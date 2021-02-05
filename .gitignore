@@ -23,4 +23,9 @@
 hs_err_pid*
 
 # Maven
-target/
+org.pathvisio.lib/target/
+org.pathvisio.lib/.classpath
+org.pathvisio.lib/.settings
+org.pathvisio.lib/.project
+
+.metadata/
