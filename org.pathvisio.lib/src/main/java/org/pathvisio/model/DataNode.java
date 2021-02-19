@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -27,7 +26,7 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class DataNode {
+public class DataNode implements Graphics{
 
 	private Xref xref;
 	private Graphics graphics; 
