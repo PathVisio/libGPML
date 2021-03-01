@@ -16,44 +16,37 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
-
 /**
- * This class stores all information relevant to an Interaction pathway element.
+ * This class contains possible orientations for a Shape, such as "Top" (0
+ * degrees) or "Right" (90 degrees).
  * 
- * @author finterly
+ * @author unknown, finterly
  */
-public class Interaction extends GraphicalLine {
+public class OrientationType {
 
-	private Xref xref;
+	// warning: don't change these constants. Correct mapping to .MAPP format
+	// depends on it.
+	public static final int TOP = 0;
+	public static final int RIGHT = 1;
+	public static final int BOTTOM = 2;
+	public static final int LEFT = 3;
 
-	public Interaction() {
-		super();
+	// Some mappings to Gpml
+	private static final List<String> ORIENTATION_MAPPINGS = Arrays
+			.asList(new String[] { "top", "right", "bottom", "left" });
+
+	public static int getMapping(String value) {
+		return ORIENTATION_MAPPINGS.indexOf(value);
 	}
 
-	// Add Constructors
-
-	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
+	public static String getMapping(int value) {
+		return (String) ORIENTATION_MAPPINGS.get(value);
 	}
 
-	/**
-	 * Instantiates and sets the value of DataNode Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+	public static String[] getNames() {
+		return new String[] { "Top", "Right", "Bottom", "Left" };
 	}
-
 }

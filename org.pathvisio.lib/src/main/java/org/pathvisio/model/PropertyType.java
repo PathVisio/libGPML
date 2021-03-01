@@ -16,44 +16,27 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.List;
-
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
-
 /**
- * This class stores all information relevant to an Interaction pathway element.
- * 
- * @author finterly
+ * This interface represents a type (the <i>Type</i> in Property).
+ *
+ * @author Mark Woon
  */
-public class Interaction extends GraphicalLine {
-
-	private Xref xref;
-
-	public Interaction() {
-		super();
-	}
-
-	// Add Constructors
+public interface PropertyType {
 
 	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
+	 * The id for this type.
 	 */
-	public Xref getXref() {
-		return xref;
-	}
+	String getId();
 
 	/**
-	 * Instantiates and sets the value of DataNode Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
+	 * Handle the translation of a Property from a (JDOM) GPML element to a PathwayElement.
+	 * This is responsible for copying the value(s) of prop from gpmlElem to pwElem.
 	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
+	//void translateFromGpml(Property prop, Element gpmlElem, PathwayElement pwElem) throws ConverterException;
 
+	/**
+	 * Handle the translation of a Property from a PathwayElement to a (JDOM) GPML element.
+	 * This is responsible for copying the value(s) of a prop from pwElem to gpmlElem.
+	 */
+	//void translateToGpml(Property prop, PathwayElement pwElem, Element gpmlElem) throws ConverterException;
 }

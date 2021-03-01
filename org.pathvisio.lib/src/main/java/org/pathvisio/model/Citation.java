@@ -22,7 +22,7 @@ import org.bridgedb.Xref;
 /**
  * This class stores all information relevant to a Citation pathway element.
  * 
- * @author finterly
+ * @author saurabh, finterly
  */
 public class Citation {
 	private String elementId;

@@ -26,15 +26,17 @@ public class Anchor {
 
 	private String elementId;
 	private double position;
-	private double x;
-	private double y;
+	private Coordinate coordinate;
+//	private double x;
+//	private double y;
 	private String shapeType;
+	private PathwayElement parent;
 
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
 	 * @param elementId the unique id of the anchor.
-	 * @param position  the the proportional distance of an anchor along the line it
+	 * @param position  the proportional distance of an anchor along the line it
 	 *                  belongs to.
 	 * @param x         the x coordinate position of the anchor.
 	 * @param y         the y coordinate position of the anchor.
@@ -90,40 +92,58 @@ public class Anchor {
 	}
 
 	/**
-	 * Gets the x coordinate position of the anchor.
+	 * Gets the x and y coordinate position of the anchor.
 	 * 
-	 * @return x the x coordinate position of the anchor.
+	 * @return coordinate the coordinate position of the anchor.
 	 */
-	public double getX() {
-		return x;
+	public Coordinate getCoordinate() {
+		return coordinate;
 	}
 
 	/**
-	 * Sets the x coordinate position of the anchor.
+	 * Gets the x and y coordinate position of the anchor.
 	 * 
-	 * @param x the x coordinate position of the anchor.
+	 * @param coordinate the coordinate position of the anchor.
 	 */
-	public void setX(double x) {
-		this.x = x;
+	public void setX(Coordinate coordinate) {
+		this.coordinate = coordinate;
 	}
-
-	/**
-	 * Gets the y coordinate position of the anchor.
-	 * 
-	 * @return y the y coordinate position of the anchor.
-	 */
-	public double getY() {
-		return y;
-	}
-
-	/**
-	 * Sets the y coordinate position of the anchor.
-	 * 
-	 * @param y the y coordinate position of the anchor.
-	 */
-	public void setY(double y) {
-		this.y = y;
-	}
+	
+//	/**
+//	 * Gets the x coordinate position of the anchor.
+//	 * 
+//	 * @return x the x coordinate position of the anchor.
+//	 */
+//	public double getX() {
+//		return x;
+//	}
+//
+//	/**
+//	 * Sets the x coordinate position of the anchor.
+//	 * 
+//	 * @param x the x coordinate position of the anchor.
+//	 */
+//	public void setX(double x) {
+//		this.x = x;
+//	}
+//
+//	/**
+//	 * Gets the y coordinate position of the anchor.
+//	 * 
+//	 * @return y the y coordinate position of the anchor.
+//	 */
+//	public double getY() {
+//		return y;
+//	}
+//
+//	/**
+//	 * Sets the y coordinate position of the anchor.
+//	 * 
+//	 * @param y the y coordinate position of the anchor.
+//	 */
+//	public void setY(double y) {
+//		this.y = y;
+//	}
 
 	/**
 	 * Gets the visual representation of an anchor, e.g., none, square.

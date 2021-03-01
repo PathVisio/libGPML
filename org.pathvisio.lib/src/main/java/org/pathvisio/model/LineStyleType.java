@@ -16,44 +16,26 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.List;
-
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
-
 /**
- * This class stores all information relevant to an Interaction pathway element.
+ * This class contains possible values for line style property. Line style can
+ * be either solid, dashed or double.
  * 
- * @author finterly
+ * NB: Not to be confused with LineType, which defines the appearance of the
+ * arrow head.
+ * 
+ * @author unknown, finterly
  */
-public class Interaction extends GraphicalLine {
+public class LineStyleType {
+	public static final int SOLID = 0;
+	public static final int DASHED = 1;
+	public static final int DOUBLE = 2;
 
-	private Xref xref;
-
-	public Interaction() {
-		super();
+	public static String[] getNames() {
+		return new String[] { "Solid", "Dashed", "Double"};
 	}
 
-	// Add Constructors
-
-	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
-
-	/**
-	 * Instantiates and sets the value of DataNode Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
+	// dynamic property key for LineStyle.DOUBLE, until GPML is updated
+	// TODO: remove after next GPML update
+	final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 
 }

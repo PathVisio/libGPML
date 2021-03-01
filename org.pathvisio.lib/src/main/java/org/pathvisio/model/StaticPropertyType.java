@@ -16,44 +16,76 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.List;
-
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
-
 /**
- * This class stores all information relevant to an Interaction pathway element.
+ * This enum class defines properties of different types. All the possible types
+ * are defined here.
  * 
- * @author finterly
+ * @author unknown, finterly
  */
-public class Interaction extends GraphicalLine {
+public enum StaticPropertyType implements PropertyType {
+	/** */
+	BOOLEAN,
+	/** */
+	DOUBLE,
+	/** */
+	INTEGER,
+	/** */
+	DATASOURCE,
+	/** */
+	LINESTYLE,
+	/** */
+	COLOR,
+	/** */
+	STRING,
+	/** */
+	ORIENTATION,
+	/** */
+	SHAPETYPE,
+	/** */
+	LINETYPE,
+	/** */
+	OUTLINETYPE,
+	/** */
+	GENETYPE,
+	/** */
+	FONT,
+	/** */
+	ANGLE,
+	/** */
+	ORGANISM,
+	/** */
+	DB_ID,
+	/** */
+	DB_SYMBOL,
+	/** */
+	BIOPAXREF,
+	/** */
+	COMMENTS,
+	/** */
+	GROUPSTYLETYPE,
+	/** */
+	ALIGNTYPE,
+	/** */
+	HALIGNTYPE,
+	/** */
+	VALIGNTYPE;
 
-	private Xref xref;
-
-	public Interaction() {
-		super();
-	}
-
-	// Add Constructors
+	private String id;
 
 	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
+	 * Constructor to initialize the state of enum types.
 	 */
-	public Xref getXref() {
-		return xref;
+	private StaticPropertyType() {
+		id = "core." + name();
+		PropertyManager.registerPropertyType(this);
 	}
 
 	/**
-	 * Instantiates and sets the value of DataNode Xref.
+	 * Returns the id of this StaticPropertyType.
 	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
+	 * @return id the identifier.
 	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+	public String getId() {
+		return id;
 	}
-
 }
