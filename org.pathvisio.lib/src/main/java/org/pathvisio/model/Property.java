@@ -17,60 +17,37 @@
 package org.pathvisio.model;
 
 /**
- * This class stores all information relevant to a Property, key value pair.
- * 
- * @author finterly
+ * This interface defines a typed property.
+ *
+ * @author Mark Woon
  */
-public class Property {
-
-	private String key;
-	private String value;
+public interface Property {
 
 	/**
-	 * Instantiates a Property, key value pair information.  
-	 * 
-	 * @param key the key of a key value pair.
-	 * @param value the value of a key value pair.
+	 * Gets the Id for this property. Ids must be unique.
 	 */
-	public Property(String key, String value) {
-		this.key = key;
-		this.value = value;
-	}
+	String getId();
 
 	/**
-	 * Gets the key of a key value pair. 
-	 * 
-	 * @return key the key of a key value pair.
+	 * @returns Name of property, used e.g. as row header in the properties table.
 	 */
-	public String getKey() {
-		return key;
-	}
+	String getName();
 
 	/**
-	 * Sets the key of a key value pair. 
+	 * Description of property, used e.g. as tooltip text when mousing over the
+	 * properties table. Descriptions are optional.
 	 * 
-	 * @param key the key of a key value pair.
+	 * @returns description. May return null.
 	 */
-	public void setKey(String key) {
-		this.key = key;
-	}
+	String getDescription();
 
 	/**
-	 * Gets the value of a key value pair. 
-	 * 
-	 * @return value the value of a key value pair.
+	 * Gets the data type for this property.
 	 */
-	public String getValue() {
-		return value;
-	}
+	PropertyType getType();
 
 	/**
-	 * Sets the value of a key value pair. 
-	 * 
-	 * @param value the value of a key value pair.
+	 * Gets whether this property has accepts values.
 	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
-
+	boolean isCollection();
 }

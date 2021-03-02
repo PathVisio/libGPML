@@ -16,19 +16,21 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
+import org.pathvisio.model.ElementLink.ElementRefContainer;
 
 /**
  * This class stores all information relevant to a State pathway element.
  * 
  * @author finterly
  */
-public class State {
+public class State extends PathwayElement implements ElementRefContainer {
+
+
 	private Xref xref;
 	private Graphics graphics;
 	private List<Comment> comments;
@@ -36,11 +38,14 @@ public class State {
 	private List<AnnotationRef> annotationRefs;
 	private List<CitationRef> citationRefs;
 	private String elementId;
-	private Object groupRef;
+	private String groupRef;
 	private String textLabel;
 	private String type;
 
-	// Add Constructors
+	protected State(ObjectType state) {
+		super(ObjectType.STATE);
+		// TODO Auto-generated constructor stub
+	}
 
 	
 	/**
@@ -70,7 +75,7 @@ public class State {
 	 * @return groupRef the groupRef of the state.
 	 * 
 	 */
-	public Object getGroupRef() {
+	public String getGroupRef() {
 		return groupRef;
 	}
 

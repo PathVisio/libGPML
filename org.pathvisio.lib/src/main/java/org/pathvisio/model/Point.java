@@ -22,7 +22,7 @@ package org.pathvisio.model;
  * @author finterly
  */
 public class Point {
-
+	
 	private String elementId;
 	private String elementRef; // optional?
 	private String arrowHead; //optional
@@ -30,6 +30,7 @@ public class Point {
 	private double y;
 	private double relX; //optional
 	private double relY; //optional
+	private PathwayElement parent;
 
 	/**
 	 * Instantiates a Point pathway element, with reference to another pathway
@@ -224,5 +225,8 @@ public class Point {
 	public void setRelY(double relY) {
 		this.relY = relY;
 	}
+	
+	
+	
 
 }
