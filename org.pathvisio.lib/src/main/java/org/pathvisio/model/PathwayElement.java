@@ -33,6 +33,7 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.ElementLink.ElementIdContainer;
 import org.pathvisio.model.ElementLink.ElementRefContainer;
+import org.pathvisio.util.Utils;
 
 /**
  * PathwayElement is responsible for maintaining the data for all the individual
@@ -881,7 +882,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	 *
 	 * No events will be sent to the parent of the original PathwayElement.
 	 * 
-	 * @return result the copy of PathwayElement. 
+	 * @return result the copy of PathwayElement.
 	 */
 	public PathwayElement copy() {
 		PathwayElement result = PathwayElement.createPathwayElement(objectType);
@@ -893,15 +894,19 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	protected ObjectType objectType = ObjectType.DATANODE;
 
 	/**
-	 * Returns objectType of this pathway element. 
+	 * Returns objectType of this pathway element.
 	 * 
-	 * @return objectType the objectType of this pathway element. 
+	 * @return objectType the objectType of this pathway element.
 	 */
 	public ObjectType getObjectType() {
 		return objectType;
 	}
 
-	// only for lines
+	/* ------------------------------- LINES ------------------------------- */
+
+	/**
+	 * List of Points.
+	 */
 	private List<MPoint> mPoints = Arrays.asList(new MPoint(0, 0), new MPoint(0, 0));
 
 	public void setMPoints(List<MPoint> points) {
@@ -1069,90 +1074,157 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/* ------------------------------- COLOR ------------------------------- */
+
+	/**
+	 * Color is white by default.
+	 */
 	protected Color color = new Color(0, 0, 0);
 
+	/**
+	 * Gets color of this pathway element.
+	 * 
+	 * @return color the color of this pathway element.
+	 */
 	public Color getColor() {
 		return color;
 	}
 
-	public void setColor(Color v) {
-		if (v == null)
+	/**
+	 * Sets color of this pathway element.
+	 * 
+	 * @param color the color of this pathway element.
+	 */
+	public void setColor(Color color) {
+		if (color == null)
 			throw new IllegalArgumentException();
-		if (color != v) {
-			color = v;
+		if (this.color != color) {
+			this.color = color;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COLOR));
 		}
 	}
 
 	/**
-	 * a fillcolor of null is equivalent to transparent.
+	 * FillColor of null is equivalent to transparent.
 	 */
 	protected Color fillColor = null;
 
+	/**
+	 * Gets fillColor of this pathway element.
+	 * 
+	 * @return fillColor the fill color of this pathway element.
+	 */
 	public Color getFillColor() {
 		return fillColor;
 	}
 
-	public void setFillColor(Color v) {
-		if (fillColor != v) {
-			fillColor = v;
+	/**
+	 * Sets fillColor of this pathway element.
+	 * 
+	 * @param color the fill color of this pathway element.
+	 */
+	public void setFillColor(Color color) {
+		if (this.fillColor != color) {
+			this.fillColor = color;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FILLCOLOR));
 		}
 	}
 
 	/**
-	 * checks if fill color is equal to null or the alpha value is equal to 0.
+	 * Checks if fill color is equal to null or the alpha value is equal to 0.
+	 * 
+	 * @return true if fill color equal to null or alpha value equal to 0, false
+	 *         otherwise.
 	 */
 	public boolean isTransparent() {
 		return fillColor == null || fillColor.getAlpha() == 0;
 	}
 
 	/**
-	 * sets the alpha component of fillColor to 0 if true sets the alpha component
-	 * of fillColor to 255 if true
+	 * TODO: Logic seems weird...
+	 * 
+	 * Sets the alpha component of fillColor to 0 if true, sets the alpha component
+	 * of fillColor to 255 if false.
+	 * 
+	 * @param value the boolean value.
 	 */
-	public void setTransparent(boolean v) {
-		if (isTransparent() != v) {
+	public void setTransparent(boolean value) {
+		if (isTransparent() != value) {
 			if (fillColor == null) {
 				fillColor = Color.WHITE;
 			}
-			int alpha = v ? 0 : 255;
+			int alpha = value ? 0 : 255;
 			fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
-
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TRANSPARENT));
 		}
 	}
 
-	// general
+	/* ------------------------------- GENERAL ------------------------------- */
+
+	/**
+	 * List of comments.
+	 */
 	List<Comment> comments = new ArrayList<Comment>();
 
+	/**
+	 * Returns comments the list of Comment.
+	 * 
+	 * @return comments the list of comments.
+	 */
 	public List<Comment> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comment> value) {
-		if (comments != value) {
-			comments = value;
+	/**
+	 * Sets comments to given list of Comment.
+	 * 
+	 * @param comments the list of comments.
+	 */
+	public void setComments(List<Comment> comments) {
+		if (this.comments != comments) {
+			this.comments = comments;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
 		}
 	}
 
+	/**
+	 * TODO: Move this
+	 * 
+	 * Adds String comment and String source...
+	 * 
+	 * @param comment the comment.
+	 * @param source  the source.
+	 */
 	public void addComment(String comment, String source) {
 		addComment(new Comment(comment, source));
 	}
 
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
 	public void addComment(Comment comment) {
 		comments.add(comment);
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
 	}
 
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
 	public void removeComment(Comment comment) {
 		comments.remove(comment);
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
 	}
 
 	/**
-	 * Finds the first comment with a specific source
+	 * TODO: Need to be moved or something...
+	 * 
+	 * Finds the first comment with a specific source.
+	 * 
+	 * @returns the comment with a given source.
 	 */
 	public String findComment(String source) {
 		for (Comment c : comments) {
@@ -1163,6 +1235,9 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	protected String setGeneID = "";
 
 	/**
@@ -1184,8 +1259,9 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	}
 
 	public void setElementID(String v) {
-		if (v == null)
+		if (v == null) {
 			throw new IllegalArgumentException();
+		}
 		v = v.trim();
 		if (!Utils.stringEquals(setGeneID, v)) {
 			setGeneID = v;
@@ -1193,37 +1269,66 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * DataNodeType is "Unknown by default".
+	 */
 	protected String dataNodeType = "Unknown";
 
+	/**
+	 * Gets DataNodeType.
+	 * 
+	 * @return dataNodeType the data node type.
+	 */
 	public String getDataNodeType() {
 		return dataNodeType;
 	}
 
-	public void setDataNodeType(DataNodeType type) {
-		setDataNodeType(type.getName());
+	/**
+	 * Sets data node type to given DataNodeType.
+	 * 
+	 * @param dataNodeType the data node type.
+	 */
+	public void setDataNodeType(DataNodeType dataNodeType) {
+		setDataNodeType(dataNodeType.getName());
 	}
 
-	public void setDataNodeType(String v) {
-		if (v == null)
+	/**
+	 * Sets data node type to given String.
+	 * 
+	 * @return dataNodeType the data node type.
+	 */
+	public void setDataNodeType(String value) {
+		if (value == null) {
 			throw new IllegalArgumentException();
-		if (!Utils.stringEquals(dataNodeType, v)) {
-			dataNodeType = v;
+		}
+		if (!Utils.stringEquals(dataNodeType, value)) {
+			dataNodeType = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TYPE));
 		}
 	}
 
 	/**
-	 * The pathway datasource
+	 * The pathway data source.
 	 */
-	protected DataSource dataSource = null;
+	protected DataSource source = null;
 
+	/**
+	 * Gets pathway data source.
+	 * 
+	 * @return source the pathway data source.
+	 */
 	public DataSource getDataSource() {
-		return dataSource;
+		return source;
 	}
 
-	public void setDataSource(DataSource v) {
-		if (dataSource != v) {
-			dataSource = v;
+	/**
+	 * Sets pathway data source.
+	 * 
+	 * @param source the pathway data source.
+	 */
+	public void setDataSource(DataSource source) {
+		if (this.source != source) {
+			this.source = source;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.DATASOURCE));
 		}
 	}
@@ -1237,7 +1342,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	 */
 	public Xref getXref() {
 		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
-		return new Xref(setGeneID, dataSource);
+		return new Xref(setGeneID, source);
 	}
 
 	protected double mCenterx = 0;
