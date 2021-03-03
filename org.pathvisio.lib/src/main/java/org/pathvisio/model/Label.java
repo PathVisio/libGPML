@@ -19,35 +19,53 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores all information relevant to a Label pathway element.
  * 
  * @author finterly
  */
-public class Label {
+public class Label extends PathwayElement {
 
 	private Graphics graphics;
 	private List<Comment> comments;
 	private List<Property> properties;
 	private List<AnnotationRef> annotationRefs;
 	private List<CitationRef> citationRefs;
-	private String href;
+	protected String href = ""; // hyperlink optionally specified in a Label for a reference to a url.
 	private String elementId;
 	private String groupRef;
 	private String textLabel;
 
 	// Add Constructors
 
+	/**
+	 * Gets the hyperlink for a Label.
+	 * 
+	 * @return href the hyperlink reference to a url.
+	 */
 	public String getHref() {
 		return href;
 	}
 
-	public void setHref(String href) {
-		this.href = href;
+	/**
+	 * Sets the hyperlink for a Label.
+	 * 
+	 * @param input the given string link. If input is null, href is set to
+	 *              ""(empty).
+	 */
+	public void setHref(String input) {
+		String link = (input == null) ? "" : input;
+		if (!Utils.stringEquals(href, link)) {
+			href = link;
+			if (PreferenceManager.getCurrent() == null)
+				PreferenceManager.init();
+			setColor(PreferenceManager.getCurrent().getColor(GlobalPreference.COLOR_LINK));
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
+		}
 	}
 
-	
 	/**
 	 * Gets the elementId of the label.
 	 * 
@@ -89,7 +107,6 @@ public class Label {
 	public void getGroupRef(String groupRef) {
 		this.groupRef = groupRef;
 	}
-
 
 	/**
 	 * Gets the text of of the label.

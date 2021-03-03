@@ -22,7 +22,7 @@ package org.pathvisio.model;
  * Pathway elements (e.g. DataNode, State, Interaction, GraphicalLine, Label,
  * Shape, Group) can have zero or more comments with it.
  * 
- * @author finterly
+ * @author unknown, finterly
  */
 public class Comment implements Cloneable {
 
@@ -106,9 +106,10 @@ public class Comment implements Cloneable {
 
 	}
 
-//    private void changed() {
-//        parent.fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.COMMENTS));
-//    }
+	//saubr
+    private void changed() {
+        parent.fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.COMMENTS));
+    }
 
 //	private void changed() {
 //		fireObjectModifiedEvent(

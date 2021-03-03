@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.Color;
+
 /**
  * This class stores information for the visual appearance of a line object,
  * e.g. Pathway elements: Interaction or GraphicalLine.
@@ -24,20 +26,24 @@ package org.pathvisio.model;
  */
 public class LineGraphics implements Graphics {
 
-	private String lineColor;
-	private String lineStyle;
-	private double lineWidth; // double or integer?
-	private String connectorType; // enum?
-	private int zOrder;
+	protected Color lineColor; // TODO: Set color by type
+	/**
+	 * The visual appearance of a line, e.g. Solid or Broken.
+	 */
+	protected int lineStyle = LineStyleType.SOLID; // TODO: int? enum?
+	protected double lineWidth = 1.0; // double or integer?
+	private ConnectorType connectorType = ConnectorType.STRAIGHT; // enum?
+	protected int zOrder;
+	protected PathwayElement parent; // TODO: Getter/Setter
 
 	/**
 	 * Gets the color of a line.
 	 * 
 	 * @return lineColor the color of a line.
 	 */
-	public String getLineColor() {
+	public Color getLineColor() {
 		if (lineColor == null) {
-			return "Black";
+			return new Color(0, 0, 0);
 		} else {
 			return lineColor;
 		}
@@ -47,9 +53,16 @@ public class LineGraphics implements Graphics {
 	 * Sets the color of a line.
 	 * 
 	 * @param lineColor the color of a line.
+	 * @throws IllegalArgumentException if color null.
 	 */
-	public void setLineColor(String value) {
-		this.lineColor = value;
+	public void setLineColor(Color lineColor) {
+		if (lineColor == null)
+			throw new IllegalArgumentException();
+		if (this.lineColor != lineColor) {
+			this.lineColor = lineColor;
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINECOLOR));
+		}
 	}
 
 	/**
@@ -57,12 +70,12 @@ public class LineGraphics implements Graphics {
 	 * 
 	 * @return lineStyle the style of a line.
 	 */
-	public String getLineStyle() {
-		if (lineStyle == null) {
-			return "Solid"; // enum
-		} else {
-			return lineStyle;
-		}
+	public int getLineStyle() {
+//		if (lineStyle == null) {
+//			return "Solid"; // TODO:enum
+//		} else {
+		return lineStyle;
+//		}
 	}
 
 	/**
@@ -70,8 +83,18 @@ public class LineGraphics implements Graphics {
 	 * 
 	 * @param lineStyle the style of a line.
 	 */
-	public void setLineStyle(String value) {
-		this.lineStyle = value;
+	public void setLineStyle(int lineStyle) {
+		if (this.lineStyle != lineStyle) {
+			this.lineStyle = lineStyle;
+			// handle LineStyle.DOUBLE until GPML is updated
+			// TODO: remove after next GPML update
+//			if (this.lineStyle == LineStyleType.DOUBLE)
+//				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, "Double");
+//			else
+//				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, null);
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINESTYLE));
+		}
 	}
 
 	/**
@@ -81,7 +104,7 @@ public class LineGraphics implements Graphics {
 	 */
 	public double getLineWidth() {
 		if (lineWidth == 0) {
-			return 1.0F;
+			return 1.0;
 		} else {
 			return lineWidth;
 		}
@@ -92,8 +115,12 @@ public class LineGraphics implements Graphics {
 	 * 
 	 * @param lineWidth the width of a line.
 	 */
-	public void setLineWidth(double value) {
-		this.lineWidth = value;
+	public void setLineWidth(double lineWidth) {
+		if (this.lineWidth != lineWidth) {
+			this.lineWidth = lineWidth;
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINETHICKNESS));
+		}
 	}
 
 	/**
@@ -103,9 +130,9 @@ public class LineGraphics implements Graphics {
 	 * 
 	 * @return connectorType the layout of a line.
 	 */
-	public String getConnectorType() {
+	public ConnectorType getConnectorType() {
 		if (connectorType == null) {
-			return "Straight";
+			return ConnectorType.STRAIGHT;
 		} else {
 			return connectorType;
 		}
@@ -118,8 +145,15 @@ public class LineGraphics implements Graphics {
 	 * 
 	 * @param connectorType the layout of a line.
 	 */
-	public void setConnectorType(String value) {
-		this.connectorType = value;
+	public void setConnectorType(ConnectorType connectorType) {
+		if (connectorType == null) {
+			throw new IllegalArgumentException();
+		}
+		if (!this.connectorType.equals(connectorType)) {
+			this.connectorType = connectorType;
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.CONNECTORTYPE));
+		}
 	}
 
 	/**
@@ -136,8 +170,8 @@ public class LineGraphics implements Graphics {
 	 * 
 	 * @param zOrder the order of a line.
 	 */
-	public void setZOrder(int value) {
-		this.zOrder = value;
+	public void setZOrder(int zOrder) {
+		this.zOrder = zOrder;
 	}
 
 }

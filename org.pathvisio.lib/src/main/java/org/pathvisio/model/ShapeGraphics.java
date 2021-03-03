@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.Color;
+
 /**
  * This class stores information for the visual appearance of a two dimensional
  * (shape) object, e.g. Pathway elements: DataNode, State, Shape, Label.
@@ -24,21 +26,22 @@ package org.pathvisio.model;
  */
 public class ShapeGraphics implements Graphics {
 
-	private String borderColor; //enum?
-	private String borderStyle; //enum?
-	private double borderWidth; //double? 
-	private String fillColor;  
-	private String shapeType; //enum?
-	private int zOrder;
+	protected Color borderColor; // TODO: Set color by type?
+	protected String borderStyle; // enum?
+	protected double borderWidth = 1.0; // double?
+	protected Color fillColor = null; // TODO: fix transparency implementation
+	protected String shapeType; // enum?
+	protected int zOrder;
+	protected PathwayElement parent; // TODO: Getter/Setter
 
 	/**
 	 * Gets the border color of an object.
 	 * 
 	 * @return borderColor the border color of an object.
 	 */
-	public String getBorderColor() {
+	public Color getBorderColor() {
 		if (borderColor == null) {
-			return "Black";
+			return new Color(0, 0, 0); // black
 		} else {
 			return borderColor;
 		}
@@ -48,9 +51,16 @@ public class ShapeGraphics implements Graphics {
 	 * Sets the border color of an object.
 	 * 
 	 * @param borderColor the border color of an object.
+	 * @throws IllegalArgumentException if color null.
 	 */
-	public void setBorderColor(String borderColor) {
-		this.borderColor = borderColor;
+	public void setBorderColor(Color borderColor) {
+		if (borderColor == null)
+			throw new IllegalArgumentException();
+		if (this.borderColor != borderColor) {
+			this.borderColor = borderColor;
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.BORDERCOLOR));
+		}
 	}
 
 	/**
@@ -60,7 +70,7 @@ public class ShapeGraphics implements Graphics {
 	 */
 	public String getBorderStyle() {
 		if (borderStyle == null) {
-			return "solid"; //enum?
+			return "solid"; // enum?
 		} else {
 			return borderStyle;
 		}
@@ -82,7 +92,7 @@ public class ShapeGraphics implements Graphics {
 	 */
 	public double getBorderWidth() {
 		if (borderWidth == 0) {
-			return 0;
+			return 0; //TODO: Can borderWidth be zero? 
 		} else {
 			return borderWidth;
 		}
@@ -94,17 +104,21 @@ public class ShapeGraphics implements Graphics {
 	 * @param borderWidth the width of a border.
 	 */
 	public void setBorderWidth(double borderWidth) {
-		this.borderWidth = borderWidth;
+		if (this.borderWidth != borderWidth) {
+			this.borderWidth = borderWidth;
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINETHICKNESS));
+		}
 	}
 
 	/**
 	 * Gets the color used to paint the area of an object, not including its border.
 	 * 
-	 * @return fillColor the fill color of an object. 
+	 * @return fillColor the fill color of an object.
 	 */
-	public String getFillColor() {
+	public Color getFillColor() {
 		if (fillColor == null) {
-			return "White";
+			return new Color(255, 255, 255); // white
 		} else {
 			return fillColor;
 		}
@@ -115,8 +129,42 @@ public class ShapeGraphics implements Graphics {
 	 * 
 	 * @param fillColor the fill color of an object.
 	 */
-	public void setFillColor(String fillColor) {
-		this.fillColor = fillColor;
+	public void setFillColor(Color fillColor) {
+		if (this.fillColor != fillColor) {
+			this.fillColor = fillColor;
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FILLCOLOR));
+		}
+	}
+
+	/**
+	 * Checks if fill color is equal to null or the alpha value is equal to 0.
+	 * 
+	 * @return true if fill color equal to null or alpha value equal to 0, false
+	 *         otherwise.
+	 */
+	public boolean isTransparent() {
+		return fillColor == null || fillColor.getAlpha() == 0;
+	}
+
+	/**
+	 * TODO: Logic seems weird...
+	 * 
+	 * Sets the alpha component of fillColor to 0 if true, sets the alpha component
+	 * of fillColor to 255 if false.
+	 * 
+	 * @param value the boolean value.
+	 */
+	public void setTransparent(boolean value) {
+		if (isTransparent() != value) {
+			if (fillColor == null) {
+				fillColor = Color.WHITE;
+			}
+			int alpha = value ? 0 : 255;
+			fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
+			parent.fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.TRANSPARENT));
+		}
 	}
 
 	/**
@@ -163,6 +211,15 @@ public class ShapeGraphics implements Graphics {
 	 */
 	public void setZOrder(int zOrder) {
 		this.zOrder = zOrder;
+	}
+
+	/**
+	 * Gets the parent PathwayElement to which the shape graphic property belongs.
+	 * 
+	 * @return parent the parent pathway element.
+	 */
+	public PathwayElement getParent() {
+		return parent;
 	}
 
 }

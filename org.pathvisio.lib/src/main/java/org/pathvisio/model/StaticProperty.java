@@ -47,6 +47,10 @@ public enum StaticProperty implements Property {
 	 * TODO: Shape, Datanode, Label
 	 */
 	BORDERCOLOR("Color", "Color", StaticPropertyType.COLOR, 204),
+	/**
+	 * TODO: Shape, Datanode, Label
+	 */
+	TEXTCOLOR("Color", "Color", StaticPropertyType.COLOR, 204),
 
 	/**
 	 * DataNode, Label, Shape
@@ -91,10 +95,23 @@ public enum StaticProperty implements Property {
 	ENDLINETYPE("EndLineType", "End Line Type", StaticPropertyType.LINETYPE, 119),
 
 	/**
+	 * TODO: number...CORRECT MAPPING
+	 */
+	CONNECTORTYPE("ConnectorType", "Connector Type", StaticPropertyType.CONNECTORTYPE, 120),
+	/**
 	 * Line, label, shape, state and datanode
 	 */
 	LINESTYLE("LineStyle", "Line Style", StaticPropertyType.LINESTYLE, 120),
 	LINETHICKNESS("LineThickness", "Line Thickness", StaticPropertyType.DOUBLE, 120),
+	/**
+	 * TODO: number...
+	 */
+	LINEWIDTH("LineWidth", "Line Width", StaticPropertyType.DOUBLE, 120),
+
+	/**
+	 * TODO: number...
+	 */
+	BORDERWIDTH("BorderWidth", "Border Width", StaticPropertyType.DOUBLE, 120),
 
 	/**
 	 * brace???
@@ -116,7 +133,15 @@ public enum StaticProperty implements Property {
 	FONTSTYLE("FontStyle", "Italic", StaticPropertyType.BOOLEAN, 131),
 	FONTSIZE("FontSize", "Font Size", StaticPropertyType.DOUBLE, 132),
 	/**
-	 * TODO:
+	 * TODO: number...
+	 */
+	FONTSTRIKETHRU("FontStrikethru", "Font Strikethru", StaticPropertyType.BOOLEAN, 132), 
+	/**
+	 * TODO: number...
+	 */
+	FONTDECORATION("FontDecoration", "Font Decoration", StaticPropertyType.BOOLEAN, 132), 
+	/**
+	 * TODO: number...
 	 */
 	VALIGN("Valign", "Vertical Alignment", StaticPropertyType.VALIGNTYPE, 133),
 	HALIGN("Halign", "Horizontal Alignment", StaticPropertyType.HALIGNTYPE, 134),

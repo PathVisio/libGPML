@@ -77,51 +77,6 @@ import org.pathvisio.util.Utils;
  * @author unknown, finterly
  */
 public class PathwayElement implements ElementIdContainer, Comparable<PathwayElement> {
-	// TreeMap has better performance than HashMap
-	// in the (common) case where no attributes are present
-	// This map should never contain non-null values, if a value
-	// is set to null the key should be removed.
-
-	/**
-	 * Map for storing dynamic properties. Dynamic properties can have any String as
-	 * key and value of type String. Dynamic properties represent
-	 * CommentGroup.Property in gpml.
-	 */
-	private Map<String, String> dynamicProperties = new TreeMap<String, String>();
-
-	/**
-	 * Gets a set of all dynamic property keys.
-	 * 
-	 * @return a set of all dynamic property keys.
-	 */
-	public Set<String> getDynamicPropertyKeys() {
-		return dynamicProperties.keySet();
-	}
-
-	/**
-	 * Sets a dynamic property. Setting to null means removing this dynamic property
-	 * altogether.
-	 * 
-	 * @param key   the key of a key value pair.
-	 * @param value the value of a key value pair.
-	 */
-	public void setDynamicProperty(String key, String value) {
-		if (value == null)
-			dynamicProperties.remove(key);
-		else
-			dynamicProperties.put(key, value);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, key));
-	}
-
-	/**
-	 * Gets a dynamic property string value.
-	 * 
-	 * @param key the key of a key value pair.
-	 * @return the value or dynamic property.
-	 */
-	public String getDynamicProperty(String key) {
-		return dynamicProperties.get(key);
-	}
 
 	/**
 	 * Initial values for pathway element properties.
@@ -525,7 +480,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 			if (value instanceof DataSource) {
 				setDataSource((DataSource) value);
 			} else {
-				setDataSource(DataSource.getByFullName((String) value));
+				setDataSource(DataSource.getExistingByFullName((String) value)); // getByFullName
 			}
 			break;
 		case TYPE:
@@ -787,7 +742,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 			result = getZOrder();
 			break;
 		case GROUPSTYLE:
-			result = getGroupStyle().toString();
+			result = getGroupType().toString();
 			break;
 		case ALIGN:
 			result = getAlign();
@@ -796,7 +751,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 			result = getValign();
 			break;
 		case LINETHICKNESS:
-			result = getLineThickness();
+			result = getLineWidth();
 			break;
 		}
 
@@ -815,14 +770,14 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		dynamicProperties = new TreeMap<String, String>(src.dynamicProperties); // create copy
 		author = src.author;
 		copyright = src.copyright;
-		mCenterx = src.mCenterx;
-		mCentery = src.mCentery;
+		mCenterX = src.mCenterX;
+		mCenterY = src.mCenterY;
 		relX = src.relX;
 		relY = src.relY;
 		zOrder = src.zOrder;
 		color = src.color;
 		fillColor = src.fillColor;
-		dataSource = src.dataSource;
+		source = src.source;
 		email = src.email;
 		fontName = src.fontName;
 		mFontSize = src.mFontSize;
@@ -845,9 +800,9 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		organism = src.organism;
 		rotation = src.rotation;
 		shapeType = src.shapeType;
-		lineThickness = src.lineThickness;
-		align = src.align;
-		valign = src.valign;
+		lineWidth = src.lineWidth;
+		hAlign = src.hAlign;
+		vAlign = src.vAlign;
 		mPoints = new ArrayList<MPoint>();
 		for (MPoint p : src.mPoints) {
 			mPoints.add(new MPoint(p));
@@ -866,11 +821,11 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 		version = src.version;
 		mWidth = src.mWidth;
-		graphId = src.graphId;
+		elementId = src.elementId;
 		graphRef = src.graphRef;
 		groupId = src.groupId;
 		groupRef = src.groupRef;
-		groupStyle = src.groupStyle;
+		groupType = src.groupType;
 		connectorType = src.connectorType;
 		biopaxRefs = (List<String>) ((ArrayList<String>) src.biopaxRefs).clone();
 		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
@@ -971,25 +926,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		getMEnd().setY(v);
 	}
 
-	protected int lineStyle = LineStyleType.SOLID;
-
-	public int getLineStyle() {
-		return lineStyle;
-	}
-
-	public void setLineStyle(int value) {
-		if (lineStyle != value) {
-			lineStyle = value;
-			// handle LineStyle.DOUBLE until GPML is updated
-			// TODO: remove after next GPML update
-			if (lineStyle == LineStyleType.DOUBLE)
-				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, "Double");
-			else
-				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, null);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
-		}
-	}
-
 	protected LineType endLineType = LineType.LINE;
 	protected LineType startLineType = LineType.LINE;
 
@@ -1013,24 +949,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 			endLineType = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ENDLINETYPE));
 		}
-	}
-
-	private ConnectorType connectorType = ConnectorType.STRAIGHT;
-
-	public void setConnectorType(ConnectorType type) {
-		if (connectorType == null) {
-			throw new IllegalArgumentException();
-		}
-		if (!connectorType.equals(type)) {
-			connectorType = type;
-			// TODO: create a static property for connector type, linestyle is not the
-			// correct mapping
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
-		}
-	}
-
-	public ConnectorType getConnectorType() {
-		return connectorType;
 	}
 
 	// TODO: end of new elements
@@ -1077,7 +995,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	/* ------------------------------- COLOR ------------------------------- */
 
 	/**
-	 * Color is white by default.
+	 * Color is black by default.
 	 */
 	protected Color color = new Color(0, 0, 0);
 
@@ -1094,6 +1012,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	 * Sets color of this pathway element.
 	 * 
 	 * @param color the color of this pathway element.
+	 * @throws IllegalArgumentException if color null.
 	 */
 	public void setColor(Color color) {
 		if (color == null)
@@ -1101,61 +1020,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		if (this.color != color) {
 			this.color = color;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COLOR));
-		}
-	}
-
-	/**
-	 * FillColor of null is equivalent to transparent.
-	 */
-	protected Color fillColor = null;
-
-	/**
-	 * Gets fillColor of this pathway element.
-	 * 
-	 * @return fillColor the fill color of this pathway element.
-	 */
-	public Color getFillColor() {
-		return fillColor;
-	}
-
-	/**
-	 * Sets fillColor of this pathway element.
-	 * 
-	 * @param color the fill color of this pathway element.
-	 */
-	public void setFillColor(Color color) {
-		if (this.fillColor != color) {
-			this.fillColor = color;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FILLCOLOR));
-		}
-	}
-
-	/**
-	 * Checks if fill color is equal to null or the alpha value is equal to 0.
-	 * 
-	 * @return true if fill color equal to null or alpha value equal to 0, false
-	 *         otherwise.
-	 */
-	public boolean isTransparent() {
-		return fillColor == null || fillColor.getAlpha() == 0;
-	}
-
-	/**
-	 * TODO: Logic seems weird...
-	 * 
-	 * Sets the alpha component of fillColor to 0 if true, sets the alpha component
-	 * of fillColor to 255 if false.
-	 * 
-	 * @param value the boolean value.
-	 */
-	public void setTransparent(boolean value) {
-		if (isTransparent() != value) {
-			if (fillColor == null) {
-				fillColor = Color.WHITE;
-			}
-			int alpha = value ? 0 : 255;
-			fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TRANSPARENT));
 		}
 	}
 
@@ -1271,43 +1135,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
-	/**
-	 * DataNodeType is "Unknown by default".
-	 */
-	protected String dataNodeType = "Unknown";
-
-	/**
-	 * Gets DataNodeType.
-	 * 
-	 * @return dataNodeType the data node type.
-	 */
-	public String getDataNodeType() {
-		return dataNodeType;
-	}
-
-	/**
-	 * Sets data node type to given DataNodeType.
-	 * 
-	 * @param dataNodeType the data node type.
-	 */
-	public void setDataNodeType(DataNodeType dataNodeType) {
-		setDataNodeType(dataNodeType.getName());
-	}
-
-	/**
-	 * Sets data node type to given String.
-	 * 
-	 * @return dataNodeType the data node type.
-	 */
-	public void setDataNodeType(String value) {
-		if (value == null) {
-			throw new IllegalArgumentException();
-		}
-		if (!Utils.stringEquals(dataNodeType, value)) {
-			dataNodeType = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TYPE));
-		}
-	}
 
 	/**
 	 * The pathway data source.
@@ -1628,152 +1455,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	/* ------------------------------- LABEL ------------------------------- */
 
 	/**
-	 * The boolean for font weight normal (default) or bold, a bold font would have
-	 * more weight. FontAttributes.fontWeight in GPML.
-	 */
-	protected boolean fBold = false;
-
-	/**
-	 * Checks if font weight is normal or bold.
-	 * 
-	 * @return fBold the boolean, if true font weight is bold. If false, font weight
-	 *         is normal.
-	 */
-	public boolean isBold() {
-		return fBold;
-	}
-
-	/**
-	 * Sets fBold the boolean for font weight
-	 * 
-	 * @param fBold the boolean, if true font weight is bold. If false, font weight
-	 *              is normal.
-	 */
-	public void setBold(boolean fBold) {
-		if (this.fBold != fBold) {
-			this.fBold = fBold;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTWEIGHT));
-		}
-	}
-
-	/**
-	 * The boolean for typographic style normal (default) or strikethru.
-	 * FontAttributes.fontStrikethru in GPML.
-	 */
-	protected boolean fStrikethru = false;
-
-	/**
-	 * Checks if typographic style is normal or strikethru.
-	 * 
-	 * @return fStrikethru the boolean, if true typographic style is strikethru. If
-	 *         false, typographic style is normal.
-	 */
-	public boolean isStrikethru() {
-		return fStrikethru;
-	}
-
-	/**
-	 * Sets fStrikethru the boolean for typographic style normal or strikethru.
-	 * 
-	 * @param fStrikethru the boolean, if true typographic style is strikethru. If
-	 *                    false, typographic style is normal.
-	 */
-	public void setStrikethru(boolean fStrikethru) {
-		if (this.fStrikethru != fStrikethru) {
-			this.fStrikethru = fStrikethru;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
-		}
-	}
-
-	/**
-	 * The boolean for typographic style normal (default) or underline.
-	 * FontAttributes.fontDecoration in GPML.
-	 */
-	protected boolean fUnderline = false;
-
-	/**
-	 * Checks if typographic style is normal or underline.
-	 * 
-	 * @return fUnderline the boolean, if true typographic style is underline. If
-	 *         false, typographic style is normal.
-	 */
-	public boolean isUnderline() {
-		return fUnderline;
-	}
-
-	/**
-	 * Sets fUnderline the boolean for typographic style normal or underline.
-	 * 
-	 * @param fUnderline the boolean, if true typographic style is underline. If
-	 *                   false, typographic style is normal.
-	 */
-	public void setUnderline(boolean v) {
-		if (fUnderline != v) {
-			fUnderline = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
-		}
-	}
-
-	/**
-	 * The boolean for typographic style normal (default) or italic.
-	 * FontAttributes.fontStyle in GPML.
-	 */
-	protected boolean fItalic = false;
-
-	/**
-	 * Checks if typographic style is normal or italic.
-	 * 
-	 * @return fItalic the boolean, if true typographic style is italic. If false,
-	 *         typographic style is normal.
-	 */
-	public boolean isItalic() {
-		return fItalic;
-	}
-
-	/**
-	 * Sets fItalic the boolean for typographic style normal or italic.
-	 * 
-	 * @param fItalic the boolean, if true typographic style is italic. If false,
-	 *                typographic style is normal.
-	 */
-	public void setItalic(boolean fItalic) {
-		if (this.fItalic != fItalic) {
-			this.fItalic = fItalic;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
-		}
-	}
-
-	/**
-	 * The name of the set of printable text characters to be used for
-	 * visualization, e.g., Arial. FontAttributes.fontName in GPML.
-	 */
-	protected String fontName = "Arial";
-
-	/**
-	 * Gets the font name of the printable text characters.
-	 * 
-	 * @return fontName the name of font.
-	 */
-	public String getFontName() {
-		return fontName;
-	}
-
-	/**
-	 * Sets the font name of the printable text characters.
-	 * 
-	 * @param fontName the name of font.
-	 * @throws IllegalArgumentException if given fontName is null.
-	 */
-	public void setFontName(String fontName) {
-		if (fontName == null)
-			throw new IllegalArgumentException();
-		if (!Utils.stringEquals(this.fontName, fontName)) {
-			this.fontName = fontName;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTNAME));
-		}
-	}
-
-	/**
 	 * The text label of this object.
 	 */
 	protected String textLabel = "";
@@ -1799,89 +1480,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		if (!Utils.stringEquals(textLabel, text)) {
 			textLabel = text;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
-		}
-	}
-
-	/**
-	 * The hyperlink optionally specified in a Label for a reference to a url.
-	 */
-	protected String href = "";
-
-	/**
-	 * Gets the hyperlink for a Label.
-	 * 
-	 * @return href the hyperlink reference to a url.
-	 */
-	public String getHref() {
-		return href;
-	}
-
-	/**
-	 * Sets the hyperlink for a Label.
-	 * 
-	 * @param input the given string link. If input is null, href is set to
-	 *              ""(empty).
-	 */
-	public void setHref(String input) {
-		String link = (input == null) ? "" : input;
-		if (!Utils.stringEquals(href, link)) {
-			href = link;
-			if (PreferenceManager.getCurrent() == null)
-				PreferenceManager.init();
-			setColor(PreferenceManager.getCurrent().getColor(GlobalPreference.COLOR_LINK));
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
-		}
-	}
-
-	/**
-	 * Line width the pixel value for the width of a line.
-	 */
-	private double lineWidth = 1.0;
-
-	/**
-	 * Gets the pixel value for the width of a line.
-	 * 
-	 * @return lineWidth the width of a line.
-	 */
-	public double getLineWidth() {
-		return lineWidth;
-	}
-
-	/**
-	 * Sets the pixel value for the width of a line.
-	 * 
-	 * @param lineWidth the width of a line.
-	 */
-	public void setLineWidth(double lineWidth) {
-		if (this.lineWidth != lineWidth) {
-			this.lineWidth = lineWidth;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINETHICKNESS));
-		}
-	}
-
-	/**
-	 * Font size the point value for the size of the font.
-	 */
-	protected double mFontSize = M_INITIAL_FONTSIZE;
-
-	/**
-	 * Sets point value for the size of the font.
-	 * 
-	 * @param fontSize the value for the size of the font.
-	 */
-	public double getMFontSize() {
-		return mFontSize;
-	}
-
-	/**
-	 * Sets point value for the size of the font.
-	 * 
-	 * @param fontSize the value for the size of the font.
-	 */
-	public void setMFontSize(double mFontSize) {
-		if (this.mFontSize != mFontSize) {
-			this.mFontSize = mFontSize;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSIZE));
 		}
 	}
 
@@ -1961,46 +1559,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 			fireObjectModifiedEvent(
 					PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.MAPINFO_DATASOURCE));
 		}
-	}
-
-	/**
-	 * Vertical alignment.
-	 */
-	protected VAlignType vAlign = VAlignType.MIDDLE;
-
-	/**
-	 * Gets vertical alignment.
-	 * 
-	 * @return vAlign
-	 */
-	public VAlignType getValign() {
-		return vAlign;
-	}
-
-	/**
-	 * Sets vertical alignment.
-	 * 
-	 * @param vAlign
-	 */
-	public void setValign(VAlignType vAlign) {
-		if (this.vAlign != vAlign) {
-			this.vAlign = vAlign;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VALIGN));
-		}
-	}
-
-	/**
-	 * Horizontal alignment.
-	 */
-	protected HAlignType hAlign = HAlignType.CENTER;
-
-	/**
-	 * Gets horizontal alignment.
-	 * 
-	 * @return hAlign
-	 */
-	public HAlignType getAlign() {
-		return hAlign;
 	}
 
 	/**
@@ -2279,7 +1837,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	}
 
 	/**
-	 * Sets GroupType to the given groupType. 
+	 * Sets GroupType to the given groupType.
 	 * 
 	 * @param groupType the type of group.
 	 */

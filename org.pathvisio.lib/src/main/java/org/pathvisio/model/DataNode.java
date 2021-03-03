@@ -20,29 +20,57 @@ import java.util.List;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores all information relevant to a DataNode pathway element.
  * 
  * @author finterly
  */
-public class DataNode implements Graphics{
+public class DataNode extends PathwayElement implements Graphics {
+
+	protected DataNode(ObjectType objectType) {
+		super(objectType);
+		// TODO Auto-generated constructor stub
+	}
 
 	private Xref xref;
-	private Graphics graphics; 
-	private List<Comment> comments; //optional
-	private List<Property> properties; //optional
-	private List<AnnotationRef> annotationRefs; //optional
-	private List<CitationRef> citationRefs; //optional
-	private String elementId; 
+	private Graphics graphics;
+	private List<Comment> comments; // optional
+	private List<Property> properties; // optional
+	private List<AnnotationRef> annotationRefs; // optional
+	private List<CitationRef> citationRefs; // optional
+	private String elementId;
 	private String groupRef; // if part of group
-	private String textLabel; 
-	private String type;
-	
+	private String textLabel;
+	protected DataNodeType type = DataNodeType.UNKOWN; // TODO: Getter/Setter weird
+
+//	/** TODO
+//	 * Sets data node type to given DataNodeType.
+//	 * 
+//	 * @param dataNodeType the data node type.
+//	 */
+//	public void setDataNodeType(DataNodeType type) {
+//		setDataNodeType(type.getName());
+//	}
+
+//	/** TODO
+//	 * Sets data node type to given String.
+//	 * 
+//	 * @return dataNodeType the data node type.
+//	 */
+//	public void setDataNodeType(String value) {
+//		if (value == null) {
+//			throw new IllegalArgumentException();
+//		}
+//		if (!Utils.stringEquals(dataNodeType, value)) {
+//			dataNodeType = value;
+//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TYPE));
+//		}
+//	}
 
 	// Add Constructors
 
-	
 	/**
 	 * Gets the elementId of the datanode.
 	 * 
@@ -64,8 +92,8 @@ public class DataNode implements Graphics{
 	}
 
 	/**
-	 * Gets the groupRef of the datanode. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
+	 * Gets the groupRef of the datanode. A groupRef indicates an object is part of
+	 * a gpml:Group with a elementId.
 	 * 
 	 * @return groupRef the groupRef of the datanode.
 	 * 
@@ -75,8 +103,8 @@ public class DataNode implements Graphics{
 	}
 
 	/**
-	 * Sets the groupRef of the datanode. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
+	 * Sets the groupRef of the datanode. A groupRef indicates an object is part of
+	 * a gpml:Group with a elementId.
 	 * 
 	 * @param groupRef the groupRef of the datanode.
 	 * 
@@ -130,7 +158,7 @@ public class DataNode implements Graphics{
 	 * 
 	 * @return type the type of datanode, e.g. complex.
 	 */
-	public String getType() {
+	public DataNodeType getType() {
 		return type;
 	}
 
@@ -139,8 +167,13 @@ public class DataNode implements Graphics{
 	 * 
 	 * @param type the type of datanode, e.g. complex.
 	 */
-	public void setType(String type) {
+	public void setType(DataNodeType type) {
 		this.type = type;
+		if (this.type != type) {
+			this.type = type;
+			// TODO: Add Type...
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+		}
 	}
 
 	/**
