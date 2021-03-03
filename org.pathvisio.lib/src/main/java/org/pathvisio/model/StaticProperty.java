@@ -144,7 +144,10 @@ public enum StaticProperty implements Property {
 	ENDGRAPHREF("EndGraphRef", "EndGraphRef", StaticPropertyType.STRING, 149, false, true, false),
 	GROUPID("GroupId", "GroupId", StaticPropertyType.STRING, 150, false, true, false),
 	GROUPREF("GroupRef", "GroupRef", StaticPropertyType.STRING, 151, false, true, false),
+	/** TODO: remove*/
 	GROUPSTYLE("GroupStyle", "Group style", StaticPropertyType.GROUPSTYLETYPE, 152),
+	GROUPTYPE("GroupStyle", "Group style", StaticPropertyType.GROUPTYPE, 152),
+
 	BIOPAXREF("BiopaxRef", "BiopaxRef", StaticPropertyType.BIOPAXREF, 153, false, true, false),
 	ZORDER("Z order", "ZOrder", StaticPropertyType.INTEGER, 154, false, true, false);
 

@@ -61,9 +61,11 @@ public enum StaticPropertyType implements PropertyType {
 	BIOPAXREF,
 	/** */
 	COMMENTS,
-	/** */
+	/** TODO: remove */
 	GROUPSTYLETYPE,
 	/** */
+	GROUPTYPE,
+	/** TODO: remove */
 	ALIGNTYPE,
 	/** */
 	HALIGNTYPE,

@@ -54,7 +54,7 @@ import org.pathvisio.util.Utils;
  * and can be used to store arbitrary data. In GPML, dynamic properties are
  * stored in CommentGroup.Property in an <Attribute key="" value=""/> tag.
  * Internally, dynamic properties are stored in a Map<String, String>.
- * 
+ * <p>
  * Static properties must have a key from the StaticProperty enum. Their value
  * can be various types {@link StaticPropertyType} obtained from
  * {@link StaticProperty#type()}. Static properties can be queried with
@@ -63,7 +63,7 @@ import org.pathvisio.util.Utils;
  * <p>
  * Internally, dynamic properties are stored in various fields of the
  * PathwayElement Object. The static properties are a union of all possible
- * fields (e.g it has both start and endpoints for lines, and label text for
+ * fields (e.g it has both start and end points for lines, and label text for
  * labels)
  * <p>
  * the setPropertyEx() and getPropertyEx() functions can be used to access both
@@ -1235,6 +1235,8 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		return null;
 	}
 
+	/* ------------------------------- DATANODE ------------------------------- */
+
 	/**
 	 * 
 	 */
@@ -1334,8 +1336,8 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	}
 
 	/**
-	 * returns GeneID and datasource combined in an Xref. Only meaningful for
-	 * datanodes.
+	 * returns GeneID and dataSource combined in an Xref. Pathway elements DataNode,
+	 * State, Interaction, and Group can contain a Xref.
 	 *
 	 * Same as new Xref ( pathwayElement.getGeneID(), pathwayElement.getDataSource()
 	 * );
@@ -1345,97 +1347,211 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		return new Xref(setGeneID, source);
 	}
 
-	protected double mCenterx = 0;
+	/**
+	 * CenterX of this pathway element object. The x coordinate of the middle of an
+	 * object.
+	 */
+	protected double mCenterX = 0;
 
+	/**
+	 * Gets the x coordinate of the middle of an object.
+	 * 
+	 * @return mCenterX the middle of an object in the x direction.
+	 */
 	public double getMCenterX() {
-		return mCenterx;
+		return mCenterX;
 	}
 
-	public void setMCenterX(double v) {
-		if (mCenterx != v) {
-			mCenterx = v;
+	/**
+	 * Sets the x coordinate of the middle of an object.
+	 * 
+	 * @param mCenterX the middle of an object in the x direction.
+	 */
+	public void setMCenterX(double mCenterX) {
+		if (this.mCenterX != mCenterX) {
+			this.mCenterX = mCenterX;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
-	protected double mCentery = 0;
+	/**
+	 * CenterY of this pathway element object. The y coordinate of the middle of an
+	 * object.
+	 */
+	protected double mCenterY = 0;
 
+	/**
+	 * Gets the y coordinate of the middle of an object.
+	 * 
+	 * @return mCenterY the middle of an object in the y direction.
+	 */
 	public double getMCenterY() {
-		return mCentery;
+		return mCenterY;
 	}
 
-	public void setMCenterY(double v) {
-		if (mCentery != v) {
-			mCentery = v;
+	/**
+	 * Sets the y coordinate of the middle of an object.
+	 * 
+	 * @param mCenterY the middle of an object in the y direction.
+	 */
+	public void setMCenterY(double mCenterY) {
+		if (this.mCenterY != mCenterY) {
+			this.mCenterY = mCenterY;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
+	/**
+	 * mWidth of this object. The pixel value for the x dimensional length of an
+	 * object.
+	 */
 	protected double mWidth = 0;
 
+	/**
+	 * Gets the pixel value for the x dimensional length of an object.
+	 * 
+	 * @return mWidth the width of an object.
+	 */
 	public double getMWidth() {
 		return mWidth;
 	}
 
-	public void setMWidth(double v) {
+	/**
+	 * Sets the pixel value for the x dimensional length of an object.
+	 * 
+	 * @param mWidth the width of an object.
+	 * @throws IllegalArgumentException if mWidth is a negative value.
+	 */
+	public void setMWidth(double mWidth) {
 		if (mWidth < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + v);
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + mWidth);
 		}
-		if (mWidth != v) {
-			mWidth = v;
+		if (this.mWidth != mWidth) {
+			this.mWidth = mWidth;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
+	/**
+	 * mHeight of this object. The pixel value for the y dimensional length of an
+	 * object.
+	 */
 	protected double mHeight = 0;
 
+	/**
+	 * Gets the pixel value for the y dimensional length of an object.
+	 * 
+	 * @return mHeight the height of an object.
+	 */
 	public double getMHeight() {
 		return mHeight;
 	}
 
-	public void setMHeight(double v) {
-		if (mWidth < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + v);
+	/**
+	 * Sets the pixel value for the y dimensional length of an object.
+	 * 
+	 * @param mHeight the height of an object.
+	 * @throws IllegalArgumentException if mHeight is a negative value.
+	 */
+	public void setMHeight(double mHeight) {
+		if (mHeight < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + mHeight);
 		}
-		if (mHeight != v) {
-			mHeight = v;
+		if (this.mHeight != mHeight) {
+			this.mHeight = mHeight;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
-	// starty for shapes
+	/* ------------------------------- SHAPE ------------------------------- */
+
+	/**
+	 * Gets the starty for shapes.
+	 * 
+	 * @return the start y for shape.
+	 */
 	public double getMTop() {
-		return mCentery - mHeight / 2;
+		return mCenterY - mHeight / 2;
 	}
 
+	/**
+	 * Sets the start y for shape.
+	 * 
+	 * @return the start y for shape.
+	 */
 	public void setMTop(double v) {
-		mCentery = v + mHeight / 2;
+		mCenterY = v + mHeight / 2;
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
-	// startx for shapes
+	/**
+	 * Gets the startx for shapes.
+	 * 
+	 * @return the start x for shape.
+	 */
 	public double getMLeft() {
-		return mCenterx - mWidth / 2;
+		return mCenterX - mWidth / 2;
 	}
 
+	/**
+	 * Sets the startx for shapes.
+	 * 
+	 * @return the start x for shape.
+	 */
 	public void setMLeft(double v) {
-		mCenterx = v + mWidth / 2;
+		mCenterX = v + mWidth / 2;
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
+	/**
+	 * Default IShape shapeType is Rectangle.
+	 */
 	protected IShape shapeType = ShapeType.RECTANGLE;
 
+	/**
+	 * Gets shapeType the IShape.
+	 * 
+	 * @return shapeType the IShape.
+	 */
 	public IShape getShapeType() {
 		return shapeType;
 	}
 
-	public void setShapeType(IShape v) {
-		if (shapeType != v) {
-			shapeType = v;
+	/**
+	 * Sets shape type to given IShape.
+	 * 
+	 * @param IShape the shape type.
+	 */
+	public void setShapeType(IShape shapeType) {
+		if (this.shapeType != shapeType) {
+			this.shapeType = shapeType;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SHAPETYPE));
 		}
 	}
 
+	/**
+	 * Gets the orientation for shapes.
+	 * 
+	 * @return the orientation for
+	 */
+	public int getOrientation() {
+		double r = rotation / Math.PI;
+		if (r < 1.0 / 4 || r >= 7.0 / 4)
+			return OrientationType.TOP;
+		if (r > 5.0 / 4 && r <= 7.0 / 4)
+			return OrientationType.LEFT;
+		if (r > 3.0 / 4 && r <= 5.0 / 4)
+			return OrientationType.BOTTOM;
+		if (r > 1.0 / 4 && r <= 3.0 / 4)
+			return OrientationType.RIGHT;
+		return 0;
+	}
+
+	/**
+	 * Sets the orientation for shapes.
+	 * 
+	 * @param orientation the orientation integer.
+	 */
 	public void setOrientation(int orientation) {
 		switch (orientation) {
 		case OrientationType.TOP:
@@ -1453,42 +1569,43 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
-	public int getOrientation() {
-		double r = rotation / Math.PI;
-		if (r < 1.0 / 4 || r >= 7.0 / 4)
-			return OrientationType.TOP;
-		if (r > 5.0 / 4 && r <= 7.0 / 4)
-			return OrientationType.LEFT;
-		if (r > 3.0 / 4 && r <= 5.0 / 4)
-			return OrientationType.BOTTOM;
-		if (r > 1.0 / 4 && r <= 3.0 / 4)
-			return OrientationType.RIGHT;
-		return 0;
-	}
-
+	/**
+	 * Rotation of this shape object.
+	 */
 	protected double rotation = 0; // in radians
 
+	/**
+	 * Gets the rotation of this shape.
+	 * 
+	 * @return rotation the rotation of this shape.
+	 */
 	public double getRotation() {
 		return rotation;
 	}
 
-	public void setRotation(double v) {
-		if (rotation != v) {
-			rotation = v;
+	/**
+	 * Sets the rotation of this shape.
+	 * 
+	 * @return rotation the rotation of this shape.
+	 */
+	public void setRotation(double rotation) {
+		if (this.rotation != rotation) {
+			this.rotation = rotation;
 
 			// Rotation is not stored for State, so we use a dynamic property.
 			// TODO: remove after next GPML update.
-			if (objectType == ObjectType.STATE && v != 0) {
-				setDynamicProperty(State.ROTATION_KEY, "" + v);
+			if (objectType == ObjectType.STATE && rotation != 0) {
+				setDynamicProperty(State.ROTATION_KEY, "" + rotation);
 			}
-
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 
 	}
 
 	/**
-	 * Get the rectangular bounds of the object after rotation is applied
+	 * Gets the rectangular bounds of the object after rotation is applied.
+	 * 
+	 * @return bounds the rectangular bounds of the object.
 	 */
 	public Rectangle2D getRBounds() {
 		Rectangle2D bounds = getMBounds();
@@ -1499,45 +1616,97 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	}
 
 	/**
-	 * Get the rectangular bounds of the object without rotation taken into accound
+	 * Gets the rectangular bounds of the object without taking rotation into
+	 * account.
+	 * 
+	 * @return the rectangular bounds of the object.
 	 */
 	public Rectangle2D getMBounds() {
 		return new Rectangle2D.Double(getMLeft(), getMTop(), getMWidth(), getMHeight());
 	}
 
-	// for labels
+	/* ------------------------------- LABEL ------------------------------- */
+
+	/**
+	 * The boolean for font weight normal (default) or bold, a bold font would have
+	 * more weight. FontAttributes.fontWeight in GPML.
+	 */
 	protected boolean fBold = false;
 
+	/**
+	 * Checks if font weight is normal or bold.
+	 * 
+	 * @return fBold the boolean, if true font weight is bold. If false, font weight
+	 *         is normal.
+	 */
 	public boolean isBold() {
 		return fBold;
 	}
 
-	public void setBold(boolean v) {
-		if (fBold != v) {
-			fBold = v;
+	/**
+	 * Sets fBold the boolean for font weight
+	 * 
+	 * @param fBold the boolean, if true font weight is bold. If false, font weight
+	 *              is normal.
+	 */
+	public void setBold(boolean fBold) {
+		if (this.fBold != fBold) {
+			this.fBold = fBold;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTWEIGHT));
 		}
 	}
 
+	/**
+	 * The boolean for typographic style normal (default) or strikethru.
+	 * FontAttributes.fontStrikethru in GPML.
+	 */
 	protected boolean fStrikethru = false;
 
+	/**
+	 * Checks if typographic style is normal or strikethru.
+	 * 
+	 * @return fStrikethru the boolean, if true typographic style is strikethru. If
+	 *         false, typographic style is normal.
+	 */
 	public boolean isStrikethru() {
 		return fStrikethru;
 	}
 
-	public void setStrikethru(boolean v) {
-		if (fStrikethru != v) {
-			fStrikethru = v;
+	/**
+	 * Sets fStrikethru the boolean for typographic style normal or strikethru.
+	 * 
+	 * @param fStrikethru the boolean, if true typographic style is strikethru. If
+	 *                    false, typographic style is normal.
+	 */
+	public void setStrikethru(boolean fStrikethru) {
+		if (this.fStrikethru != fStrikethru) {
+			this.fStrikethru = fStrikethru;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
 		}
 	}
 
+	/**
+	 * The boolean for typographic style normal (default) or underline.
+	 * FontAttributes.fontDecoration in GPML.
+	 */
 	protected boolean fUnderline = false;
 
+	/**
+	 * Checks if typographic style is normal or underline.
+	 * 
+	 * @return fUnderline the boolean, if true typographic style is underline. If
+	 *         false, typographic style is normal.
+	 */
 	public boolean isUnderline() {
 		return fUnderline;
 	}
 
+	/**
+	 * Sets fUnderline the boolean for typographic style normal or underline.
+	 * 
+	 * @param fUnderline the boolean, if true typographic style is underline. If
+	 *                   false, typographic style is normal.
+	 */
 	public void setUnderline(boolean v) {
 		if (fUnderline != v) {
 			fUnderline = v;
@@ -1545,58 +1714,118 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * The boolean for typographic style normal (default) or italic.
+	 * FontAttributes.fontStyle in GPML.
+	 */
 	protected boolean fItalic = false;
 
+	/**
+	 * Checks if typographic style is normal or italic.
+	 * 
+	 * @return fItalic the boolean, if true typographic style is italic. If false,
+	 *         typographic style is normal.
+	 */
 	public boolean isItalic() {
 		return fItalic;
 	}
 
-	public void setItalic(boolean v) {
-		if (fItalic != v) {
-			fItalic = v;
+	/**
+	 * Sets fItalic the boolean for typographic style normal or italic.
+	 * 
+	 * @param fItalic the boolean, if true typographic style is italic. If false,
+	 *                typographic style is normal.
+	 */
+	public void setItalic(boolean fItalic) {
+		if (this.fItalic != fItalic) {
+			this.fItalic = fItalic;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
 		}
 	}
 
+	/**
+	 * The name of the set of printable text characters to be used for
+	 * visualization, e.g., Arial. FontAttributes.fontName in GPML.
+	 */
 	protected String fontName = "Arial";
 
+	/**
+	 * Gets the font name of the printable text characters.
+	 * 
+	 * @return fontName the name of font.
+	 */
 	public String getFontName() {
 		return fontName;
 	}
 
-	public void setFontName(String v) {
-		if (v == null)
+	/**
+	 * Sets the font name of the printable text characters.
+	 * 
+	 * @param fontName the name of font.
+	 * @throws IllegalArgumentException if given fontName is null.
+	 */
+	public void setFontName(String fontName) {
+		if (fontName == null)
 			throw new IllegalArgumentException();
-		if (!Utils.stringEquals(fontName, v)) {
-			fontName = v;
+		if (!Utils.stringEquals(this.fontName, fontName)) {
+			this.fontName = fontName;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTNAME));
 		}
 	}
 
+	/**
+	 * The text label of this object.
+	 */
 	protected String textLabel = "";
 
+	/**
+	 * Gets the text label of this object.
+	 * 
+	 * @return textLabel the text label of this object.
+	 */
 	public String getTextLabel() {
 		return textLabel;
 	}
 
-	public void setTextLabel(String v) {
-		String input = (v == null) ? "" : v;
-		if (!Utils.stringEquals(textLabel, input)) {
-			textLabel = input;
+	/**
+	 * Sets the text label of this object to the given string or ""(empty) if input
+	 * is null.
+	 * 
+	 * @param input the given string text. If input is null, textLabel is set to
+	 *              ""(empty).
+	 */
+	public void setTextLabel(String input) {
+		String text = (input == null) ? "" : input;
+		if (!Utils.stringEquals(textLabel, text)) {
+			textLabel = text;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
+	/**
+	 * The hyperlink optionally specified in a Label for a reference to a url.
+	 */
 	protected String href = "";
 
+	/**
+	 * Gets the hyperlink for a Label.
+	 * 
+	 * @return href the hyperlink reference to a url.
+	 */
 	public String getHref() {
 		return href;
 	}
 
-	public void setHref(String v) {
-		String input = (v == null) ? "" : v;
-		if (!Utils.stringEquals(href, input)) {
-			href = input;
+	/**
+	 * Sets the hyperlink for a Label.
+	 * 
+	 * @param input the given string link. If input is null, href is set to
+	 *              ""(empty).
+	 */
+	public void setHref(String input) {
+		String link = (input == null) ? "" : input;
+		if (!Utils.stringEquals(href, link)) {
+			href = link;
 			if (PreferenceManager.getCurrent() == null)
 				PreferenceManager.init();
 			setColor(PreferenceManager.getCurrent().getColor(GlobalPreference.COLOR_LINK));
@@ -1604,38 +1833,77 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
-	private double lineThickness = 1.0;
+	/**
+	 * Line width the pixel value for the width of a line.
+	 */
+	private double lineWidth = 1.0;
 
-	public double getLineThickness() {
-		return lineThickness;
+	/**
+	 * Gets the pixel value for the width of a line.
+	 * 
+	 * @return lineWidth the width of a line.
+	 */
+	public double getLineWidth() {
+		return lineWidth;
 	}
 
-	public void setLineThickness(double v) {
-		if (lineThickness != v) {
-			lineThickness = v;
+	/**
+	 * Sets the pixel value for the width of a line.
+	 * 
+	 * @param lineWidth the width of a line.
+	 */
+	public void setLineWidth(double lineWidth) {
+		if (this.lineWidth != lineWidth) {
+			this.lineWidth = lineWidth;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINETHICKNESS));
 		}
 	}
 
+	/**
+	 * Font size the point value for the size of the font.
+	 */
 	protected double mFontSize = M_INITIAL_FONTSIZE;
 
+	/**
+	 * Sets point value for the size of the font.
+	 * 
+	 * @param fontSize the value for the size of the font.
+	 */
 	public double getMFontSize() {
 		return mFontSize;
 	}
 
-	public void setMFontSize(double v) {
-		if (mFontSize != v) {
-			mFontSize = v;
+	/**
+	 * Sets point value for the size of the font.
+	 * 
+	 * @param fontSize the value for the size of the font.
+	 */
+	public void setMFontSize(double mFontSize) {
+		if (this.mFontSize != mFontSize) {
+			this.mFontSize = mFontSize;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSIZE));
 		}
 	}
 
+	/* ------------------------------- PATHWAY ------------------------------- */
+
+	/**
+	 * The title of the pathway?
+	 */
 	protected String mapInfoName = "untitled";
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getMapInfoName() {
 		return mapInfoName;
 	}
 
+	/**
+	 * 
+	 * @param v
+	 */
 	public void setMapInfoName(String v) {
 		if (v == null)
 			throw new IllegalArgumentException();
@@ -1646,12 +1914,23 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected String organism = null;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOrganism() {
 		return organism;
 	}
 
+	/**
+	 * 
+	 * @param v
+	 */
 	public void setOrganism(String v) {
 		if (!Utils.stringEquals(organism, v)) {
 			organism = v;
@@ -1659,12 +1938,23 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected String mapInfoDataSource = null;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getMapInfoDataSource() {
 		return mapInfoDataSource;
 	}
 
+	/**
+	 * 
+	 * @param v
+	 */
 	public void setMapInfoDataSource(String v) {
 		if (!Utils.stringEquals(mapInfoDataSource, v)) {
 			mapInfoDataSource = v;
@@ -1673,38 +1963,75 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
-	protected VAlignType valign = VAlignType.MIDDLE;
+	/**
+	 * Vertical alignment.
+	 */
+	protected VAlignType vAlign = VAlignType.MIDDLE;
 
-	public void setValign(VAlignType v) {
-		if (valign != v) {
-			valign = v;
+	/**
+	 * Gets vertical alignment.
+	 * 
+	 * @return vAlign
+	 */
+	public VAlignType getValign() {
+		return vAlign;
+	}
+
+	/**
+	 * Sets vertical alignment.
+	 * 
+	 * @param vAlign
+	 */
+	public void setValign(VAlignType vAlign) {
+		if (this.vAlign != vAlign) {
+			this.vAlign = vAlign;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VALIGN));
 		}
 	}
 
-	public VAlignType getValign() {
-		return valign;
+	/**
+	 * Horizontal alignment.
+	 */
+	protected HAlignType hAlign = HAlignType.CENTER;
+
+	/**
+	 * Gets horizontal alignment.
+	 * 
+	 * @return hAlign
+	 */
+	public HAlignType getAlign() {
+		return hAlign;
 	}
 
-	protected HAlignType align = HAlignType.CENTER;
-
-	public void setAlign(HAlignType v) {
-		if (align != v) {
-			align = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIGN));
+	/**
+	 * Sets horizontal alignment.
+	 * 
+	 * @param hAlign
+	 */
+	public void setAlign(HAlignType hAlign) {
+		if (this.hAlign != hAlign) {
+			this.hAlign = hAlign;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HALIGN));
 		}
 	}
 
-	public HAlignType getAlign() {
-		return align;
-	}
-
+	/**
+	 * 
+	 */
 	protected String version = null;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getVersion() {
 		return version;
 	}
 
+	/**
+	 * 
+	 * @param v
+	 */
 	public void setVersion(String v) {
 		if (!Utils.stringEquals(version, v)) {
 			version = v;
@@ -1712,12 +2039,23 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected String author = null;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getAuthor() {
 		return author;
 	}
 
+	/**
+	 * 
+	 * @param v
+	 */
 	public void setAuthor(String v) {
 		if (!Utils.stringEquals(author, v)) {
 			author = v;
@@ -1725,12 +2063,23 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected String maintainer = null;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getMaintainer() {
 		return maintainer;
 	}
 
+	/**
+	 * 
+	 * @param v
+	 */
 	public void setMaintainer(String v) {
 		if (!Utils.stringEquals(maintainer, v)) {
 			maintainer = v;
@@ -1738,12 +2087,23 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected String email = null;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * 
+	 * @param v
+	 */
 	public void setEmail(String v) {
 		if (!Utils.stringEquals(email, v)) {
 			email = v;
@@ -1751,12 +2111,21 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected String copyright = null;
 
+	/**
+	 * 
+	 */
 	public String getCopyright() {
 		return copyright;
 	}
 
+	/**
+	 * 
+	 */
 	public void setCopyright(String v) {
 		if (!Utils.stringEquals(copyright, v)) {
 			copyright = v;
@@ -1764,12 +2133,21 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected String lastModified = null;
 
+	/**
+	 * 
+	 */
 	public String getLastModified() {
 		return lastModified;
 	}
 
+	/**
+	 * 
+	 */
 	public void setLastModified(String v) {
 		if (!Utils.stringEquals(lastModified, v)) {
 			lastModified = v;
@@ -1779,39 +2157,78 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 
 	/**
 	 * Calculates the drawing size on basis of the location and size of the
-	 * containing pathway elements
+	 * containing pathway elements.
 	 * 
-	 * @return The drawing size
+	 * @return the drawing size
 	 */
 	public double[] getMBoardSize() {
 		return parent.getMBoardSize();
 	}
 
+	/**
+	 * Gets the board width from the drawing size.
+	 * 
+	 * @return the board width
+	 */
 	public double getMBoardWidth() {
 		return getMBoardSize()[0];
 	}
 
+	/**
+	 * Gets the board height from the drawing size.
+	 * 
+	 * @return the board height
+	 */
 	public double getMBoardHeight() {
 		return getMBoardSize()[1];
 	}
 
+	/* ------------------------------- ID & GROUP ------------------------------- */
+
 	/* AP20070508 */
+	/**
+	 * TODO: Is replaced with elementId in 2021.
+	 */
 	protected String groupId;
 
-	protected String graphId;
+	/**
+	 * 
+	 */
+	protected String elementId;
 
+	/**
+	 * 
+	 */
 	protected String groupRef;
 
-	protected GroupType groupStyle;
+	/**
+	 * GroupType the type of group, e.g. Complex, Pathway, etc. GroupType is GROUP
+	 * by default.
+	 * 
+	 * NB: groupStyle was renamed to groupType.
+	 */
+	protected GroupType groupType = GroupType.GROUP;
 
-	public String doGetGraphId() {
-		return graphId;
+	/**
+	 * 
+	 * @return
+	 */
+	public String doGetElementId() {
+		return elementId;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getGroupRef() {
 		return groupRef;
 	}
 
+	/**
+	 * 
+	 * @param s
+	 */
 	public void setGroupRef(String s) {
 		if (groupRef == null || !groupRef.equals(s)) {
 			if (parent != null) {
@@ -1828,10 +2245,18 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		}
 	}
 
+	/**
+	 * 
+	 * TODO: groupId is replaced with elementId in 2021.
+	 */
 	public String getGroupId() {
 		return groupId;
 	}
 
+	/**
+	 * 
+	 * TODO: groupId is replaced with elementId in 2021.
+	 */
 	public String createGroupId() {
 		if (groupId == null) {
 			setGroupId(parent.getUniqueGroupId());
@@ -1839,18 +2264,30 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		return groupId;
 	}
 
-	public void setGroupStyle(GroupType gs) {
-		if (groupStyle != gs) {
-			groupStyle = gs;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPSTYLE));
+	/**
+	 * Gets GroupType. GroupType is GROUP by default.
+	 * 
+	 * TODO: Default GroupType used to be NONE. NONE needs to be changed to GROUP.
+	 * 
+	 * @return groupType the type of group.
+	 */
+	public GroupType getGroupType() {
+		if (groupType == null) {
+			groupType = GroupType.GROUP;
 		}
+		return groupType;
 	}
 
-	public GroupType getGroupStyle() {
-		if (groupStyle == null) {
-			groupStyle = GroupType.NONE;
+	/**
+	 * Sets GroupType to the given groupType. 
+	 * 
+	 * @param groupType the type of group.
+	 */
+	public void setGroupType(GroupType groupType) {
+		if (this.groupType != groupType) {
+			this.groupType = groupType;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPTYPE));
 		}
-		return groupStyle;
 	}
 
 	/**
@@ -1883,7 +2320,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	}
 
 	/**
-	 * set graphRef property, used by State The new graphRef should exist and point
+	 * Set graphRef property, used by State The new graphRef should exist and point
 	 * to an existing DataNode
 	 */
 	public void setGraphRef(String value) {
@@ -1935,7 +2372,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	}
 
 	public String getElementId() {
-		return graphId;
+		return elementId;
 	}
 
 	/**
@@ -1945,13 +2382,13 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	 */
 	public void setElementId(String v) {
 		ElementLink.setElementId(v, this, parent);
-		graphId = v;
+		elementId = v;
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GRAPHID));
 	}
 
 	public String setGeneratedElementId() {
 		setElementId(parent.getUniqueGraphId());
-		return graphId;
+		return elementId;
 	}
 
 	public String getStartGraphRef() {
@@ -2107,6 +2544,9 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		return ElementLink.getReferences(this, parent);
 	}
 
+	/**
+	 * 
+	 */
 	public int compareTo(PathwayElement o) {
 		int rez = getZOrder() - o.getZOrder();
 		if (rez != 0) {

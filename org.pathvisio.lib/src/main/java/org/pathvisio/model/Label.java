@@ -16,12 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
 
 /**
  * This class stores all information relevant to a Label pathway element.
