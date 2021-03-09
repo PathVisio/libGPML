@@ -39,6 +39,85 @@ public class Shape implements Graphics{
 
 	// Add Constructors
 
+	
+	
+
+
+
+
+	/**
+	 * Gets the orientation for shapes.
+	 * 
+	 * @return the orientation for
+	 */
+	public int getOrientation() {
+		double r = rotation / Math.PI;
+		if (r < 1.0 / 4 || r >= 7.0 / 4)
+			return OrientationType.TOP;
+		if (r > 5.0 / 4 && r <= 7.0 / 4)
+			return OrientationType.LEFT;
+		if (r > 3.0 / 4 && r <= 5.0 / 4)
+			return OrientationType.BOTTOM;
+		if (r > 1.0 / 4 && r <= 3.0 / 4)
+			return OrientationType.RIGHT;
+		return 0;
+	}
+
+	/**
+	 * Sets the orientation for shapes.
+	 * 
+	 * @param orientation the orientation integer.
+	 */
+	public void setOrientation(int orientation) {
+		switch (orientation) {
+		case OrientationType.TOP:
+			setRotation(0);
+			break;
+		case OrientationType.LEFT:
+			setRotation(Math.PI * (3.0 / 2));
+			break;
+		case OrientationType.BOTTOM:
+			setRotation(Math.PI);
+			break;
+		case OrientationType.RIGHT:
+			setRotation(Math.PI / 2);
+			break;
+		}
+	}
+
+	/**
+	 * Rotation of this shape object.
+	 */
+	protected double rotation = 0; // in radians
+
+	/**
+	 * Gets the rotation of this shape.
+	 * 
+	 * @return rotation the rotation of this shape.
+	 */
+	public double getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets the rotation of this shape.
+	 * 
+	 * @return rotation the rotation of this shape.
+	 */
+	public void setRotation(double rotation) {
+		if (this.rotation != rotation) {
+			this.rotation = rotation;
+
+			// Rotation is not stored for State, so we use a dynamic property.
+			// TODO: remove after next GPML update.
+			if (objectType == ObjectType.STATE && rotation != 0) {
+				setDynamicProperty(State.ROTATION_KEY, "" + rotation);
+			}
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
+
+	}
+	
 	public List<Graphics> getGraphics() {
 		return graphics;
 	}
