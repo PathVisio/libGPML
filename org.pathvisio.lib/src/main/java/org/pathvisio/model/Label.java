@@ -36,7 +36,7 @@ public class Label extends PathwayElement {
 	protected String href = ""; // hyperlink optionally specified in a Label for a reference to a url.
 	private String elementId;
 	private String groupRef;
-	private String textLabel;
+	private String textLabel = "";
 
 	// Add Constructors
 
@@ -128,6 +128,23 @@ public class Label extends PathwayElement {
 		this.textLabel = textLabel;
 	}
 
+	
+	/**
+	 * Sets the text label of this object to the given string or ""(empty) if input
+	 * is null.
+	 * 
+	 * @param input the given string text. If input is null, textLabel is set to
+	 *              ""(empty).
+	 */
+	public void setTextLabel(String input) {
+		String text = (input == null) ? "" : input;
+		if (!Utils.stringEquals(textLabel, text)) {
+			textLabel = text;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+		}
+	}
+	
+	
 	/**
 	 * Gets the list of comments.
 	 * 

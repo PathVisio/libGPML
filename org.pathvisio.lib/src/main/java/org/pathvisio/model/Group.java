@@ -33,7 +33,13 @@ public class Group {
 	private String groupRef; // if part of group
 	private Xref xref; // optional
 	private String textLabel; // optional
-	private String type; // optional
+	/**
+	 * GroupType the type of group, e.g. Complex, Pathway, etc. GroupType is GROUP
+	 * by default.
+	 * 
+	 * NB: previously named groupStyle.
+	 */
+	private GroupType type = GroupType.GROUP; // optional
 	private List<Comment> comments; // optional
 	private List<Property> properties; // optional
 	private List<AnnotationRef> annotationRefs; // optional
@@ -124,21 +130,30 @@ public class Group {
 	}
 
 	/**
-	 * Gets the type of the group.
+	 * Gets GroupType. GroupType is GROUP by default.
+	 * 
+	 * TODO: Default GroupType used to be NONE. NONE needs to be changed to GROUP.
 	 * 
 	 * @return type the type of group, e.g. complex.
 	 */
-	public String getType() {
+	public GroupType getType() {
+		if (type == null) {
+			type = GroupType.GROUP;
+		}
 		return type;
 	}
 
 	/**
-	 * Sets the type of the group.
+	 * Sets GroupType to the given groupType.
 	 * 
 	 * @param type the type of group, e.g. complex.
 	 */
-	public void setType(String type) {
-		this.type = type;
+	public void setType(GroupType type) {
+		if (this.type != type) {
+			this.type = type;
+			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
+			// StaticProperty.GROUPTYPE));
+		}
 	}
 
 	/**
@@ -183,6 +198,5 @@ public class Group {
 //		}
 //		return this.annotationRefs;
 //	}
-	
-	
+
 }

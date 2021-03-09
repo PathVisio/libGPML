@@ -23,6 +23,7 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.ElementLink.ElementIdContainer;
 import org.pathvisio.model.ElementLink.ElementRefContainer;
+import org.pathvisio.util.Utils;
 
 /**
  * This class is the model for pathway data. It is responsible for storing all
@@ -47,6 +48,159 @@ public class Pathway {
 	 */
 	public boolean hasChanged() {
 		return changed;
+	}
+	/**
+	 * The title of the pathway?
+	 */
+	protected String title = "untitled";
+	/**
+	 * 
+	 */
+	protected String organism = null;
+	/**
+	 * 
+	 */
+	protected String source = null;
+	/**
+	 * 
+	 */
+	protected String version = null;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * 
+	 * @param v
+	 */
+	public void setTitle(String v) {
+		if (v == null)
+			throw new IllegalArgumentException();
+
+		if (!Utils.stringEquals(title, v)) {
+			title = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.MAPINFONAME));
+		}
+	}
+
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getOrganism() {
+		return organism;
+	}
+
+	/**
+	 * 
+	 * @param v
+	 */
+	public void setOrganism(String v) {
+		if (!Utils.stringEquals(organism, v)) {
+			organism = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
+		}
+	}
+
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getMapInfoDataSource() {
+		return source;
+	}
+
+	/**
+	 * 
+	 * @param v
+	 */
+	public void setMapInfoDataSource(String v) {
+		if (!Utils.stringEquals(source, v)) {
+			source = v;
+			fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.MAPINFO_DATASOURCE));
+		}
+	}
+
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * 
+	 * @param v
+	 */
+	public void setVersion(String v) {
+		if (!Utils.stringEquals(version, v)) {
+			version = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
+		}
+	}
+
+	/**
+	 * 
+	 */
+	protected String author = null;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getAuthor() {
+		return author;
+	}
+
+	/**
+	 * 
+	 * @param v
+	 */
+	public void setAuthor(String v) {
+		if (!Utils.stringEquals(author, v)) {
+			author = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.AUTHOR));
+		}
+	}
+
+
+
+	/**
+	 * Calculates the drawing size on basis of the location and size of the
+	 * containing pathway elements.
+	 * 
+	 * @return the drawing size
+	 */
+	public double[] getMBoardSize() {
+		return parent.getMBoardSize();
+	}
+
+	/**
+	 * Gets the board width from the drawing size.
+	 * 
+	 * @return the board width
+	 */
+	public double getMBoardWidth() {
+		return getMBoardSize()[0];
+	}
+
+	/**
+	 * Gets the board height from the drawing size.
+	 * 
+	 * @return the board height
+	 */
+	public double getMBoardHeight() {
+		return getMBoardSize()[1];
 	}
 
 	/**
@@ -943,50 +1097,3 @@ public class Pathway {
 	 */
 	private List<String> biopaxReferenceToDelete = new ArrayList<String>();
 }
-
-//	private Xref xref;
-//	private List<Pathway.Author> author;
-//	private List<Pathway.Comment> comment;
-//	private List<Pathway.Property> property;
-//	private List<Pathway.AnnotationRef> annotationRef;
-//	private List<Pathway.CitationRef> citationRef;
-//	private Pathway.Graphics graphics;
-//
-//	private List<DataNode> dataNodes;
-//	private List<State> states;
-//	private List<Interaction> interactions;
-//	private List<GraphicalLine> graphicalLines;
-//	private List<Label> labels;
-//	private List<Shape> shapes;
-//	private List<Group> groups;
-//	private InfoBox infoBox;
-//	private Legend legend;
-//	private List<Annotation> annotations;
-//	private List<Citation> citations;
-//	private String title;
-//	private String organism;
-//	private String source;
-//	private String version;
-//	private String license;
-//
-//	/**
-//	 * Gets the Pathway Xref.
-//	 * 
-//	 * @return xref the pathway xref.
-//	 */
-//	public Xref getXref() {
-//		return xref;
-//	}
-//
-//	/**
-//	 * Instantiates and sets the value of Pathway Xref.
-//	 * 
-//	 * @param identifier the identifier of the database entry.
-//	 * @param dataSource the source of database entry.
-//	 */
-//	public void setXref(String identifier, String dataSource) {
-//		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-//		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-//	}
-//
-//}

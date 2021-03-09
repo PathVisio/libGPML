@@ -17,7 +17,6 @@
 package org.pathvisio.model;
 
 import java.awt.Color;
-
 import org.pathvisio.util.Utils;
 
 /**
@@ -25,10 +24,10 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class FontGraphics implements Graphics {
+public class FontProperty implements Graphics {
 
-	protected Color textColor;
-	protected String fontName = "Arial";
+	protected Color textColor = Color.BLACK; 
+	protected String fontName = "Arial"; 
 	protected boolean fontWeight = false; // bold or normal
 	protected boolean fontStyle = false; // italic or normal
 	protected boolean fontDecoration = false; // underline or normal

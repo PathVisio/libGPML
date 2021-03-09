@@ -18,6 +18,7 @@ package org.pathvisio.model;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -38,6 +39,42 @@ public class GraphicalLine {
 	private String elementId;
 	private String groupRef; //optional
 //	protected String type; //debate
+	
+	
+	
+
+	/**
+	 * List of Points.
+	 */
+	private List<MPoint> mPoints = Arrays.asList(new MPoint(0, 0), new MPoint(0, 0));
+
+	public void setMPoints(List<MPoint> points) {
+		if (points != null) {
+			if (points.size() < 2) {
+				throw new IllegalArgumentException("Points array should at least have two elements");
+			}
+			mPoints = points;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
+	}
+
+	public List<MPoint> getMPoints() {
+		return mPoints;
+	}
+	
+	
+	// TODO: end of new elements
+	protected List<MAnchor> anchors = new ArrayList<MAnchor>();
+
+	/**
+	 * Get the anchors for this line.
+	 * 
+	 * @return A list with the anchors, or an empty list, if no anchors are defined
+	 */
+	public List<MAnchor> getMAnchors() {
+		return anchors;
+	}
+
 	
 	
 	// Add Constructors

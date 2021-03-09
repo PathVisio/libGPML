@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -34,16 +35,17 @@ public class DataNode extends PathwayElement implements Graphics {
 		// TODO Auto-generated constructor stub
 	}
 
-	private Xref xref;
-	private Graphics graphics;
-	private List<Comment> comments; // optional
-	private List<Property> properties; // optional
-	private List<AnnotationRef> annotationRefs; // optional
-	private List<CitationRef> citationRefs; // optional
-	private String elementId;
-	private String groupRef; // if part of group
-	private String textLabel;
+	protected Xref xref;
+	protected Graphics graphics;
+	protected List<Comment> comments; // optional
+	protected List<Property> properties; // optional
+	protected List<AnnotationRef> annotationRefs; // optional
+	protected List<CitationRef> citationRefs; // optional
+	protected String elementId;
+	protected String groupRef; // if part of group
+	protected String textLabel;
 	protected DataNodeType type = DataNodeType.UNKOWN; // TODO: Getter/Setter weird
+
 
 //	/** TODO
 //	 * Sets data node type to given DataNodeType.
@@ -181,16 +183,76 @@ public class DataNode extends PathwayElement implements Graphics {
 	 * 
 	 * @return comments the list of comments.
 	 */
-	public List<Comment> getCommentList() {
+	public List<Comment> getComments() {
 		return comments;
 	}
+	
+	/**
+	 * Sets comments to given list of Comment.
+	 * 
+	 * @param comments the list of comments.
+	 */
+	public void setComments(List<Comment> comments) {
+		if (this.comments != comments) {
+			this.comments = comments;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
+		}
+	}
 
+	
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addComment(Comment comment) {
+		comments.add(comment);
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeComment(Comment comment) {
+		comments.remove(comment);
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
+	}
+
+	/**
+	 * TODO: Move this
+	 * 
+	 * Adds String comment and String source...
+	 * 
+	 * @param comment the comment.
+	 * @param source  the source.
+	 */
+	public void addComment(String comment, String source) {
+		addComment(new Comment(comment, source));
+	}
+	
+	/**
+	 * TODO: Need to be moved or something...
+	 * 
+	 * Finds the first comment with a specific source.
+	 * 
+	 * @returns the comment with a given source.
+	 */
+	public String findComment(String source) {
+		for (Comment c : comments) {
+			if (source.equals(c.source)) {
+				return c.comment;
+			}
+		}
+		return null;
+	}
 	/**
 	 * Gets the list of key value pair information properties.
 	 * 
 	 * @return properties the list of properties.
 	 */
-	public List<Property> getPropertyList() {
+	public List<Property> getProperties() {
 		return properties;
 	}
 
@@ -199,7 +261,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	 * 
 	 * @return annotationRefs the list of annotation references.
 	 */
-	public List<AnnotationRef> getAnnotationRefList() {
+	public List<AnnotationRef> getAnnotationRefs() {
 		return annotationRefs;
 	}
 
@@ -208,7 +270,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	 * 
 	 * @return citationRefs the list of citation references.
 	 */
-	public List<CitationRef> getCitationRefList() {
+	public List<CitationRef> getCitationRefs() {
 		return citationRefs;
 	}
 

@@ -24,14 +24,14 @@ import java.awt.Color;
  * 
  * @author finterly
  */
-public class LineGraphics implements Graphics {
+public class LineStyleProperty implements Graphics {
 
-	protected Color lineColor; // TODO: Set color by type
+	protected Color lineColor = Color.BLACK;
 	/**
 	 * The visual appearance of a line, e.g. Solid or Broken.
 	 */
 	protected int lineStyle = LineStyleType.SOLID; // TODO: int? enum?
-	protected double lineWidth = 1.0; // double or integer?
+	protected double lineWidth = 1.0; // double
 	private ConnectorType connectorType = ConnectorType.STRAIGHT; // enum?
 	protected int zOrder;
 	protected PathwayElement parent; // TODO: Getter/Setter
@@ -171,7 +171,11 @@ public class LineGraphics implements Graphics {
 	 * @param zOrder the order of a line.
 	 */
 	public void setZOrder(int zOrder) {
-		this.zOrder = zOrder;
+		if (this.zOrder != zOrder) {
+			this.zOrder = zOrder;
+			parent.fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.ZORDER));
+
+		}
 	}
 
 }

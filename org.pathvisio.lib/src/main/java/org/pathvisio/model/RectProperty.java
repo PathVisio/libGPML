@@ -23,12 +23,14 @@ package org.pathvisio.model;
  * 
  * @author finterly
  */
-public class RectGraphics implements Graphics {
+public class RectProperty implements Graphics {
 
-	private double centerX;
-	private double centerY;
-	private double width;
-	private double height;
+	protected double centerX;
+	protected double centerY;
+	protected double width;
+	protected double height;
+	protected PathwayElement parent;
+
 
 	/**
 	 * Gets the x coordinate of the middle of an object.
@@ -45,7 +47,10 @@ public class RectGraphics implements Graphics {
 	 * @param centerX the middle of an object in the x direction.
 	 */
 	public void setCenterX(double centerX) {
-		this.centerX = centerX;
+		if (this.centerX != centerX) {
+			this.centerX = centerX;
+		//	parent.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(parent));
+		}
 	}
 
 	/**
@@ -63,7 +68,10 @@ public class RectGraphics implements Graphics {
 	 * @param centerY the middle of an object in the y direction.
 	 */
 	public void setCenterY(double centerY) {
-		this.centerY = centerY;
+		if (this.centerY != centerY) {
+			this.centerY = centerY;
+		//	parent.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(parent));
+		}
 	}
 
 	/**
@@ -79,9 +87,16 @@ public class RectGraphics implements Graphics {
 	 * Sets the pixel value for the x dimensional length of an object.
 	 * 
 	 * @param width the width of an object.
+	 * @throws IllegalArgumentException if width is a negative value.
 	 */
-	public void setWidth(double value) {
-		this.width = value;
+	public void setWidth(double width) {
+		if (width < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + width);
+		}
+		if (this.width != width) {
+			this.width = width;
+		//	fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -97,8 +112,15 @@ public class RectGraphics implements Graphics {
 	 * Sets the pixel value for the y dimensional length of an object.
 	 * 
 	 * @param height the height of an object.
+	 * @throws IllegalArgumentException if height is a negative value.
 	 */
-	public void setHeight(double value) {
-		this.height = value;
+	public void setHeight(double height) {
+		if (height < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + height);
+		}
+		if (this.height != height) {
+			this.height = height;
+		//	fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 }

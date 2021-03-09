@@ -24,15 +24,68 @@ import java.awt.Color;
  * 
  * @author finterly
  */
-public class ShapeGraphics implements Graphics {
+public class ShapeStyleProperty implements Graphics {
 
 	protected Color borderColor; // TODO: Set color by type?
 	protected String borderStyle; // enum?
 	protected double borderWidth = 1.0; // double?
 	protected Color fillColor = null; // TODO: fix transparency implementation
 	protected String shapeType; // enum?
+	/**
+	 * Z-order of this object. Z-order is an ordering of overlapping
+	 * two-dimensional objects.
+	 */
 	protected int zOrder;
 	protected PathwayElement parent; // TODO: Getter/Setter
+
+	/**
+	 * Set shapeType to NONE if objectType is Label. Otherwise set to RECTANGLE.
+	 */
+	if(objectType==ObjectType.LABEL)
+	{
+		this.shapeType = ShapeType.NONE;
+	}else
+	{
+		this.shapeType = ShapeType.RECTANGLE;
+	}
+
+	/**
+	 * Default IShape shapeType is Rectangle.
+	 */
+	protected IShape shapeType = ShapeType.RECTANGLE;
+
+	/**
+	 * Gets shapeType the IShape.
+	 * 
+	 * @return shapeType the IShape.
+	 */
+	public IShape getShapeType() {
+		return shapeType;
+	}
+
+	/**
+	 * Sets shape type to given IShape.
+	 * 
+	 * @param IShape the shape type.
+	 */
+	public void setShapeType(IShape shapeType) {
+		if (this.shapeType != shapeType) {
+			this.shapeType = shapeType;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SHAPETYPE));
+		}
+	}
+	/**
+	 * LINE AND GRAPHLINE DO NOT HAVE FILLCOLOR? Set fillColor to WHITE if
+	 * objectType is Line, Label, DataNode, State, or GraphLine. Otherwise set to
+	 * null.
+	 */
+	if(objectType==ObjectType.LINE||objectType==ObjectType.LABEL||objectType==ObjectType.DATANODE||objectType==ObjectType.STATE||objectType==ObjectType.GRAPHLINE)
+	{
+		this.fillColor = Color.WHITE;
+	}else
+	{
+		this.fillColor = null;
+	}
 
 	/**
 	 * Gets the border color of an object.
@@ -92,7 +145,7 @@ public class ShapeGraphics implements Graphics {
 	 */
 	public double getBorderWidth() {
 		if (borderWidth == 0) {
-			return 0; //TODO: Can borderWidth be zero? 
+			return 0; // TODO: Can borderWidth be zero?
 		} else {
 			return borderWidth;
 		}
@@ -196,7 +249,7 @@ public class ShapeGraphics implements Graphics {
 	}
 
 	/**
-	 * Gets the order of an object.
+	 * Gets the z-order of an object. 
 	 * 
 	 * @param zOrder the order of an object.
 	 */
@@ -205,12 +258,16 @@ public class ShapeGraphics implements Graphics {
 	}
 
 	/**
-	 * Sets the order of an object.
+	 * Sets the z-order of an object.
 	 * 
 	 * @param zOrder the order of an object.
 	 */
 	public void setZOrder(int zOrder) {
-		this.zOrder = zOrder;
+		if (this.zOrder != zOrder) {
+			this.zOrder = zOrder;
+			parent.fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.ZORDER));
+
+		}
 	}
 
 	/**
@@ -220,6 +277,15 @@ public class ShapeGraphics implements Graphics {
 	 */
 	public PathwayElement getParent() {
 		return parent;
+	}
+	
+	/**
+	 * Sets the parent PathwayElement to which the shape graphic property belongs.
+	 * 
+	 * @return parent the parent pathway element.
+	 */
+	public void setParent(PathwayElement parent) {
+		this.parent = parent;
 	}
 
 }
