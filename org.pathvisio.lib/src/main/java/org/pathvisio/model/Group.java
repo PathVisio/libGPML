@@ -29,21 +29,16 @@ import org.bridgedb.Xref;
  */
 public class Group {
 
-	private String elementId;
-	private String groupRef; // if part of group
-	private Xref xref; // optional
-	private String textLabel; // optional
-	/**
-	 * GroupType the type of group, e.g. Complex, Pathway, etc. GroupType is GROUP
-	 * by default.
-	 * 
-	 * NB: previously named groupStyle.
-	 */
-	private GroupType type = GroupType.GROUP; // optional
-	private List<Comment> comments; // optional
-	private List<Property> properties; // optional
-	private List<AnnotationRef> annotationRefs; // optional
-	private List<CitationRef> citationRefs; // optional
+	protected String elementId;
+	protected String textLabel; // optional
+	protected GroupType type = GroupType.GROUP; // optional
+	protected String groupRef; // if part of group
+	protected Xref xref; // optional
+	protected List<Comment> comments; // optional
+	protected List<DynamicProperty> dynamicProperties; // optional
+	protected List<AnnotationRef> annotationRefs; // optional
+	protected List<CitationRef> citationRefs; // optional
+	protected List<EvidenceRef> evidenceRefs; // optional
 
 	// Add Constructors
 

@@ -60,8 +60,6 @@ public class LineStyleProperty implements Graphics {
 			throw new IllegalArgumentException();
 		if (this.lineColor != lineColor) {
 			this.lineColor = lineColor;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINECOLOR));
 		}
 	}
 
@@ -92,8 +90,6 @@ public class LineStyleProperty implements Graphics {
 //				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, "Double");
 //			else
 //				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, null);
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINESTYLE));
 		}
 	}
 
@@ -118,8 +114,6 @@ public class LineStyleProperty implements Graphics {
 	public void setLineWidth(double lineWidth) {
 		if (this.lineWidth != lineWidth) {
 			this.lineWidth = lineWidth;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINETHICKNESS));
 		}
 	}
 
@@ -151,8 +145,6 @@ public class LineStyleProperty implements Graphics {
 		}
 		if (!this.connectorType.equals(connectorType)) {
 			this.connectorType = connectorType;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.CONNECTORTYPE));
 		}
 	}
 
@@ -173,8 +165,6 @@ public class LineStyleProperty implements Graphics {
 	public void setZOrder(int zOrder) {
 		if (this.zOrder != zOrder) {
 			this.zOrder = zOrder;
-			parent.fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.ZORDER));
-
 		}
 	}
 

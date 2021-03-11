@@ -29,63 +29,20 @@ public class ShapeStyleProperty implements Graphics {
 	protected Color borderColor; // TODO: Set color by type?
 	protected String borderStyle; // enum?
 	protected double borderWidth = 1.0; // double?
-	protected Color fillColor = null; // TODO: fix transparency implementation
-	protected String shapeType; // enum?
-	/**
-	 * Z-order of this object. Z-order is an ordering of overlapping
-	 * two-dimensional objects.
-	 */
-	protected int zOrder;
-	protected PathwayElement parent; // TODO: Getter/Setter
-
-	/**
-	 * Set shapeType to NONE if objectType is Label. Otherwise set to RECTANGLE.
-	 */
-	if(objectType==ObjectType.LABEL)
-	{
-		this.shapeType = ShapeType.NONE;
-	}else
-	{
-		this.shapeType = ShapeType.RECTANGLE;
-	}
-
-	/**
-	 * Default IShape shapeType is Rectangle.
-	 */
-	protected IShape shapeType = ShapeType.RECTANGLE;
-
-	/**
-	 * Gets shapeType the IShape.
-	 * 
-	 * @return shapeType the IShape.
-	 */
-	public IShape getShapeType() {
-		return shapeType;
-	}
-
-	/**
-	 * Sets shape type to given IShape.
-	 * 
-	 * @param IShape the shape type.
-	 */
-	public void setShapeType(IShape shapeType) {
-		if (this.shapeType != shapeType) {
-			this.shapeType = shapeType;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SHAPETYPE));
-		}
-	}
 	/**
 	 * LINE AND GRAPHLINE DO NOT HAVE FILLCOLOR? Set fillColor to WHITE if
 	 * objectType is Line, Label, DataNode, State, or GraphLine. Otherwise set to
 	 * null.
 	 */
-	if(objectType==ObjectType.LINE||objectType==ObjectType.LABEL||objectType==ObjectType.DATANODE||objectType==ObjectType.STATE||objectType==ObjectType.GRAPHLINE)
-	{
-		this.fillColor = Color.WHITE;
-	}else
-	{
-		this.fillColor = null;
-	}
+	protected Color fillColor = null; // TODO: fix transparency implementation
+	protected ShapeType shapeType = ShapeType.RECTANGLE; // Set shapeType to NONE if Label. Otherwise set to RECTANGLE.
+	/**
+	 * Z-order of this object. Z-order is an ordering of overlapping two-dimensional
+	 * objects.
+	 */
+	protected int zOrder;
+	protected PathwayElement parent; // TODO: Getter/Setter
+
 
 	/**
 	 * Gets the border color of an object.
@@ -111,8 +68,6 @@ public class ShapeStyleProperty implements Graphics {
 			throw new IllegalArgumentException();
 		if (this.borderColor != borderColor) {
 			this.borderColor = borderColor;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.BORDERCOLOR));
 		}
 	}
 
@@ -159,8 +114,6 @@ public class ShapeStyleProperty implements Graphics {
 	public void setBorderWidth(double borderWidth) {
 		if (this.borderWidth != borderWidth) {
 			this.borderWidth = borderWidth;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.LINETHICKNESS));
 		}
 	}
 
@@ -185,8 +138,6 @@ public class ShapeStyleProperty implements Graphics {
 	public void setFillColor(Color fillColor) {
 		if (this.fillColor != fillColor) {
 			this.fillColor = fillColor;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FILLCOLOR));
 		}
 	}
 
@@ -215,8 +166,6 @@ public class ShapeStyleProperty implements Graphics {
 			}
 			int alpha = value ? 0 : 255;
 			fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.TRANSPARENT));
 		}
 	}
 
@@ -236,6 +185,7 @@ public class ShapeStyleProperty implements Graphics {
 		}
 	}
 
+
 	/**
 	 * Sets the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
 	 * Nucleus. Not to be confused with Shape.type, the categories of shapeType,
@@ -245,11 +195,13 @@ public class ShapeStyleProperty implements Graphics {
 	 * 
 	 */
 	public void setShapeType(String shapeType) {
-		this.shapeType = shapeType;
+		if (this.shapeType != shapeType) {
+			this.shapeType = shapeType;
+		}
 	}
 
 	/**
-	 * Gets the z-order of an object. 
+	 * Gets the z-order of an object.
 	 * 
 	 * @param zOrder the order of an object.
 	 */
@@ -265,7 +217,6 @@ public class ShapeStyleProperty implements Graphics {
 	public void setZOrder(int zOrder) {
 		if (this.zOrder != zOrder) {
 			this.zOrder = zOrder;
-			parent.fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.ZORDER));
 
 		}
 	}
@@ -278,7 +229,7 @@ public class ShapeStyleProperty implements Graphics {
 	public PathwayElement getParent() {
 		return parent;
 	}
-	
+
 	/**
 	 * Sets the parent PathwayElement to which the shape graphic property belongs.
 	 * 

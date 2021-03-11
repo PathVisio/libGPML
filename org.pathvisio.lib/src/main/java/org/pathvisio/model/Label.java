@@ -28,15 +28,19 @@ import org.pathvisio.util.Utils;
  */
 public class Label extends PathwayElement {
 
-	private Graphics graphics;
-	private List<Comment> comments;
-	private List<Property> properties;
-	private List<AnnotationRef> annotationRefs;
-	private List<CitationRef> citationRefs;
-	protected String href = ""; // hyperlink optionally specified in a Label for a reference to a url.
 	private String elementId;
-	private String groupRef;
 	private String textLabel = "";
+	private String groupRef;
+	protected String href = ""; // hyperlink
+	protected RectProperty rectProperty;
+	protected FontProperty fontProperty;
+	protected ShapeStyleProperty shapeStyleProperty;
+	protected List<Comment> comments; // optional
+	protected List<DynamicProperty> dynamicProperties; // optional
+	protected List<AnnotationRef> annotationRefs; // optional
+	protected List<CitationRef> citationRefs; // optional
+	private List<EvidenceRef> evidenceRefs; // optional
+
 
 	// Add Constructors
 

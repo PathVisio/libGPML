@@ -17,26 +17,15 @@
 package org.pathvisio.model;
 
 /**
- * This interface represents a type (the <i>Type</i> in Property).
- *
- * @author Mark Woon
+ * This interface stores all information relevant to Graphics.
+ * 
+ * @author finterly
  */
-public interface PropertyType {
+public interface Graphics {
 
-	/**
-	 * The id for this type.
-	 */
-	String getId();
-
-	/**
-	 * Handle the translation of a Property from a (JDOM) GPML element to a PathwayElement.
-	 * This is responsible for copying the value(s) of prop from gpmlElem to pwElem.
-	 */
-	//void translateFromGpml(Property prop, Element gpmlElem, PathwayElement pwElem) throws ConverterException;
-
-	/**
-	 * Handle the translation of a Property from a PathwayElement to a (JDOM) GPML element.
-	 * This is responsible for copying the value(s) of a prop from pwElem to gpmlElem.
-	 */
-	//void translateToGpml(Property prop, PathwayElement pwElem, Element gpmlElem) throws ConverterException;
+	
+	//Add graphics 
+	//Remove graphics
+    
+    
 }

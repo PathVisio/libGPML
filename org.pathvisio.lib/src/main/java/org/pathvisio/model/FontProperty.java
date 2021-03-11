@@ -26,8 +26,8 @@ import org.pathvisio.util.Utils;
  */
 public class FontProperty implements Graphics {
 
-	protected Color textColor = Color.BLACK; 
-	protected String fontName = "Arial"; 
+	protected Color textColor = Color.BLACK;
+	protected String fontName = "Arial";
 	protected boolean fontWeight = false; // bold or normal
 	protected boolean fontStyle = false; // italic or normal
 	protected boolean fontDecoration = false; // underline or normal
@@ -35,7 +35,6 @@ public class FontProperty implements Graphics {
 	protected double fontSize = 12; // M_INITIAL_FONTSIZE
 	protected HAlignType hAlign = HAlignType.CENTER; // horizontal alignment of text
 	protected VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
-	protected PathwayElement parent; // TODO: Getter/Setter
 
 	/**
 	 * Gets the color of text.
@@ -56,14 +55,13 @@ public class FontProperty implements Graphics {
 	 * @param textColor the color of text
 	 * @throws IllegalArgumentException if color null.
 	 */
-	public void setLineColor(Color textColor) {
-		if (textColor == null)
+	public void setTextColor(Color textColor) {
+		if (textColor == null) {
 			throw new IllegalArgumentException();
-		if (this.textColor != textColor) {
+		} else {
 			this.textColor = textColor;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.TEXTCOLOR));
 		}
+
 	}
 
 	/**
@@ -92,8 +90,6 @@ public class FontProperty implements Graphics {
 			throw new IllegalArgumentException();
 		if (!Utils.stringEquals(this.fontName, fontName)) {
 			this.fontName = fontName;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FONTNAME));
 		}
 	}
 
@@ -117,8 +113,6 @@ public class FontProperty implements Graphics {
 	public void setFontWeight(boolean fontWeight) {
 		if (this.fontWeight != fontWeight) {
 			this.fontWeight = fontWeight;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FONTWEIGHT));
 		}
 	}
 
@@ -140,11 +134,7 @@ public class FontProperty implements Graphics {
 	 *                  typographic style is normal.
 	 */
 	public void setFontStyle(boolean fontStyle) {
-		if (this.fontStyle != fontStyle) {
-			this.fontStyle = fontStyle;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FONTSTYLE));
-		}
+		this.fontStyle = fontStyle;
 	}
 
 	/**
@@ -165,11 +155,7 @@ public class FontProperty implements Graphics {
 	 *                       false, typographic style is normal.
 	 */
 	public void setFontDecoration(boolean fontDecoration) {
-		if (this.fontDecoration != fontDecoration) {
-			this.fontDecoration = fontDecoration;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FONTDECORATION));
-		}
+		this.fontDecoration = fontDecoration;
 	}
 
 	/**
@@ -189,11 +175,7 @@ public class FontProperty implements Graphics {
 	 *                       If false, typographic style is normal.
 	 */
 	public void setFontStrikethru(boolean fontStrikethru) {
-		if (this.fontStrikethru != fontStrikethru) {
-			this.fontStrikethru = fontStrikethru;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FONTSTRIKETHRU));
-		}
+		this.fontStrikethru = fontStrikethru;
 	}
 
 	/**
@@ -216,11 +198,7 @@ public class FontProperty implements Graphics {
 	 * @param fontSize the value for the size of the font.
 	 */
 	public void setFontSize(double fontSize) {
-		if (this.fontSize != fontSize) {
-			this.fontSize = fontSize;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.FONTSIZE));
-		}
+		this.fontSize = fontSize;
 	}
 
 	/**
@@ -242,11 +220,7 @@ public class FontProperty implements Graphics {
 	 * @param hAlign the horizontal alignment value of displayed text.
 	 */
 	public void setHAlign(HAlignType hAlign) {
-		if (this.hAlign != hAlign) {
-			this.hAlign = hAlign;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.HALIGN));
-		}
+		this.hAlign = hAlign;
 	}
 
 	/**
@@ -269,11 +243,7 @@ public class FontProperty implements Graphics {
 	 * 
 	 */
 	public void setVAlign(VAlignType vAlign) {
-		if (this.vAlign != vAlign) {
-			this.vAlign = vAlign;
-			parent.fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.VALIGN));
-		}
+		this.vAlign = vAlign;
 	}
 
 }

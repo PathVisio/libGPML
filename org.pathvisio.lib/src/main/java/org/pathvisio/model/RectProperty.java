@@ -49,7 +49,6 @@ public class RectProperty implements Graphics {
 	public void setCenterX(double centerX) {
 		if (this.centerX != centerX) {
 			this.centerX = centerX;
-		//	parent.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(parent));
 		}
 	}
 
@@ -70,7 +69,6 @@ public class RectProperty implements Graphics {
 	public void setCenterY(double centerY) {
 		if (this.centerY != centerY) {
 			this.centerY = centerY;
-		//	parent.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(parent));
 		}
 	}
 
@@ -95,7 +93,6 @@ public class RectProperty implements Graphics {
 		}
 		if (this.width != width) {
 			this.width = width;
-		//	fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -120,7 +117,6 @@ public class RectProperty implements Graphics {
 		}
 		if (this.height != height) {
 			this.height = height;
-		//	fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 }

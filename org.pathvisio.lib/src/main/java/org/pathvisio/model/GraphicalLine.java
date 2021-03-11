@@ -27,17 +27,19 @@ import org.bridgedb.Xref;
 /**
  * 
  */
-public class GraphicalLine {
+public class GraphicalLine extends PathwayElement {
 
-	private List<Point> points;
-	private List<Anchor> anchors;
-	private Graphics graphics;
-	private List<Comment> comments; //optional
-	private List<Property> properties; //optional
-	private List<AnnotationRef> annotationRefs; //optional
-	private List<CitationRef> citationRefs; //optional
-	private String elementId;
-	private String groupRef; //optional
+	protected String elementId;
+	protected String groupRef; //optional
+	protected LineStyleProperty lineStyleProperty;
+	protected List<Point> points;
+	protected List<Anchor> anchors;
+	protected List<Comment> comments; //optional
+	protected List<DynamicProperty> dynamicProperties; // optional
+	protected List<AnnotationRef> annotationRefs; //optional
+	protected List<CitationRef> citationRefs; //optional
+	protected List<EvidenceRef> evidenceRefs; // optional
+
 //	protected String type; //debate
 	
 	

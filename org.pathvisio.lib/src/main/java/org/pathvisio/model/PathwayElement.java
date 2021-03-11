@@ -78,10 +78,15 @@ import org.pathvisio.util.Utils;
  */
 public class PathwayElement implements ElementIdContainer, Comparable<PathwayElement> {
 
+	
+	
+	
 	/**
-	 * Parent pathway of this object: may be null (for example, when object is in clipboard)
+	 * Parent pathway of this object: may be null (for example, when object is in
+	 * clipboard)
 	 */
 	protected Pathway parent = null;
+	protected String elementRef = null;
 
 	/**
 	 * Returns the parent pathway.
@@ -111,6 +116,157 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	void setParent(Pathway v) {
 		parent = v;
 	}
+	
+	/* ------------------------------- ID & GROUP ------------------------------- */
+
+	/**
+	 * 
+	 */
+	protected String elementId;
+
+	/**
+	 * 
+	 */
+	protected String groupRef;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String doGetElementId() {
+		return elementId;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getGroupRef() {
+		return groupRef;
+	}
+
+	/**
+	 * 
+	 * @param s
+	 */
+	public void setGroupRef(String s) {
+		if (groupRef == null || !groupRef.equals(s)) {
+			if (parent != null) {
+				if (groupRef != null) {
+					parent.removeGroupRef(groupRef, this);
+				}
+				// Check: move add before remove??
+				if (s != null) {
+					parent.addGroupRef(s, this);
+				}
+			}
+			groupRef = s;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+		}
+	}
+
+	/* AP20070508 */
+	/**
+	 * TODO: Is replaced with elementId in 2021.
+	 */
+	protected String groupId;
+
+	/**
+	 * 
+	 * TODO: groupId is replaced with elementId in 2021.
+	 */
+	public String getGroupId() {
+		return groupId;
+	}
+
+	/**
+	 * 
+	 * TODO: groupId is replaced with elementId in 2021.
+	 */
+	public String createGroupId() {
+		if (groupId == null) {
+			setGroupId(parent.getUniqueGroupId());
+		}
+		return groupId;
+	}
+
+	/**
+	 * Set groupId. This id must be any string unique within the Pathway object
+	 *
+	 * @see Pathway#getUniqueId(java.util.Set)
+	 */
+	public void setGroupId(String w) {
+		if (groupId == null || !groupId.equals(w)) {
+			if (parent != null) {
+				if (groupId != null) {
+					parent.removeGroupId(groupId);
+				}
+				// Check: move add before remove??
+				if (w != null) {
+					parent.addGroupId(w, this);
+				}
+			}
+			groupId = w;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPID));
+		}
+
+	}
+
+
+	/** graphRef property, used by Modification */
+	public String getElementRef() {
+		return elementRef;
+	}
+
+	/**
+	 * Set graphRef property, used by State The new graphRef should exist and point
+	 * to an existing DataNode
+	 */
+	public void setGraphRef(String value) {
+		// TODO: check that new graphRef exists and that it points to a DataNode
+		if (!(elementRef == null ? value == null : elementRef.equals(value))) {
+			elementRef = value;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GRAPHREF));
+		}
+	}
+
+	public String getElementId() {
+		return elementId;
+	}
+
+	/**
+	 * Set graphId. This id must be any string unique within the Pathway object
+	 *
+	 * @see Pathway#getUniqueId(java.util.Set)
+	 */
+	public void setElementId(String v) {
+		ElementLink.setElementId(v, this, parent);
+		elementId = v;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GRAPHID));
+	}
+
+	public String setGeneratedElementId() {
+		setElementId(parent.getUniqueGraphId());
+		return elementId;
+	}
+
+	public String getStartGraphRef() {
+		return mPoints.get(0).getElementRef();
+	}
+
+	public void setStartGraphRef(String ref) {
+		MPoint start = mPoints.get(0);
+		start.setGraphRef(ref);
+	}
+
+	public String getEndGraphRef() {
+		return mPoints.get(mPoints.size() - 1).getElementRef();
+	}
+
+	public void setEndGraphRef(String ref) {
+		MPoint end = mPoints.get(mPoints.size() - 1);
+		end.setGraphRef(ref);
+	}
 
 	/**
 	 * Returns keys of available static properties and dynamic properties as an
@@ -126,108 +282,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		return keys;
 	}
 
-	/**
-	 * Map for storing allowed properties with ObjectType as key and a set of
-	 * StaticProperty(s) as value.
-	 */
-	private static final Map<ObjectType, Set<StaticProperty>> ALLOWED_PROPS;
-
-	static {
-		Set<StaticProperty> propsCommon = EnumSet.of(StaticProperty.COMMENTS, StaticProperty.GRAPHID,
-				StaticProperty.GROUPREF, StaticProperty.BIOPAXREF, StaticProperty.ZORDER);
-		Set<StaticProperty> propsCommonShape = EnumSet.of(StaticProperty.CENTERX, StaticProperty.CENTERY,
-				StaticProperty.WIDTH, StaticProperty.HEIGHT, StaticProperty.COLOR);
-		Set<StaticProperty> propsCommonStyle = EnumSet.of(StaticProperty.TEXTLABEL, StaticProperty.FONTNAME,
-				StaticProperty.FONTWEIGHT, StaticProperty.FONTSTYLE, StaticProperty.FONTSIZE, StaticProperty.ALIGN,
-				StaticProperty.VALIGN, StaticProperty.COLOR, StaticProperty.FILLCOLOR, StaticProperty.TRANSPARENT,
-				StaticProperty.SHAPETYPE, StaticProperty.LINETHICKNESS, StaticProperty.LINESTYLE);
-		Set<StaticProperty> propsCommonLine = EnumSet.of(StaticProperty.COLOR, StaticProperty.STARTX,
-				StaticProperty.STARTY, StaticProperty.ENDX, StaticProperty.ENDY, StaticProperty.STARTLINETYPE,
-				StaticProperty.ENDLINETYPE, StaticProperty.LINESTYLE, StaticProperty.LINETHICKNESS,
-				StaticProperty.STARTGRAPHREF, StaticProperty.ENDGRAPHREF);
-		ALLOWED_PROPS = new EnumMap<ObjectType, Set<StaticProperty>>(ObjectType.class);
-		{
-			Set<StaticProperty> propsMappinfo = EnumSet.of(StaticProperty.COMMENTS, StaticProperty.MAPINFONAME,
-					StaticProperty.ORGANISM, StaticProperty.MAPINFO_DATASOURCE, StaticProperty.VERSION,
-					StaticProperty.AUTHOR, StaticProperty.MAINTAINED_BY, StaticProperty.EMAIL,
-					StaticProperty.LAST_MODIFIED, StaticProperty.LICENSE, StaticProperty.BOARDWIDTH,
-					StaticProperty.BOARDHEIGHT);
-			ALLOWED_PROPS.put(ObjectType.MAPPINFO, propsMappinfo);
-		}
-		{
-			Set<StaticProperty> propsState = EnumSet.of(StaticProperty.RELX, StaticProperty.RELY, StaticProperty.WIDTH,
-					StaticProperty.HEIGHT, StaticProperty.MODIFICATIONTYPE, StaticProperty.GRAPHREF,
-					StaticProperty.ROTATION);
-			propsState.addAll(propsCommon);
-			propsState.addAll(propsCommonStyle);
-			ALLOWED_PROPS.put(ObjectType.STATE, propsState);
-		}
-		{
-			Set<StaticProperty> propsShape = EnumSet.of(StaticProperty.FILLCOLOR, StaticProperty.SHAPETYPE,
-					StaticProperty.ROTATION, StaticProperty.TRANSPARENT, StaticProperty.LINESTYLE);
-			propsShape.addAll(propsCommon);
-			propsShape.addAll(propsCommonStyle);
-			propsShape.addAll(propsCommonShape);
-			ALLOWED_PROPS.put(ObjectType.SHAPE, propsShape);
-		}
-		{
-			Set<StaticProperty> propsDatanode = EnumSet.of(StaticProperty.GENEID, StaticProperty.DATASOURCE,
-					StaticProperty.TEXTLABEL, StaticProperty.TYPE);
-			propsDatanode.addAll(propsCommon);
-			propsDatanode.addAll(propsCommonStyle);
-			propsDatanode.addAll(propsCommonShape);
-			ALLOWED_PROPS.put(ObjectType.DATANODE, propsDatanode);
-		}
-		{
-			Set<StaticProperty> propsGraphLine = new HashSet<StaticProperty>();
-			propsGraphLine.addAll(propsCommon);
-			propsGraphLine.addAll(propsCommonLine);
-			ALLOWED_PROPS.put(ObjectType.GRAPHLINE, propsGraphLine);
-		}
-		{
-			Set<StaticProperty> propsLine = EnumSet.of(StaticProperty.GENEID, StaticProperty.DATASOURCE);
-			propsLine.addAll(propsCommon);
-			propsLine.addAll(propsCommonLine);
-			ALLOWED_PROPS.put(ObjectType.LINE, propsLine);
-		}
-		{
-			Set<StaticProperty> propsLabel = EnumSet.of(StaticProperty.HREF);
-			propsLabel.addAll(propsCommon);
-			propsLabel.addAll(propsCommonStyle);
-			propsLabel.addAll(propsCommonShape);
-			ALLOWED_PROPS.put(ObjectType.LABEL, propsLabel);
-		}
-		{
-			Set<StaticProperty> propsGroup = EnumSet.of(StaticProperty.GROUPID, StaticProperty.GROUPREF,
-					StaticProperty.BIOPAXREF, StaticProperty.GROUPSTYLE, StaticProperty.TEXTLABEL,
-					StaticProperty.COMMENTS, StaticProperty.ZORDER);
-			ALLOWED_PROPS.put(ObjectType.GROUP, propsGroup);
-		}
-		{
-			Set<StaticProperty> propsInfobox = EnumSet.of(StaticProperty.CENTERX, StaticProperty.CENTERY,
-					StaticProperty.ZORDER);
-			ALLOWED_PROPS.put(ObjectType.INFOBOX, propsInfobox);
-		}
-		{
-			Set<StaticProperty> propsLegend = EnumSet.of(StaticProperty.CENTERX, StaticProperty.CENTERY,
-					StaticProperty.ZORDER);
-			ALLOWED_PROPS.put(ObjectType.LEGEND, propsLegend);
-		}
-		{
-			Set<StaticProperty> propsBiopax = EnumSet.noneOf(StaticProperty.class);
-			ALLOWED_PROPS.put(ObjectType.BIOPAX, propsBiopax);
-		}
-	};
-
-	/**
-	 * Gets all attributes that are stored as static members.
-	 * 
-	 * @return all attributes stored as static members.
-	 */
-	public Set<StaticProperty> getStaticPropertyKeys() {
-		return ALLOWED_PROPS.get(getObjectType());
-	}
-
+	
 	/**
 	 * Sets dynamic or static properties at the same time.
 	 * 
@@ -258,192 +313,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 			throw new IllegalArgumentException();
 		}
 	}
-
-	/**
-	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-	 * x);
-	 *
-	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
-	 */
-	public void setStaticProperty(StaticProperty key, Object value) {
-		if (!getStaticPropertyKeys().contains(key))
-			throw new IllegalArgumentException(
-					"Property " + key.name() + " is not allowed for objects of type " + getObjectType());
-		switch (key) {
-		case COMMENTS:
-			setComments((List<Comment>) value);
-			break;
-		case COLOR:
-			setColor((Color) value);
-			break;
-
-		case CENTERX:
-			setMCenterX((Double) value);
-			break;
-		case CENTERY:
-			setMCenterY((Double) value);
-			break;
-		case WIDTH:
-			setMWidth((Double) value);
-			break;
-		case HEIGHT:
-			setMHeight((Double) value);
-			break;
-
-		case FILLCOLOR:
-			setFillColor((Color) value);
-			break;
-		case SHAPETYPE:
-			setShapeType((IShape) value);
-			break;
-		case ROTATION:
-			setRotation((Double) value);
-			break;
-		case RELX:
-			setRelX((Double) value);
-			break;
-		case RELY:
-			setRelY((Double) value);
-			break;
-		case STARTX:
-			setMStartX((Double) value);
-			break;
-		case STARTY:
-			setMStartY((Double) value);
-			break;
-		case ENDX:
-			setMEndX((Double) value);
-			break;
-		case ENDY:
-			setMEndY((Double) value);
-			break;
-		case ENDLINETYPE:
-			setEndLineType((LineType) value);
-			break;
-		case STARTLINETYPE:
-			setStartLineType((LineType) value);
-			break;
-		case LINESTYLE:
-			setLineStyle((Integer) value);
-			break;
-
-		case ORIENTATION:
-			setOrientation((Integer) value);
-			break;
-
-		case GENEID:
-			setElementID((String) value);
-			break;
-		case DATASOURCE:
-			if (value instanceof DataSource) {
-				setDataSource((DataSource) value);
-			} else {
-				setDataSource(DataSource.getExistingByFullName((String) value)); // getByFullName
-			}
-			break;
-		case TYPE:
-			setDataNodeType((String) value);
-			break;
-
-		case TEXTLABEL:
-			setTextLabel((String) value);
-			break;
-		case HREF:
-			setHref((String) value);
-			break;
-		case FONTNAME:
-			setFontName((String) value);
-			break;
-		case FONTWEIGHT:
-			setBold((Boolean) value);
-			break;
-		case FONTSTYLE:
-			setItalic((Boolean) value);
-			break;
-		case FONTSIZE:
-			setMFontSize((Double) value);
-			break;
-		case MAPINFONAME:
-			setMapInfoName((String) value);
-			break;
-		case ORGANISM:
-			setOrganism((String) value);
-			break;
-		case MAPINFO_DATASOURCE:
-			setMapInfoDataSource((String) value);
-			break;
-		case VERSION:
-			setVersion((String) value);
-			break;
-		case AUTHOR:
-			setAuthor((String) value);
-			break;
-		case MAINTAINED_BY:
-			setMaintainer((String) value);
-			break;
-		case EMAIL:
-			setEmail((String) value);
-			break;
-		case LAST_MODIFIED:
-			setLastModified((String) value);
-			break;
-		case LICENSE:
-			setCopyright((String) value);
-			break;
-		case BOARDWIDTH:
-			// ignore, board width is calculated automatically
-			break;
-		case BOARDHEIGHT:
-			// ignore, board width is calculated automatically
-			break;
-		case GRAPHID:
-			setElementId((String) value);
-			break;
-		case STARTGRAPHREF:
-			setStartGraphRef((String) value);
-			break;
-		case ENDGRAPHREF:
-			setEndGraphRef((String) value);
-			break;
-		case GROUPID:
-			setGroupId((String) value);
-			break;
-		case GROUPREF:
-			setGroupRef((String) value);
-			break;
-		case TRANSPARENT:
-			setTransparent((Boolean) value);
-			break;
-
-		case BIOPAXREF:
-			setBiopaxRefs((List<String>) value);
-			break;
-		case ZORDER:
-			setZOrder((Integer) value);
-			break;
-		case GROUPSTYLE:
-			if (value instanceof GroupType) {
-				setGroupStyle((GroupType) value);
-			} else {
-				setGroupStyle(GroupType.fromName((String) value));
-			}
-			break;
-		case ALIGN:
-			setAlign((HAlignType) value);
-			break;
-		case VALIGN:
-			setValign((VAlignType) value);
-			break;
-		case LINETHICKNESS:
-			setLineThickness((Double) value);
-			break;
-		}
-	}
-
-	
 
 	/* ------------------------------- DATANODE ------------------------------- */
 
@@ -480,7 +349,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GENEID));
 		}
 	}
-
 
 	/**
 	 * The pathway data source.
@@ -522,277 +390,8 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 
 
 
-
-
-
-	/* ------------------------------- ID & GROUP ------------------------------- */
-
-
-	/**
-	 * 
-	 */
-	protected String elementId;
-
-	/**
-	 * 
-	 */
-	protected String groupRef;
-
-
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String doGetElementId() {
-		return elementId;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * 
-	 * @param s
-	 */
-	public void setGroupRef(String s) {
-		if (groupRef == null || !groupRef.equals(s)) {
-			if (parent != null) {
-				if (groupRef != null) {
-					parent.removeGroupRef(groupRef, this);
-				}
-				// Check: move add before remove??
-				if (s != null) {
-					parent.addGroupRef(s, this);
-				}
-			}
-			groupRef = s;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
-		}
-	}
-
-
-	/* AP20070508 */
-	/**
-	 * TODO: Is replaced with elementId in 2021.
-	 */
-	protected String groupId;
-	/**
-	 * 
-	 * TODO: groupId is replaced with elementId in 2021.
-	 */
-	public String getGroupId() {
-		return groupId;
-	}
-
-	/**
-	 * 
-	 * TODO: groupId is replaced with elementId in 2021.
-	 */
-	public String createGroupId() {
-		if (groupId == null) {
-			setGroupId(parent.getUniqueGroupId());
-		}
-		return groupId;
-	}
-	
-	/**
-	 * Set groupId. This id must be any string unique within the Pathway object
-	 *
-	 * @see Pathway#getUniqueId(java.util.Set)
-	 */
-	public void setGroupId(String w) {
-		if (groupId == null || !groupId.equals(w)) {
-			if (parent != null) {
-				if (groupId != null) {
-					parent.removeGroupId(groupId);
-				}
-				// Check: move add before remove??
-				if (w != null) {
-					parent.addGroupId(w, this);
-				}
-			}
-			groupId = w;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPID));
-		}
-
-	}
-
-	protected String graphRef = null;
-
-	/** graphRef property, used by Modification */
-	public String getElementRef() {
-		return graphRef;
-	}
-
-	/**
-	 * Set graphRef property, used by State The new graphRef should exist and point
-	 * to an existing DataNode
-	 */
-	public void setGraphRef(String value) {
-		// TODO: check that new graphRef exists and that it points to a DataNode
-		if (!(graphRef == null ? value == null : graphRef.equals(value))) {
-			graphRef = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GRAPHREF));
-		}
-	}
-
-
-
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Set graphId. This id must be any string unique within the Pathway object
-	 *
-	 * @see Pathway#getUniqueId(java.util.Set)
-	 */
-	public void setElementId(String v) {
-		ElementLink.setElementId(v, this, parent);
-		elementId = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GRAPHID));
-	}
-
-	public String setGeneratedElementId() {
-		setElementId(parent.getUniqueGraphId());
-		return elementId;
-	}
-
-	public String getStartGraphRef() {
-		return mPoints.get(0).getElementRef();
-	}
-
-	public void setStartGraphRef(String ref) {
-		MPoint start = mPoints.get(0);
-		start.setGraphRef(ref);
-	}
-
-	public String getEndGraphRef() {
-		return mPoints.get(mPoints.size() - 1).getElementRef();
-	}
-
-	public void setEndGraphRef(String ref) {
-		MPoint end = mPoints.get(mPoints.size() - 1);
-		end.setGraphRef(ref);
-	}
-
-
-
-	public PathwayElement[] splitLine() {
-		double centerX = (getMStartX() + getMEndX()) / 2;
-		double centerY = (getMStartY() + getMEndY()) / 2;
-		PathwayElement l1 = new PathwayElement(ObjectType.LINE);
-		l1.copyValuesFrom(this);
-		l1.setMStartX(getMStartX());
-		l1.setMStartY(getMStartY());
-		l1.setMEndX(centerX);
-		l1.setMEndY(centerY);
-		PathwayElement l2 = new PathwayElement(ObjectType.LINE);
-		l2.copyValuesFrom(this);
-		l2.setMStartX(centerX);
-		l2.setMStartY(centerY);
-		l2.setMEndX(getMEndX());
-		l2.setMEndY(getMEndY());
-		return new PathwayElement[] { l1, l2 };
-	}
-
-	int noFire = 0;
-
-	public void dontFireEvents(int times) {
-		noFire = times;
-	}
-
-	private Set<PathwayElementListener> listeners = new HashSet<PathwayElementListener>();
-
-	public void addListener(PathwayElementListener v) {
-		if (!listeners.contains(v))
-			listeners.add(v);
-	}
-
-	public void removeListener(PathwayElementListener v) {
-		listeners.remove(v);
-	}
-
-	public void fireObjectModifiedEvent(PathwayElementEvent e) {
-		if (noFire > 0) {
-			noFire -= 1;
-			return;
-		}
-		if (parent != null)
-			parent.childModified(e);
-		for (PathwayElementListener g : listeners) {
-			g.gmmlObjectModified(e);
-		}
-	}
-
-
-
 	public Set<ElementRefContainer> getReferences() {
 		return ElementLink.getReferences(this, parent);
-	}
-
-	/**
-	 * 
-	 */
-	public int compareTo(PathwayElement o) {
-		int rez = getZOrder() - o.getZOrder();
-		if (rez != 0) {
-			return rez;
-		}
-		String a = getElementId();
-		String b = o.getElementId();
-		if (a == null) {
-			if (b == null) {
-				return 0;
-			}
-			return -1;
-		}
-		if (b == null) {
-			return 1;
-		}
-		return a.compareTo(b);
-	}
-
-	public Point2D toAbsoluteCoordinate(Point2D p) {
-		double x = p.getX();
-		double y = p.getY();
-		Rectangle2D bounds = getRBounds();
-		// Scale
-		if (bounds.getWidth() != 0)
-			x *= bounds.getWidth() / 2;
-		if (bounds.getHeight() != 0)
-			y *= bounds.getHeight() / 2;
-		// Translate
-		x += bounds.getCenterX();
-		y += bounds.getCenterY();
-		return new Point2D.Double(x, y);
-	}
-
-	/**
-	 * @param mp a point in absolute model coordinates
-	 * @returns the same point relative to the bounding box of this pathway element:
-	 *          -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
-	 *          corner, and 0,0 meaning the center.
-	 */
-	public Point2D toRelativeCoordinate(Point2D mp) {
-		double relX = mp.getX();
-		double relY = mp.getY();
-		Rectangle2D bounds = getRBounds();
-		// Translate
-		relX -= bounds.getCenterX();
-		relY -= bounds.getCenterY();
-		// Scalebounds.getCenterX();
-		if (relX != 0 && bounds.getWidth() != 0)
-			relX /= bounds.getWidth() / 2;
-		if (relY != 0 && bounds.getHeight() != 0)
-			relY /= bounds.getHeight() / 2;
-		return new Point2D.Double(relX, relY);
 	}
 
 	public void printRefsDebugInfo() {

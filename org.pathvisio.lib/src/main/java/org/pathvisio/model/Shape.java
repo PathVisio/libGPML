@@ -19,23 +19,29 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bridgedb.Xref;
+
 /**
  * This class stores all information relevant to a Shape pathway element.
  * 
  * @author finterly
  */
-public class Shape implements Graphics{
+public class Shape extends PathwayElement implements Graphics{
 
-	private List<Graphics> graphics;
-	private List<Comment> comments; // optional
-	private List<Property> properties; // optional
-	private List<AnnotationRef> annotationRefs; // optional
-	private List<CitationRef> citationRefs; // optional
-	private String elementId;
-	private String groupRef; // optional
-	private String textLabel; // optional
-	private String type; // optional
-	private String rotation; // optional
+	protected String elementId;
+	protected String textLabel;
+	protected ShapeType type; // TODO: Getter/Setter weird
+	protected String groupRef; // if part of group
+	protected RectProperty rectProperty;
+	protected FontProperty fontProperty;
+	protected ShapeStyleProperty shapeStyleProperty;
+	protected String rotation; 
+	protected List<Comment> comments; // optional
+	protected List<DynamicProperty> dynamicProperties; // optional
+	protected List<AnnotationRef> annotationRefs; // optional
+	protected List<CitationRef> citationRefs; // optional
+	protected List<EvidenceRef> evidenceRefs; // optional
+
 
 	// Add Constructors
 

@@ -28,7 +28,18 @@ import org.bridgedb.Xref;
  */
 public class Interaction extends GraphicalLine {
 
-	private Xref xref;
+//	protected String elementId;
+//	protected String groupRef; //optional
+//	protected LineStyleProperty lineStyleProperty;
+	
+	protected Xref xref;
+	
+//	protected List<Point> points;
+//	protected List<Anchor> anchors;
+//	protected List<Comment> comments; //optional
+//	protected List<DynamicProperty> dynamicProperties; // optional
+//	protected List<AnnotationRef> annotationRefs; //optional
+//	protected List<CitationRef> citationRefs; //optional
 
 	public Interaction() {
 		super();

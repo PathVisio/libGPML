@@ -15,39 +15,39 @@
  * the License.
  ******************************************************************************/
 package org.pathvisio.model;
-
 /**
- * This interface defines a typed property.
+ * This class holds coordinates x and y. 
+ * 
+ * @see Point
+ * @see Anchor
+ * @author finterly
  *
- * @author Mark Woon
  */
-public interface Property {
+public class Coordinate {
 
-	/**
-	 * Gets the Id for this property. Ids must be unique.
-	 */
-	String getId();
+	private double x; 
+	private double y;
 
-	/**
-	 * @returns Name of property, used e.g. as row header in the properties table.
-	 */
-	String getName();
+	public Coordinate(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
 
-	/**
-	 * Description of property, used e.g. as tooltip text when mousing over the
-	 * properties table. Descriptions are optional.
-	 * 
-	 * @returns description. May return null.
-	 */
-	String getDescription();
+	public String toString() {
+		return String.format("%d/%d", this.x, this.y);
+	}
 
-	/**
-	 * Gets the data type for this property.
-	 */
-	PropertyType getType();
+	public int hashCode() {
+		return this.toString().hashCode();
+	}
 
-	/**
-	 * Gets whether this property has accepts values.
-	 */
-	boolean isCollection();
+	public boolean equals(final Object o) {
+		return this.equals((Coordinate) o);
+	}
+
+	public boolean equals(final Coordinate c) {
+		return this.x == c.x && this.y == c.y;
+	}
+
+
 }

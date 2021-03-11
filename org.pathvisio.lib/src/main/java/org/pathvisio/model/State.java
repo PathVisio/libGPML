@@ -30,23 +30,91 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
  */
 public class State extends PathwayElement implements ElementRefContainer {
 
+	protected String elementId;
+	protected String elementRef;
+	protected String textLabel;
+	protected StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
+	private double relX;
+	private double relY;
+	private double width;
+	private double height;	
+	protected FontProperty fontProperty;
+	protected ShapeStyleProperty shapeStyleProperty;
+	protected Xref xref;
+	protected List<Comment> comments; // optional
+	protected List<DynamicProperty> dynamicProperties; // optional
+	protected List<AnnotationRef> annotationRefs; // optional
+	protected List<CitationRef> citationRefs; // optional
+	protected List<EvidenceRef> evidenceRefs; // optional
 
-	private Xref xref;
-	private Graphics graphics;
-	private List<Comment> comments;
-	private List<Property> properties;
-	private List<AnnotationRef> annotationRefs;
-	private List<CitationRef> citationRefs;
-	private String elementId;
-	private String groupRef;
-	private String textLabel;
-	private String type;
+	
+	
+	/**
+	 * Gets the parent data node of this state.
+	 * 
+	 * @return the parent pathway element data node of this state, null if no parent
+	 *         exists.
+	 */
+	public PathwayElement getParentDataNode() {
+		Pathway parent = getParent();
+		if (parent == null) {
+			return null;
+		}
+		return parent.getElementById(getElementRef());
+	}
+	
+	@Override
+	public void setParent(Pathway v) {
+		if (parent != v) {
+			super.setParent(v);
+			if (parent != null && graphRef != null) {
+				updateCoordinates();
+			}
+		}
+	}
 
 	protected State(ObjectType state) {
 		super(ObjectType.STATE);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
+	 * 1.0 corresponds to the edge of the parent object
+	 */
+	public double getRelX() {
+		return relX;
+	}
+
+	/**
+	 * See getRelX
+	 */
+	public void setRelX(double value) {
+		if (relX != value) {
+			relX = value;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
+	}
+
+
+	/**
+	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
+	 * 1.0 corresponds to the edge of the parent object
+	 */
+	public double getRelY() {
+		return relY;
+	}
+
+	/**
+	 * See getRelX
+	 */
+	public void setRelY(double value) {
+		if (relY != value) {
+			relY = value;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
+	}
+	
 	
 	/**
 	 * Gets the elementId of the state.

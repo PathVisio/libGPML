@@ -30,21 +30,20 @@ import org.pathvisio.util.Utils;
  */
 public class DataNode extends PathwayElement implements Graphics {
 
-	protected DataNode(ObjectType objectType) {
-		super(objectType);
-		// TODO Auto-generated constructor stub
-	}
-
-	protected Xref xref;
-	protected Graphics graphics;
-	protected List<Comment> comments; // optional
-	protected List<Property> properties; // optional
-	protected List<AnnotationRef> annotationRefs; // optional
-	protected List<CitationRef> citationRefs; // optional
 	protected String elementId;
-	protected String groupRef; // if part of group
+	protected String elementRef;
 	protected String textLabel;
 	protected DataNodeType type = DataNodeType.UNKOWN; // TODO: Getter/Setter weird
+	protected String groupRef; // if part of group
+	protected RectProperty rectProperty;
+	protected FontProperty fontProperty;
+	protected ShapeStyleProperty shapeStyleProperty;
+	protected Xref xref;
+	protected List<Comment> comments; // optional
+	protected List<DynamicProperty> dynamicProperties; // optional
+	protected List<AnnotationRef> annotationRefs; // optional
+	protected List<CitationRef> citationRefs; // optional
+	protected List<EvidenceRef> evidenceRefs; // optional
 
 
 //	/** TODO
@@ -134,6 +133,10 @@ public class DataNode extends PathwayElement implements Graphics {
 		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 	}
+	
+	/** 
+	 * Gets the source of data, e.g. the full name, code name or abbreviation of the database...
+	 */
 
 	/**
 	 * Gets the text of of the datanode.
@@ -252,8 +255,8 @@ public class DataNode extends PathwayElement implements Graphics {
 	 * 
 	 * @return properties the list of properties.
 	 */
-	public List<Property> getProperties() {
-		return properties;
+	public List<DynamicProperty> getProperties() {
+		return dynamicProperties;
 	}
 
 	/**
