@@ -21,45 +21,17 @@ package org.pathvisio.model;
  * 
  * @author finterly
  */
-public class Point {
+public class Point extends PathwayElement{
 	
 	private String elementId;
 	private String elementRef; // optional?
-	private String arrowHead; //optional
+	private LineType arrowHead; //optional
 	private double x;
 	private double y;
 	private double relX; //optional
 	private double relY; //optional
 	private PathwayElement parent;
 
-	
-
-
-	protected LineType endLineType = LineType.LINE;
-	protected LineType startLineType = LineType.LINE;
-
-	public LineType getStartLineType() {
-		return startLineType == null ? LineType.LINE : startLineType;
-	}
-
-	public LineType getEndLineType() {
-		return endLineType == null ? LineType.LINE : endLineType;
-	}
-
-	public void setStartLineType(LineType value) {
-		if (startLineType != value) {
-			startLineType = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.STARTLINETYPE));
-		}
-	}
-
-	public void setEndLineType(LineType value) {
-		if (endLineType != value) {
-			endLineType = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ENDLINETYPE));
-		}
-	}
-	
 	
 	/**
 	 * Instantiates a Point pathway element, with reference to another pathway

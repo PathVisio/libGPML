@@ -24,25 +24,54 @@ import java.awt.Color;
  * 
  * @author finterly
  */
-public class ShapeStyleProperty implements Graphics {
+public class ShapeStyleProperty {
 
-	protected Color borderColor; // TODO: Set color by type?
-	protected String borderStyle; // enum?
-	protected double borderWidth = 1.0; // double?
-	/**
-	 * LINE AND GRAPHLINE DO NOT HAVE FILLCOLOR? Set fillColor to WHITE if
-	 * objectType is Line, Label, DataNode, State, or GraphLine. Otherwise set to
-	 * null.
-	 */
-	protected Color fillColor = null; // TODO: fix transparency implementation
-	protected ShapeType shapeType = ShapeType.RECTANGLE; // Set shapeType to NONE if Label. Otherwise set to RECTANGLE.
-	/**
-	 * Z-order of this object. Z-order is an ordering of overlapping two-dimensional
-	 * objects.
-	 */
-	protected int zOrder;
-	protected PathwayElement parent; // TODO: Getter/Setter
+	protected Color borderColor = Color.decode("000000"); // black
+	protected LineStyleType borderStyle = LineStyleType.SOLID; // solid TODO: Fix
+	protected double borderWidth = 1.0; // TODO: type?
+	protected Color fillColor = Color.decode("ffffff"); // white TODO: Transparent if Label
+	protected ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
+	protected int zOrder; // optional
+	protected PathwayElement parent; // TODO: is needed for label?
 
+	/**
+	 * Constructor for all shape style properties. Default values in ( ).
+	 * 
+	 * @param borderColor the color of a border, (Black).
+	 * @param borderStyle the style of a border, (Solid).
+	 * @param borderWidth the thickness of a border, (1.0).
+	 * @param fillColor   the fill color of an object, (White).
+	 * @param shapeType   the shape type of an object, (Rectangle).
+	 * @param zOrder      the z order, an ordering of overlapping two-dimensional
+	 *                    objects.
+	 * @param parent      the parent pathway element of these properties.
+	 */
+	public ShapeStyleProperty(Color borderColor, LineStyleType borderStyle, double borderWidth, Color fillColor,
+			ShapeType shapeType, int zOrder, PathwayElement parent) {
+		super();
+		this.borderColor = borderColor;
+		this.borderStyle = borderStyle;
+		this.borderWidth = borderWidth;
+		this.fillColor = fillColor;
+		this.shapeType = shapeType;
+		this.zOrder = zOrder;
+		this.parent = parent;
+	}
+
+	/**
+	 * Constructor for all shape style properties except zOrder, an optional
+	 * attribute.
+	 */
+	public ShapeStyleProperty(Color borderColor, LineStyleType borderStyle, double borderWidth, Color fillColor,
+			ShapeType shapeType, PathwayElement parent) {
+		super();
+		this.borderColor = borderColor;
+		this.borderStyle = borderStyle;
+		this.borderWidth = borderWidth;
+		this.fillColor = fillColor;
+		this.shapeType = shapeType;
+		this.parent = parent;
+	}
 
 	/**
 	 * Gets the border color of an object.
@@ -51,7 +80,7 @@ public class ShapeStyleProperty implements Graphics {
 	 */
 	public Color getBorderColor() {
 		if (borderColor == null) {
-			return new Color(0, 0, 0); // black
+			return Color.decode("000000"); // black
 		} else {
 			return borderColor;
 		}
@@ -64,9 +93,9 @@ public class ShapeStyleProperty implements Graphics {
 	 * @throws IllegalArgumentException if color null.
 	 */
 	public void setBorderColor(Color borderColor) {
-		if (borderColor == null)
+		if (borderColor == null) {
 			throw new IllegalArgumentException();
-		if (this.borderColor != borderColor) {
+		} else {
 			this.borderColor = borderColor;
 		}
 	}
@@ -76,9 +105,9 @@ public class ShapeStyleProperty implements Graphics {
 	 * 
 	 * @return borderStyle the style of a border.
 	 */
-	public String getBorderStyle() {
+	public LineStyleType getBorderStyle() {
 		if (borderStyle == null) {
-			return "solid"; // enum?
+			return LineStyleType.SOLID;
 		} else {
 			return borderStyle;
 		}
@@ -89,7 +118,7 @@ public class ShapeStyleProperty implements Graphics {
 	 * 
 	 * @param borderStyle the style of a border.
 	 */
-	public void setBorderStyle(String borderStyle) {
+	public void setBorderStyle(LineStyleType borderStyle) {
 		this.borderStyle = borderStyle;
 	}
 
@@ -99,8 +128,8 @@ public class ShapeStyleProperty implements Graphics {
 	 * @return borderWidth the width of a border.
 	 */
 	public double getBorderWidth() {
-		if (borderWidth == 0) {
-			return 0; // TODO: Can borderWidth be zero?
+		if (borderWidth < 0) {
+			return 1.0; // TODO: Can borderWidth be zero?
 		} else {
 			return borderWidth;
 		}
@@ -112,7 +141,9 @@ public class ShapeStyleProperty implements Graphics {
 	 * @param borderWidth the width of a border.
 	 */
 	public void setBorderWidth(double borderWidth) {
-		if (this.borderWidth != borderWidth) {
+		if (borderWidth < 0) {
+			throw new IllegalArgumentException();
+		} else {
 			this.borderWidth = borderWidth;
 		}
 	}
@@ -124,7 +155,7 @@ public class ShapeStyleProperty implements Graphics {
 	 */
 	public Color getFillColor() {
 		if (fillColor == null) {
-			return new Color(255, 255, 255); // white
+			return Color.decode("ffffff"); // white
 		} else {
 			return fillColor;
 		}
@@ -136,66 +167,43 @@ public class ShapeStyleProperty implements Graphics {
 	 * @param fillColor the fill color of an object.
 	 */
 	public void setFillColor(Color fillColor) {
-		if (this.fillColor != fillColor) {
+		if (fillColor == null) {
+			throw new IllegalArgumentException();
+		} else {
 			this.fillColor = fillColor;
 		}
 	}
 
 	/**
-	 * Checks if fill color is equal to null or the alpha value is equal to 0.
-	 * 
-	 * @return true if fill color equal to null or alpha value equal to 0, false
-	 *         otherwise.
-	 */
-	public boolean isTransparent() {
-		return fillColor == null || fillColor.getAlpha() == 0;
-	}
-
-	/**
-	 * TODO: Logic seems weird...
-	 * 
-	 * Sets the alpha component of fillColor to 0 if true, sets the alpha component
-	 * of fillColor to 255 if false.
-	 * 
-	 * @param value the boolean value.
-	 */
-	public void setTransparent(boolean value) {
-		if (isTransparent() != value) {
-			if (fillColor == null) {
-				fillColor = Color.WHITE;
-			}
-			int alpha = value ? 0 : 255;
-			fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
-		}
-	}
-
-	/**
 	 * Gets the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
-	 * Nucleus. Not to be confused with Shape.type, the categories of shapeType,
-	 * e.g. Basic, CellularComponent, Virus...
+	 * Mitochondria, Oval.
+	 * 
+	 * NB: Shape.type is for object type while shapeType is the visual appearance.
+	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
 	 * 
 	 * @return shapeType the visual appearance of an object.
-	 * 
 	 */
-	public String getShapeType() {
+	public ShapeType getShapeType() {
 		if (shapeType == null) {
-			return "Rectangle";
+			return ShapeType.RECTANGLE;
 		} else {
 			return shapeType;
 		}
 	}
 
-
 	/**
-	 * Sets the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
-	 * Nucleus. Not to be confused with Shape.type, the categories of shapeType,
-	 * e.g. Basic, CellularComponent, Virus...
+	 * Gets the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
+	 * Mitochondria, Oval.
+	 * 
+	 * NB: Shape.type is for object type while shapeType is the visual appearance.
+	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
 	 * 
 	 * @param shapeType the visual appearance of an object.
-	 * 
 	 */
-	public void setShapeType(String shapeType) {
-		if (this.shapeType != shapeType) {
+	public void setShapeType(ShapeType shapeType) {
+		if (shapeType == null) {
+			throw new IllegalArgumentException();
+		} else {
 			this.shapeType = shapeType;
 		}
 	}
@@ -215,10 +223,7 @@ public class ShapeStyleProperty implements Graphics {
 	 * @param zOrder the order of an object.
 	 */
 	public void setZOrder(int zOrder) {
-		if (this.zOrder != zOrder) {
-			this.zOrder = zOrder;
-
-		}
+		this.zOrder = zOrder;
 	}
 
 	/**

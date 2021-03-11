@@ -24,17 +24,43 @@ import java.awt.Color;
  * 
  * @author finterly
  */
-public class LineStyleProperty implements Graphics {
+public class LineStyleProperty {
 
-	protected Color lineColor = Color.BLACK;
+	protected Color lineColor = Color.decode("#000000"); // black
+	protected LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
+	protected double lineWidth = 1.0; // 1.0
+	private ConnectorType connectorType = ConnectorType.STRAIGHT; // straight, elbow, curved...
+	protected int zOrder; // optional
+
 	/**
-	 * The visual appearance of a line, e.g. Solid or Broken.
+	 * Constructor for all line style properties. Default values in ( ).
+	 * 
+	 * @param lineColor     the color of a line, (Black).
+	 * @param lineStyle     the style of a line, (Solid).
+	 * @param lineWidth     the pixel value for the width of a line, (1.0).
+	 * @param connectorType the connector type of a line, (Straight}.
+	 * @param zOrder        the z order, an ordering of overlapping two-dimensional
+	 *                      objects.
 	 */
-	protected int lineStyle = LineStyleType.SOLID; // TODO: int? enum?
-	protected double lineWidth = 1.0; // double
-	private ConnectorType connectorType = ConnectorType.STRAIGHT; // enum?
-	protected int zOrder;
-	protected PathwayElement parent; // TODO: Getter/Setter
+	public LineStyleProperty(Color lineColor, LineStyleType lineStyle, double lineWidth, ConnectorType connectorType,
+			int zOrder) {
+		this.lineColor = lineColor;
+		this.lineStyle = lineStyle;
+		this.lineWidth = lineWidth;
+		this.connectorType = connectorType;
+		this.zOrder = zOrder;
+	}
+
+	/**
+	 * Constructor for all line style properties except zOrder, an optional
+	 * attribute.
+	 */
+	public LineStyleProperty(Color lineColor, LineStyleType lineStyle, double lineWidth, ConnectorType connectorType) {
+		this.lineColor = lineColor;
+		this.lineStyle = lineStyle;
+		this.lineWidth = lineWidth;
+		this.connectorType = connectorType;
+	}
 
 	/**
 	 * Gets the color of a line.
@@ -43,7 +69,7 @@ public class LineStyleProperty implements Graphics {
 	 */
 	public Color getLineColor() {
 		if (lineColor == null) {
-			return new Color(0, 0, 0);
+			return Color.decode("#000000"); // black
 		} else {
 			return lineColor;
 		}
@@ -56,9 +82,9 @@ public class LineStyleProperty implements Graphics {
 	 * @throws IllegalArgumentException if color null.
 	 */
 	public void setLineColor(Color lineColor) {
-		if (lineColor == null)
+		if (lineColor == null) {
 			throw new IllegalArgumentException();
-		if (this.lineColor != lineColor) {
+		} else {
 			this.lineColor = lineColor;
 		}
 	}
@@ -68,12 +94,12 @@ public class LineStyleProperty implements Graphics {
 	 * 
 	 * @return lineStyle the style of a line.
 	 */
-	public int getLineStyle() {
-//		if (lineStyle == null) {
-//			return "Solid"; // TODO:enum
-//		} else {
-		return lineStyle;
-//		}
+	public LineStyleType getLineStyle() {
+		if (lineStyle == null) {
+			return LineStyleType.SOLID; // TODO:enum
+		} else {
+			return lineStyle;
+		}
 	}
 
 	/**
@@ -81,15 +107,11 @@ public class LineStyleProperty implements Graphics {
 	 * 
 	 * @param lineStyle the style of a line.
 	 */
-	public void setLineStyle(int lineStyle) {
-		if (this.lineStyle != lineStyle) {
+	public void setLineStyle(LineStyleType lineStyle) {
+		if (lineStyle == null) {
+			throw new IllegalArgumentException();
+		} else {
 			this.lineStyle = lineStyle;
-			// handle LineStyle.DOUBLE until GPML is updated
-			// TODO: remove after next GPML update
-//			if (this.lineStyle == LineStyleType.DOUBLE)
-//				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, "Double");
-//			else
-//				setDynamicProperty(LineStyleType.DOUBLE_LINE_KEY, null);
 		}
 	}
 
@@ -99,7 +121,7 @@ public class LineStyleProperty implements Graphics {
 	 * @return lineWidth the width of a line.
 	 */
 	public double getLineWidth() {
-		if (lineWidth == 0) {
+		if (lineWidth < 0) {
 			return 1.0;
 		} else {
 			return lineWidth;
@@ -112,7 +134,9 @@ public class LineStyleProperty implements Graphics {
 	 * @param lineWidth the width of a line.
 	 */
 	public void setLineWidth(double lineWidth) {
-		if (this.lineWidth != lineWidth) {
+		if (lineWidth < 0) {
+			throw new IllegalArgumentException();
+		} else {
 			this.lineWidth = lineWidth;
 		}
 	}
@@ -142,8 +166,7 @@ public class LineStyleProperty implements Graphics {
 	public void setConnectorType(ConnectorType connectorType) {
 		if (connectorType == null) {
 			throw new IllegalArgumentException();
-		}
-		if (!this.connectorType.equals(connectorType)) {
+		} else {
 			this.connectorType = connectorType;
 		}
 	}
@@ -163,9 +186,7 @@ public class LineStyleProperty implements Graphics {
 	 * @param zOrder the order of a line.
 	 */
 	public void setZOrder(int zOrder) {
-		if (this.zOrder != zOrder) {
-			this.zOrder = zOrder;
-		}
+		this.zOrder = zOrder;
 	}
 
 }

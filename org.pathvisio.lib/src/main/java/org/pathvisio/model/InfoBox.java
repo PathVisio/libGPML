@@ -23,7 +23,7 @@ package org.pathvisio.model;
  * 
  * @author finterly
  */
-public class InfoBox {
+public class InfoBox extends PathwayElement {
 
 	private double centerX;
 	private double centerY;

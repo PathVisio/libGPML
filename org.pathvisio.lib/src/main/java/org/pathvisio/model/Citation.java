@@ -24,10 +24,11 @@ import org.bridgedb.Xref;
  * 
  * @author saurabh, finterly
  */
-public class Citation {
+public class Citation extends PathwayElement{
+	
 	private String elementId;
-	private Xref xref; //optional
 	private String url; //optional
+	private Xref xref; //optional
 
 	/**
 	 * Instantiates a Citation pathway element given elementId, given xref, and

@@ -26,17 +26,9 @@ import java.util.Map;
  * @author unknown, finterly
  */
 public enum VAlignType {
-	/**
-	 * Top
-	 */
+
 	TOP("Top"),
-	/**
-	 * Middle
-	 */
 	MIDDLE("Middle"),
-	/**
-	 * Bottom
-	 */
 	BOTTOM("Bottom");
 
 	private final String name;

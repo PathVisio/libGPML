@@ -27,7 +27,7 @@ package org.pathvisio.model;
 public class Comment implements Cloneable {
 
 	protected String source;
-	protected String commentText;
+	protected String content;
 	protected PathwayElement parent;
 
 	

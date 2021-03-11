@@ -21,9 +21,11 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * This class stores all information relevant to a Property, key value pair.
+ * This class stores all information relevant to a dynamic property, or
+ * CommentGroup.Property in GPML. Dynamic property is used to store arbitrary
+ * data.
  * 
- * @author Mark Woon, finterly
+ * @author unknown, finterly
  */
 public class DynamicProperty {
 

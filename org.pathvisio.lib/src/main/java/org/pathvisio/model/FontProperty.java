@@ -17,6 +17,8 @@
 package org.pathvisio.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
+
 import org.pathvisio.util.Utils;
 
 /**
@@ -26,15 +28,42 @@ import org.pathvisio.util.Utils;
  */
 public class FontProperty implements Graphics {
 
-	protected Color textColor = Color.BLACK;
-	protected String fontName = "Arial";
+	protected Color textColor = Color.decode("000000"); // black
+	protected String fontName = "Arial"; // Arial
 	protected boolean fontWeight = false; // bold or normal
 	protected boolean fontStyle = false; // italic or normal
 	protected boolean fontDecoration = false; // underline or normal
 	protected boolean fontStrikethru = false;// strikethru or normal
-	protected double fontSize = 12; // M_INITIAL_FONTSIZE
+	protected double fontSize = 12; // 12
 	protected HAlignType hAlign = HAlignType.CENTER; // horizontal alignment of text
 	protected VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
+
+	/**
+	 * Constructor for all font properties. Default values in ( ). 
+	 * 
+	 * @param textColor      the color of text, (Black).
+	 * @param fontName       the name of the set of printable text characters to be
+	 *                       used for visualization, (Arial).
+	 * @param fontWeight     the thickness of the font used, bold or (Normal).                        more weight, by default normal.
+	 * @param fontStyle      the typographic style for italic or (Normal).
+	 * @param fontDecoration the typographic style for underline or (Normal).
+	 * @param fontStrikethru the typographic style for strikethru or (Normal).
+	 * @param fontSize       the point value for the size of the font, (12).
+	 * @param hAlign         the horizontal alignment of displayed text, (Center).
+	 * @param vAlign         the vertical alignment of displayed text, by (Middle). 
+	 */
+	public FontProperty(Color textColor, String fontName, boolean fontWeight, boolean fontStyle, boolean fontDecoration,
+			boolean fontStrikethru, double fontSize, HAlignType hAlign, VAlignType vAlign) {
+		this.textColor = textColor;
+		this.fontName = fontName;
+		this.fontWeight = fontWeight;
+		this.fontStyle = fontStyle;
+		this.fontDecoration = fontDecoration;
+		this.fontStrikethru = fontStrikethru;
+		this.fontSize = fontSize;
+		this.hAlign = hAlign;
+		this.vAlign = vAlign;
+	}
 
 	/**
 	 * Gets the color of text.
@@ -43,7 +72,7 @@ public class FontProperty implements Graphics {
 	 */
 	public Color getTextColor() {
 		if (textColor == null) {
-			return new Color(0, 0, 0); // black
+			return Color.decode("#000000"); // black
 		} else {
 			return textColor;
 		}
@@ -61,7 +90,6 @@ public class FontProperty implements Graphics {
 		} else {
 			this.textColor = textColor;
 		}
-
 	}
 
 	/**
@@ -86,9 +114,9 @@ public class FontProperty implements Graphics {
 	 * @throws IllegalArgumentException if given fontName is null.
 	 */
 	public void setFontName(String fontName) {
-		if (fontName == null)
+		if (fontName == null) {
 			throw new IllegalArgumentException();
-		if (!Utils.stringEquals(this.fontName, fontName)) {
+		} else {
 			this.fontName = fontName;
 		}
 	}
@@ -111,9 +139,7 @@ public class FontProperty implements Graphics {
 	 *                   weight is normal.
 	 */
 	public void setFontWeight(boolean fontWeight) {
-		if (this.fontWeight != fontWeight) {
-			this.fontWeight = fontWeight;
-		}
+		this.fontWeight = fontWeight;
 	}
 
 	/**
@@ -185,7 +211,7 @@ public class FontProperty implements Graphics {
 	 * 
 	 */
 	public double getFontSize() {
-		if (fontSize == 0) {
+		if (fontSize <= 0) {
 			return 12;
 		} else {
 			return fontSize;
@@ -207,11 +233,11 @@ public class FontProperty implements Graphics {
 	 * @return hAlign the horizontal alignment value of displayed text.
 	 */
 	public HAlignType getHAlign() {
-//		if (hAlign == null) {
-//			return "Center";
-//		} else {
-		return hAlign;
-//		}
+		if (hAlign == null) {
+			return HAlignType.CENTER;
+		} else {
+			return hAlign;
+		}
 	}
 
 	/**
@@ -229,11 +255,11 @@ public class FontProperty implements Graphics {
 	 * @return vAlign the vertical alignment value of displayed text.
 	 */
 	public VAlignType getVAlign() {
-//		if (vAlign == null) { TODO
-//			return VAlignType;
-//		} else {
-		return vAlign;
-//		}
+		if (vAlign == null) {
+			return VAlignType.MIDDLE;
+		} else {
+			return vAlign;
+		}
 	}
 
 	/**

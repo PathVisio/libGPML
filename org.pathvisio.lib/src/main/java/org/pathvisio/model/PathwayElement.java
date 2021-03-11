@@ -36,57 +36,18 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
 import org.pathvisio.util.Utils;
 
 /**
- * PathwayElement is responsible for maintaining the data for all the individual
- * objects that can appear on a pathway (Lines, GeneProducts, Shapes, etc.)
- * <p>
- * All PathwayElements have an ObjectType. This ObjectType is specified at
- * creation time and can't be modified. To create a PathwayElement, use the
- * createPathwayElement() function. This is a factory method that returns a
- * different implementation class depending on the specified ObjectType.
- * <p>
- * PathwayElements have a number of properties which consist of a key, value
- * pair.
- * <p>
- * There are two types of properties: Static and Dynamic.
- * <p>
- * Dynamic properties can have any String as key. Their value is always of type
- * String. Dynamic properties are not essential for the functioning of PathVisio
- * and can be used to store arbitrary data. In GPML, dynamic properties are
- * stored in CommentGroup.Property in an <Attribute key="" value=""/> tag.
- * Internally, dynamic properties are stored in a Map<String, String>.
- * <p>
- * Static properties must have a key from the StaticProperty enum. Their value
- * can be various types {@link StaticPropertyType} obtained from
- * {@link StaticProperty#type()}. Static properties can be queried with
- * getStaticProperty(key) and setStaticProperty(key, value), but also specific
- * accessors such as e.g. getTextLabel() and setTextLabel()
- * <p>
- * Internally, dynamic properties are stored in various fields of the
- * PathwayElement Object. The static properties are a union of all possible
- * fields (e.g it has both start and end points for lines, and label text for
- * labels)
- * <p>
- * the setPropertyEx() and getPropertyEx() functions can be used to access both
- * dynamic and static properties from the same function. If key instanceof
- * String then it's assumed the caller wants a dynamic property, if key
- * instanceof StaticProperty then the static property is used.
- * <p>
- * most static properties cannot be set to null. Notable exceptions are graphId,
- * startGraphRef and endGraphRef.
+ * A class of pathway elements which are part of a pathway and have an
+ * elementId.
  * 
  * @author unknown, AP20070508, finterly
  */
-public class PathwayElement implements ElementIdContainer, Comparable<PathwayElement> {
+public abstract class PathwayElement implements ElementIdContainer, Comparable<PathwayElement> {
 
-	
-	
-	
 	/**
 	 * Parent pathway of this object: may be null (for example, when object is in
 	 * clipboard)
 	 */
 	protected Pathway parent = null;
-	protected String elementRef = null;
 
 	/**
 	 * Returns the parent pathway.
@@ -116,7 +77,7 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 	void setParent(Pathway v) {
 		parent = v;
 	}
-	
+
 	/* ------------------------------- ID & GROUP ------------------------------- */
 
 	/**
@@ -212,7 +173,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 
 	}
 
-
 	/** graphRef property, used by Modification */
 	public String getElementRef() {
 		return elementRef;
@@ -282,7 +242,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		return keys;
 	}
 
-	
 	/**
 	 * Sets dynamic or static properties at the same time.
 	 * 
@@ -387,8 +346,6 @@ public class PathwayElement implements ElementIdContainer, Comparable<PathwayEle
 		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
 		return new Xref(setGeneID, source);
 	}
-
-
 
 	public Set<ElementRefContainer> getReferences() {
 		return ElementLink.getReferences(this, parent);

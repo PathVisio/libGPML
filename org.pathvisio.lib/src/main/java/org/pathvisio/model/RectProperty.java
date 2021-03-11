@@ -23,17 +23,30 @@ package org.pathvisio.model;
  * 
  * @author finterly
  */
-public class RectProperty implements Graphics {
+public class RectProperty {
 
-	protected double centerX;
+	protected double centerX; // TODO: Coordinate
 	protected double centerY;
 	protected double width;
 	protected double height;
-	protected PathwayElement parent;
-
 
 	/**
-	 * Gets the x coordinate of the middle of an object.
+	 * Constructor for centering (position) an dimension properties.
+	 * 
+	 * @param centerX the x coordinate of the middle of an object.
+	 * @param centerY the y coordinate of the middle of an object.
+	 * @param width   the pixel value for the x dimensional length of an object.
+	 * @param height  the pixel value for the y dimensional length of an object.
+	 */
+	public RectProperty(double centerX, double centerY, double width, double height) {
+		this.centerX = centerX;
+		this.centerY = centerY;
+		this.width = width;
+		this.height = height;
+	}
+
+	/**
+	 * Gets the center x coordinate of an object.
 	 * 
 	 * @return centerX the middle of an object in the x direction.
 	 */
@@ -42,18 +55,16 @@ public class RectProperty implements Graphics {
 	}
 
 	/**
-	 * Sets the x coordinate of the middle of an object.
+	 * Sets the center x coordinate of an object.
 	 * 
 	 * @param centerX the middle of an object in the x direction.
 	 */
 	public void setCenterX(double centerX) {
-		if (this.centerX != centerX) {
-			this.centerX = centerX;
-		}
+		this.centerX = centerX;
 	}
 
 	/**
-	 * Gets the y coordinate of the middle of an object.
+	 * Gets the center y coordinate of an object.
 	 * 
 	 * @return centerY the middle of an object in the y direction.
 	 */
@@ -62,18 +73,16 @@ public class RectProperty implements Graphics {
 	}
 
 	/**
-	 * Sets the y coordinate of the middle of an object.
+	 * Sets the center y coordinate of an object.
 	 * 
 	 * @param centerY the middle of an object in the y direction.
 	 */
 	public void setCenterY(double centerY) {
-		if (this.centerY != centerY) {
-			this.centerY = centerY;
-		}
+		this.centerY = centerY;
 	}
 
 	/**
-	 * Gets the pixel value for the x dimensional length of an object.
+	 * Gets the width of an object.
 	 * 
 	 * @return width the width of an object.
 	 */
@@ -82,7 +91,7 @@ public class RectProperty implements Graphics {
 	}
 
 	/**
-	 * Sets the pixel value for the x dimensional length of an object.
+	 * Sets the width of an object.
 	 * 
 	 * @param width the width of an object.
 	 * @throws IllegalArgumentException if width is a negative value.
@@ -90,14 +99,13 @@ public class RectProperty implements Graphics {
 	public void setWidth(double width) {
 		if (width < 0) {
 			throw new IllegalArgumentException("Tried to set dimension < 0: " + width);
-		}
-		if (this.width != width) {
+		} else {
 			this.width = width;
 		}
 	}
 
 	/**
-	 * Gets the pixel value for the y dimensional length of an object.
+	 * Gets the height of an object.
 	 * 
 	 * @return height the height of an object.
 	 */
@@ -106,7 +114,7 @@ public class RectProperty implements Graphics {
 	}
 
 	/**
-	 * Sets the pixel value for the y dimensional length of an object.
+	 * Sets the height of an object.
 	 * 
 	 * @param height the height of an object.
 	 * @throws IllegalArgumentException if height is a negative value.
@@ -114,8 +122,7 @@ public class RectProperty implements Graphics {
 	public void setHeight(double height) {
 		if (height < 0) {
 			throw new IllegalArgumentException("Tried to set dimension < 0: " + height);
-		}
-		if (this.height != height) {
+		} else {
 			this.height = height;
 		}
 	}

@@ -24,13 +24,13 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Annotation {
+public class Annotation extends PathwayElement{
 
 	private String elementId;
-	private Xref xref; //optional
-	private String textLabel; //optional
+	private String name; //optional
+	private AnnotationType type; //optional
 	private String url; //optional
-	private String type; //optional
+	private Xref xref; //optional
 
 	
 	

@@ -45,6 +45,10 @@ public class DataNode extends PathwayElement implements Graphics {
 	protected List<CitationRef> citationRefs; // optional
 	protected List<EvidenceRef> evidenceRefs; // optional
 
+	
+
+    
+    
 
 //	/** TODO
 //	 * Sets data node type to given DataNodeType.
