@@ -51,18 +51,14 @@ abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer
 		for (int i = 0; i < coordinates.length; i++) {
 			coordinates[i] += delta[i];
 		}
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
 	}
 
 	protected void moveTo(double[] coordinates) {
 		this.coordinates = coordinates;
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
 	}
 
 	protected void moveTo(GenericPoint p) {
 		coordinates = p.coordinates;
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
-		;
 	}
 
 	protected double getCoordinate(int i) {
@@ -81,8 +77,6 @@ abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer
 	public void setElementId(String v) {
 		ElementLink.setElementId(v, this, PathwayElement.this.parent);
 		graphId = v;
-		fireObjectModifiedEvent(
-				PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.GRAPHID));
 	}
 
 	public Object clone() throws CloneNotSupportedException {

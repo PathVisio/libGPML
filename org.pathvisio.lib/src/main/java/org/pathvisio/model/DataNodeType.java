@@ -30,7 +30,7 @@ public class DataNodeType {
 	private static final Map<String, DataNodeType> nameToDataNodeType = new HashMap<String, DataNodeType>();
 	private static List<DataNodeType> dataNodeTypes = new ArrayList<DataNodeType>();
 
-	public static final DataNodeType UNKOWN = new DataNodeType("Unknown");
+	public static final DataNodeType UNKNOWN = new DataNodeType("Unknown");
 	public static final DataNodeType RNA = new DataNodeType("Rna");
 	public static final DataNodeType PROTEIN = new DataNodeType("Protein");
 	public static final DataNodeType COMPLEX = new DataNodeType("Complex");

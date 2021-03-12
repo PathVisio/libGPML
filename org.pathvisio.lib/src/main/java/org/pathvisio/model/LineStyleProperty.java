@@ -63,7 +63,7 @@ public class LineStyleProperty {
 	}
 
 	/**
-	 * Gets the color of a line.
+	 * Returns the color of a line.
 	 * 
 	 * @return lineColor the color of a line.
 	 */
@@ -90,9 +90,9 @@ public class LineStyleProperty {
 	}
 
 	/**
-	 * Gets the visual appearance of a line, e.g. Solid or Broken.
+	 * Returns the visual appearance of a line, e.g. Solid or Broken.
 	 * 
-	 * @return lineStyle the style of a line.
+	 * @return lineStyle the style of a line. 
 	 */
 	public LineStyleType getLineStyle() {
 		if (lineStyle == null) {
@@ -106,6 +106,7 @@ public class LineStyleProperty {
 	 * Sets the visual appearance of a line, e.g. Solid or Broken.
 	 * 
 	 * @param lineStyle the style of a line.
+	 * @throws IllegalArgumentException if lineStyle null.
 	 */
 	public void setLineStyle(LineStyleType lineStyle) {
 		if (lineStyle == null) {
@@ -116,9 +117,9 @@ public class LineStyleProperty {
 	}
 
 	/**
-	 * Gets the pixel value for the width of a line.
+	 * Returns the pixel value for the width of a line.
 	 * 
-	 * @return lineWidth the width of a line.
+	 * @return lineWidth the width of a line. 
 	 */
 	public double getLineWidth() {
 		if (lineWidth < 0) {
@@ -132,6 +133,7 @@ public class LineStyleProperty {
 	 * Sets the pixel value for the width of a line.
 	 * 
 	 * @param lineWidth the width of a line.
+	 * @throws IllegalArgumentException if lineWidth is a negative value. 
 	 */
 	public void setLineWidth(double lineWidth) {
 		if (lineWidth < 0) {
@@ -142,7 +144,7 @@ public class LineStyleProperty {
 	}
 
 	/**
-	 * Gets the value of the connectorType property. Specifies a set of rules to
+	 * Returns the value of the connectorType property. Specifies a set of rules to
 	 * govern layout of Graphical Lines and Interactions. PathVisio (Java): Line
 	 * Type and GPML: ConnectorType e.g. Curved, Elbow, Straight
 	 * 
@@ -162,6 +164,7 @@ public class LineStyleProperty {
 	 * Type and GPML: ConnectorType e.g. Curved, Elbow, Straight
 	 * 
 	 * @param connectorType the layout of a line.
+	 * @throws IllegalArgumentException if ConnectorType null.
 	 */
 	public void setConnectorType(ConnectorType connectorType) {
 		if (connectorType == null) {
@@ -172,7 +175,7 @@ public class LineStyleProperty {
 	}
 
 	/**
-	 * Gets the order of a line.
+	 * Returns the order of a line.
 	 * 
 	 * @return zOrder the order of a line.
 	 */

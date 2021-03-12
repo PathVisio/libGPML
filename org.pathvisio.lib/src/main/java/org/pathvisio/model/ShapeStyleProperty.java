@@ -74,7 +74,7 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the border color of an object.
+	 * Returns the border color of an object.
 	 * 
 	 * @return borderColor the border color of an object.
 	 */
@@ -101,7 +101,7 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the visual appearance of a border, e.g. Solid or Broken.
+	 * Returns the visual appearance of a border, e.g. Solid or Broken.
 	 * 
 	 * @return borderStyle the style of a border.
 	 */
@@ -123,7 +123,7 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the pixel value for the border of an object.
+	 * Returns the pixel value for the border of an object.
 	 * 
 	 * @return borderWidth the width of a border.
 	 */
@@ -139,6 +139,7 @@ public class ShapeStyleProperty {
 	 * Sets the pixel value for the border of an object.
 	 * 
 	 * @param borderWidth the width of a border.
+	 * @throws IllegalArgumentException if borderWidth is a negative value.
 	 */
 	public void setBorderWidth(double borderWidth) {
 		if (borderWidth < 0) {
@@ -149,7 +150,7 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the color used to paint the area of an object, not including its border.
+	 * Returns the color used to paint the area of an object, not including its border.
 	 * 
 	 * @return fillColor the fill color of an object.
 	 */
@@ -165,6 +166,7 @@ public class ShapeStyleProperty {
 	 * Sets the color used to paint the area of an object, not including its border.
 	 * 
 	 * @param fillColor the fill color of an object.
+	 * @throws IllegalArgumentException if fillColor null.
 	 */
 	public void setFillColor(Color fillColor) {
 		if (fillColor == null) {
@@ -175,7 +177,7 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
+	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
 	 * Mitochondria, Oval.
 	 * 
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
@@ -192,13 +194,14 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
+	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
 	 * Mitochondria, Oval.
 	 * 
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
 	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
 	 * 
 	 * @param shapeType the visual appearance of an object.
+	 * @throws IllegalArgumentException if shapeType null.
 	 */
 	public void setShapeType(ShapeType shapeType) {
 		if (shapeType == null) {
@@ -209,7 +212,7 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the z-order of an object.
+	 * Returns the z-order of an object.
 	 * 
 	 * @param zOrder the order of an object.
 	 */
@@ -227,7 +230,7 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Gets the parent PathwayElement to which the shape graphic property belongs.
+	 * Returns the parent PathwayElement to which the shape graphic property belongs.
 	 * 
 	 * @return parent the parent pathway element.
 	 */

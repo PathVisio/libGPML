@@ -18,6 +18,7 @@ package org.pathvisio.model;
 
 import java.awt.geom.Point2D;
 import java.util.Collections;
+import java.util.Random;
 import java.util.Set;
 
 import org.pathvisio.util.Utils;
@@ -31,16 +32,37 @@ import org.pathvisio.util.Utils;
 public abstract class ElementLink {
 
 	/**
+	 * Generates random IDs, based on strings of hex digits (0..9 or a..f). IDs are
+	 * unique across elementIds per pathway and referenced by elementRefs and
+	 * groupRefs.
+	 * 
+	 * NB: elementId previously named graphId. Group pathway elements previously had
+	 * both elementId and groupId(deprecated).
+	 * 
+	 * @param ids the collection of already existing IDs.
+	 * @return result the new unique ID unique for this pathway.
+	 */
+	static String getUniqueId(Set<String> ids) {
+		String result;
+		Random random = new Random();
+		int mod = 0x60000; // 3 hex letters
+		int min = 0xa0000; // must start with a letter
+		// add hex letters if set size large 
+		if ((ids.size()) > 0x10000) {
+			mod = 0x60000000;
+			min = 0xa0000000;
+		}
+		do {
+			result = Integer.toHexString(Math.abs(random.nextInt()) % mod + min);
+		} while (ids.contains(result));
+		return result;
+	}
+
+	/**
 	 * This interface allows iteration through all objects containing an elementId.
-	 * Classes that have an elementId implement this interface, e.g. Anchor, Point,
-	 * Citation, Annotation, DataNode, State, Interaction, GraphicalLine, Labels,
-	 * Shape, Group.
+	 * All pathway element classes have an elementId and implement this interface.
 	 * 
 	 * @author unknown, finterly
-	 */
-	/**
-	 * @author p70073399
-	 *
 	 */
 	public interface ElementIdContainer {
 
@@ -67,7 +89,7 @@ public abstract class ElementLink {
 		Set<ElementRefContainer> getReferences();
 
 		/**
-		 * Returns the parent gpml data object, needed for maintaining a consistent list
+		 * Returns the parent Pathway object, needed for maintaining a consistent list
 		 * of elementIds.
 		 */
 		Pathway getPathway();
@@ -86,8 +108,8 @@ public abstract class ElementLink {
 
 	/**
 	 * This interface allows iteration through all objects containing an elementRef.
-	 * Classes that refer *to* a ElementIdContainer implement this interface, e.g.
-	 * Point, State, DataNode? AnnotationRef?, CitationRef?
+	 * Classes that refer *to* an ElementIdContainer must implement this interface,
+	 * e.g. Point, State, DataNode, AnnotationRef, CitationRef, EvidenceRef.
 	 * 
 	 * @author unknown, finterly
 	 */
@@ -133,28 +155,28 @@ public abstract class ElementLink {
 		if (graphId == null || !graphId.equals(elementId)) {
 			if (data != null) {
 				if (graphId != null) {
-					data.removeGraphId(graphId);
+					data.removeElementId(graphId);
 				}
 				if (elementId != null) {
-					data.addGraphId(elementId, elementIdContainer);
+					data.addElementId(elementId, elementIdContainer);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Return a list of ElementRefContainers (i.e. points) referring to a certain
+	 * Returns a list of ElementRefContainers (i.e. points) referring to a certain
 	 * ElementId.
 	 *
-	 * @param elementIdthe elementId.
-	 * @param data         the pathway model, which is maintaining a complete list
-	 *                     of all elementIds in this pathway.
+	 * @param elementId     the elementId.
+	 * @param parentPathway the parent pathway model, which is maintaining a
+	 *                      complete list of all elementIds in this pathway.
 	 * @return a list of ElementRefContainers.
 	 */
-	public static Set<ElementRefContainer> getReferences(ElementIdContainer elementId, Pathway data) {
-		if (data == null || Utils.isEmpty(elementId.getElementId()))
+	public static Set<ElementRefContainer> getReferences(ElementIdContainer elementId, Pathway parentPathway) {
+		if (parentPathway == null || Utils.isEmpty(elementId.getElementId()))
 			return Collections.emptySet();
 		else
-			return data.getReferringObjects(elementId.getElementId());
+			return parentPathway.getReferringObjects(elementId.getElementId());
 	}
 }

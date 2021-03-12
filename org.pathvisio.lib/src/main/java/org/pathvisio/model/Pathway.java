@@ -18,6 +18,21 @@ package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
@@ -26,47 +41,282 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
 import org.pathvisio.util.Utils;
 
 /**
- * This class is the model for pathway data. It is responsible for storing all
- * information necessary for maintaining, loading and saving pathway data.
- *
- * Pathway contains multiple pathway elements.
+ * This class stores all information relevant to a Pathway. Pathway contains
+ * pathway elements and properties.
  * 
- * Pathway is guaranteed to always have exactly one object of the type MAPPINFO
- * and exactly one object of the type INFOBOX.
+ * TODO: MOVE: It is responsible for storing all information necessary for
+ * maintaining, loading and saving pathway data.
  * 
  * @author unknown, finterly
  */
 public class Pathway {
 
-	private boolean changed = true;
-
-	/**
-	 * Tracks if the Pathway has been changed since the file was opened or last
-	 * saved. New pathways start changed.
-	 * 
-	 * @return changed the "changed" flag for if the Pathway has been changed.
-	 */
-	public boolean hasChanged() {
-		return changed;
-	}
-	/**
-	 * The title of the pathway?
-	 */
 	protected String title = "untitled";
-	/**
-	 * 
-	 */
 	protected String organism = null;
-	/**
-	 * 
-	 */
 	protected String source = null;
-	/**
-	 * 
-	 */
 	protected String version = null;
+	protected Xref xref;
+	protected List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
+
+	protected List<Annotation> annotations;
+	protected List<Citation> citations;
+	protected List<Evidence> evidences;
+
+	protected List<Comment> comments = new ArrayList<Comment>(); // length 0 to unbounded
+	protected List<DynamicProperty> dynamicProperties = new ArrayList<DynamicProperty>(); // length 0 to unbounded
+	protected List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // length 0 to unbounded
+	protected List<CitationRef> citationRefs = new ArrayList<CitationRef>(); // length 0 to unbounded
+	protected List<EvidenceRef> evidenceRefs = new ArrayList<EvidenceRef>(); // length 0 to unbounded
+	protected double boardWidth;
+	protected double boardHeight;
+
+	protected List<DataNode> dataNodes;
+	protected List<State> states;
+	protected List<Interaction> interactions;
+	protected List<GraphicalLine> graphicalLines;
+	protected List<Label> labels;
+	protected List<Shape> shapes;
+	protected List<Group> groups;
+	protected InfoBox infoBox;
+
+	/* -------------------------- ELEMENTID & ELEMENTREF --------------------------- */
+
+	/** Mapping of String elementId key to ElementIdContainer value. */
+	private Map<String, ElementIdContainer> elementIdToContainer = new HashMap<String, ElementIdContainer>();
+	/** Mapping of String elementId key to Set of ElementRefContainer value. */
+	private Map<String, Set<ElementRefContainer>> elementIdToSetRefContainer = new HashMap<String, Set<ElementRefContainer>>();
 
 	/**
+	 * Returns a set view of String elementId keys from the elementIdToContainer
+	 * hash map.
+	 * 
+	 * @return a set of elementId keys.
+	 */
+	public Set<String> getElementIds() {
+		return elementIdToContainer.keySet();
+	}
+
+	/**
+	 * Returns ElementIdcontainer for the given String elementId key.
+	 * 
+	 * @param elementId the given elementId key.
+	 * @return the ElementIdcontainer for the given elementId key.
+	 */
+	public ElementIdContainer getElementIdContainer(String elementId) {
+		return elementIdToContainer.get(elementId);
+	}
+
+	/**
+	 * Registers a link from an elementId to an ElementIdContainer. Inserts a
+	 * mapping of elementId key and ElementIdContainer value to the
+	 * elementIdToContainer hash map.
+	 * 
+	 * @param elementId          the elementId
+	 * @param elementIdContainer the ElementIdContainer
+	 * @throws IllegalArgumentException if elementId or elementIdContainer are null.
+	 * @throws IllegalArgumentException if elementId is not unique.
+	 */
+	public void addElementId(String elementId, ElementIdContainer elementIdContainer) {
+		if (elementIdContainer == null || elementId == null) {
+			throw new IllegalArgumentException("unique elementId can't be null");
+		}
+		if (elementIdToContainer.containsKey(elementId)) {
+			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
+		}
+		elementIdToContainer.put(elementId, elementIdContainer);
+	}
+
+	/**
+	 * Removes the mapping of given elementId key from the elementIdToContainer hash
+	 * map.
+	 * 
+	 * @param elementId the elementId key.
+	 */
+	void removeElementId(String elementId) {
+		elementIdToContainer.remove(elementId);
+	}
+
+	/**
+	 * Returns a set of ElementRefContainers that refer to an object with a
+	 * particular elementId.
+	 * 
+	 * @param elementId the elementId key.
+	 */
+	public Set<ElementRefContainer> getReferringObjects(String elementId) {
+		Set<ElementRefContainer> elementRefContainers = elementIdToSetRefContainer.get(elementId);
+		if (elementRefContainers != null) {
+			// create defensive copy to prevent problems with ConcurrentModification.
+			return new HashSet<ElementRefContainer>(elementRefContainers);
+		} else {
+			return Collections.emptySet();
+		}
+	}
+
+	/**
+	 * Registers a link from an elementId to an ElementRefContainer. Inserts a
+	 * mapping of elementId key and ElementRefContainer value to the
+	 * elementIdToSetRefContainer hash map.
+	 * 
+	 * @param elementId           the elementId.
+	 * @param elementRefContainer the target ElementRefContainer.
+	 */
+	public void addElementRef(String elementId, ElementRefContainer elementRefContainer) {
+		Utils.multimapPut(elementIdToSetRefContainer, elementId, elementRefContainer);
+	}
+
+	/**
+	 * Removes a reference to an elementId by removing the mapping of the given
+	 * elementId key from the elementIdToSetRefContainer hash map.
+	 * 
+	 * @param elementId           the elementId.
+	 * @param elementRefContainer the target ElementRefContainer.
+	 * @throws IllegalArgumentException if hash map does not contain the given
+	 *                                  elementId key.
+	 */
+	void removeElementRef(String elementId, ElementRefContainer elementRefContainer) {
+		if (!elementIdToSetRefContainer.containsKey(elementId)) {
+			throw new IllegalArgumentException();
+		} else {
+			elementIdToSetRefContainer.get(elementId).remove(elementRefContainer);
+			// remove elementId key if zero ElementRefContainers values.
+			if (elementIdToSetRefContainer.get(elementId).size() == 0)
+				elementIdToSetRefContainer.remove(elementId);
+		}
+	}
+
+	/* ------------------------------- GROUPID ------------------------------- */
+
+	private Map<String, PathwayElement> groupIdToPathwayElement = new HashMap<String, PathwayElement>();
+	private Map<String, Set<PathwayElement>> groupIdToSetPathwayElement = new HashMap<String, Set<PathwayElement>>();
+
+	/**
+	 * Returns a set view of String groupId keys from the groupIdToPathwayElement
+	 * hash map.
+	 * 
+	 * @return set of groupId key.
+	 */
+	public Set<String> getGroupIds() {
+		return groupIdToPathwayElement.keySet();
+	}
+	
+
+	/**
+	 * Returns a PathwayElement for the given String groupId key.
+	 * 
+	 * @param groupId the given groupId key.
+	 * @return the PathwayElement for the given groupId.
+	 */
+	public PathwayElement getGroupById(String groupId) {
+		return groupIdToPathwayElement.get(groupId);
+	}
+
+	/**
+	 * Registers a link from a group id to a PathwayElement. Inserts a mapping of
+	 * groupId key and PathwayElement to the groupIdToPathwayElement hash map.
+	 * 
+	 * @param groupId        the groupId.
+	 * @param pathwayElement the pathway element.
+	 */
+	void addGroupId(String groupId, PathwayElement pathwayElement) {
+		if (groupId == null) {
+			throw new IllegalArgumentException("unique groupId can't be null");
+		}
+		if (groupIdToPathwayElement.containsKey(groupId)) {
+			throw new IllegalArgumentException("groupId '" + groupId + "' is not unique");
+		}
+		groupIdToPathwayElement.put(groupId, pathwayElement);
+	}
+
+	/**
+	 * Removes a reference to a groupId by removing the mapping of the given groupId
+	 * key from the groupIdToPathwayElement hash map.
+	 * 
+	 * @param groupId the group id.
+	 */
+	void removeGroupId(String groupId) {
+		groupIdToPathwayElement.remove(groupId);
+		Set<PathwayElement> pathwayElements = groupIdToSetPathwayElement.get(groupId);
+		if (pathwayElements != null)
+			for (PathwayElement pathwayElement : pathwayElements) {
+				pathwayElement.groupRef = null;
+			}
+		groupIdToSetPathwayElement.remove(groupId);
+	}
+
+
+	/* ------------------------------- GROUPREF ------------------------------- */
+
+	/**
+	 * Adds a groupref to child pathway element.
+	 * 
+	 * @param ref   the groupref.
+	 * @param child the child pathway element.
+	 */
+	void addGroupRef(String ref, PathwayElement child) {
+		Utils.multimapPut(groupIdToSetPathwayElement, ref, child);
+	}
+
+	/**
+	 * Removes a groupref from child pathway element.
+	 * 
+	 * @param ref   the groupref.
+	 * @param child the child pathway element.
+	 */
+	void removeGroupRef(String id, PathwayElement child) {
+		if (!groupIdToSetPathwayElement.containsKey(id))
+			throw new IllegalArgumentException();
+
+		groupIdToSetPathwayElement.get(id).remove(child);
+
+		// Find out if this element is the last one in a group
+		// If so, remove the group as well
+		if (groupIdToSetPathwayElement.get(id).size() == 0) {
+			groupIdToSetPathwayElement.remove(id);
+			PathwayElement group = getGroupById(id);
+			if (group != null)
+				forceRemove(group);
+		} else {
+			// redraw group outline
+			if (getGroupById(id) != null) {
+				Group group = (Group) getGroupById(id);
+			}
+		}
+	}
+
+	/**
+	 * Gets the pathway elements that are part of the given group.
+	 * 
+	 * @param id the id of the group.
+	 * @return the set of pathway elements part of the group.
+	 */
+	public Set<PathwayElement> getGroupElements(String id) {
+		Set<PathwayElement> result = groupIdToSetPathwayElement.get(id);
+		// Return an empty set if the group is empty
+		return result == null ? new HashSet<PathwayElement>() : result;
+	}
+
+	/**
+	 * Gets the unique graphId.
+	 * 
+	 * @return unique graph id.
+	 */
+	public String getUniqueElementId() {
+		return ElementLink.getUniqueId(elementIdToContainer.keySet());
+	}
+
+	/**
+	 * Gets the unique groupId.
+	 * 
+	 * @return unique group id.
+	 */
+	public String getUniqueGroupId() {
+		return ElementLink.getUniqueId(groupIdToSetPathwayElement.keySet());
+	}
+
+	// ------------------------------- ID -------------------------------------
+
+	/**
+	 * 
 	 * 
 	 * @return
 	 */
@@ -76,18 +326,14 @@ public class Pathway {
 
 	/**
 	 * 
-	 * @param v
+	 * @param title
 	 */
-	public void setTitle(String v) {
-		if (v == null)
+	public void setTitle(String title) {
+		if (title == null) {
 			throw new IllegalArgumentException();
-
-		if (!Utils.stringEquals(title, v)) {
-			title = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.MAPINFONAME));
-		}
+		} else
+			this.title = title;
 	}
-
 
 	/**
 	 * 
@@ -101,19 +347,18 @@ public class Pathway {
 	 * 
 	 * @param v
 	 */
-	public void setOrganism(String v) {
-		if (!Utils.stringEquals(organism, v)) {
-			organism = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
-		}
+	public void setOrganism(String organism) {
+		if (organism == null) {
+			throw new IllegalArgumentException();
+		} else
+			this.organism = organism;
 	}
-
 
 	/**
 	 * 
 	 * @return
 	 */
-	public String getMapInfoDataSource() {
+	public String getSource() {
 		return source;
 	}
 
@@ -121,14 +366,12 @@ public class Pathway {
 	 * 
 	 * @param v
 	 */
-	public void setMapInfoDataSource(String v) {
-		if (!Utils.stringEquals(source, v)) {
-			source = v;
-			fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.MAPINFO_DATASOURCE));
-		}
+	public void setSource(String source) {
+		if (source == null) {
+			throw new IllegalArgumentException();
+		} else
+			this.source = source;
 	}
-
 
 	/**
 	 * 
@@ -142,88 +385,72 @@ public class Pathway {
 	 * 
 	 * @param v
 	 */
-	public void setVersion(String v) {
-		if (!Utils.stringEquals(version, v)) {
-			version = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
-		}
+	public void setVersion(String version) {
+		if (version == null) {
+			throw new IllegalArgumentException();
+		} else
+			this.version = version;
 	}
-
-	/**
-	 * 
-	 */
-	protected String author = null;
 
 	/**
 	 * 
 	 * @return
 	 */
-	public String getAuthor() {
-		return author;
+	public List<Author> getAuthor() {
+		return authors;
 	}
 
 	/**
 	 * 
 	 * @param v
 	 */
-	public void setAuthor(String v) {
-		if (!Utils.stringEquals(author, v)) {
-			author = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.AUTHOR));
-		}
+	public void setAuthor(List<Author> author) {
+		this.authors = authors;
 	}
 
-
-
 	/**
-	 * Calculates the drawing size on basis of the location and size of the
-	 * containing pathway elements.
+	 * Gets the board width. Board width together with board height define drawing
+	 * size.
 	 * 
-	 * @return the drawing size
+	 * @return boardWidth the board width
 	 */
-	public double[] getMBoardSize() {
-		return parent.getMBoardSize();
+	public double getBoardWidth() {
+		return boardWidth;
 	}
 
 	/**
-	 * Gets the board width from the drawing size.
+	 * Sets the board width.
 	 * 
-	 * @return the board width
+	 * @param boardWidth the board width
 	 */
-	public double getMBoardWidth() {
-		return getMBoardSize()[0];
-	}
-
-	/**
-	 * Gets the board height from the drawing size.
-	 * 
-	 * @return the board height
-	 */
-	public double getMBoardHeight() {
-		return getMBoardSize()[1];
-	}
-
-	/**
-	 * Calls clearChangedFlag when the current pathway is known to be the same as
-	 * the one on disk. This happens when you just opened it, or when you just saved
-	 * it.
-	 */
-	public void clearChangedFlag() {
-		if (changed) {
-			changed = false;
-			fireStatusFlagEvent(new StatusFlagEvent(changed));
-			// System.out.println ("Changed flag is cleared");
+	public double setBoardWidth() {
+		if (boardWidth < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardWidth);
+		} else {
+			this.boardWidth = boardWidth;
 		}
 	}
 
 	/**
-	 * Sets changed flag as true after each edit operation.
+	 * Gets the board height. Board width together with board height define drawing
+	 * size.
+	 * 
+	 * @return boardHeight the board height
 	 */
-	private void markChanged() {
-		if (!changed) {
-			changed = true;
-			fireStatusFlagEvent(new StatusFlagEvent(changed));
-			// System.out.println ("Changed flag is set");
+	public double getBoardHeight() {
+		return boardHeight;
+	}
+
+	/**
+	 * Sets the board height.
+	 * 
+	 * @param boardWidth the board width
+	 */
+	public double setBoardHeight() {
+		if (boardHeight < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardHeight);
+		} else {
+			this.boardHeight = boardHeight;
 		}
 	}
 
@@ -291,20 +518,6 @@ public class Pathway {
 			}
 		}
 		return result;
-	}
-
-	private PathwayElement mappInfo = null;
-	private PathwayElement infoBox = null;
-	private BiopaxElement biopax = null;
-	private PathwayElement legend = null;
-
-	/**
-	 * Gets the one and only MappInfo object.
-	 *
-	 * @return mappInfo the PathwayElement with ObjectType set to mappinfo.
-	 */
-	public PathwayElement getMappInfo() {
-		return mappInfo;
 	}
 
 	/**
@@ -424,85 +637,6 @@ public class Pathway {
 	}
 
 	/**
-	 * Gets the highest z-order of all objects.
-	 * 
-	 * @return zmax the highest z order of all objects.
-	 */
-	public int getMaxZOrder() {
-		if (dataObjects.size() == 0)
-			return 0;
-
-		int zmax = dataObjects.get(0).getZOrder();
-		for (PathwayElement e : dataObjects) {
-			if (e.getZOrder() > zmax)
-				zmax = e.getZOrder();
-		}
-		return zmax;
-	}
-
-	/**
-	 * Gets the lowest z-order of all objects.
-	 * 
-	 * @return zmin the lowest z order of all objects.
-	 */
-	public int getMinZOrder() {
-		if (dataObjects.size() == 0)
-			return 0;
-
-		int zmin = dataObjects.get(0).getZOrder();
-		for (PathwayElement e : dataObjects) {
-			if (e.getZOrder() < zmin)
-				zmin = e.getZOrder();
-		}
-		return zmin;
-	}
-
-	/**
-	 * Only used by children of this Pathway to notify the parent of modifications.
-	 * 
-	 * @param e the pathway element event.
-	 */
-	void childModified(PathwayElementEvent e) {
-		markChanged();
-		/**
-		 * a coordinate change could trigger dependent objects such as states, groups
-		 * and connectors to be updated as well.
-		 */
-		if (e.isCoordinateChange()) {
-
-			PathwayElement elt = e.getModifiedPathwayElement();
-			for (ElementRefContainer refc : getReferringObjects(elt.getElementId())) {
-				refc.refeeChanged();
-			}
-
-			String ref = elt.getGroupRef();
-			if (ref != null && getGroupById(ref) != null) {
-				// identify group object and notify model change to trigger view update
-				PathwayElement group = getGroupById(ref);
-				group.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(group));
-			}
-
-			checkMBoardSize(e.getModifiedPathwayElement());
-		}
-	}
-
-	/**
-	 * Replaces old object or pathway element with new one. Called for infoBox and
-	 * mappInfo upon addition.
-	 * 
-	 * @param oldElt the old pathway element.
-	 * @param newElt the new pathway element.
-	 */
-	private void replaceUnique(PathwayElement oldElt, PathwayElement newElt) {
-		assert (oldElt.getParent() == this);
-		assert (oldElt.getObjectType() == newElt.getObjectType());
-		assert (newElt.getParent() == null);
-		assert (oldElt != newElt);
-		forceRemove(oldElt);
-		forceAddObject(newElt);
-	}
-
-	/**
 	 * Removes object sets parent of object to null fires PathwayEvent.DELETED event
 	 * <i>before</i> removal of the object.
 	 *
@@ -561,308 +695,6 @@ public class Pathway {
 		o.setParent(null);
 	}
 
-	/**
-	 * Stores references of graphids to other GraphRefContainers.
-	 */
-	private Map<String, Set<ElementRefContainer>> graphRefs = new HashMap<String, Set<ElementRefContainer>>();
-	private Map<String, ElementIdContainer> graphIds = new HashMap<String, ElementIdContainer>();
-
-	/**
-	 * Gets GraphIds.
-	 * 
-	 * @return a set of graphIds.
-	 */
-	public Set<String> getGraphIds() {
-		return graphIds.keySet();
-	}
-
-	public ElementIdContainer getGraphIdContainer(String id) {
-		return graphIds.get(id);
-	}
-
-	/**
-	 * Returns all GraphRefContainers that refer to an object with a particular
-	 * graphId.
-	 */
-	public Set<ElementRefContainer> getReferringObjects(String id) {
-		Set<ElementRefContainer> refs = graphRefs.get(id);
-		if (refs != null) {
-			// create defensive copy to prevent problems with ConcurrentModification.
-			return new HashSet<ElementRefContainer>(refs);
-		} else {
-			return Collections.emptySet();
-		}
-	}
-
-	/**
-	 * Registers a link from a graph id to a graph ref.
-	 * 
-	 * @param id     the graph id.
-	 * @param target the target GraphRefContainer.
-	 */
-	public void addGraphRef(String id, ElementRefContainer target) {
-		Utils.multimapPut(graphRefs, id, target);
-	}
-
-	/**
-	 * Removes a reference to another Id.
-	 * 
-	 * @param id     the graph id.
-	 * @param target the target GraphRefContainer.
-	 */
-	void removeGraphRef(String id, ElementRefContainer target) {
-		if (!graphRefs.containsKey(id))
-			throw new IllegalArgumentException();
-
-		graphRefs.get(id).remove(target);
-		if (graphRefs.get(id).size() == 0)
-			graphRefs.remove(id);
-	}
-
-	/**
-	 * Registers an id that can subsequently be used for referral. It is tested for
-	 * uniqueness.
-	 * 
-	 * @param id the graph id.
-	 */
-	public void addElementId(String id, ElementIdContainer idc) {
-		if (idc == null || id == null) {
-			throw new IllegalArgumentException("unique id can't be null");
-		}
-		if (graphIds.containsKey(id)) {
-			throw new IllegalArgumentException("id '" + id + "' is not unique");
-		}
-		graphIds.put(id, idc);
-	}
-
-	/**
-	 * Removes graph id.
-	 * 
-	 * @param id the graph id.
-	 */
-	void removeGraphId(String id) {
-		graphIds.remove(id);
-	}
-
-	private Map<String, PathwayElement> groupIds = new HashMap<String, PathwayElement>();
-	private Map<String, Set<PathwayElement>> groupRefs = new HashMap<String, Set<PathwayElement>>();
-
-	/**
-	 * Gets group id.
-	 * 
-	 * @return set of group id.
-	 */
-	public Set<String> getGroupIds() {
-		return groupIds.keySet();
-	}
-
-	/**
-	 * Adds a group id to target group.
-	 * 
-	 * @param id    the group id.
-	 * @param group the target group.
-	 */
-	void addGroupId(String id, PathwayElement group) {
-		if (id == null) {
-			throw new IllegalArgumentException("unique id can't be null");
-		}
-		if (groupIds.containsKey(id)) {
-			throw new IllegalArgumentException("id '" + id + "' is not unique");
-		}
-		groupIds.put(id, group);
-	}
-
-	/**
-	 * Removes a group id.
-	 * 
-	 * @param id the group id.
-	 */
-	void removeGroupId(String id) {
-		groupIds.remove(id);
-		Set<PathwayElement> elts = groupRefs.get(id);
-		if (elts != null)
-			for (PathwayElement elt : elts) {
-				elt.groupRef = null;
-				elt.fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(elt, StaticProperty.GROUPREF));
-			}
-		groupRefs.remove(id);
-	}
-
-	/**
-	 * Gets a group given group id.
-	 * 
-	 * @param id the group id.
-	 * @return the group.
-	 */
-	public PathwayElement getGroupById(String id) {
-		return groupIds.get(id);
-	}
-
-	/**
-	 * Adds a groupref to child pathway element.
-	 * 
-	 * @param ref   the groupref.
-	 * @param child the child pathway element.
-	 */
-	void addGroupRef(String ref, PathwayElement child) {
-		Utils.multimapPut(groupRefs, ref, child);
-	}
-
-	/**
-	 * Removes a groupref from child pathway element.
-	 * 
-	 * @param ref   the groupref.
-	 * @param child the child pathway element.
-	 */
-	void removeGroupRef(String id, PathwayElement child) {
-		if (!groupRefs.containsKey(id))
-			throw new IllegalArgumentException();
-
-		groupRefs.get(id).remove(child);
-
-		// Find out if this element is the last one in a group
-		// If so, remove the group as well
-		if (groupRefs.get(id).size() == 0) {
-			groupRefs.remove(id);
-			PathwayElement group = getGroupById(id);
-			if (group != null)
-				forceRemove(group);
-		} else {
-			// redraw group outline
-			if (getGroupById(id) != null) {
-				MGroup group = (MGroup) getGroupById(id);
-				group.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(group));
-			}
-		}
-	}
-
-	/**
-	 * Gets the pathway elements that are part of the given group.
-	 * 
-	 * @param id the id of the group.
-	 * @return the set of pathway elements part of the group.
-	 */
-	public Set<PathwayElement> getGroupElements(String id) {
-		Set<PathwayElement> result = groupRefs.get(id);
-		// Return an empty set if the group is empty
-		return result == null ? new HashSet<PathwayElement>() : result;
-	}
-
-	/**
-	 * Gets the unique graphId.
-	 * 
-	 * @return unique graph id.
-	 */
-	public String getUniqueGraphId() {
-		return getUniqueId(graphIds.keySet());
-	}
-
-	/**
-	 * Gets the unique groupId.
-	 * 
-	 * @return unique group id.
-	 */
-	public String getUniqueGroupId() {
-		return getUniqueId(groupIds.keySet());
-	}
-
-	/**
-	 * Generates random ids, based on strings of hex digits (0..9 or a..f). Ids are
-	 * unique across both graphIds and groupIds per pathway
-	 * 
-	 * @param ids the collection of already existing ids.
-	 * @return result the Id unique for this pathway.
-	 */
-	public String getUniqueId(Set<String> ids) {
-		String result;
-		Random rn = new Random();
-		int mod = 0x60000; // 3 hex letters
-		int min = 0xa0000; // has to start with a letter
-		// in case this map is getting big, do more hex letters
-		if ((ids.size()) > 0x10000) {
-			mod = 0x60000000;
-			min = 0xa0000000;
-		}
-
-		do {
-			result = Integer.toHexString(Math.abs(rn.nextInt()) % mod + min);
-		} while (ids.contains(result));
-
-		return result;
-	}
-
-	double mBoardWidth = 0;
-	double mBoardHeight = 0;
-
-	private static final int BORDER_SIZE = 30;
-
-	/**
-	 * Checks whether the board size is still large enough for the given
-	 * {@link PathwayElement} and increases the size if not.
-	 * 
-	 * @param elm the element to check the board size for.
-	 */
-	private void checkMBoardSize(PathwayElement e) {
-		double mw = mBoardWidth;
-		double mh = mBoardHeight;
-
-		switch (e.getObjectType()) {
-		case LINE:
-			mw = Math.max(mw, BORDER_SIZE + Math.max(e.getMStartX(), e.getMEndX()));
-			mh = Math.max(mh, BORDER_SIZE + Math.max(e.getMStartY(), e.getMEndY()));
-			break;
-		case GRAPHLINE:
-			mw = Math.max(mw, BORDER_SIZE + Math.max(e.getMStartX(), e.getMEndX()));
-			mh = Math.max(mh, BORDER_SIZE + Math.max(e.getMStartY(), e.getMEndY()));
-			break;
-		default:
-			mw = Math.max(mw, BORDER_SIZE + e.getMLeft() + e.getMWidth());
-			mh = Math.max(mh, BORDER_SIZE + e.getMTop() + e.getMHeight());
-			break;
-		}
-
-		if (Math.abs(mBoardWidth - mw) + Math.abs(mBoardHeight - mh) > 0.01) {
-			mBoardWidth = mw;
-			mBoardHeight = mh;
-			fireObjectModifiedEvent(new PathwayEvent(mappInfo, PathwayEvent.RESIZED));
-		}
-	}
-
-	/**
-	 * Gets board size.
-	 * 
-	 * @return array of board width and board height.
-	 */
-	public double[] getMBoardSize() {
-		return new double[] { mBoardWidth, mBoardHeight };
-	}
-
-	private File sourceFile = null;
-
-	/**
-	 * Gets the xml file containing the Gpml pathway currently displayed.
-	 * 
-	 * @return sourceFile the current xml file.
-	 */
-	public File getSourceFile() {
-		return sourceFile;
-	}
-
-	public void setSourceFile(File file) {
-		sourceFile = file;
-	}
-
-	/**
-	 * Constructor for this class, creates a new gpml document.
-	 */
-	public Pathway() {
-		mappInfo = PathwayElement.createPathwayElement(ObjectType.MAPPINFO);
-		this.add(mappInfo);
-		infoBox = PathwayElement.createPathwayElement(ObjectType.INFOBOX);
-		this.add(infoBox);
-	}
-
 	/*
 	 * Call when making a new mapp.
 	 */
@@ -870,136 +702,6 @@ public class Pathway {
 		String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
 		mappInfo.setVersion(dateString);
 		mappInfo.setMapInfoName("New Pathway");
-	}
-
-	/**
-	 * Writes the JDOM document to the file specified.
-	 * 
-	 * @param file     the file to which the JDOM document should be saved.
-	 * @param validate if true, validate the dom structure before writing to file.
-	 *                 If there is a validation error, or the xsd is not in the
-	 *                 classpath, an exception will be thrown.
-	 */
-	public void writeToXml(File file, boolean validate) throws ConverterException {
-		GpmlFormat.writeToXml(this, file, validate);
-		setSourceFile(file);
-		clearChangedFlag();
-
-	}
-
-	public void readFromXml(Reader in, boolean validate) throws ConverterException {
-		GpmlFormat.readFromXml(this, in, validate);
-		setSourceFile(null);
-		clearChangedFlag();
-	}
-
-	public void readFromXml(InputStream in, boolean validate) throws ConverterException {
-		GpmlFormat.readFromXml(this, in, validate);
-		setSourceFile(null);
-		clearChangedFlag();
-	}
-
-	public void readFromXml(File file, boolean validate) throws ConverterException {
-		Logger.log.info("Start reading the XML file: " + file);
-		GpmlFormat.readFromXml(this, file, validate);
-		setSourceFile(file);
-		clearChangedFlag();
-	}
-
-	public void writeToMapp(File file) throws ConverterException {
-		new MappFormat().doExport(file, this);
-	}
-
-	public void writeToSvg(File file) throws ConverterException {
-		// Use Batik instead of SvgFormat
-		// SvgFormat.writeToSvg (this, file);
-		new BatikImageExporter(ImageExporter.TYPE_SVG).doExport(file, this);
-	}
-
-	/**
-	 * Implement this interface if you want to be notified when the "changed" status
-	 * changes. This happens e.g. when the user makes a change to an unchanged
-	 * pathway, or when a changed pathway is saved.
-	 */
-	public interface StatusFlagListener extends EventListener {
-		public void statusFlagChanged(StatusFlagEvent e);
-	}
-
-	/**
-	 * Event for a change in the "changed" status of this Pathway
-	 */
-	public static class StatusFlagEvent {
-		private boolean newStatus;
-
-		public StatusFlagEvent(boolean newStatus) {
-			this.newStatus = newStatus;
-		}
-
-		public boolean getNewStatus() {
-			return newStatus;
-		}
-	}
-
-	private List<StatusFlagListener> statusFlagListeners = new ArrayList<StatusFlagListener>();
-
-	/**
-	 * Register a status flag listener
-	 */
-	public void addStatusFlagListener(StatusFlagListener v) {
-		if (!statusFlagListeners.contains(v))
-			statusFlagListeners.add(v);
-	}
-
-	/**
-	 * Remove a status flag listener
-	 */
-	public void removeStatusFlagListener(StatusFlagListener v) {
-		statusFlagListeners.remove(v);
-	}
-
-	// TODO: make private
-	public void fireStatusFlagEvent(StatusFlagEvent e) {
-		for (StatusFlagListener g : statusFlagListeners) {
-			g.statusFlagChanged(e);
-		}
-	}
-
-	private List<PathwayListener> listeners = new ArrayList<PathwayListener>();
-
-	public void addListener(PathwayListener v) {
-		if (!listeners.contains(v))
-			listeners.add(v);
-	}
-
-	public void removeListener(PathwayListener v) {
-		listeners.remove(v);
-	}
-
-	/**
-	 * Firing the ObjectModifiedEvent has the side effect of marking the Pathway as
-	 * changed.
-	 */
-	public void fireObjectModifiedEvent(PathwayEvent e) {
-		markChanged();
-		for (PathwayListener g : listeners) {
-			g.pathwayModified(e);
-		}
-	}
-
-	public Pathway clone() {
-		Pathway result = new Pathway();
-		for (PathwayElement pe : dataObjects) {
-			result.add(pe.copy());
-		}
-		result.changed = changed;
-		if (sourceFile != null) {
-			result.sourceFile = new File(sourceFile.getAbsolutePath());
-		}
-		// do not copy status flag listeners
-//			for(StatusFlagListener l : statusFlagListeners) {
-//				result.addStatusFlagListener(l);
-//			}
-		return result;
 	}
 
 	public String summary() {
@@ -1061,20 +763,6 @@ public class Pathway {
 		return result;
 	}
 
-	/**
-	 * Transfer statusflag listeners from one pathway to another. This is used
-	 * needed when copies of the pathway are created / returned by UndoManager. The
-	 * status flag listeners are only interested in status flag events of the active
-	 * copy.
-	 */
-	public void transferStatusFlagListeners(Pathway dest) {
-		for (Iterator<StatusFlagListener> i = statusFlagListeners.iterator(); i.hasNext();) {
-			StatusFlagListener l = i.next();
-			dest.addStatusFlagListener(l);
-			i.remove();
-		}
-	}
-
 	public void printRefsDebugInfo() {
 		for (PathwayElement elt : dataObjects) {
 			elt.printRefsDebugInfo();
@@ -1096,4 +784,5 @@ public class Pathway {
 	 * the pathway.
 	 */
 	private List<String> biopaxReferenceToDelete = new ArrayList<String>();
+
 }

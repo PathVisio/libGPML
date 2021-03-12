@@ -27,7 +27,7 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Group {
+public class Group extends PathwayElement{
 
 	protected String elementId;
 	protected String textLabel; // optional

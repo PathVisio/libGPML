@@ -26,7 +26,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class FontProperty implements Graphics {
+public class FontProperty {
 
 	protected Color textColor = Color.decode("000000"); // black
 	protected String fontName = "Arial"; // Arial
@@ -66,7 +66,7 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the color of text.
+	 * Returns the color of text.
 	 * 
 	 * @return textColor the color of text.
 	 */
@@ -93,7 +93,7 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the name of the set of printable text characters to be used for
+	 * Returns the name of the set of printable text characters to be used for
 	 * visualization, e.g., Arial.
 	 * 
 	 * @return fontName the name of the font.
@@ -122,7 +122,7 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the thickness of the font used, a bold font would have more weight.
+	 * Returns the thickness of the font used, a bold font would have more weight.
 	 * 
 	 * @return fontWeight the boolean, if true font weight is bold. If false, font
 	 *         weight is normal.
@@ -143,7 +143,7 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the typographic style applied to displayed text, e.g. normal or italic.
+	 * Returns the typographic style applied to displayed text, e.g. normal or italic.
 	 * 
 	 * @return fontStyle the boolean, if true typographic style is italic. If false,
 	 *         typographic style is normal.
@@ -164,7 +164,7 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the typographic style for underline or normal.
+	 * Returns the typographic style for underline or normal.
 	 * 
 	 * @return fontDecoration the boolean, if true typographic style is underline.
 	 *         If false, typographic style is normal.
@@ -185,7 +185,7 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the typographic style for strikethru or normal.
+	 * Returns the typographic style for strikethru or normal.
 	 * 
 	 * @return fontStrikethru the boolean, if true typographic style is strikethru.
 	 *         If false, typographic style is normal.
@@ -205,13 +205,13 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the point value for the size of the font.
+	 * Returns the point value for the size of the font.
 	 * 
 	 * @return fontSize the value for the size of the font.
 	 * 
 	 */
 	public double getFontSize() {
-		if (fontSize <= 0) {
+		if (fontSize < 0) {
 			return 12;
 		} else {
 			return fontSize;
@@ -222,13 +222,18 @@ public class FontProperty implements Graphics {
 	 * Sets point value for the size of the font.
 	 * 
 	 * @param fontSize the value for the size of the font.
+	 * @throws IllegalArgumentException if fontSize is a negative value.
 	 */
 	public void setFontSize(double fontSize) {
-		this.fontSize = fontSize;
+		if (fontSize < 0) {
+			throw new IllegalArgumentException("Tried to set font size < 0: " + fontSize);
+		} else {
+			this.fontSize = fontSize;
+		}
 	}
 
 	/**
-	 * Gets the horizontal alignment of displayed text, e.g., Left, Center, Right.
+	 * Returns the horizontal alignment of displayed text, e.g., Left, Center, Right.
 	 * 
 	 * @return hAlign the horizontal alignment value of displayed text.
 	 */
@@ -250,7 +255,7 @@ public class FontProperty implements Graphics {
 	}
 
 	/**
-	 * Gets the vertical alignment of displayed text, e.g., Top, Middle, Bottom.
+	 * Returns the vertical alignment of displayed text, e.g., Top, Middle, Bottom.
 	 * 
 	 * @return vAlign the vertical alignment value of displayed text.
 	 */

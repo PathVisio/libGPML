@@ -43,19 +43,46 @@ import org.pathvisio.util.Utils;
  */
 public abstract class PathwayElement implements ElementIdContainer, Comparable<PathwayElement> {
 
+	protected String elementId;
+	protected Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
+
 	/**
-	 * Parent pathway of this object: may be null (for example, when object is in
-	 * clipboard)
+	 * @return
 	 */
-	protected Pathway parent = null;
+	public String getElementId() {
+		return elementId;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String doGetElementId() {
+		return elementId;
+	}
+
+	/**
+	 * Set elementId. ElementId must be a unique within the Pathway object
+	 *
+	 * @see Pathway#getUniqueId(java.util.Set)
+	 */
+	public void setElementId(String id) {
+		ElementLink.setElementId(id, this, parentPathway);
+		elementId = id;
+	}
+
+	public String setGeneratedElementId() {
+		setElementId(parentPathway.getUniqueElementId());
+		return elementId;
+	}
 
 	/**
 	 * Returns the parent pathway.
 	 * 
 	 * @return parent the parent pathway.
 	 */
-	public Pathway getParent() {
-		return parent;
+	public Pathway getParentPathway() {
+		return parentPathway;
 	}
 
 	/**
@@ -65,7 +92,7 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 * @return parent the parent pathway.
 	 */
 	public Pathway getPathway() {
-		return parent;
+		return parentPathway;
 	}
 
 	/**
@@ -74,29 +101,15 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 * 
 	 * @param v the parentGENEID
 	 */
-	void setParent(Pathway v) {
-		parent = v;
+	void setParentPathway(Pathway pathway) {
+		parentPathway = pathway;
 	}
 
-	/* ------------------------------- ID & GROUP ------------------------------- */
+	
+	
+	/* ------------------------------- GROUPREF ------------------------------- */
 
-	/**
-	 * 
-	 */
-	protected String elementId;
-
-	/**
-	 * 
-	 */
 	protected String groupRef;
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String doGetElementId() {
-		return elementId;
-	}
 
 	/**
 	 * 
@@ -110,43 +123,33 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 * 
 	 * @param s
 	 */
-	public void setGroupRef(String s) {
-		if (groupRef == null || !groupRef.equals(s)) {
-			if (parent != null) {
+	public void setGroupRef(String id) {
+		if (groupRef == null || !groupRef.equals(id)) {
+			if (parentPathway != null) {
 				if (groupRef != null) {
-					parent.removeGroupRef(groupRef, this);
+					parentPathway.removeGroupRef(groupRef, this);
 				}
 				// Check: move add before remove??
-				if (s != null) {
-					parent.addGroupRef(s, this);
+				if (id != null) {
+					parentPathway.addGroupRef(id, this);
 				}
 			}
-			groupRef = s;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+			groupRef = id;
 		}
 	}
 
-	/* AP20070508 */
-	/**
-	 * TODO: Is replaced with elementId in 2021.
-	 */
+
+	/* ------------------------------- GROUPID ------------------------------- */
+
 	protected String groupId;
 
-	/**
-	 * 
-	 * TODO: groupId is replaced with elementId in 2021.
-	 */
 	public String getGroupId() {
 		return groupId;
 	}
 
-	/**
-	 * 
-	 * TODO: groupId is replaced with elementId in 2021.
-	 */
 	public String createGroupId() {
 		if (groupId == null) {
-			setGroupId(parent.getUniqueGroupId());
+			setGroupId(parentPathway.getUniqueGroupId());
 		}
 		return groupId;
 	}
@@ -156,22 +159,25 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 *
 	 * @see Pathway#getUniqueId(java.util.Set)
 	 */
-	public void setGroupId(String w) {
-		if (groupId == null || !groupId.equals(w)) {
-			if (parent != null) {
+	public void setGroupId(String id) {
+		if (groupId == null || !groupId.equals(id)) {
+			if (parentPathway != null) {
 				if (groupId != null) {
-					parent.removeGroupId(groupId);
+					parentPathway.removeGroupId(groupId);
 				}
 				// Check: move add before remove??
-				if (w != null) {
-					parent.addGroupId(w, this);
+				if (id != null) {
+					parentPathway.addGroupId(id, this);
 				}
 			}
-			groupId = w;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPID));
+			groupId = id;
 		}
-
 	}
+	
+	/* ------------------------------- ELEMENTREF ------------------------------- */
+
+
+	protected String elementRef = null;
 
 	/** graphRef property, used by Modification */
 	public String getElementRef() {
@@ -182,51 +188,37 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 * Set graphRef property, used by State The new graphRef should exist and point
 	 * to an existing DataNode
 	 */
-	public void setGraphRef(String value) {
+	public void setElementRef(String value) {
 		// TODO: check that new graphRef exists and that it points to a DataNode
 		if (!(elementRef == null ? value == null : elementRef.equals(value))) {
 			elementRef = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GRAPHREF));
 		}
 	}
 
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Set graphId. This id must be any string unique within the Pathway object
-	 *
-	 * @see Pathway#getUniqueId(java.util.Set)
-	 */
-	public void setElementId(String v) {
-		ElementLink.setElementId(v, this, parent);
-		elementId = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GRAPHID));
-	}
-
-	public String setGeneratedElementId() {
-		setElementId(parent.getUniqueGraphId());
-		return elementId;
-	}
-
-	public String getStartGraphRef() {
+	public String getStartElementRef() {
 		return mPoints.get(0).getElementRef();
 	}
 
-	public void setStartGraphRef(String ref) {
+	public void setStartElementRef(String ref) {
 		MPoint start = mPoints.get(0);
 		start.setGraphRef(ref);
 	}
 
-	public String getEndGraphRef() {
+	public String getEndElementRef() {
 		return mPoints.get(mPoints.size() - 1).getElementRef();
 	}
 
-	public void setEndGraphRef(String ref) {
+	public void setEndElementRef(String ref) {
 		MPoint end = mPoints.get(mPoints.size() - 1);
 		end.setGraphRef(ref);
 	}
+	
+	public Set<ElementRefContainer> getReferences() {
+		return ElementLink.getReferences(this, parentPathway);
+	}
+	
+	/* ------------------------------- OTHER.... ------------------------------- */
+
 
 	/**
 	 * Returns keys of available static properties and dynamic properties as an
@@ -275,81 +267,7 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 
 	/* ------------------------------- DATANODE ------------------------------- */
 
-	/**
-	 * 
-	 */
-	protected String setGeneID = "";
 
-	/**
-	 * @deprecated Use {@link #getElementID()} instead
-	 */
-	public String getGeneID() {
-		return getElementID();
-	}
-
-	public String getElementID() {
-		return setGeneID;
-	}
-
-	/**
-	 * @deprecated Use {@link #setElementID(String)} instead
-	 */
-	public void setGeneID(String v) {
-		setElementID(v);
-	}
-
-	public void setElementID(String v) {
-		if (v == null) {
-			throw new IllegalArgumentException();
-		}
-		v = v.trim();
-		if (!Utils.stringEquals(setGeneID, v)) {
-			setGeneID = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GENEID));
-		}
-	}
-
-	/**
-	 * The pathway data source.
-	 */
-	protected DataSource source = null;
-
-	/**
-	 * Gets pathway data source.
-	 * 
-	 * @return source the pathway data source.
-	 */
-	public DataSource getDataSource() {
-		return source;
-	}
-
-	/**
-	 * Sets pathway data source.
-	 * 
-	 * @param source the pathway data source.
-	 */
-	public void setDataSource(DataSource source) {
-		if (this.source != source) {
-			this.source = source;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.DATASOURCE));
-		}
-	}
-
-	/**
-	 * returns GeneID and dataSource combined in an Xref. Pathway elements DataNode,
-	 * State, Interaction, and Group can contain a Xref.
-	 *
-	 * Same as new Xref ( pathwayElement.getGeneID(), pathwayElement.getDataSource()
-	 * );
-	 */
-	public Xref getXref() {
-		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
-		return new Xref(setGeneID, source);
-	}
-
-	public Set<ElementRefContainer> getReferences() {
-		return ElementLink.getReferences(this, parent);
-	}
 
 	public void printRefsDebugInfo() {
 		System.err.println(objectType + " " + getElementId());

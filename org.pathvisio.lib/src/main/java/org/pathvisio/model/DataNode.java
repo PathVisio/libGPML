@@ -28,27 +28,55 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class DataNode extends PathwayElement implements Graphics {
+public class DataNode extends PathwayElement {
 
 	protected String elementId;
-	protected String elementRef;
+	protected String elementRef; // optional
 	protected String textLabel;
-	protected DataNodeType type = DataNodeType.UNKOWN; // TODO: Getter/Setter weird
-	protected String groupRef; // if part of group
+	protected DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
+	protected String groupRef; // optional
 	protected RectProperty rectProperty;
 	protected FontProperty fontProperty;
 	protected ShapeStyleProperty shapeStyleProperty;
 	protected Xref xref;
-	protected List<Comment> comments; // optional
-	protected List<DynamicProperty> dynamicProperties; // optional
-	protected List<AnnotationRef> annotationRefs; // optional
-	protected List<CitationRef> citationRefs; // optional
-	protected List<EvidenceRef> evidenceRefs; // optional
-
+	protected List<Comment> comments = new ArrayList<Comment>(); // length 0 to unbounded
+	protected List<DynamicProperty> dynamicProperties = new ArrayList<DynamicProperty>(); // length 0 to unbounded
+	protected List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // length 0 to unbounded
+	protected List<CitationRef> citationRefs = new ArrayList<CitationRef>(); // length 0 to unbounded
+	protected List<EvidenceRef> evidenceRefs = new ArrayList<EvidenceRef>(); // length 0 to unbounded
 	
+	
+	
+	protected String identifier = "";
 
-    
-    
+	protected DataSource dataSource = null;
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		if (identifier == null) {
+			throw new IllegalArgumentException();
+		} else {
+			identifier = identifier.trim();
+			this.identifier = identifier;
+		}
+	}
+
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public Xref getXref() {
+		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
+		return new Xref(identifier, dataSource);
+	}
 
 //	/** TODO
 //	 * Sets data node type to given DataNodeType.
@@ -77,7 +105,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	// Add Constructors
 
 	/**
-	 * Gets the elementId of the datanode.
+	 * Returns the elementId of the datanode.
 	 * 
 	 * @return elementId the unique id of the datanode.
 	 * 
@@ -97,7 +125,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	}
 
 	/**
-	 * Gets the groupRef of the datanode. A groupRef indicates an object is part of
+	 * Returns the groupRef of the datanode. A groupRef indicates an object is part of
 	 * a gpml:Group with a elementId.
 	 * 
 	 * @return groupRef the groupRef of the datanode.
@@ -119,7 +147,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	}
 
 	/**
-	 * Gets the DataNode Xref.
+	 * Returns the DataNode Xref.
 	 * 
 	 * @return xref the datanode xref.
 	 */
@@ -137,13 +165,14 @@ public class DataNode extends PathwayElement implements Graphics {
 		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 	}
-	
-	/** 
-	 * Gets the source of data, e.g. the full name, code name or abbreviation of the database...
+
+	/**
+	 * Returns the source of data, e.g. the full name, code name or abbreviation of the
+	 * database...
 	 */
 
 	/**
-	 * Gets the text of of the datanode.
+	 * Returns the text of of the datanode.
 	 * 
 	 * @return textLabel the text of of the datanode.
 	 * 
@@ -163,7 +192,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	}
 
 	/**
-	 * Gets the type of the datanode.
+	 * Returns the type of the datanode.
 	 * 
 	 * @return type the type of datanode, e.g. complex.
 	 */
@@ -177,36 +206,28 @@ public class DataNode extends PathwayElement implements Graphics {
 	 * @param type the type of datanode, e.g. complex.
 	 */
 	public void setType(DataNodeType type) {
+		this.type = type; // TODO: default type
 		this.type = type;
-		if (this.type != type) {
-			this.type = type;
-			// TODO: Add Type...
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
-		}
 	}
 
 	/**
-	 * Gets the list of comments.
+	 * Returns the list of comments.
 	 * 
 	 * @return comments the list of comments.
 	 */
 	public List<Comment> getComments() {
 		return comments;
 	}
-	
+
 	/**
 	 * Sets comments to given list of Comment.
 	 * 
 	 * @param comments the list of comments.
 	 */
 	public void setComments(List<Comment> comments) {
-		if (this.comments != comments) {
-			this.comments = comments;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
-		}
+		this.comments = comments;
 	}
 
-	
 	/**
 	 * Adds given comment to comments list.
 	 * 
@@ -214,7 +235,6 @@ public class DataNode extends PathwayElement implements Graphics {
 	 */
 	public void addComment(Comment comment) {
 		comments.add(comment);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
 	}
 
 	/**
@@ -224,7 +244,6 @@ public class DataNode extends PathwayElement implements Graphics {
 	 */
 	public void removeComment(Comment comment) {
 		comments.remove(comment);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENTS));
 	}
 
 	/**
@@ -238,7 +257,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	public void addComment(String comment, String source) {
 		addComment(new Comment(comment, source));
 	}
-	
+
 	/**
 	 * TODO: Need to be moved or something...
 	 * 
@@ -254,8 +273,9 @@ public class DataNode extends PathwayElement implements Graphics {
 		}
 		return null;
 	}
+
 	/**
-	 * Gets the list of key value pair information properties.
+	 * Returns the list of key value pair information properties.
 	 * 
 	 * @return properties the list of properties.
 	 */
@@ -264,7 +284,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	}
 
 	/**
-	 * Gets the list of annotation references.
+	 * Returns the list of annotation references.
 	 * 
 	 * @return annotationRefs the list of annotation references.
 	 */
@@ -273,7 +293,7 @@ public class DataNode extends PathwayElement implements Graphics {
 	}
 
 	/**
-	 * Gets the list of citation references.
+	 * Returns the list of citation references.
 	 * 
 	 * @return citationRefs the list of citation references.
 	 */

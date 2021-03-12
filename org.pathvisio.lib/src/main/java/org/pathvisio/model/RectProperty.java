@@ -46,7 +46,7 @@ public class RectProperty {
 	}
 
 	/**
-	 * Gets the center x coordinate of an object.
+	 * Returns the center x coordinate of an object.
 	 * 
 	 * @return centerX the middle of an object in the x direction.
 	 */
@@ -64,7 +64,7 @@ public class RectProperty {
 	}
 
 	/**
-	 * Gets the center y coordinate of an object.
+	 * Returns the center y coordinate of an object.
 	 * 
 	 * @return centerY the middle of an object in the y direction.
 	 */
@@ -82,7 +82,7 @@ public class RectProperty {
 	}
 
 	/**
-	 * Gets the width of an object.
+	 * Returns the width of an object.
 	 * 
 	 * @return width the width of an object.
 	 */
@@ -105,7 +105,7 @@ public class RectProperty {
 	}
 
 	/**
-	 * Gets the height of an object.
+	 * Returns the height of an object.
 	 * 
 	 * @return height the height of an object.
 	 */
