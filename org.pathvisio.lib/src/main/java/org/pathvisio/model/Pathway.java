@@ -79,12 +79,23 @@ public class Pathway {
 	protected List<Group> groups;
 	protected InfoBox infoBox;
 
-	/* -------------------------- ELEMENTID & ELEMENTREF --------------------------- */
+	/*
+	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
+	 */
 
 	/** Mapping of String elementId key to ElementIdContainer value. */
 	private Map<String, ElementIdContainer> elementIdToContainer = new HashMap<String, ElementIdContainer>();
 	/** Mapping of String elementId key to Set of ElementRefContainer value. */
-	private Map<String, Set<ElementRefContainer>> elementIdToSetRefContainer = new HashMap<String, Set<ElementRefContainer>>();
+	private Map<String, Set<ElementRefContainer>> elementRefToRefContainerSet = new HashMap<String, Set<ElementRefContainer>>();
+
+	/**
+	 * Returns a unique elementId.
+	 * 
+	 * @return a unique elementId.
+	 */
+	public String getUniqueElementId() {
+		return ElementLink.getUniqueId(elementIdToContainer.keySet());
+	}
 
 	/**
 	 * Returns a set view of String elementId keys from the elementIdToContainer
@@ -107,8 +118,7 @@ public class Pathway {
 	}
 
 	/**
-	 * Registers a link from an elementId to an ElementIdContainer. Inserts a
-	 * mapping of elementId key and ElementIdContainer value to the
+	 * Inserts mapping of elementId key to ElementIdContainer value in the
 	 * elementIdToContainer hash map.
 	 * 
 	 * @param elementId          the elementId
@@ -140,10 +150,10 @@ public class Pathway {
 	 * Returns a set of ElementRefContainers that refer to an object with a
 	 * particular elementId.
 	 * 
-	 * @param elementId the elementId key.
+	 * @param elementRef the reference to elementId.
 	 */
-	public Set<ElementRefContainer> getReferringObjects(String elementId) {
-		Set<ElementRefContainer> elementRefContainers = elementIdToSetRefContainer.get(elementId);
+	public Set<ElementRefContainer> getReferringObjects(String elementRef) {
+		Set<ElementRefContainer> elementRefContainers = elementRefToRefContainerSet.get(elementRef);
 		if (elementRefContainers != null) {
 			// create defensive copy to prevent problems with ConcurrentModification.
 			return new HashSet<ElementRefContainer>(elementRefContainers);
@@ -153,164 +163,160 @@ public class Pathway {
 	}
 
 	/**
-	 * Registers a link from an elementId to an ElementRefContainer. Inserts a
-	 * mapping of elementId key and ElementRefContainer value to the
+	 * Inserts mapping of elementId key to ElementRefContainer value in the
 	 * elementIdToSetRefContainer hash map.
 	 * 
-	 * @param elementId           the elementId.
+	 * @param elementRef          the reference to elementId.
 	 * @param elementRefContainer the target ElementRefContainer.
 	 */
-	public void addElementRef(String elementId, ElementRefContainer elementRefContainer) {
-		Utils.multimapPut(elementIdToSetRefContainer, elementId, elementRefContainer);
+	public void addElementRef(String elementRef, ElementRefContainer elementRefContainer) {
+		Utils.multimapPut(elementRefToRefContainerSet, elementRef, elementRefContainer);
 	}
 
 	/**
-	 * Removes a reference to an elementId by removing the mapping of the given
-	 * elementId key from the elementIdToSetRefContainer hash map.
+	 * Removes the mapping of the given elementId key from the
+	 * elementIdToSetRefContainer hash map.
 	 * 
-	 * @param elementId           the elementId.
+	 * @param elementRef          the reference to elementId.
 	 * @param elementRefContainer the target ElementRefContainer.
 	 * @throws IllegalArgumentException if hash map does not contain the given
 	 *                                  elementId key.
 	 */
-	void removeElementRef(String elementId, ElementRefContainer elementRefContainer) {
-		if (!elementIdToSetRefContainer.containsKey(elementId)) {
+	void removeElementRef(String elementRef, ElementRefContainer elementRefContainer) {
+		if (!elementRefToRefContainerSet.containsKey(elementRef)) {
 			throw new IllegalArgumentException();
 		} else {
-			elementIdToSetRefContainer.get(elementId).remove(elementRefContainer);
+			elementRefToRefContainerSet.get(elementRef).remove(elementRefContainer);
 			// remove elementId key if zero ElementRefContainers values.
-			if (elementIdToSetRefContainer.get(elementId).size() == 0)
-				elementIdToSetRefContainer.remove(elementId);
+			if (elementRefToRefContainerSet.get(elementRef).size() == 0)
+				elementRefToRefContainerSet.remove(elementRef);
 		}
 	}
 
-	/* ------------------------------- GROUPID ------------------------------- */
+	/* -------------------------- GROUPID & GROUPREF --------------------------- */
 
-	private Map<String, PathwayElement> groupIdToPathwayElement = new HashMap<String, PathwayElement>();
-	private Map<String, Set<PathwayElement>> groupIdToSetPathwayElement = new HashMap<String, Set<PathwayElement>>();
+	/** Mapping of String groupId key to PathwayElement group. */
+	private Map<String, PathwayElement> groupIdToPathwayElementGroup = new HashMap<String, PathwayElement>();
+	/** Mapping of String groupRef key to set of PathwayElements. */
+	private Map<String, Set<PathwayElement>> groupRefToPathwayElementSet = new HashMap<String, Set<PathwayElement>>();
 
 	/**
-	 * Returns a set view of String groupId keys from the groupIdToPathwayElement
-	 * hash map.
+	 * Returns a unique groupId.
+	 * 
+	 * @return a unique groupId.
+	 */
+	public String getUniqueGroupId() {
+		return ElementLink.getUniqueId(groupRefToPathwayElementSet.keySet());
+	}
+
+	/**
+	 * Returns a set view of String groupId keys from the
+	 * groupIdToPathwayElementGroup hash map.
 	 * 
 	 * @return set of groupId key.
 	 */
 	public Set<String> getGroupIds() {
-		return groupIdToPathwayElement.keySet();
+		return groupIdToPathwayElementGroup.keySet();
 	}
-	
 
 	/**
-	 * Returns a PathwayElement for the given String groupId key.
+	 * Returns the pathway element group for the given groupId key.
 	 * 
 	 * @param groupId the given groupId key.
-	 * @return the PathwayElement for the given groupId.
+	 * @return the pathway element group for the given groupId.
 	 */
 	public PathwayElement getGroupById(String groupId) {
-		return groupIdToPathwayElement.get(groupId);
+		return groupIdToPathwayElementGroup.get(groupId);
 	}
 
 	/**
-	 * Registers a link from a group id to a PathwayElement. Inserts a mapping of
-	 * groupId key and PathwayElement to the groupIdToPathwayElement hash map.
+	 * Inserts a mapping of String groupId key and PathwayElement group in the
+	 * groupIdToPathwayElementGroup hash map.
 	 * 
-	 * @param groupId        the groupId.
-	 * @param pathwayElement the pathway element.
+	 * @param groupId             the group id.
+	 * @param pathwayElementGroup the pathway element group.
 	 */
-	void addGroupId(String groupId, PathwayElement pathwayElement) {
+	void addGroupId(String groupId, PathwayElement pathwayElementGroup) {
 		if (groupId == null) {
 			throw new IllegalArgumentException("unique groupId can't be null");
 		}
-		if (groupIdToPathwayElement.containsKey(groupId)) {
+		if (groupIdToPathwayElementGroup.containsKey(groupId)) {
 			throw new IllegalArgumentException("groupId '" + groupId + "' is not unique");
 		}
-		groupIdToPathwayElement.put(groupId, pathwayElement);
+		groupIdToPathwayElementGroup.put(groupId, pathwayElementGroup);
 	}
 
 	/**
-	 * Removes a reference to a groupId by removing the mapping of the given groupId
-	 * key from the groupIdToPathwayElement hash map.
+	 * Removes the mapping of the given groupId key from the
+	 * groupIdToPathwayElementGroup hash map and the groupRefToPathwayElementSet
+	 * hash map. Sets groupRef of all PathwayElements linked to the groupId to null.
 	 * 
 	 * @param groupId the group id.
 	 */
 	void removeGroupId(String groupId) {
-		groupIdToPathwayElement.remove(groupId);
-		Set<PathwayElement> pathwayElements = groupIdToSetPathwayElement.get(groupId);
+		String groupRef = groupId;
+		groupIdToPathwayElementGroup.remove(groupId);
+		Set<PathwayElement> pathwayElements = groupRefToPathwayElementSet.get(groupRef);
 		if (pathwayElements != null)
 			for (PathwayElement pathwayElement : pathwayElements) {
 				pathwayElement.groupRef = null;
 			}
-		groupIdToSetPathwayElement.remove(groupId);
-	}
-
-
-	/* ------------------------------- GROUPREF ------------------------------- */
-
-	/**
-	 * Adds a groupref to child pathway element.
-	 * 
-	 * @param ref   the groupref.
-	 * @param child the child pathway element.
-	 */
-	void addGroupRef(String ref, PathwayElement child) {
-		Utils.multimapPut(groupIdToSetPathwayElement, ref, child);
-	}
-
-	/**
-	 * Removes a groupref from child pathway element.
-	 * 
-	 * @param ref   the groupref.
-	 * @param child the child pathway element.
-	 */
-	void removeGroupRef(String id, PathwayElement child) {
-		if (!groupIdToSetPathwayElement.containsKey(id))
-			throw new IllegalArgumentException();
-
-		groupIdToSetPathwayElement.get(id).remove(child);
-
-		// Find out if this element is the last one in a group
-		// If so, remove the group as well
-		if (groupIdToSetPathwayElement.get(id).size() == 0) {
-			groupIdToSetPathwayElement.remove(id);
-			PathwayElement group = getGroupById(id);
-			if (group != null)
-				forceRemove(group);
-		} else {
-			// redraw group outline
-			if (getGroupById(id) != null) {
-				Group group = (Group) getGroupById(id);
-			}
-		}
+		groupRefToPathwayElementSet.remove(groupRef);
 	}
 
 	/**
 	 * Gets the pathway elements that are part of the given group.
 	 * 
-	 * @param id the id of the group.
-	 * @return the set of pathway elements part of the group.
+	 * @param groupId the group id.
+	 * @return pathwayElements the set of pathway elements belonging to the group
+	 *         with the given groupId.
 	 */
-	public Set<PathwayElement> getGroupElements(String id) {
-		Set<PathwayElement> result = groupIdToSetPathwayElement.get(id);
+	public Set<PathwayElement> getGroupElements(String groupId) {
+		String groupRef = groupId;
+		Set<PathwayElement> pathwayElements = groupRefToPathwayElementSet.get(groupRef);
 		// Return an empty set if the group is empty
-		return result == null ? new HashSet<PathwayElement>() : result;
+		return pathwayElements == null ? new HashSet<PathwayElement>() : pathwayElements;
+	}
+
+	/***
+	 * Inserts a mapping of groupRef key and PathwayElement value in the
+	 * groupRefToPathwayElementSet hash map.
+	 * 
+	 * @param groupRef       the reference to group id.
+	 * @param pathwayElement the pathway element which belong to the group.
+	 */
+	void addGroupRef(String groupRef, PathwayElement pathwayElement) {
+		Utils.multimapPut(groupRefToPathwayElementSet, groupRef, pathwayElement);
 	}
 
 	/**
-	 * Gets the unique graphId.
+	 * Removes the mapping of the given groupRef key from the
+	 * groupRefToPathwayElementSet hash map.
 	 * 
-	 * @return unique graph id.
+	 * @param groupRef       the reference to group id.
+	 * @param pathwayElement the pathway element which belong to the group.
+	 * @throws IllegalArgumentException if groupRefToPathwayElementSet does not
+	 *                                  contain given groupRef key.
 	 */
-	public String getUniqueElementId() {
-		return ElementLink.getUniqueId(elementIdToContainer.keySet());
-	}
-
-	/**
-	 * Gets the unique groupId.
-	 * 
-	 * @return unique group id.
-	 */
-	public String getUniqueGroupId() {
-		return ElementLink.getUniqueId(groupIdToSetPathwayElement.keySet());
+	void removeGroupRef(String groupRef, PathwayElement pathwayElement) {
+		String groupId = groupRef;
+		if (!groupRefToPathwayElementSet.containsKey(groupRef)) {
+			throw new IllegalArgumentException();
+		} else {
+			groupRefToPathwayElementSet.get(groupRef).remove(pathwayElement);
+			// remove groupRef and group if group contains no elements
+			if (groupRefToPathwayElementSet.get(groupRef).size() == 0) {
+				groupRefToPathwayElementSet.remove(groupRef);
+				PathwayElement pathwayElementGroup = getGroupById(groupId);
+				if (pathwayElementGroup != null)
+					forceRemove(pathwayElementGroup);
+			} else {
+				// redraw group outline
+				if (getGroupById(groupId) != null) {
+					Group pathwayElementGroup = (Group) getGroupById(groupId);
+				}
+			}
+		}
 	}
 
 	// ------------------------------- ID -------------------------------------

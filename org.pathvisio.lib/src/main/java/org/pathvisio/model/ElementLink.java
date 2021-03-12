@@ -47,7 +47,7 @@ public abstract class ElementLink {
 		Random random = new Random();
 		int mod = 0x60000; // 3 hex letters
 		int min = 0xa0000; // must start with a letter
-		// add hex letters if set size large 
+		// add hex letters if set size large
 		if ((ids.size()) > 0x10000) {
 			mod = 0x60000000;
 			min = 0xa0000000;
@@ -74,9 +74,9 @@ public abstract class ElementLink {
 		/**
 		 * Sets elementId as given String id.
 		 * 
-		 * @param id the string elementId is set to.
+		 * @param elementId the string elementId is set to.
 		 */
-		void setElementId(String id);
+		void setElementId(String elementId);
 
 		/**
 		 * Generates a unique elementId and uses that.
@@ -115,9 +115,12 @@ public abstract class ElementLink {
 	 */
 	public interface ElementRefContainer {
 
+		/**
+		 * Gets elementRef.
+		 */
 		String getElementRef();
 
-		void linkTo(ElementIdContainer idc, double relX, double relY);
+		void linkTo(ElementIdContainer elementIdContainer, double relX, double relY);
 
 		void unlink();
 
@@ -147,18 +150,18 @@ public abstract class ElementLink {
 	 * @param elementId          the elementId.
 	 * @param elementIdContainer the ElementIdContainer which is going to get the
 	 *                           new elementId
-	 * @param data               the pathway model, which is maintaining a complete
+	 * @param parentPathway            the pathway model, which is maintaining a complete
 	 *                           list of all elementIds in this pathway.
 	 */
-	protected static void setElementId(String elementId, ElementIdContainer elementIdContainer, Pathway data) {
+	protected static void setElementId(String elementId, ElementIdContainer elementIdContainer, Pathway parentPathway) {
 		String graphId = elementIdContainer.getElementId();
 		if (graphId == null || !graphId.equals(elementId)) {
-			if (data != null) {
+			if (parentPathway != null) {
 				if (graphId != null) {
-					data.removeElementId(graphId);
+					parentPathway.removeElementId(graphId);
 				}
 				if (elementId != null) {
-					data.addElementId(elementId, elementIdContainer);
+					parentPathway.addElementId(elementId, elementIdContainer);
 				}
 			}
 		}

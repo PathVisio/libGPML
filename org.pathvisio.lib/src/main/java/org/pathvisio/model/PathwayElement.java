@@ -47,36 +47,6 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	protected Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
 
 	/**
-	 * @return
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String doGetElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Set elementId. ElementId must be a unique within the Pathway object
-	 *
-	 * @see Pathway#getUniqueId(java.util.Set)
-	 */
-	public void setElementId(String id) {
-		ElementLink.setElementId(id, this, parentPathway);
-		elementId = id;
-	}
-
-	public String setGeneratedElementId() {
-		setElementId(parentPathway.getUniqueElementId());
-		return elementId;
-	}
-
-	/**
 	 * Returns the parent pathway.
 	 * 
 	 * @return parent the parent pathway.
@@ -138,7 +108,6 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 		}
 	}
 
-
 	/* ------------------------------- GROUPID ------------------------------- */
 
 	protected String groupId;
@@ -173,10 +142,41 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 			groupId = id;
 		}
 	}
-	
+	/* ------------------------------- ELEMENTID ------------------------------- */
+	/**
+	 * @return
+	 */
+	public String getElementId() {
+		return elementId;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String doGetElementId() {
+		return elementId;
+	}
+
+	/**
+	 * Set elementId. ElementId must be a unique within the Pathway object
+	 *
+	 * @see Pathway#getUniqueId(java.util.Set)
+	 */
+	public void setElementId(String id) {
+		ElementLink.setElementId(id, this, parentPathway);
+		elementId = id;
+	}
+
+	public String setGeneratedElementId() {
+		setElementId(parentPathway.getUniqueElementId());
+		return elementId;
+	}
 	/* ------------------------------- ELEMENTREF ------------------------------- */
 
-
+	public Set<ElementRefContainer> getReferences() {
+		return ElementLink.getReferences(this, parentPathway);
+	}
 	protected String elementRef = null;
 
 	/** graphRef property, used by Modification */
@@ -194,6 +194,9 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 			elementRef = value;
 		}
 	}
+	
+
+	/* ------------------------------- OTHER.... ------------------------------- */
 
 	public String getStartElementRef() {
 		return mPoints.get(0).getElementRef();
@@ -213,9 +216,7 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 		end.setGraphRef(ref);
 	}
 	
-	public Set<ElementRefContainer> getReferences() {
-		return ElementLink.getReferences(this, parentPathway);
-	}
+
 	
 	/* ------------------------------- OTHER.... ------------------------------- */
 
