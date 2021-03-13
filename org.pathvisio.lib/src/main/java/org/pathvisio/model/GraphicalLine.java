@@ -29,11 +29,11 @@ import org.bridgedb.Xref;
  */
 public class GraphicalLine extends PathwayElement {
 
-	protected String elementId;
+//	protected String elementId;
 	protected String groupRef; //optional
 	protected LineStyleProperty lineStyleProperty;
 	protected List<Point> points;
-	protected List<Anchor> anchors;
+	protected List<Anchor> anchors = new ArrayList<Anchor>(); 
 	protected List<Comment> comments; //optional
 	protected List<DynamicProperty> dynamicProperties; // optional
 	protected List<AnnotationRef> annotationRefs; //optional
@@ -64,9 +64,6 @@ public class GraphicalLine extends PathwayElement {
 		return mPoints;
 	}
 	
-	
-	// TODO: end of new elements
-	protected List<MAnchor> anchors = new ArrayList<MAnchor>();
 
 	/**
 	 * Get the anchors for this line.
@@ -81,26 +78,6 @@ public class GraphicalLine extends PathwayElement {
 	
 	// Add Constructors
 
-	
-	/**
-	 * Gets the elementId of the graphical line.
-	 * 
-	 * @return elementId the unique id of the graphical line.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Sets the elementId of the graphical line.
-	 * 
-	 * @param elementId the unique id of the graphical line.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
 
 	/**
 	 * Gets the groupRef of the graphical line. A groupRef indicates an object is part of a
@@ -109,7 +86,7 @@ public class GraphicalLine extends PathwayElement {
 	 * @return groupRef the groupRef of the graphical line.
 	 * 
 	 */
-	public Object getGroupRef() {
+	public String getGroupRef() {
 		return groupRef;
 	}
 

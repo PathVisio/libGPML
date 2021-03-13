@@ -26,9 +26,9 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Shape extends PathwayElement implements Graphics{
+public class Shape extends PathwayElement {
 
-	protected String elementId;
+//	protected String elementId;
 	protected String textLabel;
 	protected ShapeType type; // TODO: Getter/Setter weird
 	protected String groupRef; // if part of group
@@ -138,27 +138,6 @@ public class Shape extends PathwayElement implements Graphics{
 		graphics.remove(graphic);
 	}
 
-	
-	
-	/**
-	 * Gets the elementId of the shape.
-	 * 
-	 * @return elementId the unique id of the shape.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Sets the elementId of the shape.
-	 * 
-	 * @param elementId the unique id of the shape.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
 
 	/**
 	 * Gets the groupRef of the shape. A groupRef indicates an object is part of a
@@ -207,7 +186,7 @@ public class Shape extends PathwayElement implements Graphics{
 	 * 
 	 * @return type the type of shape, e.g. complex.
 	 */
-	public String getType() {
+	public ShapeType getType() {
 		return type;
 	}
 
@@ -216,7 +195,7 @@ public class Shape extends PathwayElement implements Graphics{
 	 * 
 	 * @param type the type of shape, e.g. complex.
 	 */
-	public void setType(String type) {
+	public void setType(ShapeType type) {
 		this.type = type;
 	}
 

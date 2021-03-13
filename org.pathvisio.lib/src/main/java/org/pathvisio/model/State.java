@@ -30,7 +30,7 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
  */
 public class State extends PathwayElement implements ElementRefContainer {
 
-	protected String elementId;
+//	protected String elementId;
 	protected String elementRef;
 	protected String textLabel;
 	protected StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
@@ -115,26 +115,6 @@ public class State extends PathwayElement implements ElementRefContainer {
 		}
 	}
 	
-	
-	/**
-	 * Gets the elementId of the state.
-	 * 
-	 * @return elementId the unique id of the state.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Sets the elementId of the state.
-	 * 
-	 * @param elementId the unique id of the state.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
 
 	/**
 	 * Gets the groupRef of the state. A groupRef indicates an object is part of a
@@ -203,7 +183,7 @@ public class State extends PathwayElement implements ElementRefContainer {
 	 * 
 	 * @return type the type of state, e.g. complex.
 	 */
-	public String getType() {
+	public StateType getType() {
 		return type;
 	}
 
@@ -212,7 +192,7 @@ public class State extends PathwayElement implements ElementRefContainer {
 	 * 
 	 * @param type the type of state, e.g. complex.
 	 */
-	public void setType(String type) {
+	public void setType(StateType type) {
 		this.type = type;
 	}
 

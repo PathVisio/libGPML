@@ -24,76 +24,50 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Annotation extends PathwayElement{
+public class Annotation extends PathwayElement {
 
-	private String elementId;
-	private String name; //optional
-	private AnnotationType type; //optional
-	private String url; //optional
-	private Xref xref; //optional
+//	private String elementId;
+	private String name; // optional
+	private AnnotationType type; // optional
+	private String url; // optional
+	private Xref xref; // optional
 
-	
-	
 	// Add Constructors
 
-	
-	
 	/**
-	 * Gets the elementId of the citation.
+	 * Gets the name, term, or text of the annotation.
 	 * 
-	 * @return elementId the unique id of the citation.
+	 * @return name the name, term, or text of the annotation.
 	 */
-	public String getElementId() {
-		return elementId;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Sets ID of the citations
+	 * Sets the name, term, or text of the annotation.
 	 * 
-	 * @param elementId the unique id of the citation.
+	 * @param name the name, term, or text of the annotation.
 	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * Gets the Annotation Xref.
+	 * Gets the type of the annotation.
 	 * 
-	 * @return xref the annotation xref.
+	 * @return type the type of annotation, e.g. ontology term.
 	 */
-	public Xref getXref() {
-		return xref;
+	public AnnotationType getType() {
+		return type;
 	}
 
 	/**
-	 * Instantiates and sets the value of Annotation Xref.
+	 * Sets the type of the annotation.
 	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
+	 * @param type the type of annotation, e.g. ontology term.
 	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
-
-	/**
-	 * Gets the text of of the annotation.
-	 * 
-	 * @return textLabel the text of of the annotation.
-	 * 
-	 */
-	public String getTextLabel() {
-		return textLabel;
-	}
-
-	/**
-	 * Sets the text of of the annotation.
-	 * 
-	 * @param textLabel the text of of the annotation.
-	 * 
-	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
+	public void setType(AnnotationType type) {
+		this.type = type;
 	}
 
 	/**
@@ -115,21 +89,23 @@ public class Annotation extends PathwayElement{
 	}
 
 	/**
-	 * Gets the type of the annotation.
+	 * Gets the Annotation Xref.
 	 * 
-	 * @return type the type of annotation, e.g. ontology term.
+	 * @return xref the annotation xref.
 	 */
-	public String getType() {
-		return type;
+	public Xref getXref() {
+		return xref;
 	}
 
 	/**
-	 * Sets the type of the annotation.
+	 * Instantiates and sets the value of Annotation Xref.
 	 * 
-	 * @param type the type of annotation, e.g. ontology term.
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
 	 */
-	public void setType(String type) {
-		this.type = type;
+	public void setXref(String identifier, String dataSource) {
+		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 	}
 
 }

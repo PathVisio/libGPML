@@ -121,19 +121,19 @@ public class Pathway {
 	 * Inserts mapping of elementId key to ElementIdContainer value in the
 	 * elementIdToContainer hash map.
 	 * 
-	 * @param elementId          the elementId
-	 * @param elementIdContainer the ElementIdContainer
+	 * @param elementId the elementId
+	 * @param target    the ElementIdContainer
 	 * @throws IllegalArgumentException if elementId or elementIdContainer are null.
 	 * @throws IllegalArgumentException if elementId is not unique.
 	 */
-	public void addElementId(String elementId, ElementIdContainer elementIdContainer) {
-		if (elementIdContainer == null || elementId == null) {
+	public void addElementId(String elementId, ElementIdContainer target) {
+		if (target == null || elementId == null) {
 			throw new IllegalArgumentException("unique elementId can't be null");
 		}
 		if (elementIdToContainer.containsKey(elementId)) {
 			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
 		}
-		elementIdToContainer.put(elementId, elementIdContainer);
+		elementIdToContainer.put(elementId, target);
 	}
 
 	/**
@@ -166,27 +166,27 @@ public class Pathway {
 	 * Inserts mapping of elementId key to ElementRefContainer value in the
 	 * elementIdToSetRefContainer hash map.
 	 * 
-	 * @param elementRef          the reference to elementId.
-	 * @param elementRefContainer the target ElementRefContainer.
+	 * @param elementRef the reference to elementId.
+	 * @param target     the target ElementRefContainer.
 	 */
-	public void addElementRef(String elementRef, ElementRefContainer elementRefContainer) {
-		Utils.multimapPut(elementRefToRefContainerSet, elementRef, elementRefContainer);
+	public void addElementRef(String elementRef, ElementRefContainer target) {
+		Utils.multimapPut(elementRefToRefContainerSet, elementRef, target);
 	}
 
 	/**
 	 * Removes the mapping of the given elementId key from the
 	 * elementIdToSetRefContainer hash map.
 	 * 
-	 * @param elementRef          the reference to elementId.
-	 * @param elementRefContainer the target ElementRefContainer.
+	 * @param elementRef the reference to elementId.
+	 * @param target     the target ElementRefContainer.
 	 * @throws IllegalArgumentException if hash map does not contain the given
 	 *                                  elementId key.
 	 */
-	void removeElementRef(String elementRef, ElementRefContainer elementRefContainer) {
+	public void removeElementRef(String elementRef, ElementRefContainer target) {
 		if (!elementRefToRefContainerSet.containsKey(elementRef)) {
 			throw new IllegalArgumentException();
 		} else {
-			elementRefToRefContainerSet.get(elementRef).remove(elementRefContainer);
+			elementRefToRefContainerSet.get(elementRef).remove(target);
 			// remove elementId key if zero ElementRefContainers values.
 			if (elementRefToRefContainerSet.get(elementRef).size() == 0)
 				elementRefToRefContainerSet.remove(elementRef);

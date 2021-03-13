@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 
 /**
@@ -26,14 +27,14 @@ import java.awt.geom.Point2D;
  */
 public class Anchor extends PathwayElement {
 
-	private String elementId;
+//	private String elementId;
 	private double position;
 	private Coordinate xy;
-//	private double x;
-//	private double y;
 	private AnchorType shapeType = AnchorType.NONE;
-	private PathwayElement parent;
+//	private PathwayElement parent;
 
+	//TODO: Method to calculate xy from position! 
+	
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
@@ -44,33 +45,12 @@ public class Anchor extends PathwayElement {
 	 * @param y         the y coordinate position of the anchor.
 	 * @param shapeType the visual representation of an anchor.
 	 */
-	public Anchor(String elementId, double position, double x, double y, String shapeType) {
+	public Anchor(String elementId, double position, Coordinate xy, AnchorType shapeType) {
 		this.elementId = elementId;
 		this.position = position;
-		this.x = x;
-		this.y = y;
+		this.xy = xy;
 		if (shapeType != null)
 			this.shapeType = shapeType;
-	}
-
-	/**
-	 * Gets the elementId of the anchor.
-	 * 
-	 * @return elementId the unique id of the anchor.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Sets the elementId of the anchor.
-	 * 
-	 * @param elementId the unique id of the anchor.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
 	}
 
 	/**
@@ -98,8 +78,8 @@ public class Anchor extends PathwayElement {
 	 * 
 	 * @return coordinate the coordinate position of the anchor.
 	 */
-	public Coordinate getCoordinate() {
-		return coordinate;
+	public Coordinate getXY() {
+		return xy;
 	}
 
 	/**
@@ -107,158 +87,37 @@ public class Anchor extends PathwayElement {
 	 * 
 	 * @param coordinate the coordinate position of the anchor.
 	 */
-	public void setX(Coordinate coordinate) {
-		this.coordinate = coordinate;
+	public void setXY(Coordinate xy) {
+		this.xy = xy;
 	}
 
-//	/**
-//	 * Gets the x coordinate position of the anchor.
-//	 * 
-//	 * @return x the x coordinate position of the anchor.
-//	 */
-//	public double getX() {
-//		return x;
-//	}
-//
-//	/**
-//	 * Sets the x coordinate position of the anchor.
-//	 * 
-//	 * @param x the x coordinate position of the anchor.
-//	 */
-//	public void setX(double x) {
-//		this.x = x;
-//	}
-//
-//	/**
-//	 * Gets the y coordinate position of the anchor.
-//	 * 
-//	 * @return y the y coordinate position of the anchor.
-//	 */
-//	public double getY() {
-//		return y;
-//	}
-//
-//	/**
-//	 * Sets the y coordinate position of the anchor.
-//	 * 
-//	 * @param y the y coordinate position of the anchor.
-//	 */
-//	public void setY(double y) {
-//		this.y = y;
-//	}
 
 	/**
 	 * Gets the visual representation of an anchor, e.g., none, square.
 	 * 
-	 * @return shapeType the shape type of the anchor.
+	 * @return shapeType the shape type of the anchor. Return default square
+	 *         shapeType if null.
 	 */
-	public String getShapeType() {
+	public AnchorType getShapeType() {
 		if (shapeType == null) {
-			return "None";
+			return AnchorType.SQUARE;
 		} else {
 			return shapeType;
 		}
 	}
 
 	/**
-	 * Sets the visual representation of an anchor, e.g., none, square.
-	 * 
-	 * @param shapeType the shape type of the anchor.
-	 */
-	public void setShapeType(String shapeType) {
-		this.shapeType = shapeType;
-	}
-
-	/**
-	 * Instantiates an Anchor pathway element.
-	 * 
-	 * @param position the proportional distance of an anchor along the line it
-	 *                 belongs to.
-	 * @param parent   the parent pathway element the anchor belongs to.
-	 */
-	public MAnchor(double position, PathwayElement parent) {
-		super(new double[] { position }, parent);
-	}
-
-	/**
-	 * Copy constructor for Anchor pathway element which adds shapeType attribute.
-	 * 
-	 * @param a the Anchor pathway element.
-	 */
-	public MAnchor(MAnchor a) {
-		super(a);
-		shapeType = a.shapeType;
-	}
-
-	/**
 	 * Sets the shapeType for given anchor pathway element.
 	 * 
-	 * @param type the anchor type enum value.
-	 * 
+	 * @param shapeType the shape type of the anchor.
+	 * @throws IllegalArgumentException if shapeType null.
 	 */
-	public void setShape(AnchorType type) {
-		if (!this.shapeType.equals(type) && type != null) {
-			this.shapeType = type;
+	public void setShape(AnchorType shapeType) {
+		if (shapeType == null) {
+			throw new IllegalArgumentException();
+		} else {
+			this.shapeType = shapeType;
 		}
 	}
 
-	/**
-	 * Gets the shapeType of given anchor pathway element.
-	 * 
-	 * @return shapeType the shape of given anchor pathway element.
-	 */
-	public AnchorType getShape() {
-		return shapeType;
-	}
-
-	/**
-	 * Gets the proportional distance of an anchor along the line it belongs to,
-	 * between 0 and 1.
-	 * 
-	 * @return position the position of the anchor.
-	 */
-	public double getPosition() {
-		return getCoordinate(0);
-	}
-
-	/**
-	 * Sets the proportional distance of an anchor along the line it belongs to,
-	 * between 0 and 1.
-	 * 
-	 * @param position the position of the anchor.
-	 */
-	public void setPosition(double position) {
-		if (position != getPosition()) {
-			moveBy(position - getPosition());
-		}
-	}
-
-	/**
-	 * Moves position of anchor by given value along the line it belongs to.
-	 * 
-	 * @param delta the value to move position of anchor.
-	 */
-	public void moveBy(double delta) {
-		super.moveBy(new double[] { delta });
-	}
-
-	/**
-	 * Returns position of anchor as a Point2d absolute coordinate.
-	 * 
-	 * @param p the Point2d.
-	 */
-	public Point2D toAbsoluteCoordinate(Point2D p) {
-		Point2D l = ((MLine) getParent()).getConnectorShape().fromLineCoordinate(getPosition());
-		return new Point2D.Double(p.getX() + l.getX(), p.getY() + l.getY());
-	}
-
-	/**
-	 * Returns position of anchor as a Point2d relative coordinate.
-	 * 
-	 * @param p the Point2d.
-	 */
-	public Point2D toRelativeCoordinate(Point2D p) {
-		Point2D l = ((MLine) getParent()).getConnectorShape().fromLineCoordinate(getPosition());
-		return new Point2D.Double(p.getX() - l.getX(), p.getY() - l.getY());
-	}
 }

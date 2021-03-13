@@ -30,7 +30,7 @@ import org.pathvisio.util.Utils;
  */
 public class DataNode extends PathwayElement {
 
-	protected String elementId;
+//	protected String elementId;
 	protected String elementRef; // optional
 	protected String textLabel;
 	protected DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
@@ -44,9 +44,7 @@ public class DataNode extends PathwayElement {
 	protected List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // length 0 to unbounded
 	protected List<CitationRef> citationRefs = new ArrayList<CitationRef>(); // length 0 to unbounded
 	protected List<EvidenceRef> evidenceRefs = new ArrayList<EvidenceRef>(); // length 0 to unbounded
-	
-	
-	
+
 	protected String identifier = "";
 
 	protected DataSource dataSource = null;
@@ -64,18 +62,12 @@ public class DataNode extends PathwayElement {
 		}
 	}
 
-
 	public DataSource getDataSource() {
 		return dataSource;
 	}
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
-	}
-
-	public Xref getXref() {
-		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
-		return new Xref(identifier, dataSource);
 	}
 
 //	/** TODO
@@ -105,28 +97,8 @@ public class DataNode extends PathwayElement {
 	// Add Constructors
 
 	/**
-	 * Returns the elementId of the datanode.
-	 * 
-	 * @return elementId the unique id of the datanode.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Sets the elementId of the datanode.
-	 * 
-	 * @param elementId the unique id of the datanode.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
-
-	/**
-	 * Returns the groupRef of the datanode. A groupRef indicates an object is part of
-	 * a gpml:Group with a elementId.
+	 * Returns the groupRef of the datanode. A groupRef indicates an object is part
+	 * of a gpml:Group with a elementId.
 	 * 
 	 * @return groupRef the groupRef of the datanode.
 	 * 
@@ -155,6 +127,24 @@ public class DataNode extends PathwayElement {
 		return xref;
 	}
 
+	public Xref getXref() {
+		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
+		return new Xref(identifier, dataSource);
+	}
+
+	public String getXrefIdentifier() {
+		return xref.getId();
+	}
+
+	public DataSource getXrefDataSource(Xref xref) {
+		DataSource dataSource = xref.getDataSource();
+		String sysCode = dataSource.getSystemCode();
+		String fullName = dataSource.getFullName();
+		return dataSource;
+
+		// https://github.com/bridgedb/BridgeDb/blob/master/org.bridgedb/src/main/java/org/bridgedb/DataSource.java
+	}
+
 	/**
 	 * Instantiates and sets the value of DataNode Xref.
 	 * 
@@ -167,8 +157,8 @@ public class DataNode extends PathwayElement {
 	}
 
 	/**
-	 * Returns the source of data, e.g. the full name, code name or abbreviation of the
-	 * database...
+	 * Returns the source of data, e.g. the full name, code name or abbreviation of
+	 * the database...
 	 */
 
 	/**

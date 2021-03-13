@@ -173,13 +173,17 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 		return elementId;
 	}
 	/* ------------------------------- ELEMENTREF ------------------------------- */
+	
+	protected String elementRef = null;
 
+	/**
+	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway element. 
+	 */
 	public Set<ElementRefContainer> getReferences() {
 		return ElementLink.getReferences(this, parentPathway);
 	}
-	protected String elementRef = null;
 
-	/** graphRef property, used by Modification */
+	/** elementRef property, used by Modification */
 	public String getElementRef() {
 		return elementRef;
 	}
@@ -189,7 +193,7 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 * to an existing DataNode
 	 */
 	public void setElementRef(String value) {
-		// TODO: check that new graphRef exists and that it points to a DataNode
+		// TODO: check that new elementRef exists and that it points to a DataNode
 		if (!(elementRef == null ? value == null : elementRef.equals(value))) {
 			elementRef = value;
 		}

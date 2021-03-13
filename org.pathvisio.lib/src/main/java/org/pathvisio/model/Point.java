@@ -16,80 +16,25 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.pathvisio.model.ElementLink.ElementIdContainer;
+import org.pathvisio.model.ElementLink.ElementRefContainer;
+import org.pathvisio.util.Utils;
+
 /**
  * This class stores all information relevant to a Point pathway element.
  * 
  * @author finterly
  */
-public class Point extends PathwayElement{
-	
-	private String elementId;
+public class Point extends PathwayElement {
+
+//	private String elementId; 
 	private String elementRef; // optional?
-	private LineType arrowHead; //optional
-	private double x;
-	private double y;
-	private double relX; //optional
-	private double relY; //optional
-	private PathwayElement parent;
+	private LineType arrowHead; // optional
+	private Coordinate xy;
+	private double relX; // optional
+	private double relY; // optional
 
-	
-	/**
-	 * Instantiates a Point pathway element, with reference to another pathway
-	 * element.
-	 * 
-	 * @param elementId  the unique id of the point.
-	 * @param elementRef the id of the pathway element to which the point refers.
-	 * @param arrowHead  the arrowhead property of the point.
-	 * @param x          the x coordinate position of the point.
-	 * @param y          the y coordinate position of the point.
-	 * @param relX       the relative x coordinate.
-	 * @param relY       the relative x coordinate.
-	 */
-	public Point(String elementId, String elementRef, String arrowHead, double x, double y, double relX, double relY) {
-		this.elementId = elementId;
-		this.elementRef = elementRef;
-		this.arrowHead = arrowHead;
-		this.x = x;
-		this.y = y;
-		this.relX = relX;
-		this.relY = relY;
-	}
-
-	/**
-	 * Instantiates a Point pathway element, with no reference to another pathway
-	 * element.
-	 * 
-	 * @param elementId the unique id of the point.
-	 * @param arrowHead the arrowhead property of the point.
-	 * @param x         the x coordinate position of the point.
-	 * @param y         the y coordinate position of the point.
-	 */
-	public Point(String elementId, String arrowHead, double x, double y) {
-		this.elementId = elementId;
-		this.arrowHead = arrowHead;
-		this.x = x;
-		this.y = y;
-	}
-
-	/**
-	 * Gets the elementId of the point.
-	 * 
-	 * @return elementId the unique id of the point.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Sets the elementId of the point.
-	 * 
-	 * @param elementId the unique id of the point.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
+	/*-----------------------------------------------------------------------*/
 
 	/**
 	 * Gets the elementRef of the point, indicates a child/parent relationship
@@ -99,10 +44,15 @@ public class Point extends PathwayElement{
 	 * @return elementRef the elementRef of the point.
 	 * 
 	 */
-	public Object getElementRef() {
+	public String getElementRef() {
 		return elementRef;
 	}
 
+	
+	private ElementIdContainer getElementIdContainer() {
+		return getPathway().getElementIdContainer(elementRef);
+	}
+	
 	/**
 	 * Sets the elementRef of the point, indicates a child/parent relationship
 	 * between pathway elements. The elementRef of the child refers to the elementId
@@ -116,6 +66,111 @@ public class Point extends PathwayElement{
 	}
 
 	/**
+	 * Set a (elementRef) reference to another object with an elementId. If a parent
+	 * is set, this will automatically deregister the previously held reference and
+	 * register the new reference as necessary.
+	 *
+	 * @param v reference to set.
+	 */
+	public void setElementRef(String ref) {
+		if (!Utils.stringEquals(elementRef, ref)) {
+			if (parentPathway != null) {
+				if (elementRef != null) {
+					getPathway().removeElementRef(elementRef, (ElementRefContainer) this);
+				}
+				if (ref != null) {
+					getPathway().addElementRef(ref, (ElementRefContainer) this);
+				}
+			}
+			elementRef = ref;
+		}
+	}
+
+	/*-----------------------------------------------------------------------*/
+
+//	/**
+//	 * Link to an object. Current absolute coordinates will be converted to relative
+//	 * coordinates based on the object to link to.
+//	 */
+//	public void linkTo(ElementIdContainer idc) {
+//		Point2D rel = idc.toRelativeCoordinate(toPoint2D());
+//		linkTo(idc, rel.getX(), rel.getY());
+//	}
+//
+//	/**
+//	 * Link to an object using the given relative coordinates
+//	 */
+//	public void linkTo(ElementIdContainer idc, double relX, double relY) {
+//		String id = idc.getElementId();
+//		if (id == null)
+//			id = idc.setGeneratedElementId();
+//		setElementRef(idc.getElementId());
+//		setRelativePosition(relX, relY);
+//	}
+//
+//	/**
+//	 * note that this may be called any number of times when this point is already
+//	 * unlinked
+//	 */
+//	public void unlink() {
+//		if (graphRef != null) {
+//			if (getPathway() != null) {
+//				Point2D abs = getAbsolute();
+//				moveTo(abs.getX(), abs.getY());
+//			}
+//			relativeSet = false;
+//			setElementRef(null);
+//		}
+//	}
+//
+//	/**
+//	 * Find out if this point is linked to an object. Returns true if a graphRef
+//	 * exists and is not an empty string
+//	 */
+//	public boolean isLinked() {
+//		String ref = getElementRef();
+//		return ref != null && !"".equals(ref);
+//	}
+
+	/*-----------------------------------------------------------------------*/
+
+	/**
+	 * Instantiates a Point pathway element, with reference to another pathway
+	 * element.
+	 * 
+	 * @param elementId  the unique id of the point.
+	 * @param elementRef the id of the pathway element to which the point refers.
+	 * @param arrowHead  the arrowhead property of the point.
+	 * @param x          the x coordinate position of the point.
+	 * @param y          the y coordinate position of the point.
+	 * @param relX       the relative x coordinate.
+	 * @param relY       the relative x coordinate.
+	 */
+	public Point(String elementId, String elementRef, LineType arrowHead, Coordinate xy, double relX, double relY) {
+		this.elementId = elementId;
+		this.elementRef = elementRef;
+		this.arrowHead = arrowHead;
+		this.xy = xy;
+		this.relX = relX;
+		this.relY = relY;
+	}
+
+	/**
+	 * Instantiates a Point pathway element, with no reference to another pathway
+	 * element.
+	 * 
+	 * @param elementId the unique id of the point.
+	 * @param arrowHead the arrowhead property of the point.
+	 * @param x         the x coordinate position of the point.
+	 * @param y         the y coordinate position of the point.
+	 */
+	public Point(String elementId, String arrowHead, Coordinate xy) {
+		this.elementId = elementId;
+		this.arrowHead = arrowHead;
+		this.xy = xy;
+	}
+
+	/**
 	 * Gets the arrowHead property of the point. Arrowhead specifies the glyph at
 	 * the ends of lines and interactions. Only the arrowHead attribute on first and
 	 * last points are used, the rest is ignored.
@@ -123,9 +178,9 @@ public class Point extends PathwayElement{
 	 * @return arrowhead the arrowhead property of the point.
 	 * 
 	 */
-	public String getArrowHead() {
+	public LineType getArrowHead() {
 		if (arrowHead == null) {
-			return "Line";
+			return LineType.LINE;
 		} else {
 			return arrowHead;
 		}
@@ -139,45 +194,28 @@ public class Point extends PathwayElement{
 	 * @param arrowhead the arrowhead property of the point.
 	 * 
 	 */
-	public void setArrowHead(String arrowHead) {
+	public void setArrowHead(LineType arrowHead) {
 		this.arrowHead = arrowHead;
 	}
 
 	/**
-	 * Gets the x coordinate position of the point.
+	 * Gets the xy coordinate position of the point.
 	 * 
-	 * @param x the x coordinate position of the point.
+	 * @param xy the xy coordinate position of the point.
 	 */
-	public double getX() {
-		return x;
+	public Coordinate getXY() {
+		return xy;
 	}
 
 	/**
-	 * Sets the x coordinate position of the point.
+	 * Sets the xy coordinate position of the point.
 	 * 
-	 * @return x the x coordinate position of the point.
+	 * @return xy the xy coordinate position of the point.
 	 */
-	public void setX(double x) {
-		this.x = x;
+	public void setXY(Coordinate xy) {
+		this.xy = xy;
 	}
 
-	/**
-	 * Gets the y coordinate position of the point.
-	 * 
-	 * @param y the y coordinate position of the point.
-	 */
-	public double getY() {
-		return y;
-	}
-
-	/**
-	 * Sets the y coordinate position of the point.
-	 * 
-	 * @return y the y coordinate position of the point.
-	 */
-	public void setY(double y) {
-		this.y = y;
-	}
 
 	/**
 	 * Gets the relative x coordinate. When the given point is linked to a pathway
@@ -226,8 +264,5 @@ public class Point extends PathwayElement{
 	public void setRelY(double relY) {
 		this.relY = relY;
 	}
-	
-	
-	
 
 }

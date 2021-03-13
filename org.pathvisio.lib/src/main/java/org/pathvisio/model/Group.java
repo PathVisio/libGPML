@@ -33,6 +33,9 @@ public class Group extends PathwayElement{
 	protected String textLabel; // optional
 	protected GroupType type = GroupType.GROUP; // optional
 	protected String groupRef; // if part of group
+	protected RectProperty rectProperty;
+	protected FontProperty fontProperty;
+	protected ShapeStyleProperty shapeStyleProperty;
 	protected Xref xref; // optional
 	protected List<Comment> comments; // optional
 	protected List<DynamicProperty> dynamicProperties; // optional

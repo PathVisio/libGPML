@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -26,20 +27,21 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Interaction extends GraphicalLine {
+public class Interaction extends PathwayElement {
 
-//	protected String elementId;
-//	protected String groupRef; //optional
-//	protected LineStyleProperty lineStyleProperty;
+	protected String groupRef; //optional
+	protected LineStyleProperty lineStyleProperty;
 	
 	protected Xref xref;
 	
-//	protected List<Point> points;
-//	protected List<Anchor> anchors;
-//	protected List<Comment> comments; //optional
-//	protected List<DynamicProperty> dynamicProperties; // optional
-//	protected List<AnnotationRef> annotationRefs; //optional
-//	protected List<CitationRef> citationRefs; //optional
+	// TODO Add getters and setters
+	protected List<Point> points;
+	protected List<Anchor> anchors = new ArrayList<Anchor>(); 
+	protected List<Comment> comments; //optional
+	protected List<DynamicProperty> dynamicProperties; // optional
+	protected List<AnnotationRef> annotationRefs; //optional
+	protected List<CitationRef> citationRefs; //optional
+	protected List<EvidenceRef> evidenceRefs; // optional
 
 	public Interaction() {
 		super();

@@ -15,17 +15,16 @@
  * the License.
  ******************************************************************************/
 package org.pathvisio.model;
+
 /**
- * This class holds coordinates x and y. 
+ * This class holds coordinates x and y.
  * 
- * @see Point
- * @see Anchor
+ * @see RectProperty
  * @author finterly
- *
  */
 public class Coordinate {
 
-	private double x; 
+	private double x;
 	private double y;
 
 	public Coordinate(double x, double y) {
@@ -33,12 +32,16 @@ public class Coordinate {
 		this.y = y;
 	}
 
-	public String toString() {
-		return String.format("%d/%d", this.x, this.y);
+	public double getX() {
+		return x;
 	}
 
-	public int hashCode() {
-		return this.toString().hashCode();
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
 	}
 
 	public boolean equals(final Object o) {
@@ -49,5 +52,16 @@ public class Coordinate {
 		return this.x == c.x && this.y == c.y;
 	}
 
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public String toString() {
+		return String.format("%f/%f", this.x, this.y);
+	}
+
+	public int hashCode() {
+		return this.toString().hashCode();
+	}
 
 }

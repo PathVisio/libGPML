@@ -42,7 +42,7 @@ public abstract class ElementLink {
 	 * @param ids the collection of already existing IDs.
 	 * @return result the new unique ID unique for this pathway.
 	 */
-	static String getUniqueId(Set<String> ids) {
+	public static String getUniqueId(Set<String> ids) {
 		String result;
 		Random random = new Random();
 		int mod = 0x60000; // 3 hex letters
@@ -59,12 +59,60 @@ public abstract class ElementLink {
 	}
 
 	/**
+	 * Gives an object that implements the ElementIdContainer interface a elementId,
+	 * thereby possibly linking it to new objects.
+	 *
+	 * This is a helper for classes that need to implement the ElementIdContainer
+	 * interface, to avoid duplication.
+	 *
+	 * @param elementId     the elementId.
+	 * @param object        the object which is going to get the new elementId
+	 * @param parentPathway the pathway model, which is maintaining a complete list
+	 *                      of all elementIds in this pathway.
+	 */
+	protected static void setElementId(String elementId, ElementIdContainer object, Pathway parentPathway) {
+		String graphId = object.getElementId();
+		if (graphId == null || !graphId.equals(elementId)) {
+			if (parentPathway != null) {
+				if (graphId != null) {
+					parentPathway.removeElementId(graphId);
+				}
+				if (elementId != null) {
+					parentPathway.addElementId(elementId, object);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns a list of ElementRefContainers (i.e. points) referring to a certain
+	 * ElementId.
+	 *
+	 * @param elementId     the elementId.
+	 * @param parentPathway the parent pathway model, which is maintaining a
+	 *                      complete list of all elementIds in this pathway.
+	 * @return a list of ElementRefContainers.
+	 */
+	public static Set<ElementRefContainer> getReferences(ElementIdContainer elementId, Pathway parentPathway) {
+		if (parentPathway == null || Utils.isEmpty(elementId.getElementId()))
+			return Collections.emptySet();
+		else
+			return parentPathway.getReferringObjects(elementId.getElementId());
+	}
+
+	/**
 	 * This interface allows iteration through all objects containing an elementId.
 	 * All pathway element classes have an elementId and implement this interface.
 	 * 
 	 * @author unknown, finterly
 	 */
 	public interface ElementIdContainer {
+
+		/**
+		 * Returns the parent Pathway object, needed for maintaining a consistent list
+		 * of elementIds.
+		 */
+		Pathway getPathway();
 
 		/**
 		 * Gets elementId.
@@ -89,12 +137,6 @@ public abstract class ElementLink {
 		Set<ElementRefContainer> getReferences();
 
 		/**
-		 * Returns the parent Pathway object, needed for maintaining a consistent list
-		 * of elementIds.
-		 */
-		Pathway getPathway();
-
-		/**
 		 * Converts a point to shape coordinates (relative to the bounds of the
 		 * ElementIdContainer).
 		 */
@@ -108,16 +150,18 @@ public abstract class ElementLink {
 
 	/**
 	 * This interface allows iteration through all objects containing an elementRef.
-	 * Classes that refer *to* an ElementIdContainer must implement this interface,
-	 * e.g. Point, State, DataNode, AnnotationRef, CitationRef, EvidenceRef.
+	 * Classes that refer to an ElementIdContainer implement this interface, e.g.
+	 * Point, State, DataNode, AnnotationRef, CitationRef, EvidenceRef.
 	 * 
 	 * @author unknown, finterly
 	 */
 	public interface ElementRefContainer {
-
 		/**
-		 * Gets elementRef.
+		 * Returns the parent Pathway object, needed for maintaining a consistent list
+		 * of elementIds.
 		 */
+		Pathway getPathway();
+
 		String getElementRef();
 
 		void linkTo(ElementIdContainer elementIdContainer, double relX, double relY);
@@ -129,57 +173,9 @@ public abstract class ElementLink {
 		double getRelY();
 
 		/**
-		 * Returns the parent Pathway object, needed for maintaining a consistent list
-		 * of elementIds.
-		 */
-		Pathway getPathway();
-
-		/**
 		 * Called whenever the object being referred to changes coordinates.
 		 */
 		void refeeChanged();
 	}
 
-	/**
-	 * Gives an object that implements the ElementIdContainer interface a elementId,
-	 * thereby possibly linking it to new objects.
-	 *
-	 * This is a helper for classes that need to implement the ElementIdContainer
-	 * interface, to avoid duplication.
-	 *
-	 * @param elementId          the elementId.
-	 * @param elementIdContainer the ElementIdContainer which is going to get the
-	 *                           new elementId
-	 * @param parentPathway            the pathway model, which is maintaining a complete
-	 *                           list of all elementIds in this pathway.
-	 */
-	protected static void setElementId(String elementId, ElementIdContainer elementIdContainer, Pathway parentPathway) {
-		String graphId = elementIdContainer.getElementId();
-		if (graphId == null || !graphId.equals(elementId)) {
-			if (parentPathway != null) {
-				if (graphId != null) {
-					parentPathway.removeElementId(graphId);
-				}
-				if (elementId != null) {
-					parentPathway.addElementId(elementId, elementIdContainer);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Returns a list of ElementRefContainers (i.e. points) referring to a certain
-	 * ElementId.
-	 *
-	 * @param elementId     the elementId.
-	 * @param parentPathway the parent pathway model, which is maintaining a
-	 *                      complete list of all elementIds in this pathway.
-	 * @return a list of ElementRefContainers.
-	 */
-	public static Set<ElementRefContainer> getReferences(ElementIdContainer elementId, Pathway parentPathway) {
-		if (parentPathway == null || Utils.isEmpty(elementId.getElementId()))
-			return Collections.emptySet();
-		else
-			return parentPathway.getReferringObjects(elementId.getElementId());
-	}
 }

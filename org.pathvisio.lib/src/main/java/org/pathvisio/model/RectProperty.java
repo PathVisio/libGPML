@@ -25,8 +25,7 @@ package org.pathvisio.model;
  */
 public class RectProperty {
 
-	protected double centerX; // TODO: Coordinate
-	protected double centerY;
+	protected Coordinate centerXY; // TODO: Coordinate
 	protected double width;
 	protected double height;
 
@@ -38,47 +37,28 @@ public class RectProperty {
 	 * @param width   the pixel value for the x dimensional length of an object.
 	 * @param height  the pixel value for the y dimensional length of an object.
 	 */
-	public RectProperty(double centerX, double centerY, double width, double height) {
-		this.centerX = centerX;
-		this.centerY = centerY;
+	public RectProperty(Coordinate centerXY, double width, double height) {
+		this.centerXY = centerXY;
 		this.width = width;
 		this.height = height;
 	}
 
 	/**
-	 * Returns the center x coordinate of an object.
+	 * Returns the center x and y coordinate of an object.
 	 * 
-	 * @return centerX the middle of an object in the x direction.
+	 * @return centerXY the middle of an object in the x and y direction.
 	 */
-	public double getCenterX() {
-		return centerX;
+	public Coordinate getCenterX() {
+		return centerXY;
 	}
 
 	/**
-	 * Sets the center x coordinate of an object.
+	 * Sets the center x and y coordinate of an object.
 	 * 
-	 * @param centerX the middle of an object in the x direction.
+	 * @param centerXY the middle of an object in the x and y direction.
 	 */
-	public void setCenterX(double centerX) {
-		this.centerX = centerX;
-	}
-
-	/**
-	 * Returns the center y coordinate of an object.
-	 * 
-	 * @return centerY the middle of an object in the y direction.
-	 */
-	public double getCenterY() {
-		return centerY;
-	}
-
-	/**
-	 * Sets the center y coordinate of an object.
-	 * 
-	 * @param centerY the middle of an object in the y direction.
-	 */
-	public void setCenterY(double centerY) {
-		this.centerY = centerY;
+	public void setCenterX(Coordinate centerXY) {
+		this.centerXY = centerXY;
 	}
 
 	/**
