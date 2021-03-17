@@ -26,7 +26,7 @@ import java.awt.Color;
 public interface Graphics {
 
 
-	public boolean isValidColor();
+	private boolean isValidColor();
     
 	
 	/**

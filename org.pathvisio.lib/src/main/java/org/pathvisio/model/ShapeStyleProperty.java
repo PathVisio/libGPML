@@ -26,13 +26,13 @@ import java.awt.Color;
  */
 public class ShapeStyleProperty {
 
-	protected Color borderColor = Color.decode("000000"); // black
-	protected LineStyleType borderStyle = LineStyleType.SOLID; // solid TODO: Fix
-	protected double borderWidth = 1.0; // TODO: type?
-	protected Color fillColor = Color.decode("ffffff"); // white TODO: Transparent if Label
-	protected ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
-	protected int zOrder; // optional
-	protected PathwayElement parent; // TODO: is needed for label?
+	private Color borderColor = Color.decode("000000"); // black
+	private LineStyleType borderStyle = LineStyleType.SOLID; // solid TODO: Fix
+	private double borderWidth = 1.0; // TODO: type?
+	private Color fillColor = Color.decode("ffffff"); // white TODO: Transparent if Label
+	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
+	private int zOrder; // optional
+	private PathwayElement parent; // TODO: is needed for label?
 
 	/**
 	 * Constructor for all shape style properties. Default values in ( ).

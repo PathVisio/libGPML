@@ -28,27 +28,19 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
  * 
  * @author finterly
  */
-public class State extends PathwayElement implements ElementRefContainer {
+public class State extends CommentGroupElement implements ElementRefContainer {
 
-//	protected String elementId;
-	protected String elementRef;
-	protected String textLabel;
-	protected StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
+	private String elementRef;
+	private String textLabel;
+	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
 	private double relX;
 	private double relY;
 	private double width;
-	private double height;	
-	protected FontProperty fontProperty;
-	protected ShapeStyleProperty shapeStyleProperty;
-	protected Xref xref;
-	protected List<Comment> comments; // optional
-	protected List<DynamicProperty> dynamicProperties; // optional
-	protected List<AnnotationRef> annotationRefs; // optional
-	protected List<CitationRef> citationRefs; // optional
-	protected List<EvidenceRef> evidenceRefs; // optional
+	private double height;
+	private FontProperty fontProperty;
+	private ShapeStyleProperty shapeStyleProperty;
+	private Xref xref; // optional
 
-	
-	
 	/**
 	 * Gets the parent data node of this state.
 	 * 
@@ -62,7 +54,7 @@ public class State extends PathwayElement implements ElementRefContainer {
 		}
 		return parent.getElementById(getElementRef());
 	}
-	
+
 	@Override
 	public void setParent(Pathway v) {
 		if (parent != v) {
@@ -78,86 +70,15 @@ public class State extends PathwayElement implements ElementRefContainer {
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
-	 * 1.0 corresponds to the edge of the parent object
-	 */
-	public double getRelX() {
-		return relX;
-	}
-
-	/**
-	 * See getRelX
-	 */
-	public void setRelX(double value) {
-		if (relX != value) {
-			relX = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
-		}
-	}
-
-
-	/**
-	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
-	 * 1.0 corresponds to the edge of the parent object
-	 */
-	public double getRelY() {
-		return relY;
-	}
-
-	/**
-	 * See getRelX
-	 */
-	public void setRelY(double value) {
-		if (relY != value) {
-			relY = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
-		}
-	}
 	
-
-	/**
-	 * Gets the groupRef of the state. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
-	 * 
-	 * @return groupRef the groupRef of the state.
-	 * 
-	 */
-	public String getGroupRef() {
-		return groupRef;
+	public String getElementRef() {
+		return elementRef;
 	}
 
-	/**
-	 * Sets the groupRef of the state. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
-	 * 
-	 * @param groupRef the groupRef of the state.
-	 * 
-	 */
-	public void getGroupRef(String groupRef) {
-		this.groupRef = groupRef;
-	}
 
-	/**
-	 * Gets the state Xref.
-	 * 
-	 * @return xref the state xref.
-	 */
-	public Xref getXref() {
-		return xref;
+	public void setElementRef(String elementRef) {
+		this.elementRef = elementRef;
 	}
-
-	/**
-	 * Instantiates and sets the value of state Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
-
 	/**
 	 * Gets the text of of the state.
 	 * 
@@ -197,46 +118,87 @@ public class State extends PathwayElement implements ElementRefContainer {
 	}
 
 	/**
-	 * Gets the list of comments.
-	 * 
-	 * @return comments the list of comments.
+	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
+	 * 1.0 corresponds to the edge of the parent object
 	 */
-	public List<Comment> getCommentList() {
-		return comments;
+	public double getRelX() {
+		return relX;
 	}
 
 	/**
-	 * Gets the list of key value pair information properties.
-	 * 
-	 * @return properties the list of properties.
+	 * See getRelX
 	 */
-	public List<Property> getPropertyList() {
-		return properties;
+	public void setRelX(double relX) {
+		this.relX = relX;
 	}
 
 	/**
-	 * Gets the list of annotation references.
-	 * 
-	 * @return annotationRefs the list of annotation references.
+	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
+	 * 1.0 corresponds to the edge of the parent object
 	 */
-	public List<AnnotationRef> getAnnotationRefList() {
-		return annotationRefs;
+	public double getRelY() {
+		return relY;
 	}
 
 	/**
-	 * Gets the list of citation references.
-	 * 
-	 * @return citationRefs the list of citation references.
+	 * See getRelX
 	 */
-	public List<CitationRef> getCitationRefList() {
-		return citationRefs;
+	public void setRelY(double relY) {
+		this.relY = relY;
 	}
 
-//	public List<AnnotationRef> getAnnotationRefList() {
-//		if (annotationRefs == null) {
-//			annotationRefs = new ArrayList<AnnotationRef>();
-//		}
-//		return this.annotationRefs;
-//	}
+	public double getWidth() {
+		return width;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+	public FontProperty getFontProperty() {
+		return fontProperty;
+	}
+
+	public void setFontProperty(FontProperty fontProperty) {
+		this.fontProperty = fontProperty;
+	}
+
+	public ShapeStyleProperty getShapeStyleProperty() {
+		return shapeStyleProperty;
+	}
+
+	public void setShapeStyleProperty(ShapeStyleProperty shapeStyleProperty) {
+		this.shapeStyleProperty = shapeStyleProperty;
+	}
+	
+
+	/**
+	 * Gets the state Xref.
+	 * 
+	 * @return xref the state xref.
+	 */
+	public Xref getXref() {
+		return xref;
+	}
+
+	/**
+	 * Instantiates and sets the value of state Xref.
+	 * 
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
+	 */
+	public void setXref(String identifier, String dataSource) {
+		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+	}
+
 
 }

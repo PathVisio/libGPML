@@ -25,9 +25,9 @@ package org.pathvisio.model;
  */
 public class RectProperty {
 
-	protected Coordinate centerXY; // TODO: Coordinate
-	protected double width;
-	protected double height;
+	private Coordinate centerXY; // TODO: Coordinate
+	private double width;
+	private double height;
 
 	/**
 	 * Constructor for centering (position) an dimension properties.

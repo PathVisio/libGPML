@@ -31,15 +31,8 @@ public class Label extends PathwayElement {
 	private String elementId;
 	private String textLabel = "";
 	private String groupRef;
-	protected String href = ""; // hyperlink
-	protected RectProperty rectProperty;
-	protected FontProperty fontProperty;
-	protected ShapeStyleProperty shapeStyleProperty;
-	protected List<Comment> comments; // optional
-	protected List<DynamicProperty> dynamicProperties; // optional
-	protected List<AnnotationRef> annotationRefs; // optional
-	protected List<CitationRef> citationRefs; // optional
-	private List<EvidenceRef> evidenceRefs; // optional
+	private String href = ""; // hyperlink
+
 
 
 	// Add Constructors
@@ -149,47 +142,6 @@ public class Label extends PathwayElement {
 	}
 	
 	
-	/**
-	 * Gets the list of comments.
-	 * 
-	 * @return comments the list of comments.
-	 */
-	public List<Comment> getCommentList() {
-		return comments;
-	}
-
-	/**
-	 * Gets the list of key value pair information properties.
-	 * 
-	 * @return properties the list of properties.
-	 */
-	public List<Property> getPropertyList() {
-		return properties;
-	}
-
-	/**
-	 * Gets the list of annotation references.
-	 * 
-	 * @return annotationRefs the list of annotation references.
-	 */
-	public List<AnnotationRef> getAnnotationRefList() {
-		return annotationRefs;
-	}
-
-	/**
-	 * Gets the list of citation references.
-	 * 
-	 * @return citationRefs the list of citation references.
-	 */
-	public List<CitationRef> getCitationRefList() {
-		return citationRefs;
-	}
-
-//	public List<AnnotationRef> getAnnotationRefList() {
-//		if (annotationRefs == null) {
-//			annotationRefs = new ArrayList<AnnotationRef>();
-//		}
-//		return this.annotationRefs;
-//	}
+	
 
 }

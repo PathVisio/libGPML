@@ -14,42 +14,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.io;
 
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
+import org.jdom2.Element;
 
-/**
- * This class stores information for an Interaction pathway element.
- * 
- * @author finterly
- */
-public class Interaction extends LineElement {
-
-
-	private Xref xref;
+public interface GpmlFormatReader extends GpmlFormatVersion {
 	
+	public PathwayElement mapElement(Element e) throws ConverterException;
 
-	// Add Constructors
-
-	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
-
-	/**
-	 * Instantiates and sets the value of DataNode Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
-
+	public void readFromRoot(Element root, Pathway pwy) throws ConverterException;
 }

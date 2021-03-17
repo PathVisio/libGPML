@@ -14,42 +14,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.io;
 
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
+import java.util.List;
 
 /**
- * This class stores information for an Interaction pathway element.
- * 
- * @author finterly
+ * Common methods for {@link PathwayImporter}s and {@link PathwayExporter}s
  */
-public class Interaction extends LineElement {
-
-
-	private Xref xref;
-	
-
-	// Add Constructors
+public interface PathwayIO
+{
+	public String getName();
 
 	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
+	 * Get the possible extensions this importer/exporter can read (e.g. txt).
+	 * The extensions do not have to be unique. 
+	 * In case two importers use the same extension, the correct one will be chosen
+	 * based on the result of PathwayImporter.isCorrectFileType().
+	 * If that doesn't help, the user may be asked to pick an importer.
+	 * The first item in the array is assumed to be the preferred extension.
+	 * @return An array with the possible extensions (without '.')
 	 */
-	public Xref getXref() {
-		return xref;
-	}
+	public String[] getExtensions();
 
 	/**
-	 * Instantiates and sets the value of DataNode Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
+	 * After import or export, this can be used to check if there are any warnings
+	 * @returns a list of warning messages, or an empty list if there are none.
 	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
+	public List<String> getWarnings();
 
 }

@@ -27,12 +27,52 @@ import org.pathvisio.util.Utils;
  */
 public class Point extends PathwayElement {
 
-//	private String elementId; 
 	private String elementRef; // optional?
-	private LineType arrowHead; // optional
+	private LineType arrowHead; // line by default
 	private Coordinate xy;
 	private double relX; // optional
 	private double relY; // optional
+	
+	//TODO: PathwayElement parent? 
+
+	
+	
+	/**
+	 * Instantiates a Point pathway element, with reference to another pathway
+	 * element.
+	 * 
+	 * @param elementId  the unique id of the point.
+	 * @param elementRef the id of the pathway element to which the point refers.
+	 * @param arrowHead  the arrowhead property of the point.
+	 * @param x          the x coordinate position of the point.
+	 * @param y          the y coordinate position of the point.
+	 * @param relX       the relative x coordinate.
+	 * @param relY       the relative x coordinate.
+	 */
+	public Point(String elementId, String elementRef, LineType arrowHead, Coordinate xy, double relX, double relY) {
+		super(elementId);
+		this.elementRef = elementRef;
+		this.arrowHead = arrowHead;
+		this.xy = xy;
+		this.relX = relX;
+		this.relY = relY;
+	}
+
+	/**
+	 * Instantiates a Point pathway element, with no reference to another pathway
+	 * element.
+	 * 
+	 * @param elementId the unique id of the point.
+	 * @param arrowHead the arrowhead property of the point.
+	 * @param x         the x coordinate position of the point.
+	 * @param y         the y coordinate position of the point.
+	 */
+	public Point(String elementId, LineType arrowHead, Coordinate xy) {
+		super(elementId);
+		this.arrowHead = arrowHead;
+		this.xy = xy;
+	}
+
 
 	/*-----------------------------------------------------------------------*/
 
@@ -48,11 +88,10 @@ public class Point extends PathwayElement {
 		return elementRef;
 	}
 
-	
 	private ElementIdContainer getElementIdContainer() {
 		return getPathway().getElementIdContainer(elementRef);
 	}
-	
+
 	/**
 	 * Sets the elementRef of the point, indicates a child/parent relationship
 	 * between pathway elements. The elementRef of the child refers to the elementId
@@ -134,41 +173,7 @@ public class Point extends PathwayElement {
 
 	/*-----------------------------------------------------------------------*/
 
-	/**
-	 * Instantiates a Point pathway element, with reference to another pathway
-	 * element.
-	 * 
-	 * @param elementId  the unique id of the point.
-	 * @param elementRef the id of the pathway element to which the point refers.
-	 * @param arrowHead  the arrowhead property of the point.
-	 * @param x          the x coordinate position of the point.
-	 * @param y          the y coordinate position of the point.
-	 * @param relX       the relative x coordinate.
-	 * @param relY       the relative x coordinate.
-	 */
-	public Point(String elementId, String elementRef, LineType arrowHead, Coordinate xy, double relX, double relY) {
-		this.elementId = elementId;
-		this.elementRef = elementRef;
-		this.arrowHead = arrowHead;
-		this.xy = xy;
-		this.relX = relX;
-		this.relY = relY;
-	}
 
-	/**
-	 * Instantiates a Point pathway element, with no reference to another pathway
-	 * element.
-	 * 
-	 * @param elementId the unique id of the point.
-	 * @param arrowHead the arrowhead property of the point.
-	 * @param x         the x coordinate position of the point.
-	 * @param y         the y coordinate position of the point.
-	 */
-	public Point(String elementId, String arrowHead, Coordinate xy) {
-		this.elementId = elementId;
-		this.arrowHead = arrowHead;
-		this.xy = xy;
-	}
 
 	/**
 	 * Gets the arrowHead property of the point. Arrowhead specifies the glyph at
@@ -215,7 +220,6 @@ public class Point extends PathwayElement {
 	public void setXY(Coordinate xy) {
 		this.xy = xy;
 	}
-
 
 	/**
 	 * Gets the relative x coordinate. When the given point is linked to a pathway

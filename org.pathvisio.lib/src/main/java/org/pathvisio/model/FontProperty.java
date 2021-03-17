@@ -28,15 +28,15 @@ import org.pathvisio.util.Utils;
  */
 public class FontProperty {
 
-	protected Color textColor = Color.decode("000000"); // black
-	protected String fontName = "Arial"; // Arial
-	protected boolean fontWeight = false; // bold or normal
-	protected boolean fontStyle = false; // italic or normal
-	protected boolean fontDecoration = false; // underline or normal
-	protected boolean fontStrikethru = false;// strikethru or normal
-	protected double fontSize = 12; // 12
-	protected HAlignType hAlign = HAlignType.CENTER; // horizontal alignment of text
-	protected VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
+	private Color textColor = Color.decode("000000"); // black
+	private String fontName = "Arial"; // Arial
+	private boolean fontWeight = false; // bold or normal
+	private boolean fontStyle = false; // italic or normal
+	private boolean fontDecoration = false; // underline or normal
+	private boolean fontStrikethru = false;// strikethru or normal
+	private double fontSize = 12; // 12
+	private HAlignType hAlign = HAlignType.CENTER; // horizontal alignment of text
+	private VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
 
 	/**
 	 * Constructor for all font properties. Default values in ( ). 

@@ -26,11 +26,11 @@ import java.awt.Color;
  */
 public class LineStyleProperty {
 
-	protected Color lineColor = Color.decode("#000000"); // black
-	protected LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
-	protected double lineWidth = 1.0; // 1.0
+	private Color lineColor = Color.decode("#000000"); // black
+	private LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
+	private double lineWidth = 1.0; // 1.0
 	private ConnectorType connectorType = ConnectorType.STRAIGHT; // straight, elbow, curved...
-	protected int zOrder; // optional
+	private int zOrder; // optional
 
 	/**
 	 * Constructor for all line style properties. Default values in ( ).

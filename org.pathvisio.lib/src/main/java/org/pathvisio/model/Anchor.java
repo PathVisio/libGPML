@@ -27,12 +27,11 @@ import java.awt.geom.Point2D;
  */
 public class Anchor extends PathwayElement {
 
-//	private String elementId;
 	private double position;
 	private Coordinate xy;
 	private AnchorType shapeType = AnchorType.NONE;
-//	private PathwayElement parent;
-
+	
+	//TODO: PathwayElement parent? 
 	//TODO: Method to calculate xy from position! 
 	
 	/**
@@ -46,7 +45,7 @@ public class Anchor extends PathwayElement {
 	 * @param shapeType the visual representation of an anchor.
 	 */
 	public Anchor(String elementId, double position, Coordinate xy, AnchorType shapeType) {
-		this.elementId = elementId;
+		super(elementId);
 		this.position = position;
 		this.xy = xy;
 		if (shapeType != null)

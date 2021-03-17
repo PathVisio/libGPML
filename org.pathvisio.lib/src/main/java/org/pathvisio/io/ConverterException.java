@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2019 BiGCaT Bioinformatics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -14,13 +14,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.io;
 
 /**
- * This class stores information for GraphicalLine pathway element.
- * 
- * @author finterly
+ * Exception that occurs during import, export, save or load of a Pathway.
+ * @see PathwayExporter#doExport
+ * @see PathwayImporter#doImport
+ * @see Pathway#readFromXml
+ * @see Pathway#writeToXml
  */
-public class GraphicalLine extends LineElement {
+public class ConverterException extends Exception {
+
+
+	public ConverterException(String msg)
+	{
+		super(msg);
+	}
+
+	public ConverterException(Exception e)
+	{
+		super(e.getClass() + ": " + e.getMessage(), e);
+		setStackTrace(e.getStackTrace());
+	}
+
 
 }

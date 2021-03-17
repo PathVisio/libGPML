@@ -14,42 +14,43 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.io;
 
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class stores information for an Interaction pathway element.
+ * Abstract base class which implements PathwayImporter and PathwayExporter
+ * warnings mechanism.
  * 
- * @author finterly
+ * @author unknown, finterly
  */
-public class Interaction extends LineElement {
+public abstract class AbstractPathwayFormat implements PathwayImporter, PathwayExporter {
+	private List<String> warnings = new ArrayList<String>();
 
-
-	private Xref xref;
-	
-
-	// Add Constructors
-
-	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
+	protected void clearWarnings() {
+		warnings.clear();
 	}
 
 	/**
-	 * Instantiates and sets the value of DataNode Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
+	 * Can be used by overriding classes to add to the list of warnings. Don't
+	 * forget to call {@link clearWarnings} at the start of conversion.
+	 *
+	 * @param warning the string.
 	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+	protected void emitWarning(String warning) {
+		warnings.add(warning);
+	}
+
+	@Override
+	public boolean isCorrectType(File f) {
+		return true;
+	}
+
+	@Override
+	public List<String> getWarnings() {
+		return warnings;
 	}
 
 }

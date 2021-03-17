@@ -23,14 +23,39 @@ package org.pathvisio.model;
  */
 public class Author {
 
-	protected String name;
-	protected String fullName;
-	protected String email;
+	private String name;
+	private String fullName;
+	private String email;
 
-	public Author(String name, String fullName, String email) {
-		this.name = name;
-		this.fullName = fullName;
-		this.email = email;
+	public static class AuthorBuilder {
+		private String name; // required
+		private String fullName; // optional
+		private String email; // optional
+
+		public AuthorBuilder(String name) {
+			this.name = name;
+		}
+
+		public AuthorBuilder setFullName(String fullName) {
+			this.fullName = fullName;
+			return this;
+		}
+
+		public AuthorBuilder setEmail(String email) {
+			this.email = email;
+			return this;
+		}
+
+		public Author build() {
+			// call the private constructor in the outer class
+			return new Author(this);
+		}
+	}
+
+	private Author(AuthorBuilder builder) {
+		this.name = builder.name;
+		this.fullName = builder.fullName;
+		this.email = builder.email;
 	}
 
 	/**

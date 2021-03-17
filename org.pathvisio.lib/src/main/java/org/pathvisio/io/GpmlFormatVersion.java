@@ -14,42 +14,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.io;
 
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
+import org.jdom2.Document;
+import org.jdom2.Namespace;
 
-/**
- * This class stores information for an Interaction pathway element.
- * 
- * @author finterly
- */
-public class Interaction extends LineElement {
-
-
-	private Xref xref;
+public interface GpmlFormatVersion {
 	
-
-	// Add Constructors
-
-	/**
-	 * Gets the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
+	Namespace getGpmlNamespace();
 
 	/**
-	 * Instantiates and sets the value of DataNode Xref.
+	 * validates a JDOM document against the xml-schema definition specified by
+	 * 'xsdFile'
 	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
+	 * @param doc the document to validate
 	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
-
+	void validateDocument(Document doc) throws ConverterException;
 }

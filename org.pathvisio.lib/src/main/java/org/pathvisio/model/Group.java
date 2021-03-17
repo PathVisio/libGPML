@@ -16,9 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -27,66 +24,18 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Group extends PathwayElement{
+public class Group extends ShapedElement{
 
-	protected String elementId;
-	protected String textLabel; // optional
-	protected GroupType type = GroupType.GROUP; // optional
-	protected String groupRef; // if part of group
-	protected RectProperty rectProperty;
-	protected FontProperty fontProperty;
-	protected ShapeStyleProperty shapeStyleProperty;
-	protected Xref xref; // optional
-	protected List<Comment> comments; // optional
-	protected List<DynamicProperty> dynamicProperties; // optional
-	protected List<AnnotationRef> annotationRefs; // optional
-	protected List<CitationRef> citationRefs; // optional
-	protected List<EvidenceRef> evidenceRefs; // optional
+	private String textLabel; // optional
+	private GroupType type = GroupType.GROUP; // optional	
+	private Xref xref; // optional
+
 
 	// Add Constructors
 
-	/**
-	 * Gets the elementId of the group.
-	 * 
-	 * @return elementId the unique id of the group.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
 
-	/**
-	 * Sets the elementId of the group.
-	 * 
-	 * @param elementId the unique id of the group.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
 
-	/**
-	 * Gets the groupRef of the group. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
-	 * 
-	 * @return groupRef the groupRef of the group.
-	 * 
-	 */
-	public Object getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the groupRef of the group. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
-	 * 
-	 * @param groupRef the groupRef of the group.
-	 * 
-	 */
-	public void setGroupRef(String groupRef) {
-		this.groupRef = groupRef;
-	}
-
+	
 	/**
 	 * Gets the Group Xref.
 	 * 
@@ -154,47 +103,5 @@ public class Group extends PathwayElement{
 		}
 	}
 
-	/**
-	 * Gets the list of comments.
-	 * 
-	 * @return comments the list of comments.
-	 */
-	public List<Comment> getCommentList() {
-		return comments;
-	}
-
-	/**
-	 * Gets the list of key value pair information properties.
-	 * 
-	 * @return properties the list of properties.
-	 */
-	public List<Property> getPropertyList() {
-		return properties;
-	}
-
-	/**
-	 * Gets the list of annotation references.
-	 * 
-	 * @return annotationRefs the list of annotation references.
-	 */
-	public List<AnnotationRef> getAnnotationRefList() {
-		return annotationRefs;
-	}
-
-	/**
-	 * Gets the list of citation references.
-	 * 
-	 * @return citationRefs the list of citation references.
-	 */
-	public List<CitationRef> getCitationRefList() {
-		return citationRefs;
-	}
-
-//	public List<AnnotationRef> getAnnotationRefList() {
-//		if (annotationRefs == null) {
-//			annotationRefs = new ArrayList<AnnotationRef>();
-//		}
-//		return this.annotationRefs;
-//	}
 
 }

@@ -51,33 +51,38 @@ import org.pathvisio.util.Utils;
  */
 public class Pathway {
 
-	protected String title = "untitled";
-	protected String organism = null;
-	protected String source = null;
-	protected String version = null;
-	protected Xref xref;
-	protected List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
+	private String title = "untitled";
+	private String organism = null;
+	private String source = null;
+	private String version = null;
+	private Xref xref;
+	private List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
 
-	protected List<Annotation> annotations;
-	protected List<Citation> citations;
-	protected List<Evidence> evidences;
+	private List<Annotation> annotations;
+	private List<Citation> citations;
+	private List<Evidence> evidences;
 
-	protected List<Comment> comments = new ArrayList<Comment>(); // length 0 to unbounded
-	protected List<DynamicProperty> dynamicProperties = new ArrayList<DynamicProperty>(); // length 0 to unbounded
-	protected List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // length 0 to unbounded
-	protected List<CitationRef> citationRefs = new ArrayList<CitationRef>(); // length 0 to unbounded
-	protected List<EvidenceRef> evidenceRefs = new ArrayList<EvidenceRef>(); // length 0 to unbounded
-	protected double boardWidth;
-	protected double boardHeight;
+	private List<Comment> comments = new ArrayList<Comment>(); // length 0 to unbounded
+	private List<DynamicProperty> dynamicProperties = new ArrayList<DynamicProperty>(); // length 0 to unbounded
+	private List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // length 0 to unbounded
+	private List<CitationRef> citationRefs = new ArrayList<CitationRef>(); // length 0 to unbounded
+	private List<EvidenceRef> evidenceRefs = new ArrayList<EvidenceRef>(); // length 0 to unbounded
+	private double boardWidth;
+	private double boardHeight;
 
-	protected List<DataNode> dataNodes;
-	protected List<State> states;
-	protected List<Interaction> interactions;
-	protected List<GraphicalLine> graphicalLines;
-	protected List<Label> labels;
-	protected List<Shape> shapes;
-	protected List<Group> groups;
-	protected InfoBox infoBox;
+	private List<DataNode> dataNodes;
+	private List<State> states;
+	private List<Interaction> interactions;
+	private List<GraphicalLine> graphicalLines;
+	private List<Label> labels;
+	private List<Shape> shapes;
+	private List<Group> groups;
+	private InfoBox infoBox;
+
+	// Add/remove PathwayElement Methods
+	// Add/remove Author Methods
+	// Add/remove Comment, DynamicProperty,AnnotationRef,CitationRef,EvidenceRef
+	// Methods
 
 	/*
 	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
@@ -410,10 +415,28 @@ public class Pathway {
 	 * 
 	 * @param v
 	 */
-	public void setAuthor(List<Author> author) {
+	public void setAuthor(List<Author> authors) {
 		this.authors = authors;
 	}
 
+	
+	/**
+	 * 
+	 * @param v
+	 */
+	public void addAuthor(List<Author> authors) {
+		this.authors = authors;
+	}
+	
+	/**
+	 * 
+	 * @param v
+	 */
+	public void removeAuthor(List<Author> authors) {
+		this.authors = authors;
+	}
+	
+	
 	/**
 	 * Gets the board width. Board width together with board height define drawing
 	 * size.
@@ -502,12 +525,9 @@ public class Pathway {
 	 */
 	public List<Xref> getDataNodeXrefs() {
 		List<Xref> result = new ArrayList<Xref>();
-		for (PathwayElement e : dataObjects) {
-			if (e.getObjectType() == ObjectType.DATANODE) {
-				result.add(e.getXref());
-			}
+		for (DataNode dataNode : dataNodes) {
+			result.add(dataNode.getXref());
 		}
-		return result;
 	}
 
 	/**
@@ -519,11 +539,26 @@ public class Pathway {
 	public List<Xref> getLineXrefs() {
 		List<Xref> result = new ArrayList<Xref>();
 		for (PathwayElement e : dataObjects) {
-			if (e.getObjectType() == ObjectType.LINE) {
-				result.add(e.getXref());
+			if (e instanceof Interaction) {
+//				result.add(e.getXref());
 			}
 		}
-		return result;
+	}
+
+	/**
+	 * Returns the DataNode Xref.
+	 * 
+	 * @return xref the datanode xref.
+	 */
+	public Xref getXref() {
+		return xref;
+	}
+
+	public Xref setXref(String identifier, String dataSource) {
+		DataSource dataSource = dataSource;
+		Xref xref = new Xref(identifier, dataSource);
+		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
+		return new Xref(identifier, dataSource);
 	}
 
 	/**
@@ -790,5 +825,13 @@ public class Pathway {
 	 * the pathway.
 	 */
 	private List<String> biopaxReferenceToDelete = new ArrayList<String>();
+
+	public List<Author> getAuthors() {
+		return authors;
+	}
+
+	public void setAuthors(List<Author> authors) {
+		this.authors = authors;
+	}
 
 }

@@ -43,8 +43,15 @@ import org.pathvisio.util.Utils;
  */
 public abstract class PathwayElement implements ElementIdContainer, Comparable<PathwayElement> {
 
-	protected String elementId;
-	protected Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
+	private String elementId;
+	private Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
+
+	//TODO parent Pathway handle? 
+	
+	
+	public PathwayElement(String elementId) {
+		this.elementId = elementId;
+	}
 
 	/**
 	 * Returns the parent pathway.

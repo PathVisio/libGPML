@@ -16,150 +16,29 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.pathvisio.util.Utils;
 
 /**
- * This class stores all information relevant to a DataNode pathway element.
+ * This class stores information for a DataNode pathway element.
  * 
  * @author finterly
  */
-public class DataNode extends PathwayElement {
+public class DataNode extends ShapedElement {
 
-//	protected String elementId;
-	protected String elementRef; // optional
-	protected String textLabel;
-	protected DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
-	protected String groupRef; // optional
-	protected RectProperty rectProperty;
-	protected FontProperty fontProperty;
-	protected ShapeStyleProperty shapeStyleProperty;
-	protected Xref xref;
-	protected List<Comment> comments = new ArrayList<Comment>(); // length 0 to unbounded
-	protected List<DynamicProperty> dynamicProperties = new ArrayList<DynamicProperty>(); // length 0 to unbounded
-	protected List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // length 0 to unbounded
-	protected List<CitationRef> citationRefs = new ArrayList<CitationRef>(); // length 0 to unbounded
-	protected List<EvidenceRef> evidenceRefs = new ArrayList<EvidenceRef>(); // length 0 to unbounded
+	private String elementRef; // optional
+	private String textLabel;
+	private DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
+	private Xref xref;
+	// TODO elementRef methods
 
-	protected String identifier = "";
-
-	protected DataSource dataSource = null;
-
-	public String getIdentifier() {
-		return identifier;
+	public String getElementRef() {
+		return elementRef;
 	}
 
-	public void setIdentifier(String identifier) {
-		if (identifier == null) {
-			throw new IllegalArgumentException();
-		} else {
-			identifier = identifier.trim();
-			this.identifier = identifier;
-		}
+	public void setElementRef(String elementRef) {
+		this.elementRef = elementRef;
 	}
-
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-//	/** TODO
-//	 * Sets data node type to given DataNodeType.
-//	 * 
-//	 * @param dataNodeType the data node type.
-//	 */
-//	public void setDataNodeType(DataNodeType type) {
-//		setDataNodeType(type.getName());
-//	}
-
-//	/** TODO
-//	 * Sets data node type to given String.
-//	 * 
-//	 * @return dataNodeType the data node type.
-//	 */
-//	public void setDataNodeType(String value) {
-//		if (value == null) {
-//			throw new IllegalArgumentException();
-//		}
-//		if (!Utils.stringEquals(dataNodeType, value)) {
-//			dataNodeType = value;
-//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TYPE));
-//		}
-//	}
-
-	// Add Constructors
-
-	/**
-	 * Returns the groupRef of the datanode. A groupRef indicates an object is part
-	 * of a gpml:Group with a elementId.
-	 * 
-	 * @return groupRef the groupRef of the datanode.
-	 * 
-	 */
-	public Object getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the groupRef of the datanode. A groupRef indicates an object is part of
-	 * a gpml:Group with a elementId.
-	 * 
-	 * @param groupRef the groupRef of the datanode.
-	 * 
-	 */
-	public void getGroupRef(String groupRef) {
-		this.groupRef = groupRef;
-	}
-
-	/**
-	 * Returns the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
-
-	public Xref getXref() {
-		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
-		return new Xref(identifier, dataSource);
-	}
-
-	public String getXrefIdentifier() {
-		return xref.getId();
-	}
-
-	public DataSource getXrefDataSource(Xref xref) {
-		DataSource dataSource = xref.getDataSource();
-		String sysCode = dataSource.getSystemCode();
-		String fullName = dataSource.getFullName();
-		return dataSource;
-
-		// https://github.com/bridgedb/BridgeDb/blob/master/org.bridgedb/src/main/java/org/bridgedb/DataSource.java
-	}
-
-	/**
-	 * Instantiates and sets the value of DataNode Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
-
-	/**
-	 * Returns the source of data, e.g. the full name, code name or abbreviation of
-	 * the database...
-	 */
 
 	/**
 	 * Returns the text of of the datanode.
@@ -201,101 +80,34 @@ public class DataNode extends PathwayElement {
 	}
 
 	/**
-	 * Returns the list of comments.
+	 * Returns the DataNode Xref.
 	 * 
-	 * @return comments the list of comments.
+	 * @return xref the datanode xref.
 	 */
-	public List<Comment> getComments() {
-		return comments;
+	public Xref getXref() {
+		return xref;
+	}
+
+	public String getXrefIdentifier() {
+		return xref.getId();
+	}
+
+	public DataSource getXrefDataSource(Xref xref) {
+		DataSource dataSource = xref.getDataSource();
+		String sysCode = dataSource.getSystemCode();
+		String fullName = dataSource.getFullName();
+		return dataSource;
 	}
 
 	/**
-	 * Sets comments to given list of Comment.
+	 * Instantiates and sets the value of DataNode Xref.
 	 * 
-	 * @param comments the list of comments.
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
 	 */
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
+	public void setXref(String identifier, String dataSource) {
+		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 	}
-
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addComment(Comment comment) {
-		comments.add(comment);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeComment(Comment comment) {
-		comments.remove(comment);
-	}
-
-	/**
-	 * TODO: Move this
-	 * 
-	 * Adds String comment and String source...
-	 * 
-	 * @param comment the comment.
-	 * @param source  the source.
-	 */
-	public void addComment(String comment, String source) {
-		addComment(new Comment(comment, source));
-	}
-
-	/**
-	 * TODO: Need to be moved or something...
-	 * 
-	 * Finds the first comment with a specific source.
-	 * 
-	 * @returns the comment with a given source.
-	 */
-	public String findComment(String source) {
-		for (Comment c : comments) {
-			if (source.equals(c.source)) {
-				return c.comment;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the list of key value pair information properties.
-	 * 
-	 * @return properties the list of properties.
-	 */
-	public List<DynamicProperty> getProperties() {
-		return dynamicProperties;
-	}
-
-	/**
-	 * Returns the list of annotation references.
-	 * 
-	 * @return annotationRefs the list of annotation references.
-	 */
-	public List<AnnotationRef> getAnnotationRefs() {
-		return annotationRefs;
-	}
-
-	/**
-	 * Returns the list of citation references.
-	 * 
-	 * @return citationRefs the list of citation references.
-	 */
-	public List<CitationRef> getCitationRefs() {
-		return citationRefs;
-	}
-
-//	public List<AnnotationRef> getAnnotationRefList() {
-//		if (annotationRefs == null) {
-//			annotationRefs = new ArrayList<AnnotationRef>();
-//		}
-//		return this.annotationRefs;
-//	}
 
 }

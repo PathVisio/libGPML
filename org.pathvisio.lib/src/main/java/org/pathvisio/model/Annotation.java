@@ -26,12 +26,41 @@ import org.bridgedb.Xref;
  */
 public class Annotation extends PathwayElement {
 
-//	private String elementId;
-	private String name; // optional
-	private AnnotationType type; // optional
+	private String name;
+	private AnnotationType type;
 	private String url; // optional
 	private Xref xref; // optional
 
+	public Annotation(String elementId, String name, AnnotationType type) {
+		super(elementId);
+		this.name = name;
+		this.type = type;
+	}
+	
+	public Annotation(String elementId, String name, AnnotationType type, String url, Xref xref) {
+		super(elementId);
+		this.name = name;
+		this.type = type;
+		this.url = url;
+		this.xref = xref;
+	}
+	
+	public Annotation(String elementId, String name, AnnotationType type, String url) {
+		super(elementId);
+		this.name = name;
+		this.type = type;
+		this.url = url;
+	}
+
+	public Annotation(String elementId, String name, AnnotationType type, Xref xref) {
+		super(elementId);
+		this.name = name;
+		this.type = type;
+		this.xref = xref;
+	}
+	
+
+	
 	// Add Constructors
 
 	/**

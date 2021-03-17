@@ -26,7 +26,8 @@ import org.bridgedb.Xref;
  */
 public class Citation extends PathwayElement{
 	
-//	private String elementId;
+
+
 	private String url; //optional
 	private Xref xref; //optional
 
@@ -37,9 +38,9 @@ public class Citation extends PathwayElement{
 	 * @param elementId the unique id of the citation element.
 	 * @param xref      the citation xref.
 	 * @param url       the url of the citation.
-	 */
+	 */	
 	public Citation(String elementId, Xref xref, String url) {
-		this.elementId = elementId;
+		super(elementId);
 		if (xref != null)
 			this.xref = xref;
 		if (url != null)
@@ -54,7 +55,7 @@ public class Citation extends PathwayElement{
 	 * @param xref      the citation xref.
 	 */
 	public Citation(String elementId, Xref xref) {
-		this.elementId = elementId;
+		super(elementId);
 		if (xref != null)
 			this.xref = xref;
 	}
@@ -67,7 +68,7 @@ public class Citation extends PathwayElement{
 	 * @param url       the url of the citation.
 	 */
 	public Citation(String elementId, String url) {
-		this.elementId = elementId;
+		super(elementId);
 		if (url != null)
 			this.url = url;
 	}
