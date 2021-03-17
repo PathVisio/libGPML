@@ -41,7 +41,7 @@ import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.core.biopax.BiopaxElement;
 import org.pathvisio.core.debug.Logger;
-import org.pathvisio.core.model.GraphLink.GraphIdContainer;
+import org.pathvisio.model.*;
 import org.xml.sax.SAXException;
 
 /**
@@ -257,7 +257,7 @@ public abstract class GpmlFormatAbstract {
 	 * @param o the pathway element 
 	 * @throws ConverterException
 	 */
-	protected abstract void updateMappInfoVariable(Element root, PathwayElement o) throws ConverterException;
+	protected abstract void updateMappInfoVariable(Element root, Pathway p) throws ConverterException;
 
 	/**
 	 * Updates pathway information.
@@ -266,28 +266,32 @@ public abstract class GpmlFormatAbstract {
 	 * @param o
 	 * @throws ConverterException
 	 */
-	protected void updateMappInfo(Element root, PathwayElement o) throws ConverterException {
-		setAttribute("Pathway", "Name", root, o.getMapInfoName());
-		setAttribute("Pathway", "Data-Source", root, o.getMapInfoDataSource());
-		setAttribute("Pathway", "Version", root, o.getVersion());
-		setAttribute("Pathway", "Author", root, o.getAuthor());
-		setAttribute("Pathway", "Maintainer", root, o.getMaintainer());
-		setAttribute("Pathway", "Email", root, o.getEmail());
-		setAttribute("Pathway", "Last-Modified", root, o.getLastModified());
-		setAttribute("Pathway", "Organism", root, o.getOrganism());
+	protected void updateMappInfo(Element root, Pathway p) throws ConverterException {
+		setAttribute("Pathway", "Name", root, p.getTitle());
+		setAttribute("Pathway", "Organism", root, p.getOrganism());
+		setAttribute("Pathway", "Data-Source", root, p.getSource());
+		setAttribute("Pathway", "Version", root, p.getVersion());
+		
+		//TODO License? 
+		
+		//TODO Handle 		
+		setAttribute("Pathway", "Author", root, p.getAuthor());
+		setAttribute("Pathway", "Maintainer", root, p.getMaintainer());
+		setAttribute("Pathway", "Email", root, p.getEmail());
+		setAttribute("Pathway", "Last-Modified", root, p.getLastModified());
 
-		updateComments(o, root);
-		updateBiopaxRef(o, root);
-		updateAttributes(o, root);
+		updateComments(p, root);
+		updateBiopaxRef(p, root);
+		updateAttributes(p, root);
 
 		Element graphics = new Element("Graphics", nsGPML);
 		root.addContent(graphics);
 
-		double[] size = o.getMBoardSize();
+		double[] size = p.getMBoardSize();
 		setAttribute("Pathway.Graphics", "BoardWidth", graphics, "" + size[0]);
 		setAttribute("Pathway.Graphics", "BoardHeight", graphics, "" + size[1]);
 
-		updateMappInfoVariable(root, o);
+		updateMappInfoVariable(root, p);
 	}
 
 	public abstract PathwayElement mapElement(Element e, Pathway p) throws ConverterException;
@@ -367,7 +371,7 @@ public abstract class GpmlFormatAbstract {
 		}
 	}
 
-	protected void mapGraphId(ElementIdContainer o, Element e) {
+	protected void mapElementId(ElementIdContainer o, Element e) {
 		String id = e.getAttributeValue("GraphId");
 		// Never add graphid until all elements are mapped, to prevent duplcate ids!
 //		if((id == null || id.equals("")) && o.getGmmlData() != null) {
@@ -437,21 +441,24 @@ public abstract class GpmlFormatAbstract {
 		setAttribute("Group", "TextLabel", e, o.getTextLabel());
 	}
 
-	protected abstract void mapMappInfoDataVariable(PathwayElement o, Element e) throws ConverterException;
+	protected abstract void mapMappInfoDataVariable(Pathway p, Element e) throws ConverterException;
 
-	protected void mapMappInfoData(PathwayElement o, Element e) throws ConverterException {
-		o.setMapInfoName(getAttribute("Pathway", "Name", e));
-		o.setOrganism(getAttribute("Pathway", "Organism", e));
-		o.setMapInfoDataSource(getAttribute("Pathway", "Data-Source", e));
-		o.setVersion(getAttribute("Pathway", "Version", e));
-		o.setAuthor(getAttribute("Pathway", "Author", e));
-		o.setMaintainer(getAttribute("Pathway", "Maintainer", e));
-		o.setEmail(getAttribute("Pathway", "Email", e));
-		o.setLastModified(getAttribute("Pathway", "Last-Modified", e));
+	protected void mapMappInfoData(Pathway p, Element e) throws ConverterException {
+		p.setTitle(getAttribute("Pathway", "Name", e));
+		p.setOrganism(getAttribute("Pathway", "Organism", e));
+		p.setSource(getAttribute("Pathway", "Data-Source", e));
+		p.setVersion(getAttribute("Pathway", "Version", e));
+		
+		//TODO: HANDLE 
+		p.setAuthor(getAttribute("Pathway", "Author", e));
+		p.setMaintainer(getAttribute("Pathway", "Maintainer", e));
+		p.setEmail(getAttribute("Pathway", "Email", e));
+		p.setLastModified(getAttribute("Pathway", "Last-Modified", e));
 
-		mapMappInfoDataVariable(o, e);
+		mapMappInfoDataVariable(p, e);
 	}
 
+	//TODO HANDLE 
 	protected void updateBiopax(PathwayElement o, Element e) throws ConverterException {
 		Document bp = ((BiopaxElement) o).getBiopax();
 		if (e != null && bp != null) {

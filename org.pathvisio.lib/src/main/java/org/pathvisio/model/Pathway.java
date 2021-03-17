@@ -55,6 +55,8 @@ public class Pathway {
 	private String organism = null;
 	private String source = null;
 	private String version = null;
+	private String license = null;
+
 	private Xref xref;
 	private List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
 
@@ -71,6 +73,8 @@ public class Pathway {
 	private double boardHeight;
 
 	private List<DataNode> dataNodes;
+
+
 	private List<State> states;
 	private List<Interaction> interactions;
 	private List<GraphicalLine> graphicalLines;
@@ -79,6 +83,14 @@ public class Pathway {
 	private List<Group> groups;
 	private InfoBox infoBox;
 
+	
+	public List<DataNode> getDataNodes() {
+		return dataNodes;
+	}
+
+	public void setDataNodes(List<DataNode> dataNodes) {
+		this.dataNodes = dataNodes;
+	}
 	// Add/remove PathwayElement Methods
 	// Add/remove Author Methods
 	// Add/remove Comment, DynamicProperty,AnnotationRef,CitationRef,EvidenceRef
@@ -401,6 +413,15 @@ public class Pathway {
 			throw new IllegalArgumentException();
 		} else
 			this.version = version;
+	}
+
+	
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
 	}
 
 	/**

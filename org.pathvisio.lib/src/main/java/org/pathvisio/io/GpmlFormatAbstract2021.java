@@ -273,13 +273,14 @@ public abstract class GpmlFormatAbstract2021 {
 
 		// Add element Xref
 		Element xref = new Element("Xref", getGpmlNamespace());
-		
-		//TODO: How to handle DataSource properly? 
-		String dataSource = p.getXref().getDataSource().getFullName() == null ? "" : p.getXref().getDataSource().getFullName();
+
+		// TODO: How to handle DataSource properly?
+		String dataSource = p.getXref().getDataSource().getFullName() == null ? ""
+				: p.getXref().getDataSource().getFullName();
 		setAttribute("Pathway.Xref", "dataSource", xref, dataSource == null ? "" : dataSource);
-		setAttribute("Pathway.Xref", "identifier", xref, p.getXref().getId()); //TODO also "" for identifier? 
+		setAttribute("Pathway.Xref", "identifier", xref, p.getXref().getId()); // TODO also "" for identifier?
 		root.addContent(xref);
-		
+
 		// Add elements Author
 		for (Author a : p.getAuthors()) {
 			if (a == null)
@@ -290,7 +291,7 @@ public abstract class GpmlFormatAbstract2021 {
 			setAttribute("Pathway.Author", "email", author, a.getEmail());
 			root.addContent(author);
 		}
-		
+
 		Element graphics = new Element("Graphics", nsGPML);
 		root.addContent(graphics);
 		setAttribute("Pathway.Graphics", "BoardWidth", graphics, String.valueOf(p.getBoardWidth()));
@@ -303,57 +304,85 @@ public abstract class GpmlFormatAbstract2021 {
 		return mapElement(e, null);
 	}
 
-//	protected void mapColor(PathwayElement o, Element e) throws ConverterException {
-//		Element graphics = e.getChild("Graphics", e.getNamespace());
-//		String scol = getAttribute(e.getName() + ".Graphics", "Color", graphics);
-//		o.setColor(gmmlString2Color(scol));
-//	}
-
 	protected void mapLineColor(LineElement o, Element e) throws ConverterException {
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 		String scol = getAttribute(e.getName() + ".Graphics", "lineColor", graphics);
 		o.getLineStyleProperty().setLineColor(gmmlString2Color(scol));
+
 	}
 
-	// TODO Add BorderColor and TextColor....
+	protected void mapBorderColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String scol = getAttribute(e.getName() + ".Graphics", "lineColor", graphics);
+		o.getShapeStyleProperty().setBorderColor(gmmlString2Color(scol));
 
-	protected void mapShapeColor(PathwayElement o, Element e) throws ConverterException {
+	}
+
+	protected void mapTextColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String scol = getAttribute(e.getName() + ".Graphics", "lineColor", graphics);
+		o.getFontProperty().setTextColor(gmmlString2Color(scol));
+
+	}
+
+	protected void mapShapeColor(ShapedElement o, Element e) throws ConverterException {
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 		String scol = getAttribute(e.getName() + ".Graphics", "FillColor", graphics);
 		if (scol.equals("Transparent")) {
 			o.setTransparent(true);
 		} else {
 			o.setTransparent(false);
-			o.setFillColor(gmmlString2Color(scol));
+			o.getShapeStyleProperty().setFillColor(gmmlString2Color(scol));
 		}
 	}
 
-	protected void updateColor(PathwayElement o, Element e) throws ConverterException {
+	protected void updateLineColor(LineElement o, Element e) throws ConverterException {
 		if (e != null) {
 			Element jdomGraphics = e.getChild("Graphics", e.getNamespace());
 			if (jdomGraphics != null) {
-				setAttribute(e.getName() + ".Graphics", "Color", jdomGraphics, color2HexBin(o.getColor()));
+				setAttribute(e.getName() + ".Graphics", "Color", jdomGraphics,
+						color2HexBin(o.getLineStyleProperty().getLineColor()));
 			}
 		}
 	}
 
-	protected void updateShapeColor(PathwayElement o, Element e) throws ConverterException {
+	protected void updateBorderColor(ShapedElement o, Element e) throws ConverterException {
 		if (e != null) {
 			Element jdomGraphics = e.getChild("Graphics", e.getNamespace());
 			if (jdomGraphics != null) {
-				String val = o.isTransparent() ? "Transparent" : color2HexBin(o.getFillColor());
+				setAttribute(e.getName() + ".Graphics", "Color", jdomGraphics,
+						color2HexBin(o.getShapeStyleProperty().getBorderColor()));
+			}
+		}
+	}
+
+	protected void updateTextColor(ShapedElement o, Element e) throws ConverterException {
+		if (e != null) {
+			Element jdomGraphics = e.getChild("Graphics", e.getNamespace());
+			if (jdomGraphics != null) {
+				setAttribute(e.getName() + ".Graphics", "Color", jdomGraphics,
+						color2HexBin(o.getFontProperty().getTextColor()));
+			}
+		}
+	}
+
+	protected void updateShapeColor(ShapedElement o, Element e) throws ConverterException {
+		if (e != null) {
+			Element jdomGraphics = e.getChild("Graphics", e.getNamespace());
+			if (jdomGraphics != null) {
+				String val = o.isTransparent() ? "Transparent" : color2HexBin(o.getShapeStyleProperty().getFillColor());
 				setAttribute(e.getName() + ".Graphics", "FillColor", jdomGraphics, val);
 			}
 		}
 	}
 
-	protected void mapComments(PathwayElement o, Element e) throws ConverterException {
+	protected void mapComments(CommentGroupElement o, Element e) throws ConverterException {
 		for (Object f : e.getChildren("Comment", e.getNamespace())) {
 			o.addComment(((Element) f).getText(), getAttribute("Comment", "Source", (Element) f));
 		}
 	}
 
-	protected void updateComments(PathwayElement o, Element e) throws ConverterException {
+	protected void updateComments(CommentGroupElement o, Element e) throws ConverterException {
 		if (e != null) {
 			for (PathwayElement.Comment c : o.getComments()) {
 				Element f = new Element("Comment", e.getNamespace());
@@ -452,15 +481,15 @@ public abstract class GpmlFormatAbstract2021 {
 		setAttribute("Group", "textLabel", e, o.getTextLabel());
 	}
 
-	protected abstract void mapMappInfoDataVariable(PathwayElement o, Element e) throws ConverterException;
+	protected abstract void mapMappInfoDataVariable(Pathway p, Element e) throws ConverterException;
 
-	protected void mapMappInfoData(Pathway o, Element e) throws ConverterException {
-		o.setTitle(getAttribute("Pathway", "title", e));
-		o.setOrganism(getAttribute("Pathway", "organism", e));
-		o.setSource(getAttribute("Pathway", "source", e));
-		o.setVersion(getAttribute("Pathway", "version", e));
+	protected void mapMappInfoData(Pathway p, Element e) throws ConverterException {
+		p.setTitle(getAttribute("Pathway", "title", e));
+		p.setOrganism(getAttribute("Pathway", "organism", e));
+		p.setSource(getAttribute("Pathway", "source", e));
+		p.setVersion(getAttribute("Pathway", "version", e));
 
-		mapMappInfoDataVariable(o, e);
+		mapMappInfoDataVariable(p, e);
 	}
 
 	protected void updateBiopax(PathwayElement o, Element e) throws ConverterException {

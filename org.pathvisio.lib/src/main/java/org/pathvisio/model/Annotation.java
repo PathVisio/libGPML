@@ -31,33 +31,29 @@ public class Annotation extends PathwayElement {
 	private String url; // optional
 	private Xref xref; // optional
 
+	//TODO Fix constructors....
 	public Annotation(String elementId, String name, AnnotationType type) {
 		super(elementId);
 		this.name = name;
 		this.type = type;
 	}
 	
-	public Annotation(String elementId, String name, AnnotationType type, String url, Xref xref) {
-		super(elementId);
-		this.name = name;
-		this.type = type;
-		this.url = url;
-		this.xref = xref;
-	}
-	
 	public Annotation(String elementId, String name, AnnotationType type, String url) {
-		super(elementId);
-		this.name = name;
-		this.type = type;
+		this(elementId, name, type);
 		this.url = url;
 	}
 
 	public Annotation(String elementId, String name, AnnotationType type, Xref xref) {
-		super(elementId);
-		this.name = name;
-		this.type = type;
+		this(elementId, name, type);
 		this.xref = xref;
 	}
+	
+	public Annotation(String elementId, String name, AnnotationType type, String url, Xref xref) {
+		this(elementId, name, type, url);
+		this.xref = xref;
+	}
+	
+
 	
 
 	

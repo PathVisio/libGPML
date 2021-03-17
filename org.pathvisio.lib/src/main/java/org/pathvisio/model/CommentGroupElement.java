@@ -41,17 +41,7 @@ public class CommentGroupElement extends PathwayElement {
 
 	//TODO Builder or Constructor with empty Lists? 
 	
-	
-	public CommentGroupElement(String elementId, List<Comment> comments,
-			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<CitationRef> citationRefs,
-			List<EvidenceRef> evidenceRefs) {
-		super(elementId);
-		this.comments = comments;
-		this.dynamicProperties = dynamicProperties;
-		this.annotationRefs = annotationRefs;
-		this.citationRefs = citationRefs;
-		this.evidenceRefs = evidenceRefs;
-	}
+
 	
 	
 	
