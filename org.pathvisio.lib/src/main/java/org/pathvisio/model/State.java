@@ -28,7 +28,7 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
  * 
  * @author finterly
  */
-public class State extends ShapedElement {
+public class State extends PathwayElement {
 
 //	private String elementRef;
 	private String textLabel;

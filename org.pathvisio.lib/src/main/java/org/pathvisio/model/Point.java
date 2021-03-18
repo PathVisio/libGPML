@@ -27,7 +27,7 @@ import org.pathvisio.util.Utils;
  */
 public class Point extends GenericPoint {
 
-	private String elementRef; // optional?
+	private PathwayElement elementRef; // optional?
 	private LineType arrowHead; // line by default
 	private Coordinate xy;
 	private double relX; // optional

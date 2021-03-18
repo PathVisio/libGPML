@@ -32,7 +32,7 @@ import org.bridgedb.Xref;
  */
 public abstract class LineElement extends PathwayElement {
 
-	private String groupRef = null; // optional
+	private Group parentGroup; // optional instead of groupRef
 	private LineStyleProperty lineStyleProperty;
 	private List<Point> points;
 	private List<Anchor> anchors = new ArrayList<Anchor>();

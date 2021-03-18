@@ -27,6 +27,7 @@ public class Author {
 	private String fullName;
 	private String email;
 
+
 	public static class AuthorBuilder {
 		private String name; // required
 		private String fullName; // optional

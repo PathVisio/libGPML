@@ -31,32 +31,6 @@ import org.pathvisio.util.Utils;
  */
 public abstract class ElementLink {
 
-	/**
-	 * Generates random IDs, based on strings of hex digits (0..9 or a..f). IDs are
-	 * unique across elementIds per pathway and referenced by elementRefs and
-	 * groupRefs.
-	 * 
-	 * NB: elementId previously named graphId. Group pathway elements previously had
-	 * both elementId and groupId(deprecated).
-	 * 
-	 * @param ids the collection of already existing IDs.
-	 * @return result the new unique ID unique for this pathway.
-	 */
-	public static String getUniqueId(Set<String> ids) {
-		String result;
-		Random random = new Random();
-		int mod = 0x60000; // 3 hex letters
-		int min = 0xa0000; // must start with a letter
-		// add hex letters if set size large
-		if ((ids.size()) > 0x10000) {
-			mod = 0x60000000;
-			min = 0xa0000000;
-		}
-		do {
-			result = Integer.toHexString(Math.abs(random.nextInt()) % mod + min);
-		} while (ids.contains(result));
-		return result;
-	}
 
 	/**
 	 * Gives an object that implements the ElementIdContainer interface a elementId,
@@ -100,82 +74,5 @@ public abstract class ElementLink {
 			return parentPathway.getReferringObjects(elementId.getElementId());
 	}
 
-	/**
-	 * This interface allows iteration through all objects containing an elementId.
-	 * All pathway element classes have an elementId and implement this interface.
-	 * 
-	 * @author unknown, finterly
-	 */
-	public interface ElementIdContainer {
-
-		/**
-		 * Returns the parent Pathway object, needed for maintaining a consistent list
-		 * of elementIds.
-		 */
-		Pathway getPathway();
-
-		/**
-		 * Gets elementId.
-		 */
-		String getElementId();
-
-		/**
-		 * Sets elementId as given String id.
-		 * 
-		 * @param elementId the string elementId is set to.
-		 */
-		void setElementId(String elementId);
-
-		/**
-		 * Generates a unique elementId and uses that.
-		 */
-		String setGeneratedElementId();
-
-		/**
-		 * Returns a set of ElementRefContainer.
-		 */
-		Set<ElementRefContainer> getReferences();
-
-		/**
-		 * Converts a point to shape coordinates (relative to the bounds of the
-		 * ElementIdContainer).
-		 */
-		Point2D toRelativeCoordinate(Point2D p);
-
-		/**
-		 * Converts a point to pathway coordinates (relative to the pathway).
-		 */
-		Point2D toAbsoluteCoordinate(Point2D p);
-	}
-
-	/**
-	 * This interface allows iteration through all objects containing an elementRef.
-	 * Classes that refer to an ElementIdContainer implement this interface, e.g.
-	 * Point, State, DataNode, AnnotationRef, CitationRef, EvidenceRef.
-	 * 
-	 * @author unknown, finterly
-	 */
-	public interface ElementRefContainer {
-		/**
-		 * Returns the parent Pathway object, needed for maintaining a consistent list
-		 * of elementIds.
-		 */
-		Pathway getPathway();
-
-		String getElementRef();
-
-		void linkTo(ElementIdContainer elementIdContainer, double relX, double relY);
-
-		void unlink();
-
-		double getRelX();
-
-		double getRelY();
-
-		/**
-		 * Called whenever the object being referred to changes coordinates.
-		 */
-		void refeeChanged();
-	}
 
 }

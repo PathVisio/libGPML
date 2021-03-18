@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.List;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -29,7 +31,7 @@ public class Group extends ShapedElement{
 	private String textLabel; // optional
 	private GroupType type = GroupType.GROUP; // optional	
 	private Xref xref; // optional
-
+	private List<PathwayElement> pathwayElement; 
 
 	// Add Constructors
 

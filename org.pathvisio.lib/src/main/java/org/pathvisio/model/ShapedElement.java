@@ -24,7 +24,7 @@ package org.pathvisio.model;
  */
 public class ShapedElement extends PathwayElement {
 	
-	private String groupRef = null; // optional
+	private Group parentGroup; // optional
 	private RectProperty rectProperty;
 	private FontProperty fontProperty;
 	private ShapeStyleProperty shapeStyleProperty;

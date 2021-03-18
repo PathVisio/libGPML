@@ -23,7 +23,7 @@ import java.util.List;
  * 
  * @author finterly
  */
-public class AnnotationRef {
+public class AnnotationRef implement IElementRefContainer {
 
 	private Annotation annotation;
 	private List<Citation> citations;

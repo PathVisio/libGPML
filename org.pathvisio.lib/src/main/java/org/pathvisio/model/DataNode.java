@@ -26,7 +26,7 @@ import org.bridgedb.Xref;
  */
 public class DataNode extends PathwayElement {
 
-	private String elementRef; // optional
+	private PathwayElement elementRef; // optional references as an Alias 
 	private String textLabel;
 	private DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
 	private Xref xref;

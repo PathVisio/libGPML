@@ -32,7 +32,6 @@ public class ShapeStyleProperty {
 	private Color fillColor = Color.decode("ffffff"); // white TODO: Transparent if Label
 	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
 	private int zOrder; // optional
-	private PathwayElement parent; // TODO: is needed for label?
 
 	/**
 	 * Constructor for all shape style properties. Default values in ( ).
@@ -55,7 +54,6 @@ public class ShapeStyleProperty {
 		this.fillColor = fillColor;
 		this.shapeType = shapeType;
 		this.zOrder = zOrder;
-		this.parent = parent;
 	}
 
 	/**
@@ -70,7 +68,6 @@ public class ShapeStyleProperty {
 		this.borderWidth = borderWidth;
 		this.fillColor = fillColor;
 		this.shapeType = shapeType;
-		this.parent = parent;
 	}
 
 	/**

@@ -28,12 +28,12 @@ package org.pathvisio.model;
  */
 abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer {
 	
-	private Coordinate coordinates;
+	private Coordinate xy;
 
 	private String graphId;
 
-	GenericPoint(Coordinate coordinates) {
-		this.coordinates = coordinates;
+	GenericPoint(Coordinate xy) {
+		this.xy = xy;
 	}
 
 	/**

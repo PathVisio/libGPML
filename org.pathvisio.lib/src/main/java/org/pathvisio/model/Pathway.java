@@ -60,22 +60,20 @@ public class Pathway {
 	private Xref xref;
 	private List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
 
-	private List<Annotation> annotations;
-	private List<Citation> citations;
-	private List<Evidence> evidences;
+	private List<Annotation> annotations; //--> Manager Pathway.getCitationManager.getCitations() 
+	private List<Citation> citations; // --> Manager
+	private List<Evidence> evidences; // --> Manager
 
-	private List<Comment> comments = new ArrayList<Comment>(); // length 0 to unbounded
-	private List<DynamicProperty> dynamicProperties = new ArrayList<DynamicProperty>(); // length 0 to unbounded
-	private List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // length 0 to unbounded
-	private List<CitationRef> citationRefs = new ArrayList<CitationRef>(); // length 0 to unbounded
-	private List<EvidenceRef> evidenceRefs = new ArrayList<EvidenceRef>(); // length 0 to unbounded
+	private List<Comment> comments; // length 0 to unbounded
+	private List<DynamicProperty> dynamicProperties; // length 0 to unbounded
+	private List<AnnotationRef> annotationRefs; // length 0 to unbounded
+	private List<Citation> citationRefs; // length 0 to unbounded
+	private List<Evidence> evidenceRef; // length 0 to unbounded
 	private double boardWidth;
 	private double boardHeight;
 
 	private List<DataNode> dataNodes;
-
-
-	private List<State> states;
+//	private List<State> states;
 	private List<Interaction> interactions;
 	private List<GraphicalLine> graphicalLines;
 	private List<Label> labels;
@@ -96,6 +94,34 @@ public class Pathway {
 	// Add/remove Comment, DynamicProperty,AnnotationRef,CitationRef,EvidenceRef
 	// Methods
 
+	
+
+	/**
+	 * Generates random IDs, based on strings of hex digits (0..9 or a..f). IDs are
+	 * unique across elementIds per pathway and referenced by elementRefs and
+	 * groupRefs.
+	 * 
+	 * NB: elementId previously named graphId. Group pathway elements previously had
+	 * both elementId and groupId(deprecated).
+	 * 
+	 * @param ids the collection of already existing IDs.
+	 * @return result the new unique ID unique for this pathway.
+	 */
+	public static String getUniqueId(Set<String> ids) {
+		String result;
+		Random random = new Random();
+		int mod = 0x60000; // 3 hex letters
+		int min = 0xa0000; // must start with a letter
+		// add hex letters if set size large
+		if ((ids.size()) > 0x10000) {
+			mod = 0x60000000;
+			min = 0xa0000000;
+		}
+		do {
+			result = Integer.toHexString(Math.abs(random.nextInt()) % mod + min);
+		} while (ids.contains(result));
+		return result;
+	}
 	/*
 	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
 	 */
