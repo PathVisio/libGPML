@@ -24,12 +24,30 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class DataNode extends ShapedElement {
+public class DataNode extends PathwayElement {
 
 	private String elementRef; // optional
 	private String textLabel;
 	private DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
 	private Xref xref;
+
+	// Without elementRef
+	public DataNode(String elementId, String textLabel, DataNodeType type, Xref xref) {
+		super(elementId);
+		this.textLabel = textLabel;
+		this.type = type;
+		this.xref = xref;
+	}
+
+	// With all properties
+	public DataNode(String elementId, String elementRef, String textLabel, DataNodeType type, Xref xref) {
+		super(elementId);
+		this.elementRef = elementRef;
+		this.textLabel = textLabel;
+		this.type = type;
+		this.xref = xref;
+	}
+
 	// TODO elementRef methods
 
 	public String getElementRef() {

@@ -36,8 +36,10 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
 import org.pathvisio.util.Utils;
 
 /**
- * A class of pathway elements which are part of a pathway and have an
+ * Abstract class of pathway elements which are part of a pathway and have an
  * elementId.
+ * 
+ * Children: DataNode, State, Interaction, GraphicalLine, Label, Shape, Group.
  * 
  * @author unknown, AP20070508, finterly
  */
@@ -46,9 +48,16 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	private String elementId;
 	private Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
 
-	//TODO parent Pathway handle? 
-	
-	
+	// TODO parent Pathway handle?
+
+	private List<Comment> comments = new ArrayList<Comment>(); // length 0 to unbounded
+	private List<DynamicProperty> dynamicProperties = new ArrayList<DynamicProperty>();
+	private List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>();
+	private List<Citation> citations = new ArrayList<Citation>();
+	private List<Evidence> evidences = new ArrayList<Evidence>();
+
+	// TODO Builder or Constructor with empty Lists?
+
 	public PathwayElement(String elementId) {
 		this.elementId = elementId;
 	}
@@ -82,8 +91,6 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 		parentPathway = pathway;
 	}
 
-	
-	
 	/* ------------------------------- GROUPREF ------------------------------- */
 
 	protected String groupRef;
@@ -149,6 +156,7 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 			groupId = id;
 		}
 	}
+
 	/* ------------------------------- ELEMENTID ------------------------------- */
 	/**
 	 * @return
@@ -180,11 +188,12 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 		return elementId;
 	}
 	/* ------------------------------- ELEMENTREF ------------------------------- */
-	
+
 	protected String elementRef = null;
 
 	/**
-	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway element. 
+	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway
+	 * element.
 	 */
 	public Set<ElementRefContainer> getReferences() {
 		return ElementLink.getReferences(this, parentPathway);
@@ -205,7 +214,6 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 			elementRef = value;
 		}
 	}
-	
 
 	/* ------------------------------- OTHER.... ------------------------------- */
 
@@ -226,11 +234,8 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 		MPoint end = mPoints.get(mPoints.size() - 1);
 		end.setGraphRef(ref);
 	}
-	
 
-	
 	/* ------------------------------- OTHER.... ------------------------------- */
-
 
 	/**
 	 * Returns keys of available static properties and dynamic properties as an
@@ -279,8 +284,6 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 
 	/* ------------------------------- DATANODE ------------------------------- */
 
-
-
 	public void printRefsDebugInfo() {
 		System.err.println(objectType + " " + getElementId());
 		if (this instanceof MLine) {
@@ -295,4 +298,103 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 			System.err.println("  " + getElementRef());
 		}
 	}
+
+	/*
+	 * ------------------------------- CommentGroup -------------------------------
+	 */
+
+	/**
+	 * Returns the list of comments.
+	 * 
+	 * @return comments the list of comments.
+	 */
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	/**
+	 * Sets comments to given list of Comment.
+	 * 
+	 * @param comments the list of comments.
+	 */
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addComment(Comment comment) {
+		comments.add(comment);
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeComment(Comment comment) {
+		comments.remove(comment);
+	}
+
+	/**
+	 * TODO: Need to be moved or something...
+	 * 
+	 * Finds the first comment with a specific source.
+	 * 
+	 * @returns the comment with a given source.
+	 */
+	public String findComment(String source) {
+		for (Comment c : comments) {
+			if (source.equals(c.source)) {
+				return c.comment;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the list of key value pair information properties.
+	 * 
+	 * @return properties the list of properties.
+	 */
+	public List<DynamicProperty> getProperties() {
+		return dynamicProperties;
+	}
+
+	/**
+	 * Returns the list of annotation references.
+	 * 
+	 * @return annotationRefs the list of annotation references.
+	 */
+	public List<AnnotationRef> getAnnotationRefs() {
+		return annotationRefs;
+	}
+
+	/**
+	 * Returns the list of citation references.
+	 * 
+	 * @return citationRefs the list of citation references.
+	 */
+	public List<Citation> getCitations() {
+		return citations;
+	}
+
+	public List<Evidence> getEvidences() {
+		return evidences;
+	}
+
+	public void setEvidenceRefs(List<Evidence> evidences) {
+		this.evidences = evidences;
+	}
+
+//	public List<AnnotationRef> getAnnotationRefList() {
+//		if (annotationRefs == null) {
+//			annotationRefs = new ArrayList<AnnotationRef>();
+//		}
+//		return this.annotationRefs;
+//	}
+
 }

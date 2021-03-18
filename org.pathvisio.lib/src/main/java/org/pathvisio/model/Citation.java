@@ -20,16 +20,15 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
 /**
- * This class stores all information relevant to a Citation pathway element.
+ * This class stores information for a Citation.
  * 
  * @author saurabh, finterly
  */
-public class Citation extends PathwayElement{
-	
+public class Citation {
 
-
-	private String url; //optional
-	private Xref xref; //optional
+	private String elementId;
+	private String url; // optional
+	private Xref xref; // optional
 
 	/**
 	 * Instantiates a Citation pathway element given elementId, given xref, and
@@ -38,9 +37,10 @@ public class Citation extends PathwayElement{
 	 * @param elementId the unique id of the citation element.
 	 * @param xref      the citation xref.
 	 * @param url       the url of the citation.
-	 */	
+	 */
 	public Citation(String elementId, Xref xref, String url) {
-		super(elementId);
+		if (elementId != null)
+			this.elementId = elementId;
 		if (xref != null)
 			this.xref = xref;
 		if (url != null)
@@ -55,7 +55,8 @@ public class Citation extends PathwayElement{
 	 * @param xref      the citation xref.
 	 */
 	public Citation(String elementId, Xref xref) {
-		super(elementId);
+		if (elementId != null)
+			this.elementId = elementId;
 		if (xref != null)
 			this.xref = xref;
 	}
@@ -68,7 +69,8 @@ public class Citation extends PathwayElement{
 	 * @param url       the url of the citation.
 	 */
 	public Citation(String elementId, String url) {
-		super(elementId);
+		if (elementId != null)
+			this.elementId = elementId;
 		if (url != null)
 			this.url = url;
 	}

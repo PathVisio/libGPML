@@ -25,7 +25,7 @@ import java.awt.geom.Point2D;
  * 
  * @author finterly
  */
-public class Anchor extends PathwayElement {
+public class Anchor extends GenericPoint {
 
 	private double position;
 	private Coordinate xy;

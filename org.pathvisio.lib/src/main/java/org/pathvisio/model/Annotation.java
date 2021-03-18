@@ -20,12 +20,13 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
 /**
- * This class stores all information relevant to a Annotation pathway element.
+ * This class stores information for an Annotation.
  * 
  * @author finterly
  */
-public class Annotation extends PathwayElement {
+public class Annotation {
 
+	private String elementId;
 	private String name;
 	private AnnotationType type;
 	private String url; // optional
@@ -33,7 +34,7 @@ public class Annotation extends PathwayElement {
 
 	//TODO Fix constructors....
 	public Annotation(String elementId, String name, AnnotationType type) {
-		super(elementId);
+		this.elementId = elementId;
 		this.name = name;
 		this.type = type;
 	}

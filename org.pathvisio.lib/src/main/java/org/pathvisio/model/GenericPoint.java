@@ -27,11 +27,12 @@ package org.pathvisio.model;
  *
  */
 abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer {
-	private double[] coordinates;
+	
+	private Coordinate coordinates;
 
 	private String graphId;
 
-	GenericPoint(double[] coordinates) {
+	GenericPoint(Coordinate coordinates) {
 		this.coordinates = coordinates;
 	}
 
@@ -47,13 +48,13 @@ abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer
 			graphId = p.graphId;
 	}
 
-	protected void moveBy(double[] delta) {
+	protected void moveBy(Coordinate delta) {
 		for (int i = 0; i < coordinates.length; i++) {
 			coordinates[i] += delta[i];
 		}
 	}
 
-	protected void moveTo(double[] coordinates) {
+	protected void moveTo(Coordinate coordinates) {
 		this.coordinates = coordinates;
 	}
 

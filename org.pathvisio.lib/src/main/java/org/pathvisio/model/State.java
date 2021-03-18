@@ -28,9 +28,9 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
  * 
  * @author finterly
  */
-public class State extends CommentGroupElement implements ElementRefContainer {
+public class State extends ShapedElement {
 
-	private String elementRef;
+//	private String elementRef;
 	private String textLabel;
 	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
 	private double relX;

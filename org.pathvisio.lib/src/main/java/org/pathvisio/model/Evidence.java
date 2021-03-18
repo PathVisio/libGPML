@@ -20,57 +20,69 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
 /**
- * This class stores all information relevant to an Evidence pathway element.
+ * This class stores information for an Evidence.
  * 
  * @author finterly
  */
-public class Evidence extends PathwayElement{
-	
+public class Evidence {
+
 	private String elementId;
-	private String name; 
-	private String url; 
-	private Xref xref; 
+	private Xref xref;
+	private String name; // optional
+	private String url; // optional
 
-	/**
-	 * Instantiates a Citation pathway element given elementId, given xref, and
-	 * given url.
-	 * 
-	 * @param elementId the unique id of the citation element.
-	 * @param xref      the citation xref.
-	 * @param url       the url of the citation.
-	 */
-	public Citation(String elementId, Xref xref, String url) {
-		this.elementId = elementId;
-		if (xref != null)
+	// Uses Builder
+
+	public static class EvidenceBuilder {
+		private String elementId;
+		private Xref xref;
+		private String name; // optional
+		private String url; // optional
+
+		public EvidenceBuilder(String elementId, Xref xref) {
+			this.elementId = elementId;
 			this.xref = xref;
-		if (url != null)
+		}
+
+		public EvidenceBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public EvidenceBuilder setUrl(String url) {
 			this.url = url;
+			return this;
+		}
+
+		public Evidence build() {
+			// call the private constructor in the outer class
+			return new Evidence(this);
+		}
+	}
+
+	private Evidence(EvidenceBuilder builder) {
+		this.elementId = builder.elementId;
+		this.xref = builder.xref;
+		this.setName(builder.name);
+		this.url = builder.url;
 	}
 
 	/**
-	 * Instantiates a Citation pathway element given elementId, given xref, and no
-	 * url.
+	 * Gets the elementId of the citation.
 	 * 
-	 * @param elementId the unique id of the citation element.
-	 * @param xref      the citation xref.
+	 * @return elementId the unique id of the citation.
 	 */
-	public Citation(String elementId, Xref xref) {
-		this.elementId = elementId;
-		if (xref != null)
-			this.xref = xref;
+	public String getElementId() {
+		return elementId;
 	}
 
 	/**
-	 * Instantiates a Citation pathway element given elementId, given url, and no
-	 * xref.
+	 * Sets ID of the citations
 	 * 
-	 * @param elementId the unique id of the citation element.
-	 * @param url       the url of the citation.
+	 * @param elementId the unique id of the citation.
 	 */
-	public Citation(String elementId, String url) {
+	public void setElementId(String elementId) {
 		this.elementId = elementId;
-		if (url != null)
-			this.url = url;
 	}
 
 	/**
@@ -93,22 +105,12 @@ public class Evidence extends PathwayElement{
 		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 	}
 
-	/**
-	 * Gets the elementId of the citation.
-	 * 
-	 * @return elementId the unique id of the citation.
-	 */
-	public String getElementId() {
-		return elementId;
+	public String getName() {
+		return name;
 	}
 
-	/**
-	 * Sets ID of the citations
-	 * 
-	 * @param elementId the unique id of the citation.
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -130,4 +132,3 @@ public class Evidence extends PathwayElement{
 	}
 
 }
-

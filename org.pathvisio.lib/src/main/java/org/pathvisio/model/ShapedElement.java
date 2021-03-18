@@ -22,7 +22,7 @@ package org.pathvisio.model;
  * 
  * @author finterly
  */
-public class ShapedElement extends CommentGroupElement {
+public class ShapedElement extends PathwayElement {
 	
 	private String groupRef = null; // optional
 	private RectProperty rectProperty;

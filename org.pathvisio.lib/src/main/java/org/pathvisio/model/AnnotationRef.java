@@ -19,17 +19,15 @@ package org.pathvisio.model;
 import java.util.List;
 
 /**
- * This class stores all information relevant to an AnnotationRef. AnnotationRef
- * refers to the unique elementId of an Annotation pathway element. In the case
- * that meta annotations are used to annotate other annotations, AnnotationRef
- * may contain a list of annotationRefs (meta annotations).
+ * This class stores information for an AnnotationRef.
  * 
  * @author finterly
  */
 public class AnnotationRef {
 
-	private String elementRef;
-	private List<AnnotationRef> annotationRefs;
+	private Annotation annotation;
+	private List<Citation> citations;
+	private List<Evidence> evidences;
 
 	/**
 	 * Instantiates a AnnotationRef given elementRef and given a list of

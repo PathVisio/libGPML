@@ -25,7 +25,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class Point extends PathwayElement {
+public class Point extends GenericPoint {
 
 	private String elementRef; // optional?
 	private LineType arrowHead; // line by default
