@@ -17,7 +17,15 @@
 package org.pathvisio.model;
 
 /**
- * This class stores all information relevant to an Author.
+ * This class stores all information relevant to an Author. An Author must have
+ * name and optionally fullName and/or email.
+ * 
+ * Because constructors cannot have the same signature, a builder pattern is
+ * implemented for Author. Example of how an Author object can be created:
+ * 
+ * Author author = new Author.AuthorBuilder("Jan") 
+ * 		.setfullName("Jan Doe")
+ * 		.setEmail("jdoe@gmail.com").build();
  * 
  * @author finterly
  */
@@ -27,32 +35,64 @@ public class Author {
 	private String fullName;
 	private String email;
 
-
+	/**
+	 * This builder class builds an Author object step-by-step.
+	 * 
+	 * @author finterly
+	 */
 	public static class AuthorBuilder {
 		private String name; // required
 		private String fullName; // optional
 		private String email; // optional
 
+		/**
+		 * Public constructor with required attribute name as parameter.
+		 * 
+		 * @param name the name of this author.
+		 */
 		public AuthorBuilder(String name) {
 			this.name = name;
 		}
 
+		/**
+		 * Sets fullName and returns this builder object.
+		 * 
+		 * @param fullName the full name of this author.
+		 * @return the AuthorBuilder object.
+		 */
 		public AuthorBuilder setFullName(String fullName) {
 			this.fullName = fullName;
 			return this;
 		}
 
+		/**
+		 * Sets email and returns this builder object.
+		 * 
+		 * @param email the email of this author.
+		 * @return the AuthorBuilder object.
+		 */
 		public AuthorBuilder setEmail(String email) {
 			this.email = email;
 			return this;
 		}
 
+		/**
+		 * Calls the private constructor in the Author class and passes builder object
+		 * itself as the parameter to this private constructor.
+		 * 
+		 * @return the created Author object.
+		 */
 		public Author build() {
-			// call the private constructor in the outer class
 			return new Author(this);
 		}
 	}
 
+	/**
+	 * Private constructor for Author which takes AuthorBuilder object as its
+	 * argument.
+	 * 
+	 * @param builder the AuthorBuilder object.
+	 */
 	private Author(AuthorBuilder builder) {
 		this.name = builder.name;
 		this.fullName = builder.fullName;
@@ -87,7 +127,7 @@ public class Author {
 	}
 
 	/**
-	 * Sets the name of this author.
+	 * Sets the full name of this author.
 	 * 
 	 * @param fullName the full name of this author.
 	 */
