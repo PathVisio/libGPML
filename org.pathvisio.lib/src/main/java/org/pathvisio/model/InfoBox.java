@@ -17,13 +17,13 @@
 package org.pathvisio.model;
 
 /**
- * This class stores all information relevant to the InfoBox pathway element.
- * InfoBox element holds the coordinates where information, e.g. name and
- * organism, are displayed in the pathway. (Currently just a placeholder)
+ * This class stores information for the InfoBox. InfoBox holds the xy
+ * coordinates for where information, e.g. name and organism, are displayed in
+ * the pathway. Is Pathway.InfoBox or gpml:InfoBox in GPML.
  * 
  * @author finterly
  */
-public class InfoBox extends PathwayElement {
+public class InfoBox {
 
 	private double centerX;
 	private double centerY;

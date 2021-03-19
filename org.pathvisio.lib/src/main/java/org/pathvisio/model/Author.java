@@ -17,15 +17,15 @@
 package org.pathvisio.model;
 
 /**
- * This class stores all information relevant to an Author. An Author must have
- * name and optionally fullName and/or email.
+ * This class stores information for an Author. An Author must have name and
+ * optionally fullName and/or email. Is Pathway.Author in GPML. 
  * 
  * Because constructors cannot have the same signature, a builder pattern is
  * implemented for Author. Example of how an Author object can be created:
  * 
  * Author author = new Author.AuthorBuilder("Jan") 
- * 		.setfullName("Jan Doe")
- * 		.setEmail("jdoe@gmail.com").build();
+ * 			.setfullName("Jan Doe")
+ * 			.setEmail("jdoe@gmail.com").build();
  * 
  * @author finterly
  */
