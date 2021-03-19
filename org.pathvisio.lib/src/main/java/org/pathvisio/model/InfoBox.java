@@ -25,55 +25,40 @@ package org.pathvisio.model;
  */
 public class InfoBox {
 
-	private double centerX;
-	private double centerY;
+	private Coordinate centerXY;
 
 	/**
 	 * Instantiates a InfoBox pathway element.
 	 * 
-	 * @param centerX the middle of the info box in the x direction.
-	 * @param centerY the middle of the info box in the y direction.
+	 * @param centerXY the middle of the info box in the x and y direction.
 	 */
-	public InfoBox(double centerX, double centerY) {
-		this.centerX = centerX;
-		this.centerY = centerY;
+	public InfoBox(Coordinate centerXY) {
+		this.centerXY = centerXY;
 	}
 
 	/**
-	 * Gets the center x coordinate of the info box.
-	 * 
-	 * @return centerX the middle of the info box in the x direction.
+	 * Instantiates a InfoBox pathway element with default coordinates x = 0, y = 0.
 	 */
-	public double getCenterX() {
-		return centerX;
+	public InfoBox() {
+		this.centerXY = new Coordinate(0, 0);
 	}
 
 	/**
-	 * Sets the center x coordinate of the info box.
+	 * Gets the center x and y coordinate of the info box.
 	 * 
-	 * @param centerX the middle of the info box in the x direction.
+	 * @return centerXY the middle of the info box.
 	 */
-	public void setCenterX(double centerX) {
-		this.centerX = centerX;
+	public Coordinate getCenterXY() {
+		return centerXY;
 	}
 
 	/**
-	 * Gets the center y coordinate of the info box.
+	 * Sets the center x and y coordinate of the info box.
 	 * 
-	 * @return centerY the middle of the info box in the y direction.
+	 * @param centerXY the middle of the info box.
 	 */
-	public double getCenterY() {
-		return centerY;
-	}
-
-	/**
-	 * Sets the center y coordinate of the info box.
-	 * 
-	 * @param centerY the middle of the info box in the y direction.
-	 * 
-	 */
-	public void setCenterY(double centerY) {
-		this.centerY = centerY;
+	public void setCenterXY(Coordinate centerXY) {
+		this.centerXY = centerXY;
 	}
 
 }

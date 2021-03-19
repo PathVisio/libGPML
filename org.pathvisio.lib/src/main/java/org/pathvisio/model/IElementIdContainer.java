@@ -12,6 +12,10 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
  * @author unknown, finterly
  */
 public interface IElementIdContainer {
+	
+	
+	boolean isValidElementId(String elementId);
+
 	/**
 	 * Returns the parent Pathway object, needed for maintaining a consistent list
 	 * of elementIds.

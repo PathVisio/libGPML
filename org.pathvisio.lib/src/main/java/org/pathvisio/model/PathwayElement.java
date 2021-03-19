@@ -61,6 +61,9 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	// TODO Builder or Constructor with empty Lists?
 
 	public PathwayElement(String elementId) {
+		
+		// TODO use setter since its complicated...
+		setElementId();
 		this.elementId = elementId;
 		
 		comments = new ArrayList<Comment>(); // length 0 to unbounded

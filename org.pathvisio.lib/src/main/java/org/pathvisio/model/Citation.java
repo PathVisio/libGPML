@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.geom.Point2D;
+import java.util.Set;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -24,7 +27,7 @@ import org.bridgedb.Xref;
  * 
  * @author saurabh, finterly
  */
-public class Citation {
+public class Citation implements IElementIdContainer {
 
 	private String elementId;
 	private String url; // optional
@@ -39,13 +42,35 @@ public class Citation {
 	 * @param url       the url of the citation.
 	 */
 	public Citation(String elementId, Xref xref, String url) {
-		if (elementId != null)
-			this.elementId = elementId;
-		if (xref != null)
-			this.xref = xref;
-		if (url != null)
-			this.url = url;
+
+		// TODO use setter since its complicated...
+		setElementId();
+		this.elementId = elementId;
+		this.xref = xref;
+		this.url = url;
 	}
+
+	
+
+	public boolean isValidElementId(String elementId) {
+		if (elementId == null && isUniqueElementId(elementId) == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isValidUrl(String url2) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean isValidXref(Xref xref2) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 
 	/**
 	 * Instantiates a Citation pathway element given elementId, given xref, and no
@@ -55,10 +80,7 @@ public class Citation {
 	 * @param xref      the citation xref.
 	 */
 	public Citation(String elementId, Xref xref) {
-		if (elementId != null)
-			this.elementId = elementId;
-		if (xref != null)
-			this.xref = xref;
+		this(elementId, xref, null);
 	}
 
 	/**
@@ -69,10 +91,7 @@ public class Citation {
 	 * @param url       the url of the citation.
 	 */
 	public Citation(String elementId, String url) {
-		if (elementId != null)
-			this.elementId = elementId;
-		if (url != null)
-			this.url = url;
+		this(elementId, null, url);
 	}
 
 	/**
