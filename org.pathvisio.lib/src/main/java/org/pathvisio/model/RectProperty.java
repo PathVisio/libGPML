@@ -70,6 +70,7 @@ public class RectProperty {
 		return width;
 	}
 
+	
 	/**
 	 * Sets the width of an object.
 	 * 

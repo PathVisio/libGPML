@@ -26,27 +26,47 @@ package org.pathvisio.model;
  * @author thomas, finterly
  *
  */
-abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer {
+abstract class GenericPoint implements Cloneable, IElementIdContainer {
 	
-	private Coordinate xy;
+	private String elementId;
+	private Coordinate coordinates;
+	private Pathway parent;
+	
 
-	private String graphId;
-
-	GenericPoint(Coordinate xy) {
-		this.xy = xy;
+	GenericPoint(Coordinate coordinates) {
+		this.coordinates = coordinates;
 	}
 
+
 	/**
-	 * Copy Constructor 
+	 * Copy Constructor???
 	 * 
 	 * @param p
 	 */
 	GenericPoint(GenericPoint p) {
-		coordinates = new double[p.coordinates.length];
-		System.arraycopy(p.coordinates, 0, coordinates, 0, coordinates.length);
-		if (p.graphId != null)
-			graphId = p.graphId;
+		coordinates = p.coordinates;
+		if (p.elementId != null)
+			elementId = p.elementId;
 	}
+	
+	public Object clone() throws CloneNotSupportedException {
+		GenericPoint p = (GenericPoint) super.clone();
+		if (elementId != null)
+			p.elementId = elementId;
+		return p;
+	}
+	
+//	/**
+//	 * Copy Constructor 
+//	 * 
+//	 * @param p
+//	 */
+//	GenericPoint(GenericPoint p) {
+//		coordinates = new double[p.coordinates.length];
+//		System.arraycopy(p.coordinates, 0, coordinates, 0, coordinates.length);
+//		if (p.elementId != null)
+//			elementId = p.elementId;
+//	}
 
 	protected void moveBy(Coordinate delta) {
 		for (int i = 0; i < coordinates.length; i++) {
@@ -54,7 +74,7 @@ abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer
 		}
 	}
 
-	protected void moveTo(Coordinate coordinates) {
+	protected void setCoordinates(Coordinate coordinates) {
 		this.coordinates = coordinates;
 	}
 
@@ -62,30 +82,24 @@ abstract class GenericPoint implements Cloneable, ElementLink.ElementIdContainer
 		coordinates = p.coordinates;
 	}
 
-	protected double getCoordinate(int i) {
-		return coordinates[i];
-	}
+//	protected double getCoordinate(int i) {
+//		return coordinates[i];
+//	}
 
 	public String getElementId() {
-		return graphId;
+		return elementId;
 	}
 
 	public String setGeneratedElementId() {
 		setElementId(parent.getUniqueGraphId());
-		return graphId;
+		return elementId;
 	}
 
 	public void setElementId(String v) {
 		ElementLink.setElementId(v, this, PathwayElement.this.parent);
-		graphId = v;
+		elementId = v;
 	}
 
-	public Object clone() throws CloneNotSupportedException {
-		GenericPoint p = (GenericPoint) super.clone();
-		if (graphId != null)
-			p.graphId = graphId;
-		return p;
-	}
 
 	public Set<ElementRefContainer> getReferences() {
 		return ElementLink.getReferences(this, parent);

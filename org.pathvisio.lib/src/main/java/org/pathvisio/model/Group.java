@@ -26,18 +26,17 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Group extends ShapedElement{
+public class Group extends ShapedElement {
 
 	private String textLabel; // optional
-	private GroupType type = GroupType.GROUP; // optional	
+	private GroupType type = GroupType.GROUP;
 	private Xref xref; // optional
-	private List<PathwayElement> pathwayElement; 
+	private List<PathwayElement> pathwayElements; // 0 to unbounded
 
-	// Add Constructors
-
-
-
+	// TODO Add Constructors
 	
+	
+
 	/**
 	 * Gets the Group Xref.
 	 * 
@@ -98,12 +97,7 @@ public class Group extends ShapedElement{
 	 * @param type the type of group, e.g. complex.
 	 */
 	public void setType(GroupType type) {
-		if (this.type != type) {
-			this.type = type;
-			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
-			// StaticProperty.GROUPTYPE));
-		}
+		this.type = type;
 	}
-
 
 }

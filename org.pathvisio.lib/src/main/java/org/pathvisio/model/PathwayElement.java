@@ -48,35 +48,25 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	private String elementId;
 	private Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
 
-	// TODO parent Pathway handle?
+	// TODO parent Pathway handle, Builder or empty lists
 
-
-	private List<Comment> comments = null; // length 0 to unbounded
+	private List<Comment> comments; 
 	private List<DynamicProperty> dynamicProperties;
 	private List<AnnotationRef> annotationRefs;
 	private List<Citation> citations;
 	private List<Evidence> evidences;
-	
-	
-	// TODO Builder or Constructor with empty Lists?
 
 	public PathwayElement(String elementId) {
-		
-		// TODO use setter since its complicated...
-		setElementId();
-		this.elementId = elementId;
-		
-		comments = new ArrayList<Comment>(); // length 0 to unbounded
-		dynamicProperties = new ArrayList<DynamicProperty>();
-		annotationRefs = new ArrayList<AnnotationRef>();
-		citations = new ArrayList<Citation>();
-		evidences = new ArrayList<Evidence>();
-	}
-	
-	
 
-  
-	
+		// setElementId(); TODO use setter since its complicated...
+		this.elementId = elementId;
+		this.comments = new ArrayList<Comment>(); // 0 to unbounded
+		this.dynamicProperties = new ArrayList<DynamicProperty>(); // 0 to unbounded
+		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
+		this.citations = new ArrayList<Citation>(); // 0 to unbounded
+		this.evidences = new ArrayList<Evidence>(); // 0 to unbounded
+	}
+
 	/**
 	 * Returns the parent pathway.
 	 * 

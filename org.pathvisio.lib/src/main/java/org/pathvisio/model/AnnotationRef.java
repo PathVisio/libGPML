@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,75 +24,55 @@ import java.util.List;
  * 
  * @author finterly
  */
-public class AnnotationRef implement IElementRefContainer {
+public class AnnotationRef implements IElementRefContainer {
 
-	private Annotation annotation;
-	private List<Citation> citations;
-	private List<Evidence> evidences;
+	private Annotation annotation; // elementRef in GPML is this.annotation.getElementId()
+	private List<Citation> citations; // 0 to unbounded
+	private List<Evidence> evidences; // 0 to unbounded
 
+	//TODO Annotation reference tricky...
+	
 	/**
-	 * Instantiates a AnnotationRef given elementRef and given a list of
-	 * annotationRefs, meta annotations used to annotate the referenced Annotation.
+	 * Instantiates an AnnotationRef given annotation and initializes citation and
+	 * evidence lists.
 	 * 
-	 * @param elementRef     the id of the Annotation element to which the
-	 *                       AnnotationRef refers.
-	 * @param annotationRefs the list of meta annotation references.
+	 * @param annotation the Annotation this AnnotationRef refers to.
 	 */
-	public AnnotationRef(String elementRef, List<AnnotationRef> annotationRefs) {
-		super();
-		this.elementRef = elementRef;
-		this.annotationRefs = annotationRefs;
+	public AnnotationRef(Annotation annotation) {
+		this.annotation = annotation;
+		this.citations = new ArrayList<Citation>();
+		this.evidences = new ArrayList<Evidence>();
 	}
 
-	/**
-	 * Instantiates a AnnotationRef given elementRef and no meta annotationRefs.
-	 * 
-	 * @param elementRef the id of the Annotation element to which the AnnotationRef
-	 *                   refers.
-	 */
-	public AnnotationRef(String elementRef) {
-		super();
-		this.elementRef = elementRef;
+	public Annotation getAnnotation() {
+		return annotation;
 	}
 
-	/**
-	 * Gets elementRef of the AnnotationRef, refers to the elementId of an
-	 * Annotation.
-	 * 
-	 * @return elementRef the id of the Annotation element to which the
-	 *         AnnotationRef refers.
-	 */
-	public String getElementRef() {
-		return elementRef;
+	public void setAnnotation(Annotation annotation) {
+		this.annotation = annotation;
 	}
 
-	/**
-	 * Sets elementRef of the AnnotationRef, refers to the elementId of an
-	 * Annotation.
-	 * 
-	 * @param elementRef the id of the Annotation element to which the AnnotationRef
-	 *                   refers.
-	 */
-	public void setElementRef(String elementRef) {
-		this.elementRef = elementRef;
+	public List<Citation> getCitations() {
+		return citations;
 	}
 
-	/**
-	 * Gets the list of meta annotationRefs.
-	 * 
-	 * @return annotationRefs the list of meta annotation references.
-	 */
-	public List<AnnotationRef> getAnnotationRefList() {
-		return annotationRefs;
+	public void addCitation(Citation citation) {
+		citations.add(citation);
+	}
+	
+	public void removeCitation(Citation citation) {
+		citations.remove(citation);
 	}
 
-	/**
-	 * Sets the list of meta annotationRefs.
-	 * 
-	 * @param annotationRefs the list of meta annotation references.
-	 */
-	public void setAnnotationRefList(List<AnnotationRef> annotationRefs) {
-		this.annotationRefs = annotationRefs;
+	public List<Evidence> getEvidences() {
+		return evidences;
 	}
 
+	public void addEvidence(Evidence evidence) {
+		evidences.add(evidence);
+	}
+
+	public void removeEvidence(Evidence evidence) {
+		evidences.remove(evidence);
+	}
 }

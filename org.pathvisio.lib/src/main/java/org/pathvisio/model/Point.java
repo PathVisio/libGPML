@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.ElementLink.ElementIdContainer;
-import org.pathvisio.model.ElementLink.ElementRefContainer;
 import org.pathvisio.util.Utils;
 
 /**
@@ -27,9 +25,9 @@ import org.pathvisio.util.Utils;
  */
 public class Point extends GenericPoint {
 
-	private PathwayElement elementRef; // optional?
+	private PathwayElement elementRef; // TODO PATHWAY ELEMENT DOES NOT INCLUDE ANCHOR!!!
 	private LineType arrowHead; // line by default
-	private Coordinate xy;
+	private Coordinate xy; // TODO: part of generic point 
 	private double relX; // optional
 	private double relY; // optional
 	
@@ -68,9 +66,7 @@ public class Point extends GenericPoint {
 	 * @param y         the y coordinate position of the point.
 	 */
 	public Point(String elementId, LineType arrowHead, Coordinate xy) {
-		super(elementId);
-		this.arrowHead = arrowHead;
-		this.xy = xy;
+		this(elementId, null, arrowHead, xy, null, null);
 	}
 
 
