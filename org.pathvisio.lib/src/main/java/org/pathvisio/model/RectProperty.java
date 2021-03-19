@@ -19,18 +19,18 @@ package org.pathvisio.model;
 /**
  * This class stores information for centering (position) and dimension
  * properties of a two dimensional object, e.g. Pathway elements: DataNode,
- * Shape, Label.
+ * State, Label, Shape, and Group. Is gpml:RectAttributes in GPML.
  * 
  * @author finterly
  */
 public class RectProperty {
 
-	private Coordinate centerXY; // TODO: Coordinate
+	private Coordinate centerXY;
 	private double width;
 	private double height;
 
 	/**
-	 * Constructor for centering (position) an dimension properties.
+	 * Constructor for centering and dimension properties.
 	 * 
 	 * @param centerX the x coordinate of the middle of an object.
 	 * @param centerY the y coordinate of the middle of an object.
@@ -48,7 +48,7 @@ public class RectProperty {
 	 * 
 	 * @return centerXY the middle of an object in the x and y direction.
 	 */
-	public Coordinate getCenterX() {
+	public Coordinate getCenterXY() {
 		return centerXY;
 	}
 
@@ -57,7 +57,7 @@ public class RectProperty {
 	 * 
 	 * @param centerXY the middle of an object in the x and y direction.
 	 */
-	public void setCenterX(Coordinate centerXY) {
+	public void setCenterXY(Coordinate centerXY) {
 		this.centerXY = centerXY;
 	}
 
