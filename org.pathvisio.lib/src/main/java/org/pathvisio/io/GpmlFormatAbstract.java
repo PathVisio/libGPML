@@ -277,13 +277,12 @@ public abstract class GpmlFormatAbstract {
 		// TODO Handle
 		setAttribute("Pathway", "Author", root, p.getAuthor.getName());
 		setAttribute("Pathway", "Email", root, p.getEmail());
-
 		setAttribute("Pathway", "Maintainer", root, p.getMaintainer());
 		setAttribute("Pathway", "Last-Modified", root, p.getLastModified());
-
 		writeComments(p, root);
 		writeBiopaxRef(p, root);
 		writeAttributes(p, root);
+		
 
 		Element graphics = new Element("Graphics", nsGPML);
 		root.addContent(graphics);
@@ -406,6 +405,7 @@ public abstract class GpmlFormatAbstract {
 		}
 	}
 
+	//TODO 
 	protected void readElementId(ElementIdContainer o, Element e) {
 		String id = e.getAttributeValue("GraphId");
 		// Never add graphid until all elements are readped, to prevent duplcate ids!
@@ -417,6 +417,7 @@ public abstract class GpmlFormatAbstract {
 		}
 	}
 
+	//TODO 
 	protected void writeGraphId(ElementIdContainer o, Element e) {
 		String id = o.getElementId();
 		// id has to be unique!

@@ -275,10 +275,10 @@ public abstract class GpmlFormatAbstract2021 {
 		Element xref = new Element("Xref", getGpmlNamespace());
 
 		// TODO: How to handle DataSource properly?
-		String dataSource = p.getXref().getDataSource().getFullName() == null ? ""
-				: p.getXref().getDataSource().getFullName();
+		String identifier = p.getXref().getId();
+		String dataSource = p.getXref().getDataSource().getFullName();
 		setAttribute("Pathway.Xref", "dataSource", xref, dataSource == null ? "" : dataSource);
-		setAttribute("Pathway.Xref", "identifier", xref, p.getXref().getId()); // TODO also "" for identifier?
+		setAttribute("Pathway.Xref", "identifier", xref, identifier); // TODO also "" for identifier?
 		root.addContent(xref);
 
 		// Add elements Author
