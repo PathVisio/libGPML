@@ -27,8 +27,10 @@ import java.util.List;
  */
 public class OrientationType {
 
-	// warning: don't change these constants. Correct mapping to .MAPP format
-	// depends on it.
+	/**
+	 * Warning: don't change these constants. Correct mapping to .MAPP format
+	 * depends on it
+	 */
 	public static final int TOP = 0;
 	public static final int RIGHT = 1;
 	public static final int BOTTOM = 2;

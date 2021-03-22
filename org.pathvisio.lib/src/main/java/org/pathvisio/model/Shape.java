@@ -30,7 +30,7 @@ public class Shape extends ShapedElement {
 
 	private String textLabel;
 	private ShapeType type; // TODO: Getter/Setter weird
-	private String rotation = 0; // in radians
+	private double rotation = 0; // in radians
 
 	// Add Constructors
 
@@ -75,23 +75,6 @@ public class Shape extends ShapedElement {
 	}
 
 
-	/**
-	 * Sets the rotation of this shape.
-	 * 
-	 * @return rotation the rotation of this shape.
-	 */
-	public void setRotation(double rotation) {
-		if (this.rotation != rotation) {
-			this.rotation = rotation;
-
-			// Rotation is not stored for State, so we use a dynamic property.
-			// TODO: remove after next GPML update.
-			if (objectType == ObjectType.STATE && rotation != 0) {
-				setDynamicProperty(State.ROTATION_KEY, "" + rotation);
-			}
-		}
-
-	}
 
 	/**
 	 * Gets the text of of the shape.
@@ -132,25 +115,28 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Gets the value of the rotation property.
+	 * Gets the rotation of this shape.
 	 * 
 	 * @return rotation the rotation of the shape.
 	 */
-	public String getRotation() {
-		if (rotation == null) {
-			return "Top";
-		} else {
+	public double getRotation() {
+
 			return rotation;
-		}
+		
 	}
 
 	/**
-	 * Sets the value of the rotation property.
+	 * Sets the rotation of this shape.
 	 * 
 	 * @param rotation the rotation of the shape.
 	 */
-	public void setRotation(String value) {
-		this.rotation = value;
+	public void setRotation(String rotation) {
+		this.rotation = rotation;
+		
+//		// Rotation is not stored for State, so we use a dynamic property.
+//		// TODO: remove after next GPML update.
+//		if (objectType == ObjectType.STATE && rotation != 0) {
+//			setDynamicProperty(State.ROTATION_KEY, "" + rotation);
 	}
 
 }

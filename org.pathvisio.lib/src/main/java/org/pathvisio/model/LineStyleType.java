@@ -23,7 +23,8 @@ import java.util.Map;
 
 /**
  * This class contains possible values for line style property. Line style can
- * be either solid, dashed or double.
+ * be either solid, dashed or double. Used for lineStyle {@link LineStyleProperty} 
+ * and borderStyle {@link ShapeStyleProperty}. 
  * 
  * NB: Not to be confused with LineType, which defines the appearance of the
  * arrow head.
@@ -36,7 +37,7 @@ import java.util.Map;
  * @author unknown, finterly
  */
 public class LineStyleType {
-	
+
 	private static Map<String, LineStyleType> nameToLineStyleType = new HashMap<String, LineStyleType>();
 	private static List<LineStyleType> lineStyleTypes = new ArrayList<LineStyleType>();
 
@@ -50,9 +51,9 @@ public class LineStyleType {
 	private String name;
 
 	/**
-	 * The constructor is private. LineStyleType cannot be directly instantiated. Use
-	 * create() method to instantiate LineStyleType.
-	 *  
+	 * The constructor is private. LineStyleType cannot be directly instantiated.
+	 * Use create() method to instantiate LineStyleType.
+	 * 
 	 * @param name the string identifier of this LineStyleType.
 	 * @throws NullPointerException if name is null.
 	 */

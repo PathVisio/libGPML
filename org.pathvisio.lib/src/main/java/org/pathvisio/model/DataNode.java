@@ -31,14 +31,6 @@ public class DataNode extends PathwayElement {
 	private DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
 	private Xref xref;
 
-	// Without elementRef
-	public DataNode(String elementId, String textLabel, DataNodeType type, Xref xref) {
-		super(elementId);
-		this.textLabel = textLabel;
-		this.type = type;
-		this.xref = xref;
-	}
-
 	// With all properties
 	public DataNode(String elementId, String elementRef, String textLabel, DataNodeType type, Xref xref) {
 		super(elementId);
@@ -47,6 +39,16 @@ public class DataNode extends PathwayElement {
 		this.type = type;
 		this.xref = xref;
 	}
+	
+	// Without elementRef
+	public DataNode(String elementId, String textLabel, DataNodeType type, Xref xref) {
+		super(elementId);
+		this.textLabel = textLabel;
+		this.type = type;
+		this.xref = xref;
+	}
+
+
 
 	// TODO elementRef methods
 
@@ -106,16 +108,16 @@ public class DataNode extends PathwayElement {
 		return xref;
 	}
 
-	public String getXrefIdentifier() {
-		return xref.getId();
-	}
-
-	public DataSource getXrefDataSource(Xref xref) {
-		DataSource dataSource = xref.getDataSource();
-		String sysCode = dataSource.getSystemCode();
-		String fullName = dataSource.getFullName();
-		return dataSource;
-	}
+//	public String getXrefIdentifier() {
+//		return xref.getId();
+//	}
+//
+//	public DataSource getXrefDataSource() {
+//		DataSource dataSource = xref.getDataSource();
+//		String sysCode = dataSource.getSystemCode();
+//		String fullName = dataSource.getFullName();
+//		return dataSource;
+//	}
 
 	/**
 	 * Instantiates and sets the value of DataNode Xref.
