@@ -59,11 +59,15 @@ public abstract class LineElement extends PathwayElement {
 	public void setGroupRef(String groupRef) {
 		this.groupRef = groupRef;
 	}
-	
-	
+
 //	private List<MPoint> mPoints = Arrays.asList(new Point(), new Point());
 
-	public void setMPoints(List<MPoint> points) {
+	public List<Point> getPoints() {
+		return points;
+	}
+
+	// TODO needed? 
+	public void setPoints(List<Point> points) {
 		if (points != null) {
 			if (points.size() < 2) {
 				throw new IllegalArgumentException("Points array should at least have two elements");
@@ -72,17 +76,12 @@ public abstract class LineElement extends PathwayElement {
 		}
 	}
 
-	public List<MPoint> getPoints() {
-		return points;
+	public void addPoint(Point point) {
+		points.add(point);
 	}
 
-	/**
-	 * Get the anchors for this line.
-	 * 
-	 * @return A list with the anchors, or an empty list, if no anchors are defined
-	 */
-	public List<MAnchor> getMAnchors() {
-		return anchors;
+	public void removePoint(Point point) {
+		points.remove(point);
 	}
 
 	public LineStyleProperty getLineStyleProperty() {
@@ -93,12 +92,28 @@ public abstract class LineElement extends PathwayElement {
 		this.lineStyleProperty = lineStyleProperty;
 	}
 
+	/**
+	 * Get the anchors for this line.
+	 * 
+	 * @return A list with the anchors, or an empty list, if no anchors are defined
+	 */
 	public List<Anchor> getAnchors() {
 		return anchors;
 	}
 
-	public void setAnchors(List<Anchor> anchors) {
-		this.anchors = anchors;
+	public void addAnchors(Anchor anchor) {
+		anchors.add(anchor);
+	}
 
+	public void removeAnchors(Anchor anchor) {
+		anchors.remove(anchor);
+	}
+
+	public Group getParentGroup() {
+		return parentGroup;
+	}
+
+	public void setParentGroup(Group parentGroup) {
+		this.parentGroup = parentGroup;
 	}
 }

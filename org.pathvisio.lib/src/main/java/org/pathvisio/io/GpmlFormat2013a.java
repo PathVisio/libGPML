@@ -274,22 +274,6 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param e
 	 * @throws ConverterException
 	 */
-	private void writeShapedElement(ShapedElement o, Element e) throws ConverterException {
-		String base = e.getName();
-		String groupRef = o.getParentGroup().getElementId();
-		setAttribute(base, "GroupRef", e, groupRef);
-		writeRectProperty(o, e);
-		writeFontProperty(o, e);
-		writeShapeStyleProperty(o, e);
-	}
-
-	/**
-	 * DataNode, Label, Shape, Group
-	 * 
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
 	private void readShapedElement(ShapedElement o, Element e) throws ConverterException {
 		String base = e.getName();
 		String groupRef = getAttribute(base, "GroupRef", e);
@@ -300,42 +284,19 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	}
 
 	/**
-	 *
+	 * DataNode, Label, Shape, Group
+	 * 
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
 	 */
-	public Element createJdomElement(PathwayElement o) throws ConverterException {
-		Element e = null;
-		switch (o.getObjectType()) {
-
-		case LINE:
-			e = new Element("Interaction", getGpmlNamespace());
-			writeCommon(o, e);
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			e.addContent(new Element("Xref", getGpmlNamespace()));
-			writeLine(o, e); // Xref
-			writeLineData(o, e);
-			writeLineStyle(o, e);
-			writeGraphId(o, e);
-			writeGroupRef(o, e);
-			break;
-		case GRAPHLINE:
-			e = new Element("GraphicalLine", getGpmlNamespace());
-			writeCommon(o, e);
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			writeLineData(o, e);
-			writeLineStyle(o, e);
-			writeGraphId(o, e);
-			writeGroupRef(o, e);
-			break;
-
-		case BIOPAX:
-			e = new Element("Biopax", getGpmlNamespace());
-			writeBiopax(o, e);
-			break;
-		}
-		if (e == null) {
-			throw new ConverterException("Error creating jdom element with objectType " + o.getObjectType());
-		}
-		return e;
+	private void writeShapedElement(ShapedElement o, Element e) throws ConverterException {
+		String base = e.getName();
+		String groupRef = o.getParentGroup().getElementId();
+		setAttribute(base, "GroupRef", e, groupRef);
+		writeRectProperty(o, e);
+		writeFontProperty(o, e);
+		writeShapeStyleProperty(o, e);
 	}
 
 	/**
@@ -492,7 +453,6 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 		o.getFontProperty().setVAlign(VAlignType.fromName(vAlignType));
 	}
 
-	
 	/**
 	 * Gets FontProperty values from model and writes to gpml FontAttributes for
 	 * Graphics element of the given pathway element.
@@ -729,6 +689,8 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 		Element xref = e.getChild("Xref", e.getNamespace());
 		String identifier = getAttribute("DataNode.Xref", "ID", xref);
 		String dataSource = getAttribute("DataNode.Xref", "Database", xref);
+		o.setXref(identifier, dataSource);
+
 	}
 
 	/**
@@ -849,6 +811,7 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	protected void readInteraction(Interaction o, Element e) throws ConverterException {
+		readLineElement(o, e);
 		Element xref = e.getChild("Xref", e.getNamespace());
 		String identifier = getAttribute("Interaction.Xref", "ID", xref);
 		String dataSource = getAttribute("Interaction.Xref", "Database", xref);
@@ -861,11 +824,13 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	protected void writeInteraction(Interaction o, Element e) throws ConverterException {
+		writeLineElement(o, e);
 		Element xref = e.getChild("Xref", e.getNamespace());
 		String identifier = o.getXref().getId();
 		String dataSource = o.getXref().getDataSource().getFullName();
 		setAttribute("Interaction.Xref", "Database", xref, dataSource == null ? "" : dataSource);
 		setAttribute("Interaction.Xref", "ID", xref, identifier);
+
 	}
 
 	/**
@@ -873,40 +838,53 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void mapLineData(PathwayElement o, Element e) throws ConverterException {
+	protected void readLineElement(LineElement o, Element e) throws ConverterException {
+
+		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 
-		List<MPoint> mPoints = new ArrayList<MPoint>();
+		readPathwayElement(o, e); /** TODO elementId, CommentGroup */
+		String groupRef = getAttribute(base, "GroupRef", e); // TODO GroupRef
+		o.setGroupRef(groupRef);
+		readLineStyleProperty(o, e);
 
 		String startType = null;
 		String endType = null;
 
-		List<Element> pointElements = graphics.getChildren("Point", e.getNamespace());
-		for (int i = 0; i < pointElements.size(); i++) {
-			Element pe = pointElements.get(i);
-			MPoint mp = o.new MPoint(Double.parseDouble(getAttribute("Interaction.Graphics.Point", "X", pe)),
-					Double.parseDouble(getAttribute("Interaction.Graphics.Point", "Y", pe)));
-			mPoints.add(mp);
-			String ref = getAttribute("Interaction.Graphics.Point", "GraphRef", pe);
-			if (ref != null) {
-				mp.setGraphRef(ref);
-				String srx = pe.getAttributeValue("RelX");
-				String sry = pe.getAttributeValue("RelY");
-				if (srx != null && sry != null) {
-					mp.setRelativePosition(Double.parseDouble(srx), Double.parseDouble(sry));
-				}
-			}
+		List<Point> pts = new ArrayList<Point>();
+		List<Element> points = graphics.getChildren("Point", e.getNamespace());
+		for (int i = 0; i < points.size(); i++) {
+			Element point = points.get(i);
 
-			if (i == 0) {
-				startType = getAttribute("Interaction.Graphics.Point", "ArrowHead", pe);
-			} else if (i == pointElements.size() - 1) {
-				endType = getAttribute("Interaction.Graphics.Point", "ArrowHead", pe);
+			Point pt = new Point();
+			String elementId = getAttribute(base + ".Graphics.Point", "GraphId", point); // TODO ElementId
+			double x = Double.parseDouble(getAttribute(base + ".Graphics.Point", "X", point));
+			double y = Double.parseDouble(getAttribute(base + ".Graphics.Point", "Y", point));
+
+			String graphRef = getAttribute(base + ".Graphics.Point", "GraphRef", point);
+			String relX = point.getAttributeValue("RelX");
+			String relY = point.getAttributeValue("RelY");
+			String arrowHead = getAttribute("Interaction.Graphics.Point", "ArrowHead", point);
+
+			if (graphRef != null) {
+				pt.setGraphRef(graphRef); // TODO GraphRef
 			}
+			if (relX != null && relY != null) {
+				pt.setRelX(Double.parseDouble(relX));
+				pt.setRelY(Double.parseDouble(relY));
+			}
+			if (arrowHead != null) {
+				pt.setArrowHead(arrowHead);
+			} else {
+				pt.setArrowHead(LineType.LINE);
+
+			}
+//			arrowHead == null ? LineType.LINE : arrowHead;
+//			o.setMPoints(mPoints);
+//			o.setStartLineType(LineType.fromName(startType));
+//			o.setEndLineType(LineType.fromName(endType));
+			pts.add(pt);
 		}
-
-		o.setMPoints(mPoints);
-		o.setStartLineType(LineType.fromName(startType));
-		o.setEndLineType(LineType.fromName(endType));
 
 		// Map anchors
 		List<Element> anchors = graphics.getChildren("Anchor", e.getNamespace());
@@ -926,36 +904,42 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void writeLineData(PathwayElement o, Element e) throws ConverterException {
-		Element jdomGraphics = e.getChild("Graphics", e.getNamespace());
-		List<MPoint> mPoints = o.getMPoints();
+	protected void writeLineElement(LineElement o, Element e) throws ConverterException {
 
-		for (int i = 0; i < mPoints.size(); i++) {
-			MPoint mp = mPoints.get(i);
-			Element pe = new Element("Point", e.getNamespace());
-			jdomGraphics.addContent(pe);
-			setAttribute("Interaction.Graphics.Point", "X", pe, Double.toString(mp.getX()));
-			setAttribute("Interaction.Graphics.Point", "Y", pe, Double.toString(mp.getY()));
-			if (mp.getElementRef() != null && !mp.getElementRef().equals("")) {
-				setAttribute("Interaction.Graphics.Point", "GraphRef", pe, mp.getElementRef());
-				setAttribute("Interaction.Graphics.Point", "RelX", pe, Double.toString(mp.getRelX()));
-				setAttribute("Interaction.Graphics.Point", "RelY", pe, Double.toString(mp.getRelY()));
+		String base = e.getName();
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		writePathwayElement(o, e); /** TODO elementId, CommentGroup */
+		String groupRef = o.getParentGroup().getElementId(); // TODO GroupRef
+		setAttribute(base, "GroupRef", e, groupRef);
+		writeLineStyleProperty(o, e);
+
+		/** TODO GPML2021 Points not in Graphics */
+		List<Point> pts = o.getPoints();
+		for (int i = 0; i < pts.size(); i++) {
+			Point pt = pts.get(i);
+			Element point = new Element("Point", e.getNamespace());
+			graphics.addContent(point);
+			writeElementId(pt, point); // TODO
+			setAttribute(base + ".Graphics.Point", "X", point, Double.toString(pt.getXY().getX()));
+			setAttribute(base + ".Graphics.Point", "Y", point, Double.toString(pt.getXY().getY()));
+			if (pt.getElementRef() != null && !pt.getElementRef().equals("")) {
+				setAttribute(base + ".Graphics.Point", "GraphRef", point, pt.getElementRef());
+				setAttribute(base + ".Graphics.Point", "RelX", point, Double.toString(pt.getRelX()));
+				setAttribute(base + ".Graphics.Point", "RelY", point, Double.toString(pt.getRelY()));
 			}
-			if (i == 0) {
-				setAttribute("Interaction.Graphics.Point", "ArrowHead", pe, o.getStartLineType().getName());
-			} else if (i == mPoints.size() - 1) {
-				setAttribute("Interaction.Graphics.Point", "ArrowHead", pe, o.getEndLineType().getName());
+			if (pt.getArrowHead() != null) {
+				setAttribute(base + ".Graphics.Point", "ArrowHead", point, pt.getArrowHead().getName());
 			}
 		}
 
-		for (MAnchor anchor : o.getMAnchors()) {
-			Element ae = new Element("Anchor", e.getNamespace());
-			setAttribute("Interaction.Graphics.Anchor", "Position", ae, Double.toString(anchor.getPosition()));
-			setAttribute("Interaction.Graphics.Anchor", "Shape", ae, anchor.getShape().getName());
-			writeGraphId(anchor, ae);
-			jdomGraphics.addContent(ae);
+		/** TODO GPML2021 Anchors not in Graphics */
+		for (Anchor a : o.getAnchors()) {
+			Element anchor = new Element("Anchor", e.getNamespace());
+			writeElementId(a, anchor); // TODO
+			setAttribute(base + ".Graphics.Anchor", "Position", anchor, Double.toString(a.getPosition()));
+			setAttribute(base + ".Graphics.Anchor", "Shape", anchor, a.getShapeType().getName());
+			graphics.addContent(anchor);
 		}
-
 	}
 
 	/**
@@ -1040,6 +1024,7 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 		Element xref = e.getChild("Xref", e.getNamespace());
 		String identifier = getAttribute("DataNode.Xref", "ID", xref);
 		String dataSource = getAttribute("DataNode.Xref", "Database", xref);
+		o.setXref(identifier, dataSource);
 
 	}
 
@@ -1064,9 +1049,10 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 
 		/** Xref added in GPML2021 */
 		Element xref = e.getChild("Xref", e.getNamespace());
+		String identifier = o.getXref().getId();
 		String dataSource = o.getXref().getDataSource().getFullName();
 		setAttribute("State.Xref", "Database", xref, dataSource == null ? "" : dataSource);
-		setAttribute("State.Xref", "ID", xref, o.getXref().getId());
+		setAttribute("State.Xref", "ID", xref, identifier);
 
 	}
 
@@ -1109,6 +1095,30 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 				e.addContent(new Element("Graphics", getGpmlNamespace()));
 				e = new Element("Legend", getGpmlNamespace());
 				e = new Element("InfoBox", getGpmlNamespace());
+
+				
+
+				//LINE 
+				e = new Element("Interaction", getGpmlNamespace());
+				e.addContent(new Element("Graphics", getGpmlNamespace()));
+				e.addContent(new Element("Xref", getGpmlNamespace()));
+				
+		
+				//GRAPHLINE
+				e = new Element("GraphicalLine", getGpmlNamespace());
+				e.addContent(new Element("Graphics", getGpmlNamespace()));
+						
+			
+
+					case BIOPAX:
+						e = new Element("Biopax", getGpmlNamespace());
+						writeBiopax(o, e);
+						break;
+					}if(e==null)
+
+	{
+		throw new ConverterException("Error creating jdom element with objectType " + o.getObjectType());
+	}return e;}
 
 	private Xref xref;
 	private List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
