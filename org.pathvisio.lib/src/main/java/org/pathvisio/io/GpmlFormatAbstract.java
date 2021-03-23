@@ -286,10 +286,8 @@ public abstract class GpmlFormatAbstract {
 
 		Element graphics = new Element("Graphics", nsGPML);
 		root.addContent(graphics);
-
-		double[] size = p.getMBoardSize();
-		setAttribute("Pathway.Graphics", "BoardWidth", graphics, "" + size[0]);
-		setAttribute("Pathway.Graphics", "BoardHeight", graphics, "" + size[1]);
+		setAttribute("Pathway.Graphics", "BoardWidth", graphics, String.valueOf(p.getBoardWidth()));
+		setAttribute("Pathway.Graphics", "BoardHeight", graphics, String.valueOf(p.getBoardHeight()));
 
 		writeMappInfoVariable(root, p);
 	}
@@ -387,14 +385,27 @@ public abstract class GpmlFormatAbstract {
 		}
 	}
 
-	protected void readAttributes(PathwayElement o, Element e) throws ConverterException {
+	/**
+	 * Attribute in gpml 
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void readDynamicProperty(PathwayElement o, Element e) throws ConverterException {
 		for (Object f : e.getChildren("Attribute", e.getNamespace())) {
-			o.setDynamicProperty(getAttribute("Attribute", "Key", (Element) f),
-					getAttribute("Attribute", "Value", (Element) f));
+			String key = getAttribute("Attribute", "Key", (Element) f);
+			String value = getAttribute("Attribute", "Value", (Element) f);
+			o.addDynamicProperty(special); //TODO look into implementation
 		}
 	}
 
-	protected void writeAttributes(PathwayElement o, Element e) throws ConverterException {
+	/**
+	 * Attribute in gpml 
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeDynamicProperty(PathwayElement o, Element e) throws ConverterException {
 		if (e != null) {
 			for (String key : o.getDynamicPropertyKeys()) {
 				Element a = new Element("Attribute", e.getNamespace());
@@ -406,7 +417,7 @@ public abstract class GpmlFormatAbstract {
 	}
 
 	//TODO 
-	protected void readElementId(ElementIdContainer o, Element e) {
+	protected void readElementId(IElementIdContainer o, Element e) {
 		String id = e.getAttributeValue("GraphId");
 		// Never add graphid until all elements are readped, to prevent duplcate ids!
 //		if((id == null || id.equals("")) && o.getGmmlData() != null) {
@@ -418,7 +429,7 @@ public abstract class GpmlFormatAbstract {
 	}
 
 	//TODO 
-	protected void writeGraphId(ElementIdContainer o, Element e) {
+	protected void writeElementId(IElementIdContainer o, Element e) {
 		String id = o.getElementId();
 		// id has to be unique!
 		if (id != null && !id.equals("")) {
@@ -439,42 +450,6 @@ public abstract class GpmlFormatAbstract {
 		if (id != null && !id.equals("")) {
 			e.setAttribute("GroupRef", o.getGroupRef());
 		}
-	}
-
-	protected void readGroup(PathwayElement o, Element e) throws ConverterException {
-		// ID
-		String id = e.getAttributeValue("GroupId");
-		if ((id == null || id.equals("")) && o.getParent() != null) {
-			id = o.getParent().getUniqueGroupId();
-		}
-		o.setGroupId(id);
-
-		// GraphId
-		readGraphId(o, e);
-
-		// Style
-		o.setGroupStyle(GroupType.fromName(getAttribute("Group", "Style", e)));
-		// Label
-		String textLabel = getAttribute("Group", "TextLabel", e);
-		if (textLabel != null) {
-			o.setTextLabel(textLabel);
-		}
-	}
-
-	protected void writeGroup(PathwayElement o, Element e) throws ConverterException {
-		// ID
-		String id = o.createGroupId();
-		if (id != null && !id.equals("")) {
-			e.setAttribute("GroupId", o.createGroupId());
-		}
-
-		// GraphId
-		writeGraphId(o, e);
-
-		// Style
-		setAttribute("Group", "Style", e, o.getGroupStyle().getName());
-		// Label
-		setAttribute("Group", "TextLabel", e, o.getTextLabel());
 	}
 
 	protected abstract void readMappInfoDataVariable(Pathway p, Element e) throws ConverterException;

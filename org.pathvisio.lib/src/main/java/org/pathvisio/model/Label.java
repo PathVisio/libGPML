@@ -26,7 +26,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class Label extends PathwayElement {
+public class Label extends ShapedElement {
 
 	private String elementId;
 	private String textLabel = "";

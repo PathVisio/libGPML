@@ -229,7 +229,14 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	@Override
 	protected void readMappInfoDataVariable(Pathway p, Element e) throws ConverterException {
 		p.setLicense(getAttribute("Pathway", "License", e));
-	}
+//		
+//		
+//		private String title = "untitled";
+//		private String organism = null;
+//		private String source = null;
+//		private String version = null;
+//		private String license = null;
+//	}
 
 	@Override
 	protected void writeMappInfoVariable(Element root, Pathway p) throws ConverterException {
@@ -242,7 +249,7 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	private void readPathwayElement(PathwayElement o, Element e) throws ConverterException {
-		writeGraphId(o, e); // GraphId
+		writeElementId(o, e); // GraphId
 		readComments(o, e);
 		readBiopaxRef(o, e);
 		writeAttributes(o, e);
@@ -254,7 +261,7 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	private void writePathwayElement(PathwayElement o, Element e) throws ConverterException {
-		readGraphId(o, e); // GraphId
+		readElementId(o, e); // GraphId
 		writeComments(o, e);
 		writeBiopaxRef(o, e);
 		writeAttributes(o, e);
@@ -268,6 +275,9 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	private void writeShapedElement(ShapedElement o, Element e) throws ConverterException {
+		String base = e.getName();
+		String groupRef = o.getParentGroup().getElementId();
+		setAttribute(base, "GroupRef", e, groupRef);
 		writeRectProperty(o, e);
 		writeFontProperty(o, e);
 		writeShapeStyleProperty(o, e);
@@ -281,6 +291,9 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	private void readShapedElement(ShapedElement o, Element e) throws ConverterException {
+		String base = e.getName();
+		String groupRef = getAttribute(base, "GroupRef", e);
+		o.setGroupRef(groupRef);
 		readRectProperty(o, e);
 		readFontProperty(o, e);
 		readShapeStyleProperty(o, e);
@@ -292,79 +305,31 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	public Element createJdomElement(PathwayElement o) throws ConverterException {
 		Element e = null;
 		switch (o.getObjectType()) {
-		case DATANODE:
-			e = new Element("DataNode", getGpmlNamespace());
-			updateCommon(o, e);
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			e.addContent(new Element("Xref", getGpmlNamespace()));
-			updateShapePosition(o, e);
-			updateShapeCommon(o, e);
-			updateDataNode(o, e); // Type & Xref
-			updateGroupRef(o, e);
-			break;
-		case STATE:
-			e = new Element("State", getGpmlNamespace());
-			updateCommon(o, e);
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			e.addContent(new Element("Xref", getGpmlNamespace()));
-			updateStateData(o, e);
-			updateShapeCommon(o, e);
-			break;
-		case SHAPE:
-			e = new Element("Shape", getGpmlNamespace());
-			updateCommon(o, e);
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			updateShapePosition(o, e);
-			updateShapeCommon(o, e);
-			updateRotation(o, e);
-			updateGroupRef(o, e);
-			break;
+
 		case LINE:
 			e = new Element("Interaction", getGpmlNamespace());
-			updateCommon(o, e);
+			writeCommon(o, e);
 			e.addContent(new Element("Graphics", getGpmlNamespace()));
 			e.addContent(new Element("Xref", getGpmlNamespace()));
-			updateLine(o, e); // Xref
-			updateLineData(o, e);
-			updateLineStyle(o, e);
+			writeLine(o, e); // Xref
+			writeLineData(o, e);
+			writeLineStyle(o, e);
 			writeGraphId(o, e);
-			updateGroupRef(o, e);
+			writeGroupRef(o, e);
 			break;
 		case GRAPHLINE:
 			e = new Element("GraphicalLine", getGpmlNamespace());
-			updateCommon(o, e);
+			writeCommon(o, e);
 			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			updateLineData(o, e);
-			updateLineStyle(o, e);
+			writeLineData(o, e);
+			writeLineStyle(o, e);
 			writeGraphId(o, e);
-			updateGroupRef(o, e);
+			writeGroupRef(o, e);
 			break;
-		case LABEL:
-			e = new Element("Label", getGpmlNamespace());
-			updateCommon(o, e);
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			updateShapePosition(o, e);
-			updateShapeCommon(o, e);
-			updateHref(o, e);
-			updateGroupRef(o, e);
-			break;
-		case LEGEND:
-			e = new Element("Legend", getGpmlNamespace());
-			updateSimpleCenter(o, e);
-			break;
-		case INFOBOX:
-			e = new Element("InfoBox", getGpmlNamespace());
-			updateSimpleCenter(o, e);
-			break;
-		case GROUP:
-			e = new Element("Group", getGpmlNamespace());
-			updateCommon(o, e);
-			updateGroup(o, e);
-			updateGroupRef(o, e);
-			break;
+
 		case BIOPAX:
 			e = new Element("Biopax", getGpmlNamespace());
-			updateBiopax(o, e);
+			writeBiopax(o, e);
 			break;
 		}
 		if (e == null) {
@@ -507,10 +472,6 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	protected void readFontProperty(ShapedElement o, Element e) throws ConverterException {
-		// TODO dirty hack: the fact that state doesn't allow font data is a bug
-		if (e.getName().equals("State"))
-			return;
-
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 		String fontName = getAttribute(base + ".Graphics", "FontName", graphics);
@@ -521,21 +482,17 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 		String fontSize = getAttribute(base + ".Graphics", "FontSize", graphics);
 		String hAlignType = getAttribute(base + ".Graphics", "Align", graphics);
 		String vAlignType = getAttribute(base + ".Graphics", "Valign", graphics);
-
 		o.getFontProperty().setFontName(fontName);
 		o.getFontProperty().setFontWeight(fontWeight != null && fontWeight.equals("Bold"));
 		o.getFontProperty().setFontStyle(fontStyle != null && fontStyle.equals("Italic"));
 		o.getFontProperty().setFontDecoration(fontDecoration != null && fontDecoration.equals("Underline"));
 		o.getFontProperty().setFontStrikethru(fontStrikethru != null && fontStrikethru.equals("Strikethru"));
-		o.getFontProperty().setFontSize(Integer.parseInt(fontSize));
+		o.getFontProperty().setFontSize(Integer.parseInt(fontSize)); // TODO Integer?
 		o.getFontProperty().setHAlign(HAlignType.fromName(hAlignType));
 		o.getFontProperty().setVAlign(VAlignType.fromName(vAlignType));
 	}
 
-// TODO STATE is NOT SHAPED PROPERTY :( 
-//	 TODO o.setTextLabel(getAttribute(base, "TextLabel", e));
-//	TODO setAttribute(base, "TextLabel", e, o.getTextLabel());
-
+	
 	/**
 	 * Gets FontProperty values from model and writes to gpml FontAttributes for
 	 * Graphics element of the given pathway element.
@@ -545,10 +502,6 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(ShapedElement o, Element e) throws ConverterException {
-		// TODO dirty hack: the fact that state doesn't allow font data is a bug
-		if (e.getName().equals("State"))
-			return;
-
 		String fontName = o.getFontProperty().getFontName() == null ? "" : o.getFontProperty().getFontName();
 		String fontWeight = o.getFontProperty().getFontWeight() ? "Bold" : "Normal";
 		String fontStyle = o.getFontProperty().getFontStyle() ? "Italic" : "Normal";
@@ -729,46 +682,8 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 		setAttribute("DataNode", "Type", e, type);
 		setAttribute("DataNode.Xref", "Database", xref, dataSource == null ? "" : dataSource);
 		setAttribute("DataNode.Xref", "ID", xref, identifier);
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void readLabel(Label o, Element e) throws ConverterException {
-		String textLabel = getAttribute("Label", "TextLabel", e);
-		String href = getAttribute("Label", "Href", e);
-		o.setTextLabel(textLabel);
-		o.setHref(href);
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeLabel(Label o, Element e) throws ConverterException {
-		String textLabel = o.getTextLabel();
-		String href = o.getHref();
-		setAttribute("Label", "TextLabel", e, textLabel);
-		setAttribute("Label", "Href", e, href);
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void readShape(Shape o, Element e) throws ConverterException {
-		String textLabel = getAttribute("Shape", "TextLabel", e);
-		String type = getAttribute("Shape", "Type", e);
-		String rotation = getAttribute("Shape", "Rotation", e);
-		o.setTextLabel(textLabel);
-		// TODO ShapeType
-		o.setType(ShapeType.fromName(type));
-		// TODO Rotation
-		o.setRotation(rotation);
+//		writeCommon(o, e); //Comment, Attribute, Biopax 
+		writeShapedElement(o, e); // groupRef, RectProperty, FontProperty, ShapeStyleProperty
 
 	}
 
@@ -777,15 +692,81 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void writeShape(Shape o, Element e) throws ConverterException {
-		String textLabel = o.getTextLabel();
-		// TODO Shape type
-		// TODO rotation
-		setAttribute("Shape", "TextLabel", e, textLabel);
-		// TODO ShapeType
-		setAttribute("Shape", "Type", e, type);
-		setAttribute("Shape", "Rotation", e, rotation);
+	protected void readState(State o, Element e) throws ConverterException {
+		// TODO: writeCommon(o, e); // Comment, Attribute, Biopax
+		// TODO: ElementId
+		// TODO elementRef
+		String elementRef = getAttribute("State", "GraphRef", e);
+		if (elementRef != null) {
+			o.setElementRef(elementRef);
+		}
+		o.setTextLabel(getAttribute("State", "TextLabel", e));
+		o.setType(StateType.fromName(getAttribute("State", "StateType", e))); // TODO Enum
+		o.setElementRef(getAttribute("State", "GraphRef", e));
+		/** Graphics */
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		o.setRelX(Double.parseDouble(getAttribute("State.Graphics", "RelX", graphics)));
+		o.setRelY(Double.parseDouble(getAttribute("State.Graphics", "RelY", graphics)));
+		o.setWidth(Double.parseDouble(getAttribute("State.Graphics", "Width", graphics)));
+		o.setHeight(Double.parseDouble(getAttribute("State.Graphics", "Height", graphics)));
+		/** FontProperty */
+		String fontWeight = getAttribute("State.Graphics", "FontWeight", graphics);
+		String fontStyle = getAttribute("State.Graphics", "FontStyle", graphics);
+		String fontDecoration = getAttribute("State.Graphics", "FontDecoration", graphics);
+		String fontStrikethru = getAttribute("State.Graphics", "FontStrikethru", graphics);
+		o.getFontProperty().setFontName(getAttribute("State.Graphics", "FontName", graphics));
+		o.getFontProperty().setFontWeight(fontWeight != null && fontWeight.equals("Bold"));
+		o.getFontProperty().setFontStyle(fontStyle != null && fontStyle.equals("Italic"));
+		o.getFontProperty().setFontDecoration(fontDecoration != null && fontDecoration.equals("Underline"));
+		o.getFontProperty().setFontStrikethru(fontStrikethru != null && fontStrikethru.equals("Strikethru"));
+		o.getFontProperty().setFontSize(Integer.parseInt(getAttribute("State.Graphics", "FontSize", graphics))); // TODO
+																													// Integer
+		o.getFontProperty().setHAlign(HAlignType.fromName(getAttribute("State.Graphics", "Align", graphics)));
+		o.getFontProperty().setVAlign(VAlignType.fromName(getAttribute("State.Graphics", "Valign", graphics)));
+		/** TODO ShapeStyleProperty */
 
+		/** Xref */
+		Element xref = e.getChild("Xref", e.getNamespace());
+		String identifier = getAttribute("DataNode.Xref", "ID", xref);
+		String dataSource = getAttribute("DataNode.Xref", "Database", xref);
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeState(State o, Element e) throws ConverterException {
+
+		// TODO: writeCommon(o, e); // Comment, Attribute, Biopax
+		// TODO: ElementId
+		// TODO elementRef
+		setAttribute("State", "GraphRef", e, o.getElementRef()); // TODO Check if null
+		setAttribute("State", "TextLabel", e, o.getTextLabel());
+		setAttribute("State", "StateType", e, o.getType().getName());
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		setAttribute("State.Graphics", "RelX", graphics, "" + o.getRelX());
+		setAttribute("State.Graphics", "RelY", graphics, "" + o.getRelY());
+		setAttribute("State.Graphics", "Width", graphics, "" + o.getWidth());
+		setAttribute("State.Graphics", "Height", graphics, "" + o.getHeight());
+		/** FontProperty */
+		setAttribute("State.Graphics", "FontName", graphics,
+				o.getFontProperty().getFontName() == null ? "" : o.getFontProperty().getFontName());
+		setAttribute("State.Graphics", "FontWeight", graphics, o.getFontProperty().getFontWeight() ? "Bold" : "Normal");
+		setAttribute("State.Graphics", "FontStyle", graphics, o.getFontProperty().getFontStyle() ? "Italic" : "Normal");
+		setAttribute("State.Graphics", "FontDecoration", graphics,
+				o.getFontProperty().getFontDecoration() ? "Underline" : "Normal");
+		setAttribute("State.Graphics", "FontStrikethru", graphics,
+				o.getFontProperty().getFontStrikethru() ? "Strikethru" : "Normal");
+		setAttribute("State.Graphics", "FontSize", graphics, Integer.toString((int) o.getFontProperty().getFontSize()));
+		setAttribute("State.Graphics", "Align", graphics, o.getFontProperty().getVAlign().getName());
+		setAttribute("State.Graphics", "Valign", graphics, o.getFontProperty().getHAlign().getName());
+		/** TODO ShapeStyleProperty */
+		/** Xref */
+		Element xref = e.getChild("Xref", e.getNamespace());
+		String dataSource = o.getXref().getDataSource().getFullName();
+		setAttribute("State.Xref", "Database", xref, dataSource == null ? "" : dataSource);
+		setAttribute("State.Xref", "ID", xref, o.getXref().getId());
 	}
 
 	/**
@@ -892,64 +873,6 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readState(State o, Element e) throws ConverterException {
-//		Xref
-//		relX
-//		relY
-//		width
-//		height
-//		FontAttributes
-//		ShapeAttributes
-//		elementRef
-//		textLabel
-//		type
-
-		String ref = getAttribute("State", "GraphRef", e);
-		if (ref != null) {
-			o.setGraphRef(ref);
-		}
-
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-
-		o.setRelX(Double.parseDouble(getAttribute("State.Graphics", "RelX", graphics)));
-		o.setRelY(Double.parseDouble(getAttribute("State.Graphics", "RelY", graphics)));
-		o.setWidth(Double.parseDouble(getAttribute("State.Graphics", "Width", graphics)));
-		o.setHeight(Double.parseDouble(getAttribute("State.Graphics", "Height", graphics)));
-
-		o.setType(getAttribute("State", "StateType", e));
-		o.setElementRef(getAttribute("State", "GraphRef", e));
-		Element xref = e.getChild("Xref", e.getNamespace());
-		o.setElementID(getAttribute("State.Xref", "ID", xref));
-		o.setDataSource(DataSource.getExistingByFullName(getAttribute("State.Xref", "Database", xref)));
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeState(State o, Element e) throws ConverterException {
-		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-
-		setAttribute(base + ".Graphics", "RelX", graphics, "" + o.getRelX());
-		setAttribute(base + ".Graphics", "RelY", graphics, "" + o.getRelY());
-		setAttribute(base + ".Graphics", "Width", graphics, "" + o.getWidth());
-		setAttribute(base + ".Graphics", "Height", graphics, "" + o.getHeight());
-
-		setAttribute("State", "StateType", e, o.getDataNodeType());
-		setAttribute("State", "GraphRef", e, o.getElementRef());
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String database = o.getDataSource() == null ? "" : o.getDataSource().getFullName();
-		setAttribute("State.Xref", "Database", xref, database == null ? "" : database);
-		setAttribute("State.Xref", "ID", xref, o.getElementID());
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
 	protected void mapLineData(PathwayElement o, Element e) throws ConverterException {
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 
@@ -1003,7 +926,7 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void updateLineData(PathwayElement o, Element e) throws ConverterException {
+	protected void writeLineData(PathwayElement o, Element e) throws ConverterException {
 		Element jdomGraphics = e.getChild("Graphics", e.getNamespace());
 		List<MPoint> mPoints = o.getMPoints();
 
@@ -1029,63 +952,218 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 			Element ae = new Element("Anchor", e.getNamespace());
 			setAttribute("Interaction.Graphics.Anchor", "Position", ae, Double.toString(anchor.getPosition()));
 			setAttribute("Interaction.Graphics.Anchor", "Shape", ae, anchor.getShape().getName());
-			updateGraphId(anchor, ae);
+			writeGraphId(anchor, ae);
 			jdomGraphics.addContent(ae);
 		}
 
 	}
 
 	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void readLabel(Label o, Element e) throws ConverterException {
+		String textLabel = getAttribute("Label", "TextLabel", e);
+		String href = getAttribute("Label", "Href", e);
+		o.setTextLabel(textLabel);
+		o.setHref(href);
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeLabel(Label o, Element e) throws ConverterException {
+//		writeCommon(o, e); TODO elementId, CommentGroups....
+		String textLabel = o.getTextLabel();
+		String href = o.getHref();
+		setAttribute("Label", "TextLabel", e, textLabel);
+		setAttribute("Label", "Href", e, href);
+		writeShapeStyleProperty(o, e); // groupRef, RectProperty, FontProperty, ShapeStyleProperty
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void readShape(Shape o, Element e) throws ConverterException {
+		String textLabel = getAttribute("Shape", "TextLabel", e);
+		String type = getAttribute("Shape", "Type", e);
+		String rotation = getAttribute("Shape", "Rotation", e);
+		o.setTextLabel(textLabel);
+		o.setType(ShapeType.fromName(type)); // TODO ShapeType
+		// TODO Rotation
+		o.setRotation(rotation);
+
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeShape(Shape o, Element e) throws ConverterException {
+
+//		writeCommon(o, e); //CommentGroup, elementId
+		String textLabel = o.getTextLabel();
+		String type = o.getType().getName(); // TODO Shape type enum
+		setAttribute("Shape", "TextLabel", e, textLabel);
+		setAttribute("Shape", "Type", e, type);
+		writeShapedElement(o, e); // groupRef, RectProperty, FontProperty, ShapeStyleProperty
+		writeRotation(o, e); // TODO rotation
+		break;
+	}
+
+	protected void readGroup(Group o, Element e) throws ConverterException {
+
+		// TODO read Common(o, e); TODO: elementId, commentGroup stuff
+		// GraphId
+		readElementId(o, e);
+		/** TODO GroupID */
+		String groupId = e.getAttributeValue("GroupId");
+		if ((groupId == null || groupId.equals("")) && o.getParentPathway() != null) {
+			groupId = o.getParentPathway().getUniqueGroupId();
+		}
+		o.setGroupId(groupId);
+
+		String textLabel = getAttribute("Group", "TextLabel", e);
+		String type = getAttribute("Group", "Style", e); // NB. GroupType was named Style
+		if (textLabel != null) {
+			o.setTextLabel(textLabel);
+		}
+		o.setType(GroupType.fromName(type));
+
+		/** Xref added in GPML2021 */
+		Element xref = e.getChild("Xref", e.getNamespace());
+		String identifier = getAttribute("DataNode.Xref", "ID", xref);
+		String dataSource = getAttribute("DataNode.Xref", "Database", xref);
+
+	}
+
+	protected void writeGroup(Group o, Element e) throws ConverterException {
+
+		// GraphId
+		writeElementId(o, e);
+		// TODO writeCommon(o, e); TODO: elementId, commentGroup stuff
+		// TODO GroupId
+		String id = o.createGroupId();
+		if (id != null && !id.equals("")) {
+			e.setAttribute("GroupId", o.createGroupId());
+		}
+
+		String textLabel = o.getTextLabel();
+		String type = o.getType().getName(); // TODO Group type
+		setAttribute("Group", "TextLabel", e, textLabel);
+		setAttribute("Group", "Style", e, type);
+
+		// TODO 2013a group does not have graphics
+		writeShapedElement(o, e); // groupRef, RectProperty, FontProperty, ShapeStyleProperty
+
+		/** Xref added in GPML2021 */
+		Element xref = e.getChild("Xref", e.getNamespace());
+		String dataSource = o.getXref().getDataSource().getFullName();
+		setAttribute("State.Xref", "Database", xref, dataSource == null ? "" : dataSource);
+		setAttribute("State.Xref", "ID", xref, o.getXref().getId());
+
+	}
+
+	/**
 	 *
 	 */
-	public Document createJdom(Pathway data) throws ConverterException {
+	public Document createJdom(Pathway p) throws ConverterException {
 		Document doc = new Document();
 
 		Element root = new Element("Pathway", getGpmlNamespace());
 		doc.setRootElement(root);
 
 		List<Element> elementList = new ArrayList<Element>();
+//
+//		writeMappInfo(root, p);
+//		
+//		
+//		List<Author> authors = p.getAuthors();
+//		Collections.sort(authors);
+//		for (Author o : authors) {
+//			
+//		} else {
+		e = new Element("Label", getGpmlNamespace());
+		e.addContent(new Element("Graphics", getGpmlNamespace()));
 
-		List<PathwayElement> pathwayElements = data.getDataObjects();
-		Collections.sort(pathwayElements);
-		for (PathwayElement o : pathwayElements) {
-			if (o.getObjectType() == ObjectType.MAPPINFO) {
-				updateMappInfo(root, o);
-			} else {
+		e = new Element("DataNode", getGpmlNamespace());
+		e.addContent(new Element("Graphics", getGpmlNamespace()));
+		e.addContent(new Element("Xref", getGpmlNamespace()));
+		
+		e = new Element("Group", getGpmlNamespace());
 				Element e = createJdomElement(o);
 				if (e != null)
 					elementList.add(e);
-			}
-		}
 
-		// now sort the generated elements in the order defined by the xsd
-		Collections.sort(elementList, new ByElementName());
-		for (Element e : elementList) {
-			// make sure biopax references are sorted alphabetically by rdf-id
-			if (e.getName().equals("Biopax")) {
-				for (Element e3 : e.getChildren()) {
-					e3.removeChildren("AUTHORS", GpmlFormat.BIOPAX);
-				}
-				e.sortChildren(new BiopaxAttributeComparator());
-			}
-			root.addContent(e);
-		}
+				e = new Element("State", getGpmlNamespace());
+				e.addContent(new Element("Graphics", getGpmlNamespace()));
+				e.addContent(new Element("Xref", getGpmlNamespace()));
 
-		return doc;
+				e = new Element("Shape", getGpmlNamespace());
+				e.addContent(new Element("Graphics", getGpmlNamespace()));
+				e = new Element("Legend", getGpmlNamespace());
+				e = new Element("InfoBox", getGpmlNamespace());
+
+	private Xref xref;
+	private List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
+
+	private List<Annotation> annotations; // --> Manager Pathway.getCitationManager.getCitations()
+	private List<Citation> citations; // --> Manager
+	private List<Evidence> evidences; // --> Manager
+
+	private List<Comment> comments; // length 0 to unbounded
+	private List<DynamicProperty> dynamicProperties; // length 0 to unbounded
+	private List<AnnotationRef> annotationRefs; // length 0 to unbounded
+	private List<Citation> citationRefs; // length 0 to unbounded
+	private List<Evidence> evidenceRef; // length 0 to unbounded
+	private double boardWidth;
+	private double boardHeight;
+	private InfoBox infoBox;
+
+	private List<DataNode> dataNodes;
+//		private List<State> states;
+	private List<Interaction> interactions;
+	private List<GraphicalLine> graphicalLines;
+	private List<Label> labels;
+	private List<Shape> shapes;
+	private List<Group> groups;
+
+	// now sort the generated elements in the order defined by the xsd
+	Collections.sort(elementList,new ByElementName());for(
+	Element e:elementList)
+	{
+		// make sure biopax references are sorted alphabetically by rdf-id
+		if (e.getName().equals("Biopax")) {
+			for (Element e3 : e.getChildren()) {
+				e3.removeChildren("AUTHORS", GpmlFormat.BIOPAX);
+			}
+			e.sortChildren(new BiopaxAttributeComparator());
+		}
+		root.addContent(e);
 	}
 
-	public class BiopaxAttributeComparator implements Comparator<Element> {
-		public int compare(Element e1, Element e2) {
-			String id1 = "";
-			if (e1.getAttributes().size() > 0) {
-				id1 = e1.getAttributes().get(0).getValue();
-			}
-			String id2 = "";
-			if (e2.getAttributes().size() > 0) {
-				id2 = e2.getAttributes().get(0).getValue();
-			}
-			return id1.compareTo(id2);
+	return doc;
+}
+
+public class BiopaxAttributeComparator implements Comparator<Element> {
+	public int compare(Element e1, Element e2) {
+		String id1 = "";
+		if (e1.getAttributes().size() > 0) {
+			id1 = e1.getAttributes().get(0).getValue();
 		}
+		String id2 = "";
+		if (e2.getAttributes().size() > 0) {
+			id2 = e2.getAttributes().get(0).getValue();
+		}
+		return id1.compareTo(id2);
+	}
+
 	}
 
 	/**
@@ -1140,21 +1218,56 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param o
 	 * @param e
 	 */
-	protected void mapSimpleCenter(PathwayElement o, Element e) {
-		o.setCenterX(Double.parseDouble(e.getAttributeValue("CenterX")));
-		o.setCenterY(Double.parseDouble(e.getAttributeValue("CenterY")));
+	protected void readLegend(Pathway p, Element e) {
+		// TODO Dynamic Property....
+	}p.getDynamicProperty(Legend_CenterX)
+
+	{
+		o.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
+		String centerX = e.getAttributeValue("CenterX");
+		String centerY = e.getAttributeValue("CenterY");
+		o.getCenterXY().setX(Double.parseDouble(centerX));
+		o.getCenterXY().setY(Double.parseDouble(centerY));
 	}
 
 	/**
 	 * @param o
 	 * @param e
 	 */
-	protected void updateSimpleCenter(PathwayElement o, Element e) {
+	protected void writeLegend(Legend o, Element e) {
+		String centerX = o.getCenterXY().
+		String centerY = o.getCenterXY().
 		if (e != null) {
-			e.setAttribute("CenterX", Double.toString(o.getCenterX()));
-			e.setAttribute("CenterY", Double.toString(o.getCenterY()));
+			e.setAttribute("CenterX", centerX);
+			e.setAttribute("CenterY", centerY);
 		}
 	}
+
+	/**
+	 * @param o
+	 * @param e
+	 */
+	protected void readInfoBox(InfoBox o, Element e) {
+		String centerX = e.getAttributeValue("CenterX");
+		String centerY = e.getAttributeValue("CenterY");
+		o.getCenterXY().setX(Double.parseDouble(centerX));
+		o.getCenterXY().setY(Double.parseDouble(centerY));
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 */
+	protected void writeInfoBox(InfoBox o, Element e) {
+		String centerX = Double.toString(o.getCenterXY().getX());
+		String centerY = Double.toString(o.getCenterXY().getY());
+		if (e != null) {
+			e.setAttribute("CenterX", centerX);
+			e.setAttribute("CenterY", centerY);
+		}
+	}
+
+	// TODO LEGEND!!!
 
 	/**
 	 * @param o

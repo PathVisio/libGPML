@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.List;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -24,12 +26,13 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class DataNode extends PathwayElement {
+public class DataNode extends ShapedElement {
 
 	private PathwayElement elementRef; // optional references as an Alias 
 	private String textLabel;
 	private DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
 	private Xref xref;
+	private List<State> states;
 
 	// With all properties
 	public DataNode(String elementId, String elementRef, String textLabel, DataNodeType type, Xref xref) {
@@ -128,6 +131,14 @@ public class DataNode extends PathwayElement {
 	public void setXref(String identifier, String dataSource) {
 		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+	}
+
+	public List<State> getStates() {
+		return states;
+	}
+
+	public void setStates(List<State> states) {
+		this.states = states;
 	}
 
 }

@@ -64,7 +64,6 @@ public class DynamicProperty {
 			dynamicProperties.remove(key);
 		else
 			dynamicProperties.put(key, value);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, key));
 	}
 
 	/**

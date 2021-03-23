@@ -43,7 +43,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author unknown, AP20070508, finterly
  */
-public abstract class PathwayElement implements ElementIdContainer, Comparable<PathwayElement> {
+public abstract class PathwayElement implements IElementIdContainer, Comparable<PathwayElement> {
 
 	private String elementId;
 	private Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
@@ -318,15 +318,6 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	}
 
 	/**
-	 * Sets comments to given list of Comment.
-	 * 
-	 * @param comments the list of comments.
-	 */
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
-
-	/**
 	 * Adds given comment to comments list.
 	 * 
 	 * @param comment the comment to be added.
@@ -345,7 +336,7 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	}
 
 	/**
-	 * TODO: Need to be moved or something...
+	 * TODO
 	 * 
 	 * Finds the first comment with a specific source.
 	 * 
@@ -365,10 +356,28 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 * 
 	 * @return properties the list of properties.
 	 */
-	public List<DynamicProperty> getProperties() {
+	public List<DynamicProperty> getDynamicProperties() {
 		return dynamicProperties;
 	}
 
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addDynamicProperty(DynamicProperty dynamicProperty) {
+		dynamicProperties.add(dynamicProperty);
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
+		dynamicProperties.remove(dynamicProperty);
+	}
+	
 	/**
 	 * Returns the list of annotation references.
 	 * 
@@ -376,6 +385,24 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 	 */
 	public List<AnnotationRef> getAnnotationRefs() {
 		return annotationRefs;
+	}
+	
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addAnnotationRef(AnnotationRef annotationRef) {
+		annotationRefs.add(annotationRef);
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		annotationRefs.remove(annotationRef);
 	}
 
 	/**
@@ -387,6 +414,29 @@ public abstract class PathwayElement implements ElementIdContainer, Comparable<P
 		return citations;
 	}
 
+	
+	//TODO CitationRef/Annotation Manager
+	
+	
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addCitationRef(CitationRef citationRef) {
+		citationRefs.add(citationRef);
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeCitationRef(CitationRef citationRef) {
+		citationRefs.remove(citationRef);
+	}
+	
+	
 	public List<Evidence> getEvidences() {
 		return evidences;
 	}

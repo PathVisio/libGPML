@@ -94,4 +94,12 @@ public class ShapedElement extends PathwayElement {
 		this.shapeStyleProperty = shapeStyleProperty;
 	}
 
+	public Group getParentGroup() {
+		return parentGroup;
+	}
+
+	public void setParentGroup(Group parentGroup) {
+		this.parentGroup = parentGroup;
+	}
+
 }

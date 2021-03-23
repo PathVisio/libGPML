@@ -71,6 +71,7 @@ public class Pathway {
 	private List<Evidence> evidenceRef; // length 0 to unbounded
 	private double boardWidth;
 	private double boardHeight;
+	private InfoBox infoBox;
 
 	private List<DataNode> dataNodes;
 //	private List<State> states;
@@ -79,7 +80,6 @@ public class Pathway {
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;
-	private InfoBox infoBox;
 
 	
 	public List<DataNode> getDataNodes() {
