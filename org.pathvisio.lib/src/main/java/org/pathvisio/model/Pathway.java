@@ -60,7 +60,7 @@ public class Pathway {
 	private Xref xref;
 	private List<Author> authors = new ArrayList<Author>(); // length 0 to unbounded
 
-	private List<Annotation> annotations; //--> Manager Pathway.getCitationManager.getCitations() 
+	private List<Annotation> annotations; // --> Manager Pathway.getCitationManager.getCitations()
 	private List<Citation> citations; // --> Manager
 	private List<Evidence> evidences; // --> Manager
 
@@ -80,21 +80,6 @@ public class Pathway {
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;
-
-	
-	public List<DataNode> getDataNodes() {
-		return dataNodes;
-	}
-
-	public void setDataNodes(List<DataNode> dataNodes) {
-		this.dataNodes = dataNodes;
-	}
-	// Add/remove PathwayElement Methods
-	// Add/remove Author Methods
-	// Add/remove Comment, DynamicProperty,AnnotationRef,CitationRef,EvidenceRef
-	// Methods
-
-	
 
 	/**
 	 * Generates random IDs, based on strings of hex digits (0..9 or a..f). IDs are
@@ -121,6 +106,69 @@ public class Pathway {
 			result = Integer.toHexString(Math.abs(random.nextInt()) % mod + min);
 		} while (ids.contains(result));
 		return result;
+	}
+
+	/**
+	 * Gets a pathway element by it's GraphId.
+	 * 
+	 * @param graphId the graphId of the element.
+	 * @return e the pathway element with the given id, or null when no element was
+	 *         found.
+	 */
+	public PathwayElement getElementById(String graphId) {
+		// TODO: dataobject should be stored in a hashmap, with the graphId as key!
+		if (graphId != null) {
+			for (PathwayElement e : dataObjects) {
+				if (graphId.equals(e.getElementId())) {
+					return e;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the Xref of all DataNodes in this pathway as a List.
+	 * 
+	 * @return result the list of xref of all datanodes or an empty arraylist if
+	 *         there are no datanodes in this pathway.
+	 */
+	public List<Xref> getDataNodeXrefs() {
+		List<Xref> result = new ArrayList<Xref>();
+		for (DataNode dataNode : dataNodes) {
+			result.add(dataNode.getXref());
+		}
+	}
+
+	/**
+	 * Returns the Xref of all Lines in this pathway as a List.
+	 *
+	 * @return result the list of xref of all lines or an empty arraylist if there
+	 *         are no lines in this pathway.
+	 */
+	public List<Xref> getLineXrefs() {
+		List<Xref> result = new ArrayList<Xref>();
+		for (PathwayElement e : dataObjects) {
+			if (e instanceof Interaction) {
+//				result.add(e.getXref());
+			}
+		}
+	}
+
+	/**
+	 * Returns the DataNode Xref.
+	 * 
+	 * @return xref the datanode xref.
+	 */
+	public Xref getXref() {
+		return xref;
+	}
+
+	public Xref setXref(String identifier, String dataSource) {
+		DataSource dataSource = dataSource;
+		Xref xref = new Xref(identifier, dataSource);
+		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
+		return new Xref(identifier, dataSource);
 	}
 	/*
 	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
@@ -362,7 +410,8 @@ public class Pathway {
 		}
 	}
 
-	// ------------------------------- ID -------------------------------------
+	// ------------------------------- Information
+	// -------------------------------------
 
 	/**
 	 * 
@@ -441,7 +490,6 @@ public class Pathway {
 			this.version = version;
 	}
 
-	
 	public String getLicense() {
 		return license;
 	}
@@ -454,36 +502,18 @@ public class Pathway {
 	 * 
 	 * @return
 	 */
-	public List<Author> getAuthor() {
+	public List<Author> getAuthors() {
 		return authors;
 	}
 
-	/**
-	 * 
-	 * @param v
-	 */
-	public void setAuthor(List<Author> authors) {
-		this.authors = authors;
+	public void addAuthor(Author author) {
+		authors.add(author);
 	}
 
-	
-	/**
-	 * 
-	 * @param v
-	 */
-	public void addAuthor(List<Author> authors) {
-		this.authors = authors;
+	public void removeAuthor(Author author) {
+		authors.remove(author);
 	}
-	
-	/**
-	 * 
-	 * @param v
-	 */
-	public void removeAuthor(List<Author> authors) {
-		this.authors = authors;
-	}
-	
-	
+
 	/**
 	 * Gets the board width. Board width together with board height define drawing
 	 * size.
@@ -531,90 +561,21 @@ public class Pathway {
 	}
 
 	/**
-	 * List of contained dataObjects.
-	 */
-	private List<PathwayElement> dataObjects = new ArrayList<PathwayElement>();
-
-	/**
-	 * Gets dataObjects contained. There is no setter, you have to add dataObjects
-	 * individually
-	 * 
-	 * @return List of dataObjects contained in this pathway
-	 */
-	public List<PathwayElement> getDataObjects() {
-		return dataObjects;
-	}
-
-	/**
-	 * Gets a pathway element by it's GraphId.
-	 * 
-	 * @param graphId the graphId of the element.
-	 * @return e the pathway element with the given id, or null when no element was
-	 *         found.
-	 */
-	public PathwayElement getElementById(String graphId) {
-		// TODO: dataobject should be stored in a hashmap, with the graphId as key!
-		if (graphId != null) {
-			for (PathwayElement e : dataObjects) {
-				if (graphId.equals(e.getElementId())) {
-					return e;
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the Xref of all DataNodes in this pathway as a List.
-	 * 
-	 * @return result the list of xref of all datanodes or an empty arraylist if
-	 *         there are no datanodes in this pathway.
-	 */
-	public List<Xref> getDataNodeXrefs() {
-		List<Xref> result = new ArrayList<Xref>();
-		for (DataNode dataNode : dataNodes) {
-			result.add(dataNode.getXref());
-		}
-	}
-
-	/**
-	 * Returns the Xref of all Lines in this pathway as a List.
-	 *
-	 * @return result the list of xref of all lines or an empty arraylist if there
-	 *         are no lines in this pathway.
-	 */
-	public List<Xref> getLineXrefs() {
-		List<Xref> result = new ArrayList<Xref>();
-		for (PathwayElement e : dataObjects) {
-			if (e instanceof Interaction) {
-//				result.add(e.getXref());
-			}
-		}
-	}
-
-	/**
-	 * Returns the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
-
-	public Xref setXref(String identifier, String dataSource) {
-		DataSource dataSource = dataSource;
-		Xref xref = new Xref(identifier, dataSource);
-		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
-		return new Xref(identifier, dataSource);
-	}
-
-	/**
 	 * Gets the one and only InfoBox object.
 	 *
 	 * @return infoBox the PathwayElement with ObjectType set to mappinfo.
 	 */
-	public PathwayElement getInfoBox() {
+	public InfoBox getInfoBox() {
 		return infoBox;
+	}
+
+	/**
+	 * Sets the one and only InfoBox object.
+	 *
+	 * @return infoBox the PathwayElement with ObjectType set to mappinfo.
+	 */
+	public void setInfoBox(InfoBox infoBox) {
+		this.infoBox = infoBox;
 	}
 
 	/**
@@ -873,12 +834,184 @@ public class Pathway {
 	 */
 	private List<String> biopaxReferenceToDelete = new ArrayList<String>();
 
-	public List<Author> getAuthors() {
-		return authors;
+	/*
+	 * ------------------------------- CommentGroup -------------------------------
+	 */
+
+	/**
+	 * Returns the list of comments.
+	 * 
+	 * @return comments the list of comments.
+	 */
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public void setAuthors(List<Author> authors) {
-		this.authors = authors;
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addComment(Comment comment) {
+		comments.add(comment);
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeComment(Comment comment) {
+		comments.remove(comment);
+	}
+
+	/**
+	 * TODO
+	 * 
+	 * Finds the first comment with a specific source.
+	 * 
+	 * @returns the comment with a given source.
+	 */
+	public String findComment(String source) {
+		for (Comment c : comments) {
+			if (source.equals(c.source)) {
+				return c.comment;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the list of key value pair information properties.
+	 * 
+	 * @return properties the list of properties.
+	 */
+	public List<DynamicProperty> getDynamicProperties() {
+		return dynamicProperties;
+	}
+
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addDynamicProperty(DynamicProperty dynamicProperty) {
+		dynamicProperties.add(dynamicProperty);
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
+		dynamicProperties.remove(dynamicProperty);
+	}
+
+	/**
+	 * Returns the list of annotation references.
+	 * 
+	 * @return annotationRefs the list of annotation references.
+	 */
+	public List<AnnotationRef> getAnnotationRefs() {
+		return annotationRefs;
+	}
+
+	/**
+	 * Adds given comment to comments list.
+	 * 
+	 * @param comment the comment to be added.
+	 */
+	public void addAnnotationRef(AnnotationRef annotationRef) {
+		annotationRefs.add(annotationRef);
+	}
+
+	/**
+	 * Removes given comment from comments list.
+	 * 
+	 * @param comment the comment to be removed.
+	 */
+	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		annotationRefs.remove(annotationRef);
+	}
+
+	/**
+	 * Returns the list of citation references.
+	 * 
+	 * @return citationRefs the list of citation references.
+	 */
+	public List<Citation> getCitations() {
+		return citations;
+	}
+
+	// TODO CitationRef/Annotation Manager
+
+	/*------------------------------- Pathway Elements ------------------------------*/
+	
+	public List<DataNode> getDataNodes() {
+		return dataNodes;
+	}
+
+	public void addDataNode(DataNode dataNode) {
+		dataNodes.add(dataNode);
+	}
+	public void removeDataNode(DataNode dataNode) {
+		dataNodes.remove(dataNode);
+	}
+
+	public List<Interaction> getInteractions() {
+		return interactions;
+	}
+
+	public void addInteraction(Interaction interaction) {
+		interactions.add(interaction);
+	}
+	public void removeInteraction(Interaction interaction) {
+		interactions.remove(interaction);
+	}
+
+	public List<GraphicalLine> getGraphicalLines() {
+		return graphicalLines;
+	}
+
+	public void addGraphicalLine(GraphicalLine graphicalLine) {
+		graphicalLines.add(graphicalLine);
+	}
+	public void removeGraphicalLine(GraphicalLine graphicalLine) {
+		graphicalLines.remove(graphicalLine);
+	}
+
+	public List<Label> getLabels() {
+		return labels;
+	}
+
+	public void addLabel(Label label) {
+		labels.add(label);
+	}
+	public void removeLabel(Label label) {
+		labels.remove(label);
+	}
+
+	public List<Shape> getShapes() {
+		return shapes;
+	}
+
+	public void addShape(Shape shape) {
+		shapes.add(shape);
+	}
+	public void removeShape(Shape shape) {
+		shapes.remove(shape);
+	}
+
+	public List<Group> getGroups() {
+		return groups;
+	}
+
+	public void addGroup(Group group) {
+		groups.add(group);
+	}
+	public void removeGroup(Group group) {
+		groups.remove(group);
 	}
 
 }

@@ -66,7 +66,7 @@ public abstract class LineElement extends PathwayElement {
 		return points;
 	}
 
-	// TODO needed? 
+	// TODO needed?
 	public void setPoints(List<Point> points) {
 		if (points != null) {
 			if (points.size() < 2) {
@@ -101,11 +101,11 @@ public abstract class LineElement extends PathwayElement {
 		return anchors;
 	}
 
-	public void addAnchors(Anchor anchor) {
+	public void addAnchor(Anchor anchor) {
 		anchors.add(anchor);
 	}
 
-	public void removeAnchors(Anchor anchor) {
+	public void removeAnchor(Anchor anchor) {
 		anchors.remove(anchor);
 	}
 

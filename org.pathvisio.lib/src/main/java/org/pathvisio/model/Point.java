@@ -19,22 +19,20 @@ package org.pathvisio.model;
 import org.pathvisio.util.Utils;
 
 /**
- * This class stores all information relevant to a Point pathway element.
+ * This class stores information for a Point pathway element. 
  * 
  * @author finterly
  */
 public class Point extends GenericPoint {
 
-	private PathwayElement elementRef; // TODO PATHWAY ELEMENT DOES NOT INCLUDE ANCHOR!!!
 	private LineType arrowHead; // line by default
-	private Coordinate xy; // TODO: part of generic point 
+	private Coordinate xy; // TODO: part of generic point
+	private String elementRef; // TODO PATHWAY ELEMENT DOES NOT INCLUDE ANCHOR!!!
 	private double relX; // optional
 	private double relY; // optional
-	
-	//TODO: PathwayElement parent? 
 
-	
-	
+	// TODO: PathwayElement parent?
+
 	/**
 	 * Instantiates a Point pathway element, with reference to another pathway
 	 * element.
@@ -47,11 +45,11 @@ public class Point extends GenericPoint {
 	 * @param relX       the relative x coordinate.
 	 * @param relY       the relative x coordinate.
 	 */
-	public Point(String elementId, String elementRef, LineType arrowHead, Coordinate xy, double relX, double relY) {
+	public Point(String elementId, LineType arrowHead, Coordinate xy, String elementRef, double relX, double relY) {
 		super(elementId);
-		this.elementRef = elementRef;
 		this.arrowHead = arrowHead;
 		this.xy = xy;
+		this.elementRef = elementRef;
 		this.relX = relX;
 		this.relY = relY;
 	}
@@ -66,9 +64,8 @@ public class Point extends GenericPoint {
 	 * @param y         the y coordinate position of the point.
 	 */
 	public Point(String elementId, LineType arrowHead, Coordinate xy) {
-		this(elementId, null, arrowHead, xy, null, null);
+		this(elementId, arrowHead, xy);
 	}
-
 
 	/*-----------------------------------------------------------------------*/
 
@@ -168,8 +165,6 @@ public class Point extends GenericPoint {
 //	}
 
 	/*-----------------------------------------------------------------------*/
-
-
 
 	/**
 	 * Gets the arrowHead property of the point. Arrowhead specifies the glyph at

@@ -376,13 +376,13 @@ public abstract class GpmlFormatAbstract2021 {
 		}
 	}
 
-	protected void mapComments(CommentGroupElement o, Element e) throws ConverterException {
+	protected void readComments(CommentGroupElement o, Element e) throws ConverterException {
 		for (Object f : e.getChildren("Comment", e.getNamespace())) {
 			o.addComment(((Element) f).getText(), getAttribute("Comment", "Source", (Element) f));
 		}
 	}
 
-	protected void updateComments(CommentGroupElement o, Element e) throws ConverterException {
+	protected void writeComments(CommentGroupElement o, Element e) throws ConverterException {
 		if (e != null) {
 			for (PathwayElement.Comment c : o.getComments()) {
 				Element f = new Element("Comment", e.getNamespace());
@@ -393,20 +393,44 @@ public abstract class GpmlFormatAbstract2021 {
 		}
 	}
 
-	protected void mapAttributes(PathwayElement o, Element e) throws ConverterException {
+	protected void readDynamicProperty(Pathway p, Element e) throws ConverterException {
 		for (Object f : e.getChildren("Attribute", e.getNamespace())) {
-			o.setDynamicProperty(getAttribute("Attribute", "Key", (Element) f),
-					getAttribute("Attribute", "Value", (Element) f));
+			String key = getAttribute("Attribute", "Key", (Element) f);
+			String value = getAttribute("Attribute", "Value", (Element) f);
+			DynamicProperty dynamicProperty = new DynamicProperty(key, value);
+			p.addDynamicProperty(dynamicProperty);
 		}
 	}
 
-	protected void updateAttributes(PathwayElement o, Element e) throws ConverterException {
+	protected void readDynamicProperty(PathwayElement o, Element e) throws ConverterException {
+		for (Object f : e.getChildren("Attribute", e.getNamespace())) {
+			String key = getAttribute("Attribute", "Key", (Element) f);
+			String value = getAttribute("Attribute", "Value", (Element) f);
+			DynamicProperty dynamicProperty = new DynamicProperty(key, value);
+			o.addDynamicProperty(dynamicProperty);
+		}
+	}
+
+	protected void writeDynamicProperty(Pathway p, Element e) throws ConverterException {
 		if (e != null) {
-			for (String key : o.getDynamicPropertyKeys()) {
-				Element a = new Element("Property", e.getNamespace());
-				setAttribute("Property", "key", a, key);
-				setAttribute("Property", "value", a, o.getDynamicProperty(key));
-				e.addContent(a);
+			List<DynamicProperty> dynamicProperties = p.getDynamicProperties();
+			for (DynamicProperty dp : dynamicProperties) {
+				Element dynamicProperty = new Element("Property", e.getNamespace());
+				setAttribute("Attribute", "key", dynamicProperty, dp.getKey());
+				setAttribute("Attribute", "value", dynamicProperty, dp.getValue());
+				e.addContent(dynamicProperty);
+			}
+		}
+	}
+
+	protected void writeDynamicProperty(PathwayElement o, Element e) throws ConverterException {
+		if (e != null) {
+			List<DynamicProperty> dynamicProperties = o.getDynamicProperties();
+			for (DynamicProperty dp : dynamicProperties) {
+				Element dynamicProperty = new Element("Property", e.getNamespace());
+				setAttribute("Attribute", "key", dynamicProperty, dp.getKey());
+				setAttribute("Attribute", "value", dynamicProperty, dp.getValue());
+				e.addContent(dynamicProperty);
 			}
 		}
 	}

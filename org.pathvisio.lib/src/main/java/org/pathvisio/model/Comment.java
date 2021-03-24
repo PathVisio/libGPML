@@ -26,14 +26,10 @@ package org.pathvisio.model;
  */
 public class Comment implements Cloneable {
 
-	protected String source;
-	protected String content;
-	protected PathwayElement parent;
+	private String source;
+	private String content;
+	private PathwayElement parent;
 
-	
-
-	
-	
 	/**
 	 * Instantiates a Comment.
 	 * 
@@ -41,7 +37,7 @@ public class Comment implements Cloneable {
 	 */
 	public Comment(String source, String commentText, PathwayElement parent) {
 		this.source = source;
-		this.commentText = commentText;
+		this.content = commentText;
 		this.parent = parent;
 	}
 
@@ -75,8 +71,8 @@ public class Comment implements Cloneable {
 	 * 
 	 * @return comment the text of the comment.
 	 */
-	public String getCommentText() {
-		return commentText;
+	public String getContent() {
+		return content;
 	}
 
 	/**
@@ -84,15 +80,14 @@ public class Comment implements Cloneable {
 	 * 
 	 * @param comment the text of the comment.
 	 */
-	public void setCommentText(String commentText) {
-		if (commentText != null && !this.commentText.equals(commentText)) {
-			this.commentText = commentText;
-			// changed();
+	public void setContent(String content) {
+		if (content != null) {
+			this.content = content;
 		}
 	}
 
 	/**
-	 * Gets the parent PathwayElement to which the Comment belongs. 
+	 * Gets the parent PathwayElement to which the Comment belongs.
 	 * 
 	 * @return parent the parent pathway element.
 	 */
@@ -101,7 +96,7 @@ public class Comment implements Cloneable {
 	}
 
 	/**
-	 * Sets the parent PathwayElement to which the Comment belongs. 
+	 * Sets the parent PathwayElement to which the Comment belongs.
 	 * 
 	 * @param parent the parent pathway element.
 	 */
@@ -110,21 +105,4 @@ public class Comment implements Cloneable {
 
 	}
 
-	//saubr
-    private void changed() {
-        parent.fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(parent, StaticProperty.COMMENTS));
-    }
-
-//	private void changed() {
-//		fireObjectModifiedEvent(
-//				PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENTS));
-//	}
-
-	public String toString() {
-		String src = "";
-		if (source != null && !"".equals(source)) {
-			src = " (" + source + ")";
-		}
-		return commentText + src;
-	}
 }

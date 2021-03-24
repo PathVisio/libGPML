@@ -33,8 +33,8 @@ abstract class GenericPoint implements Cloneable, IElementIdContainer {
 	private Pathway parent;
 	
 
-	GenericPoint(Coordinate coordinates) {
-		this.coordinates = coordinates;
+	GenericPoint(String elementId) {
+		this.elementId = elementId;
 	}
 
 

@@ -30,10 +30,10 @@ public class Anchor extends GenericPoint {
 	private double position;
 	private Coordinate xy;
 	private AnchorType shapeType = AnchorType.NONE;
-	
-	//TODO: PathwayElement parent? 
-	//TODO: Method to calculate xy from position! 
-	
+
+	// TODO: PathwayElement parent?
+	// TODO: Method to calculate xy from position!
+
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
@@ -46,7 +46,10 @@ public class Anchor extends GenericPoint {
 	 */
 	public Anchor(String elementId, double position, Coordinate xy, AnchorType shapeType) {
 		super(elementId);
-		this.position = position;
+		if (position < 0 || position > 1) {
+			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
+		}
+		this.position = position; // must be valid
 		this.xy = xy;
 		if (shapeType != null)
 			this.shapeType = shapeType;
@@ -69,6 +72,9 @@ public class Anchor extends GenericPoint {
 	 * @param position the position of the anchor.
 	 */
 	public void setPosition(double position) {
+		if (position < 0 || position > 1) {
+			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
+		}
 		this.position = position;
 	}
 
@@ -89,7 +95,6 @@ public class Anchor extends GenericPoint {
 	public void setXY(Coordinate xy) {
 		this.xy = xy;
 	}
-
 
 	/**
 	 * Gets the visual representation of an anchor, e.g., none, square.
