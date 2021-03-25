@@ -16,9 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.awt.geom.Point2D;
-import java.util.Set;
-
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -27,39 +24,39 @@ import org.bridgedb.Xref;
  * 
  * @author saurabh, finterly
  */
-public class Citation implements IElementIdContainer {
+public class Citation extends PathwayElement {
 
-	private String elementId;
+	private Xref xref;
 	private String url; // optional
-	private Xref xref; // optional
+	
 
 	/**
-	 * Instantiates a Citation pathway element given elementId, given xref, and
+	 * Instantiates a Citation pathway element given elementId, given parent pathway model, given xref, and no
+	 * url.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param xref         the citation xref.
+	 */
+	public Citation(String elementId, PathwayModel pathwayModel, Xref xref) {
+		this(elementId, pathwayModel, xref, null);
+	}
+
+	/**
+	 * Instantiates a Citation pathway element given elementId, given parent pathway model, given xref, and
 	 * given url.
 	 * 
-	 * @param elementId the unique id of the citation element.
-	 * @param xref      the citation xref.
-	 * @param url       the url of the citation.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param xref         the citation xref.
+	 * @param url          the url of the citation.
 	 */
-	public Citation(String elementId, Xref xref, String url) {
-
-		// TODO use setter since its complicated...
-		setElementId();
-		this.elementId = elementId;
+	public Citation(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
+		super(elementId, pathwayModel);
 		this.xref = xref;
 		this.url = url;
 	}
 
-	
-
-	public boolean isValidElementId(String elementId) {
-		if (elementId == null && isUniqueElementId(elementId) == true) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
 	private boolean isValidUrl(String url2) {
 		// TODO Auto-generated method stub
 		return false;
@@ -68,30 +65,6 @@ public class Citation implements IElementIdContainer {
 	private boolean isValidXref(Xref xref2) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-
-
-	/**
-	 * Instantiates a Citation pathway element given elementId, given xref, and no
-	 * url.
-	 * 
-	 * @param elementId the unique id of the citation element.
-	 * @param xref      the citation xref.
-	 */
-	public Citation(String elementId, Xref xref) {
-		this(elementId, xref, null);
-	}
-
-	/**
-	 * Instantiates a Citation pathway element given elementId, given url, and no
-	 * xref.
-	 * 
-	 * @param elementId the unique id of the citation element.
-	 * @param url       the url of the citation.
-	 */
-	public Citation(String elementId, String url) {
-		this(elementId, null, url);
 	}
 
 	/**

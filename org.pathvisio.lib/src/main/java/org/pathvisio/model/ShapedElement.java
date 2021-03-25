@@ -22,7 +22,7 @@ package org.pathvisio.model;
  * 
  * @author finterly
  */
-public class ShapedElement extends PathwayElement {
+public class ShapedElement extends ElementInfo {
 	
 	private Group parentGroup; // optional
 	private RectProperty rectProperty;

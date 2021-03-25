@@ -24,7 +24,7 @@ import java.util.List;
  * 
  * @author finterly
  */
-public class AnnotationRef implements IElementRefContainer {
+public class AnnotationRef {
 
 	private Annotation annotation; // elementRef in GPML is this.annotation.getElementId()
 	private List<Citation> citations; // 0 to unbounded

@@ -26,6 +26,7 @@ package org.pathvisio.model;
  * @author thomas, finterly
  *
  */
+
 abstract class GenericPoint implements Cloneable, IElementIdContainer {
 	
 	private String elementId;

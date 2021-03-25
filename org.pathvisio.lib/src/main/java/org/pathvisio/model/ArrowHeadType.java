@@ -31,26 +31,26 @@ import java.util.Map;
  * 
  * @author unknown, finterly
  */
-public class LineType {
-	private static Map<String, LineType> nameToLineType = new HashMap<String, LineType>();
-	private static List<LineType> lineTypes = new ArrayList<LineType>();
-	private static List<LineType> visibleLineTypes = new ArrayList<LineType>();
+public class ArrowHeadType {
+	private static Map<String, ArrowHeadType> nameToLineType = new HashMap<String, ArrowHeadType>();
+	private static List<ArrowHeadType> lineTypes = new ArrayList<ArrowHeadType>();
+	private static List<ArrowHeadType> visibleLineTypes = new ArrayList<ArrowHeadType>();
 
 	/** LineType LINE means the absence of an arrowhead */
-	public static final LineType LINE = new LineType("Line", "Line");
-	public static final LineType ARROW = new LineType("Arrow", "Arrow");
-	public static final LineType TBAR = new LineType("TBar", "TBar");
+	public static final ArrowHeadType LINE = new ArrowHeadType("Line", "Line");
+	public static final ArrowHeadType ARROW = new ArrowHeadType("Arrow", "Arrow");
+	public static final ArrowHeadType TBAR = new ArrowHeadType("TBar", "TBar");
 
 	@Deprecated
-	public static final LineType RECEPTOR = new LineType("Receptor", "Receptor", true);
+	public static final ArrowHeadType RECEPTOR = new ArrowHeadType("Receptor", "Receptor", true);
 	@Deprecated
-	public static final LineType LIGAND_SQUARE = new LineType("LigandSquare", "LigandSq", true);
+	public static final ArrowHeadType LIGAND_SQUARE = new ArrowHeadType("LigandSquare", "LigandSq", true);
 	@Deprecated
-	public static final LineType RECEPTOR_SQUARE = new LineType("ReceptorSquare", "ReceptorSq", true);
+	public static final ArrowHeadType RECEPTOR_SQUARE = new ArrowHeadType("ReceptorSquare", "ReceptorSq", true);
 	@Deprecated
-	public static final LineType LIGAND_ROUND = new LineType("LigandRound", "LigandRd", true);
+	public static final ArrowHeadType LIGAND_ROUND = new ArrowHeadType("LigandRound", "LigandRd", true);
 	@Deprecated
-	public static final LineType RECEPTOR_ROUND = new LineType("ReceptorRound", "ReceptorRd", true);
+	public static final ArrowHeadType RECEPTOR_ROUND = new ArrowHeadType("ReceptorRound", "ReceptorRd", true);
 
 	private String mappName;
 	private String name;
@@ -63,7 +63,7 @@ public class LineType {
 	 * @param mappName the string identifier. mappName may be null for new lines
 	 *                 that don't have a .mapp equivalent.
 	 */
-	private LineType(String name, String mappName) {
+	private ArrowHeadType(String name, String mappName) {
 		this(name, mappName, false);
 	}
 
@@ -76,7 +76,7 @@ public class LineType {
 	 *                 that don't have a .mapp equivalent.
 	 * @param hidden   if false, ?????? is visible.
 	 */
-	private LineType(String name, String mappName, boolean hidden) {
+	private ArrowHeadType(String name, String mappName, boolean hidden) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
@@ -97,11 +97,11 @@ public class LineType {
 	 * @param mappName the string identifier.
 	 * @return a LineType object.
 	 */
-	public static LineType create(String name, String mappName) {
+	public static ArrowHeadType create(String name, String mappName) {
 		if (nameToLineType.containsKey(name)) {
 			return nameToLineType.get(name);
 		} else {
-			return new LineType(name, mappName);
+			return new ArrowHeadType(name, mappName);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class LineType {
 	 * @param value the string.
 	 * @return the LineType with given string value.
 	 */
-	public static LineType fromName(String value) {
+	public static ArrowHeadType fromName(String value) {
 		return nameToLineType.get(value);
 	}
 
@@ -163,8 +163,8 @@ public class LineType {
 	 * 
 	 * @return the array of LineTypes.
 	 */
-	static public LineType[] getValues() {
-		return nameToLineType.values().toArray(new LineType[nameToLineType.size()]);
+	static public ArrowHeadType[] getValues() {
+		return nameToLineType.values().toArray(new ArrowHeadType[nameToLineType.size()]);
 	}
 
 	/**
@@ -172,8 +172,8 @@ public class LineType {
 	 * 
 	 * @return the array of visible LineTypes.
 	 */
-	static public LineType[] getVisibleValues() {
-		return visibleLineTypes.toArray(new LineType[0]);
+	static public ArrowHeadType[] getVisibleValues() {
+		return visibleLineTypes.toArray(new ArrowHeadType[0]);
 	}
 
 	/**

@@ -978,8 +978,8 @@ class GpmlFormat2021 extends GpmlFormatAbstract implements GpmlFormatReader, Gpm
 		}
 
 		o.setMPoints(mPoints);
-		o.setStartLineType(LineType.fromName(startType));
-		o.setEndLineType(LineType.fromName(endType));
+		o.setStartLineType(ArrowHeadType.fromName(startType));
+		o.setEndLineType(ArrowHeadType.fromName(endType));
 
 		// Map anchors
 		List<Element> anchors = graphics.getChildren("Anchor", e.getNamespace());

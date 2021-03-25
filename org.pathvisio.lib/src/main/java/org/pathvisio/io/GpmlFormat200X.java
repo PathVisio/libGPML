@@ -489,8 +489,8 @@ class GpmlFormat200X extends GpmlFormatAbstract implements GpmlFormatReader {
 		}
 
 		o.setMPoints(mPoints);
-		o.setStartLineType(LineType.fromName(startType));
-		o.setEndLineType(LineType.fromName(endType));
+		o.setStartLineType(ArrowHeadType.fromName(startType));
+		o.setEndLineType(ArrowHeadType.fromName(endType));
 
 		String connType = getAttribute("Line.Graphics", "ConnectorType", graphics);
 		o.setConnectorType(ConnectorType.fromName(connType));

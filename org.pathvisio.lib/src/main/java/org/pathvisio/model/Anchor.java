@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.awt.Color;
-import java.awt.geom.Point2D;
 
 /**
  * This class stores all information relevant to an Anchor pathway element.
@@ -25,27 +23,26 @@ import java.awt.geom.Point2D;
  * 
  * @author finterly
  */
-public class Anchor extends GenericPoint {
+public class Anchor extends PathwayElement {
 
 	private double position;
 	private Coordinate xy;
 	private AnchorType shapeType = AnchorType.NONE;
 
-	// TODO: PathwayElement parent?
 	// TODO: Method to calculate xy from position!
 
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
-	 * @param elementId the unique id of the anchor.
+	 * @param elementId the unique pathway element identifier.
 	 * @param position  the proportional distance of an anchor along the line it
 	 *                  belongs to.
 	 * @param x         the x coordinate position of the anchor.
 	 * @param y         the y coordinate position of the anchor.
 	 * @param shapeType the visual representation of an anchor.
 	 */
-	public Anchor(String elementId, double position, Coordinate xy, AnchorType shapeType) {
-		super(elementId);
+	public Anchor(String elementId, PathwayModel pathwayModel, double position, Coordinate xy, AnchorType shapeType) {
+		super(elementId, pathwayModel);
 		if (position < 0 || position > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}

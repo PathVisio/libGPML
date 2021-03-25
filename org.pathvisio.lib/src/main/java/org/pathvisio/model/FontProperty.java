@@ -34,7 +34,7 @@ public class FontProperty {
 	private boolean fontStyle = false; // italic or normal
 	private boolean fontDecoration = false; // underline or normal
 	private boolean fontStrikethru = false;// strikethru or normal
-	private double fontSize = 12; // 12
+	private int fontSize = 12; // 12, could be double in older schemas
 	private HAlignType hAlign = HAlignType.CENTER; // horizontal alignment of text
 	private VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
 

@@ -24,65 +24,72 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Evidence {
+public class Evidence extends PathwayElement {
 
-	private String elementId;
+	private String value; // optional
 	private Xref xref;
-	private String name; // optional
 	private String url; // optional
 
-	// Uses Builder
+	/*
+	 * NB: Manipulated the order of variables to overload constructor. Cannot
+	 * have two constructors with the same signature. This is not best practice,
+	 * however variable inheritance complicates use of a builder. F
+	 */
 
-	public static class EvidenceBuilder {
-		private String elementId;
-		private Xref xref;
-		private String name; // optional
-		private String url; // optional
-
-		public EvidenceBuilder(String elementId, Xref xref) {
-			this.elementId = elementId;
-			this.xref = xref;
-		}
-
-		public EvidenceBuilder setName(String name) {
-			this.name = name;
-			return this;
-		}
-
-		public EvidenceBuilder setUrl(String url) {
-			this.url = url;
-			return this;
-		}
-
-		public Evidence build() {
-			// call the private constructor in the outer class
-			return new Evidence(this);
-		}
-	}
-
-	private Evidence(EvidenceBuilder builder) {
-		this.elementId = builder.elementId;
-		this.xref = builder.xref;
-		this.setName(builder.name);
-		this.url = builder.url;
+	/**
+	 * Instantiates an Evidence pathway element given elementId, given parent
+	 * pathway model, given xref, no value, and no url.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param xref         the evidence xref.
+	 */
+	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref) {
+		this(elementId, pathwayModel, null, xref, null);
 	}
 
 	/**
-	 * Gets the elementId of the citation.
+	 * Instantiates an Evidence pathway element given elementId, given parent
+	 * pathway model, given xref, given url, and no value. 
 	 * 
-	 * @return elementId the unique id of the citation.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param value        the name, term, or text of the evidence.
+	 * @param xref         the evidence xref.
+	 * @param url          the url of the evidence.
 	 */
-	public String getElementId() {
-		return elementId;
+	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
+		this(elementId, pathwayModel, null, xref, url);
 	}
 
 	/**
-	 * Sets ID of the citations
+	 * Instantiates an Evidence pathway element given elementId, given parent
+	 * pathway model, given value, given xref, and no url.
 	 * 
-	 * @param elementId the unique id of the citation.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param value        the name, term, or text of the evidence.
+	 * @param xref         the evidence xref.
 	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
+	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref) {
+		this(elementId, pathwayModel, value, xref, null);
+	}
+
+	/**
+	 * Instantiates an Evidence pathway element given elementId, given parent
+	 * pathway model, given value, given xref, and given url.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param value        the name, term, or text of the evidence.
+	 * @param xref         the evidence xref.
+	 * @param url          the url of the evidence.
+	 */
+	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref, String url) {
+		super(elementId, pathwayModel);
+		this.value = value;
+		this.xref = xref;
+		this.url = url;
 	}
 
 	/**
@@ -105,12 +112,12 @@ public class Evidence {
 		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 	}
 
-	public String getName() {
-		return name;
+	public String getValue() {
+		return value;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	/**

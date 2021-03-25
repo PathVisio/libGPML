@@ -828,14 +828,14 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 			LineType arrowHead = getAttribute("Interaction.Graphics.Point", "ArrowHead", point) == null ? LineType.LINE
 					: LineType.fromName(getAttribute("Interaction.Graphics.Point", "ArrowHead", point));
 			String elementRef = getAttribute(base + ".Graphics.Point", "GraphRef", point);
-			if (elementRef == null) {
-				Point pt = new Point(elementId, arrowHead, new Coordinate(x, y));
-				pts.add(pt);
-			} else {
+			Point pt = new Point(elementId, arrowHead, new Coordinate(x, y));
+			pts.add(pt);
+			if (elementRef != null) {
 				double relX = Double.parseDouble(point.getAttributeValue("RelX"));
 				double relY = Double.parseDouble(point.getAttributeValue("RelY"));
-				Point pt = new Point(elementId, arrowHead, new Coordinate(x, y), elementRef, relX, relY);
-				pts.add(pt);
+				pt.setElementRef(elementRef);
+				pt.setRelX(relX);
+				pt.setRelY(relY);
 			}
 		}
 

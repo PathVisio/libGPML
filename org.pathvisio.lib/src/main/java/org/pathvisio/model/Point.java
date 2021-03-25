@@ -23,30 +23,46 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class Point extends GenericPoint {
+public class Point extends PathwayElement {
 
-	private LineType arrowHead; // line by default
+	private ArrowHeadType arrowHead; // line by default
 	private Coordinate xy; // TODO: part of generic point
-	private String elementRef; // TODO PATHWAY ELEMENT DOES NOT INCLUDE ANCHOR!!!
+	private PathwayElement elementRef; // TODO Anchor now pathwayElement
 	private double relX; // optional
 	private double relY; // optional
 
 	// TODO: PathwayElement parent?
 
+	
+	/**
+	 * Instantiates a Point pathway element, with no reference to another pathway
+	 * element.
+	 * 
+	 * @param elementId  the unique pathway element identifier.
+	 * @param arrowHead the arrowhead property of the point.
+	 * @param x         the x coordinate position of the point.
+	 * @param y         the y coordinate position of the point.
+	 */
+	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy) {
+		super(elementId, pathwayModel);
+		this.arrowHead = arrowHead;
+		this.xy = xy;
+	}
+	
 	/**
 	 * Instantiates a Point pathway element, with reference to another pathway
 	 * element.
 	 * 
-	 * @param elementId  the unique id of the point.
-	 * @param elementRef the id of the pathway element to which the point refers.
+	 * @param elementId  the unique pathway element identifier.
+	 * @param elementRef the pathway element to which the point refers.
 	 * @param arrowHead  the arrowhead property of the point.
 	 * @param x          the x coordinate position of the point.
 	 * @param y          the y coordinate position of the point.
 	 * @param relX       the relative x coordinate.
 	 * @param relY       the relative x coordinate.
 	 */
-	public Point(String elementId, LineType arrowHead, Coordinate xy, String elementRef, double relX, double relY) {
-		super(elementId);
+	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy, PathwayElement elementRef, double relX, double relY) {
+		super(elementId, pathwayModel);
 		this.arrowHead = arrowHead;
 		this.xy = xy;
 		this.elementRef = elementRef;
@@ -54,18 +70,7 @@ public class Point extends GenericPoint {
 		this.relY = relY;
 	}
 
-	/**
-	 * Instantiates a Point pathway element, with no reference to another pathway
-	 * element.
-	 * 
-	 * @param elementId the unique id of the point.
-	 * @param arrowHead the arrowhead property of the point.
-	 * @param x         the x coordinate position of the point.
-	 * @param y         the y coordinate position of the point.
-	 */
-	public Point(String elementId, LineType arrowHead, Coordinate xy) {
-		this(elementId, arrowHead, xy);
-	}
+
 
 	/*-----------------------------------------------------------------------*/
 
@@ -174,9 +179,9 @@ public class Point extends GenericPoint {
 	 * @return arrowhead the arrowhead property of the point.
 	 * 
 	 */
-	public LineType getArrowHead() {
+	public ArrowHeadType getArrowHead() {
 		if (arrowHead == null) {
-			return LineType.LINE;
+			return ArrowHeadType.LINE;
 		} else {
 			return arrowHead;
 		}
@@ -190,7 +195,7 @@ public class Point extends GenericPoint {
 	 * @param arrowhead the arrowhead property of the point.
 	 * 
 	 */
-	public void setArrowHead(LineType arrowHead) {
+	public void setArrowHead(ArrowHeadType arrowHead) {
 		this.arrowHead = arrowHead;
 	}
 

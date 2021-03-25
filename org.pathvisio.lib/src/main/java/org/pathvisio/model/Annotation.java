@@ -24,58 +24,93 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class Annotation {
+public class Annotation extends PathwayElement {
 
-	private String elementId;
-	private String name;
+	private String value;
 	private AnnotationType type;
-	private String url; // optional
 	private Xref xref; // optional
+	private String url; // optional
 
-	//TODO Fix constructors....
-	public Annotation(String elementId, String name, AnnotationType type) {
-		this.elementId = elementId;
-		this.name = name;
-		this.type = type;
+	/**
+	 * Instantiates an Annotation pathway element given elementId, given parent
+	 * pathway model, given value, given type, no url, and no xref.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param value        the name, term, or text of the annotation.
+	 * @param type         the type of the annotation, e.g. ontology.
+	 */
+	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type) {
+		this(elementId, pathwayModel, value, type, null, null);
+
 	}
-	
-	public Annotation(String elementId, String name, AnnotationType type, String url) {
-		this(elementId, name, type);
+
+	/**
+	 * Instantiates an Annotation pathway element given elementId, given parent
+	 * pathway model, given value, given type, given url, and no xref.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param value        the name, term, or text of the annotation.
+	 * @param type         the type of the annotation, e.g. ontology.
+	 * @param url          the url of the annotation.
+	 */
+	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, String url) {
+		this(elementId, pathwayModel, value, type, null, url);
+
+	}
+
+	/**
+	 * Instantiates an Annotation pathway element given elementId, given parent
+	 * pathway model, given value, given type, given xref, and no url.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param value        the name, term, or text of the annotation.
+	 * @param type         the type of the annotation, e.g. ontology.
+	 * @param xref         the annotation xref.
+	 */
+	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref) {
+		this(elementId, pathwayModel, value, type, xref, null);
+	}
+
+	/**
+	 * Instantiates an Annotation pathway element given elementId, given parent
+	 * pathway model, given value, given type, given url, and given xref.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param value        the name, term, or text of the annotation.
+	 * @param type         the type of the annotation, e.g. ontology.
+	 * @param xref         the annotation xref.
+	 * @param url          the url of the annotation.
+	 */
+	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref, String url) {
+		super(elementId, pathwayModel);
+		this.value = value;
+		this.type = type;
+		this.xref = xref;
 		this.url = url;
 	}
 
-	public Annotation(String elementId, String name, AnnotationType type, Xref xref) {
-		this(elementId, name, type);
-		this.xref = xref;
-	}
-	
-	public Annotation(String elementId, String name, AnnotationType type, String url, Xref xref) {
-		this(elementId, name, type, url);
-		this.xref = xref;
-	}
-	
-
-	
-
-	
 	// Add Constructors
 
 	/**
 	 * Gets the name, term, or text of the annotation.
 	 * 
-	 * @return name the name, term, or text of the annotation.
+	 * @return value the name, term, or text of the annotation.
 	 */
-	public String getName() {
-		return name;
+	public String getValue() {
+		return value;
 	}
 
 	/**
 	 * Sets the name, term, or text of the annotation.
 	 * 
-	 * @param name the name, term, or text of the annotation.
+	 * @param value the name, term, or text of the annotation.
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	/**

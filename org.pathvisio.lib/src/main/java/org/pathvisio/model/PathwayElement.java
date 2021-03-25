@@ -39,65 +39,82 @@ import org.pathvisio.util.Utils;
  * Abstract class of pathway elements which are part of a pathway and have an
  * elementId.
  * 
- * Children: DataNode, State, Interaction, GraphicalLine, Label, Shape, Group.
+ * Children: DataNode, State, Interaction, GraphicalLine, Label, Shape, Group,
+ * Anchor, Point, Annotation, Citation, and Evidence.
  * 
  * @author unknown, AP20070508, finterly
  */
-public abstract class PathwayElement implements IElementIdContainer, Comparable<PathwayElement> {
+public abstract class PathwayElement {
 
 	private String elementId;
-	private Pathway parentPathway = null; // parent pathway: may be null (e.g. when object is in clipboard)
+	private PathwayModel pathwayModel = null; // parent pathway model: may be null (e.g. when object is in clipboard)
 
-	// TODO parent Pathway handle, Builder or empty lists
-
-	private List<Comment> comments; 
-	private List<DynamicProperty> dynamicProperties;
-	private List<AnnotationRef> annotationRefs;
-	private List<Citation> citations;
-	private List<Evidence> evidences;
-
-	public PathwayElement(String elementId) {
-
-		// setElementId(); TODO use setter since its complicated...
-		this.elementId = elementId;
-		this.comments = new ArrayList<Comment>(); // 0 to unbounded
-		this.dynamicProperties = new ArrayList<DynamicProperty>(); // 0 to unbounded
-		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
-		this.citations = new ArrayList<Citation>(); // 0 to unbounded
-		this.evidences = new ArrayList<Evidence>(); // 0 to unbounded
+	/**
+	 * Initialize this pathway element with elementId and given parent pathway
+	 * model.
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 */
+	public PathwayElement(String elementId, PathwayModel pathwayModel) {
+		this.elementId = elementId; // TODO Setter
+		this.pathwayModel = pathwayModel;
 	}
 
 	/**
-	 * Returns the parent pathway.
+	 * Returns the parent pathway model.
 	 * 
-	 * @return parent the parent pathway.
+	 * @return pathwayModel the parent pathway model.
 	 */
-	public Pathway getParentPathway() {
-		return parentPathway;
+	public PathwayModel getPathwayModel() {
+		return pathwayModel;
 	}
 
 	/**
-	 * Get the parent pathway. Same as {@link #getParent()}, but necessary to comply
-	 * to the {@link ElementIdContainer} interface.
+	 * Sets the parent pathway model.
 	 * 
-	 * @return parent the parent pathway.
+	 * @param pathwayModel the parent pathway model.
 	 */
-	public Pathway getPathway() {
-		return parentPathway;
+	public void setPathwayModel(PathwayModel pathwayModel) {
+		this.pathwayModel = pathwayModel;
 	}
 
 	/**
-	 * Set parent. Do not use this method directly! parent is set automatically when
-	 * using Pathway.add/remove
+	 * Gets the parent data node of this state.
 	 * 
-	 * @param v the parentGENEID
+	 * @return the parent pathway element data node of this state, null if no parent
+	 *         exists.
 	 */
-	void setParentPathway(Pathway pathway) {
-		parentPathway = pathway;
+	public PathwayElement getParentDataNode() {
+		Pathway parent = getParent();
+		if (parent == null) {
+			return null;
+		}
+		return parent.getElementById(getElementRef());
 	}
 
+	@Override
+	public void setParent(Pathway v) {
+		if (parent != v) {
+			super.setParent(v);
+			if (parent != null && graphRef != null) {
+				updateCoordinates();
+			}
+		}
+	}
+
+	protected State(ObjectType state) {
+		super(ObjectType.STATE);
+		// TODO Auto-generated constructor stub
+	}
 	/* ------------------------------- GROUPREF ------------------------------- */
-
+	public boolean isValidElementId(String elementId) {
+		if (elementId == null && isUniqueElementId(elementId) == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	protected String groupRef;
 
 	/**
@@ -114,13 +131,13 @@ public abstract class PathwayElement implements IElementIdContainer, Comparable<
 	 */
 	public void setGroupRef(String id) {
 		if (groupRef == null || !groupRef.equals(id)) {
-			if (parentPathway != null) {
+			if (pathwayModel != null) {
 				if (groupRef != null) {
-					parentPathway.removeGroupRef(groupRef, this);
+					pathwayModel.removeGroupRef(groupRef, this);
 				}
 				// Check: move add before remove??
 				if (id != null) {
-					parentPathway.addGroupRef(id, this);
+					pathwayModel.addGroupRef(id, this);
 				}
 			}
 			groupRef = id;
@@ -137,7 +154,7 @@ public abstract class PathwayElement implements IElementIdContainer, Comparable<
 
 	public String createGroupId() {
 		if (groupId == null) {
-			setGroupId(parentPathway.getUniqueGroupId());
+			setGroupId(pathwayModel.getUniqueGroupId());
 		}
 		return groupId;
 	}
@@ -149,13 +166,13 @@ public abstract class PathwayElement implements IElementIdContainer, Comparable<
 	 */
 	public void setGroupId(String id) {
 		if (groupId == null || !groupId.equals(id)) {
-			if (parentPathway != null) {
+			if (pathwayModel != null) {
 				if (groupId != null) {
-					parentPathway.removeGroupId(groupId);
+					pathwayModel.removeGroupId(groupId);
 				}
 				// Check: move add before remove??
 				if (id != null) {
-					parentPathway.addGroupId(id, this);
+					pathwayModel.addGroupId(id, this);
 				}
 			}
 			groupId = id;
@@ -184,12 +201,12 @@ public abstract class PathwayElement implements IElementIdContainer, Comparable<
 	 * @see Pathway#getUniqueId(java.util.Set)
 	 */
 	public void setElementId(String id) {
-		ElementLink.setElementId(id, this, parentPathway);
+		ElementLink.setElementId(id, this, pathwayModel);
 		elementId = id;
 	}
 
 	public String setGeneratedElementId() {
-		setElementId(parentPathway.getUniqueElementId());
+		setElementId(pathwayModel.getUniqueElementId());
 		return elementId;
 	}
 	/* ------------------------------- ELEMENTREF ------------------------------- */
@@ -201,7 +218,7 @@ public abstract class PathwayElement implements IElementIdContainer, Comparable<
 	 * element.
 	 */
 	public Set<ElementRefContainer> getReferences() {
-		return ElementLink.getReferences(this, parentPathway);
+		return ElementLink.getReferences(this, pathwayModel);
 	}
 
 	/** elementRef property, used by Modification */
@@ -303,153 +320,5 @@ public abstract class PathwayElement implements IElementIdContainer, Comparable<
 			System.err.println("  " + getElementRef());
 		}
 	}
-
-	/*
-	 * ------------------------------- CommentGroup -------------------------------
-	 */
-
-	/**
-	 * Returns the list of comments.
-	 * 
-	 * @return comments the list of comments.
-	 */
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addComment(Comment comment) {
-		comments.add(comment);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeComment(Comment comment) {
-		comments.remove(comment);
-	}
-
-	/**
-	 * TODO
-	 * 
-	 * Finds the first comment with a specific source.
-	 * 
-	 * @returns the comment with a given source.
-	 */
-	public String findComment(String source) {
-		for (Comment c : comments) {
-			if (source.equals(c.source)) {
-				return c.comment;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the list of key value pair information properties.
-	 * 
-	 * @return properties the list of properties.
-	 */
-	public List<DynamicProperty> getDynamicProperties() {
-		return dynamicProperties;
-	}
-
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.add(dynamicProperty);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.remove(dynamicProperty);
-	}
-	
-	/**
-	 * Returns the list of annotation references.
-	 * 
-	 * @return annotationRefs the list of annotation references.
-	 */
-	public List<AnnotationRef> getAnnotationRefs() {
-		return annotationRefs;
-	}
-	
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addAnnotationRef(AnnotationRef annotationRef) {
-		annotationRefs.add(annotationRef);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		annotationRefs.remove(annotationRef);
-	}
-
-	/**
-	 * Returns the list of citation references.
-	 * 
-	 * @return citationRefs the list of citation references.
-	 */
-	public List<Citation> getCitations() {
-		return citations;
-	}
-
-	
-	//TODO CitationRef/Annotation Manager
-	
-	
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addCitationRef(CitationRef citationRef) {
-		citationRefs.add(citationRef);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeCitationRef(CitationRef citationRef) {
-		citationRefs.remove(citationRef);
-	}
-	
-	
-	public List<Evidence> getEvidences() {
-		return evidences;
-	}
-
-	public void setEvidenceRefs(List<Evidence> evidences) {
-		this.evidences = evidences;
-	}
-
-//	public List<AnnotationRef> getAnnotationRefList() {
-//		if (annotationRefs == null) {
-//			annotationRefs = new ArrayList<AnnotationRef>();
-//		}
-//		return this.annotationRefs;
-//	}
 
 }

@@ -30,7 +30,7 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public abstract class LineElement extends PathwayElement {
+public abstract class LineElement extends ElementInfo {
 
 	private Group parentGroup; // optional instead of groupRef
 	private LineStyleProperty lineStyleProperty;

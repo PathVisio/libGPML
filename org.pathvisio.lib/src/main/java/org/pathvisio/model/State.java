@@ -28,9 +28,9 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
  * 
  * @author finterly
  */
-public class State extends PathwayElement {
+public class State extends ElementInfo {
 
-//	private String elementRef;
+	private DataNode dataNode; // parent dataNode, previously elementRef
 	private String textLabel;
 	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
 	private double relX;
@@ -41,44 +41,68 @@ public class State extends PathwayElement {
 	private ShapeStyleProperty shapeStyleProperty;
 	private Xref xref; // optional
 
-	/**
-	 * Gets the parent data node of this state.
-	 * 
-	 * @return the parent pathway element data node of this state, null if no parent
-	 *         exists.
-	 */
-	public PathwayElement getParentDataNode() {
-		Pathway parent = getParent();
-		if (parent == null) {
-			return null;
-		}
-		return parent.getElementById(getElementRef());
-	}
-
-	@Override
-	public void setParent(Pathway v) {
-		if (parent != v) {
-			super.setParent(v);
-			if (parent != null && graphRef != null) {
-				updateCoordinates();
-			}
-		}
-	}
-
-	protected State(ObjectType state) {
-		super(ObjectType.STATE);
-		// TODO Auto-generated constructor stub
-	}
-
 	
-	public String getElementRef() {
-		return elementRef;
+	/**
+	 * 
+	 * @param elementId
+	 * @param pathwayModel
+	 * @param dataNode
+	 * @param textLabel
+	 * @param type
+	 * @param relX
+	 * @param relY
+	 * @param width
+	 * @param height
+	 * @param fontProperty
+	 * @param shapeStyleProperty
+	 */
+	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
+			double relX, double relY, double width, double height, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty) {
+		super(elementId, pathwayModel);
+		this.dataNode = dataNode;
+		this.textLabel = textLabel;
+		this.type = type;
+		this.relX = relX;
+		this.relY = relY;
+		this.width = width;
+		this.height = height;
+		this.fontProperty = fontProperty;
+		this.shapeStyleProperty = shapeStyleProperty;
+	}
+
+	/**
+	 * @param elementId
+	 * @param pathwayModel
+	 * @param dataNode
+	 * @param textLabel
+	 * @param type
+	 * @param relX
+	 * @param relY
+	 * @param width
+	 * @param height
+	 * @param fontProperty
+	 * @param shapeStyleProperty
+	 * @param xref
+	 */
+	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
+			double relX, double relY, double width, double height, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Xref xref) {
+		this(textLabel, pathwayModel, dataNode, textLabel, type, height, height, height, height, fontProperty,
+				shapeStyleProperty);
+		this.xref = xref;
 	}
 
 
-	public void setElementRef(String elementRef) {
-		this.elementRef = elementRef;
+
+	public DataNode getDataNode() {
+		return dataNode;
 	}
+
+	public void setDataNode(DataNode dataNode) {
+		this.dataNode = dataNode;
+	}
+
 	/**
 	 * Gets the text of of the state.
 	 * 
@@ -178,7 +202,6 @@ public class State extends PathwayElement {
 	public void setShapeStyleProperty(ShapeStyleProperty shapeStyleProperty) {
 		this.shapeStyleProperty = shapeStyleProperty;
 	}
-	
 
 	/**
 	 * Gets the state Xref.
@@ -199,6 +222,5 @@ public class State extends PathwayElement {
 		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 	}
-
 
 }
