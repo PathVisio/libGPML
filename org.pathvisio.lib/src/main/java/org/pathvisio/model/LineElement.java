@@ -132,7 +132,7 @@ public abstract class LineElement extends ElementInfo {
 	 * 
 	 * @return groupRef the parent group of the line.
 	 */
-	public Group getGroup() {
+	public Group getGroupRef() {
 		return groupRef;
 	}
 
@@ -142,7 +142,7 @@ public abstract class LineElement extends ElementInfo {
 	 * 
 	 * @param groupRef the parent group of the line.
 	 */
-	public void setGroup(Group groupRef) {
+	public void setGroupRef(Group groupRef) {
 		groupRef.addPathwayElement(this);
 		this.groupRef = groupRef;
 	}

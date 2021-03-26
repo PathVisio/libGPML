@@ -151,7 +151,7 @@ public class Shape extends ShapedElement {
 	 * 
 	 * @return groupRef the parent group of the shape.
 	 */
-	public Group getGroup() {
+	public Group getGroupRef() {
 		return groupRef;
 	}
 
@@ -161,7 +161,7 @@ public class Shape extends ShapedElement {
 	 * 
 	 * @param groupRef the parent group of the shape.
 	 */
-	public void setGroup(Group groupRef) {
+	public void setGroupRef(Group groupRef) {
 		groupRef.addPathwayElement(this);
 		this.groupRef = groupRef;
 	}

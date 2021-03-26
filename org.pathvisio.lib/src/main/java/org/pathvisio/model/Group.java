@@ -114,8 +114,25 @@ public class Group extends ShapedElement {
 	 * @param groupRef the parent group of the group.
 	 */
 	public void setGroup(Group groupRef) {
-		groupRef.addPathwayElement(this);
-		this.groupRef = groupRef;
+		if (groupRef.getPathwayElements() != null && groupRef != null) {
+			groupRef.addPathwayElement(this);
+			this.groupRef = groupRef;
+		}
+
+		//TODO how to handle groupRef properly...
+		
+//			if (groupRef == null || !groupRef.equals(id)) {
+//				if (pathwayModel != null) {
+//					if (groupRef != null) {
+//						pathwayModel.removeGroupRef(groupRef, this);
+//					}
+//					// Check: move add before remove??
+//					if (id != null) {
+//						pathwayModel.addGroupRef(id, this);
+//					}
+//				}
+//				groupRef = id;
+//			}
 	}
 
 	/**

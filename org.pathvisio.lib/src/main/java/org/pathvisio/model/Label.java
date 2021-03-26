@@ -63,7 +63,7 @@ public class Label extends ShapedElement {
 	 * 
 	 * @return groupRef the parent group of the label.
 	 */
-	public Group getGroup() {
+	public Group getGroupRef() {
 		return groupRef;
 	}
 
@@ -73,7 +73,7 @@ public class Label extends ShapedElement {
 	 * 
 	 * @param groupRef the parent group of the label.
 	 */
-	public void setGroup(Group groupRef) {
+	public void setGroupRef(Group groupRef) {
 		groupRef.addPathwayElement(this);
 		this.groupRef = groupRef;
 	}

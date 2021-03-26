@@ -169,7 +169,7 @@ public class DataNode extends ShapedElement {
 	 * 
 	 * @return groupRef the parent group of the data node.
 	 */
-	public Group getGroup() {
+	public Group getGroupRef() {
 		return groupRef;
 	}
 
@@ -179,7 +179,7 @@ public class DataNode extends ShapedElement {
 	 * 
 	 * @param groupRef the parent group of the data node.
 	 */
-	public void setGroup(Group groupRef) {
+	public void setGroupRef(Group groupRef) {
 		groupRef.addPathwayElement(this);
 		this.groupRef = groupRef;
 	}

@@ -16,10 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-
 /**
- * This class stores all information relevant to an Anchor pathway element.
- * Anchor element is a connection point on a graphical line or an interaction.
+ * This class stores information for an Anchor pathway element. Anchor element
+ * is a connection point on a graphical line or an interaction.
  * 
  * @author finterly
  */
