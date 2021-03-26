@@ -32,69 +32,23 @@ import org.bridgedb.Xref;
  */
 public abstract class LineElement extends ElementInfo {
 
-	private Group parentGroup; // optional instead of groupRef
-	private LineStyleProperty lineStyleProperty;
 	private List<Point> points;
 	private List<Anchor> anchors = new ArrayList<Anchor>();
-	// TODO: No Type?
+	private LineStyleProperty lineStyleProperty;
 
-	
-	
-//	/*
-//	 * The group to which the shaped element belongs. In GPML, this is groupRef
-//	 * which refers to elementId (formerly groupId) of a gpml:Group.
-//	 */
-//	private Group groupRef; //optional
-//
-//	
-//	 * @param groupRef           the group to which the shaped element belongs. In
-//	 *                           GPML, this is groupRef which refers to elementId
-//	 *                           (formerly groupId) of a gpml:Group.
-	 
-//	/**
-//	 * Returns the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @return groupRef the groupRef of the pathway element.
-//	 */
-//	public Group getGroupRef() {
-//		return groupRef;
-//	}
-//
-//	/**
-//	 * Sets the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @param groupRef the groupRef of the pathway element.
-//	 */
-//	public void setGroupRef(Group groupRef) {
-//		this.groupRef = groupRef;
-//	}
-//	 
-	/**
-	 * Returns the groupRef of the pathway element. A groupRef indicates an object
-	 * is part of a gpml:Group with a elementId.
-	 * 
-	 * @return groupRef the groupRef of the datanode.
-	 * 
+	/*
+	 * The parent group to which the line belongs. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
 	 */
-	public String getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the groupRef of the pathway element. A groupRef indicates an object is
-	 * part of a gpml:Group with a elementId.
-	 * 
-	 * @param groupRef the groupRef of the datanode.
-	 * 
-	 */
-	public void setGroupRef(String groupRef) {
-		this.groupRef = groupRef;
-	}
+	private Group groupRef; // optional
 
 //	private List<MPoint> mPoints = Arrays.asList(new Point(), new Point());
 
+	/**
+	 * Get the points for this line.
+	 * 
+	 * @return points the list of points, an empty list if no anchors are defined.
+	 */
 	public List<Point> getPoints() {
 		return points;
 	}
@@ -109,44 +63,87 @@ public abstract class LineElement extends ElementInfo {
 		}
 	}
 
+	/**
+	 * Adds given point to points list.
+	 * 
+	 * @param point the point to be added.
+	 */
 	public void addPoint(Point point) {
 		points.add(point);
 	}
 
+	/**
+	 * Removes given point from the points list.
+	 * 
+	 * @param point the point to be removed.
+	 */
 	public void removePoint(Point point) {
 		points.remove(point);
-	}
-
-	public LineStyleProperty getLineStyleProperty() {
-		return lineStyleProperty;
-	}
-
-	public void setLineStyleProperty(LineStyleProperty lineStyleProperty) {
-		this.lineStyleProperty = lineStyleProperty;
 	}
 
 	/**
 	 * Get the anchors for this line.
 	 * 
-	 * @return A list with the anchors, or an empty list, if no anchors are defined
+	 * @return anchors the list of anchors, an empty list if no anchors are defined.
 	 */
 	public List<Anchor> getAnchors() {
 		return anchors;
 	}
 
+	/**
+	 * Adds given anchor to anchors list.
+	 * 
+	 * @param anchor the anchor to be added.
+	 */
 	public void addAnchor(Anchor anchor) {
 		anchors.add(anchor);
 	}
 
+	/**
+	 * Removes given anchor from the anchors list.
+	 * 
+	 * @param anchor the anchor to be removed.
+	 */
 	public void removeAnchor(Anchor anchor) {
 		anchors.remove(anchor);
 	}
 
-	public Group getParentGroup() {
-		return parentGroup;
+	/**
+	 * Returns the line style properties of the pathway element, e.g. lineColor...
+	 * 
+	 * @return lineStyleProperty the line style properties.
+	 */
+	public LineStyleProperty getLineStyleProperty() {
+		return lineStyleProperty;
 	}
 
-	public void setParentGroup(Group parentGroup) {
-		this.parentGroup = parentGroup;
+	/**
+	 * Sets the line style properties of the pathway element, e.g. lineColor...
+	 * 
+	 * @return lineStyleProperty the line style properties.
+	 */
+	public void setLineStyleProperty(LineStyleProperty lineStyleProperty) {
+		this.lineStyleProperty = lineStyleProperty;
+	}
+
+	/**
+	 * Returns the parent group of the line. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of the line.
+	 */
+	public Group getGroup() {
+		return groupRef;
+	}
+
+	/**
+	 * Sets the parent group of the line. The group is added to the pathwayElements
+	 * list of the parent group.
+	 * 
+	 * @param groupRef the parent group of the line.
+	 */
+	public void setGroup(Group groupRef) {
+		groupRef.addPathwayElement(this);
+		this.groupRef = groupRef;
 	}
 }

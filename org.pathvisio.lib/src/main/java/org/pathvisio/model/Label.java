@@ -28,44 +28,55 @@ import org.pathvisio.util.Utils;
  */
 public class Label extends ShapedElement {
 
-	private String elementId;
-	private String textLabel = "";
-	private String groupRef;
-	private String href = ""; // hyperlink
-
+	private String textLabel;
+	/*
+	 * The parent group to which the label belongs. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 */
+	private Group groupRef; // optional
+	private String href; // optional
 
 	
-//	/*
-//	 * The group to which the shaped element belongs. In GPML, this is groupRef
-//	 * which refers to elementId (formerly groupId) of a gpml:Group.
-//	 */
-//	private Group groupRef; //optional
-//
-//	
-//	 * @param groupRef           the group to which the shaped element belongs. In
-//	 *                           GPML, this is groupRef which refers to elementId
-//	 *                           (formerly groupId) of a gpml:Group.
-	 
-//	/**
-//	 * Returns the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @return groupRef the groupRef of the pathway element.
-//	 */
-//	public Group getGroupRef() {
-//		return groupRef;
-//	}
-//
-//	/**
-//	 * Sets the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @param groupRef the groupRef of the pathway element.
-//	 */
-//	public void setGroupRef(Group groupRef) {
-//		this.groupRef = groupRef;
-//	}
-//	 
+	/**
+	 * Gets the text of of the label.
+	 * 
+	 * @return textLabel the text of of the label.
+	 * 
+	 */
+	public String getTextLabel() {
+		return textLabel;
+	}
+
+	/**
+	 * Sets the text of of the label.
+	 * 
+	 * @param textLabel the text of of the label.
+	 * 
+	 */
+	public void setTextLabel(String textLabel) {
+		this.textLabel = textLabel;
+	}
+
+	/**
+	 * Returns the parent group of the label. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of the label.
+	 */
+	public Group getGroup() {
+		return groupRef;
+	}
+
+	/**
+	 * Sets the parent group of the label. The group is added to the pathwayElements
+	 * list of the parent group.
+	 * 
+	 * @param groupRef the parent group of the label.
+	 */
+	public void setGroup(Group groupRef) {
+		groupRef.addPathwayElement(this);
+		this.groupRef = groupRef;
+	}
 
 	/**
 	 * Gets the hyperlink for a Label.
@@ -89,89 +100,6 @@ public class Label extends ShapedElement {
 			if (PreferenceManager.getCurrent() == null)
 				PreferenceManager.init();
 			setColor(PreferenceManager.getCurrent().getColor(GlobalPreference.COLOR_LINK));
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
 		}
 	}
-
-	/**
-	 * Gets the elementId of the label.
-	 * 
-	 * @return elementId the unique id of the label.
-	 * 
-	 */
-	public String getElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Sets the elementId of the label.
-	 * 
-	 * @param elementId the unique id of the label.
-	 * 
-	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
-
-	/**
-	 * Gets the groupRef of the label. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
-	 * 
-	 * @return groupRef the groupRef of the label.
-	 * 
-	 */
-	public Object getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the groupRef of the label. A groupRef indicates an object is part of a
-	 * gpml:Group with a elementId.
-	 * 
-	 * @param groupRef the groupRef of the label.
-	 * 
-	 */
-	public void getGroupRef(String groupRef) {
-		this.groupRef = groupRef;
-	}
-
-	/**
-	 * Gets the text of of the label.
-	 * 
-	 * @return textLabel the text of of the label.
-	 * 
-	 */
-	public String getTextLabel() {
-		return textLabel;
-	}
-
-	/**
-	 * Sets the text of of the label.
-	 * 
-	 * @param textLabel the text of of the label.
-	 * 
-	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
-	}
-
-	
-	/**
-	 * Sets the text label of this object to the given string or ""(empty) if input
-	 * is null.
-	 * 
-	 * @param input the given string text. If input is null, textLabel is set to
-	 *              ""(empty).
-	 */
-	public void setTextLabel(String input) {
-		String text = (input == null) ? "" : input;
-		if (!Utils.stringEquals(textLabel, text)) {
-			textLabel = text;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
-		}
-	}
-	
-	
-	
-
 }

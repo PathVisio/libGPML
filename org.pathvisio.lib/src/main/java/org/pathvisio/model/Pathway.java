@@ -30,11 +30,6 @@ import org.bridgedb.Xref;
 public class Pathway {
 
 	private String title = "untitled";
-	private String organism = null; // optional
-	private String source = null; // optional
-	private String version = null; // optional
-	private String license = null; // optional
-	private Xref xref; // optional
 	private List<Comment> comments; // 0 to unbounded
 	private List<DynamicProperty> dynamicProperties; // 0 to unbounded
 	private List<AnnotationRef> annotationRefs; // 0 to unbounded
@@ -44,7 +39,18 @@ public class Pathway {
 	private double boardHeight;
 	private Color backgroundColor;
 	private Coordinate infoBox; // the centerXY of gpml:InfoBox
+	/**
+	 * Optional parameters
+	 */
+	private String organism = null; // optional
+	private String source = null; // optional
+	private String version = null; // optional
+	private String license = null; // optional
+	private Xref xref; // optional
 
+	//TODO Builder or null? 
+	
+	
 	/**
 	 * Returns the title or name of this pathway.
 	 * 

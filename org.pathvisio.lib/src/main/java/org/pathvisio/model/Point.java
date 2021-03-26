@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-
 /**
  * This class stores information for a Point pathway element.
  * 
@@ -27,7 +26,8 @@ public class Point extends PathwayElement {
 	private ArrowHeadType arrowHead; // line by default
 	private Coordinate xy;
 	/*
-	 * Below are optional parameters for when a point refers to a pathway element.
+	 * The pathway element to which the point refers to. In GPML, this is elementRef
+	 * which refers to the elementId of a pathway element. 
 	 */
 	private PathwayElement elementRef; // optional
 	private double relX; // optional
@@ -118,14 +118,20 @@ public class Point extends PathwayElement {
 	}
 
 	/**
-	 * @return
+	 * Returns the pathway element to which the point refers to. In GPML, this is
+	 * elementRef which refers to the elementId of a pathway element.
+	 * 
+	 * @return elementRef the pathway element to which the point refers.
 	 */
 	public PathwayElement getElementRef() {
 		return elementRef;
 	}
 
 	/**
-	 * @param elementRef
+	 * Sets the pathway element to which the point refers to. In GPML, this is
+	 * elementRef which refers to the elementId of a pathway element.
+	 * 
+	 * @param elementRef the pathway element to which the point refers.
 	 */
 	public void setElementRef(PathwayElement elementRef) {
 		this.elementRef = elementRef;

@@ -31,39 +31,14 @@ public class Shape extends ShapedElement {
 	private String textLabel;
 	private ShapeType type; // TODO: Getter/Setter weird
 	private double rotation = 0; // in radians
-
+	/*
+	 * The parent group to which the shape belongs. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 */
+	private Group groupRef; // optional
 	
-//	/*
-//	 * The group to which the shaped element belongs. In GPML, this is groupRef
-//	 * which refers to elementId (formerly groupId) of a gpml:Group.
-//	 */
-//	private Group groupRef; //optional
-//
-//	
-//	 * @param groupRef           the group to which the shaped element belongs. In
-//	 *                           GPML, this is groupRef which refers to elementId
-//	 *                           (formerly groupId) of a gpml:Group.
-	 
-//	/**
-//	 * Returns the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @return groupRef the groupRef of the pathway element.
-//	 */
-//	public Group getGroupRef() {
-//		return groupRef;
-//	}
-//
-//	/**
-//	 * Sets the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @param groupRef the groupRef of the pathway element.
-//	 */
-//	public void setGroupRef(Group groupRef) {
-//		this.groupRef = groupRef;
-//	}
-//	 
+	
+	
 
 	/**
 	 * Gets the orientation for shapes.
@@ -170,4 +145,24 @@ public class Shape extends ShapedElement {
 //			setDynamicProperty(State.ROTATION_KEY, "" + rotation);
 	}
 
+	/**
+	 * Returns the parent group of the shape. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of the shape.
+	 */
+	public Group getGroup() {
+		return groupRef;
+	}
+
+	/**
+	 * Sets the parent group of the shape. The group is added to the pathwayElements
+	 * list of the parent group.
+	 * 
+	 * @param groupRef the parent group of the shape.
+	 */
+	public void setGroup(Group groupRef) {
+		groupRef.addPathwayElement(this);
+		this.groupRef = groupRef;
+	}
 }

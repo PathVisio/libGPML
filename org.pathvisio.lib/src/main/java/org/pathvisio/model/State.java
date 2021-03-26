@@ -28,10 +28,8 @@ import org.bridgedb.Xref;
  */
 public class State extends ShapedElement {
 
-	/*
-	 * parent dataNode (NB: elementRef was formerly elementId of parent data node)
-	 */
-	private DataNode dataNode;
+
+	private DataNode dataNode; // parent dataNode (NB: elementRef was formerly elementId of parent data node)
 	private String textLabel;
 	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
 	private double relX; // TODO should we replace with x and y?

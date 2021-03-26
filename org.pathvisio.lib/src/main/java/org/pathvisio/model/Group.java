@@ -28,65 +28,19 @@ import org.bridgedb.Xref;
  */
 public class Group extends ShapedElement {
 
-	private String textLabel; // optional
 	private GroupType type = GroupType.GROUP;
-	private Xref xref; // optional
+	private String textLabel; // optional
+	/**
+	 * The list of pathway elements which belong to the group.
+	 */
 	private List<PathwayElement> pathwayElements; // 0 to unbounded
-
-	// TODO Add Constructors
-	
-	
-//	/*
-//	 * The group to which the shaped element belongs. In GPML, this is groupRef
-//	 * which refers to elementId (formerly groupId) of a gpml:Group.
-//	 */
-//	private Group groupRef; //optional
-//
-//	
-//	 * @param groupRef           the group to which the shaped element belongs. In
-//	 *                           GPML, this is groupRef which refers to elementId
-//	 *                           (formerly groupId) of a gpml:Group.
-	 
-//	/**
-//	 * Returns the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @return groupRef the groupRef of the pathway element.
-//	 */
-//	public Group getGroupRef() {
-//		return groupRef;
-//	}
-//
-//	/**
-//	 * Sets the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @param groupRef the groupRef of the pathway element.
-//	 */
-//	public void setGroupRef(Group groupRef) {
-//		this.groupRef = groupRef;
-//	}
-//	 
-
-	/**
-	 * Gets the Group Xref.
-	 * 
-	 * @return xref the group xref.
+	/*
+	 * The parent group to which the group belongs. In other words, a group can
+	 * belong in another group. In GPML, groupRef refers to the elementId (formerly
+	 * groupId) of the parent gpml:Group.
 	 */
-	public Xref getXref() {
-		return xref;
-	}
-
-	/**
-	 * Instantiates and sets the value of Group Xref.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-	}
+	private Group groupRef; // optional
+	private Xref xref; // optional
 
 	/**
 	 * Gets the text of of the group.
@@ -129,6 +83,66 @@ public class Group extends ShapedElement {
 	 */
 	public void setType(GroupType type) {
 		this.type = type;
+	}
+
+	public List<PathwayElement> getPathwayElements() {
+		return pathwayElements;
+	}
+
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.add(pathwayElement);
+	}
+
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.remove(pathwayElement);
+	}
+
+	/**
+	 * Returns the parent group of the group. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of the group.
+	 */
+	public Group getGroup() {
+		return groupRef;
+	}
+
+	/**
+	 * Sets the parent group of the group. The group is added to the pathwayElements
+	 * list of the parent group.
+	 * 
+	 * @param groupRef the parent group of the group.
+	 */
+	public void setGroup(Group groupRef) {
+		groupRef.addPathwayElement(this);
+		this.groupRef = groupRef;
+	}
+
+	/**
+	 * Returns the Xref for the data node.
+	 * 
+	 * @return xref the xref of the data node.
+	 */
+	public Xref getXref() {
+		return xref;
+	}
+
+	/**
+	 * Instantiates data node Xref given identifier and dataSource. Checks whether
+	 * dataSource string is fullName, systemCode, or invalid.
+	 * 
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
+	 * @throws IllegalArgumentException is given dataSource does not exist.
+	 */
+	public void setXref(String identifier, String dataSource) {
+		if (DataSource.fullNameExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		} else if (DataSource.systemCodeExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		} else {
+			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+		}
 	}
 
 }

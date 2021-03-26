@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,13 +29,15 @@ import java.util.List;
  */
 public abstract class ElementInfo extends PathwayElement {
 
-	private List<Comment> comments; // 0 to unbounded
-	private List<DynamicProperty> dynamicProperties; // 0 to unbounded
-	private List<AnnotationRef> annotationRefs; // 0 to unbounded
-	private List<Citation> citationRefs; // 0 to unbounded
-	private List<Evidence> evidenceRefs; // 0 to unbounded
+	private List<Comment> comments;
+	private List<DynamicProperty> dynamicProperties;
+	private List<AnnotationRef> annotationRefs;
+	private List<Citation> citationRefs;
+	private List<Evidence> evidenceRefs;
 
 	/**
+	 * Instantiates a pathway element with meta data information.
+	 * 
 	 * @param elementId         the unique pathway element identifier.
 	 * @param pathwayModel      the parent pathway model.
 	 * @param comments          the list of comments.
@@ -47,11 +50,11 @@ public abstract class ElementInfo extends PathwayElement {
 			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
 			List<Evidence> evidenceRefs) {
 		super(elementId, pathwayModel);
-		this.comments = comments;
-		this.dynamicProperties = dynamicProperties;
-		this.annotationRefs = annotationRefs;
-		this.citationRefs = citationRefs;
-		this.evidenceRefs = evidenceRefs;
+		this.comments = new ArrayList<Comment>(); // 0 to unbounded
+		this.dynamicProperties = new ArrayList<DynamicProperty>(); // 0 to unbounded
+		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
+		this.citationRefs = new ArrayList<Citation>(); // 0 to unbounded
+		this.evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
 	}
 
 	/*
@@ -98,25 +101,26 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * Returns the list of key value pair information properties.
 	 * 
-	 * @return properties the list of properties.
+	 * @return properties the list of properties, an empty list if no properties are
+	 *         defined.
 	 */
 	public List<DynamicProperty> getDynamicProperties() {
 		return dynamicProperties;
 	}
 
 	/**
-	 * Adds given comment to comments list.
+	 * Adds given dynamic property to dynamicProperties list.
 	 * 
-	 * @param comment the comment to be added.
+	 * @param dynamicProperty the dynamic property to be added.
 	 */
 	public void addDynamicProperty(DynamicProperty dynamicProperty) {
 		dynamicProperties.add(dynamicProperty);
 	}
 
 	/**
-	 * Removes given comment from comments list.
+	 * Removes given dynamic property from the dynamicProperties list.
 	 * 
-	 * @param comment the comment to be removed.
+	 * @param dynamicProperty the dynamic property to be removed.
 	 */
 	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
 		dynamicProperties.remove(dynamicProperty);
@@ -125,7 +129,8 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * Returns the list of annotation references.
 	 * 
-	 * @return annotationRefs the list of annotation references.
+	 * @return annotationRefs the list of annotation references, an empty list if no
+	 *         properties are defined.
 	 */
 	public List<AnnotationRef> getAnnotationRefs() {
 		return annotationRefs;
@@ -152,7 +157,8 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * Returns the list of citation references.
 	 * 
-	 * @return citationRefs the list of citations referenced.
+	 * @return citationRefs the list of citations referenced, an empty list if no
+	 *         properties are defined.
 	 */
 	public List<Citation> getCitationRefs() {
 		return citationRefs;
@@ -179,7 +185,8 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * Returns the list of evidence references.
 	 * 
-	 * @return evidenceRefs the list of evidences referenced.
+	 * @return evidenceRefs the list of evidences referenced, an empty list if no
+	 *         properties are defined.
 	 */
 	public List<Evidence> getEvidenceRef() {
 		return evidenceRefs;

@@ -38,39 +38,15 @@ public class DataNode extends ShapedElement {
 	 * (normally gpml:Group).
 	 */
 	private PathwayElement elementRef; // optional
+	/*
+	 * The parent group to which the data node belongs. In GPML, groupRef refers to
+	 * the elementId (formerly groupId) of the parent gpml:Group.
+	 */
+	private Group groupRef; // optional
 
 	
-//	/*
-//	 * The group to which the shaped element belongs. In GPML, this is groupRef
-//	 * which refers to elementId (formerly groupId) of a gpml:Group.
-//	 */
-//	private Group groupRef; //optional
-//
-//	
-//	 * @param groupRef           the group to which the shaped element belongs. In
-//	 *                           GPML, this is groupRef which refers to elementId
-//	 *                           (formerly groupId) of a gpml:Group.
-	 
-//	/**
-//	 * Returns the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @return groupRef the groupRef of the pathway element.
-//	 */
-//	public Group getGroupRef() {
-//		return groupRef;
-//	}
-//
-//	/**
-//	 * Sets the group to which the pathway element belongs. A groupRef indicates an object is
-//	 * part of a gpml:Group with a elementId.
-//	 * 
-//	 * @param groupRef the groupRef of the pathway element.
-//	 */
-//	public void setGroupRef(Group groupRef) {
-//		this.groupRef = groupRef;
-//	}
-//	 
+	
+	
 	
 	/**
 	 * Returns the text of of the datanode.
@@ -155,7 +131,7 @@ public class DataNode extends ShapedElement {
 	public void addState(State state) {
 		states.add(state);
 	}
-	
+
 	/**
 	 * Removes given state to states list.
 	 * 
@@ -185,6 +161,27 @@ public class DataNode extends ShapedElement {
 	 */
 	public void setElementRef(PathwayElement elementRef) {
 		this.elementRef = elementRef;
+	}
+
+	/**
+	 * Returns the parent group of the data node. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of the data node.
+	 */
+	public Group getGroup() {
+		return groupRef;
+	}
+
+	/**
+	 * Sets the parent group of the data node. The group is added to the
+	 * pathwayElements list of the parent group.
+	 * 
+	 * @param groupRef the parent group of the data node.
+	 */
+	public void setGroup(Group groupRef) {
+		groupRef.addPathwayElement(this);
+		this.groupRef = groupRef;
 	}
 
 }
