@@ -18,6 +18,8 @@ package org.pathvisio.model;
 
 import java.awt.Color;
 import java.util.List;
+
+import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
 /**
@@ -147,12 +149,31 @@ public class Pathway {
 		this.license = license;
 	}
 
+	/**
+	 * Returns the Xref for this pathway. 
+	 * 
+	 * @return xref the xref of this pathway. 
+	 */
 	public Xref getXref() {
 		return xref;
 	}
 
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	/**
+	 * Instantiates pathway Xref given identifier and dataSource. Checks whether
+	 * dataSource string is fullName, systemCode, or invalid.
+	 * 
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
+	 * @throws IllegalArgumentException is given dataSource does not exist.
+	 */
+	public void setXref(String identifier, String dataSource) {
+		if (DataSource.fullNameExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		} else if (DataSource.systemCodeExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		} else {
+			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+		}
 	}
 
 	/**
@@ -224,7 +245,7 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the list of annotation references.
+	 * Returns the list of annotations referenced.
 	 * 
 	 * @return annotationRefs the list of annotation references.
 	 */
@@ -251,7 +272,7 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the list of citation references.
+	 * Returns the list of citations referenced.
 	 * 
 	 * @return citationRefs the list of citations referenced.
 	 */
@@ -278,7 +299,7 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the list of evidence references.
+	 * Returns the list of evidences referenced.
 	 * 
 	 * @return evidenceRefs the list of evidences referenced.
 	 */

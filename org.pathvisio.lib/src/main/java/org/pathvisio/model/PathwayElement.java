@@ -42,15 +42,18 @@ import org.pathvisio.util.Utils;
  * Children: DataNode, State, Interaction, GraphicalLine, Label, Shape, Group,
  * Anchor, Point, Annotation, Citation, and Evidence.
  * 
- * @author unknown, AP20070508, finterly
+ * @author finterly
  */
 public abstract class PathwayElement {
 
 	private String elementId;
-	private PathwayModel pathwayModel = null; // parent pathway model: may be null (e.g. when object is in clipboard)
+	/** 
+	 * parent pathway model: may be null (e.g. when object is in clipboard)
+	 */
+	private PathwayModel pathwayModel = null; 
 
 	/**
-	 * Initialize this pathway element with elementId and given parent pathway
+	 * Instantiates this pathway element with elementId and given parent pathway
 	 * model.
 	 * 
 	 * @param elementId    the unique pathway element identifier.
@@ -79,105 +82,80 @@ public abstract class PathwayElement {
 		this.pathwayModel = pathwayModel;
 	}
 
-	/**
-	 * Gets the parent data node of this state.
-	 * 
-	 * @return the parent pathway element data node of this state, null if no parent
-	 *         exists.
-	 */
-	public PathwayElement getParentDataNode() {
-		Pathway parent = getParent();
-		if (parent == null) {
-			return null;
-		}
-		return parent.getElementById(getElementRef());
-	}
 
-	@Override
-	public void setParent(Pathway v) {
-		if (parent != v) {
-			super.setParent(v);
-			if (parent != null && graphRef != null) {
-				updateCoordinates();
-			}
-		}
-	}
-
-	protected State(ObjectType state) {
-		super(ObjectType.STATE);
-		// TODO Auto-generated constructor stub
-	}
-	/* ------------------------------- GROUPREF ------------------------------- */
-	public boolean isValidElementId(String elementId) {
-		if (elementId == null && isUniqueElementId(elementId) == true) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	protected String groupRef;
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * 
-	 * @param s
-	 */
-	public void setGroupRef(String id) {
-		if (groupRef == null || !groupRef.equals(id)) {
-			if (pathwayModel != null) {
-				if (groupRef != null) {
-					pathwayModel.removeGroupRef(groupRef, this);
-				}
-				// Check: move add before remove??
-				if (id != null) {
-					pathwayModel.addGroupRef(id, this);
-				}
-			}
-			groupRef = id;
-		}
-	}
-
-	/* ------------------------------- GROUPID ------------------------------- */
-
-	protected String groupId;
-
-	public String getGroupId() {
-		return groupId;
-	}
-
-	public String createGroupId() {
-		if (groupId == null) {
-			setGroupId(pathwayModel.getUniqueGroupId());
-		}
-		return groupId;
-	}
-
-	/**
-	 * Set groupId. This id must be any string unique within the Pathway object
-	 *
-	 * @see Pathway#getUniqueId(java.util.Set)
-	 */
-	public void setGroupId(String id) {
-		if (groupId == null || !groupId.equals(id)) {
-			if (pathwayModel != null) {
-				if (groupId != null) {
-					pathwayModel.removeGroupId(groupId);
-				}
-				// Check: move add before remove??
-				if (id != null) {
-					pathwayModel.addGroupId(id, this);
-				}
-			}
-			groupId = id;
-		}
-	}
+	
+	
+//	/* ------------------------------- GROUPREF ------------------------------- */
+//	public boolean isValidElementId(String elementId) {
+//		if (elementId == null && isUniqueElementId(elementId) == true) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
+//	protected String groupRef;
+//
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public String getGroupRef() {
+//		return groupRef;
+//	}
+//
+//	/**
+//	 * 
+//	 * @param s
+//	 */
+//	public void setGroupRef(String id) {
+//		if (groupRef == null || !groupRef.equals(id)) {
+//			if (pathwayModel != null) {
+//				if (groupRef != null) {
+//					pathwayModel.removeGroupRef(groupRef, this);
+//				}
+//				// Check: move add before remove??
+//				if (id != null) {
+//					pathwayModel.addGroupRef(id, this);
+//				}
+//			}
+//			groupRef = id;
+//		}
+//	}
+//
+//	/* ------------------------------- GROUPID ------------------------------- */
+//
+//	protected String groupId;
+//
+//	public String getGroupId() {
+//		return groupId;
+//	}
+//
+//	public String createGroupId() {
+//		if (groupId == null) {
+//			setGroupId(pathwayModel.getUniqueGroupId());
+//		}
+//		return groupId;
+//	}
+//
+//	/**
+//	 * Set groupId. This id must be any string unique within the Pathway object
+//	 *
+//	 * @see Pathway#getUniqueId(java.util.Set)
+//	 */
+//	public void setGroupId(String id) {
+//		if (groupId == null || !groupId.equals(id)) {
+//			if (pathwayModel != null) {
+//				if (groupId != null) {
+//					pathwayModel.removeGroupId(groupId);
+//				}
+//				// Check: move add before remove??
+//				if (id != null) {
+//					pathwayModel.addGroupId(id, this);
+//				}
+//			}
+//			groupId = id;
+//		}
+//	}
 
 	/* ------------------------------- ELEMENTID ------------------------------- */
 	/**
@@ -210,32 +188,32 @@ public abstract class PathwayElement {
 		return elementId;
 	}
 	/* ------------------------------- ELEMENTREF ------------------------------- */
-
-	protected String elementRef = null;
-
-	/**
-	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway
-	 * element.
-	 */
-	public Set<ElementRefContainer> getReferences() {
-		return ElementLink.getReferences(this, pathwayModel);
-	}
-
-	/** elementRef property, used by Modification */
-	public String getElementRef() {
-		return elementRef;
-	}
-
-	/**
-	 * Set graphRef property, used by State The new graphRef should exist and point
-	 * to an existing DataNode
-	 */
-	public void setElementRef(String value) {
-		// TODO: check that new elementRef exists and that it points to a DataNode
-		if (!(elementRef == null ? value == null : elementRef.equals(value))) {
-			elementRef = value;
-		}
-	}
+//
+//	protected String elementRef = null;
+//
+//	/**
+//	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway
+//	 * element.
+//	 */
+//	public Set<ElementRefContainer> getReferences() {
+//		return ElementLink.getReferences(this, pathwayModel);
+//	}
+//
+//	/** elementRef property, used by Modification */
+//	public String getElementRef() {
+//		return elementRef;
+//	}
+//
+//	/**
+//	 * Set graphRef property, used by State The new graphRef should exist and point
+//	 * to an existing DataNode
+//	 */
+//	public void setElementRef(String value) {
+//		// TODO: check that new elementRef exists and that it points to a DataNode
+//		if (!(elementRef == null ? value == null : elementRef.equals(value))) {
+//			elementRef = value;
+//		}
+//	}
 
 	/* ------------------------------- OTHER.... ------------------------------- */
 

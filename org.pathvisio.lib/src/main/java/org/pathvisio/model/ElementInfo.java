@@ -34,10 +34,24 @@ public abstract class ElementInfo extends PathwayElement {
 	private List<Citation> citationRefs; // 0 to unbounded
 	private List<Evidence> evidenceRefs; // 0 to unbounded
 
-	public ElementInfo(String elementId, PathwayModel pathwayModel) {
+	/**
+	 * @param elementId         the unique pathway element identifier.
+	 * @param pathwayModel      the parent pathway model.
+	 * @param comments          the list of comments.
+	 * @param dynamicProperties the list of dynamic properties, key value pairs.
+	 * @param annotationRefs    the list of annotations referenced.
+	 * @param citationRefs      the list of citations referenced.
+	 * @param evidenceRefs      the list of evidences referenced.
+	 */
+	public ElementInfo(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs) {
 		super(elementId, pathwayModel);
-		
-		// TODO Auto-generated constructor stub
+		this.comments = comments;
+		this.dynamicProperties = dynamicProperties;
+		this.annotationRefs = annotationRefs;
+		this.citationRefs = citationRefs;
+		this.evidenceRefs = evidenceRefs;
 	}
 
 	/*

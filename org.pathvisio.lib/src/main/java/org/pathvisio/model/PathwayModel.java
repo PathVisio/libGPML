@@ -57,11 +57,11 @@ public class PathwayModel {
 	private Pathway pathway; 
 	
 	//elementId and pathwayElement TODO would be in pathway model....Pathway metadata
-	private Map<String, PathwayElement>  pathwayElements; //ElementIdContainer interface not needed
+	private Map<String, PathwayElement>  pathwayElements; 
 	private List<Author> authors = new ArrayList<Author>(); // move to Pathway? 
-	private List<Annotation> annotations; // --> Manager Pathway.getCitationManager.getCitations()
-	private List<Citation> citations; // --> TODO Manager
-	private List<Evidence> evidences; // --> TODO Manager
+	private List<Annotation> annotations;
+	private List<Citation> citations; 
+	private List<Evidence> evidences; 
 	private List<DataNode> dataNodes;
 //	private List<State> states;
 	private List<Interaction> interactions;
@@ -681,102 +681,7 @@ public class PathwayModel {
 	 * ------------------------------- CommentGroup -------------------------------
 	 */
 
-	/**
-	 * Returns the list of comments.
-	 * 
-	 * @return comments the list of comments.
-	 */
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addComment(Comment comment) {
-		comments.add(comment);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeComment(Comment comment) {
-		comments.remove(comment);
-	}
-
-	/**
-	 * TODO
-	 * 
-	 * Finds the first comment with a specific source.
-	 * 
-	 * @returns the comment with a given source.
-	 */
-	public String findComment(String source) {
-		for (Comment c : comments) {
-			if (source.equals(c.source)) {
-				return c.comment;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the list of key value pair information properties.
-	 * 
-	 * @return properties the list of properties.
-	 */
-	public List<DynamicProperty> getDynamicProperties() {
-		return dynamicProperties;
-	}
-
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.add(dynamicProperty);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.remove(dynamicProperty);
-	}
-
-	/**
-	 * Returns the list of annotation references.
-	 * 
-	 * @return annotationRefs the list of annotation references.
-	 */
-	public List<AnnotationRef> getAnnotationRefs() {
-		return annotationRefs;
-	}
-
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addAnnotationRef(AnnotationRef annotationRef) {
-		annotationRefs.add(annotationRef);
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		annotationRefs.remove(annotationRef);
-	}
+	
 
 	/**
 	 * Returns the list of citation references.

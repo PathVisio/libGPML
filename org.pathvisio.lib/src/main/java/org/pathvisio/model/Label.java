@@ -34,8 +34,38 @@ public class Label extends ShapedElement {
 	private String href = ""; // hyperlink
 
 
-
-	// Add Constructors
+	
+//	/*
+//	 * The group to which the shaped element belongs. In GPML, this is groupRef
+//	 * which refers to elementId (formerly groupId) of a gpml:Group.
+//	 */
+//	private Group groupRef; //optional
+//
+//	
+//	 * @param groupRef           the group to which the shaped element belongs. In
+//	 *                           GPML, this is groupRef which refers to elementId
+//	 *                           (formerly groupId) of a gpml:Group.
+	 
+//	/**
+//	 * Returns the group to which the pathway element belongs. A groupRef indicates an object is
+//	 * part of a gpml:Group with a elementId.
+//	 * 
+//	 * @return groupRef the groupRef of the pathway element.
+//	 */
+//	public Group getGroupRef() {
+//		return groupRef;
+//	}
+//
+//	/**
+//	 * Sets the group to which the pathway element belongs. A groupRef indicates an object is
+//	 * part of a gpml:Group with a elementId.
+//	 * 
+//	 * @param groupRef the groupRef of the pathway element.
+//	 */
+//	public void setGroupRef(Group groupRef) {
+//		this.groupRef = groupRef;
+//	}
+//	 
 
 	/**
 	 * Gets the hyperlink for a Label.

@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.List;
+
 /**
  * This class stores information for shaped pathway element, e.g. DataNode,
  * TODO: STATE?, Label, Shape, and Group.
@@ -23,83 +25,89 @@ package org.pathvisio.model;
  * @author finterly
  */
 public class ShapedElement extends ElementInfo {
-	
-	private Group parentGroup; // optional
+
 	private RectProperty rectProperty;
 	private FontProperty fontProperty;
 	private ShapeStyleProperty shapeStyleProperty;
 
 	/**
-	 * Returns the groupRef of the pathway element. A groupRef indicates an object
-	 * is part of a gpml:Group with a elementId.
+	 * Instantiates a Shaped pathway element.
 	 * 
-	 * @return groupRef the groupRef of the datanode.
-	 * 
+	 * @param elementId          the unique pathway element identifier.
+	 * @param pathwayModel       the parent pathway model.
+	 * @param comments           the list of comments.
+	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
+	 * @param annotationRefs     the list of annotations referenced.
+	 * @param citationRefs       the list of citations referenced.
+	 * @param evidenceRefs       the list of evidences referenced.
+	 * @param rectProperty       the centering (position) and dimension properties.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor,
 	 */
-	public String getGroupRef() {
-		return groupRef;
+	public ShapedElement(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs);
+		this.rectProperty = rectProperty;
+		this.fontProperty = fontProperty;
+		this.shapeStyleProperty = shapeStyleProperty;
 	}
 
 	/**
-	 * Sets the groupRef of the pathway element. A groupRef indicates an object is
-	 * part of a gpml:Group with a elementId.
+	 * Returns the centering and dimension properties of the pathway element.
 	 * 
-	 * @param groupRef the groupRef of the datanode.
-	 * 
-	 */
-	public void setGroupRef(String groupRef) {
-		this.groupRef = groupRef;
-	}
-	
-	
-	/**
-	 * @return
+	 * @return rectProperty the centering and dimension properties.
 	 */
 	public RectProperty getRectProperty() {
 		return rectProperty;
 	}
 
 	/**
-	 * @param rectProperty
+	 * Sets the centering and dimension properties of the pathway element.
+	 * 
+	 * @param rectProperty the centering and dimension properties.
 	 */
 	public void setRectProperty(RectProperty rectProperty) {
 		this.rectProperty = rectProperty;
 	}
 
 	/**
-	 * @return
+	 * Returns the font properties of the pathway element, e.g. textColor,
+	 * fontName...
+	 * 
+	 * @return fontProperty the font properties.
 	 */
 	public FontProperty getFontProperty() {
 		return fontProperty;
 	}
 
 	/**
-	 * @param fontProperty
+	 * Sets the font properties of the pathway element, e.g. textColor, fontName...
+	 * 
+	 * @param fontProperty the font properties.
 	 */
 	public void setFontProperty(FontProperty fontProperty) {
 		this.fontProperty = fontProperty;
 	}
 
 	/**
-	 * @return
+	 * Returns the shape style properties of the pathway element, e.g.
+	 * borderColor...
+	 * 
+	 * @return shapeStyleProperty the shape style properties.
 	 */
 	public ShapeStyleProperty getShapeStyleProperty() {
 		return shapeStyleProperty;
 	}
 
 	/**
-	 * @param shapeStyleProperty
+	 * Sets the shape style properties of the pathway element, e.g. borderColor...
+	 * 
+	 * @param shapeStyleProperty the shape style properties.
 	 */
 	public void setShapeStyleProperty(ShapeStyleProperty shapeStyleProperty) {
 		this.shapeStyleProperty = shapeStyleProperty;
-	}
-
-	public Group getParentGroup() {
-		return parentGroup;
-	}
-
-	public void setParentGroup(Group parentGroup) {
-		this.parentGroup = parentGroup;
 	}
 
 }

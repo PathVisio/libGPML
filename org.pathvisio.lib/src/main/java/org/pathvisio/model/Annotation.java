@@ -32,28 +32,27 @@ public class Annotation extends PathwayElement {
 	private String url; // optional
 
 	/**
-	 * Instantiates an Annotation pathway element given elementId, given parent
-	 * pathway model, given value, given type, no url, and no xref.
+	 * Instantiates an Annotation pathway element given all possible parameters:
+	 * elementId, parent pathway model, value, type, url, and xref.
 	 * 
 	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
 	 * @param value        the name, term, or text of the annotation.
 	 * @param type         the type of the annotation, e.g. ontology.
+	 * @param xref         the annotation xref.
+	 * @param url          the url of the annotation.
 	 */
-	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type) {
-		this(elementId, pathwayModel, value, type, null, null);
-
+	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref,
+			String url) {
+		super(elementId, pathwayModel);
+		this.value = value;
+		this.type = type;
+		this.xref = xref;
+		this.url = url;
 	}
 
 	/**
-	 * Instantiates an Annotation pathway element given elementId, given parent
-	 * pathway model, given value, given type, given url, and no xref.
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param value        the name, term, or text of the annotation.
-	 * @param type         the type of the annotation, e.g. ontology.
-	 * @param url          the url of the annotation.
+	 * Instantiates an Annotation given all possible parameters except xref.
 	 */
 	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, String url) {
 		this(elementId, pathwayModel, value, type, null, url);
@@ -61,36 +60,18 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Instantiates an Annotation pathway element given elementId, given parent
-	 * pathway model, given value, given type, given xref, and no url.
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param value        the name, term, or text of the annotation.
-	 * @param type         the type of the annotation, e.g. ontology.
-	 * @param xref         the annotation xref.
+	 * Instantiates an Annotation given all possible parameters except url.
 	 */
 	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref) {
 		this(elementId, pathwayModel, value, type, xref, null);
 	}
 
 	/**
-	 * Instantiates an Annotation pathway element given elementId, given parent
-	 * pathway model, given value, given type, given url, and given xref.
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param value        the name, term, or text of the annotation.
-	 * @param type         the type of the annotation, e.g. ontology.
-	 * @param xref         the annotation xref.
-	 * @param url          the url of the annotation.
+	 * Instantiates an Annotation given all possible parameters except url and xref.
 	 */
-	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref, String url) {
-		super(elementId, pathwayModel);
-		this.value = value;
-		this.type = type;
-		this.xref = xref;
-		this.url = url;
+	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type) {
+		this(elementId, pathwayModel, value, type, null, null);
+
 	}
 
 	// Add Constructors

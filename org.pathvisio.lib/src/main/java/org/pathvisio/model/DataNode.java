@@ -28,41 +28,50 @@ import org.bridgedb.Xref;
  */
 public class DataNode extends ShapedElement {
 
-	private PathwayElement elementRef; // optional references as an Alias 
 	private String textLabel;
 	private DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
 	private Xref xref;
 	private List<State> states;
+	/*
+	 * The pathway element to which the data node refers to as an alias. In GPML,
+	 * this is elementRef which refers to the elementId of a pathway element
+	 * (normally gpml:Group).
+	 */
+	private PathwayElement elementRef; // optional
 
-	// With all properties
-	public DataNode(String elementId, String elementRef, String textLabel, DataNodeType type, Xref xref) {
-		super(elementId);
-		this.elementRef = elementRef;
-		this.textLabel = textLabel;
-		this.type = type;
-		this.xref = xref;
-	}
 	
-	// Without elementRef
-	public DataNode(String elementId, String textLabel, DataNodeType type, Xref xref) {
-		super(elementId);
-		this.textLabel = textLabel;
-		this.type = type;
-		this.xref = xref;
-	}
-
-
-
-	// TODO elementRef methods
-
-	public String getElementRef() {
-		return elementRef;
-	}
-
-	public void setElementRef(String elementRef) {
-		this.elementRef = elementRef;
-	}
-
+//	/*
+//	 * The group to which the shaped element belongs. In GPML, this is groupRef
+//	 * which refers to elementId (formerly groupId) of a gpml:Group.
+//	 */
+//	private Group groupRef; //optional
+//
+//	
+//	 * @param groupRef           the group to which the shaped element belongs. In
+//	 *                           GPML, this is groupRef which refers to elementId
+//	 *                           (formerly groupId) of a gpml:Group.
+	 
+//	/**
+//	 * Returns the group to which the pathway element belongs. A groupRef indicates an object is
+//	 * part of a gpml:Group with a elementId.
+//	 * 
+//	 * @return groupRef the groupRef of the pathway element.
+//	 */
+//	public Group getGroupRef() {
+//		return groupRef;
+//	}
+//
+//	/**
+//	 * Sets the group to which the pathway element belongs. A groupRef indicates an object is
+//	 * part of a gpml:Group with a elementId.
+//	 * 
+//	 * @param groupRef the groupRef of the pathway element.
+//	 */
+//	public void setGroupRef(Group groupRef) {
+//		this.groupRef = groupRef;
+//	}
+//	 
+	
 	/**
 	 * Returns the text of of the datanode.
 	 * 
@@ -103,42 +112,79 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Returns the DataNode Xref.
+	 * Returns the Xref for the data node.
 	 * 
-	 * @return xref the datanode xref.
+	 * @return xref the xref of the data node.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
-//	public String getXrefIdentifier() {
-//		return xref.getId();
-//	}
-//
-//	public DataSource getXrefDataSource() {
-//		DataSource dataSource = xref.getDataSource();
-//		String sysCode = dataSource.getSystemCode();
-//		String fullName = dataSource.getFullName();
-//		return dataSource;
-//	}
-
 	/**
-	 * Instantiates and sets the value of DataNode Xref.
+	 * Instantiates data node Xref given identifier and dataSource. Checks whether
+	 * dataSource string is fullName, systemCode, or invalid.
 	 * 
 	 * @param identifier the identifier of the database entry.
 	 * @param dataSource the source of database entry.
+	 * @throws IllegalArgumentException is given dataSource does not exist.
 	 */
 	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		if (DataSource.fullNameExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		} else if (DataSource.systemCodeExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		} else {
+			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+		}
 	}
 
+	/*
+	 * Returns the list of states of the data node.
+	 * 
+	 * @return states the list of states.
+	 */
 	public List<State> getStates() {
 		return states;
 	}
 
-	public void setStates(List<State> states) {
-		this.states = states;
+	/**
+	 * Adds given state to states list.
+	 * 
+	 * @param state the state to be added.
+	 */
+	public void addState(State state) {
+		states.add(state);
+	}
+	
+	/**
+	 * Removes given state to states list.
+	 * 
+	 * @param state the state to be removed.
+	 */
+	public void removeState(State state) {
+		states.remove(state);
+	}
+
+	/**
+	 * Returns the pathway element to which the data node refers to as an alias. In
+	 * GPML, this is elementRef which refers to the elementId of a pathway element
+	 * (normally gpml:Group).
+	 * 
+	 * @return elementRef the pathway element to which the data node refers.
+	 */
+	public PathwayElement getElementRef() {
+		return elementRef;
+	}
+
+	/**
+	 * Sets the pathway element to which the data node refers to as an alias. In
+	 * GPML, this is elementRef which refers to the elementId of a pathway element
+	 * (normally gpml:Group).
+	 * 
+	 * @param elementRef the pathway element to which the data node refers.
+	 */
+	public void setElementRef(PathwayElement elementRef) {
+		this.elementRef = elementRef;
 	}
 
 }

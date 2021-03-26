@@ -16,95 +16,112 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.pathvisio.model.ElementLink.ElementRefContainer;
 
 /**
  * This class stores all information relevant to a State pathway element.
  * 
  * @author finterly
  */
-public class State extends ElementInfo {
+public class State extends ShapedElement {
 
-	private DataNode dataNode; // parent dataNode, previously elementRef
+	/*
+	 * parent dataNode (NB: elementRef was formerly elementId of parent data node)
+	 */
+	private DataNode dataNode;
 	private String textLabel;
 	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
-	private double relX;
+	private double relX; // TODO should we replace with x and y?
 	private double relY;
-	private double width;
-	private double height;
-	private FontProperty fontProperty;
-	private ShapeStyleProperty shapeStyleProperty;
 	private Xref xref; // optional
 
-	
 	/**
+	 * Instantiates a State pathway element given all possible parameters.
 	 * 
-	 * @param elementId
-	 * @param pathwayModel
-	 * @param dataNode
-	 * @param textLabel
-	 * @param type
-	 * @param relX
-	 * @param relY
-	 * @param width
-	 * @param height
-	 * @param fontProperty
-	 * @param shapeStyleProperty
+	 * @param elementId          the unique pathway element identifier.
+	 * @param pathwayModel       the parent pathway model.
+	 * @param comments           the list of comments.
+	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
+	 * @param annotationRefs     the list of annotations referenced.
+	 * @param citationRefs       the list of citations referenced.
+	 * @param evidenceRefs       the list of evidences referenced.
+	 * @param rectProperty       the centering (position) and dimension properties.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
+	 * @param dataNode           the parent data node (NB: elementRef was formerly
+	 *                           elementId of parent data node).
+	 * @param textLabel          the text label of the state.
+	 * @param type               the type of the state, e.g. protein modification.
+	 * @param relX               the relative x coordinates on the parent object,
+	 *                           where 0,0 is at the center of the object and 1,1 at
+	 *                           the bottom-right corner of the object.
+	 * @param relY               the relative y coordinates on the parent object,
+	 *                           where 0,0 is at the center of the object and 1,1 at
+	 *                           the bottom-right corner of the object.
+	 * @param xref               the state xref.
 	 */
-	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
-			double relX, double relY, double width, double height, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty) {
-		super(elementId, pathwayModel);
+	public State(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, DataNode dataNode, String textLabel, StateType type, double relX,
+			double relY, Xref xref) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty);
 		this.dataNode = dataNode;
 		this.textLabel = textLabel;
 		this.type = type;
 		this.relX = relX;
 		this.relY = relY;
-		this.width = width;
-		this.height = height;
-		this.fontProperty = fontProperty;
-		this.shapeStyleProperty = shapeStyleProperty;
-	}
-
-	/**
-	 * @param elementId
-	 * @param pathwayModel
-	 * @param dataNode
-	 * @param textLabel
-	 * @param type
-	 * @param relX
-	 * @param relY
-	 * @param width
-	 * @param height
-	 * @param fontProperty
-	 * @param shapeStyleProperty
-	 * @param xref
-	 */
-	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
-			double relX, double relY, double width, double height, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Xref xref) {
-		this(textLabel, pathwayModel, dataNode, textLabel, type, height, height, height, height, fontProperty,
-				shapeStyleProperty);
 		this.xref = xref;
 	}
 
+	/**
+	 * Instantiates a State pathway element given all possible parameters except
+	 * xref.
+	 */
+	public State(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, DataNode dataNode, String textLabel, StateType type, double relX,
+			double relY) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty);
+		this.dataNode = dataNode;
+		this.textLabel = textLabel;
+		this.type = type;
+		this.relX = relX;
+		this.relY = relY;
+	}
 
-
+	/**
+	 * Returns the parent data node to which the state belongs.
+	 * 
+	 * NB: prior to GPML2021, elementRef was used to refer to the elementId of
+	 * parent data node.
+	 * 
+	 * @return dataNode the parent data node of the state.
+	 */
 	public DataNode getDataNode() {
 		return dataNode;
 	}
 
+	/**
+	 * Sets the parent data node to which the state belongs.
+	 * 
+	 * NB: prior to GPML2021, elementRef was used to refer to the elementId of
+	 * parent data node.
+	 * 
+	 * @param dataNode the parent data node of the state.
+	 */
 	public void setDataNode(DataNode dataNode) {
 		this.dataNode = dataNode;
 	}
 
 	/**
-	 * Gets the text of of the state.
+	 * Returns the text of of the state.
 	 * 
 	 * @return textLabel the text of of the state.
 	 * 
@@ -124,7 +141,7 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Gets the type of the state.
+	 * Returns the type of the state.
 	 * 
 	 * @return type the type of state, e.g. complex.
 	 */
@@ -142,85 +159,87 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
-	 * 1.0 corresponds to the edge of the parent object
+	 * Returns the relative x coordinate. When the given point is linked to a
+	 * pathway element, relX and relY are the relative coordinates on the element,
+	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
+	 * of the object.
+	 * 
+	 * @param relX the relative x coordinate.
 	 */
 	public double getRelX() {
 		return relX;
 	}
 
 	/**
-	 * See getRelX
+	 * Sets the relative x coordinate. When the given point is linked to a pathway
+	 * element, relX and relY are the relative coordinates on the element, where 0,0
+	 * is at the center of the object and 1,1 at the bottom right corner of the
+	 * object.
+	 * 
+	 * @param relX the relative x coordinate.
+	 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 	 */
 	public void setRelX(double relX) {
-		this.relX = relX;
+		if (Math.abs(relX) <= 1.0) {
+			this.relX = relX;
+		} else {
+			throw new IllegalArgumentException("relX " + relX + " should be between -1.0 and 1.0");
+		}
 	}
 
 	/**
-	 * relX property, used by State. Should normally be between -1.0 and 1.0, where
-	 * 1.0 corresponds to the edge of the parent object
+	 * Returns the relative y coordinate. When the given point is linked to a
+	 * pathway element, relX and relY are the relative coordinates on the element,
+	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
+	 * of the object.
+	 * 
+	 * @param relY the relative y coordinate.
 	 */
 	public double getRelY() {
 		return relY;
 	}
 
 	/**
-	 * See getRelX
+	 * Sets the relative y coordinate. When the given point is linked to a pathway
+	 * element, relX and relY are the relative coordinates on the element, where 0,0
+	 * is at the center of the object and 1,1 at the bottom right corner of the
+	 * object.
+	 * 
+	 * @param relY the relative y coordinate.
 	 */
 	public void setRelY(double relY) {
-		this.relY = relY;
-	}
-
-	public double getWidth() {
-		return width;
-	}
-
-	public void setWidth(double width) {
-		this.width = width;
-	}
-
-	public double getHeight() {
-		return height;
-	}
-
-	public void setHeight(double height) {
-		this.height = height;
-	}
-
-	public FontProperty getFontProperty() {
-		return fontProperty;
-	}
-
-	public void setFontProperty(FontProperty fontProperty) {
-		this.fontProperty = fontProperty;
-	}
-
-	public ShapeStyleProperty getShapeStyleProperty() {
-		return shapeStyleProperty;
-	}
-
-	public void setShapeStyleProperty(ShapeStyleProperty shapeStyleProperty) {
-		this.shapeStyleProperty = shapeStyleProperty;
+		if (Math.abs(relY) <= 1.0) {
+			this.relY = relY;
+		} else {
+			throw new IllegalArgumentException("relY " + relY + " should be between -1.0 and 1.0");
+		}
 	}
 
 	/**
-	 * Gets the state Xref.
+	 * Returns the Xref for the state.
 	 * 
-	 * @return xref the state xref.
+	 * @return xref the xref of the state.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
-	 * Instantiates and sets the value of state Xref.
+	 * Instantiates state Xref given identifier and dataSource. Checks whether
+	 * dataSource string is fullName, systemCode, or invalid.
 	 * 
 	 * @param identifier the identifier of the database entry.
 	 * @param dataSource the source of database entry.
+	 * @throws IllegalArgumentException is given dataSource does not exist.
 	 */
 	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		if (DataSource.fullNameExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		} else if (DataSource.systemCodeExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		} else {
+			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+		}
 	}
 
 }

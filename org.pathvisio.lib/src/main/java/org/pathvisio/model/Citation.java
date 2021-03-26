@@ -28,23 +28,10 @@ public class Citation extends PathwayElement {
 
 	private Xref xref;
 	private String url; // optional
-	
 
 	/**
-	 * Instantiates a Citation pathway element given elementId, given parent pathway model, given xref, and no
-	 * url.
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param xref         the citation xref.
-	 */
-	public Citation(String elementId, PathwayModel pathwayModel, Xref xref) {
-		this(elementId, pathwayModel, xref, null);
-	}
-
-	/**
-	 * Instantiates a Citation pathway element given elementId, given parent pathway model, given xref, and
-	 * given url.
+	 * Instantiates a Citation pathway element given all possible parameters:
+	 * elementId, parent pathway model, xref, and url.
 	 * 
 	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
@@ -55,6 +42,18 @@ public class Citation extends PathwayElement {
 		super(elementId, pathwayModel);
 		this.xref = xref;
 		this.url = url;
+	}
+
+	/**
+	 * Instantiates a Citation pathway element given all possible parameters except
+	 * xref. 
+	 * 
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param xref         the citation xref.
+	 */
+	public Citation(String elementId, PathwayModel pathwayModel, Xref xref) {
+		this(elementId, pathwayModel, xref, null);
 	}
 
 	private boolean isValidUrl(String url2) {

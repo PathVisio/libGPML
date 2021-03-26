@@ -31,53 +31,13 @@ public class Evidence extends PathwayElement {
 	private String url; // optional
 
 	/*
-	 * NB: Manipulated the order of variables to overload constructor. Cannot
-	 * have two constructors with the same signature. This is not best practice,
-	 * however variable inheritance complicates use of a builder. F
+	 * NB: Manipulated the order of variables to overload constructor. This is not
+	 * best practice, however variable inheritance complicates use of a builder.
 	 */
 
 	/**
-	 * Instantiates an Evidence pathway element given elementId, given parent
-	 * pathway model, given xref, no value, and no url.
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param xref         the evidence xref.
-	 */
-	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref) {
-		this(elementId, pathwayModel, null, xref, null);
-	}
-
-	/**
-	 * Instantiates an Evidence pathway element given elementId, given parent
-	 * pathway model, given xref, given url, and no value. 
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param value        the name, term, or text of the evidence.
-	 * @param xref         the evidence xref.
-	 * @param url          the url of the evidence.
-	 */
-	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
-		this(elementId, pathwayModel, null, xref, url);
-	}
-
-	/**
-	 * Instantiates an Evidence pathway element given elementId, given parent
-	 * pathway model, given value, given xref, and no url.
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param value        the name, term, or text of the evidence.
-	 * @param xref         the evidence xref.
-	 */
-	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref) {
-		this(elementId, pathwayModel, value, xref, null);
-	}
-
-	/**
-	 * Instantiates an Evidence pathway element given elementId, given parent
-	 * pathway model, given value, given xref, and given url.
+	 * Instantiates an Evidence pathway element given all possible parameters:
+	 * elementId, parent pathway model, value, xref, and url.
 	 * 
 	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
@@ -90,6 +50,27 @@ public class Evidence extends PathwayElement {
 		this.value = value;
 		this.xref = xref;
 		this.url = url;
+	}
+
+	/**
+	 * Instantiates an Evidence given all possible parameters except value.
+	 */
+	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
+		this(elementId, pathwayModel, null, xref, url);
+	}
+
+	/**
+	 * Instantiates an Evidence given all possible parameters except url.
+	 */
+	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref) {
+		this(elementId, pathwayModel, value, xref, null);
+	}
+
+	/**
+	 * Instantiates an Evidence given all possible parameters except value and url.
+	 */
+	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref) {
+		this(elementId, pathwayModel, null, xref, null);
 	}
 
 	/**

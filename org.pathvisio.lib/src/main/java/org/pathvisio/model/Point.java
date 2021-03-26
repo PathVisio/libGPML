@@ -16,52 +16,38 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.util.Utils;
 
 /**
- * This class stores information for a Point pathway element. 
+ * This class stores information for a Point pathway element.
  * 
  * @author finterly
  */
 public class Point extends PathwayElement {
 
 	private ArrowHeadType arrowHead; // line by default
-	private Coordinate xy; // TODO: part of generic point
-	private PathwayElement elementRef; // TODO Anchor now pathwayElement
+	private Coordinate xy;
+	/*
+	 * Below are optional parameters for when a point refers to a pathway element.
+	 */
+	private PathwayElement elementRef; // optional
 	private double relX; // optional
 	private double relY; // optional
 
-	// TODO: PathwayElement parent?
-
-	
-	/**
-	 * Instantiates a Point pathway element, with no reference to another pathway
-	 * element.
-	 * 
-	 * @param elementId  the unique pathway element identifier.
-	 * @param arrowHead the arrowhead property of the point.
-	 * @param x         the x coordinate position of the point.
-	 * @param y         the y coordinate position of the point.
-	 */
-	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy) {
-		super(elementId, pathwayModel);
-		this.arrowHead = arrowHead;
-		this.xy = xy;
-	}
-	
 	/**
 	 * Instantiates a Point pathway element, with reference to another pathway
 	 * element.
 	 * 
 	 * @param elementId  the unique pathway element identifier.
 	 * @param elementRef the pathway element to which the point refers.
-	 * @param arrowHead  the arrowhead property of the point.
+	 * @param arrowHead  the glyph at the ends of lines, intermediate points have
+	 *                   arrowhead type "line" by default.
 	 * @param x          the x coordinate position of the point.
 	 * @param y          the y coordinate position of the point.
 	 * @param relX       the relative x coordinate.
 	 * @param relY       the relative x coordinate.
 	 */
-	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy, PathwayElement elementRef, double relX, double relY) {
+	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy,
+			PathwayElement elementRef, double relX, double relY) {
 		super(elementId, pathwayModel);
 		this.arrowHead = arrowHead;
 		this.xy = xy;
@@ -70,111 +56,25 @@ public class Point extends PathwayElement {
 		this.relY = relY;
 	}
 
-
-
-	/*-----------------------------------------------------------------------*/
-
 	/**
-	 * Gets the elementRef of the point, indicates a child/parent relationship
-	 * between pathway elements. The elementRef of the child refers to the elementId
-	 * of the parent.
+	 * Instantiates a Point pathway element, with no reference to another pathway
+	 * element.
 	 * 
-	 * @return elementRef the elementRef of the point.
-	 * 
+	 * @param elementId the unique pathway element identifier.
+	 * @param arrowHead the arrowhead property of the point (line by default).
+	 * @param x         the x coordinate position of the point.
+	 * @param y         the y coordinate position of the point.
 	 */
-	public String getElementRef() {
-		return elementRef;
-	}
-
-	private ElementIdContainer getElementIdContainer() {
-		return getPathway().getElementIdContainer(elementRef);
-	}
-
-	/**
-	 * Sets the elementRef of the point, indicates a child/parent relationship
-	 * between pathway elements. The elementRef of the child refers to the elementId
-	 * of the parent.
-	 * 
-	 * @param elementRef the elementRef of the point.
-	 * 
-	 */
-	public void setElementRef(String elementRef) {
-		this.elementRef = elementRef;
+	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy) {
+		super(elementId, pathwayModel);
+		this.arrowHead = arrowHead;
+		this.xy = xy;
 	}
 
 	/**
-	 * Set a (elementRef) reference to another object with an elementId. If a parent
-	 * is set, this will automatically deregister the previously held reference and
-	 * register the new reference as necessary.
-	 *
-	 * @param v reference to set.
-	 */
-	public void setElementRef(String ref) {
-		if (!Utils.stringEquals(elementRef, ref)) {
-			if (parentPathway != null) {
-				if (elementRef != null) {
-					getPathway().removeElementRef(elementRef, (ElementRefContainer) this);
-				}
-				if (ref != null) {
-					getPathway().addElementRef(ref, (ElementRefContainer) this);
-				}
-			}
-			elementRef = ref;
-		}
-	}
-
-	/*-----------------------------------------------------------------------*/
-
-//	/**
-//	 * Link to an object. Current absolute coordinates will be converted to relative
-//	 * coordinates based on the object to link to.
-//	 */
-//	public void linkTo(ElementIdContainer idc) {
-//		Point2D rel = idc.toRelativeCoordinate(toPoint2D());
-//		linkTo(idc, rel.getX(), rel.getY());
-//	}
-//
-//	/**
-//	 * Link to an object using the given relative coordinates
-//	 */
-//	public void linkTo(ElementIdContainer idc, double relX, double relY) {
-//		String id = idc.getElementId();
-//		if (id == null)
-//			id = idc.setGeneratedElementId();
-//		setElementRef(idc.getElementId());
-//		setRelativePosition(relX, relY);
-//	}
-//
-//	/**
-//	 * note that this may be called any number of times when this point is already
-//	 * unlinked
-//	 */
-//	public void unlink() {
-//		if (graphRef != null) {
-//			if (getPathway() != null) {
-//				Point2D abs = getAbsolute();
-//				moveTo(abs.getX(), abs.getY());
-//			}
-//			relativeSet = false;
-//			setElementRef(null);
-//		}
-//	}
-//
-//	/**
-//	 * Find out if this point is linked to an object. Returns true if a graphRef
-//	 * exists and is not an empty string
-//	 */
-//	public boolean isLinked() {
-//		String ref = getElementRef();
-//		return ref != null && !"".equals(ref);
-//	}
-
-	/*-----------------------------------------------------------------------*/
-
-	/**
-	 * Gets the arrowHead property of the point. Arrowhead specifies the glyph at
-	 * the ends of lines and interactions. Only the arrowHead attribute on first and
-	 * last points are used, the rest is ignored.
+	 * Returns the arrowHead property of the point. Arrowhead specifies the glyph at
+	 * the ends of graphical lines and interactions. Intermediate points have
+	 * arrowhead type LINE (the absence of an arrowhead).
 	 * 
 	 * @return arrowhead the arrowhead property of the point.
 	 * 
@@ -189,8 +89,8 @@ public class Point extends PathwayElement {
 
 	/**
 	 * Sets the arrowHead property of the point. Arrowhead specifies the glyph at
-	 * the ends of lines and interactions. Only the arrowHead attribute on first and
-	 * last points are used, the rest is ignored.
+	 * the ends of graphical lines and interactions. Intermediate points have
+	 * arrowhead type LINE (the absence of an arrowhead).
 	 * 
 	 * @param arrowhead the arrowhead property of the point.
 	 * 
@@ -200,7 +100,7 @@ public class Point extends PathwayElement {
 	}
 
 	/**
-	 * Gets the xy coordinate position of the point.
+	 * Returns the xy coordinate position of the point.
 	 * 
 	 * @param xy the xy coordinate position of the point.
 	 */
@@ -215,6 +115,20 @@ public class Point extends PathwayElement {
 	 */
 	public void setXY(Coordinate xy) {
 		this.xy = xy;
+	}
+
+	/**
+	 * @return
+	 */
+	public PathwayElement getElementRef() {
+		return elementRef;
+	}
+
+	/**
+	 * @param elementRef
+	 */
+	public void setElementRef(PathwayElement elementRef) {
+		this.elementRef = elementRef;
 	}
 
 	/**
@@ -236,9 +150,14 @@ public class Point extends PathwayElement {
 	 * object.
 	 * 
 	 * @param relX the relative x coordinate.
+	 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 	 */
 	public void setRelX(double relX) {
-		this.relX = relX;
+		if (Math.abs(relX) <= 1.0) {
+			this.relX = relX;
+		} else {
+			throw new IllegalArgumentException("relX " + relX + " should be between -1.0 and 1.0");
+		}
 	}
 
 	/**
@@ -262,7 +181,11 @@ public class Point extends PathwayElement {
 	 * @param relY the relative y coordinate.
 	 */
 	public void setRelY(double relY) {
-		this.relY = relY;
+		if (Math.abs(relY) <= 1.0) {
+			this.relY = relY;
+		} else {
+			throw new IllegalArgumentException("relY " + relY + " should be between -1.0 and 1.0");
+		}
 	}
 
 }
