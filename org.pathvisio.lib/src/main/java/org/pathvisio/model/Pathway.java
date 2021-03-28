@@ -31,7 +31,7 @@ public class Pathway {
 
 	private String title = "untitled";
 	private List<Comment> comments; // 0 to unbounded
-	private List<DynamicProperty> dynamicProperties; // 0 to unbounded
+	private List<DynamicProperty> dynamicProperties; // 0 to unbounded //TODO replace with TREEMAP 
 	private List<AnnotationRef> annotationRefs; // 0 to unbounded
 	private List<Citation> citationRefs; // 0 to unbounded
 	private List<Evidence> evidenceRefs; // 0 to unbounded

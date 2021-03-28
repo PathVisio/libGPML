@@ -187,24 +187,7 @@ public abstract class GpmlFormatAbstract {
 			el.setAttribute(name, value);
 	}
 
-	/**
-	 * Gets a certain attribute value, and replaces it with a suitable default under
-	 * certain conditions.
-	 *
-	 * @param tag  used for lookup in the defaults table.
-	 * @param name used for lookup in the defaults table.
-	 * @param el   jdom element to get the attribute from.
-	 * @throws ConverterException if {@link getAttributeInfo} does not contain a
-	 *                            mapping for the specified key.
-	 */
-	protected String getAttribute(String tag, String name, Element el) throws ConverterException {
-		String key = tag + "@" + name;
-		if (!getAttributeInfo().containsKey(key))
-			throw new ConverterException("Trying to get invalid attribute " + key);
-		AttributeInfo aInfo = getAttributeInfo().get(key);
-		String result = ((el == null) ? aInfo.def : el.getAttributeValue(name, aInfo.def));
-		return result;
-	}
+
 
 	/**
 	 * The GPML xsd implies a certain ordering for children of the pathway element.
@@ -585,22 +568,7 @@ public abstract class GpmlFormatAbstract {
 			.asList(new String[] { "Aqua", "Black", "Blue", "Fuchsia", "Gray", "Green", "Lime", "Maroon", "Navy",
 					"Olive", "Purple", "Red", "Silver", "Teal", "White", "Yellow", "Transparent" });
 
-	public void readFromRoot(Element root, Pathway pwy) throws ConverterException {
-		mapElement(root, pwy); // MappInfo
 
-		// Iterate over direct children of the root element
-		for (Object e : root.getChildren()) {
-			mapElement((Element) e, pwy);
-		}
-		Logger.log.trace("End copying read elements");
-
-		// Add graphIds for objects that don't have one
-		addGraphIds(pwy);
-
-		// Convert absolute point coordinates of linked points to
-		// relative coordinates
-		convertPointCoordinates(pwy);
-	}
 
 	private static void addGraphIds(Pathway pathway) throws ConverterException {
 		for (PathwayElement pe : pathway.getDataObjects()) {

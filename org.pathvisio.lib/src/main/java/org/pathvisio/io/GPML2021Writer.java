@@ -16,6 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
-public class GPML2021Writer {
+public class GPML2021Writer implements GPMLWriter{
 
 }

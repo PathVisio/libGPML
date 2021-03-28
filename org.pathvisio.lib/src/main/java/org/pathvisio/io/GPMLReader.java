@@ -17,5 +17,9 @@
 package org.pathvisio.io;
 
 public interface GPMLReader {
+	
+	Pathway readGPML(File f);
+	Pathway readGPML(InputStream is);
+	Pathway readGPML(String s);
 
 }

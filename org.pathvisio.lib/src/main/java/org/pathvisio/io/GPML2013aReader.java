@@ -16,6 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
-public class GPML2013aReader {
+public class GPML2013aReader implements GPMLReader{
 
 }

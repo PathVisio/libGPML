@@ -18,6 +18,9 @@ package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an
@@ -30,7 +33,12 @@ import java.util.List;
 public abstract class ElementInfo extends PathwayElement {
 
 	private List<Comment> comments;
-	private List<DynamicProperty> dynamicProperties;
+	/**
+	 * Map for storing dynamic properties. Dynamic properties can have any String as
+	 * key and value of type String. If a value is set to null the key should be
+	 * removed.
+	 */
+	private Map<String, String> dynamicProperties;
 	private List<AnnotationRef> annotationRefs;
 	private List<Citation> citationRefs;
 	private List<Evidence> evidenceRefs;
@@ -51,7 +59,7 @@ public abstract class ElementInfo extends PathwayElement {
 			List<Evidence> evidenceRefs) {
 		super(elementId, pathwayModel);
 		this.comments = new ArrayList<Comment>(); // 0 to unbounded
-		this.dynamicProperties = new ArrayList<DynamicProperty>(); // 0 to unbounded
+		this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
 		this.citationRefs = new ArrayList<Citation>(); // 0 to unbounded
 		this.evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
@@ -99,32 +107,64 @@ public abstract class ElementInfo extends PathwayElement {
 	}
 
 	/**
-	 * Returns the list of key value pair information properties.
+	 * Gets a set of all dynamic property keys.
 	 * 
-	 * @return properties the list of properties, an empty list if no properties are
-	 *         defined.
+	 * @return a set of all dynamic property keys.
 	 */
-	public List<DynamicProperty> getDynamicProperties() {
-		return dynamicProperties;
+	public Set<String> getDynamicPropertyKeys() {
+		return dynamicProperties.keySet();
 	}
 
 	/**
-	 * Adds given dynamic property to dynamicProperties list.
+	 * Sets a dynamic property. Setting to null means removing this dynamic property
+	 * altogether.
 	 * 
-	 * @param dynamicProperty the dynamic property to be added.
+	 * @param key   the key of a key value pair.
+	 * @param value the value of a key value pair.
 	 */
-	public void addDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.add(dynamicProperty);
+	public void setDynamicProperty(String key, String value) {
+		if (value == null)
+			dynamicProperties.remove(key);
+		else
+			dynamicProperties.put(key, value);
 	}
 
 	/**
-	 * Removes given dynamic property from the dynamicProperties list.
+	 * Gets a dynamic property string value.
 	 * 
-	 * @param dynamicProperty the dynamic property to be removed.
+	 * @param key the key of a key value pair.
+	 * @return the value or dynamic property.
 	 */
-	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.remove(dynamicProperty);
+	public String getDynamicProperty(String key) {
+		return dynamicProperties.get(key);
 	}
+//	/**
+//	 * Returns the list of key value pair information properties.
+//	 * 
+//	 * @return properties the list of properties, an empty list if no properties are
+//	 *         defined.
+//	 */
+//	public List<DynamicProperty> getDynamicProperties() {
+//		return dynamicProperties;
+//	}
+//
+//	/**
+//	 * Adds given dynamic property to dynamicProperties list.
+//	 * 
+//	 * @param dynamicProperty the dynamic property to be added.
+//	 */
+//	public void addDynamicProperty(DynamicProperty dynamicProperty) {
+//		dynamicProperties.add(dynamicProperty);
+//	}
+//
+//	/**
+//	 * Removes given dynamic property from the dynamicProperties list.
+//	 * 
+//	 * @param dynamicProperty the dynamic property to be removed.
+//	 */
+//	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
+//		dynamicProperties.remove(dynamicProperty);
+//	}
 
 	/**
 	 * Returns the list of annotation references.

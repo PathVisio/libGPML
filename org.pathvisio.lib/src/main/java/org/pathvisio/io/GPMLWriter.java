@@ -18,4 +18,6 @@ package org.pathvisio.io;
 
 public interface GPMLWriter {
 
+	writeGPML(Pathway p, output);
+
 }
