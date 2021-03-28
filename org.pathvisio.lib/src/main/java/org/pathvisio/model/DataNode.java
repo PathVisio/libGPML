@@ -16,8 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -33,21 +33,90 @@ public class DataNode extends ShapedElement {
 	private Xref xref;
 	private List<State> states;
 	/*
-	 * The pathway element to which the data node refers to as an alias. In GPML,
-	 * this is elementRef which refers to the elementId of a pathway element
-	 * (normally gpml:Group).
+	 * . In GPML, this is elementRef which refers to the elementId of a pathway
+	 * element (normally gpml:Group).
 	 */
-	private PathwayElement elementRef; // optional
-	/*
-	 * The parent group to which the data node belongs. In GPML, groupRef refers to
-	 * the elementId (formerly groupId) of the parent gpml:Group.
-	 */
-	private Group groupRef; // optional
+	private PathwayElement elementRef; // optional, the pathway element to which the data node refers to as an alias.
 
-	
-	
-	
-	
+	/**
+	 * 
+	 * Instantiates a Data Node pathway element given all possible parameters. The
+	 * data node is an alias and refers to another pathway element. In GPML, the
+	 * datanode has elementRef which refers to the elementId of a pathway element
+	 * (normally gpml:Group).
+	 * 
+	 * @param elementId          the unique pathway element identifier.
+	 * @param pathwayModel       the parent pathway model.
+	 * @param comments           the list of comments.
+	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
+	 * @param annotationRefs     the list of annotations referenced.
+	 * @param citationRefs       the list of citations referenced.
+	 * @param evidenceRefs       the list of evidences referenced.
+	 * @param rectProperty       the centering (position) and dimension properties.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
+	 * @param groupRef              the parent group in which the pathway element
+	 *                           belongs.
+	 * @param textLabel          the text of the datanode.
+	 * @param type               the type of datanode, e.g. complex.
+	 * @param xref               the data node Xref.
+	 * @param states             the list of states of the data node.
+	 * @param elementRef         the pathway element the data node refers to.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type, Xref xref,
+			List<State> states, PathwayElement elementRef) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef);
+		this.textLabel = textLabel;
+		this.type = type;
+		this.xref = xref;
+		this.states = new ArrayList<State>();
+		this.elementRef = elementRef;
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except elementRef,
+	 * because the data node does not refer to another pathway element.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type, Xref xref,
+			List<State> states) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, type, xref, states, null);
+
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except groupRef,
+	 * because the data node does not belong in a group.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref, List<State> states,
+			PathwayElement elementRef) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, xref, states, elementRef);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except groupRef and
+	 * elementRef, because the data node neither belongs in a group nor refers
+	 * to another pathway element.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref, List<State> states) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, xref, states, null);
+	}
+
 	/**
 	 * Returns the text of of the datanode.
 	 * 
@@ -144,7 +213,7 @@ public class DataNode extends ShapedElement {
 	/**
 	 * Returns the pathway element to which the data node refers to as an alias. In
 	 * GPML, this is elementRef which refers to the elementId of a pathway element
-	 * (normally gpml:Group).
+	 * (normally gpml:Group). TODO
 	 * 
 	 * @return elementRef the pathway element to which the data node refers.
 	 */
@@ -155,7 +224,7 @@ public class DataNode extends ShapedElement {
 	/**
 	 * Sets the pathway element to which the data node refers to as an alias. In
 	 * GPML, this is elementRef which refers to the elementId of a pathway element
-	 * (normally gpml:Group).
+	 * (normally gpml:Group). TODO
 	 * 
 	 * @param elementRef the pathway element to which the data node refers.
 	 */
@@ -163,25 +232,28 @@ public class DataNode extends ShapedElement {
 		this.elementRef = elementRef;
 	}
 
-	/**
-	 * Returns the parent group of the data node. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
-	 * 
-	 * @return groupRef the parent group of the data node.
-	 */
-	public Group getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the parent group of the data node. The group is added to the
-	 * pathwayElements list of the parent group.
-	 * 
-	 * @param groupRef the parent group of the data node.
-	 */
-	public void setGroupRef(Group groupRef) {
-		groupRef.addPathwayElement(this);
-		this.groupRef = groupRef;
-	}
+//	/**
+//	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway
+//	 * element.
+//	 */
+//	public Set<ElementRefContainer> getReferences() {
+//		return ElementLink.getReferences(this, pathwayModel);
+//	}
+//
+//	/** elementRef property, used by Modification */
+//	public String getElementRef() {
+//		return elementRef;
+//	}
+//
+//	/**
+//	 * Set graphRef property, used by State The new graphRef should exist and point
+//	 * to an existing DataNode
+//	 */
+//	public void setElementRef(String value) {
+//		// TODO: check that new elementRef exists and that it points to a DataNode
+//		if (!(elementRef == null ? value == null : elementRef.equals(value))) {
+//			elementRef = value;
+//		}
+//	}
 
 }

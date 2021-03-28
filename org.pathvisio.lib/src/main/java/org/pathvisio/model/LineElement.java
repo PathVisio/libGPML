@@ -16,13 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
 
 /**
  * This abstract class stores information for a Line pathway element, e.g.
@@ -42,7 +37,38 @@ public abstract class LineElement extends ElementInfo {
 	 */
 	private Group groupRef; // optional
 
-//	private List<MPoint> mPoints = Arrays.asList(new Point(), new Point());
+	/**
+	 * 
+	 * @param elementId
+	 * @param pathwayModel
+	 * @param comments
+	 * @param dynamicProperties
+	 * @param annotationRefs
+	 * @param citationRefs
+	 * @param evidenceRefs
+	 * @param points
+	 * @param anchors
+	 * @param lineStyleProperty
+	 * @param groupRef
+	 */
+	public LineElement(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, List<Point> points, List<Anchor> anchors, LineStyleProperty lineStyleProperty,
+			Group groupRef) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs);
+		this.points = new ArrayList<Point>();
+		this.anchors = new ArrayList<Anchor>();
+		this.lineStyleProperty = lineStyleProperty;
+		this.groupRef = groupRef;
+	}
+
+	public LineElement(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, List<Point> points, List<Anchor> anchors,
+			LineStyleProperty lineStyleProperty) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				new ArrayList<Point>(), new ArrayList<Anchor>(), lineStyleProperty, null);
+	}
 
 	/**
 	 * Get the points for this line.
@@ -79,6 +105,16 @@ public abstract class LineElement extends ElementInfo {
 	 */
 	public void removePoint(Point point) {
 		points.remove(point);
+	}
+
+	// TODO necessary method?
+	public Point getStartPoint() {
+		return points.get(0);
+	}
+
+	// TODO necessary method?
+	public Point getEndPoint() {
+		return points.get(points.size() - 1);
 	}
 
 	/**

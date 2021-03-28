@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -29,18 +30,131 @@ import org.bridgedb.Xref;
 public class Group extends ShapedElement {
 
 	private GroupType type = GroupType.GROUP;
+	/* list of pathway elements which belong to the group. */
+	private List<PathwayElement> pathwayElements; // 0 to unbounded TODO should have at least one?
 	private String textLabel; // optional
-	/**
-	 * The list of pathway elements which belong to the group.
-	 */
-	private List<PathwayElement> pathwayElements; // 0 to unbounded
-	/*
-	 * The parent group to which the group belongs. In other words, a group can
-	 * belong in another group. In GPML, groupRef refers to the elementId (formerly
-	 * groupId) of the parent gpml:Group.
-	 */
-	private Group groupRef; // optional
 	private Xref xref; // optional
+
+	/**
+	 * Instantiates a Group given all possible parameters.
+	 * 
+	 * @param elementId          the unique pathway element identifier.
+	 * @param pathwayModel       the parent pathway model.
+	 * @param comments           the list of comments.
+	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
+	 * @param annotationRefs     the list of annotations referenced.
+	 * @param citationRefs       the list of citations referenced.
+	 * @param evidenceRefs       the list of evidences referenced.
+	 * @param rectProperty       the centering (position) and dimension properties.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
+	 * @param groupRef           the parent group in which the pathway element
+	 *                           belongs.
+	 * @param type               the type of the group.
+	 * @param pathwayElements    the list of pathway element members of the group.
+	 * @param textLabel          the text of the group.
+	 * @param xref               the group Xref.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, List<PathwayElement> pathwayElements,
+			String textLabel, Xref xref) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef);
+		this.type = type;
+		this.pathwayElements = new ArrayList<PathwayElement>();
+		this.textLabel = textLabel;
+		this.xref = xref;
+	}
+
+	/**
+	 * Instantiates a Group given all possible parameters except textLabel.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, List<PathwayElement> pathwayElements,
+			Xref xref) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef, type, pathwayElements, null, xref);
+	}
+
+	/**
+	 * Instantiates a Group given all possible parameters except xref.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, List<PathwayElement> pathwayElements,
+			String textLabel) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef, type, pathwayElements, textLabel, null);
+	}
+
+	/**
+	 * Instantiates a Group given all possible parameters except textLabel and xref.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type,
+			List<PathwayElement> pathwayElements) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef, type, pathwayElements, null, null);
+	}
+
+	/**
+	 * Instantiates a Group given all possible parameters except groupRef, because
+	 * the group does not belong in another group.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements,
+			String textLabel, Xref xref) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements, textLabel, xref);
+	}
+
+	/**
+	 * Instantiates a Group given all possible parameters except groupRef and xref,
+	 * because the group neither belongs in another group nor has xref.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements,
+			String textLabel) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements, textLabel, null);
+	}
+
+	/**
+	 * Instantiates a Group given all possible parameters except groupRef and
+	 * textLabel, because the group neither belongs in another group nor has
+	 * textLabel.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements, Xref xref) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements, null, xref);
+	}
+
+	/**
+	 * Instantiates a Group given all possible parameters except groupRef,
+	 * textLabel, and xref, because the group neither belongs in another group, nor
+	 * has a textLabel, nor has xref.
+	 */
+	public Group(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements, null, null);
+	}
 
 	/**
 	 * Gets the text of of the group.
@@ -95,44 +209,6 @@ public class Group extends ShapedElement {
 
 	public void removePathwayElement(PathwayElement pathwayElement) {
 		pathwayElements.remove(pathwayElement);
-	}
-
-	/**
-	 * Returns the parent group of the group. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
-	 * 
-	 * @return groupRef the parent group of the group.
-	 */
-	public Group getGroup() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the parent group of the group. The group is added to the pathwayElements
-	 * list of the parent group.
-	 * 
-	 * @param groupRef the parent group of the group.
-	 */
-	public void setGroup(Group groupRef) {
-		if (groupRef.getPathwayElements() != null && groupRef != null) {
-			groupRef.addPathwayElement(this);
-			this.groupRef = groupRef;
-		}
-
-		//TODO how to handle groupRef properly...
-		
-//			if (groupRef == null || !groupRef.equals(id)) {
-//				if (pathwayModel != null) {
-//					if (groupRef != null) {
-//						pathwayModel.removeGroupRef(groupRef, this);
-//					}
-//					// Check: move add before remove??
-//					if (id != null) {
-//						pathwayModel.addGroupRef(id, this);
-//					}
-//				}
-//				groupRef = id;
-//			}
 	}
 
 	/**

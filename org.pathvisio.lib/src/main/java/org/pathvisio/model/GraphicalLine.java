@@ -16,11 +16,30 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.List;
+
 /**
  * This class stores information for GraphicalLine pathway element.
  * 
  * @author finterly
  */
 public class GraphicalLine extends LineElement {
+
+	public GraphicalLine(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, List<Point> points, List<Anchor> anchors, LineStyleProperty lineStyleProperty,
+			Group groupRef) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs, points, anchors,
+				lineStyleProperty, groupRef);
+		// TODO Auto-generated constructor stub
+	}
+
+	public GraphicalLine(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, List<Point> points, List<Anchor> anchors,
+			LineStyleProperty lineStyleProperty) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs, points, anchors,
+				lineStyleProperty);
+	}
 
 }

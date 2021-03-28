@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.util.Utils;
@@ -29,14 +28,71 @@ import org.pathvisio.util.Utils;
 public class Label extends ShapedElement {
 
 	private String textLabel;
-	/*
-	 * The parent group to which the label belongs. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
-	 */
-	private Group groupRef; // optional
 	private String href; // optional
 
-	
+	/**
+	 * Instantiates a Label pathway element given all possible parameters.
+	 * 
+	 * @param elementId          the unique pathway element identifier.
+	 * @param pathwayModel       the parent pathway model.
+	 * @param comments           the list of comments.
+	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
+	 * @param annotationRefs     the list of annotations referenced.
+	 * @param citationRefs       the list of citations referenced.
+	 * @param evidenceRefs       the list of evidences referenced.
+	 * @param rectProperty       the centering (position) and dimension properties.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
+	 * @param groupRef           the parent group in which the pathway element
+	 *                           belongs.
+	 * @param textLabel          the text of the label.
+	 * @param href               the hyperlink of the label.
+	 */
+	public Label(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, String href) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef);
+		this.textLabel = textLabel;
+		this.href = href;
+	}
+
+	/**
+	 * Instantiates a Label given all possible parameters except href.
+	 */
+	public Label(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, null);
+	}
+
+	/**
+	 * Instantiates a Label given all possible parameters except groupRef, because
+	 * the label does not belong in a group.
+	 */
+	public Label(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, String textLabel, String href) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, textLabel, href);
+	}
+
+	/**
+	 * Instantiates a Label given all possible parameters except groupRef and href,
+	 * because the label neither belongs in a group nor has a hyperlink.
+	 */
+	public Label(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, String textLabel) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, textLabel, null);
+	}
+
 	/**
 	 * Gets the text of of the label.
 	 * 
@@ -58,27 +114,6 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Returns the parent group of the label. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
-	 * 
-	 * @return groupRef the parent group of the label.
-	 */
-	public Group getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the parent group of the label. The group is added to the pathwayElements
-	 * list of the parent group.
-	 * 
-	 * @param groupRef the parent group of the label.
-	 */
-	public void setGroupRef(Group groupRef) {
-		groupRef.addPathwayElement(this);
-		this.groupRef = groupRef;
-	}
-
-	/**
 	 * Gets the hyperlink for a Label.
 	 * 
 	 * @return href the hyperlink reference to a url.
@@ -88,7 +123,7 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Sets the hyperlink for a Label.
+	 * Sets the hyperlink for a Label. TODO take a look....
 	 * 
 	 * @param input the given string link. If input is null, href is set to
 	 *              ""(empty).
@@ -97,9 +132,9 @@ public class Label extends ShapedElement {
 		String link = (input == null) ? "" : input;
 		if (!Utils.stringEquals(href, link)) {
 			href = link;
-			if (PreferenceManager.getCurrent() == null)
-				PreferenceManager.init();
-			setColor(PreferenceManager.getCurrent().getColor(GlobalPreference.COLOR_LINK));
+//			if (PreferenceManager.getCurrent() == null)
+//				PreferenceManager.init();
+//			setColor(PreferenceManager.getCurrent().getColor(GlobalPreference.COLOR_LINK));
 		}
 	}
 }

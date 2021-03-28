@@ -41,35 +41,29 @@ import org.pathvisio.model.ElementLink.ElementRefContainer;
 import org.pathvisio.util.Utils;
 
 /**
- * This class stores information relevant for a Pathway model. Pathway contains
+ * This class stores information for a Pathway model. Pathway model contains
  * pathway elements and properties.
  * 
  * TODO: MOVE: It is responsible for storing all information necessary for
- * maintaining, loading and saving pathway data.
+ * maintaining, loading and saving pathway data. Reading in, writing from.
  * 
  * @author unknown, finterly
  */
-public class PathwayModel { 
-	
-	//Pathway Model (metadata of pathway)
-	// PathwayModel read in 
-	// PathwayModel class
-	private Pathway pathway; 
-	
-	//elementId and pathwayElement TODO would be in pathway model....Pathway metadata
-	private Map<String, PathwayElement>  pathwayElements; 
-	private List<Author> authors = new ArrayList<Author>(); // move to Pathway? 
+public class PathwayModel {
+
+	private Pathway pathway; // pathway information
+
+	private List<Author> authors = new ArrayList<Author>(); // move to Pathway?
 	private List<Annotation> annotations;
-	private List<Citation> citations; 
-	private List<Evidence> evidences; 
-	private List<DataNode> dataNodes;
-//	private List<State> states;
-	private List<Interaction> interactions;
-	private List<GraphicalLine> graphicalLines;
+	private List<Citation> citations;
+	private List<Evidence> evidences;
+	private List<DataNode> dataNodes; // contains states
+	private List<Interaction> interactions; // contains waypoints
+	private List<GraphicalLine> graphicalLines; // contains waypoints
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;
-	
+
 	/**
 	 * 
 	 * @return
@@ -86,6 +80,136 @@ public class PathwayModel {
 		authors.remove(author);
 	}
 
+	/*
+	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
+	 */
+	/** Mapping of String elementId key to PathwayElement value. */
+	private Map<String, PathwayElement> elementIdToPathwayElement = new HashMap<String, PathwayElement>();
+
+	/** Mapping of String elementRef key to Set of PathwayElements. */
+	private Map<String, Set<PathwayElement>> elementRefToPathwayElements= new HashMap<String, Set<PathwayElement>>();
+	/** Mapping of String groupRef key to Set of PathwayElements of Group. */
+	private Map<String, Set<PathwayElement>> groupRefToPathwayElements= new HashMap<String, Set<PathwayElement>>();
+
+	
+
+	/**
+	 * Returns a unique elementId.
+	 * 
+	 * @return a unique elementId.
+	 */
+	public String getUniqueElementId() {
+		return getUniqueId(elementIdToPathwayElement.keySet());
+	}
+
+	/**
+	 * Returns a set view of String elementId keys from the
+	 * elementIdToPathwayElements hash map.
+	 * 
+	 * @return a set of elementId keys.
+	 */
+	public Set<String> getElementIds() {
+		return elementIdToPathwayElement.keySet();
+	}
+
+	/**
+	 * Returns PathwayElement for the given String elementId key.
+	 * 
+	 * @param elementId the given elementId key.
+	 * @return the PathwayElement for the given elementId key.
+	 */
+	public PathwayElement getPathwayElement(String elementId) {
+		return elementIdToPathwayElement.get(elementId);
+	}
+
+	/**
+	 * Adds mapping of elementId key to PathwayElement value in the
+	 * elementIdToPathwayElement hash map.
+	 * 
+	 * @param elementId      the elementId
+	 * @param pathwayElement the PathwayElement
+	 * @throws IllegalArgumentException if elementId or elementIdContainer are null.
+	 * @throws IllegalArgumentException if elementId is not unique.
+	 */
+	public void addElementId(String elementId, PathwayElement pathwayElement) {
+		if (pathwayElement == null || elementId == null) {
+			throw new IllegalArgumentException("unique elementId can't be null");
+		}
+		if (elementIdToPathwayElement.containsKey(elementId)) {
+			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
+		}
+		elementIdToPathwayElement.put(elementId, pathwayElement);
+	}
+
+	/**
+	 * Removes the mapping of given elementId key from the elementIdToPathwayElement
+	 * hash map.
+	 * 
+	 * @param elementId the elementId key.
+	 */
+	void removeElementId(String elementId) {
+		elementIdToPathwayElement.remove(elementId);
+	}
+
+	/**
+	 * Returns a set of points that refer to a pathway element with a particular
+	 * elementId.
+	 * 
+	 * TODO DataNode refer to Group as an alias.
+	 * 
+	 * @param elementRef the reference to elementId.
+	 */
+	public Set<Point> getReferringPoints(String elementId) {
+		Set<Point> result = new HashSet<Point>();
+		for (Interaction interaction : interactions) {
+			List<Point> points = interaction.getPoints();
+			for (Point point : points) {
+				if (point.getElementRef().getElementId() == elementId) {
+					result.add(point);
+				}
+			}
+		}
+		for (GraphicalLine graphicalLine : graphicalLines) {
+			List<Point> points = graphicalLine.getPoints();
+			for (Point point : points) {
+				if (point.getElementRef().getElementId() == elementId) {
+					result.add(point);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Inserts mapping of elementId key to ElementRefContainer value in the
+	 * elementIdToSetRefContainer hash map.
+	 * 
+	 * @param elementRef the reference to elementId.
+	 * @param target     the target ElementRefContainer.
+	 */
+	public void addElementRef(String elementRef, PathwayElement pathwayElement) {
+		Utils.multimapPut(elementRefToPathwayElements, elementRef, pathwayElement);
+	}
+
+	/**
+	 * Removes the mapping of the given elementId key from the
+	 * elementIdToSetRefContainer hash map.
+	 * 
+	 * @param elementRef the reference to elementId.
+	 * @param target     the target ElementRefContainer.
+	 * @throws IllegalArgumentException if hash map does not contain the given
+	 *                                  elementId key.
+	 */
+	public void removeElementRef(String elementRef, PathwayElement pathwayElement) {
+		if (!elementRefToPathwayElements.containsKey(elementRef)) {
+			throw new IllegalArgumentException();
+		} else {
+			elementRefToPathwayElements.get(elementRef).remove(pathwayElement);
+			// remove elementId key if zero ElementRefContainers values.
+			if (elementRefToPathwayElements.get(elementRef).size() == 0)
+				elementRefToPathwayElements.remove(elementRef);
+		}
+	}
 
 	/**
 	 * Generates random IDs, based on strings of hex digits (0..9 or a..f). IDs are
@@ -114,182 +238,6 @@ public class PathwayModel {
 		return result;
 	}
 
-	/**
-	 * Gets a pathway element by it's GraphId.
-	 * 
-	 * @param graphId the graphId of the element.
-	 * @return e the pathway element with the given id, or null when no element was
-	 *         found.
-	 */
-	public PathwayElement getElementById(String graphId) {
-		// TODO: dataobject should be stored in a hashmap, with the graphId as key!
-		if (graphId != null) {
-			for (PathwayElement e : dataObjects) {
-				if (graphId.equals(e.getElementId())) {
-					return e;
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the Xref of all DataNodes in this pathway as a List.
-	 * 
-	 * @return result the list of xref of all datanodes or an empty arraylist if
-	 *         there are no datanodes in this pathway.
-	 */
-	public List<Xref> getDataNodeXrefs() {
-		List<Xref> result = new ArrayList<Xref>();
-		for (DataNode dataNode : dataNodes) {
-			result.add(dataNode.getXref());
-		}
-	}
-
-	/**
-	 * Returns the Xref of all Lines in this pathway as a List.
-	 *
-	 * @return result the list of xref of all lines or an empty arraylist if there
-	 *         are no lines in this pathway.
-	 */
-	public List<Xref> getLineXrefs() {
-		List<Xref> result = new ArrayList<Xref>();
-		for (PathwayElement e : dataObjects) {
-			if (e instanceof Interaction) {
-//				result.add(e.getXref());
-			}
-		}
-	}
-
-	/**
-	 * Returns the DataNode Xref.
-	 * 
-	 * @return xref the datanode xref.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
-
-	public Xref setXref(String identifier, String dataSource) {
-		DataSource dataSource = dataSource;
-		Xref xref = new Xref(identifier, dataSource);
-		// TODO: Store Xref by default, derive setGeneID and dataSource from it.
-		return new Xref(identifier, dataSource);
-	}
-	/*
-	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
-	 */
-
-	/** Mapping of String elementId key to ElementIdContainer value. */
-	private Map<String, ElementIdContainer> elementIdToContainer = new HashMap<String, ElementIdContainer>();
-	/** Mapping of String elementId key to Set of ElementRefContainer value. */
-	private Map<String, Set<ElementRefContainer>> elementRefToRefContainerSet = new HashMap<String, Set<ElementRefContainer>>();
-
-	/**
-	 * Returns a unique elementId.
-	 * 
-	 * @return a unique elementId.
-	 */
-	public String getUniqueElementId() {
-		return ElementLink.getUniqueId(elementIdToContainer.keySet());
-	}
-
-	/**
-	 * Returns a set view of String elementId keys from the elementIdToContainer
-	 * hash map.
-	 * 
-	 * @return a set of elementId keys.
-	 */
-	public Set<String> getElementIds() {
-		return elementIdToContainer.keySet();
-	}
-
-	/**
-	 * Returns ElementIdcontainer for the given String elementId key.
-	 * 
-	 * @param elementId the given elementId key.
-	 * @return the ElementIdcontainer for the given elementId key.
-	 */
-	public ElementIdContainer getElementIdContainer(String elementId) {
-		return elementIdToContainer.get(elementId);
-	}
-
-	/**
-	 * Inserts mapping of elementId key to ElementIdContainer value in the
-	 * elementIdToContainer hash map.
-	 * 
-	 * @param elementId the elementId
-	 * @param target    the ElementIdContainer
-	 * @throws IllegalArgumentException if elementId or elementIdContainer are null.
-	 * @throws IllegalArgumentException if elementId is not unique.
-	 */
-	public void addElementId(String elementId, ElementIdContainer target) {
-		if (target == null || elementId == null) {
-			throw new IllegalArgumentException("unique elementId can't be null");
-		}
-		if (elementIdToContainer.containsKey(elementId)) {
-			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
-		}
-		elementIdToContainer.put(elementId, target);
-	}
-
-	/**
-	 * Removes the mapping of given elementId key from the elementIdToContainer hash
-	 * map.
-	 * 
-	 * @param elementId the elementId key.
-	 */
-	void removeElementId(String elementId) {
-		elementIdToContainer.remove(elementId);
-	}
-
-	/**
-	 * Returns a set of ElementRefContainers that refer to an object with a
-	 * particular elementId.
-	 * 
-	 * @param elementRef the reference to elementId.
-	 */
-	public Set<ElementRefContainer> getReferringObjects(String elementRef) {
-		Set<ElementRefContainer> elementRefContainers = elementRefToRefContainerSet.get(elementRef);
-		if (elementRefContainers != null) {
-			// create defensive copy to prevent problems with ConcurrentModification.
-			return new HashSet<ElementRefContainer>(elementRefContainers);
-		} else {
-			return Collections.emptySet();
-		}
-	}
-
-	/**
-	 * Inserts mapping of elementId key to ElementRefContainer value in the
-	 * elementIdToSetRefContainer hash map.
-	 * 
-	 * @param elementRef the reference to elementId.
-	 * @param target     the target ElementRefContainer.
-	 */
-	public void addElementRef(String elementRef, ElementRefContainer target) {
-		Utils.multimapPut(elementRefToRefContainerSet, elementRef, target);
-	}
-
-	/**
-	 * Removes the mapping of the given elementId key from the
-	 * elementIdToSetRefContainer hash map.
-	 * 
-	 * @param elementRef the reference to elementId.
-	 * @param target     the target ElementRefContainer.
-	 * @throws IllegalArgumentException if hash map does not contain the given
-	 *                                  elementId key.
-	 */
-	public void removeElementRef(String elementRef, ElementRefContainer target) {
-		if (!elementRefToRefContainerSet.containsKey(elementRef)) {
-			throw new IllegalArgumentException();
-		} else {
-			elementRefToRefContainerSet.get(elementRef).remove(target);
-			// remove elementId key if zero ElementRefContainers values.
-			if (elementRefToRefContainerSet.get(elementRef).size() == 0)
-				elementRefToRefContainerSet.remove(elementRef);
-		}
-	}
-
 	/* -------------------------- GROUPID & GROUPREF --------------------------- */
 
 	/** Mapping of String groupId key to PathwayElement group. */
@@ -303,7 +251,7 @@ public class PathwayModel {
 	 * @return a unique groupId.
 	 */
 	public String getUniqueGroupId() {
-		return ElementLink.getUniqueId(groupRefToPathwayElementSet.keySet());
+		return getUniqueId(groupRefToPathwayElementSet.keySet());
 	}
 
 	/**
@@ -418,8 +366,6 @@ public class PathwayModel {
 
 	// ------------------------------- Information
 	// -------------------------------------
-
-
 
 	/**
 	 * Gets the BioPAX element of this pathway, containing literature references and
@@ -681,8 +627,6 @@ public class PathwayModel {
 	 * ------------------------------- CommentGroup -------------------------------
 	 */
 
-	
-
 	/**
 	 * Returns the list of citation references.
 	 * 
@@ -695,7 +639,7 @@ public class PathwayModel {
 	// TODO CitationRef/Annotation Manager
 
 	/*------------------------------- Pathway Elements ------------------------------*/
-	
+
 	public List<DataNode> getDataNodes() {
 		return dataNodes;
 	}
@@ -703,6 +647,7 @@ public class PathwayModel {
 	public void addDataNode(DataNode dataNode) {
 		dataNodes.add(dataNode);
 	}
+
 	public void removeDataNode(DataNode dataNode) {
 		dataNodes.remove(dataNode);
 	}
@@ -714,6 +659,7 @@ public class PathwayModel {
 	public void addInteraction(Interaction interaction) {
 		interactions.add(interaction);
 	}
+
 	public void removeInteraction(Interaction interaction) {
 		interactions.remove(interaction);
 	}
@@ -725,6 +671,7 @@ public class PathwayModel {
 	public void addGraphicalLine(GraphicalLine graphicalLine) {
 		graphicalLines.add(graphicalLine);
 	}
+
 	public void removeGraphicalLine(GraphicalLine graphicalLine) {
 		graphicalLines.remove(graphicalLine);
 	}
@@ -736,6 +683,7 @@ public class PathwayModel {
 	public void addLabel(Label label) {
 		labels.add(label);
 	}
+
 	public void removeLabel(Label label) {
 		labels.remove(label);
 	}
@@ -747,6 +695,7 @@ public class PathwayModel {
 	public void addShape(Shape shape) {
 		shapes.add(shape);
 	}
+
 	public void removeShape(Shape shape) {
 		shapes.remove(shape);
 	}
@@ -758,8 +707,71 @@ public class PathwayModel {
 	public void addGroup(Group group) {
 		groups.add(group);
 	}
+
 	public void removeGroup(Group group) {
 		groups.remove(group);
+	}
+
+	/**
+	 * Returns the Xref of all DataNodes in this pathway as a List.
+	 * 
+	 * @return result the list of xref of all datanodes or an empty arraylist if
+	 *         there are no datanodes in this pathway.
+	 */
+	public List<Xref> getDataNodeXrefs() {
+		List<Xref> result = new ArrayList<Xref>();
+		for (DataNode dataNode : dataNodes) {
+			result.add(dataNode.getXref());
+		}
+	}
+
+	/**
+	 * Returns the Xref of all States of all DataNodes in this pathway as a List.
+	 *
+	 * @return result the list of xref of all states or an empty arraylist if there
+	 *         are no interactions in this pathway.
+	 */
+	public List<Xref> getStateXrefs() {
+		List<Xref> result = new ArrayList<Xref>();
+		for (DataNode dataNode : dataNodes) {
+			List<State> states = dataNode.getStates();
+			for (State state : states) {
+				Xref stateXref = state.getXref();
+				if (stateXref != null) {
+					result.add(stateXref);
+
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns the Xref of all Interactions in this pathway as a List.
+	 *
+	 * @return result the list of xref of all interactions or an empty arraylist if
+	 *         there are no interactions in this pathway.
+	 */
+	public List<Xref> getInteractionXrefs() {
+		List<Xref> result = new ArrayList<Xref>();
+		for (Interaction interaction : interactions) {
+			result.add(interaction.getXref());
+		}
+	}
+
+	/**
+	 * Returns the Xref of all Groups in this pathway as a List.
+	 *
+	 * @return result the list of xref of all groups or an empty arraylist if there
+	 *         are no interactions in this pathway.
+	 */
+	public List<Xref> getGroupXrefs() {
+		List<Xref> result = new ArrayList<Xref>();
+		for (Group group : groups) {
+			Xref groupXref = group.getXref();
+			if (groupXref != null) {
+				result.add(groupXref);
+			}
+		}
 	}
 
 }

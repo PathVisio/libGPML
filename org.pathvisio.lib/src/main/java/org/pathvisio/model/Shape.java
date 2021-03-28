@@ -28,17 +28,76 @@ import org.bridgedb.Xref;
  */
 public class Shape extends ShapedElement {
 
-	private String textLabel;
 	private ShapeType type; // TODO: Getter/Setter weird
-	private double rotation = 0; // in radians
-	/*
-	 * The parent group to which the shape belongs. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
+	private double rotation = 0; // in radians TODO 
+	private String textLabel; // optional
+
+	/**
+	 * Instantiates a Label pathway element given all possible parameters.
+	 * 
+	 * @param elementId          the unique pathway element identifier.
+	 * @param pathwayModel       the parent pathway model.
+	 * @param comments           the list of comments.
+	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
+	 * @param annotationRefs     the list of annotations referenced.
+	 * @param citationRefs       the list of citations referenced.
+	 * @param evidenceRefs       the list of evidences referenced.
+	 * @param rectProperty       the centering (position) and dimension properties.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
+	 * @param groupRef           the parent group in which the pathway element
+	 *                           belongs.
+	 * @param textLabel          the text of the label.
+	 * @param href               the hyperlink of the label.
+	 * @param type               the type of the shape, e.g. rectangle, nucleus.
+	 * @param rotation           the rotation in radians. TODO
+	 * @param textLabel          the text of the shape.
 	 */
-	private Group groupRef; // optional
-	
-	
-	
+	public Shape(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, ShapeType type, double rotation, String textLabel) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef);
+		this.type = type;
+		this.rotation = rotation;
+		this.textLabel = textLabel;
+	}
+
+	/**
+	 * Instantiates a Shape given all possible parameters except textLabel.
+	 */
+	public Shape(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, ShapeType type, double rotation) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, groupRef, type, rotation, null);
+	}
+
+	/**
+	 * Instantiates a Shape given all possible parameters except groupRef, because
+	 * the pathway element does not belong in a group.
+	 */
+	public Shape(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, ShapeType type, double rotation, String textLabel) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, type, rotation, textLabel);
+	}
+
+	/**
+	 * Instantiates a Shape given all possible parameters except groupRef and textLbel, because
+	 * the shape neither belongs in a group nor has a textLabel .
+	 */
+	public Shape(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, ShapeType type, double rotation) {
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null, type, rotation, null);
+	}
 
 	/**
 	 * Gets the orientation for shapes.
@@ -79,8 +138,6 @@ public class Shape extends ShapedElement {
 			break;
 		}
 	}
-
-
 
 	/**
 	 * Gets the text of of the shape.
@@ -127,42 +184,22 @@ public class Shape extends ShapedElement {
 	 */
 	public double getRotation() {
 
-			return rotation;
-		
+		return rotation;
+
 	}
 
 	/**
-	 * Sets the rotation of this shape.
+	 * Sets the rotation of this shape. TODO 
 	 * 
 	 * @param rotation the rotation of the shape.
 	 */
-	public void setRotation(String rotation) {
+	public void setRotation(Double rotation) {
 		this.rotation = rotation;
-		
+
 //		// Rotation is not stored for State, so we use a dynamic property.
 //		// TODO: remove after next GPML update.
 //		if (objectType == ObjectType.STATE && rotation != 0) {
 //			setDynamicProperty(State.ROTATION_KEY, "" + rotation);
 	}
 
-	/**
-	 * Returns the parent group of the shape. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
-	 * 
-	 * @return groupRef the parent group of the shape.
-	 */
-	public Group getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Sets the parent group of the shape. The group is added to the pathwayElements
-	 * list of the parent group.
-	 * 
-	 * @param groupRef the parent group of the shape.
-	 */
-	public void setGroupRef(Group groupRef) {
-		groupRef.addPathwayElement(this);
-		this.groupRef = groupRef;
-	}
 }

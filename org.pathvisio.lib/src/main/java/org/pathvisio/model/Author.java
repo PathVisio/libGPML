@@ -25,7 +25,7 @@ package org.pathvisio.model;
  * 
  * Author author = new Author.AuthorBuilder("Jan") 
  * 			.setfullName("Jan Doe")
- * 			.setEmail("jdoe@gmail.com").build();
+ * 			.setEmail("jdoe@email.com").build();
  * 
  * @author finterly
  */

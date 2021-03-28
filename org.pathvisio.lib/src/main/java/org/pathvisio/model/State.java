@@ -32,7 +32,7 @@ public class State extends ShapedElement {
 	private DataNode dataNode; // parent dataNode (NB: elementRef was formerly elementId of parent data node)
 	private String textLabel;
 	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
-	private double relX; // TODO should we replace with x and y?
+	private double relX; //
 	private double relY;
 	private Xref xref; // optional
 
@@ -85,13 +85,8 @@ public class State extends ShapedElement {
 			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, DataNode dataNode, String textLabel, StateType type, double relX,
 			double relY) {
-		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
-				rectProperty, fontProperty, shapeStyleProperty);
-		this.dataNode = dataNode;
-		this.textLabel = textLabel;
-		this.type = type;
-		this.relX = relX;
-		this.relY = relY;
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, dataNode, textLabel, type, relX, relY, null);
 	}
 
 	/**

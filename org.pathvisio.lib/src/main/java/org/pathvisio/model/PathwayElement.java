@@ -16,25 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.awt.Color;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
-import org.pathvisio.model.ElementLink.ElementIdContainer;
-import org.pathvisio.model.ElementLink.ElementRefContainer;
-import org.pathvisio.util.Utils;
-
 /**
  * Abstract class of pathway elements which are part of a pathway and have an
  * elementId.
@@ -47,21 +28,56 @@ import org.pathvisio.util.Utils;
 public abstract class PathwayElement {
 
 	private String elementId;
-	/** 
-	 * parent pathway model: may be null (e.g. when object is in clipboard)
-	 */
-	private PathwayModel pathwayModel = null; 
+	/* parent pathway model: may be null (e.g. when object is in clipboard) */
+	private PathwayModel pathwayModel = null;
 
 	/**
-	 * Instantiates this pathway element with elementId and given parent pathway
-	 * model.
+	 * Instantiates this pathway element with generated elementId and given parent
+	 * pathway model.
 	 * 
 	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
 	 */
 	public PathwayElement(String elementId, PathwayModel pathwayModel) {
-		this.elementId = elementId; // TODO Setter
+		this.elementId = setGeneratedElementId(); // TODO Setter
 		this.pathwayModel = pathwayModel;
+	}
+
+	/**
+	 * Returns the elementId of the pathway element.
+	 * 
+	 * @return elementId the unique pathway element identifier.
+	 */
+	public String getElementId() {
+		return elementId;
+	}
+
+	// TODO CLEAN UP METHOD
+
+	/**
+	 * Sets the elementId of the pathway element. ElementId must be a unique within
+	 * the Pathway model. {@link PathwayModel#getUniqueId}
+	 * {@link PathwayModel#addElementId} {@link PathwayModel#removeElementId}
+	 * 
+	 * @param newElementId the given elementId to set
+	 */
+	public void setElementId(String newElementId) {
+		if (elementId == null || !elementId.equals(newElementId)) {
+			if (pathwayModel != null) {
+				if (elementId != null) {
+					pathwayModel.removeElementId(elementId);
+				}
+				if (newElementId != null) {
+					pathwayModel.addElementId(newElementId, this);
+				}
+				this.elementId = newElementId;
+			}
+		}
+	}
+
+	public String setGeneratedElementId() {
+		setElementId(pathwayModel.getUniqueElementId());
+		return elementId;
 	}
 
 	/**
@@ -82,9 +98,6 @@ public abstract class PathwayElement {
 		this.pathwayModel = pathwayModel;
 	}
 
-
-	
-	
 //	/* ------------------------------- GROUPREF ------------------------------- */
 //	public boolean isValidElementId(String elementId) {
 //		if (elementId == null && isUniqueElementId(elementId) == true) {
@@ -158,38 +171,9 @@ public abstract class PathwayElement {
 //	}
 
 	/* ------------------------------- ELEMENTID ------------------------------- */
-	/**
-	 * @return
-	 */
-	public String getElementId() {
-		return elementId;
-	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public String doGetElementId() {
-		return elementId;
-	}
-
-	/**
-	 * Set elementId. ElementId must be a unique within the Pathway object
-	 *
-	 * @see Pathway#getUniqueId(java.util.Set)
-	 */
-	public void setElementId(String id) {
-		ElementLink.setElementId(id, this, pathwayModel);
-		elementId = id;
-	}
-
-	public String setGeneratedElementId() {
-		setElementId(pathwayModel.getUniqueElementId());
-		return elementId;
-	}
 	/* ------------------------------- ELEMENTREF ------------------------------- */
 //
-//	protected String elementRef = null;
 //
 //	/**
 //	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway
@@ -214,89 +198,5 @@ public abstract class PathwayElement {
 //			elementRef = value;
 //		}
 //	}
-
-	/* ------------------------------- OTHER.... ------------------------------- */
-
-	public String getStartElementRef() {
-		return mPoints.get(0).getElementRef();
-	}
-
-	public void setStartElementRef(String ref) {
-		MPoint start = mPoints.get(0);
-		start.setGraphRef(ref);
-	}
-
-	public String getEndElementRef() {
-		return mPoints.get(mPoints.size() - 1).getElementRef();
-	}
-
-	public void setEndElementRef(String ref) {
-		MPoint end = mPoints.get(mPoints.size() - 1);
-		end.setGraphRef(ref);
-	}
-
-	/* ------------------------------- OTHER.... ------------------------------- */
-
-	/**
-	 * Returns keys of available static properties and dynamic properties as an
-	 * object list.
-	 * 
-	 * @return keys the set of keys of available static properties and dynamic
-	 *         properties.
-	 */
-	public Set<Object> getPropertyKeys() {
-		Set<Object> keys = new HashSet<Object>();
-		keys.addAll(getStaticPropertyKeys());
-		keys.addAll(getDynamicPropertyKeys());
-		return keys;
-	}
-
-	/**
-	 * Sets dynamic or static properties at the same time.
-	 * 
-	 * TODO: Will be replaced with setProperty in the future.
-	 */
-	public void setPropertyEx(Object key, Object value) {
-		if (key instanceof StaticProperty) {
-			setStaticProperty((StaticProperty) key, value);
-		} else if (key instanceof String) {
-			setDynamicProperty((String) key, value.toString());
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
-
-	/**
-	 * Gets dynamic or static properties at the same time.
-	 * 
-	 * @param key the key for dynamic or static property values.
-	 * @return dynamic or static properties.
-	 */
-	public Object getPropertyEx(Object key) {
-		if (key instanceof StaticProperty) {
-			return getStaticProperty((StaticProperty) key);
-		} else if (key instanceof String) {
-			return getDynamicProperty((String) key);
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
-
-	/* ------------------------------- DATANODE ------------------------------- */
-
-	public void printRefsDebugInfo() {
-		System.err.println(objectType + " " + getElementId());
-		if (this instanceof MLine) {
-			for (MPoint p : getMPoints()) {
-				System.err.println("  p: " + p.getElementId());
-			}
-			for (MAnchor a : getMAnchors()) {
-				System.err.println("  a: " + a.getElementId());
-			}
-		}
-		if (this instanceof MState) {
-			System.err.println("  " + getElementRef());
-		}
-	}
 
 }

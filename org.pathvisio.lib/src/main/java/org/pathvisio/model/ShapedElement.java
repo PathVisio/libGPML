@@ -24,14 +24,48 @@ import java.util.List;
  * 
  * @author finterly
  */
-public class ShapedElement extends ElementInfo {
+public abstract class ShapedElement extends ElementInfo {
 
 	private RectProperty rectProperty;
 	private FontProperty fontProperty;
 	private ShapeStyleProperty shapeStyleProperty;
+	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 
 	/**
-	 * Instantiates a Shaped pathway element.
+	 * Instantiates a Shaped pathway element which is also a member of a group
+	 * pathway element and thus has groupRef. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group. Note, a group can also
+	 * belong in another group.
+	 * 
+	 * @param elementId          the unique pathway element identifier.
+	 * @param pathwayModel       the parent pathway model.
+	 * @param comments           the list of comments.
+	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
+	 * @param annotationRefs     the list of annotations referenced.
+	 * @param citationRefs       the list of citations referenced.
+	 * @param evidenceRefs       the list of evidences referenced.
+	 * @param rectProperty       the centering (position) and dimension properties.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
+	 * @param group              the parent group in which the pathway element
+	 *                           belongs.
+	 */
+	public ShapedElement(String elementId, PathwayModel pathwayModel, List<Comment> comments,
+			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
+			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef) {
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs);
+		this.rectProperty = rectProperty;
+		this.fontProperty = fontProperty;
+		this.shapeStyleProperty = shapeStyleProperty;
+		if (groupRef != null) {
+			setGroupRef(groupRef); // set group TODO
+		}
+	}
+
+	/**
+	 * Instantiates a Shaped pathway element given all possible parameters except
+	 * groupRef, because the pathway element is not a member of a group. 
 	 * 
 	 * @param elementId          the unique pathway element identifier.
 	 * @param pathwayModel       the parent pathway model.
@@ -48,10 +82,9 @@ public class ShapedElement extends ElementInfo {
 			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
 			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty) {
-		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs);
-		this.rectProperty = rectProperty;
-		this.fontProperty = fontProperty;
-		this.shapeStyleProperty = shapeStyleProperty;
+		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
+				rectProperty, fontProperty, shapeStyleProperty, null);
+
 	}
 
 	/**
@@ -110,4 +143,41 @@ public class ShapedElement extends ElementInfo {
 		this.shapeStyleProperty = shapeStyleProperty;
 	}
 
+	/**
+	 * Returns the parent group of the group. In GPML, groupRef refers to the
+	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of the group.
+	 */
+	public Group getGroupRef() {
+		return groupRef;
+	}
+
+	/**
+	 * Sets the parent group of the group. The group is added to the pathwayElements
+	 * list of the parent group.
+	 * 
+	 * @param groupRef the parent group of the group.
+	 */
+	public void setGroupRef(Group groupRef) {
+		if (groupRef.getPathwayElements() != null && groupRef != null) {
+			groupRef.addPathwayElement(this);
+			this.groupRef = groupRef;
+		}
+
+		// TODO how to handle groupRef properly...
+
+//			if (groupRef == null || !groupRef.equals(id)) {
+//				if (pathwayModel != null) {
+//					if (groupRef != null) {
+//						pathwayModel.removeGroupRef(groupRef, this);
+//					}
+//					// Check: move add before remove??
+//					if (id != null) {
+//						pathwayModel.addGroupRef(id, this);
+//					}
+//				}
+//				groupRef = id;
+//			}
+	}
 }
