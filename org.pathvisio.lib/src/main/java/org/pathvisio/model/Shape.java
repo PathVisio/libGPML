@@ -16,10 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.bridgedb.Xref;
 
 /**
  * This class stores all information relevant to a Shape pathway element.
@@ -29,7 +26,7 @@ import org.bridgedb.Xref;
 public class Shape extends ShapedElement {
 
 	private ShapeType type; // TODO: Getter/Setter weird
-	private double rotation = 0; // in radians TODO 
+	private double rotation = 0; // in radians? TODO just read/write
 	private String textLabel; // optional
 
 	/**
@@ -50,7 +47,7 @@ public class Shape extends ShapedElement {
 	 * @param textLabel          the text of the label.
 	 * @param href               the hyperlink of the label.
 	 * @param type               the type of the shape, e.g. rectangle, nucleus.
-	 * @param rotation           the rotation in radians. TODO
+	 * @param rotation           the rotation in radians? TODO
 	 * @param textLabel          the text of the shape.
 	 */
 	public Shape(String elementId, PathwayModel pathwayModel, List<Comment> comments,
@@ -88,8 +85,8 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Instantiates a Shape given all possible parameters except groupRef and textLbel, because
-	 * the shape neither belongs in a group nor has a textLabel .
+	 * Instantiates a Shape given all possible parameters except groupRef and
+	 * textLbel, because the shape neither belongs in a group nor has a textLabel .
 	 */
 	public Shape(String elementId, PathwayModel pathwayModel, List<Comment> comments,
 			List<DynamicProperty> dynamicProperties, List<AnnotationRef> annotationRefs, List<Citation> citationRefs,
@@ -97,46 +94,6 @@ public class Shape extends ShapedElement {
 			ShapeStyleProperty shapeStyleProperty, ShapeType type, double rotation) {
 		this(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
 				rectProperty, fontProperty, shapeStyleProperty, null, type, rotation, null);
-	}
-
-	/**
-	 * Gets the orientation for shapes.
-	 * 
-	 * @return the orientation for
-	 */
-	public int getOrientation() {
-		double r = rotation / Math.PI;
-		if (r < 1.0 / 4 || r >= 7.0 / 4)
-			return OrientationType.TOP;
-		if (r > 5.0 / 4 && r <= 7.0 / 4)
-			return OrientationType.LEFT;
-		if (r > 3.0 / 4 && r <= 5.0 / 4)
-			return OrientationType.BOTTOM;
-		if (r > 1.0 / 4 && r <= 3.0 / 4)
-			return OrientationType.RIGHT;
-		return 0;
-	}
-
-	/**
-	 * Sets the orientation for shapes.
-	 * 
-	 * @param orientation the orientation integer.
-	 */
-	public void setOrientation(int orientation) {
-		switch (orientation) {
-		case OrientationType.TOP:
-			setRotation(0);
-			break;
-		case OrientationType.LEFT:
-			setRotation(Math.PI * (3.0 / 2));
-			break;
-		case OrientationType.BOTTOM:
-			setRotation(Math.PI);
-			break;
-		case OrientationType.RIGHT:
-			setRotation(Math.PI / 2);
-			break;
-		}
 	}
 
 	/**
@@ -189,17 +146,12 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Sets the rotation of this shape. TODO 
+	 * Sets the rotation of this shape. TODO
 	 * 
 	 * @param rotation the rotation of the shape.
 	 */
 	public void setRotation(Double rotation) {
 		this.rotation = rotation;
-
-//		// Rotation is not stored for State, so we use a dynamic property.
-//		// TODO: remove after next GPML update.
-//		if (objectType == ObjectType.STATE && rotation != 0) {
-//			setDynamicProperty(State.ROTATION_KEY, "" + rotation);
 	}
 
 }

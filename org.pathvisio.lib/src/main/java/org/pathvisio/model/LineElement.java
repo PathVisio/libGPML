@@ -28,7 +28,7 @@ import java.util.List;
 public abstract class LineElement extends ElementInfo {
 
 	private List<Point> points;
-	private List<Anchor> anchors = new ArrayList<Anchor>();
+	private List<Anchor> anchors;
 	private LineStyleProperty lineStyleProperty;
 
 	/*

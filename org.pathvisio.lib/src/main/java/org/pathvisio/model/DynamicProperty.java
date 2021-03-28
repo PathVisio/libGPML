@@ -28,7 +28,7 @@ public class DynamicProperty {
 
 	private String key;
 	private String value;
-	private PathwayElement parent;
+	private PathwayElement parent; //TODO
 
 	/**
 	 * Instantiates a Property, key value pair information.

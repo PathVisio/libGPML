@@ -28,17 +28,16 @@ public class Comment implements Cloneable {
 
 	private String source;
 	private String content;
-	private PathwayElement parent;
+	private PathwayElement parent; //TODO 
 
 	/**
 	 * Instantiates a Comment.
 	 * 
 	 * @param source the source of the comment.
 	 */
-	public Comment(String source, String commentText, PathwayElement parent) {
+	public Comment(String source, String commentText) {
 		this.source = source;
 		this.content = commentText;
-		this.parent = parent;
 	}
 
 	public Object clone() throws CloneNotSupportedException {

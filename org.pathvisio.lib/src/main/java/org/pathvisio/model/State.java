@@ -26,14 +26,18 @@ import org.bridgedb.Xref;
  * 
  * @author finterly
  */
-public class State extends ShapedElement {
+public class State extends ElementInfo {
 
-
+	//TODO technically has a groupRef = null....
+	
 	private DataNode dataNode; // parent dataNode (NB: elementRef was formerly elementId of parent data node)
 	private String textLabel;
 	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
-	private double relX; //
+	private double relX; 
 	private double relY;
+	private RectProperty rectProperty; //TODO get x and y Coordinates!!!! 
+	private FontProperty fontProperty;
+	private ShapeStyleProperty shapeStyleProperty;
 	private Xref xref; // optional
 
 	/**
@@ -66,13 +70,15 @@ public class State extends ShapedElement {
 			List<Evidence> evidenceRefs, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, DataNode dataNode, String textLabel, StateType type, double relX,
 			double relY, Xref xref) {
-		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs,
-				rectProperty, fontProperty, shapeStyleProperty);
+		super(elementId, pathwayModel, comments, dynamicProperties, annotationRefs, citationRefs, evidenceRefs);
 		this.dataNode = dataNode;
 		this.textLabel = textLabel;
 		this.type = type;
 		this.relX = relX;
 		this.relY = relY;
+		this.rectProperty = rectProperty;
+		this.fontProperty = fontProperty;
+		this.shapeStyleProperty = shapeStyleProperty;
 		this.xref = xref;
 	}
 
@@ -208,6 +214,63 @@ public class State extends ShapedElement {
 		}
 	}
 
+	
+	/**
+	 * Returns the centering and dimension properties of the pathway element.
+	 * 
+	 * @return rectProperty the centering and dimension properties.
+	 */
+	public RectProperty getRectProperty() {
+		return rectProperty;
+	}
+
+	/**
+	 * Sets the centering and dimension properties of the pathway element.
+	 * 
+	 * @param rectProperty the centering and dimension properties.
+	 */
+	public void setRectProperty(RectProperty rectProperty) {
+		this.rectProperty = rectProperty;
+	}
+
+	/**
+	 * Returns the font properties of the pathway element, e.g. textColor,
+	 * fontName...
+	 * 
+	 * @return fontProperty the font properties.
+	 */
+	public FontProperty getFontProperty() {
+		return fontProperty;
+	}
+
+	/**
+	 * Sets the font properties of the pathway element, e.g. textColor, fontName...
+	 * 
+	 * @param fontProperty the font properties.
+	 */
+	public void setFontProperty(FontProperty fontProperty) {
+		this.fontProperty = fontProperty;
+	}
+
+	/**
+	 * Returns the shape style properties of the pathway element, e.g.
+	 * borderColor...
+	 * 
+	 * @return shapeStyleProperty the shape style properties.
+	 */
+	public ShapeStyleProperty getShapeStyleProperty() {
+		return shapeStyleProperty;
+	}
+
+	/**
+	 * Sets the shape style properties of the pathway element, e.g. borderColor...
+	 * 
+	 * @param shapeStyleProperty the shape style properties.
+	 */
+	public void setShapeStyleProperty(ShapeStyleProperty shapeStyleProperty) {
+		this.shapeStyleProperty = shapeStyleProperty;
+	}
+	
 	/**
 	 * Returns the Xref for the state.
 	 * 
