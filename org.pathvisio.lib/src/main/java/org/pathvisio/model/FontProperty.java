@@ -28,13 +28,13 @@ import org.pathvisio.util.Utils;
  */
 public class FontProperty {
 
-	private Color textColor = Color.decode("000000"); // black
+	private Color textColor = Color.decode("#000000"); // black
 	private String fontName = "Arial"; // Arial
 	private boolean fontWeight = false; // bold or normal
 	private boolean fontStyle = false; // italic or normal
 	private boolean fontDecoration = false; // underline or normal
 	private boolean fontStrikethru = false;// strikethru or normal
-	private int fontSize = 12; // 12, could be double in older schemas
+	private int fontSize = 12; // 12, only integer full size values 
 	private HAlignType hAlign = HAlignType.CENTER; // horizontal alignment of text
 	private VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
 
@@ -53,7 +53,7 @@ public class FontProperty {
 	 * @param vAlign         the vertical alignment of displayed text, by (Middle). 
 	 */
 	public FontProperty(Color textColor, String fontName, boolean fontWeight, boolean fontStyle, boolean fontDecoration,
-			boolean fontStrikethru, double fontSize, HAlignType hAlign, VAlignType vAlign) {
+			boolean fontStrikethru, int fontSize, HAlignType hAlign, VAlignType vAlign) {
 		this.textColor = textColor;
 		this.fontName = fontName;
 		this.fontWeight = fontWeight;
@@ -224,7 +224,7 @@ public class FontProperty {
 	 * @param fontSize the value for the size of the font.
 	 * @throws IllegalArgumentException if fontSize is a negative value.
 	 */
-	public void setFontSize(double fontSize) {
+	public void setFontSize(int fontSize) {
 		if (fontSize < 0) {
 			throw new IllegalArgumentException("Tried to set font size < 0: " + fontSize);
 		} else {

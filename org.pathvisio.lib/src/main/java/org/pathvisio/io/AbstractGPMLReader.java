@@ -38,13 +38,34 @@ public abstract class AbstractGPMLReader {
 	 *                            mapping for the specified key.
 	 */
 	protected String getAttribute(String tag, String name, Element el) throws ConverterException {
-		String key = tag + "@" + name;
+		//key: "DataNode.Graphics@CenterX"
+		//tag is location, name is attribute name, element is the jdom element? 
+		String key = tag + "@" + name; 
 		if (!getAttributeInfo().containsKey(key))
 			throw new ConverterException("Trying to get invalid attribute " + key);
+		//aInfo: new AttributeInfo("xsd:float", null, "required")
 		AttributeInfo aInfo = getAttributeInfo().get(key);
+		//if element is  null, get default value, else get the actual value? 
 		String result = ((el == null) ? aInfo.def : el.getAttributeValue(name, aInfo.def));
 		return result;
 	}
+	
+	/**
+	 * @param o
+	 * @param e
+	 */
+	protected void readLegend(Pathway p, Element e) {
+		// TODO Dynamic Property....
+	}p.getDynamicProperty(Legend_CenterX)
+
+	{
+		o.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
+		String centerX = e.getAttributeValue("CenterX");
+		String centerY = e.getAttributeValue("CenterY");
+		o.getCenterXY().setX(Double.parseDouble(centerX));
+		o.getCenterXY().setY(Double.parseDouble(centerY));
+	}
+	
 	
 	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
 
@@ -71,7 +92,40 @@ public abstract class AbstractGPMLReader {
 
 	
 	
+	protected void readTextColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String textColor = getAttribute(e.getName() + ".Graphics", "Color", graphics);
+		o.getFontProperty().setTextColor(ColorUtils.stringToColor(textColor));
+	}
+	protected void readBorderColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String borderColor = getAttribute(e.getName() + ".Graphics", "Color", graphics);
+		o.getShapeStyleProperty().setBorderColor(ColorUtils.stringToColor(borderColor));
+	}
+
+	protected void readLineColor(LineElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String lineColor = getAttribute(e.getName() + ".Graphics", "Color", graphics);
+		o.getLineStyleProperty().setLineColor(ColorUtils.stringToColor(lineColor));
+	}
 	
+	protected void readFillColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String scol = getAttribute(e.getName() + ".Graphics", "FillColor", graphics);
+		if (scol.equals("Transparent")) {
+			o.getShapeStyleProperty().setFillColor(Color.decode("#00000000")); //TODO transparent? 
+		} else {
+			o.getShapeStyleProperty().setFillColor(ColorUtils.stringToColor(scol));
+		}
+	}
+	
+	
+
+	protected void readComments(ElementInfo o, Element e) throws ConverterException {
+		for (Object f : e.getChildren("Comment", e.getNamespace())) {
+			o.addComment(((Element) f).getText(), getAttribute("Comment", "Source", (Element) f));
+		}
+	}
 	/**
 	 * @param o
 	 * @param e

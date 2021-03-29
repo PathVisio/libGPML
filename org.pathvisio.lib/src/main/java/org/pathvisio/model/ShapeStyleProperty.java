@@ -26,10 +26,10 @@ import java.awt.Color;
  */
 public class ShapeStyleProperty {
 
-	private Color borderColor = Color.decode("000000"); // black
+	private Color borderColor = Color.decode("#000000"); // black
 	private LineStyleType borderStyle = LineStyleType.SOLID; // solid TODO: Fix
 	private double borderWidth = 1.0; // TODO: type?
-	private Color fillColor = Color.decode("ffffff"); // white TODO: Transparent if Label
+	private Color fillColor = Color.decode("#ffffff"); // white TODO: Transparent if Label
 	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
 	private int zOrder; // optional
 
@@ -77,7 +77,7 @@ public class ShapeStyleProperty {
 	 */
 	public Color getBorderColor() {
 		if (borderColor == null) {
-			return Color.decode("000000"); // black
+			return Color.decode("#000000"); // black
 		} else {
 			return borderColor;
 		}
@@ -153,7 +153,7 @@ public class ShapeStyleProperty {
 	 */
 	public Color getFillColor() {
 		if (fillColor == null) {
-			return Color.decode("ffffff"); // white
+			return Color.decode("#ffffff"); // white
 		} else {
 			return fillColor;
 		}
@@ -226,22 +226,22 @@ public class ShapeStyleProperty {
 		this.zOrder = zOrder;
 	}
 
-	/**
-	 * Returns the parent PathwayElement to which the shape graphic property belongs.
-	 * 
-	 * @return parent the parent pathway element.
-	 */
-	public PathwayElement getParent() {
-		return parent;
-	}
-
-	/**
-	 * Sets the parent PathwayElement to which the shape graphic property belongs.
-	 * 
-	 * @return parent the parent pathway element.
-	 */
-	public void setParent(PathwayElement parent) {
-		this.parent = parent;
-	}
+//	/**
+//	 * Returns the parent PathwayElement to which the shape graphic property belongs.
+//	 * 
+//	 * @return parent the parent pathway element.
+//	 */
+//	public PathwayElement getParent() {
+//		return parent;
+//	}
+//
+//	/**
+//	 * Sets the parent PathwayElement to which the shape graphic property belongs.
+//	 * 
+//	 * @return parent the parent pathway element.
+//	 */
+//	public void setParent(PathwayElement parent) {
+//		this.parent = parent;
+//	}
 
 }

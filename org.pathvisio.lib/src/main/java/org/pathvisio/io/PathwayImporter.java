@@ -18,7 +18,8 @@ package org.pathvisio.io;
 
 import java.io.File;
 
-/** implemented by classes that can import a pathway from various different types */
+import org.pathvisio.model.PathwayModel;
+
 public interface PathwayImporter extends PathwayIO 
 {
 	/**
@@ -40,5 +41,5 @@ public interface PathwayImporter extends PathwayIO
 	 * @throws ConverterException if the input file could not be read or parsed,
 	 * 		or doesn't contain correct pathway information.
 	 */
-	public Pathway doImport(File file) throws ConverterException;
+	public PathwayModel doImport(File file) throws ConverterException;
 }

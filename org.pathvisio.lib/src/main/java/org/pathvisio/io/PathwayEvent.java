@@ -16,41 +16,37 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Abstract base class which implements PathwayImporter and PathwayExporter
- * warnings mechanism.
- * 
- * @author unknown, finterly
+ * Used to notify listeners of changes to the model, i.e a Pathway or PathwayElement.
+ * This can mean the addition or removal of whole elements, or just a modification to
+ * one of the properties of an existing element.
+ *
+ * This event is currently used both by PathwayListener's and  PathwayElementListener's.
+ * That may change in the future.
  */
-public abstract class AbstractPathwayFormat implements GPMLReader, GPMLWriter {
-	private List<String> warnings = new ArrayList<String>();
-
-	protected void clearWarnings() {
-		warnings.clear();
-	}
+public class PathwayEvent
+{
+	/**
+	 * Sent to listeners of Pathway when an object was deleted
+	 */
+	public static final int DELETED = 2;
 
 	/**
-	 * Can be used by overriding classes to add to the list of warnings. Don't
-	 * forget to call {@link clearWarnings} at the start of conversion.
-	 *
-	 * @param warning the string.
+	 * Sent to listeners of Pathway when a new object was added
 	 */
-	protected void emitWarning(String warning) {
-		warnings.add(warning);
-	}
+	public static final int ADDED = 3;
 
-	@Override
-	public boolean isCorrectType(File f) {
-		return true;
-	}
+	public static final int RESIZED = 4;
 
-	@Override
-	public List<String> getWarnings() {
-		return warnings;
-	}
+	private PathwayElement affectedData;
+	public PathwayElement getAffectedData () { return affectedData; }
 
+	private int type;
+	public int getType() { return type; }
+
+	public PathwayEvent (PathwayElement object, int t)
+	{
+		affectedData = object;
+		type = t;
+	}
 }

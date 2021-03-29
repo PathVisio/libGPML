@@ -21,11 +21,15 @@ import java.io.OutputStream;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.pathvisio.model.*;
 
 public interface GpmlFormatWriter extends GpmlFormatVersion 
 {
-	Document createJdom(Pathway data) throws ConverterException;
+	
+	Document createJdom(PathwayModel data) throws ConverterException;
 	Element createJdomElement(PathwayElement o) throws ConverterException;
-	void writeToXml(Pathway pwy, File file, boolean validate) throws ConverterException;
-	void writeToXml(Pathway pwy, OutputStream out, boolean validate) throws ConverterException;
+	void writeToXml(PathwayModel pwyModel, File file, boolean validate) throws ConverterException;
+	void writeToXml(PathwayModel pwyModel, OutputStream out, boolean validate) throws ConverterException;
+	
+	
 }
