@@ -388,8 +388,8 @@ public class GPML2021Reader implements GPMLReader {
 	protected void readInteraction(Interaction o, Element e) throws ConverterException {
 		readLineElement(o, e);
 		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = getAttribute("Interaction.Xref", "ID", xref);
-		String dataSource = getAttribute("Interaction.Xref", "Database", xref);
+		String identifier = xref.getAttributeValue("identifier");
+		String dataSource = xref.getAttributeValue("dataSource");
 		o.setXref(identifier, dataSource);
 	}
 
@@ -399,8 +399,8 @@ public class GPML2021Reader implements GPMLReader {
 	 * @throws ConverterException
 	 */
 	protected void readLabels(Label o, Element e) throws ConverterException {
-		String textLabel = getAttribute("Label", "TextLabel", e);
-		String href = getAttribute("Label", "Href", e);
+		String textLabel = e.getAttributeValue("textLabel");
+		String href = e.getAttributeValue("href");
 		o.setTextLabel(textLabel);
 		o.setHref(href);
 		readShapeStyleProperty(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
@@ -414,9 +414,9 @@ public class GPML2021Reader implements GPMLReader {
 	 * @throws ConverterException
 	 */
 	protected void readShape(Shape o, Element e) throws ConverterException {
-		String textLabel = getAttribute("Shape", "TextLabel", e);
-		String type = getAttribute("Shape", "Type", e);
-		String rotation = getAttribute("Shape", "Rotation", e);
+		String textLabel = e.getAttributeValue("textLabel");
+		String type = e.getAttributeValue("type");
+		String rotation = e.getAttributeValue("rotation");
 		o.setTextLabel(textLabel);
 		o.setType(ShapeType.fromName(type)); // TODO ShapeType
 		readShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
@@ -437,8 +437,8 @@ public class GPML2021Reader implements GPMLReader {
 		}
 		o.setGroupId(groupId);
 
-		String textLabel = getAttribute("Group", "TextLabel", e);
-		String type = getAttribute("Group", "Style", e); // NB. GroupType was named Style
+		String textLabel = e.getAttributeValue("textLabel");
+		String type = e.getAttributeValue("type"); // NB. GroupType was named Style
 		if (textLabel != null) {
 			o.setTextLabel(textLabel);
 		}
@@ -446,8 +446,8 @@ public class GPML2021Reader implements GPMLReader {
 
 		/** Xref added in GPML2021 */
 		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = getAttribute("DataNode.Xref", "ID", xref);
-		String dataSource = getAttribute("DataNode.Xref", "Database", xref);
+		String identifier = xref.getAttributeValue("identifier");
+		String dataSource = xref.getAttributeValue("dataSource");
 		o.setXref(identifier, dataSource);
 
 	}
@@ -493,7 +493,7 @@ public class GPML2021Reader implements GPMLReader {
 		Logger.log.trace ("End copying map elements");
 
 		//Add graphIds for objects that don't have one
-		addGraphIds(pwy);
+		addElementIds(pwy);
 
 		//Convert absolute point coordinates of linked points to
 		//relative coordinates
