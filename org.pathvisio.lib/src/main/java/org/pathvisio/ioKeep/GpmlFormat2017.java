@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.ioKeep;
 
 import org.bridgedb.DataSource;
 import org.jdom.Document;
@@ -23,6 +23,11 @@ import org.jdom.Namespace;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.pathvisio.core.view.ShapeRegistry;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GpmlFormatReader;
+import org.pathvisio.io.GpmlFormatWriter;
+import org.pathvisio.ioKeep.GpmlFormatAbstract2017.AttributeInfo;
+import org.pathvisio.ioKeep.GpmlFormatAbstract2017.ByElementName;
 
 import java.awt.*;
 import java.io.File;

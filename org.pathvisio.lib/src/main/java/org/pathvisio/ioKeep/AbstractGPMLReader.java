@@ -1,54 +1,31 @@
-/*******************************************************************************
- * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License.  You may obtain a copy
- * of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
- * License for the specific language governing permissions and limitations under
- * the License.
- ******************************************************************************/
-package org.pathvisio.io;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
+package org.pathvisio.ioKeep;
 
 import org.jdom2.Element;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.bridgedb.DataSource;
+import org.bridgedb.Xref;
+import org.jdom2.Attribute;
+import org.jdom2.Document;
+import org.jdom2.Namespace;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
-import org.pathvisio.model.Anchor;
-import org.pathvisio.model.AnchorType;
-import org.pathvisio.model.ConnectorType;
-import org.pathvisio.model.Coordinate;
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.DataNodeType;
-import org.pathvisio.model.ElementInfo;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.GroupType;
-import org.pathvisio.model.HAlignType;
-import org.pathvisio.model.Interaction;
-import org.pathvisio.model.Label;
-import org.pathvisio.model.LineElement;
-import org.pathvisio.model.LineStyleType;
-import org.pathvisio.model.ObjectType;
-import org.pathvisio.model.Pathway;
-import org.pathvisio.model.PathwayElement;
-import org.pathvisio.model.Point;
-import org.pathvisio.model.Shape;
-import org.pathvisio.model.ShapeType;
-import org.pathvisio.model.ShapedElement;
-import org.pathvisio.model.State;
-import org.pathvisio.model.StateType;
-import org.pathvisio.model.VAlignType;
+import org.pathvisio.model.*;
+public abstract class AbstractGPMLReader {
 
-public class GPML2013aReader implements GPMLReader {
 
 	/**
 	 * Gets a certain attribute value, and replaces it with a suitable default under
@@ -61,14 +38,18 @@ public class GPML2013aReader implements GPMLReader {
 	 *                            mapping for the specified key.
 	 */
 	protected String getAttribute(String tag, String name, Element el) throws ConverterException {
-		String key = tag + "@" + name;
+		//key: "DataNode.Graphics@CenterX"
+		//tag is location, name is attribute name, element is the jdom element? 
+		String key = tag + "@" + name; 
 		if (!getAttributeInfo().containsKey(key))
 			throw new ConverterException("Trying to get invalid attribute " + key);
+		//aInfo: new AttributeInfo("xsd:float", null, "required")
 		AttributeInfo aInfo = getAttributeInfo().get(key);
+		//if element is  null, get default value, else get the actual value? 
 		String result = ((el == null) ? aInfo.def : el.getAttributeValue(name, aInfo.def));
 		return result;
 	}
-
+	
 	/**
 	 * @param o
 	 * @param e
@@ -84,13 +65,14 @@ public class GPML2013aReader implements GPMLReader {
 		o.getCenterXY().setX(Double.parseDouble(centerX));
 		o.getCenterXY().setY(Double.parseDouble(centerY));
 	}
-
+	
+	
 	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
 
 	public PathwayElement readElement(Element e) throws ConverterException {
 		return readElement(e, null);
 	}
-
+	
 	public void readFromRoot(Element root, Pathway pwy) throws ConverterException {
 		readElement(root, pwy); // MappInfo
 
@@ -108,12 +90,42 @@ public class GPML2013aReader implements GPMLReader {
 		convertPointCoordinates(pwy);
 	}
 
+	
+	
+	protected void readTextColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String textColor = getAttribute(e.getName() + ".Graphics", "Color", graphics);
+		o.getFontProperty().setTextColor(ColorUtils.stringToColor(textColor));
+	}
+	protected void readBorderColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String borderColor = getAttribute(e.getName() + ".Graphics", "Color", graphics);
+		o.getShapeStyleProperty().setBorderColor(ColorUtils.stringToColor(borderColor));
+	}
+
+	protected void readLineColor(LineElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String lineColor = getAttribute(e.getName() + ".Graphics", "Color", graphics);
+		o.getLineStyleProperty().setLineColor(ColorUtils.stringToColor(lineColor));
+	}
+	
+	protected void readFillColor(ShapedElement o, Element e) throws ConverterException {
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		String scol = getAttribute(e.getName() + ".Graphics", "FillColor", graphics);
+		if (scol.equals("Transparent")) {
+			o.getShapeStyleProperty().setFillColor(Color.decode("#00000000")); //TODO transparent? 
+		} else {
+			o.getShapeStyleProperty().setFillColor(ColorUtils.stringToColor(scol));
+		}
+	}
+	
+	
+
 	protected void readComments(ElementInfo o, Element e) throws ConverterException {
 		for (Object f : e.getChildren("Comment", e.getNamespace())) {
 			o.addComment(((Element) f).getText(), getAttribute("Comment", "Source", (Element) f));
 		}
 	}
-
 	/**
 	 * @param o
 	 * @param e
@@ -126,6 +138,7 @@ public class GPML2013aReader implements GPMLReader {
 		writeAttributes(o, e);
 	}
 
+	
 	@Override
 	protected void readMappInfoDataVariable(Pathway p, Element e) throws ConverterException {
 		p.setLicense(getAttribute("Pathway", "License", e));
@@ -138,6 +151,7 @@ public class GPML2013aReader implements GPMLReader {
 //		private String license = null;
 //	}
 
+	
 	protected void readRectProperty(ShapedElement o, Element e) throws ConverterException {
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
@@ -150,7 +164,7 @@ public class GPML2013aReader implements GPMLReader {
 		o.getRectProperty().setWidth(width);
 		o.getRectProperty().setWidth(height);
 	}
-
+	
 	/**
 	 * Reads gpml FontAttributes from Graphics element and sets FontProperty values
 	 * in model.
@@ -164,7 +178,6 @@ public class GPML2013aReader implements GPMLReader {
 	protected void readFontProperty(ShapedElement o, Element e) throws ConverterException {
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
-		String textColor = getAttribute(base + ".Graphics", "Color", graphics);
 		String fontName = getAttribute(base + ".Graphics", "FontName", graphics);
 		String fontWeight = getAttribute(base + ".Graphics", "FontWeight", graphics);
 		String fontStyle = getAttribute(base + ".Graphics", "FontStyle", graphics);
@@ -173,7 +186,6 @@ public class GPML2013aReader implements GPMLReader {
 		String fontSize = getAttribute(base + ".Graphics", "FontSize", graphics);
 		String hAlignType = getAttribute(base + ".Graphics", "Align", graphics);
 		String vAlignType = getAttribute(base + ".Graphics", "Valign", graphics);
-		o.getFontProperty().setTextColor(ColorUtils.stringToColor(textColor));
 		o.getFontProperty().setFontName(fontName);
 		o.getFontProperty().setFontWeight(fontWeight != null && fontWeight.equals("Bold"));
 		o.getFontProperty().setFontStyle(fontStyle != null && fontStyle.equals("Italic"));
@@ -183,24 +195,27 @@ public class GPML2013aReader implements GPMLReader {
 		o.getFontProperty().setHAlign(HAlignType.fromName(hAlignType));
 		o.getFontProperty().setVAlign(VAlignType.fromName(vAlignType));
 	}
-
-
-
+	
 
 	protected void readShapeStyleProperty(ShapedElement o, Element e) throws ConverterException {
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
-		
+
+		// TODO readLineColor(o, e); // Color --> borderColor
+
 		String borderColor = getAttribute(base + ".Graphics", "Color", graphics);
 		String borderStyle = getAttribute(base + ".Graphics", "LineStyle", graphics);
 		String borderWidth = getAttribute(base + ".Graphics", "LineThickness", graphics);
-		String fillColor = getAttribute(base + ".Graphics", "FillColor", graphics);
-		// TODO shapeType
+
+		// fillColor
+		// shapeType
+
 		String zOrder = getAttribute(base + ".Graphics", "ZOrder", graphics);
-		
-		o.getShapeStyleProperty().setBorderColor(ColorUtils.stringToColor(borderColor));
-		
-		// TODO borderStyle is double.
+
+		/**
+		 * TODO: If lineStyle is double... Check for LineStyle.DOUBLE via arbitrary
+		 * attribute. Deprecated in 2021 GPML.
+		 */
 		if ("Double".equals(o.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 			o.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 		} else {
@@ -208,17 +223,11 @@ public class GPML2013aReader implements GPMLReader {
 					.setBorderStyle((borderStyle.equals("Solid")) ? LineStyleType.SOLID : LineStyleType.DASHED);
 		}
 		o.getShapeStyleProperty().setBorderWidth(borderWidth == null ? 1.0 : Double.parseDouble(borderWidth));
-		//TODO fillColor
-		if (fillColor.equals("Transparent")) {
-			o.getShapeStyleProperty().setFillColor(Color.decode("#00000000")); // TODO transparent?
-		} else {
-			o.getShapeStyleProperty().setFillColor(ColorUtils.stringToColor(fillColor));
-		}
-		// TODO shapeType
 		if (zOrder != null)
 			o.getShapeStyleProperty().setZOrder(Integer.parseInt(zOrder));
 	}
-
+	
+	
 	/**
 	 * DataNode, Label, Shape, Group
 	 * 
@@ -252,21 +261,25 @@ public class GPML2013aReader implements GPMLReader {
 		String connectorType = getAttribute("Interaction.Graphics", "ConnectorType", graphics);
 		String zOrder = getAttribute(base + ".Graphics", "ZOrder", graphics);
 
-		o.getLineStyleProperty().setLineColor(ColorUtils.stringToColor(lineColor));
+		readLineColor(o, e); // Color --> lineColor
 
-		// TODO lineStyle double 
+		/**
+		 * TODO: If lineStyle is double... Check for LineStyle.DOUBLE via arbitrary
+		 * attribute. Deprecated in 2021 GPML.
+		 */
 		if ("Double".equals(o.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 			o.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
 		} else {
-			o.getLineStyleProperty()
-					.setLineStyle((lineStyle.equals("Solid")) ? LineStyleType.SOLID : LineStyleType.DASHED);
+			o.getLineStyleProperty().setLineStyle((lineStyle.equals("Solid")) ? LineStyleType.SOLID : LineStyleType.DASHED);
 		}
 		o.getLineStyleProperty().setLineWidth(lineWidth == null ? 1.0 : Double.parseDouble(lineWidth));
 		o.getLineStyleProperty().setConnectorType(ConnectorType.fromName(connectorType));
 		if (zOrder != null)
 			o.getLineStyleProperty().setZOrder(Integer.parseInt(zOrder));
 	}
-
+	
+	
+	
 	/**
 	 * @param o
 	 * @param e
@@ -277,7 +290,7 @@ public class GPML2013aReader implements GPMLReader {
 		p.getInfoBox().setX(Double.parseDouble(centerX));
 		p.getInfoBox().setY(Double.parseDouble(centerY));
 	}
-
+	
 	/**
 	 * @param o
 	 * @param e
@@ -298,6 +311,7 @@ public class GPML2013aReader implements GPMLReader {
 									// ShapeStyleProperty
 	}
 
+	
 	/**
 	 * @param o
 	 * @param e
@@ -316,9 +330,9 @@ public class GPML2013aReader implements GPMLReader {
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 		o.setRelX(Double.parseDouble(getAttribute("State.Graphics", "RelX", graphics)));
 		o.setRelY(Double.parseDouble(getAttribute("State.Graphics", "RelY", graphics)));
-
-		readShapedElement(o, e);
-
+		
+		readShapedElement(o,e);
+		
 		/** TODO ShapeStyleProperty */
 
 		/** Xref */
@@ -328,7 +342,7 @@ public class GPML2013aReader implements GPMLReader {
 		o.setXref(identifier, dataSource);
 
 	}
-
+	
 	/**
 	 * @param o
 	 * @param e
@@ -369,6 +383,8 @@ public class GPML2013aReader implements GPMLReader {
 			}
 		}
 
+
+
 		// Reads the entire list
 		List<Element> anchors = graphics.getChildren("Anchor", e.getNamespace());
 		for (Element anchor : anchors) {
@@ -383,7 +399,6 @@ public class GPML2013aReader implements GPMLReader {
 			o.addAnchor(a);
 		}
 	}
-
 	/**
 	 * @param o
 	 * @param e
@@ -396,7 +411,8 @@ public class GPML2013aReader implements GPMLReader {
 		String dataSource = getAttribute("Interaction.Xref", "Database", xref);
 		o.setXref(identifier, dataSource);
 	}
-
+	
+	
 	/**
 	 * @param o
 	 * @param e
@@ -411,7 +427,8 @@ public class GPML2013aReader implements GPMLReader {
 										// ShapeStyleProperty
 
 	}
-
+	
+	
 	/**
 	 * @param o
 	 * @param e
@@ -429,7 +446,7 @@ public class GPML2013aReader implements GPMLReader {
 		o.setRotation(rotation);
 
 	}
-
+	
 	protected void readGroup(Group o, Element e) throws ConverterException {
 
 		readShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
@@ -455,7 +472,6 @@ public class GPML2013aReader implements GPMLReader {
 		o.setXref(identifier, dataSource);
 
 	}
-
 	/**
 	 * Converts deprecated shapes to contemporary analogs. This allows us to
 	 * maintain backward compatibility while at the same time cleaning up old shape
@@ -484,25 +500,7 @@ public class GPML2013aReader implements GPMLReader {
 			mapLineStyle(o, e); // LineStyle
 		}
 	}
-
-	public void readFromRoot(Element root, Pathway pwy) throws ConverterException
-	{
-		mapElement(root, pwy); // MappInfo
-
-		// Iterate over direct children of the root element
-		for (Object e : root.getChildren())
-		{
-			mapElement((Element)e, pwy);
-		}
-		Logger.log.trace ("End copying map elements");
-
-		//Add graphIds for objects that don't have one
-		addGraphIds(pwy);
-
-		//Convert absolute point coordinates of linked points to
-		//relative coordinates
-		convertPointCoordinates(pwy);
-	}
+	
 	
 	private static void addElementIds(Pathway pathway) throws ConverterException {
 		for (PathwayElement pe : pathway.getDataObjects()) {
@@ -533,5 +531,5 @@ public class GPML2013aReader implements GPMLReader {
 			}
 		}
 	}
-
+	
 }

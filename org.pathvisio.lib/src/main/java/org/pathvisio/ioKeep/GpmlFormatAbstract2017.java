@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.ioKeep;
 
 
 
@@ -43,6 +43,7 @@ import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 //import org.pathvisio.core.biopax.BiopaxElement;
 import org.pathvisio.debug.Logger;
+import org.pathvisio.io.ConverterException;
 import org.pathvisio.model.ElementLink.ElementIdContainer;
 import org.xml.sax.SAXException;
 

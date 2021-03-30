@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.ioKeep;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +29,8 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.BioDataSource;
 import org.pathvisio.core.debug.Logger;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.PathwayExporter;
 
 /**
  * Exports to pathway format understood by the EuGene pathway statistics

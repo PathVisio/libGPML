@@ -51,7 +51,6 @@ public interface GPMLReader extends PathwayIO {
 	public PathwayModel readGPML(InputStream is) throws ConverterException;
 	
 	public PathwayModel readGPML(String s) throws ConverterException;
-
 	
 
 	public void readXML(Reader in, boolean validate) throws ConverterException {

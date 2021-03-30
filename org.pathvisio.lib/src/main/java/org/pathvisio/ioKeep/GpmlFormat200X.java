@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.ioKeep;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +30,11 @@ import org.pathvisio.core.biopax.BiopaxElement;
 import org.pathvisio.core.model.PathwayElement.MAnchor;
 import org.pathvisio.core.model.PathwayElement.MPoint;
 import org.pathvisio.core.view.ShapeRegistry;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GpmlFormat;
+import org.pathvisio.io.GpmlFormatAbstract;
+import org.pathvisio.io.GpmlFormatReader;
+import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
 import org.pathvisio.model.PathwayElement;
 
 /**

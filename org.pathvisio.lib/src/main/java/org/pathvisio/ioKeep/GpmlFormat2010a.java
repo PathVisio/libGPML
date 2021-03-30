@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.ioKeep;
 
 import java.awt.Color;
 import java.io.File;
@@ -39,6 +39,13 @@ import org.pathvisio.core.model.PathwayElement.MAnchor;
 import org.pathvisio.core.model.PathwayElement.MPoint;
 import org.pathvisio.core.view.ShapeRegistry;
 import org.pathvisio.core.view.State;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GpmlFormat;
+import org.pathvisio.io.GpmlFormatAbstract;
+import org.pathvisio.io.GpmlFormatReader;
+import org.pathvisio.io.GpmlFormatWriter;
+import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
+import org.pathvisio.io.GpmlFormatAbstract.ByElementName;
 
 class GpmlFormat2010a extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter 
 {

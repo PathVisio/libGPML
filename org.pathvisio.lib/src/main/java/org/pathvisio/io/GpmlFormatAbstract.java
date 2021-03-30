@@ -39,8 +39,8 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
-import org.pathvisio.biopax.BiopaxElement;
-import org.pathvisio.debug.Logger;
+import org.pathvisio.core.biopax.BiopaxElement;
+import org.pathvisio.core.debug.Logger;
 import org.pathvisio.model.*;
 import org.xml.sax.SAXException;
 
@@ -105,53 +105,106 @@ public abstract class GpmlFormatAbstract {
 		}
 	}
 
-//	/**
-//	 * Returns true if given string value and default value are equal.
-//	 * 
-//	 * @param def   the default string.
-//	 * @param value the given string.
-//	 * @return true if the specified arguments are equal, or both null.
-//	 */
-//	private boolean isEqualsString(String def, String value) {
-//		return ((def == null && value == null) || (def != null && def.equals(value))
-//				|| (def == null && value != null && value.equals("")));
-//	}
-//
-//	/**
-//	 * Returns true if given string value and default value are numerically equal.
-//	 * 
-//	 * @param def   the string for default number value.
-//	 * @param value the string for given number value.
-//	 * @return true if absolute value of difference between def and value is less
-//	 *         than 1e-6, and false otherwise.
-//	 */
-//	private boolean isEqualsNumber(String def, String value) {
-//		if (def != null && value != null) {
-//			Double x = Double.parseDouble(def);
-//			Double y = Double.parseDouble(value);
-//			if (Math.abs(x - y) < 1e-6)
-//				return true;
-//		}
-//		return false;
-//	}
-//
-//	/**
-//	 * Returns true if given value and default value are the same color object.
-//	 * 
-//	 * @param def   the string for default color object.
-//	 * @param value the string for given color object.
-//	 * @return
-//	 */
-//	private boolean isEqualsColor(String def, String value) {
-//		if (def != null && value != null) {
-//			boolean aTrans = "Transparent".equals(def);
-//			boolean bTrans = "Transparent".equals(value);
-//			Color a = ColorUtils.stringToColor(def);
-//			Color b = ColorUtils.stringToColor(value);
-//			return (a.equals(b) && aTrans == bTrans);
-//		}
-//		return def == null && value == null;
-//	}
+	/**
+	 * Returns true if given string value and default value are equal.
+	 * 
+	 * @param def   the default string.
+	 * @param value the given string.
+	 * @return true if the specified arguments are equal, or both null.
+	 */
+	private boolean isEqualsString(String def, String value) {
+		return ((def == null && value == null) || (def != null && def.equals(value))
+				|| (def == null && value != null && value.equals("")));
+	}
+
+	/**
+	 * Returns true if given string value and default value are numerically equal.
+	 * 
+	 * @param def   the string for default number value.
+	 * @param value the string for given number value.
+	 * @return true if absolute value of difference between def and value is less
+	 *         than 1e-6, and false otherwise.
+	 */
+	private boolean isEqualsNumber(String def, String value) {
+		if (def != null && value != null) {
+			Double x = Double.parseDouble(def);
+			Double y = Double.parseDouble(value);
+			if (Math.abs(x - y) < 1e-6)
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns true if given value and default value are the same color object.
+	 * 
+	 * @param def   the string for default color object.
+	 * @param value the string for given color object.
+	 * @return
+	 */
+	private boolean isEqualsColor(String def, String value) {
+		if (def != null && value != null) {
+			boolean aTrans = "Transparent".equals(def);
+			boolean bTrans = "Transparent".equals(value);
+			Color a = ColorUtils.stringToColor(def);
+			Color b = ColorUtils.stringToColor(value);
+			return (a.equals(b) && aTrans == bTrans);
+		}
+		return def == null && value == null;
+	}
+
+	/**
+	 * Sets a certain attribute value, performs a basic check for some types, and
+	 * throws an exception if trying to set an invalid value. If trying to set a
+	 * default value or an optional value to null, the attribute is omitted, which
+	 * results in a leaner xml output.
+	 *
+	 * @param tag   used for lookup in the defaults table.
+	 * @param name  used for lookup in the defaults table.
+	 * @param el    jdom element where this attribute belongs in.
+	 * @param value value you want to check and set.
+	 * @throws ConverterException if value invalid.
+	 */
+	protected void setAttribute(String tag, String name, Element el, String value) throws ConverterException {
+		String key = tag + "@" + name;
+		// throw exception for value invalid
+		if (!getAttributeInfo().containsKey(key))
+			throw new ConverterException("Trying to set invalid attribute " + key);
+		AttributeInfo aInfo = getAttributeInfo().get(key);
+		boolean isDefault = false;
+		// if attribute equal to the default value, leave out from the jdom
+		if (aInfo.use.equals("optional")) {
+			if (aInfo.schemaType.equals("xsd:string") || aInfo.schemaType.equals("xsd:ID")
+					|| aInfo.schemaType.equals("gpml:StyleType")) {
+				isDefault = isEqualsString(aInfo.def, value);
+			} else if (aInfo.schemaType.equals("xsd:float") || aInfo.schemaType.equals("Dimension")) {
+				isDefault = isEqualsNumber(aInfo.def, value);
+			} else if (aInfo.schemaType.equals("gpml:ColorType")) {
+				isDefault = isEqualsColor(aInfo.def, value);
+			}
+		}
+		if (!isDefault)
+			el.setAttribute(name, value);
+	}
+
+	/**
+	 * Gets a certain attribute value, and replaces it with a suitable default under
+	 * certain conditions.
+	 *
+	 * @param tag  used for lookup in the defaults table.
+	 * @param name used for lookup in the defaults table.
+	 * @param el   jdom element to get the attribute from.
+	 * @throws ConverterException if {@link getAttributeInfo} does not contain a
+	 *                            mapping for the specified key.
+	 */
+	protected String getAttribute(String tag, String name, Element el) throws ConverterException {
+		String key = tag + "@" + name;
+		if (!getAttributeInfo().containsKey(key))
+			throw new ConverterException("Trying to get invalid attribute " + key);
+		AttributeInfo aInfo = getAttributeInfo().get(key);
+		String result = ((el == null) ? aInfo.def : el.getAttributeValue(name, aInfo.def));
+		return result;
+	}
 
 	/**
 	 * The GPML xsd implies a certain ordering for children of the pathway element.
@@ -161,10 +214,10 @@ public abstract class GpmlFormatAbstract {
 	 * for the xsd.
 	 */
 	protected static class ByElementName implements Comparator<Element> {
-		// hashread for quick lookups during sorting
+		// hash read for quick lookups during sorting
 		private Map<String, Integer> elementOrdering;
 
-		// correctly ordered list of tag names, which are loaded into the hashread in
+		// correctly ordered list of tag names, which are loaded into the hash read in
 		// the constructor.
 		private final String[] elements = new String[] { "Comment", "BiopaxRef", "Graphics", "DataNode", "State",
 				"Interaction", "Line", "GraphicalLine", "Label", "Shape", "Group", "InfoBox", "Legend", "Biopax"
@@ -198,8 +251,74 @@ public abstract class GpmlFormatAbstract {
 	}
 
 	/**
-	 * Attribute in gpml
+	 * Updates pathway information.
+	 *
+	 * @param root the xml element
+	 * @param o    the pathway element
+	 * @throws ConverterException
+	 */
+	protected abstract void writeMappInfoVariable(Element root, Pathway p) throws ConverterException;
+
+	/**
+	 * Updates pathway information.
 	 * 
+	 * @param root
+	 * @param o
+	 * @throws ConverterException
+	 */
+	protected void writeMappInfo(Element root, Pathway p) throws ConverterException {
+		setAttribute("Pathway", "Name", root, p.getTitle());
+		setAttribute("Pathway", "Organism", root, p.getOrganism());
+		setAttribute("Pathway", "Data-Source", root, p.getSource());
+		setAttribute("Pathway", "Version", root, p.getVersion());
+
+		// TODO License?
+
+		// TODO Handle
+		setAttribute("Pathway", "Author", root, p.getAuthor.getName());
+		setAttribute("Pathway", "Email", root, p.getEmail());
+		setAttribute("Pathway", "Maintainer", root, p.getMaintainer());
+		setAttribute("Pathway", "Last-Modified", root, p.getLastModified());
+		writeComments(p, root);
+		writeBiopaxRef(p, root);
+		writeAttributes(p, root);
+		
+
+		Element graphics = new Element("Graphics", nsGPML);
+		root.addContent(graphics);
+		setAttribute("Pathway.Graphics", "BoardWidth", graphics, String.valueOf(p.getBoardWidth()));
+		setAttribute("Pathway.Graphics", "BoardHeight", graphics, String.valueOf(p.getBoardHeight()));
+
+		writeMappInfoVariable(root, p);
+	}
+
+	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
+
+	public PathwayElement readElement(Element e) throws ConverterException {
+		return readElement(e, null);
+	}
+
+
+
+	protected void readComments(PathwayElement o, Element e) throws ConverterException {
+		for (Object f : e.getChildren("Comment", e.getNamespace())) {
+			o.addComment(((Element) f).getText(), getAttribute("Comment", "Source", (Element) f));
+		}
+	}
+
+	protected void writeComments(PathwayElement o, Element e) throws ConverterException {
+		if (e != null) {
+			for (PathwayElement.Comment c : o.getComments()) {
+				Element f = new Element("Comment", e.getNamespace());
+				f.setText(c.getComment());
+				setAttribute("Comment", "Source", f, c.getSource());
+				e.addContent(f);
+			}
+		}
+	}
+
+	/**
+	 * Attribute in gpml 
 	 * @param o
 	 * @param e
 	 * @throws ConverterException
@@ -208,13 +327,28 @@ public abstract class GpmlFormatAbstract {
 		for (Object f : e.getChildren("Attribute", e.getNamespace())) {
 			String key = getAttribute("Attribute", "Key", (Element) f);
 			String value = getAttribute("Attribute", "Value", (Element) f);
-			o.addDynamicProperty(special); // TODO look into implementation
+			o.addDynamicProperty(special); //TODO look into implementation
 		}
 	}
 
+	/**
+	 * Attribute in gpml 
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeDynamicProperty(PathwayElement o, Element e) throws ConverterException {
+		if (e != null) {
+			for (String key : o.getDynamicPropertyKeys()) {
+				Element a = new Element("Attribute", e.getNamespace());
+				setAttribute("Attribute", "Key", a, key);
+				setAttribute("Attribute", "Value", a, o.getDynamicProperty(key));
+				e.addContent(a);
+			}
+		}
+	}
 
-
-	// TODO
+	//TODO 
 	protected void readElementId(IElementIdContainer o, Element e) {
 		String id = e.getAttributeValue("GraphId");
 		// Never add graphid until all elements are readped, to prevent duplcate ids!
@@ -226,8 +360,15 @@ public abstract class GpmlFormatAbstract {
 		}
 	}
 
+	//TODO 
+	protected void writeElementId(IElementIdContainer o, Element e) {
+		String id = o.getElementId();
+		// id has to be unique!
+		if (id != null && !id.equals("")) {
+			e.setAttribute("GraphId", o.getElementId());
+		}
+	}
 
-	
 	protected void readGroupRef(PathwayElement o, Element e) {
 		String id = e.getAttributeValue("GroupRef");
 		if (id != null && !id.equals("")) {
@@ -236,7 +377,12 @@ public abstract class GpmlFormatAbstract {
 
 	}
 
-
+	protected void writeGroupRef(PathwayElement o, Element e) {
+		String id = o.getGroupRef();
+		if (id != null && !id.equals("")) {
+			e.setAttribute("GroupRef", o.getGroupRef());
+		}
+	}
 
 	protected abstract void readMappInfoDataVariable(Pathway p, Element e) throws ConverterException;
 
@@ -295,7 +441,54 @@ public abstract class GpmlFormatAbstract {
 		}
 	}
 
+	
+	
+	public void readFromRoot(Element root, Pathway pwy) throws ConverterException {
+		mapElement(root, pwy); // MappInfo
 
+		// Iterate over direct children of the root element
+		for (Object e : root.getChildren()) {
+			mapElement((Element) e, pwy);
+		}
+		Logger.log.trace("End copying read elements");
+
+		// Add graphIds for objects that don't have one
+		addGraphIds(pwy);
+
+		// Convert absolute point coordinates of linked points to
+		// relative coordinates
+		convertPointCoordinates(pwy);
+	}
+
+	private static void addGraphIds(Pathway pathway) throws ConverterException {
+		for (PathwayElement pe : pathway.getDataObjects()) {
+			String id = pe.getElementId();
+			if (id == null || "".equals(id)) {
+				if (pe.getObjectType() == ObjectType.LINE || pe.getObjectType() == ObjectType.GRAPHLINE) {
+					// because we forgot to write out graphId's on Lines on older pathways
+					// generate a graphId based on hash of coordinates
+					// so that pathways with branching history still have the same id.
+					// This part may be removed for future versions of GPML (2010+)
+
+					StringBuilder builder = new StringBuilder();
+					builder.append(pe.getMStartX());
+					builder.append(pe.getMStartY());
+					builder.append(pe.getMEndX());
+					builder.append(pe.getMEndY());
+					builder.append(pe.getStartLineType());
+					builder.append(pe.getEndLineType());
+
+					String newId;
+					int i = 1;
+					do {
+						newId = "id" + Integer.toHexString((builder.toString() + ("_" + i)).hashCode());
+						i++;
+					} while (pathway.getGraphIds().contains(newId));
+					pe.setElementId(newId);
+				}
+			}
+		}
+	}
 
 	private static void convertPointCoordinates(Pathway pathway) throws ConverterException {
 		for (PathwayElement pe : pathway.getDataObjects()) {
