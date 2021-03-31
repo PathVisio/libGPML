@@ -17,169 +17,117 @@
 package org.pathvisio.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * This class contains extensible enum pattern for different arrow head types. A
- * Line in PathVisio has two endings that each can have a different arrow head
- * or "LineType".
+ * Line in PathVisio has two endings {@link Point} that each can have a
+ * different arrow head.
  * 
- * NB: the name LineType is slightly misleading, as it refers strictly to
- * arrowheads and other kinds of line endings.
+ * NB: previously named LineType.
  * 
  * @author unknown, finterly
  */
 public class ArrowHeadType {
-	private static Map<String, ArrowHeadType> nameToLineType = new HashMap<String, ArrowHeadType>();
-	private static List<ArrowHeadType> lineTypes = new ArrayList<ArrowHeadType>();
-	private static List<ArrowHeadType> visibleLineTypes = new ArrayList<ArrowHeadType>();
+	private static Map<String, ArrowHeadType> nameToArrowHeadType = new LinkedHashMap<String, ArrowHeadType>();
 
 	/** LineType LINE means the absence of an arrowhead */
-	public static final ArrowHeadType LINE = new ArrowHeadType("Line", "Line");
-	public static final ArrowHeadType ARROW = new ArrowHeadType("Arrow", "Arrow");
-	public static final ArrowHeadType TBAR = new ArrowHeadType("TBar", "TBar");
+	public static final ArrowHeadType LINE = new ArrowHeadType("Line");
+	public static final ArrowHeadType ARROW = new ArrowHeadType("Arrow");
+	public static final ArrowHeadType TBAR = new ArrowHeadType("TBar");
 
 	@Deprecated
-	public static final ArrowHeadType RECEPTOR = new ArrowHeadType("Receptor", "Receptor", true);
+	public static final ArrowHeadType RECEPTOR = new ArrowHeadType("Receptor");
 	@Deprecated
-	public static final ArrowHeadType LIGAND_SQUARE = new ArrowHeadType("LigandSquare", "LigandSq", true);
+	public static final ArrowHeadType LIGAND_SQUARE = new ArrowHeadType("LigandSquare");
 	@Deprecated
-	public static final ArrowHeadType RECEPTOR_SQUARE = new ArrowHeadType("ReceptorSquare", "ReceptorSq", true);
+	public static final ArrowHeadType RECEPTOR_SQUARE = new ArrowHeadType("ReceptorSquare");
 	@Deprecated
-	public static final ArrowHeadType LIGAND_ROUND = new ArrowHeadType("LigandRound", "LigandRd", true);
+	public static final ArrowHeadType LIGAND_ROUND = new ArrowHeadType("LigandRound");
 	@Deprecated
-	public static final ArrowHeadType RECEPTOR_ROUND = new ArrowHeadType("ReceptorRound", "ReceptorRd", true);
+	public static final ArrowHeadType RECEPTOR_ROUND = new ArrowHeadType("ReceptorRound");
 
-	private String mappName;
 	private String name;
 
 	/**
-	 * The constructor is private. LineType cannot be directly instantiated. Use
-	 * create() method to instantiate LineType.
-	 * 
-	 * @param name     the string identifier.
-	 * @param mappName the string identifier. mappName may be null for new lines
-	 *                 that don't have a .mapp equivalent.
+	 * The constructor is private. ArrowHeadType cannot be directly instantiated. Use
+	 * create() method to instantiate ArrowHeadType.
+	 *  
+	 * @param name the string identifier of this ArrowHeadType.
+	 * @throws NullPointerException if name is null.
 	 */
-	private ArrowHeadType(String name, String mappName) {
-		this(name, mappName, false);
-	}
-
-	/**
-	 * The constructor is private. LineType cannot be directly instantiated. Use
-	 * create() method to instantiate LineType.
-	 * 
-	 * @param name     the string identifier.
-	 * @param mappName the string identifier. mappName may be null for new lines
-	 *                 that don't have a .mapp equivalent.
-	 * @param hidden   if false, ?????? is visible.
-	 */
-	private ArrowHeadType(String name, String mappName, boolean hidden) {
+	private ArrowHeadType(String name) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
-		this.mappName = mappName;
 		this.name = name;
-		nameToLineType.put(name, this);
-		lineTypes.add(this);
-		if (!hidden)
-			visibleLineTypes.add(this);
+		nameToArrowHeadType.put(name, this); // adds this name and ArrowHeadType to map.
 	}
 
 	/**
-	 * Returns a LineType from a given name and given mappName. If the LineType
-	 * doesn't exist yet, it is created to extend the enum. The create method makes
-	 * sure that the same object is not added twice.
+	 * Returns a ArrowHeadType from a given string identifier name. If the
+	 * ArrowHeadType doesn't exist yet, it is created to extend the enum. The create
+	 * method makes sure that the same object is not added twice.
 	 * 
-	 * @param name     the string identifier.
-	 * @param mappName the string identifier.
-	 * @return a LineType object.
+	 * @param name the string identifier.
+	 * @return the ArrowHeadType for given name. If name does not exist, creates and
+	 *         returns a new ArrowHeadType.
 	 */
-	public static ArrowHeadType create(String name, String mappName) {
-		if (nameToLineType.containsKey(name)) {
-			return nameToLineType.get(name);
+	public static ArrowHeadType create(String name) {
+		if (nameToArrowHeadType.containsKey(name)) {
+			return nameToArrowHeadType.get(name);
 		} else {
-			return new ArrowHeadType(name, mappName);
+			return new ArrowHeadType(name);
 		}
 	}
 
 	/**
-	 * Gets mappname of LineType.
-	 * 
-	 * @return mappName the mappName of LineType.
-	 */
-	public String getMappName() {
-		return mappName;
-	}
-
-	/**
-	 * Returns the LineType from given string value.
+	 * Returns the ArrowHeadType from given string value.
 	 * 
 	 * @param value the string.
-	 * @return the LineType with given string value.
+	 * @return the ArrowHeadType with given string value.
 	 */
 	public static ArrowHeadType fromName(String value) {
-		return nameToLineType.get(value);
+		return nameToArrowHeadType.get(value);
 	}
 
 	/**
-	 * Returns the stable identifier for this LineType.
+	 * Returns the stable identifier for this ArrowHeadType.
 	 * 
-	 * @return name the stable identifier for this LineType.
+	 * @return name the stable identifier for this ArrowHeadType.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Returns the names of all registered LineTypes as a String array.
+	 * Returns the names of all registered ArrowHeadTypes as a String array.
 	 * 
-	 * @return the names of all registered LineTypes.
+	 * @return result the names of all registered ArrowHeadTypes, in such a way that
+	 *         the index is equal to it's ordinal value. i.e.
+	 *         ArrowHeadType.fromName(ArrowHeadType.getNames[n]).getOrdinal() == n
 	 */
-	static public String[] getNames() {
-		return nameToLineType.keySet().toArray(new String[nameToLineType.size()]);
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToArrowHeadType.keySet());
+		return names; 
 	}
 
 	/**
-	 * Returns the names of all visible???? registered LineTypes as a String array.
+	 * Returns the arrow head type values of all ArrowHeadTypes as an array.
 	 * 
-	 * @return result the names of all registered visible LineTypes, in such a way
-	 *         that the index is equal to it's ordinal value. i.e.
-	 *         visibleLineTypes.fromName(visibleLineTypes.getNames[n]).getOrdinal()
-	 *         == n
+	 * @return the array of ArrowHeadTypes.
 	 */
-	static public String[] getVisibleNames() {
-		String[] result = new String[visibleLineTypes.size()];
-		for (int i = 0; i < visibleLineTypes.size(); ++i) {
-			result[i] = visibleLineTypes.get(i).getName();
-		}
-		return result;
+	static public List<ArrowHeadType> getValues() {
+		List<ArrowHeadType> arrowHeadTypes = new ArrayList<>(nameToArrowHeadType.values());
+		return arrowHeadTypes; 
 	}
 
 	/**
-	 * Returns the line type values of all LineTypes as an array.
+	 * Returns a string representation of this ArrowHeadType.
 	 * 
-	 * @return the array of LineTypes.
-	 */
-	static public ArrowHeadType[] getValues() {
-		return nameToLineType.values().toArray(new ArrowHeadType[nameToLineType.size()]);
-	}
-
-	/**
-	 * Returns the line type values of all visible LineTypes as an array.
-	 * 
-	 * @return the array of visible LineTypes.
-	 */
-	static public ArrowHeadType[] getVisibleValues() {
-		return visibleLineTypes.toArray(new ArrowHeadType[0]);
-	}
-
-	/**
-	 * Returns a string representation of this LineType.
-	 * 
-	 * @return name the identifier of this LineType.
+	 * @return name the identifier of this ArrowHeadType.
 	 */
 	public String toString() {
 		return name;

@@ -204,10 +204,14 @@ public class GPML2021Reader implements GPMLReader {
 			o.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 		} else {
 			o.getShapeStyleProperty()
-					.setBorderStyle((borderStyle.equals("Solid")) ? LineStyleType.SOLID : LineStyleType.DASHED);
+					.setBorderStyle(LineStyleType.fromName(borderStyle)); //  TODO extensible? 
 		}
 		o.getShapeStyleProperty().setBorderWidth(borderWidth == null ? 1.0 : Double.parseDouble(borderWidth));
 		o.getShapeStyleProperty().setFillColor(ColorUtils.stringToColor(fillColor));
+		
+		if(ShapeType.getNames()) {
+			
+		}
 		// TODO shapeType
 		if (zOrder != null)
 			o.getShapeStyleProperty().setZOrder(Integer.parseInt(zOrder));

@@ -16,13 +16,14 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+
 
 /**
- * This class contains extensible enum for group types. Groups can have
+ * This class contains extensible enum for Group type property. Groups can have
  * different biological meanings (e.g. protein Complex), and can be rendered in
  * different ways based on that.
  *
@@ -31,39 +32,15 @@ import java.util.TreeSet;
  * @author unknown, finterly
  */
 public class GroupType implements Comparable<GroupType> {
-	private static Map<String, GroupType> nameToGroupType = new HashMap<String, GroupType>();
-	private static Set<GroupType> groupTypes = new TreeSet<GroupType>();
+	
+	private static Map<String, GroupType> nameToGroupType = new LinkedHashMap<String, GroupType>();
 
-	/**
-	 * Group bounds are slightly larger than the summed bounds of the contained
-	 * pathway elements.
-	 */
-	public static final double DEFAULT_M_MARGIN = 8;
-	public static final double COMPLEX_M_MARGIN = 12;
-
-	/**
-	 * Type for pathway elements that do no belong to a group. TODO: remove?
-	 */
 	public static final GroupType NONE = new GroupType("None");
-
-	/**
-	 * Type for pathway elements that belong to a group.
-	 */
 	public static final GroupType GROUP = new GroupType("Group");
-
-	/**
-	 * Type for pathway elements that belong to a complex.
-	 */
-	public static final GroupType COMPLEX = new GroupType("Complex", false, COMPLEX_M_MARGIN);
-
-	/**
-	 * Type for pathway elements that belong to a pathway.
-	 */
+	public static final GroupType COMPLEX = new GroupType("Complex"); //disallowLink = false, allow alias? 
 	public static final GroupType PATHWAY = new GroupType("Pathway");
 
 	private String name;
-	private boolean disallowLinks;
-	private double mMargin;
 
 	/**
 	 * The constructor is private. GroupType cannot be directly instantiated. Use
@@ -72,41 +49,13 @@ public class GroupType implements Comparable<GroupType> {
 	 * @param name the string key.
 	 */
 	private GroupType(String name) {
-		this(name, false, DEFAULT_M_MARGIN);
-	}
-
-	/**
-	 * The constructor is private. GroupType cannot be directly instantiated. Use
-	 * create() method to instantiate GroupType.
-	 * 
-	 * @param name            the string key.
-	 * @param disallowedLinks the boolean, if set to true nothing will be able to
-	 *                        attach to this group.
-	 */
-	private GroupType(String name, boolean disallowLinks) {
-		this(name, disallowLinks, DEFAULT_M_MARGIN);
-	}
-
-	/**
-	 * The constructor is private. GroupType cannot be directly instantiated. Use
-	 * create() method to instantiate GroupType.
-	 *  
-	 * @param name            the string key.
-	 * @param disallowedLinks the boolean, if set to true nothing will be able to
-	 *                        attach to this group.
-	 * @param mMargin         the margin of group bounds.
-	 * @throws NullPointerException if name is null.
-	 */
-	private GroupType(String name, boolean disallowLinks, double mMargin) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
 		this.name = name;
-		this.disallowLinks = disallowLinks;
-		this.mMargin = mMargin;
-		groupTypes.add(this);
-		nameToGroupType.put(name, this);
+		nameToGroupType.put(name, this); // adds this name and GroupType to map.
 	}
+
 
 	/**
 	 * Creates a GroupType from a given string identifier name. New GroupType
@@ -116,21 +65,13 @@ public class GroupType implements Comparable<GroupType> {
 	 * @return the new GroupType for given name.
 	 */
 	public static GroupType create(String name) {
-		return new GroupType(name);
+		if (nameToGroupType.containsKey(name)) {
+			return nameToGroupType.get(name);
+		} else {
+			return new GroupType(name);
+		}
 	}
 
-	/**
-	 * Creates a GroupType from a given name and given disallowLinks. New GroupType
-	 * extends the enum.
-	 * 
-	 * @param name            the identifier for group type.
-	 * @param disallowedLinks the boolean, if set to true nothing will be able to
-	 *                        attach to this group.
-	 * @return the new GroupType for given name.
-	 */
-	public static GroupType create(String name, boolean disallowLinks) {
-		return new GroupType(name, disallowLinks);
-	}
 
 	/**
 	 * Looks up the ConnectorType corresponding to that name.
@@ -148,17 +89,15 @@ public class GroupType implements Comparable<GroupType> {
 		return name;
 	}
 
-	public boolean isDisallowLinks() {
-		return disallowLinks;
-	}
 
 	/**
 	 * Returns the names of all registered GroupTypes as an array.
 	 * 
 	 * @return result the names of all registered GroupTypes.
 	 */
-	public static String[] getNames() {
-		return nameToGroupType.keySet().toArray(new String[nameToGroupType.size()]);
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToGroupType.keySet());
+		return names; 
 	}
 
 	/**
@@ -166,8 +105,9 @@ public class GroupType implements Comparable<GroupType> {
 	 * 
 	 * @return the array of DataNodeTypes.
 	 */
-	static public GroupType[] getValues() {
-		return groupTypes.toArray(new GroupType[0]);
+	static public List<GroupType> getValues() {
+		List<GroupType> groupTypes = new ArrayList<>(nameToGroupType.values());
+		return groupTypes; 
 	}
 
 	/**
@@ -191,12 +131,4 @@ public class GroupType implements Comparable<GroupType> {
 		return toString().compareTo(groupType.toString());
 	}
 
-	/**
-	 * Gets the margin of group bounding-box around contained elements.
-	 * 
-	 * @returns the margin of group bounding-box.
-	 */
-	public double getMMargin() {
-		return mMargin;
-	}
 }

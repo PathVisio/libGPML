@@ -22,13 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class contains extensible enum for data node types.
+ * This class contains extensible enum for DataNode type property.
  * 
  * @author unknown, finterly
  */
 public class DataNodeType {
 	private static final Map<String, DataNodeType> nameToDataNodeType = new HashMap<String, DataNodeType>();
-	private static List<DataNodeType> dataNodeTypes = new ArrayList<DataNodeType>();
 
 	public static final DataNodeType UNKNOWN = new DataNodeType("Unknown");
 	public static final DataNodeType RNA = new DataNodeType("Rna");
@@ -53,7 +52,6 @@ public class DataNodeType {
 		}
 		this.name = name;
 		nameToDataNodeType.put(name, this); // adds this name and DataNodeType to map.
-		dataNodeTypes.add(this); // adds this DataNodeType to list.
 	}
 
 	/**
@@ -99,13 +97,9 @@ public class DataNodeType {
 	 *         the index is equal to it's ordinal value. i.e.
 	 *         DataNodeType.fromName(DataNodeType.getNames[n]).getOrdinal() == n
 	 */
-	static public String[] getNames() {
-		String[] result = new String[dataNodeTypes.size()];
-
-		for (int i = 0; i < dataNodeTypes.size(); ++i) {
-			result[i] = dataNodeTypes.get(i).getName();
-		}
-		return result;
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToDataNodeType.keySet());
+		return names; 
 	}
 
 	/**
@@ -113,8 +107,9 @@ public class DataNodeType {
 	 * 
 	 * @return the array of DataNodeTypes.
 	 */
-	static public DataNodeType[] getValues() {
-		return dataNodeTypes.toArray(new DataNodeType[0]);
+	static public List<DataNodeType> getValues() {
+		List<DataNodeType> dataNodeTypes = new ArrayList<>(nameToDataNodeType.values());
+		return dataNodeTypes; 
 	}
 
 	/**

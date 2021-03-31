@@ -17,18 +17,17 @@
 package org.pathvisio.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * This class contains extensible enum for state types.
  * 
- * @author unknown, finterly
+ * @author finterly
  */
 public class StateType {
-	private static Map<String, StateType> nameToStateType = new HashMap<String, StateType>();
-	private static List<StateType> stateTypes = new ArrayList<StateType>();
+	private static Map<String, StateType> nameToStateType = new LinkedHashMap<String, StateType>();
 
 	/**
 	 * Add more....
@@ -51,7 +50,6 @@ public class StateType {
 		}
 		this.name = name;
 		nameToStateType.put(name, this); // adds this name and StateType to map.
-		stateTypes.add(this); // adds this StateType to list.
 	}
 
 	/**
@@ -97,13 +95,9 @@ public class StateType {
 	 *         the index is equal to it's ordinal value. i.e.
 	 *         StateType.fromName(StateType.getNames[n]).getOrdinal() == n
 	 */
-	static public String[] getNames() {
-		String[] result = new String[stateTypes.size()];
-
-		for (int i = 0; i < stateTypes.size(); ++i) {
-			result[i] = stateTypes.get(i).getName();
-		}
-		return result;
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToStateType.keySet());
+		return names; 
 	}
 
 	/**
@@ -111,8 +105,9 @@ public class StateType {
 	 * 
 	 * @return the array of StateTypes.
 	 */
-	static public StateType[] getValues() {
-		return stateTypes.toArray(new StateType[0]);
+	static public List<StateType> getValues() {
+		List<StateType> stateTypes = new ArrayList<>(nameToStateType.values());
+		return stateTypes; 
 	}
 
 	/**

@@ -22,12 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class contains possible values for line style property. Line style can
+ * This class contains possible values for lineStyle or borderStyle property. Line style can
  * be either solid, dashed or double. Used for lineStyle {@link LineStyleProperty} 
  * and borderStyle {@link ShapeStyleProperty}. 
- * 
- * NB: Not to be confused with LineType, which defines the appearance of the
- * arrow head.
  * 
  * @author unknown, finterly
  */

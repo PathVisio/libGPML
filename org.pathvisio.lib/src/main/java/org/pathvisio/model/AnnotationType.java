@@ -24,11 +24,10 @@ import java.util.Map;
 /**
  * This class contains extensible enum for annotation types.
  * 
- * @author unknown, finterly
+ * @author finterly
  */
 public class AnnotationType {
 	private static Map<String, AnnotationType> nameToAnnotationType = new HashMap<String, AnnotationType>();
-	private static List<AnnotationType> annotationTypes = new ArrayList<AnnotationType>();
 
 	/**
 	 * Add more....
@@ -50,7 +49,6 @@ public class AnnotationType {
 		}
 		this.name = name;
 		nameToAnnotationType.put(name, this); // adds this name and AnnotationType to map.
-		annotationTypes.add(this); // adds this AnnotationType to list.
 	}
 
 	/**
@@ -96,13 +94,9 @@ public class AnnotationType {
 	 *         the index is equal to it's ordinal value. i.e.
 	 *         AnnotationType.fromName(AnnotationType.getNames[n]).getOrdinal() == n
 	 */
-	static public String[] getNames() {
-		String[] result = new String[annotationTypes.size()];
-
-		for (int i = 0; i < annotationTypes.size(); ++i) {
-			result[i] = annotationTypes.get(i).getName();
-		}
-		return result;
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToAnnotationType.keySet());
+		return names; 
 	}
 
 	/**
@@ -110,8 +104,9 @@ public class AnnotationType {
 	 * 
 	 * @return the array of AnnotationTypes.
 	 */
-	static public AnnotationType[] getValues() {
-		return annotationTypes.toArray(new AnnotationType[0]);
+	static public List<AnnotationType> getValues() {
+		List<AnnotationType> annotationTypes = new ArrayList<>(nameToAnnotationType.values());
+		return annotationTypes; 
 	}
 
 	/**
