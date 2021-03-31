@@ -169,7 +169,7 @@ public class GPML2021Reader implements GPMLReader {
 		String fontWeight = graphics.getAttributeValue("fontWeight");
 		String fontStyle = graphics.getAttributeValue("fontStyle");
 		String fontDecoration = graphics.getAttributeValue("fontDecoration");
-		String fontStrikethru = graphics.getAttributeValue( "fontStrikethru");
+		String fontStrikethru = graphics.getAttributeValue("fontStrikethru");
 		String fontSize = graphics.getAttributeValue("fontSize");
 		String hAlignType = graphics.getAttributeValue("hAlign");
 		String vAlignType = graphics.getAttributeValue("vAlign");
@@ -179,13 +179,10 @@ public class GPML2021Reader implements GPMLReader {
 		o.getFontProperty().setFontStyle(fontStyle != null && fontStyle.equals("Italic"));
 		o.getFontProperty().setFontDecoration(fontDecoration != null && fontDecoration.equals("Underline"));
 		o.getFontProperty().setFontStrikethru(fontStrikethru != null && fontStrikethru.equals("Strikethru"));
-		o.getFontProperty().setFontSize(Integer.parseInt(fontSize)); 
+		o.getFontProperty().setFontSize(Integer.parseInt(fontSize));
 		o.getFontProperty().setHAlign(HAlignType.fromName(hAlignType));
 		o.getFontProperty().setVAlign(VAlignType.fromName(vAlignType));
 	}
-
-
-
 
 	protected void readShapeStyleProperty(ShapedElement o, Element e) throws ConverterException {
 		String base = e.getName();
@@ -196,21 +193,16 @@ public class GPML2021Reader implements GPMLReader {
 		String fillColor = graphics.getAttributeValue("fillColor");
 		String shapeType = graphics.getAttributeValue("shapeType");
 		String zOrder = graphics.getAttributeValue("zOrder");
-		
+
 		o.getShapeStyleProperty().setBorderColor(ColorUtils.stringToColor(borderColor));
-		
-		// TODO borderStyle is double.
-		if ("Double".equals(o.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
-			o.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
-		} else {
-			o.getShapeStyleProperty()
-					.setBorderStyle(LineStyleType.fromName(borderStyle)); //  TODO extensible? 
-		}
+
+		o.getShapeStyleProperty().setBorderStyle(LineStyleType.fromName(borderStyle)); // TODO extensible?
 		o.getShapeStyleProperty().setBorderWidth(borderWidth == null ? 1.0 : Double.parseDouble(borderWidth));
 		o.getShapeStyleProperty().setFillColor(ColorUtils.stringToColor(fillColor));
-		
-		if(ShapeType.getNames()) {
-			
+		if (ShapeType.getNames().contains(shapeType)) {
+			o.getShapeStyleProperty().setShapeType(ShapeType.fromName(shapeType));
+		} else {
+			o.getShapeStyleProperty().setShapeType(ShapeType.create(shapeType)); // TODO create handles actually
 		}
 		// TODO shapeType
 		if (zOrder != null)
@@ -251,7 +243,7 @@ public class GPML2021Reader implements GPMLReader {
 
 		o.getLineStyleProperty().setLineColor(ColorUtils.stringToColor(lineColor));
 
-		// TODO lineStyle double 
+		// TODO lineStyle double
 		if ("Double".equals(o.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 			o.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
 		} else {
@@ -259,7 +251,7 @@ public class GPML2021Reader implements GPMLReader {
 					.setLineStyle((lineStyle.equals("Solid")) ? LineStyleType.SOLID : LineStyleType.DASHED);
 		}
 		o.getLineStyleProperty().setLineWidth(lineWidth == null ? 1.0 : Double.parseDouble(lineWidth));
-		//TODO connectorType
+		// TODO connectorType
 		o.getLineStyleProperty().setConnectorType(ConnectorType.fromName(connectorType));
 		if (zOrder != null)
 			o.getLineStyleProperty().setZOrder(Integer.parseInt(zOrder));
@@ -270,7 +262,7 @@ public class GPML2021Reader implements GPMLReader {
 	 * @param e
 	 */
 	protected void readInfoBox(Pathway p, Element e) {
-		//TODO get child Infobox somewhere....
+		// TODO get child Infobox somewhere....
 		String centerX = e.getAttributeValue("CenterX");
 		String centerY = e.getAttributeValue("CenterY");
 		p.getInfoBox().setX(Double.parseDouble(centerX));
@@ -304,7 +296,7 @@ public class GPML2021Reader implements GPMLReader {
 	 */
 	protected void readState(State o, Element e) throws ConverterException {
 		readPathwayElement(o, e); // TODO: // ElemenId, CommentGroup
-		//TODO 
+		// TODO
 		String elementRef = ((Element) e.getParent()).getAttributeValue("elementId");
 
 		if (elementRef != null) {
@@ -485,25 +477,23 @@ public class GPML2021Reader implements GPMLReader {
 		}
 	}
 
-	public void readFromRoot(Element root, Pathway pwy) throws ConverterException
-	{
+	public void readFromRoot(Element root, Pathway pwy) throws ConverterException {
 		mapElement(root, pwy); // MappInfo
 
 		// Iterate over direct children of the root element
-		for (Object e : root.getChildren())
-		{
-			mapElement((Element)e, pwy);
+		for (Object e : root.getChildren()) {
+			mapElement((Element) e, pwy);
 		}
-		Logger.log.trace ("End copying map elements");
+		Logger.log.trace("End copying map elements");
 
-		//Add graphIds for objects that don't have one
+		// Add graphIds for objects that don't have one
 		addElementIds(pwy);
 
-		//Convert absolute point coordinates of linked points to
-		//relative coordinates
+		// Convert absolute point coordinates of linked points to
+		// relative coordinates
 		convertPointCoordinates(pwy);
 	}
-	
+
 	private static void addElementIds(Pathway pathway) throws ConverterException {
 		for (PathwayElement pe : pathway.getDataObjects()) {
 			String id = pe.getElementId();

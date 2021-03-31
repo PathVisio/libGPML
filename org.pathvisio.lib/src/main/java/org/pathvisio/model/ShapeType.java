@@ -16,22 +16,21 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.RoundRectangle2D;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.pathvisio.view.GenMAPPShapes;
-import org.pathvisio.view.GenMAPPShapes.Internal;
-import org.pathvisio.view.ShapeRegistry;
+//import java.awt.Rectangle;
+//import java.awt.Shape;
+//import java.awt.geom.AffineTransform;
+//import java.awt.geom.Arc2D;
+//import java.awt.geom.Ellipse2D;
+//import java.awt.geom.Line2D;
+//import java.awt.geom.RoundRectangle2D;
+//import org.pathvisio.view.GenMAPPShapes;
+//import org.pathvisio.view.GenMAPPShapes.Internal;
+//import org.pathvisio.view.ShapeRegistry;
 
 /**
  * This enum class contains extensible enum for Shape type property.

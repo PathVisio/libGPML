@@ -30,7 +30,7 @@ import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.jdom2.output.Format; //Formats how the XML document will look
 import org.jdom2.output.XMLOutputter; //Outputs the JDOM document to a file
 
-public class Gplayground {
+public class Playground {
 
 	public static void main(String[] args) throws JDOMException {
 		File xsdfile = new File("schema.xsd");
