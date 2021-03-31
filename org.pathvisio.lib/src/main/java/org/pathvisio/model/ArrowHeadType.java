@@ -52,9 +52,9 @@ public class ArrowHeadType {
 	private String name;
 
 	/**
-	 * The constructor is private. ArrowHeadType cannot be directly instantiated. Use
-	 * create() method to instantiate ArrowHeadType.
-	 *  
+	 * The constructor is private. ArrowHeadType cannot be directly instantiated.
+	 * Use create() method to instantiate ArrowHeadType.
+	 * 
 	 * @param name the string identifier of this ArrowHeadType.
 	 * @throws NullPointerException if name is null.
 	 */
@@ -103,25 +103,24 @@ public class ArrowHeadType {
 	}
 
 	/**
-	 * Returns the names of all registered ArrowHeadTypes as a String array.
+	 * Returns the names of all registered ArrowHeadTypes as a list.
 	 * 
-	 * @return result the names of all registered ArrowHeadTypes, in such a way that
-	 *         the index is equal to it's ordinal value. i.e.
-	 *         ArrowHeadType.fromName(ArrowHeadType.getNames[n]).getOrdinal() == n
+	 * @return names the names of all registered ArrowHeadTypes in order of
+	 *         insertion.
 	 */
 	static public List<String> getNames() {
 		List<String> names = new ArrayList<>(nameToArrowHeadType.keySet());
-		return names; 
+		return names;
 	}
 
 	/**
-	 * Returns the arrow head type values of all ArrowHeadTypes as an array.
+	 * Returns the arrow head type values of all ArrowHeadTypes as a list.
 	 * 
-	 * @return the array of ArrowHeadTypes.
+	 * @return arrowHead the list of all registered ArrowHeadTypes.
 	 */
 	static public List<ArrowHeadType> getValues() {
 		List<ArrowHeadType> arrowHeadTypes = new ArrayList<>(nameToArrowHeadType.values());
-		return arrowHeadTypes; 
+		return arrowHeadTypes;
 	}
 
 	/**

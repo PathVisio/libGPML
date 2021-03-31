@@ -93,9 +93,7 @@ public class DataNodeType {
 	/**
 	 * Returns the names of all registered DataNodeTypes as a String array.
 	 * 
-	 * @return result the names of all registered DataNodeTypes, in such a way that
-	 *         the index is equal to it's ordinal value. i.e.
-	 *         DataNodeType.fromName(DataNodeType.getNames[n]).getOrdinal() == n
+	 * @return names the names of all registered DataNodeTypes in order of insertion. 
 	 */
 	static public List<String> getNames() {
 		List<String> names = new ArrayList<>(nameToDataNodeType.keySet());
@@ -103,9 +101,9 @@ public class DataNodeType {
 	}
 
 	/**
-	 * Returns the data node type values of all DataNodeTypes as an array.
+	 * Returns the data node type values of all DataNodeTypes as a list.
 	 * 
-	 * @return the array of DataNodeTypes.
+	 * @return dataNodeTypes the list of all registered DataNodeTypes.
 	 */
 	static public List<DataNodeType> getValues() {
 		List<DataNodeType> dataNodeTypes = new ArrayList<>(nameToDataNodeType.values());

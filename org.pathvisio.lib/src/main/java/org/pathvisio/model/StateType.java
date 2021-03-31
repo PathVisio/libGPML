@@ -34,13 +34,12 @@ public class StateType {
 	 */
 	public static final StateType PHOSPHORYLATED = new StateType("phosphorylated");
 
-
 	private String name;
 
 	/**
 	 * The constructor is private. StateType cannot be directly instantiated. Use
 	 * create() method to instantiate StateType.
-	 *  
+	 * 
 	 * @param name the string identifier of this StateType.
 	 * @throws NullPointerException if name is null.
 	 */
@@ -53,9 +52,9 @@ public class StateType {
 	}
 
 	/**
-	 * Returns a StateType from a given string identifier name. If the
-	 * StateType doesn't exist yet, it is created to extend the enum. The create
-	 * method makes sure that the same object is not added twice.
+	 * Returns a StateType from a given string identifier name. If the StateType
+	 * doesn't exist yet, it is created to extend the enum. The create method makes
+	 * sure that the same object is not added twice.
 	 * 
 	 * @param name the string identifier.
 	 * @return the StateType for given name. If name does not exist, creates and
@@ -89,25 +88,23 @@ public class StateType {
 	}
 
 	/**
-	 * Returns the names of all registered StateTypes as a String array.
+	 * Returns the names of all registered StateTypes as a list.
 	 * 
-	 * @return result the names of all registered StateTypes, in such a way that
-	 *         the index is equal to it's ordinal value. i.e.
-	 *         StateType.fromName(StateType.getNames[n]).getOrdinal() == n
+	 * @return names the names of all registered StateTypes in order of insertion.
 	 */
 	static public List<String> getNames() {
 		List<String> names = new ArrayList<>(nameToStateType.keySet());
-		return names; 
+		return names;
 	}
 
 	/**
-	 * Returns the state type values of all StateTypes as an array.
+	 * Returns the state type values of all StateTypes as a list.
 	 * 
-	 * @return the array of StateTypes.
+	 * @return stateTypes the list of akk registered StateTypes.
 	 */
 	static public List<StateType> getValues() {
 		List<StateType> stateTypes = new ArrayList<>(nameToStateType.values());
-		return stateTypes; 
+		return stateTypes;
 	}
 
 	/**

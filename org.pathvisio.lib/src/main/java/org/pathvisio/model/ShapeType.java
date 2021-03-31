@@ -125,11 +125,9 @@ public class ShapeType {
 	}
 
 	/**
-	 * Returns the names of all registered ShapeTypes as a String array.
+	 * Returns the names of all registered ShapeTypes as a list.
 	 * 
-	 * @return result the names of all registered ShapeTypes, in such a way that the
-	 *         index is equal to it's ordinal value. i.e.
-	 *         ShapeType.fromName(ShapeType.getNames[n]).getOrdinal() == n
+	 * @return names the names of all registered ShapeTypes in the order of insertion. 
 	 */
 	static public List<String> getNames() {
 		List<String> names = new ArrayList<>(nameToShapeType.keySet());
@@ -138,9 +136,9 @@ public class ShapeType {
 
 
 	/**
-	 * Returns the data node type values of all ShapeTypes as an array.
+	 * Returns the data node type values of all ShapeTypes as a list.
 	 * 
-	 * @return the array of ShapeTypes.
+	 * @return shapeTypes the list of all registered ShapeTypes.
 	 */
 	static public List<ShapeType> getValues() {
 		List<ShapeType> shapeTypes = new ArrayList<>(nameToShapeType.values());

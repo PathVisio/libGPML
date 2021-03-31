@@ -91,9 +91,9 @@ public class GroupType implements Comparable<GroupType> {
 
 
 	/**
-	 * Returns the names of all registered GroupTypes as an array.
+	 * Returns the names of all registered GroupTypes as a list.
 	 * 
-	 * @return result the names of all registered GroupTypes.
+	 * @return names the names of all registered GroupTypes in order of insertion.
 	 */
 	static public List<String> getNames() {
 		List<String> names = new ArrayList<>(nameToGroupType.keySet());
@@ -101,9 +101,9 @@ public class GroupType implements Comparable<GroupType> {
 	}
 
 	/**
-	 * Returns the group type values of all GroupTypes as an array.
+	 * Returns the group type values of all GroupTypes as a list.
 	 * 
-	 * @return the array of DataNodeTypes.
+	 * @return groupTypes the list of all registered GroupTypes.
 	 */
 	static public List<GroupType> getValues() {
 		List<GroupType> groupTypes = new ArrayList<>(nameToGroupType.values());
