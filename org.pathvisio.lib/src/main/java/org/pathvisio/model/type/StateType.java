@@ -64,7 +64,7 @@ public class StateType {
 	 * @return the StateType for given name. If name does not exist, creates and
 	 *         returns a new StateType.
 	 */
-	public static StateType create(String name) {
+	public static StateType register(String name) {
 		if (nameToStateType.containsKey(name)) {
 			return nameToStateType.get(name);
 		} else {

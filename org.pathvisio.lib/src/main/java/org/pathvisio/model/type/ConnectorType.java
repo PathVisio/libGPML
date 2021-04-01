@@ -54,14 +54,14 @@ public class ConnectorType {
 
 	/**
 	 * Returns a ConnectorType from a given name. If the ConnectorType doesn't exist
-	 * yet, it is created to extend the enum.The create method makes sure that the
+	 * yet, it is created to extend the enum. The method makes sure that the
 	 * same object is not added twice.
 	 * 
 	 * @param name the string key.
 	 * @return the ConnectorType for given name or new ConnectorType if name does
 	 *         not exist.
 	 */
-	public static ConnectorType create(String name) {
+	public static ConnectorType register(String name) {
 		if (nameToConnectorType.containsKey(name)) {
 			return nameToConnectorType.get(name);
 		} else

@@ -56,14 +56,15 @@ public class LineStyleType {
 	}
 
 	/**
-	 * Registers a new LineStyleType with given name to extend the enum map, or
-	 * returns a LineStyleType from given string name if already exists in map.
+	 * Returns a LineStyleType from a given string identifier name. If the
+	 * LineStyleType doesn't exist yet, it is created to extend the enum. The method
+	 * makes sure that the same object is not added twice.
 	 * 
 	 * @param name the string key.
 	 * @return the LineStyleType for given name. If name does not exist, registers
 	 *         and returns a new LineStyleType.
 	 */
-	public static LineStyleType create(String name) {
+	public static LineStyleType register(String name) {
 		if (nameToLineStyleType.containsKey(name)) {
 			return nameToLineStyleType.get(name);
 		} else {

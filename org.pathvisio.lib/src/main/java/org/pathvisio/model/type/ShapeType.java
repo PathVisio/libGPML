@@ -94,7 +94,7 @@ public class ShapeType {
 	 * @return the ShapeType for given name. If name does not exist, creates and
 	 *         returns a new ShapeType.
 	 */
-	public static ShapeType create(String name) {
+	public static ShapeType register(String name) {
 		if (nameToShapeType.containsKey(name)) {
 			return nameToShapeType.get(name);
 		} else {

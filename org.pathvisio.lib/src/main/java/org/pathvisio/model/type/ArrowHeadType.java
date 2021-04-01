@@ -33,7 +33,7 @@ import org.pathvisio.model.elements.Point;
  * @author unknown, finterly
  */
 public class ArrowHeadType {
-	
+
 	private static Map<String, ArrowHeadType> nameToArrowHeadType = new LinkedHashMap<String, ArrowHeadType>();
 
 	// TODO to add more and changes!
@@ -72,14 +72,14 @@ public class ArrowHeadType {
 
 	/**
 	 * Returns a ArrowHeadType from a given string identifier name. If the
-	 * ArrowHeadType doesn't exist yet, it is created to extend the enum. The create
+	 * ArrowHeadType doesn't exist yet, it is created to extend the enum. The 
 	 * method makes sure that the same object is not added twice.
 	 * 
 	 * @param name the string key.
 	 * @return the ArrowHeadType for given name. If name does not exist, creates and
 	 *         returns a new ArrowHeadType.
 	 */
-	public static ArrowHeadType create(String name) {
+	public static ArrowHeadType register(String name) {
 		if (nameToArrowHeadType.containsKey(name)) {
 			return nameToArrowHeadType.get(name);
 		} else {
