@@ -61,12 +61,11 @@ public class DataNode extends ShapedElement {
 	 * @param textLabel          the text of the datanode.
 	 * @param type               the type of datanode, e.g. complex.
 	 * @param xref               the data node Xref.
-	 * @param states             the list of states of the data node.
 	 * @param elementRef         the pathway element the data node refers to.
 	 */
 	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type, Xref xref,
-			List<State> states, PathwayElement elementRef) {
+			PathwayElement elementRef) {
 		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
 		this.textLabel = textLabel;
 		this.type = type;
@@ -80,10 +79,9 @@ public class DataNode extends ShapedElement {
 	 * because the data node does not refer to another pathway element.
 	 */
 	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type, Xref xref,
-			List<State> states) {
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type, Xref xref) {
 		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, type, xref,
-				states, null);
+				null);
 
 	}
 
@@ -92,10 +90,10 @@ public class DataNode extends ShapedElement {
 	 * because the data node does not belong in a group.
 	 */
 	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref, List<State> states,
+			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref,
 			PathwayElement elementRef) {
 		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, xref,
-				states, elementRef);
+				elementRef);
 	}
 
 	/**
@@ -104,9 +102,9 @@ public class DataNode extends ShapedElement {
 	 * another pathway element.
 	 */
 	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref, List<State> states) {
+			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref) {
 		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, xref,
-				states, null);
+				null);
 	}
 
 	/**

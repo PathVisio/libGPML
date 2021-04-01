@@ -20,7 +20,6 @@ import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
-import org.pathvisio.model.type.ShapeType;
 
 /**
  * This class stores all information relevant to a Shape pathway element.
@@ -29,7 +28,6 @@ import org.pathvisio.model.type.ShapeType;
  */
 public class Shape extends ShapedElement {
 
-	private ShapeType type; // TODO: Getter/Setter weird
 	private double rotation = 0; // in radians? TODO just read/write
 	private String textLabel; // optional
 
@@ -38,26 +36,17 @@ public class Shape extends ShapedElement {
 	 * 
 	 * @param elementId          the unique pathway element identifier.
 	 * @param pathwayModel       the parent pathway model.
-	 * @param comments           the list of comments.
-	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
-	 * @param annotationRefs     the list of annotations referenced.
-	 * @param citationRefs       the list of citations referenced.
-	 * @param evidenceRefs       the list of evidences referenced.
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
 	 * @param groupRef           the parent group in which the pathway element
 	 *                           belongs.
-	 * @param textLabel          the text of the label.
-	 * @param href               the hyperlink of the label.
-	 * @param type               the type of the shape, e.g. rectangle, nucleus.
 	 * @param rotation           the rotation in radians? TODO
 	 * @param textLabel          the text of the shape.
 	 */
 	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, ShapeType type, double rotation, String textLabel) {
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, double rotation, String textLabel) {
 		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
-		this.type = type;
 		this.rotation = rotation;
 		this.textLabel = textLabel;
 	}
@@ -66,8 +55,8 @@ public class Shape extends ShapedElement {
 	 * Instantiates a Shape given all possible parameters except textLabel.
 	 */
 	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, ShapeType type, double rotation) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, type, rotation, null);
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, double rotation) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, rotation, null);
 	}
 
 	/**
@@ -75,8 +64,8 @@ public class Shape extends ShapedElement {
 	 * the pathway element does not belong in a group.
 	 */
 	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, ShapeType type, double rotation, String textLabel) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, rotation, textLabel);
+			ShapeStyleProperty shapeStyleProperty, double rotation, String textLabel) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, rotation, textLabel);
 	}
 
 	/**
@@ -84,8 +73,8 @@ public class Shape extends ShapedElement {
 	 * textLbel, because the shape neither belongs in a group nor has a textLabel .
 	 */
 	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, ShapeType type, double rotation) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, rotation, null);
+			ShapeStyleProperty shapeStyleProperty, double rotation) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, rotation, null);
 	}
 
 	/**
@@ -106,24 +95,6 @@ public class Shape extends ShapedElement {
 	 */
 	public void setTextLabel(String textLabel) {
 		this.textLabel = textLabel;
-	}
-
-	/**
-	 * Gets the type of the shape.
-	 * 
-	 * @return type the type of shape, e.g. complex.
-	 */
-	public ShapeType getType() {
-		return type;
-	}
-
-	/**
-	 * Sets the type of the shape.
-	 * 
-	 * @param type the type of shape, e.g. complex.
-	 */
-	public void setType(ShapeType type) {
-		this.type = type;
 	}
 
 	/**

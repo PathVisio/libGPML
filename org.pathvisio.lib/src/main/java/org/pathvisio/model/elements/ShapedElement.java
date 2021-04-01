@@ -42,11 +42,6 @@ public abstract class ShapedElement extends ElementInfo {
 	 * 
 	 * @param elementId          the unique pathway element identifier.
 	 * @param pathwayModel       the parent pathway model.
-	 * @param comments           the list of comments.
-	 * @param dynamicProperties  the list of dynamic properties, key value pairs.
-	 * @param annotationRefs     the list of annotations referenced.
-	 * @param citationRefs       the list of citations referenced.
-	 * @param evidenceRefs       the list of evidences referenced.
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.

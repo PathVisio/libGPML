@@ -30,7 +30,7 @@ import org.pathvisio.model.graphics.LineStyleProperty;
  */
 public abstract class LineElement extends ElementInfo {
 
-	private List<Point> points;
+	private List<Point> points; // minimum 2
 	private List<Anchor> anchors;
 	private LineStyleProperty lineStyleProperty;
 
@@ -57,7 +57,7 @@ public abstract class LineElement extends ElementInfo {
 	public LineElement(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
 			LineStyleProperty lineStyleProperty, Group groupRef) {
 		super(elementId, pathwayModel);
-		this.points = new ArrayList<Point>();
+		this.points = points; //TODO minimum 2! 
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
 		if (groupRef != null) {

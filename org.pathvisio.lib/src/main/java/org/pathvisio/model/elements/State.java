@@ -31,14 +31,12 @@ import org.pathvisio.model.type.StateType;
  */
 public class State extends ElementInfo {
 
-	// TODO x and y is optional or required? 
-
 	private DataNode dataNode; // parent dataNode (NB: elementRef was formerly elementId of parent data node)
 	private String textLabel;
-	private StateType type = StateType.PHOSPHORYLATED; // TODO: Getter/Setter weird
+	private StateType type;
 	private double relX;
 	private double relY;
-	private RectProperty rectProperty; // TODO get x and y Coordinates!!!!
+	private RectProperty rectProperty; // TODO get x and y Coordinates!!!! x and y may be optional TODO 
 	private FontProperty fontProperty;
 	private ShapeStyleProperty shapeStyleProperty;
 	private Xref xref; // optional
@@ -63,9 +61,9 @@ public class State extends ElementInfo {
 	 *                           the bottom-right corner of the object.
 	 * @param xref               the state xref.
 	 */
-	public State(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, DataNode dataNode, String textLabel, StateType type, double relX,
-			double relY, Xref xref) {
+	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
+			double relX, double relY, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Xref xref) {
 		super(elementId, pathwayModel);
 		this.dataNode = dataNode;
 		this.textLabel = textLabel;
@@ -85,8 +83,8 @@ public class State extends ElementInfo {
 	public State(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, DataNode dataNode, String textLabel, StateType type, double relX,
 			double relY) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, dataNode, textLabel, type, relX,
-				relY, null);
+		this(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, rectProperty, fontProperty,
+				shapeStyleProperty, null);
 	}
 
 	/**
