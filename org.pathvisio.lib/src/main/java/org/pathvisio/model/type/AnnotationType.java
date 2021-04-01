@@ -17,22 +17,25 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * This class contains extensible enum for annotation types.
+ * This class contains extensible enum for Annotation type property.
  * 
  * @author finterly
  */
 public class AnnotationType {
-	private static Map<String, AnnotationType> nameToAnnotationType = new HashMap<String, AnnotationType>();
+	private static Map<String, AnnotationType> nameToAnnotationType = new LinkedHashMap<String, AnnotationType>();
 
-	/**
-	 * Add more....
-	 */
-	public static final AnnotationType SUBCELLULAR_LOCATION = new AnnotationType("Subcellular location");
+	// TODO Add more
+	public static final AnnotationType UNDEFINED = new AnnotationType("Undefined");
+	public static final AnnotationType ONTOLOGY = new AnnotationType("Ontology");
+	public static final AnnotationType TAXONOMY = new AnnotationType("Taxonomy");
+//	public static final AnnotationType PATHWAY = new AnnotationType("Pathway");
+//	public static final AnnotationType DISEASE = new AnnotationType("Disease");
+//	public static final AnnotationType CELL_TYPE = new AnnotationType("Cell type");
 
 	private String name;
 
@@ -40,7 +43,7 @@ public class AnnotationType {
 	 * The constructor is private. AnnotationType cannot be directly instantiated.
 	 * Use create() method to instantiate AnnotationType.
 	 * 
-	 * @param name the string identifier of this AnnotationType.
+	 * @param name the string key of this AnnotationType.
 	 * @throws NullPointerException if name is null.
 	 */
 	private AnnotationType(String name) {
@@ -52,15 +55,15 @@ public class AnnotationType {
 	}
 
 	/**
-	 * Returns a AnnotationType from a given string identifier name. If the
+	 * Returns an AnnotationType from a given string identifier name. If the
 	 * AnnotationType doesn't exist yet, it is created to extend the enum. The
-	 * create method makes sure that the same object is not added twice.
+	 * method makes sure that the same object is not added twice.
 	 * 
-	 * @param name the string identifier.
+	 * @param name the string key.
 	 * @return the AnnotationType for given name. If name does not exist, creates
 	 *         and returns a new AnnotationType.
 	 */
-	public static AnnotationType create(String name) {
+	public static AnnotationType register(String name) {
 		if (nameToAnnotationType.containsKey(name)) {
 			return nameToAnnotationType.get(name);
 		} else {
@@ -69,22 +72,22 @@ public class AnnotationType {
 	}
 
 	/**
-	 * Returns the AnnotationType from given string value.
+	 * Returns the name key for this AnnotationType.
 	 * 
-	 * @param value the string.
-	 * @return the AnnotationType with given string value.
-	 */
-	public static AnnotationType fromName(String value) {
-		return nameToAnnotationType.get(value);
-	}
-
-	/**
-	 * Returns the stable identifier for this AnnotationType.
-	 * 
-	 * @return name the stable identifier for this AnnotationType.
+	 * @return name the key for this AnnotationType.
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Returns the AnnotationType from given string name.
+	 * 
+	 * @param name the string.
+	 * @return the AnnotationType with given string name.
+	 */
+	public static AnnotationType fromName(String name) {
+		return nameToAnnotationType.get(name);
 	}
 
 	/**

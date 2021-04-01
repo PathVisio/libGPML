@@ -20,30 +20,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This enum class contains possible values for horizontal text alignment property.
+ * This enum class contains possible values for horizontal text alignment
+ * property.
  * 
  * @author unknown, finterly
  */
 public enum HAlignType {
-	/**
-	 * Left
-	 */
-	LEFT("Left"),
-	/**
-	 * Center
-	 */
-	CENTER("Center"),
-	/**
-	 * Right
-	 */
-	RIGHT("Right");
+
+	LEFT("Left"), CENTER("Center"), RIGHT("Right");
 
 	private final String name;
 	// Initialize map
 	private static Map<String, HAlignType> nameToHAlignType = new HashMap<String, HAlignType>();
 
 	/**
-	 * Inserts mappings into map by associating specified values with specified keys.
+	 * Inserts mappings into map by associating specified values with specified
+	 * keys.
 	 */
 	static {
 		for (HAlignType hAlignType : values())
@@ -60,22 +52,22 @@ public enum HAlignType {
 	}
 
 	/**
-	 * Returns HAlignType enum constant from given string value. 
-	 * 
-	 * @param value the string value.
-	 * @return HAlignType enum constant.
-	 */
-	public static HAlignType fromName(String value) {
-		return nameToHAlignType.get(value);
-	}
-
-	/**
 	 * Returns String.
 	 * 
 	 * @return gpmlName the string value.
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Returns HAlignType enum constant from given string name.
+	 * 
+	 * @param name the string value.
+	 * @return HAlignType enum constant.
+	 */
+	public static HAlignType fromName(String name) {
+		return nameToHAlignType.get(name);
 	}
 
 	/**

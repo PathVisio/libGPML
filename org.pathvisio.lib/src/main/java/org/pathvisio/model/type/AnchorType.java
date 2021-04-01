@@ -16,110 +16,94 @@
  ******************************************************************************/
 package org.pathvisio.model.type;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
- * This class contains extensible enum for Anchor types.
+ * This class contains extensible enum for Anchor type property.
  * 
  * @author unknown, finterly
  */
-public class AnchorType implements Comparable<AnchorType> {
+public class AnchorType {
 
-	// Initialize map
-	private static Map<String, AnchorType> nameToAnchorType = new HashMap<String, AnchorType>();
-	// Initialize set
-	private static Set<AnchorType> anchorTypes = new TreeSet<AnchorType>();
+	private static Map<String, AnchorType> nameToAnchorType = new LinkedHashMap<String, AnchorType>();
 
-	/**
-	 * Anchor type can be either None (hidden) or Circle.
-	 */
 	public static final AnchorType NONE = new AnchorType("None");
 	public static final AnchorType SQUARE = new AnchorType("Square");
 
 	private String name;
-	private boolean disallowLinks;
 
 	/**
 	 * Constructor to initialize the state of enum types.
 	 * 
-	 * @param name the string.
+	 * @param name the string key.
 	 */
 	private AnchorType(String name) {
-		this(name, false);
-	}
-
-	/**
-	 * Constructor to initialize the state of enum types.
-	 * 
-	 * @param name          the string.
-	 * @param disallowLinks the boolean, if set to true nothing will be able to
-	 *                      attach to this anchor.
-	 */
-	private AnchorType(String name, final boolean disallowLinks) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
-		this.disallowLinks = disallowLinks;
 		this.name = name;
-		anchorTypes.add(this);
-		nameToAnchorType.put(name, this);
+		nameToAnchorType.put(name, this); // adds this name and ShapeType to map.
 	}
 
 	/**
-	 * Creates a AnchorType given string identifier name. New AnchorType extends the
-	 * enum.
+	 * Returns an AnchorType from a given string identifier name. If the
+	 * AnchorType doesn't exist yet, it is created to extend the enum. The method
+	 * makes sure that the same object is not added twice.
 	 * 
-	 * @param name the identifier for anchor type.
-	 * @return a new AnchorType object.
+	 * @param name the string key.
+	 * @return the AnchorType for given name. If name does not exist, creates and
+	 *         returns a new AnchorType.
 	 */
-	public static AnchorType create(String name) {
-		return new AnchorType(name, false);
+	public static AnchorType register(String name) {
+		if (nameToAnchorType.containsKey(name)) {
+			return nameToAnchorType.get(name);
+		} else {
+			return new AnchorType(name);
+		}
 	}
 
 	/**
-	 * Creates a AnchorType given string identifier name and given disallowLinks.
-	 * New AnchorType extends the enum.
+	 * Returns the name key for this AnchorType.
 	 * 
-	 * @param name          the identifier for anchor type.
-	 * @param disallowLinks the boolean, if set to true nothing will be able to
-	 *                      attach to this anchor.
-	 * @return a new AnchorType object.
-	 */
-	public static AnchorType create(String name, final boolean disallowLinks) {
-		return new AnchorType(name, disallowLinks);
-	}
-
-	/**
-	 * Returns the AnchorType from given string value.
-	 * 
-	 * @param value the string.
-	 * @return the AnchorType with given string value.
-	 */
-	public static AnchorType fromName(String value) {
-		return nameToAnchorType.get(value);
-	}
-
-	/**
-	 * Stable identifier for this AnchorType.
-	 * 
-	 * @return name the string.
+	 * @return name the string key.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Returns the anchor type values of all AnchorType as an array.
+	 * Returns the AnchorType from given string name.
 	 * 
-	 * @return anchortype array of values.
+	 * @param name the string key.
+	 * @return the AnchorType with given string name.
 	 */
-	static public AnchorType[] getValues() {
-		return anchorTypes.toArray(new AnchorType[0]);
+	public static AnchorType fromName(String name) {
+		return nameToAnchorType.get(name);
 	}
-	
+
+	/**
+	 * Returns the names of all registered AnchorTypes as a String array.
+	 * 
+	 * @return names the names of all registered AnchorTypes in order of insertion.
+	 */
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToAnchorType.keySet());
+		return names;
+	}
+
+	/**
+	 * Returns the anchor type values of all AnchorTypes as a list.
+	 * 
+	 * @return anchorTypes the list of all registered AnchorType.
+	 */
+	static public List<AnchorType> getValues() {
+		List<AnchorType> anchorTypes = new ArrayList<>(nameToAnchorType.values());
+		return anchorTypes;
+	}
+
 	/**
 	 * Returns a string representation of this AnchorType.
 	 * 
@@ -127,16 +111,6 @@ public class AnchorType implements Comparable<AnchorType> {
 	 */
 	public String toString() {
 		return name;
-	}
-
-	/**
-	 * Returns disallowLink boolean of this AnchorType.
-	 * 
-	 * @return disallowLink the boolean, if set to true nothing will be able to
-	 *         attach to this anchor.
-	 */
-	public boolean isDisallowLinks() {
-		return disallowLinks;
 	}
 
 	/**

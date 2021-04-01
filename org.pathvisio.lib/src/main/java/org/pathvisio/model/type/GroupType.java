@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * This class contains extensible enum for Group type property. Groups can have
  * different biological meanings (e.g. protein Complex), and can be rendered in
@@ -31,14 +30,16 @@ import java.util.Map;
  * 
  * @author unknown, finterly
  */
-public class GroupType implements Comparable<GroupType> {
-	
+public class GroupType {
+
 	private static Map<String, GroupType> nameToGroupType = new LinkedHashMap<String, GroupType>();
 
-	public static final GroupType NONE = new GroupType("None");
-	public static final GroupType GROUP = new GroupType("Group");
-	public static final GroupType COMPLEX = new GroupType("Complex"); //disallowLink = false, allow alias? 
+	// TODO add more?
+	public static final GroupType GROUP = new GroupType("Group"); // DEFAULT: replaces "NONE"
+	public static final GroupType COMPLEX = new GroupType("Complex"); // TODO disallowLink = false, allow alias?
 	public static final GroupType PATHWAY = new GroupType("Pathway");
+	public static final GroupType PARALOG = new GroupType("Paralog");
+	public static final GroupType ANALOG = new GroupType("Analog");
 
 	private String name;
 
@@ -56,13 +57,14 @@ public class GroupType implements Comparable<GroupType> {
 		nameToGroupType.put(name, this); // adds this name and GroupType to map.
 	}
 
-
 	/**
-	 * Creates a GroupType from a given string identifier name. New GroupType
-	 * extends the enum.
+	 * Returns a GroupType from a given string identifier name. If the GroupType
+	 * doesn't exist yet, it is created to extend the enum. The method makes sure
+	 * that the same object is not added twice.
 	 * 
-	 * @param name the string identifier.
-	 * @return the new GroupType for given name.
+	 * @param name the string key.
+	 * @return the GroupType for given name. If name does not exist, creates and
+	 *         returns a new GroupType.
 	 */
 	public static GroupType register(String name) {
 		if (nameToGroupType.containsKey(name)) {
@@ -72,23 +74,21 @@ public class GroupType implements Comparable<GroupType> {
 		}
 	}
 
-
 	/**
-	 * Looks up the ConnectorType corresponding to that name.
-	 */
-	public static GroupType fromName(String value) {
-		return nameToGroupType.get(value);
-	}
-
-	/**
-	 * Returns the stable identifier for this GroupType.
+	 * Returns the name key for this GroupType.
 	 * 
-	 * @return name the stable identifier for this GroupType.
+	 * @return name the key for this GroupType.
 	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Looks up the ConnectorType corresponding to that name.
+	 */
+	public static GroupType fromName(String name) {
+		return nameToGroupType.get(name);
+	}
 
 	/**
 	 * Returns the names of all registered GroupTypes as a list.
@@ -97,7 +97,7 @@ public class GroupType implements Comparable<GroupType> {
 	 */
 	static public List<String> getNames() {
 		List<String> names = new ArrayList<>(nameToGroupType.keySet());
-		return names; 
+		return names;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class GroupType implements Comparable<GroupType> {
 	 */
 	static public List<GroupType> getValues() {
 		List<GroupType> groupTypes = new ArrayList<>(nameToGroupType.values());
-		return groupTypes; 
+		return groupTypes;
 	}
 
 	/**

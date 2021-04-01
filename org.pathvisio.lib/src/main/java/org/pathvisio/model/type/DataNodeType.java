@@ -17,7 +17,7 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,8 @@ import java.util.Map;
  * @author unknown, finterly
  */
 public class DataNodeType {
-	private static final Map<String, DataNodeType> nameToDataNodeType = new HashMap<String, DataNodeType>();
+
+	private static final Map<String, DataNodeType> nameToDataNodeType = new LinkedHashMap<String, DataNodeType>();
 
 	public static final DataNodeType UNKNOWN = new DataNodeType("Unknown");
 	public static final DataNodeType RNA = new DataNodeType("Rna");
@@ -36,13 +37,20 @@ public class DataNodeType {
 	public static final DataNodeType GENEPRODUCT = new DataNodeType("GeneProduct");
 	public static final DataNodeType METABOLITE = new DataNodeType("Metabolite");
 	public static final DataNodeType PATHWAY = new DataNodeType("Pathway");
+	
+	// TODO Add?
+	public static final DataNodeType DISEASE = new DataNodeType("Disease");
+	public static final DataNodeType PHENOTYPE = new DataNodeType("Phenotype");
+	public static final DataNodeType ALIAS = new DataNodeType("Alias");
+	public static final DataNodeType DNA = new DataNodeType("DNA");
+	public static final DataNodeType EVENT = new DataNodeType("Event");
 
 	private String name;
 
 	/**
 	 * The constructor is private. DataNodeType cannot be directly instantiated. Use
 	 * create() method to instantiate DataNodeType.
-	 *  
+	 * 
 	 * @param name the string identifier of this DataNodeType.
 	 * @throws NullPointerException if name is null.
 	 */
@@ -56,14 +64,14 @@ public class DataNodeType {
 
 	/**
 	 * Returns a DataNodeType from a given string identifier name. If the
-	 * DataNodeType doesn't exist yet, it is created to extend the enum. The create
-	 * method makes sure that the same object is not added twice.
+	 * DataNodeType doesn't exist yet, it is created to extend the enum. The method
+	 * makes sure that the same object is not added twice.
 	 * 
-	 * @param name the string identifier.
+	 * @param name the string key.
 	 * @return the DataNodeType for given name. If name does not exist, creates and
 	 *         returns a new DataNodeType.
 	 */
-	public static DataNodeType create(String name) {
+	public static DataNodeType register(String name) {
 		if (nameToDataNodeType.containsKey(name)) {
 			return nameToDataNodeType.get(name);
 		} else {
@@ -72,32 +80,33 @@ public class DataNodeType {
 	}
 
 	/**
-	 * Returns the DataNodeType from given string value.
+	 * Returns the name key for this DataNodeType.
 	 * 
-	 * @param value the string.
-	 * @return the DataNodeType with given string value.
-	 */
-	public static DataNodeType fromName(String value) {
-		return nameToDataNodeType.get(value);
-	}
-
-	/**
-	 * Returns the stable identifier for this DataNodeType.
-	 * 
-	 * @return name the stable identifier for this DataNodeType.
+	 * @return name the key for this DataNodeType.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
+	 * Returns the DataNodeType from given string name.
+	 * 
+	 * @param name the string.
+	 * @return the DataNodeType with given string name.
+	 */
+	public static DataNodeType fromName(String name) {
+		return nameToDataNodeType.get(name);
+	}
+
+	/**
 	 * Returns the names of all registered DataNodeTypes as a String array.
 	 * 
-	 * @return names the names of all registered DataNodeTypes in order of insertion. 
+	 * @return names the names of all registered DataNodeTypes in order of
+	 *         insertion.
 	 */
 	static public List<String> getNames() {
 		List<String> names = new ArrayList<>(nameToDataNodeType.keySet());
-		return names; 
+		return names;
 	}
 
 	/**
@@ -107,7 +116,7 @@ public class DataNodeType {
 	 */
 	static public List<DataNodeType> getValues() {
 		List<DataNodeType> dataNodeTypes = new ArrayList<>(nameToDataNodeType.values());
-		return dataNodeTypes; 
+		return dataNodeTypes;
 	}
 
 	/**

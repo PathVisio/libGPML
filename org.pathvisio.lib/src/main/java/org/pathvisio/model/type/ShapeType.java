@@ -20,16 +20,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-//import java.awt.Rectangle;
-//import java.awt.Shape;
-//import java.awt.geom.AffineTransform;
-//import java.awt.geom.Arc2D;
-//import java.awt.geom.Ellipse2D;
-//import java.awt.geom.Line2D;
-//import java.awt.geom.RoundRectangle2D;
-//import org.pathvisio.view.GenMAPPShapes;
-//import org.pathvisio.view.GenMAPPShapes.Internal;
-//import org.pathvisio.view.ShapeRegistry;
 
 /**
  * This enum class contains extensible enum for Shape type property.
@@ -40,17 +30,20 @@ public class ShapeType {
 
 	private static final Map<String, ShapeType> nameToShapeType = new LinkedHashMap<String, ShapeType>();
 
+	// TODO organize and add more!
 	public static final ShapeType NONE = new ShapeType("None");
-	public static final ShapeType RECTANGLE = new ShapeType("Rectangle");
+	public static final ShapeType RECTANGLE = new ShapeType("Rectangle"); // TODO: DEFAULT?
 	public static final ShapeType ROUNDED_RECTANGLE = new ShapeType("RoundedRectangle");
-	public static final ShapeType EDGE = new ShapeType("Line");
 	public static final ShapeType OVAL = new ShapeType("Oval");
-	public static final ShapeType ARC = new ShapeType("Arc");
 	public static final ShapeType TRIANGLE = new ShapeType("Triangle");
 	public static final ShapeType PENTAGON = new ShapeType("Pentagon");
 	public static final ShapeType HEXAGON = new ShapeType("Hexagon");
 	public static final ShapeType OCTAGON = new ShapeType("Octagon");
+
+	public static final ShapeType EDGE = new ShapeType("Line");
+	public static final ShapeType ARC = new ShapeType("Arc");
 	public static final ShapeType BRACE = new ShapeType("Brace");
+
 	public static final ShapeType MITOCHONDRIA = new ShapeType("Mitochondria");
 	public static final ShapeType SARCOPLASMIC_RETICULUM = new ShapeType("Sarcoplasmic Reticulum");
 	public static final ShapeType ENDOPLASMICRETICULUM = new ShapeType("Endoplasmic Reticulum");
@@ -75,42 +68,13 @@ public class ShapeType {
 	 * region"),
 	 */
 
-	
-//	/**
-//	 * This map is used to track deprecated shapetypes for conversion and exclusion.
-//	 */
-//	public static final Map<ShapeType, ShapeType> DEPRECATED_MAP = new HashMap<ShapeType, ShapeType>();
-//	private static final List<ShapeType> VISIBLE_VALUES = new ArrayList<ShapeType>();
-//	static {
-//		DEPRECATED_MAP.put(CELL, ROUNDED_RECTANGLE);
-//		DEPRECATED_MAP.put(ORGANELLE, ROUNDED_RECTANGLE);
-//		DEPRECATED_MAP.put(MEMBRANE, ROUNDED_RECTANGLE);
-//		DEPRECATED_MAP.put(CELLA, OVAL);
-//		DEPRECATED_MAP.put(NUCLEUS, OVAL);
-//		DEPRECATED_MAP.put(ORGANA, OVAL);
-//		DEPRECATED_MAP.put(ORGANB, OVAL);
-//		DEPRECATED_MAP.put(ORGANC, OVAL);
-//		DEPRECATED_MAP.put(VESICLE, OVAL);
-//		DEPRECATED_MAP.put(PROTEINB, HEXAGON);
-//		DEPRECATED_MAP.put(RIBOSOME, HEXAGON);
-//
-//		// prune from list for gui.
-//		for (ShapeType s : values()) {
-//			if (!DEPRECATED_MAP.containsKey(s)) {
-//				VISIBLE_VALUES.add(s);
-//			}
-//		}
-//	}
-	
 	private String name;
-
-
 
 	/**
 	 * The constructor is private. ShapeType cannot be directly instantiated. Use
 	 * create() method to instantiate ShapeType.
 	 * 
-	 * @param name the string identifier of this ShapeType.
+	 * @param name the string key of this ShapeType.
 	 * @throws NullPointerException if name is null.
 	 */
 	private ShapeType(String name) {
@@ -123,10 +87,10 @@ public class ShapeType {
 
 	/**
 	 * Returns a ShapeType from a given string identifier name. If the ShapeType
-	 * doesn't exist yet, it is created to extend the enum. The create method makes
-	 * sure that the same object is not added twice.
+	 * doesn't exist yet, it is created to extend the enum. The method makes sure
+	 * that the same object is not added twice.
 	 * 
-	 * @param name the string identifier.
+	 * @param name the string key.
 	 * @return the ShapeType for given name. If name does not exist, creates and
 	 *         returns a new ShapeType.
 	 */
@@ -139,22 +103,22 @@ public class ShapeType {
 	}
 
 	/**
-	 * Returns the ShapeType from given string value.
+	 * Returns the name key for this ShapeType.
 	 * 
-	 * @param value the string.
-	 * @return the ShapeType with given string value.
-	 */
-	public static ShapeType fromName(String value) {
-		return nameToShapeType.get(value);
-	}
-
-	/**
-	 * Returns the stable identifier for this ShapeType.
-	 * 
-	 * @return name the stable identifier for this ShapeType.
+	 * @return name the key for this ShapeType.
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Returns the ShapeType from given string name.
+	 * 
+	 * @param name the string.
+	 * @return the ShapeType with given string name.
+	 */
+	public static ShapeType fromName(String name) {
+		return nameToShapeType.get(name);
 	}
 
 	/**
@@ -187,4 +151,29 @@ public class ShapeType {
 		return name;
 	}
 
+//	/**
+//	 * This map is used to track deprecated shapetypes for conversion and exclusion.
+//	 */
+//	public static final Map<ShapeType, ShapeType> DEPRECATED_MAP = new HashMap<ShapeType, ShapeType>();
+//	private static final List<ShapeType> VISIBLE_VALUES = new ArrayList<ShapeType>();
+//	static {
+//		DEPRECATED_MAP.put(CELL, ROUNDED_RECTANGLE);
+//		DEPRECATED_MAP.put(ORGANELLE, ROUNDED_RECTANGLE);
+//		DEPRECATED_MAP.put(MEMBRANE, ROUNDED_RECTANGLE);
+//		DEPRECATED_MAP.put(CELLA, OVAL);
+//		DEPRECATED_MAP.put(NUCLEUS, OVAL);
+//		DEPRECATED_MAP.put(ORGANA, OVAL);
+//		DEPRECATED_MAP.put(ORGANB, OVAL);
+//		DEPRECATED_MAP.put(ORGANC, OVAL);
+//		DEPRECATED_MAP.put(VESICLE, OVAL);
+//		DEPRECATED_MAP.put(PROTEINB, HEXAGON);
+//		DEPRECATED_MAP.put(RIBOSOME, HEXAGON);
+//
+//		// prune from list for gui.
+//		for (ShapeType s : values()) {
+//			if (!DEPRECATED_MAP.containsKey(s)) {
+//				VISIBLE_VALUES.add(s);
+//			}
+//		}
+//	}
 }

@@ -18,31 +18,24 @@ package org.pathvisio.model.type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * This class contains possible values for lineStyle or borderStyle property. Line style can
- * be either solid, dashed or double. Used for lineStyle {@link LineStyleProperty} 
- * and borderStyle {@link ShapeStyleProperty}. 
- * 
- * @author unknown, finterly
- */
-/**
- * This class contains extensible enum for Anchor types.
+ * This class contains extensible enum for lineStyle or borderStyle property.
+ * Line style can be either solid, dashed or double. Used for lineStyle
+ * {@link LineStyleProperty} and borderStyle {@link ShapeStyleProperty}.
  * 
  * @author unknown, finterly
  */
 public class LineStyleType {
 
-	private static Map<String, LineStyleType> nameToLineStyleType = new HashMap<String, LineStyleType>();
-	private static List<LineStyleType> lineStyleTypes = new ArrayList<LineStyleType>();
+	private static Map<String, LineStyleType> nameToLineStyleType = new LinkedHashMap<String, LineStyleType>();
 
-	/**
-	 * Add more....
-	 */
-	public static final LineStyleType SOLID = new LineStyleType("Solid");
-	public static final LineStyleType DASHED = new LineStyleType("Dashed");
+	// TODO Add dotted?
+	public static final LineStyleType SOLID = new LineStyleType("Solid"); // DEFAULT
+	public static final LineStyleType DASHED = new LineStyleType("Dashed"); // NB: renamed from "Broken"
 	public static final LineStyleType DOUBLE = new LineStyleType("Double");
 
 	private String name;
@@ -51,8 +44,8 @@ public class LineStyleType {
 	 * The constructor is private. LineStyleType cannot be directly instantiated.
 	 * Use create() method to instantiate LineStyleType.
 	 * 
-	 * @param name the string identifier of this LineStyleType.
-	 * @throws NullPointerException if name is null.
+	 * @param name the string key of this LineStyleType.
+	 * @throws NullPointerException if string name is null.
 	 */
 	private LineStyleType(String name) {
 		if (name == null) {
@@ -60,17 +53,15 @@ public class LineStyleType {
 		}
 		this.name = name;
 		nameToLineStyleType.put(name, this); // adds this name and LineStyleType to map.
-		lineStyleTypes.add(this); // adds this LineStyleType to list.
 	}
 
 	/**
-	 * Returns a LineStyleType from a given string identifier name. If the
-	 * LineStyleType doesn't exist yet, it is created to extend the enum. The create
-	 * method makes sure that the same object is not added twice.
+	 * Registers a new LineStyleType with given name to extend the enum map, or
+	 * returns a LineStyleType from given string name if already exists in map.
 	 * 
-	 * @param name the string identifier.
-	 * @return the LineStyleType for given name. If name does not exist, creates and
-	 *         returns a new LineStyleType.
+	 * @param name the string key.
+	 * @return the LineStyleType for given name. If name does not exist, registers
+	 *         and returns a new LineStyleType.
 	 */
 	public static LineStyleType create(String name) {
 		if (nameToLineStyleType.containsKey(name)) {
@@ -81,47 +72,43 @@ public class LineStyleType {
 	}
 
 	/**
-	 * Returns the LineStyleType from given string value.
+	 * Returns the name key for this LineStyleType.
 	 * 
-	 * @param value the string.
-	 * @return the LineStyleType with given string value.
-	 */
-	public static LineStyleType fromName(String value) {
-		return nameToLineStyleType.get(value);
-	}
-
-	/**
-	 * Returns the stable identifier for this LineStyleType.
-	 * 
-	 * @return name the stable identifier for this LineStyleType.
+	 * @return name the key for this LineStyleType.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Returns the names of all registered LineStyleTypes as a String array.
+	 * Returns the LineStyleType from given string name.
 	 * 
-	 * @return result the names of all registered LineStyleTypes, in such a way that
-	 *         the index is equal to it's ordinal value. i.e.
-	 *         LineStyleType.fromName(LineStyleType.getNames[n]).getOrdinal() == n
+	 * @param name the string.
+	 * @return the LineStyleType with given string name.
 	 */
-	static public String[] getNames() {
-		String[] result = new String[lineStyleTypes.size()];
-
-		for (int i = 0; i < lineStyleTypes.size(); ++i) {
-			result[i] = lineStyleTypes.get(i).getName();
-		}
-		return result;
+	public static LineStyleType fromName(String name) {
+		return nameToLineStyleType.get(name);
 	}
 
 	/**
-	 * Returns the annotation type values of all LineStyleTypes as an array.
+	 * Returns the names of all registered LineStyleTypes as a String array.
 	 * 
-	 * @return the array of LineStyleTypes.
+	 * @return names the names of all registered LineStyleTypes in order of
+	 *         insertion.
 	 */
-	static public LineStyleType[] getValues() {
-		return lineStyleTypes.toArray(new LineStyleType[0]);
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToLineStyleType.keySet());
+		return names;
+	}
+
+	/**
+	 * Returns the line style type values of all LineStyleType as a list.
+	 * 
+	 * @return lineStyleTypes the list of all registered LineStyleType.
+	 */
+	static public List<LineStyleType> getValues() {
+		List<LineStyleType> lineStyleTypes = new ArrayList<>(nameToLineStyleType.values());
+		return lineStyleTypes;
 	}
 
 	/**

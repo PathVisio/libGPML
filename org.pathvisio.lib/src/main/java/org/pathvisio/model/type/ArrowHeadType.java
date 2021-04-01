@@ -33,8 +33,10 @@ import org.pathvisio.model.elements.Point;
  * @author unknown, finterly
  */
 public class ArrowHeadType {
+	
 	private static Map<String, ArrowHeadType> nameToArrowHeadType = new LinkedHashMap<String, ArrowHeadType>();
 
+	// TODO to add more and changes!
 	/** LineType LINE means the absence of an arrowhead */
 	public static final ArrowHeadType LINE = new ArrowHeadType("Line");
 	public static final ArrowHeadType ARROW = new ArrowHeadType("Arrow");
@@ -57,7 +59,7 @@ public class ArrowHeadType {
 	 * The constructor is private. ArrowHeadType cannot be directly instantiated.
 	 * Use create() method to instantiate ArrowHeadType.
 	 * 
-	 * @param name the string identifier of this ArrowHeadType.
+	 * @param name the string key of this ArrowHeadType.
 	 * @throws NullPointerException if name is null.
 	 */
 	private ArrowHeadType(String name) {
@@ -73,7 +75,7 @@ public class ArrowHeadType {
 	 * ArrowHeadType doesn't exist yet, it is created to extend the enum. The create
 	 * method makes sure that the same object is not added twice.
 	 * 
-	 * @param name the string identifier.
+	 * @param name the string key.
 	 * @return the ArrowHeadType for given name. If name does not exist, creates and
 	 *         returns a new ArrowHeadType.
 	 */
@@ -86,19 +88,19 @@ public class ArrowHeadType {
 	}
 
 	/**
-	 * Returns the ArrowHeadType from given string value.
+	 * Returns the ArrowHeadType from given string name.
 	 * 
-	 * @param value the string.
-	 * @return the ArrowHeadType with given string value.
+	 * @param name the string.
+	 * @return the ArrowHeadType with given string name.
 	 */
-	public static ArrowHeadType fromName(String value) {
-		return nameToArrowHeadType.get(value);
+	public static ArrowHeadType fromName(String name) {
+		return nameToArrowHeadType.get(name);
 	}
 
 	/**
-	 * Returns the stable identifier for this ArrowHeadType.
+	 * Returns the name key for this ArrowHeadType.
 	 * 
-	 * @return name the stable identifier for this ArrowHeadType.
+	 * @return name the key for this ArrowHeadType.
 	 */
 	public String getName() {
 		return name;

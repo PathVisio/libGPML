@@ -27,16 +27,15 @@ import java.util.Map;
  */
 public enum VAlignType {
 
-	TOP("Top"),
-	MIDDLE("Middle"),
-	BOTTOM("Bottom");
+	TOP("Top"), MIDDLE("Middle"), BOTTOM("Bottom");
 
 	private final String name;
 	// Initialize map
 	private static Map<String, VAlignType> nameToVAlignType = new HashMap<String, VAlignType>();
 
 	/**
-	 * Inserts mappings into map by associating specified values with specified keys.
+	 * Inserts mappings into map by associating specified values with specified
+	 * keys.
 	 */
 	static {
 		for (VAlignType vAlignType : values())
@@ -53,22 +52,22 @@ public enum VAlignType {
 	}
 
 	/**
-	 * Returns VAlignType enum constant from given string value. 
-	 * 
-	 * @param value the string value.
-	 * @return VAlignType enum constant.
-	 */
-	public static VAlignType fromName(String value) {
-		return nameToVAlignType.get(value);
-	}
-
-	/**
 	 * Returns String.
 	 * 
 	 * @return gpmlName the string value.
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Returns VAlignType enum constant from given string name.
+	 * 
+	 * @param name the string value.
+	 * @return VAlignType enum constant.
+	 */
+	public static VAlignType fromName(String name) {
+		return nameToVAlignType.get(name);
 	}
 
 	/**

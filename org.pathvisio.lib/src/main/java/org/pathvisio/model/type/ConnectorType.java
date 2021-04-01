@@ -16,38 +16,24 @@
  ******************************************************************************/
 package org.pathvisio.model.type;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
- * This class contains extensible enum for different connector types.
+ * This class contains extensible enum for different connectorType property.
  *
  * @author unknown, finterly
  */
-public class ConnectorType implements Comparable<ConnectorType> {
-	private static Map<String, ConnectorType> nameToConnectorType = new HashMap<String, ConnectorType>();
-	private static Set<ConnectorType> connectorTypes = new TreeSet<ConnectorType>();
+public class ConnectorType {
 
-	/**
-	 * Straight connector type is the shortest path between two points.
-	 */
-	public static final ConnectorType STRAIGHT = new ConnectorType("Straight");
-	/**
-	 * Elbow connector type connects with horizontal or vertical segments and 90
-	 * degree angles.
-	 */
+	private static Map<String, ConnectorType> nameToConnectorType = new LinkedHashMap<String, ConnectorType>();
+
+	public static final ConnectorType STRAIGHT = new ConnectorType("Straight"); // DEFAULT
 	public static final ConnectorType ELBOW = new ConnectorType("Elbow");
-	/**
-	 * Curved connector type uses splines to generate a smooth curve while keeping
-	 * the end points perpendicular to the connecting element.
-	 */
 	public static final ConnectorType CURVED = new ConnectorType("Curved");
-	/**
-	 * Segmented connector type consists of segments connected at waypoints.
-	 */
-	public static final ConnectorType SEGMENTED = new ConnectorType("Segmented");
+	public static final ConnectorType SEGMENTED = new ConnectorType("Segmented"); // has waypoints
 
 	private String name;
 
@@ -64,7 +50,6 @@ public class ConnectorType implements Comparable<ConnectorType> {
 		}
 		this.name = name;
 		nameToConnectorType.put(name, this);
-		connectorTypes.add(this);
 	}
 
 	/**
@@ -84,21 +69,43 @@ public class ConnectorType implements Comparable<ConnectorType> {
 	}
 
 	/**
-	 * Returns the stable identifier for this ConnectorType.
+	 * Returns the name key for this ConnectorType.
 	 * 
-	 * @return name the stable identifier for this ConnectorType.
+	 * @return name the key for this ConnectorType.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Returns the names of all registered ConnectorTypes as an array.
+	 * Returns the ConnectorType from given string name.
 	 * 
-	 * @return result the names of all registered ConnectorTypes.
+	 * @param name the string.
+	 * @return the ConnectorType with given string name.
 	 */
-	static public ConnectorType[] getValues() {
-		return connectorTypes.toArray(new ConnectorType[0]);
+	public static ConnectorType fromName(String name) {
+		return nameToConnectorType.get(name);
+	}
+
+	/**
+	 * Returns the names of all registered ConnectorTypes as a String array.
+	 * 
+	 * @return names the names of all registered ConnectorTypes in order of
+	 *         insertion.
+	 */
+	static public List<String> getNames() {
+		List<String> names = new ArrayList<>(nameToConnectorType.keySet());
+		return names;
+	}
+
+	/**
+	 * Returns the connector type values of all ConnectorTypes as a list.
+	 * 
+	 * @return connectorTypes the list of all registered ConnectorTypes.
+	 */
+	static public List<ConnectorType> getValues() {
+		List<ConnectorType> connectorTypes = new ArrayList<>(nameToConnectorType.values());
+		return connectorTypes;
 	}
 
 	/**
