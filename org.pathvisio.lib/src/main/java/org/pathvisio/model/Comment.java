@@ -24,18 +24,17 @@ package org.pathvisio.model;
  * 
  * @author unknown, finterly
  */
-public class Comment implements Cloneable {
-	
-	private String source; //optional 
-	private String content;
-	private PathwayElement parent; //TODO 
+public class Comment {
 
+	private String source; // optional
+	private String content;
+	private PathwayElement parent; // TODO
 
 	/**
 	 * Instantiates a Comment.
 	 * 
-	 * @param source the source of the comment.
-	 * @param content the text of the comment, between Comment tags in GPML. 
+	 * @param source  the source of the comment.
+	 * @param content the text of the comment, between Comment tags in GPML.
 	 */
 	public Comment(String source, String content, PathwayElement parent) {
 		this.source = source;
@@ -44,18 +43,13 @@ public class Comment implements Cloneable {
 	}
 
 	/**
-	 * Instantiates a Comment with no source. 
+	 * Instantiates a Comment with no source.
 	 * 
-	 * @param content the text of the comment, between Comment tags in GPML. 
+	 * @param content the text of the comment, between Comment tags in GPML.
 	 */
 	public Comment(String content, PathwayElement parent) {
 		this.content = content;
 		this.parent = parent;
-	}
-	
-	
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
 	}
 
 	/**
@@ -117,5 +111,10 @@ public class Comment implements Cloneable {
 		this.parent = parent;
 
 	}
+
+//	
+//	public Object clone() throws CloneNotSupportedException {
+//		return super.clone();
+//	}
 
 }

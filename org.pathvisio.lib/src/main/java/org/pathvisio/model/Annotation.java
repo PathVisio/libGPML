@@ -34,7 +34,7 @@ public class Annotation extends PathwayElement {
 	private Xref xref; // optional
 	private String url; // optional
 	/* list of parent pathway elements which have annotationRef for this annotation. */
-	private List<PathwayElement> parentElements;
+	private List<PathwayElement> parentElements; //TODO AnnotationRef....
 	/**
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.
