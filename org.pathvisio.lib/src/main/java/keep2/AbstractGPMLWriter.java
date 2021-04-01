@@ -1,22 +1,5 @@
-/*******************************************************************************
- * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License.  You may obtain a copy
- * of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
- * License for the specific language governing permissions and limitations under
- * the License.
- ******************************************************************************/
-package org.pathvisio.io;
+package keep2;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,7 +38,8 @@ import org.pathvisio.model.type.LineStyleType;
 import keep.IElementIdContainer;
 import keep.Legend;
 
-public class GPML2013aWriter implements GPMLWriter {
+public abstract class AbstractGPMLWriter {
+	
 
 	/**
 	 * Sets a certain attribute value, performs a basic check for some types, and
@@ -99,14 +83,12 @@ public class GPML2013aWriter implements GPMLWriter {
 			e.setAttribute("GraphId", o.getElementId());
 		}
 	}
-
 	protected void writeGroupRef(PathwayElement o, Element e) {
 		String id = o.getGroupRef();
 		if (id != null && !id.equals("")) {
 			e.setAttribute("GroupRef", o.getGroupRef());
 		}
 	}
-
 	/**
 	 * Updates pathway information.
 	 *
@@ -148,6 +130,69 @@ public class GPML2013aWriter implements GPMLWriter {
 		writeMappInfoVariable(root, p);
 	}
 
+
+
+	protected void writeTextColor(ShapedElement o, Element e) throws ConverterException {
+		if (e != null) {
+			Element graphics = e.getChild("Graphics", e.getNamespace());
+			if (graphics != null) {
+				String textColor = ColorUtils.colorToHex(o.getFontProperty().getTextColor());
+				setAttribute(e.getName() + ".Graphics", "Color", graphics, textColor);
+			}
+		}
+	}
+
+
+	
+	protected void writeBorderColor(ShapedElement o, Element e) throws ConverterException {
+		if (e != null) {
+			Element graphics = e.getChild("Graphics", e.getNamespace());
+			if (graphics != null) {
+				String borderColor = ColorUtils.colorToHex(o.getShapeStyleProperty().getBorderColor());
+				setAttribute(e.getName() + ".Graphics", "Color", graphics, borderColor);
+			}
+		}
+	}
+
+
+
+	protected void writeLineColor(LineElement o, Element e) throws ConverterException {
+		if (e != null) {
+			Element graphics = e.getChild("Graphics", e.getNamespace());
+			if (graphics != null) {
+				String lineColor = ColorUtils.colorToHex(o.getLineStyleProperty().getLineColor());
+				setAttribute(e.getName() + ".Graphics", "Color", graphics, lineColor);
+			}
+		}
+	}
+
+
+
+	protected void writeFillColor(ShapedElement o, Element e) throws ConverterException {
+		if (e != null) {
+			Element graphics = e.getChild("Graphics", e.getNamespace());
+			if (graphics != null) {
+				String fillColor = o.isTransparent() ? "Transparent"
+						: color2HexBin(o.getShapeStyleProperty().getFillColor());
+				setAttribute(e.getName() + ".Graphics", "FillColor", graphics, fillColor);
+			}
+		}
+	}
+
+
+
+	protected void writeComments(PathwayElement o, Element e) throws ConverterException {
+		if (e != null) {
+			for (PathwayElement.Comment c : o.getComments()) {
+				Element f = new Element("Comment", e.getNamespace());
+				f.setText(c.getComment());
+				setAttribute("Comment", "Source", f, c.getSource());
+				e.addContent(f);
+			}
+		}
+	}
+
+	
 	/**
 	 * Attribute in gpml
 	 * 
@@ -178,11 +223,11 @@ public class GPML2013aWriter implements GPMLWriter {
 			e.setAttribute("CenterY", centerY);
 		}
 	}
-
 	@Override
 	protected void writeMappInfoVariable(Element root, Pathway p) throws ConverterException {
 		setAttribute("Pathway", "License", root, p.getLicense());
 	}
+
 
 	/**
 	 * @param o
@@ -196,6 +241,8 @@ public class GPML2013aWriter implements GPMLWriter {
 		writeDynamicProperty(o, e);
 	}
 
+
+	
 	// NOT PATHWAYELEMENTS
 //	case LEGEND:
 //	mapSimpleCenter(o, e);
@@ -214,13 +261,14 @@ public class GPML2013aWriter implements GPMLWriter {
 	 * Create a single PathwayElement based on a piece of Jdom tree. Used also by
 	 * Patch utility. Pathway p may be null
 	 */
-	public PathwayElement mapElement(Element e, Pathway p) throws ConverterException {
-		// Creates a pathway element
-		// Adds pathway element to given Pathway.
-		// reads(pathway element o, element e)... In the process it sets the pathway
-		// element?
-		// Finally this pathway element is returned.
+	public PathwayElement mapElement(Element e, Pathway p) throws ConverterException {		
+	//		Creates a pathway element
+	//		Adds pathway element to given Pathway. 
+	//		reads(pathway element o, element e)... In the process it sets the pathway element?
+	//		Finally this pathway element is returned. 
 	}
+
+
 
 	// TODO WRITERECTPROPERTY?
 // TODO 		setAttribute(base + ".Graphics", "ZOrder", graphics, "" + o.getZOrder());
@@ -239,16 +287,7 @@ public class GPML2013aWriter implements GPMLWriter {
 		setAttribute(base + ".Graphics", "Height", graphics, "" + o.getRectProperty().getHeight());
 	}
 
-	protected void writeComments(PathwayElement o, Element e) throws ConverterException {
-		if (e != null) {
-			for (PathwayElement.Comment c : o.getComments()) {
-				Element f = new Element("Comment", e.getNamespace());
-				f.setText(c.getComment());
-				setAttribute("Comment", "Source", f, c.getSource());
-				e.addContent(f);
-			}
-		}
-	}
+
 
 	/**
 	 * Gets FontProperty values from model and writes to gpml FontAttributes for
@@ -259,20 +298,18 @@ public class GPML2013aWriter implements GPMLWriter {
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(ShapedElement o, Element e) throws ConverterException {
-		String textColor = ColorUtils.colorToHex(o.getFontProperty().getTextColor());
 		String fontName = o.getFontProperty().getFontName() == null ? "" : o.getFontProperty().getFontName();
 		String fontWeight = o.getFontProperty().getFontWeight() ? "Bold" : "Normal";
 		String fontStyle = o.getFontProperty().getFontStyle() ? "Italic" : "Normal";
 		String fontDecoration = o.getFontProperty().getFontDecoration() ? "Underline" : "Normal";
 		String fontStrikethru = o.getFontProperty().getFontStrikethru() ? "Strikethru" : "Normal";
+		// TODO can font size be half size?
 		String fontSize = Integer.toString((int) o.getFontProperty().getFontSize());
 		String hAlignType = o.getFontProperty().getVAlign().getName();
 		String vAlignType = o.getFontProperty().getHAlign().getName();
-//		if (e != null) {
-//			if (graphics != null) {
+
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
-		setAttribute(base + ".Graphics", "Color", graphics, textColor);
 		setAttribute(base + ".Graphics", "FontName", graphics, fontName);
 		setAttribute(base + ".Graphics", "FontWeight", graphics, fontWeight);
 		setAttribute(base + ".Graphics", "FontStyle", graphics, fontStyle);
@@ -283,7 +320,10 @@ public class GPML2013aWriter implements GPMLWriter {
 		setAttribute(base + ".Graphics", "Valign", graphics, vAlignType);
 	}
 
-
+	// TODO
+//	String zorder = graphics.getAttributeValue("ZOrder");
+//	if (zorder != null)
+//		o.setZOrder(Integer.parseInt(zorder));
 
 
 	/**
@@ -295,23 +335,23 @@ public class GPML2013aWriter implements GPMLWriter {
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 
-		String borderColor = ColorUtils.colorToHex(o.getShapeStyleProperty().getBorderColor());
+		// TODO border COLOR
+		// writeColor(o, e);
 		String borderStyle = o.getShapeStyleProperty().getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken";
 		String borderWidth = String.valueOf(o.getShapeStyleProperty().getBorderWidth());
-		//TODO transparent 
-		String fillColor = o.getShapeStyleProperty().getFillColor() == Color.decode("#00000000") ? "Transparent"
-				: ColorUtils.colorToHex(o.getShapeStyleProperty().getFillColor());
-		// TODO shapeType
+		// fillColor
+		// shapeType
 		String zOrder = String.valueOf(o.getShapeStyleProperty().getZOrder());
-		setAttribute(base + ".Graphics", "Color", graphics, borderColor);
+
 		setAttribute(base + ".Graphics", "LineStyle", graphics, borderStyle);
 		setAttribute(base + ".Graphics", "LineThickness", graphics, borderWidth);
 		// TODO ConnectorType enum
-		// TODO shapeType
-		setAttribute(base + ".Graphics", "FillColor", graphics, fillColor);
+		// fillColor
+		// shapeType
 		setAttribute("Interaction.Graphics", "ZOrder", graphics, zOrder);
 
 	}
+
 
 	/**
 	 * DataNode, Label, Shape, Group
@@ -323,14 +363,15 @@ public class GPML2013aWriter implements GPMLWriter {
 	private void writeShapedElement(ShapedElement o, Element e) throws ConverterException {
 		writePathwayElement(o, e); // TODO: ElementId, CommentGroup
 		String base = e.getName();
-		String groupRef = o.getGroupRef().getElementId();
+		String groupRef = o.getParentGroup().getElementId();
 		setAttribute(base, "GroupRef", e, groupRef);
 		writeRectProperty(o, e);
 		writeFontProperty(o, e);
 		writeShapeStyleProperty(o, e);
 	}
-	
-	
+
+
+
 	/**
 	 * @param o
 	 * @param e
@@ -339,14 +380,13 @@ public class GPML2013aWriter implements GPMLWriter {
 	protected void writeLineStyleProperty(LineElement o, Element e) throws ConverterException {
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
-		String lineColor = ColorUtils.colorToHex(o.getLineStyleProperty().getLineColor());
 		String lineStyle = o.getLineStyleProperty().getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken";
 		String lineWidth = String.valueOf(o.getLineStyleProperty().getLineWidth());
 		String connectorType = o.getLineStyleProperty().getConnectorType().getName();
 		String zOrder = String.valueOf(o.getLineStyleProperty().getZOrder());
 
 		// TODO COLOR
-		setAttribute(base + ".Graphics", "Color", graphics, lineColor);
+		writeColor(o, e);
 
 		setAttribute(base + ".Graphics", "LineStyle", graphics, lineStyle);
 		setAttribute(base + ".Graphics", "LineThickness", graphics, lineWidth);
@@ -355,6 +395,9 @@ public class GPML2013aWriter implements GPMLWriter {
 		setAttribute("Interaction.Graphics", "ZOrder", graphics, zOrder);
 
 	}
+
+
+
 
 	/**
 	 * @param o
@@ -368,6 +411,8 @@ public class GPML2013aWriter implements GPMLWriter {
 			e.setAttribute("CenterY", centerY);
 		}
 	}
+
+
 
 	/**
 	 * @param o
@@ -392,6 +437,8 @@ public class GPML2013aWriter implements GPMLWriter {
 									// ShapeStyleProperty
 
 	}
+
+
 
 	/**
 	 * @param o
@@ -429,6 +476,7 @@ public class GPML2013aWriter implements GPMLWriter {
 		setAttribute("State.Xref", "ID", xref, o.getXref().getId());
 	}
 
+
 	/**
 	 * @param o
 	 * @param e
@@ -438,6 +486,8 @@ public class GPML2013aWriter implements GPMLWriter {
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 		setAttribute("Shape.Graphics", "Rotation", graphics, Double.toString(o.getRotation()));
 	}
+
+
 
 	/**
 	 * @param o
@@ -450,6 +500,8 @@ public class GPML2013aWriter implements GPMLWriter {
 		String shapeName = o.getShapeType().getName();
 		setAttribute(base + ".Graphics", "ShapeType", graphics, shapeName);
 	}
+
+
 
 	/**
 	 * @param o
@@ -465,6 +517,7 @@ public class GPML2013aWriter implements GPMLWriter {
 		setAttribute("Interaction.Xref", "ID", xref, identifier);
 
 	}
+
 
 	/**
 	 * @param o
@@ -511,6 +564,7 @@ public class GPML2013aWriter implements GPMLWriter {
 		}
 	}
 
+	
 //
 //	List<Label> labels = p.getLabels();
 //	Collections.sort(labels); // TODO necessary?
@@ -526,6 +580,8 @@ public class GPML2013aWriter implements GPMLWriter {
 //	protected Label readLabels(List<Element> e) throws ConverterException {
 //
 //	}
+		
+
 
 	/**
 	 * @param o
@@ -540,6 +596,8 @@ public class GPML2013aWriter implements GPMLWriter {
 		writeShapeStyleProperty(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
 										// ShapeStyleProperty
 	}
+
+
 
 	/**
 	 * @param o
@@ -558,6 +616,8 @@ public class GPML2013aWriter implements GPMLWriter {
 		writeRotation(o, e); // TODO rotation
 		break;
 	}
+
+
 
 	protected void writeGroup(Group o, Element e) throws ConverterException {
 
@@ -583,7 +643,6 @@ public class GPML2013aWriter implements GPMLWriter {
 		setAttribute("State.Xref", "ID", xref, identifier);
 
 	}
-
 	/**
 	 *
 	 */
@@ -718,8 +777,8 @@ public class GPML2013aWriter implements GPMLWriter {
 //		throw new ConverterException("Error creating jdom element with objectType " + o.getObjectType());
 //	}return e;}
 
+		
 	}
-
 	/**
 	 * Writes the JDOM document to the outputstream specified
 	 * 

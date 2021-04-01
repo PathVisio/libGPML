@@ -33,26 +33,27 @@ import org.jdom2.output.XMLOutputter;
 import org.pathvisio.io.GpmlFormat2013a.BiopaxAttributeComparator;
 import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
 import org.pathvisio.io.GpmlFormatAbstract.ByElementName;
-import org.pathvisio.model.Anchor;
 import org.pathvisio.model.AnnotationRef;
 import org.pathvisio.model.Author;
 import org.pathvisio.model.Comment;
-import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DynamicProperty;
-import org.pathvisio.model.GraphicalLine;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.IElementIdContainer;
-import org.pathvisio.model.Interaction;
-import org.pathvisio.model.Label;
-import org.pathvisio.model.Legend;
-import org.pathvisio.model.LineElement;
-import org.pathvisio.model.LineStyleType;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
-import org.pathvisio.model.Point;
-import org.pathvisio.model.Shape;
-import org.pathvisio.model.ShapedElement;
-import org.pathvisio.model.State;
+import org.pathvisio.model.elements.Anchor;
+import org.pathvisio.model.elements.LineElement;
+import org.pathvisio.model.elements.Point;
+import org.pathvisio.model.elements.ShapedElement;
+import org.pathvisio.model.pathwayelements.DataNode;
+import org.pathvisio.model.pathwayelements.GraphicalLine;
+import org.pathvisio.model.pathwayelements.Group;
+import org.pathvisio.model.pathwayelements.Interaction;
+import org.pathvisio.model.pathwayelements.Label;
+import org.pathvisio.model.pathwayelements.Shape;
+import org.pathvisio.model.pathwayelements.State;
+import org.pathvisio.model.type.LineStyleType;
+
+import keep.IElementIdContainer;
+import keep.Legend;
 
 public class GPML2021Writer implements GPMLWriter {
 

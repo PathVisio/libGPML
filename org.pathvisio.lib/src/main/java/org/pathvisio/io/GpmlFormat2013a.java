@@ -40,6 +40,29 @@ import org.pathvisio.core.biopax.BiopaxElement;
 import org.pathvisio.core.model.PathwayElement.MPoint;
 import org.pathvisio.core.view.ShapeRegistry;
 import org.pathvisio.model.*;
+import org.pathvisio.model.elements.Anchor;
+import org.pathvisio.model.elements.LineElement;
+import org.pathvisio.model.elements.Point;
+import org.pathvisio.model.elements.ShapedElement;
+import org.pathvisio.model.graphics.Coordinate;
+import org.pathvisio.model.pathwayelements.DataNode;
+import org.pathvisio.model.pathwayelements.GraphicalLine;
+import org.pathvisio.model.pathwayelements.Group;
+import org.pathvisio.model.pathwayelements.Interaction;
+import org.pathvisio.model.pathwayelements.Label;
+import org.pathvisio.model.pathwayelements.Shape;
+import org.pathvisio.model.pathwayelements.State;
+import org.pathvisio.model.type.AnchorType;
+import org.pathvisio.model.type.ConnectorType;
+import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.GroupType;
+import org.pathvisio.model.type.HAlignType;
+import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.ShapeType;
+import org.pathvisio.model.type.StateType;
+import org.pathvisio.model.type.VAlignType;
+
+import keep.Legend;
 
 class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
 	public static final GpmlFormat2013a GPML_2013A = new GpmlFormat2013a("GPML2013a.xsd",

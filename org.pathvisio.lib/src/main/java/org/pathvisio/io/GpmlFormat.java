@@ -33,11 +33,12 @@ import org.jdom2.input.JDOMParseException;
 import org.jdom2.input.SAXBuilder; //Creates a JDOM document parsed using SAX Simple API for XML
 // import org.jdom2.input.sax.XMLReaders;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.ioKeep.GpmlFormat200X;
-import org.pathvisio.ioKeep.GpmlFormat2010a;
 import org.pathvisio.util.RootElementFinder;
 import org.pathvisio.model.*;
 import org.xml.sax.InputSource;
+
+import keep2.GpmlFormat200X;
+import keep2.GpmlFormat2010a;
 
 /**
  * Class responsible for interaction with Gpml format. Contains all

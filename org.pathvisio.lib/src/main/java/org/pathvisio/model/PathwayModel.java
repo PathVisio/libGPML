@@ -36,9 +36,18 @@ import java.util.Set;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.pathvisio.model.ElementLink.ElementIdContainer;
-import org.pathvisio.model.ElementLink.ElementRefContainer;
+import org.pathvisio.model.elements.DataNode;
+import org.pathvisio.model.elements.GraphicalLine;
+import org.pathvisio.model.elements.Group;
+import org.pathvisio.model.elements.Interaction;
+import org.pathvisio.model.elements.Label;
+import org.pathvisio.model.elements.Point;
+import org.pathvisio.model.elements.Shape;
+import org.pathvisio.model.elements.State;
 import org.pathvisio.util.Utils;
+
+import keep.ElementLink.ElementIdContainer;
+import keep.ElementLink.ElementRefContainer;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains

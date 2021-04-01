@@ -18,6 +18,7 @@ package org.pathvisio.model;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
+import org.pathvisio.model.type.AnnotationType;
 
 /**
  * This class stores information for an Annotation.

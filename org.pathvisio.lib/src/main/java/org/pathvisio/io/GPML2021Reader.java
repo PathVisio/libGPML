@@ -23,30 +23,30 @@ import java.util.List;
 import org.jdom2.Element;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
-import org.pathvisio.model.Anchor;
-import org.pathvisio.model.AnchorType;
-import org.pathvisio.model.ConnectorType;
-import org.pathvisio.model.Coordinate;
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.DataNodeType;
-import org.pathvisio.model.ElementInfo;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.GroupType;
-import org.pathvisio.model.HAlignType;
-import org.pathvisio.model.Interaction;
-import org.pathvisio.model.Label;
-import org.pathvisio.model.LineElement;
-import org.pathvisio.model.LineStyleType;
 import org.pathvisio.model.ObjectType;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
-import org.pathvisio.model.Point;
-import org.pathvisio.model.Shape;
-import org.pathvisio.model.ShapeType;
-import org.pathvisio.model.ShapedElement;
-import org.pathvisio.model.State;
-import org.pathvisio.model.StateType;
-import org.pathvisio.model.VAlignType;
+import org.pathvisio.model.elements.Anchor;
+import org.pathvisio.model.elements.ElementInfo;
+import org.pathvisio.model.elements.LineElement;
+import org.pathvisio.model.elements.Point;
+import org.pathvisio.model.elements.ShapedElement;
+import org.pathvisio.model.graphics.Coordinate;
+import org.pathvisio.model.pathwayelements.DataNode;
+import org.pathvisio.model.pathwayelements.Group;
+import org.pathvisio.model.pathwayelements.Interaction;
+import org.pathvisio.model.pathwayelements.Label;
+import org.pathvisio.model.pathwayelements.Shape;
+import org.pathvisio.model.pathwayelements.State;
+import org.pathvisio.model.type.AnchorType;
+import org.pathvisio.model.type.ConnectorType;
+import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.GroupType;
+import org.pathvisio.model.type.HAlignType;
+import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.ShapeType;
+import org.pathvisio.model.type.StateType;
+import org.pathvisio.model.type.VAlignType;
 
 public class GPML2021Reader implements GPMLReader {
 
@@ -448,34 +448,34 @@ public class GPML2021Reader implements GPMLReader {
 
 	}
 
-	/**
-	 * Converts deprecated shapes to contemporary analogs. This allows us to
-	 * maintain backward compatibility while at the same time cleaning up old shape
-	 * usages.
-	 * 
-	 */
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void readShapeType(Shape o, Element e) throws ConverterException {
-		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		IShape s = ShapeRegistry.fromName(getAttribute(base + ".Graphics", "ShapeType", graphics));
-		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
-			s = ShapeType.DEPRECATED_MAP.get(s);
-			o.setShapeType(s);
-			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
-				o.setLineStyle(LineStyleType.DOUBLE);
-				o.setLineThickness(3.0);
-				o.setColor(Color.LIGHT_GRAY);
-			}
-		} else {
-			o.setShapeType(s);
-			mapLineStyle(o, e); // LineStyle
-		}
-	}
+//	/**
+//	 * Converts deprecated shapes to contemporary analogs. This allows us to
+//	 * maintain backward compatibility while at the same time cleaning up old shape
+//	 * usages.
+//	 * 
+//	 */
+//	/**
+//	 * @param o
+//	 * @param e
+//	 * @throws ConverterException
+//	 */
+//	protected void readShapeType(Shape o, Element e) throws ConverterException {
+//		String base = e.getName();
+//		Element graphics = e.getChild("Graphics", e.getNamespace());
+//		IShape s = ShapeRegistry.fromName(graphics.getAttributeValue("shapeType"));
+//		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
+//			s = ShapeType.DEPRECATED_MAP.get(s);
+//			o.setShapeType(s);
+//			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
+//				o.setLineStyle(LineStyleType.DOUBLE);
+//				o.setLineThickness(3.0);
+//				o.setColor(Color.LIGHT_GRAY);
+//			}
+//		} else {
+//			o.setShapeType(s);
+//			mapLineStyle(o, e); // LineStyle
+//		}
+//	}
 
 	public void readFromRoot(Element root, Pathway pwy) throws ConverterException {
 		mapElement(root, pwy); // MappInfo
@@ -503,7 +503,6 @@ public class GPML2021Reader implements GPMLReader {
 					// generate a graphId based on hash of coordinates
 					// so that pathways with branching history still have the same id.
 					// This part may be removed for future versions of GPML (2010+)
-
 					StringBuilder builder = new StringBuilder();
 					builder.append(pe.getMStartX());
 					builder.append(pe.getMStartY());

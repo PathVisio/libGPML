@@ -24,6 +24,27 @@ import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
 import org.pathvisio.model.*;
+import org.pathvisio.model.elements.Anchor;
+import org.pathvisio.model.elements.ElementInfo;
+import org.pathvisio.model.elements.LineElement;
+import org.pathvisio.model.elements.Point;
+import org.pathvisio.model.elements.ShapedElement;
+import org.pathvisio.model.graphics.Coordinate;
+import org.pathvisio.model.pathwayelements.DataNode;
+import org.pathvisio.model.pathwayelements.Group;
+import org.pathvisio.model.pathwayelements.Interaction;
+import org.pathvisio.model.pathwayelements.Label;
+import org.pathvisio.model.pathwayelements.Shape;
+import org.pathvisio.model.pathwayelements.State;
+import org.pathvisio.model.type.AnchorType;
+import org.pathvisio.model.type.ConnectorType;
+import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.GroupType;
+import org.pathvisio.model.type.HAlignType;
+import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.ShapeType;
+import org.pathvisio.model.type.StateType;
+import org.pathvisio.model.type.VAlignType;
 public abstract class AbstractGPMLReader {
 
 

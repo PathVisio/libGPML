@@ -44,6 +44,8 @@ import org.pathvisio.core.debug.Logger;
 import org.pathvisio.model.*;
 import org.xml.sax.SAXException;
 
+import keep.IElementIdContainer;
+
 /**
  * This abstract class is for the reading and writing of GPML files. Base
  * implementation for different GpmlFormat versions. Code that is shared between
