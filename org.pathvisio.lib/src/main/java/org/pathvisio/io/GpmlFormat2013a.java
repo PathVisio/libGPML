@@ -62,6 +62,7 @@ import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.model.type.VAlignType;
 
+import keep.DynamicProperty;
 import keep.Legend;
 
 class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {

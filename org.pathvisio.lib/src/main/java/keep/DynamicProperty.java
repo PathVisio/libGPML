@@ -14,7 +14,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package keep;
+
+import org.pathvisio.model.PathwayElement;
 
 /**
  * This class stores information for a dynamic property. Dynamic property is

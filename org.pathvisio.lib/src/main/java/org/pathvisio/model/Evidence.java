@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.List;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -29,7 +31,8 @@ public class Evidence extends PathwayElement {
 	private String value; // optional
 	private Xref xref;
 	private String url; // optional
-
+	/* list of parent pathway elements which have evidenceRef for this evidence. */
+	private List<PathwayElement> parentElements;
 	/*
 	 * NB: Manipulated the order of variables to overload constructor. This is not
 	 * best practice, however variable inheritance complicates use of a builder.

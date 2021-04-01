@@ -38,7 +38,7 @@ public class Group extends ShapedElement {
 	private List<PathwayElement> pathwayElements; // 0 to unbounded TODO should have at least one?
 	private String textLabel; // optional
 	private Xref xref; // optional
-
+	
 	/**
 	 * Instantiates a Group given all possible parameters.
 	 * 

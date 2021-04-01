@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.List;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.type.AnnotationType;
@@ -31,7 +33,8 @@ public class Annotation extends PathwayElement {
 	private AnnotationType type;
 	private Xref xref; // optional
 	private String url; // optional
-
+	/* list of parent pathway elements which have annotationRef for this annotation. */
+	private List<PathwayElement> parentElements;
 	/**
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.

@@ -23,6 +23,8 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.graphics.Coordinate;
 
+import keep.DynamicProperty;
+
 /**
  * This class stores metadata for a Pathway.
  * 
@@ -30,7 +32,7 @@ import org.pathvisio.model.graphics.Coordinate;
  */
 public class Pathway {
 
-	private String title = "untitled";
+	private String title; 
 	private List<Comment> comments; // 0 to unbounded
 	private List<DynamicProperty> dynamicProperties; // 0 to unbounded //TODO replace with TREEMAP 
 	private List<AnnotationRef> annotationRefs; // 0 to unbounded

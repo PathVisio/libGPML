@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.List;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
@@ -28,6 +30,8 @@ public class Citation extends PathwayElement {
 
 	private Xref xref;
 	private String url; // optional
+	/* list of parent pathway elements with citationRef for this citation. */
+	private List<PathwayElement> parentElements;
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters:
@@ -46,7 +50,7 @@ public class Citation extends PathwayElement {
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters except
-	 * xref. 
+	 * xref.
 	 * 
 	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
@@ -54,16 +58,6 @@ public class Citation extends PathwayElement {
 	 */
 	public Citation(String elementId, PathwayModel pathwayModel, Xref xref) {
 		this(elementId, pathwayModel, xref, null);
-	}
-
-	private boolean isValidUrl(String url2) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private boolean isValidXref(Xref xref2) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	/**

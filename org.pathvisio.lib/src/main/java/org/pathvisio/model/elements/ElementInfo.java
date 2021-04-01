@@ -143,33 +143,6 @@ public abstract class ElementInfo extends PathwayElement {
 	public String getDynamicProperty(String key) {
 		return dynamicProperties.get(key);
 	}
-//	/**
-//	 * Returns the list of key value pair information properties.
-//	 * 
-//	 * @return properties the list of properties, an empty list if no properties are
-//	 *         defined.
-//	 */
-//	public List<DynamicProperty> getDynamicProperties() {
-//		return dynamicProperties;
-//	}
-//
-//	/**
-//	 * Adds given dynamic property to dynamicProperties list.
-//	 * 
-//	 * @param dynamicProperty the dynamic property to be added.
-//	 */
-//	public void addDynamicProperty(DynamicProperty dynamicProperty) {
-//		dynamicProperties.add(dynamicProperty);
-//	}
-//
-//	/**
-//	 * Removes given dynamic property from the dynamicProperties list.
-//	 * 
-//	 * @param dynamicProperty the dynamic property to be removed.
-//	 */
-//	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
-//		dynamicProperties.remove(dynamicProperty);
-//	}
 
 	/**
 	 * Returns the list of annotation references.

@@ -36,7 +36,6 @@ import org.pathvisio.io.GpmlFormatAbstract.ByElementName;
 import org.pathvisio.model.AnnotationRef;
 import org.pathvisio.model.Author;
 import org.pathvisio.model.Comment;
-import org.pathvisio.model.DynamicProperty;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.elements.Anchor;
@@ -52,6 +51,7 @@ import org.pathvisio.model.pathwayelements.Shape;
 import org.pathvisio.model.pathwayelements.State;
 import org.pathvisio.model.type.LineStyleType;
 
+import keep.DynamicProperty;
 import keep.IElementIdContainer;
 import keep.Legend;
 
