@@ -480,7 +480,6 @@ public class PathwayModel {
 			result.add(interaction.getXref());
 		}
 		return result;
-
 	}
 
 	/**

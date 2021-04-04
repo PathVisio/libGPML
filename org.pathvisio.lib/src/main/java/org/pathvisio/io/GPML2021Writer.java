@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
@@ -78,6 +79,8 @@ public class GPML2021Writer {
 
 		root.addContent(elementList);
 
+		writeAuthors(m, root);
+		
 		List<Author> authors = m.getAuthors();
 
 		List<DataNode> dataNodes = m.getDataNodes(); // TODO And states
@@ -167,58 +170,28 @@ public class GPML2021Writer {
 		}
 	}
 
-	protected void writeComments(ElementInfo o, Element e) throws ConverterException {
-		if (e != null) {
-			for (Comment c : o.getComments()) {
+
+	protected void writeComments(List<Comment> comments, Element e) throws ConverterException {
+			for (Comment c : comments) {
 				Element comment = new Element("Comment", e.getNamespace());
 				comment.setText(c.getContent());
 				comment.setAttribute("source", c.getSource());
 				e.addContent(comment);
 			}
-		}
 	}
 
-	protected void writeComments(Pathway p, Element e) throws ConverterException {
-		if (e != null) {
-			for (Comment c : p.getComments()) {
-				Element comment = new Element("Comment", e.getNamespace());
-				comment.setText(c.getContent());
-				comment.setAttribute("source", c.getSource());
-				e.addContent(comment);
-			}
-		}
-	}
 
-	/**
-	 * Attribute in gpml
-	 * 
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeDynamicProperties(ElementInfo o, Element root) throws ConverterException {
-		if (root != null) {
-			for (String key : o.getDynamicPropertyKeys()) {
-				Element property = new Element("Property", root.getNamespace());
-				property.setAttribute("key", key);
-				property.setAttribute("value", o.getDynamicProperty(key));
-				root.addContent(property);
-			}
-		}
-	}
 
-	protected void writeDynamicProperties(List<String> dynamicPropertyKeys, Element root) throws ConverterException {
-		for (String key : dynamicPropertyKeys) {
-			Element property = new Element("Property", root.getNamespace());
+	protected void writeDynamicProperties(Map<String, String> dynamicProperties, Element e) throws ConverterException {
+		for (String key : dynamicProperties.keySet()) {
+			Element property = new Element("Property", e.getNamespace());
 			property.setAttribute("key", key);
-			property.setAttribute("value", p.getDynamicProperty(key));
-			root.addContent(property);
-
+			property.setAttribute("value", dynamicProperties.get(key));
+			e.addContent(property);
 		}
 	}
 
 	protected void writeAnnotationRefs(List<AnnotationRef> annotationRefs, Element e) throws ConverterException {
-//		if (e != null) {
 		for (AnnotationRef a : annotationRefs) {
 			Element annotationRef = new Element("AnnotationRef", e.getNamespace());
 			annotationRef.setAttribute("elementRef", a.getAnnotation().getElementId());
@@ -234,29 +207,9 @@ public class GPML2021Writer {
 		}
 	}
 
-	}
-
-	protected void writeAnnotationRefs(ElementInfo o, Element e) throws ConverterException {
+	protected void writeCitationRefs(List<Citation> citationRefs, Element e) throws ConverterException {
 		if (e != null) {
-			for (AnnotationRef a : o.getAnnotationRefs()) {
-				Element annotationRef = new Element("AnnotationRef", e.getNamespace());
-				annotationRef.setAttribute("elementRef", a.getAnnotation().getElementId());
-				for (Citation c : a.getCitations()) {
-					Element citationRef = new Element("CitationRef", e.getNamespace());
-					citationRef.setAttribute("elementRef", c.getElementId());
-				}
-				for (Evidence ev : a.getEvidences()) {
-					Element evidenceRef = new Element("EvidenceRef", e.getNamespace());
-					evidenceRef.setAttribute("elementRef", ev.getElementId());
-				}
-				e.addContent(annotationRef);
-			}
-		}
-	}
-
-	protected void writeCitationRefs(Pathway p, Element e) throws ConverterException {
-		if (e != null) {
-			for (Citation c : p.getCitationRefs()) {
+			for (Citation c : citationRefs) {
 				Element citationRef = new Element("CitationRef", e.getNamespace());
 				citationRef.setAttribute("elementRef", c.getElementId());
 				e.addContent(citationRef);
@@ -264,19 +217,9 @@ public class GPML2021Writer {
 		}
 	}
 
-	protected void writeCitationRefs(ElementInfo o, Element e) throws ConverterException {
+	protected void writeEvidenceRefs(List<Evidence> evidenceRefs, Element e) throws ConverterException {
 		if (e != null) {
-			for (Citation c : o.getCitationRefs()) {
-				Element citationRef = new Element("CitationRef", e.getNamespace());
-				citationRef.setAttribute("elementRef", c.getElementId());
-				e.addContent(citationRef);
-			}
-		}
-	}
-
-	protected void writeEvidenceRefs(Pathway p, Element e) throws ConverterException {
-		if (e != null) {
-			for (Evidence c : p.getEvidenceRefs()) {
+			for (Evidence c : evidenceRefs) {
 				Element evidenceRef = new Element("EvidenceRef", e.getNamespace());
 				evidenceRef.setAttribute("elementRef", c.getElementId());
 				e.addContent(evidenceRef);
@@ -284,15 +227,6 @@ public class GPML2021Writer {
 		}
 	}
 
-	protected void writeEvidenceRefs(ElementInfo o, Element e) throws ConverterException {
-		if (e != null) {
-			for (Evidence c : o.getEvidenceRefs()) {
-				Element evidenceRef = new Element("EvidenceRef", e.getNamespace());
-				evidenceRef.setAttribute("elementRef", c.getElementId());
-				e.addContent(evidenceRef);
-			}
-		}
-	}
 
 	protected void writeGroupRef(ShapedElement o, Element e) {
 		String groupRef = o.getGroupRef().getElementId();
