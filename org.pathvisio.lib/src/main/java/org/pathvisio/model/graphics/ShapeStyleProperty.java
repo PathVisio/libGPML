@@ -40,10 +40,10 @@ public class ShapeStyleProperty {
 	/**
 	 * Constructor for all shape style properties. Default values in ( ).
 	 * 
-	 * @param borderColor the color of a border, (Black).
+	 * @param borderColor the color of a border, (#000000 black).
 	 * @param borderStyle the style of a border, (Solid).
 	 * @param borderWidth the thickness of a border, (1.0).
-	 * @param fillColor   the fill color of an object, (White).
+	 * @param fillColor   the fill color of an object, (#ffffff white).
 	 * @param shapeType   the shape type of an object, (Rectangle).
 	 * @param zOrder      the z order, an ordering of overlapping two-dimensional
 	 *                    objects.

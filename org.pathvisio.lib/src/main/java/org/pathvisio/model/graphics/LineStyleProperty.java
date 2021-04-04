@@ -38,7 +38,7 @@ public class LineStyleProperty {
 	/**
 	 * Constructor for all line style properties. Default values in ( ).
 	 * 
-	 * @param lineColor     the color of a line, (Black).
+	 * @param lineColor     the color of a line, (#000000 black).
 	 * @param lineStyle     the style of a line, (Solid).
 	 * @param lineWidth     the pixel value for the width of a line, (1.0).
 	 * @param connectorType the connector type of a line, (Straight}.

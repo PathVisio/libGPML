@@ -17,45 +17,184 @@
 package org.pathvisio.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.graphics.Coordinate;
 
-import temp.DynamicProperty;
-
 /**
  * This class stores metadata for a Pathway.
  * 
- * @author unknown, finterly
+ * Because of multiple optional parameters, a builder pattern is implemented for
+ * Pathway. Example of how a Pathway object can be created:
+ * 
+ * Pathway pathway = new Pathway.PathwayBuilder("Title", 100, 100,
+ * Color.decode("#ffffff"), infobox).setOrganism("Homo Sapiens")
+ * .setSource("WikiPathways").setVersion("r1").setLicense("CC0").setXref(xref).build();
+ * 
+ * @author finterly
  */
 public class Pathway {
 
-	private String title; 
-	private List<Comment> comments; // 0 to unbounded
-	private List<DynamicProperty> dynamicProperties; // 0 to unbounded //TODO replace with TREEMAP 
-	private List<AnnotationRef> annotationRefs; // 0 to unbounded
-	private List<Citation> citationRefs; // 0 to unbounded
-	private List<Evidence> evidenceRefs; // 0 to unbounded
+	private String title;
 	private double boardWidth;
 	private double boardHeight;
-	private Color backgroundColor;
+	private Color backgroundColor; // default #ffffff (white) TODO or optional
 	private Coordinate infoBox; // the centerXY of gpml:InfoBox
-	/**
-	 * Optional parameters
-	 */
-	private String organism = null; // optional
-	private String source = null; // optional
-	private String version = null; // optional
-	private String license = null; // optional
-	private Xref xref; // optional
+	private String organism;
+	private String source;
+	private String version;
+	private String license;
+	private Xref xref;
+	private List<Comment> comments;
+	private Map<String, String> dynamicProperties;
+	private List<AnnotationRef> annotationRefs;
+	private List<Citation> citationRefs;
+	private List<Evidence> evidenceRefs;
 
-	//TODO Builder or null? 
-	
-	
 	/**
-	 * Returns the title or name of this pathway.
+	 * This builder class builds an Pathway object step-by-step.
+	 * 
+	 * @author finterly
+	 */
+	public static class PathwayBuilder {
+
+		private String title;
+		private double boardWidth;
+		private double boardHeight;
+		private Color backgroundColor;
+		private Coordinate infoBox;
+		private String organism; // optional
+		private String source; // optional
+		private String version; // optional
+		private String license; // optional
+		private Xref xref; // optional
+		private List<Comment> comments = new ArrayList<Comment>(); // 0 to unbounded
+		private Map<String, String> dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
+		private List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
+		private List<Citation> citationRefs = new ArrayList<Citation>(); // 0 to unbounded
+		private List<Evidence> evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
+
+		/**
+		 * Public constructor with required attribute name as parameter.
+		 * 
+		 * @param title           the title of the pathway.
+		 * @param boardWidth      together with...
+		 * @param boardHeight     define the drawing size.
+		 * @param backgroundColor the background color of the drawing, default #ffffff
+		 *                        (white)
+		 * @param infoBox         the info box xy coordinates for where information,
+		 *                        e.g. name and organism, are displayed in the pathway.
+		 */
+		public PathwayBuilder(String title, double boardWidth, double boardHeight, Color backgroundColor,
+				Coordinate infoBox) {
+			this.title = title;
+			this.boardWidth = boardWidth;
+			this.boardHeight = boardHeight;
+			this.backgroundColor = backgroundColor;
+			this.infoBox = infoBox;
+
+		}
+
+		/**
+		 * Sets organism and returns this builder object. Organism is the scientific
+		 * name (e.g., Homo sapiens) of the species being described by the pathway.
+		 * 
+		 * @param organism the organism of the pathway.
+		 * @return the PathwayBuilder object.
+		 */
+		public PathwayBuilder setOrganism(String organism) {
+			this.organism = organism;
+			return this;
+		}
+
+		/**
+		 * Sets source and returns this builder object. The source of the pathway, e.g.
+		 * WikiPathways, KEGG, Cytoscape.
+		 * 
+		 * @param source the source of the pathway.
+		 * @return the PathwayBuilder object.
+		 */
+		public PathwayBuilder setSource(String source) {
+			this.source = source;
+			return this;
+		}
+
+		/**
+		 * Sets version and returns this builder object.
+		 * 
+		 * @param source the source of the pathway.
+		 * @return the PathwayBuilder object.
+		 */
+		public PathwayBuilder setVersion(String version) {
+			this.version = version;
+			return this;
+		}
+
+		/**
+		 * Sets license and returns this builder object.
+		 * 
+		 * @param source the source of the pathway.
+		 * @return the PathwayBuilder object.
+		 */
+		public PathwayBuilder setLicense(String license) {
+			this.license = license;
+			return this;
+		}
+
+		/**
+		 * Sets xref and returns this builder object.
+		 * 
+		 * @param xref the xref of the pathway.
+		 * @return the PathwayBuilder object.
+		 */
+		public PathwayBuilder setXref(Xref xref) {
+			this.xref = xref;
+			return this;
+		}
+
+		/**
+		 * Calls the private constructor in the Pathway class and passes builder object
+		 * itself as the parameter to this private constructor.
+		 * 
+		 * @return the created Pathway object.
+		 */
+		public Pathway build() {
+			return new Pathway(this);
+		}
+	}
+
+	/**
+	 * Private constructor for Pathway which takes PathwayBuilder object as its
+	 * argument.
+	 * 
+	 * @param builder the PathwayBuilder object.
+	 */
+	private Pathway(PathwayBuilder builder) {
+		this.title = builder.title;
+		this.comments = builder.comments;
+		this.dynamicProperties = builder.dynamicProperties;
+		this.annotationRefs = builder.annotationRefs;
+		this.citationRefs = builder.citationRefs;
+		this.evidenceRefs = builder.evidenceRefs;
+		this.boardWidth = builder.boardWidth;
+		this.boardHeight = builder.boardHeight;
+		this.backgroundColor = builder.backgroundColor;
+		this.infoBox = builder.infoBox;
+		this.organism = builder.organism;
+		this.source = builder.source;
+		this.version = builder.version;
+		this.license = builder.license;
+		this.xref = builder.xref;
+	}
+
+	/**
+	 * Returns the title or name of the pathway.
 	 * 
 	 * @return title the title.
 	 */
@@ -64,7 +203,7 @@ public class Pathway {
 	}
 
 	/**
-	 * Sets the title or name of this pathway.
+	 * Sets the title or name of the pathway.
 	 * 
 	 * @param title the title.
 	 */
@@ -76,7 +215,96 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the organism of this pathway. Organism is the scientific name (e.g.,
+	 * Returns the board width. Board width together with board height define
+	 * drawing size.
+	 * 
+	 * @return boardWidth the board width
+	 */
+	public double getBoardWidth() {
+		return boardWidth;
+	}
+
+	/**
+	 * Sets the board width.
+	 * 
+	 * @param boardWidth the board width
+	 */
+	public void setBoardWidth(double boardWidth) {
+		if (boardWidth < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardWidth);
+		} else {
+			this.boardWidth = boardWidth;
+		}
+	}
+
+	/**
+	 * Returns the board height. Board width together with board height define
+	 * drawing size.
+	 * 
+	 * @return boardHeight the board height
+	 */
+	public double getBoardHeight() {
+		return boardHeight;
+	}
+
+	/**
+	 * Sets the board height.
+	 * 
+	 * @param boardWidth the board width
+	 */
+	public void setBoardHeight(double boardHeight) {
+		if (boardHeight < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardHeight);
+		} else {
+			this.boardHeight = boardHeight;
+		}
+	}
+
+	/**
+	 * Returns the background color of the pathway.
+	 * 
+	 * @return backgroundColor the background color.
+	 */
+	public Color getBackgroundColor() {
+		if (backgroundColor == null) {
+			this.backgroundColor = Color.decode("#ffffff");
+		}
+		return backgroundColor;
+	}
+
+	/**
+	 * Sets the background color of the pathway.
+	 * 
+	 * @param backgroundColor the background color.
+	 */
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+
+	/**
+	 * Returns infoBox. InfoBox holds the xy coordinates for where information, e.g.
+	 * name and organism, are displayed in the pathway. Is Pathway.InfoBox or
+	 * gpml:InfoBox in GPML.
+	 *
+	 * @return infoBox the Coordinate center of the info box.
+	 */
+	public Coordinate getInfoBox() {
+		return infoBox;
+	}
+
+	/**
+	 * Sets infoBox. InfoBox holds the xy coordinates for where information, e.g.
+	 * name and organism, are displayed in the pathway. Is Pathway.InfoBox or
+	 * gpml:InfoBox in GPML.
+	 *
+	 * @param infoBox the Coordinate center of the info box.
+	 */
+	public void setInfoBox(Coordinate infoBox) {
+		this.infoBox = infoBox;
+	}
+
+	/**
+	 * Returns the organism of the pathway. Organism is the scientific name (e.g.,
 	 * Homo sapiens) of the species being described by the pathway.
 	 * 
 	 * @return organism the organism.
@@ -86,8 +314,8 @@ public class Pathway {
 	}
 
 	/**
-	 * Sets the organism of this pathway. Organism is the scientific name (e.g.,
-	 * Homo sapiens) of the species being described by the pathway.
+	 * Sets the organism of the pathway. Organism is the scientific name (e.g., Homo
+	 * sapiens) of the species being described by the pathway.
 	 * 
 	 * @param organism the organism.
 	 */
@@ -159,9 +387,9 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the Xref for this pathway. 
+	 * Returns the Xref for this pathway.
 	 * 
-	 * @return xref the xref of this pathway. 
+	 * @return xref the xref of this pathway.
 	 */
 	public Xref getXref() {
 		return xref;
@@ -227,30 +455,46 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the list of key value pair information properties.
+	 * Returns the map of dynamic properties.
 	 * 
-	 * @return properties the list of properties.
+	 * @param key the key of a key value pair.
+	 * @return the value or dynamic property.
 	 */
-	public List<DynamicProperty> getDynamicProperties() {
+	public Map<String, String> getDynamicProperties() {
 		return dynamicProperties;
 	}
 
 	/**
-	 * Adds given comment to comments list.
+	 * Gets a set of all dynamic property keys.
 	 * 
-	 * @param comment the comment to be added.
+	 * @return a set of all dynamic property keys.
 	 */
-	public void addDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.add(dynamicProperty);
+	public Set<String> getDynamicPropertyKeys() {
+		return dynamicProperties.keySet();
 	}
 
 	/**
-	 * Removes given comment from comments list.
+	 * Returns a dynamic property string value.
 	 * 
-	 * @param comment the comment to be removed.
+	 * @param key the key of a key value pair.
+	 * @return the value or dynamic property.
 	 */
-	public void removeDynamicProperty(DynamicProperty dynamicProperty) {
-		dynamicProperties.remove(dynamicProperty);
+	public String getDynamicProperty(String key) {
+		return dynamicProperties.get(key);
+	}
+
+	/**
+	 * Sets a dynamic property. Setting to null means removing this dynamic property
+	 * altogether.
+	 * 
+	 * @param key   the key of a key value pair.
+	 * @param value the value of a key value pair.
+	 */
+	public void setDynamicProperty(String key, String value) {
+		if (value == null)
+			dynamicProperties.remove(key);
+		else
+			dynamicProperties.put(key, value);
 	}
 
 	/**
@@ -332,92 +576,6 @@ public class Pathway {
 	 */
 	public void removeEvidenceRef(Evidence evidenceRef) {
 		evidenceRefs.remove(evidenceRef);
-	}
-
-	/**
-	 * Returns the board width. Board width together with board height define
-	 * drawing size.
-	 * 
-	 * @return boardWidth the board width
-	 */
-	public double getBoardWidth() {
-		return boardWidth;
-	}
-
-	/**
-	 * Sets the board width.
-	 * 
-	 * @param boardWidth the board width
-	 */
-	public void setBoardWidth(double boardWidth) {
-		if (boardWidth < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardWidth);
-		} else {
-			this.boardWidth = boardWidth;
-		}
-	}
-
-	/**
-	 * Returns the board height. Board width together with board height define
-	 * drawing size.
-	 * 
-	 * @return boardHeight the board height
-	 */
-	public double getBoardHeight() {
-		return boardHeight;
-	}
-
-	/**
-	 * Sets the board height.
-	 * 
-	 * @param boardWidth the board width
-	 */
-	public void setBoardHeight(double boardHeight) {
-		if (boardHeight < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardHeight);
-		} else {
-			this.boardHeight = boardHeight;
-		}
-	}
-
-	/**
-	 * Returns the background color of the pathway.
-	 * 
-	 * @return backgroundColor the background color.
-	 */
-	public Color getBackgroundColor() {
-		return backgroundColor;
-	}
-
-	/**
-	 * Sets the background color of the pathway.
-	 * 
-	 * @param backgroundColor the background color.
-	 */
-	public void setBackgroundColor(Color backgroundColor) {
-		this.backgroundColor = backgroundColor;
-	}
-
-	/**
-	 * Returns infoBox. InfoBox holds the xy coordinates for where information, e.g.
-	 * name and organism, are displayed in the pathway. Is Pathway.InfoBox or
-	 * gpml:InfoBox in GPML.
-	 *
-	 * @return infoBox the Coordinate center of the info box.
-	 */
-	public Coordinate getInfoBox() {
-		return infoBox;
-	}
-
-	/**
-	 * Sets infoBox. InfoBox holds the xy coordinates for where information, e.g.
-	 * name and organism, are displayed in the pathway. Is Pathway.InfoBox or
-	 * gpml:InfoBox in GPML.
-	 *
-	 * @param infoBox the Coordinate center of the info box.
-	 */
-	public void setInfoBox(Coordinate infoBox) {
-		this.infoBox = infoBox;
 	}
 
 }

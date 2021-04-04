@@ -112,12 +112,32 @@ public abstract class ElementInfo extends PathwayElement {
 	}
 
 	/**
+	 * Returns the map of dynamic properties.
+	 * 
+	 * @param key the key of a key value pair.
+	 * @return the value or dynamic property.
+	 */
+	public Map<String, String> getDynamicProperties() {
+		return dynamicProperties;
+	}
+
+	/**
 	 * Gets a set of all dynamic property keys.
 	 * 
 	 * @return a set of all dynamic property keys.
 	 */
 	public Set<String> getDynamicPropertyKeys() {
 		return dynamicProperties.keySet();
+	}
+
+	/**
+	 * Returns a dynamic property string value.
+	 * 
+	 * @param key the key of a key value pair.
+	 * @return the value or dynamic property.
+	 */
+	public String getDynamicProperty(String key) {
+		return dynamicProperties.get(key);
 	}
 
 	/**
@@ -132,16 +152,6 @@ public abstract class ElementInfo extends PathwayElement {
 			dynamicProperties.remove(key);
 		else
 			dynamicProperties.put(key, value);
-	}
-
-	/**
-	 * Gets a dynamic property string value.
-	 * 
-	 * @param key the key of a key value pair.
-	 * @return the value or dynamic property.
-	 */
-	public String getDynamicProperty(String key) {
-		return dynamicProperties.get(key);
 	}
 
 	/**

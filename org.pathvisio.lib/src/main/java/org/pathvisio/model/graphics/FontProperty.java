@@ -17,11 +17,9 @@
 package org.pathvisio.model.graphics;
 
 import java.awt.Color;
-import java.util.ArrayList;
 
 import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.VAlignType;
-import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for common font properties.
@@ -43,7 +41,7 @@ public class FontProperty {
 	/**
 	 * Constructor for all font properties. Default values in ( ). 
 	 * 
-	 * @param textColor      the color of text, (Black).
+	 * @param textColor      the color of text, (#000000 black).
 	 * @param fontName       the name of the set of printable text characters to be
 	 *                       used for visualization, (Arial).
 	 * @param fontWeight     the thickness of the font used, bold or (Normal).                        more weight, by default normal.
