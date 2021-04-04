@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package keep;
+package temp;
 
 /**
  * This class stores all information relevant to a Legend pathway element.

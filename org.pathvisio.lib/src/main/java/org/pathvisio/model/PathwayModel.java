@@ -46,8 +46,8 @@ import org.pathvisio.model.elements.Shape;
 import org.pathvisio.model.elements.State;
 import org.pathvisio.util.Utils;
 
-import keep.ElementLink.ElementIdContainer;
-import keep.ElementLink.ElementRefContainer;
+import temp.ElementLink.ElementIdContainer;
+import temp.ElementLink.ElementRefContainer;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains

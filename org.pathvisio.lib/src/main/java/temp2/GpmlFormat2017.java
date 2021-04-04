@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package keep2;
+package temp2;
 
 import org.bridgedb.DataSource;
 import org.jdom.Document;
@@ -27,8 +27,8 @@ import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormatReader;
 import org.pathvisio.io.GpmlFormatWriter;
 
-import keep2.GpmlFormatAbstract2017.AttributeInfo;
-import keep2.GpmlFormatAbstract2017.ByElementName;
+import temp2.GpmlFormatAbstract2017.AttributeInfo;
+import temp2.GpmlFormatAbstract2017.ByElementName;
 
 import java.awt.*;
 import java.io.File;

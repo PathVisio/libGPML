@@ -51,8 +51,8 @@ import keep.IElementIdContainer;
  * implementation for different GpmlFormat versions. Code that is shared between
  * multiple versions is located here.
  */
-public abstract class GpmlFormatAbstract {
-	protected GpmlFormatAbstract(String xsdFile, Namespace nsGPML) {
+public abstract class Gpml2013aFormatAbstract {
+	protected Gpml2013aFormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}
@@ -292,6 +292,33 @@ public abstract class GpmlFormatAbstract {
 		setAttribute("Pathway.Graphics", "BoardHeight", graphics, String.valueOf(p.getBoardHeight()));
 
 		writeMappInfoVariable(root, p);
+		
+		// Add element Xref
+		Element xref = new Element("Xref", getGpmlNamespace());
+
+		// TODO: How to handle DataSource properly?
+		String identifier = p.getXref().getId();
+		String dataSource = p.getXref().getDataSource().getFullName();
+		setAttribute("Pathway.Xref", "dataSource", xref, dataSource == null ? "" : dataSource);
+		setAttribute("Pathway.Xref", "identifier", xref, identifier); // TODO also "" for identifier?
+		root.addContent(xref);
+
+		// Add elements Author
+		for (Author a : p.getAuthors()) {
+			if (a == null)
+				continue;
+			Element author = new Element("Author", getGpmlNamespace());
+			setAttribute("Pathway.Author", "name", author, a.getName());
+			setAttribute("Pathway.Author", "fullName", author, a.getFullName());
+			setAttribute("Pathway.Author", "email", author, a.getEmail());
+			root.addContent(author);
+		}
+
+		Element graphics = new Element("Graphics", nsGPML);
+		root.addContent(graphics);
+		setAttribute("Pathway.Graphics", "BoardWidth", graphics, String.valueOf(p.getBoardWidth()));
+		setAttribute("Pathway.Graphics", "BoardHeight", graphics, String.valueOf(p.getBoardHeight()));
+	}
 	}
 
 	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;

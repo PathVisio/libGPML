@@ -23,7 +23,7 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.graphics.Coordinate;
 
-import keep.DynamicProperty;
+import temp.DynamicProperty;
 
 /**
  * This class stores metadata for a Pathway.

@@ -50,41 +50,6 @@ import org.pathvisio.model.type.VAlignType;
 
 public class GPML2021Reader implements GPMLReader {
 
-//	/**
-//	 * Gets a certain attribute value, and replaces it with a suitable default under
-//	 * certain conditions.
-//	 *
-//	 * @param tag  used for lookup in the defaults table.
-//	 * @param name used for lookup in the defaults table.
-//	 * @param el   jdom element to get the attribute from.
-//	 * @throws ConverterException if {@link getAttributeInfo} does not contain a
-//	 *                            mapping for the specified key.
-//	 */
-//	protected String getAttribute(String tag, String name, Element el) throws ConverterException {
-//		String key = tag + "@" + name;
-//		if (!getAttributeInfo().containsKey(key))
-//			throw new ConverterException("Trying to get invalid attribute " + key);
-//		AttributeInfo aInfo = getAttributeInfo().get(key);
-//		String result = ((el == null) ? aInfo.def : el.getAttributeValue(name, aInfo.def));
-//		return result;
-//	}
-
-	/**
-	 * @param o
-	 * @param e
-	 */
-	protected void readLegend(Pathway p, Element e) {
-		// TODO Dynamic Property....
-	}p.getDynamicProperty(Legend_CenterX)
-
-	{
-		o.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
-		String centerX = e.getAttributeValue("CenterX");
-		String centerY = e.getAttributeValue("CenterY");
-		o.getCenterXY().setX(Double.parseDouble(centerX));
-		o.getCenterXY().setY(Double.parseDouble(centerY));
-	}
-
 	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
 
 	public PathwayElement readElement(Element e) throws ConverterException {
@@ -109,10 +74,38 @@ public class GPML2021Reader implements GPMLReader {
 	}
 
 	protected void readComments(ElementInfo o, Element e) throws ConverterException {
-		for (Object f : e.getChildren("Comment", e.getNamespace())) {
-			o.addComment(((Element) f).getText(), getAttribute("Comment", "Source", (Element) f));
+		for (Element comment : e.getChildren("Comment", e.getNamespace())) {
+			String source = comment.getAttributeValue("Source");
+			String content = comment.getText();
+//			o.addComment(new Comment(source, content, e), ;
 		}
 	}
+	
+	protected void readDynamicProperties(ElementInfo o, Element e) throws ConverterException {
+		for (Element comment : e.getChildren("Comment", e.getNamespace())) {
+			String source = comment.getAttributeValue("Source");
+			String content = comment.getText();
+//			o.addComment(new Comment(source, content, e), ;
+		}
+	}
+	
+	protected void readAnnotationRefs(ElementInfo o, Element e) throws ConverterException {
+		for (Element comment : e.getChildren("Comment", e.getNamespace())) {
+			String source = comment.getAttributeValue("Source");
+			String content = comment.getText();
+//			o.addComment(new Comment(source, content, e), ;
+		}
+	}
+	
+	protected void readCitationRefs(ElementInfo o, Element e) throws ConverterException {
+		for (Element comment : e.getChildren("Comment", e.getNamespace())) {
+			String source = comment.getAttributeValue("Source");
+			String content = comment.getText();
+//			o.addComment(new Comment(source, content, e), ;
+		}
+	}
+	
+	
 
 	/**
 	 * @param o
@@ -219,11 +212,11 @@ public class GPML2021Reader implements GPMLReader {
 	private void readShapedElement(ShapedElement o, Element e) throws ConverterException {
 		readPathwayElement(o, e); // TODO: // ElementId, CommentGroup
 		String base = e.getName();
-		String groupRef = getAttribute(base, "GroupRef", e);
-		o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(groupRef));
 		readRectProperty(o, e);
 		readFontProperty(o, e);
 		readShapeStyleProperty(o, e);
+//		String groupRef = getAttribute(base, "GroupRef", e);
+//		o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(groupRef));
 	}
 
 	/**
@@ -285,7 +278,7 @@ public class GPML2021Reader implements GPMLReader {
 		o.setTextLabel(textLabel);
 		o.setType(DataNodeType.fromName(type));
 		o.setXref(identifier, dataSource);
-		readShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
+		readShapedElement(o, e); // elementId, CommentGroup, RectProperty, FontProperty,
 									// ShapeStyleProperty
 	}
 

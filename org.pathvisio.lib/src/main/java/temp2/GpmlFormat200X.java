@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package keep2;
+package temp2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,16 +32,16 @@ import org.pathvisio.core.model.PathwayElement.MPoint;
 import org.pathvisio.core.view.ShapeRegistry;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
-import org.pathvisio.io.GpmlFormatAbstract;
+import org.pathvisio.io.Gpml2021FormatAbstract;
 import org.pathvisio.io.GpmlFormatReader;
-import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
+import org.pathvisio.io.Gpml2021FormatAbstract.AttributeInfo;
 import org.pathvisio.model.PathwayElement;
 
 /**
  * GpmlFormat reader / writer for version 2007 and 2008A. Code shared with other
  * versions is in GpmlFormatAbstract.`
  */
-class GpmlFormat200X extends GpmlFormatAbstract implements GpmlFormatReader {
+class GpmlFormat200X extends Gpml2021FormatAbstract implements GpmlFormatReader {
 	public static final GpmlFormatReader GPML_2007 = new GpmlFormat200X("GPML2007.xsd",
 			Namespace.getNamespace("http://genmapp.org/GPML/2007"));
 	public static final GpmlFormatReader GPML_2008A = new GpmlFormat200X("GPML2008a.xsd",

@@ -65,7 +65,7 @@ import org.pathvisio.model.type.VAlignType;
 import keep.DynamicProperty;
 import keep.Legend;
 
-class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
+class Gpml2013aFormat extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
 	public static final GpmlFormat2013a GPML_2013A = new GpmlFormat2013a("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
@@ -73,7 +73,7 @@ class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 	 * @param xsdFile
 	 * @param ns
 	 */
-	public GpmlFormat2013a(String xsdFile, Namespace ns) {
+	public Gpml2013aFormat(String xsdFile, Namespace ns) {
 		super(xsdFile, ns);
 	}
 

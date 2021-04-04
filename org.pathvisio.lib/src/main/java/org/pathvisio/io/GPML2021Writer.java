@@ -90,10 +90,10 @@ public class GPML2021Writer implements GPMLWriter {
 	 * @throws ConverterException
 	 */
 	protected void writeMappInfo(Element root, Pathway p) throws ConverterException {
-		setAttribute("Pathway", "Name", root, p.getTitle());
-		setAttribute("Pathway", "Organism", root, p.getOrganism());
-		setAttribute("Pathway", "Data-Source", root, p.getSource());
-		setAttribute("Pathway", "Version", root, p.getVersion());
+		root.setAttribute("title",  p.getTitle());
+		root.setAttribute("organism",  p.getOrganism());
+		root.setAttribute("source", p.getSource());
+		root.setAttribute("version", p.getVersion());
 
 		// TODO License?
 

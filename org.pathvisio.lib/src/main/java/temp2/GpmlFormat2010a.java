@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package keep2;
+package temp2;
 
 import java.awt.Color;
 import java.io.File;
@@ -41,13 +41,13 @@ import org.pathvisio.core.view.ShapeRegistry;
 import org.pathvisio.core.view.State;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
-import org.pathvisio.io.GpmlFormatAbstract;
+import org.pathvisio.io.Gpml2021FormatAbstract;
 import org.pathvisio.io.GpmlFormatReader;
 import org.pathvisio.io.GpmlFormatWriter;
-import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
-import org.pathvisio.io.GpmlFormatAbstract.ByElementName;
+import org.pathvisio.io.Gpml2021FormatAbstract.AttributeInfo;
+import org.pathvisio.io.Gpml2021FormatAbstract.ByElementName;
 
-class GpmlFormat2010a extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter 
+class GpmlFormat2010a extends Gpml2021FormatAbstract implements GpmlFormatReader, GpmlFormatWriter 
 {
 	public static final GpmlFormat2010a GPML_2010A = new GpmlFormat2010a (
 			"GPML2010a.xsd", Namespace.getNamespace("http://genmapp.org/GPML/2010a")
