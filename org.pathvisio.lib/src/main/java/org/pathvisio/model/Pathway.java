@@ -556,7 +556,7 @@ public class Pathway {
 	 * 
 	 * @return evidenceRefs the list of evidences referenced.
 	 */
-	public List<Evidence> getEvidenceRef() {
+	public List<Evidence> getEvidenceRefs() {
 		return evidenceRefs;
 	}
 

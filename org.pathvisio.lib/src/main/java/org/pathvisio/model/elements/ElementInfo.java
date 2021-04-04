@@ -216,7 +216,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * @return evidenceRefs the list of evidences referenced, an empty list if no
 	 *         properties are defined.
 	 */
-	public List<Evidence> getEvidenceRef() {
+	public List<Evidence> getEvidenceRefs() {
 		return evidenceRefs;
 	}
 

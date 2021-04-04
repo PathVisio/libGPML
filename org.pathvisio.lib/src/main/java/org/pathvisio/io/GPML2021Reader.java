@@ -22,8 +22,6 @@ import java.util.List;
 
 import org.jdom2.Element;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
-import org.pathvisio.model.ObjectType;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.elements.Anchor;
@@ -32,12 +30,7 @@ import org.pathvisio.model.elements.LineElement;
 import org.pathvisio.model.elements.Point;
 import org.pathvisio.model.elements.ShapedElement;
 import org.pathvisio.model.graphics.Coordinate;
-import org.pathvisio.model.pathwayelements.DataNode;
-import org.pathvisio.model.pathwayelements.Group;
-import org.pathvisio.model.pathwayelements.Interaction;
-import org.pathvisio.model.pathwayelements.Label;
-import org.pathvisio.model.pathwayelements.Shape;
-import org.pathvisio.model.pathwayelements.State;
+import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.AnchorType;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.DataNodeType;
@@ -48,8 +41,9 @@ import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.model.type.VAlignType;
 
-public class GPML2021Reader implements GPMLReader {
-
+public class GPML2021Reader {
+	
+	
 	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
 
 	public PathwayElement readElement(Element e) throws ConverterException {
@@ -105,31 +99,89 @@ public class GPML2021Reader implements GPMLReader {
 		}
 	}
 	
-	
 
+	/**
+	 * 
+	 * Create a single PathwayElement based on a piece of Jdom tree. Used also by
+	 * Patch utility. Pathway p may be null
+	 */
+	public PathwayElement mapElement(Element e, Pathway p) throws ConverterException {
+		// Creates a pathway element
+		// Adds pathway element to given Pathway.
+		// reads(pathway element o, element e)... In the process it sets the pathway
+		// element?
+		// Finally this pathway element is returned.
+	}
+
+	
+	
 	/**
 	 * @param o
 	 * @param e
 	 * @throws ConverterException
 	 */
-	private void readPathwayElement(PathwayElement o, Element e) throws ConverterException {
-		writeElementId(o, e); // GraphId
+	private void readElementInfo(PathwayElement o, Element e) throws ConverterException {
+		readElementId(o, e); // GraphId		
 		readComments(o, e);
-		readBiopaxRef(o, e);
-		writeAttributes(o, e);
+		readDynamicProperties(o, e);
+		readAnnotationRefs(o, e);
+		readCitationRefs(o, e);
+		readEvidenceRefs(o, e);
 	}
 
-	@Override
-	protected void readMappInfoDataVariable(Pathway p, Element e) throws ConverterException {
-		p.setLicense(getAttribute("Pathway", "License", e));
-//		
-//		
-//		private String title = "untitled";
-//		private String organism = null;
-//		private String source = null;
-//		private String version = null;
-//		private String license = null;
-//	}
+
+	protected void readGroupRef(ShapedElement o, Element e) {
+		String groupRef = e.getAttributeValue("groupRef");
+		if (groupRef != null && !groupRef.equals("")) {
+			o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(id));
+		}
+	}
+
+	protected void readGroupRef(LineElement o, Element e) {
+		String groupRef = e.getAttributeValue("groupRef");
+		if (groupRef != null && !groupRef.equals("")) {
+			o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(id));
+		}
+	}
+	
+	/**
+	 * Attribute in gpml
+	 * 
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void readDynamicProperty(PathwayElement o, Element e) throws ConverterException {
+		for (Object f : e.getChildren("Attribute", e.getNamespace())) {
+			String key = getAttribute("Attribute", "Key", (Element) f);
+			String value = getAttribute("Attribute", "Value", (Element) f);
+			o.addDynamicProperty(special); // TODO look into implementation
+		}
+	}
+	protected void readPathway(Pathway p, Element root) throws ConverterException {
+		String title = root.getAttributeValue("title");
+		
+		
+		String boardWidth = root.getAttributeValue("boardWidth");
+		String boardHeight = root.getAttributeValue("boardHeight");
+		String backgroundColor = root.getAttributeValue("backgroundColor");
+		
+		String infoBoxCenterX = root.getAttributeValue("centerX");
+		String infoBoxCenterY = root.getAttributeValue("centerY");
+
+		Element xref = root.getChild("Xref", root.getNamespace());
+		String identifier = xref.getAttributeValue("identifier");
+		String dataSource = xref.getAttributeValue("dataSource");
+		//COmments list... etc. 
+		
+		String organism = root.getAttributeValue("organism");
+		String source =root.getAttributeValue("source");
+		String version = root.getAttributeValue("version");
+		String license = root.getAttributeValue("license");
+	}
+	
+	
+	
 
 	protected void readRectProperty(ShapedElement o, Element e) throws ConverterException {
 		String base = e.getName();
@@ -395,6 +447,16 @@ public class GPML2021Reader implements GPMLReader {
 		readShapeStyleProperty(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
 										// ShapeStyleProperty
 
+	}
+	
+	protected List<Label> readLabels(List<Element> elist) throws ConverterException {
+		for (Element e: elist) {
+			String textLabel = e.getAttributeValue("textLabel");
+			String href = e.getAttributeValue("href");
+			o.setTextLabel(textLabel);
+			o.setHref(href);
+			readShapeStyleProperty(o, e);
+		}
 	}
 
 	/**
