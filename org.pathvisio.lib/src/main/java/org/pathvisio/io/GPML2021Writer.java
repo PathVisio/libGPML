@@ -58,9 +58,55 @@ public class GPML2021Writer {
 //
 //	public Namespace getGpmlNamespace () { return nsGPML; }
 //	
-//	
+//		/**
+	 * Writes the JDOM document to the outputstream specified
+	 * 
+	 * @param out      the outputstream to which the JDOM document should be writed
+	 * @param validate if true, validate the dom structure before writing. If there
+	 *                 is a validation error, or the xsd is not in the classpath, an
+	 *                 exception will be thrown.
+	 * @throws ConverterException
+	 */
+	public void writeToXml(PathwayModel pwy, OutputStream out, boolean validate) throws ConverterException {
+		Document doc = createJdom(pwy);
 
-	PathwayModel pathwayModel = new PathwayModel();
+		// Validate the JDOM document
+		if (validate)
+			validateDocument(doc);
+		// Get the XML code
+		XMLOutputter xmlcode = new XMLOutputter(Format.getPrettyFormat());
+		Format f = xmlcode.getFormat();
+		f.setEncoding("UTF-8");
+		f.setTextMode(Format.TextMode.NORMALIZE);
+		xmlcode.setFormat(f);
+
+		try {
+			// Send XML code to the outputstream
+			xmlcode.output(doc, out);
+		} catch (IOException ie) {
+			throw new ConverterException(ie);
+		}
+	}
+
+	/**
+	 * Writes the JDOM document to the file specified
+	 * 
+	 * @param file     the file to which the JDOM document should be saved
+	 * @param validate if true, validate the dom structure before writing to file.
+	 *                 If there is a validation error, or the xsd is not in the
+	 *                 classpath, an exception will be thrown.
+	 */
+	public void writeToXml(Pathway pwy, File file, boolean validate) throws ConverterException {
+		OutputStream out;
+		try {
+			out = new FileOutputStream(file);
+		} catch (IOException ex) {
+			throw new ConverterException(ex);
+		}
+		writeToXml(pwy, out, validate);
+	}
+	
+
 	SchemaFactory schemafac = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	Schema schema = schemafac.newSchema(new File("GPML2021.xsd"));
 	XMLReaderJDOMFactory factory = new XMLReaderSchemaFactory(schema);
@@ -69,57 +115,48 @@ public class GPML2021Writer {
 
 	// TODO look up how to handle namespace properly
 
-	public Document writePathwayModel(PathwayModel m) throws ConverterException {
+	public Document writePathwayModel(PathwayModel pathwayModel) throws ConverterException {
 		Document doc = new Document();
-		Element root = new Element("Pathway", root.getNamespace());
+		Element root = new Element("Pathway");
 		doc.setRootElement(root);
 
-		List<Element> elementList = new ArrayList<Element>();
+		if (root != null) {
 
-		writePathway(m.getPathway(), root);
+			writePathway(pathwayModel.getPathway(), root);
+			writeAuthors(pathwayModel.getAuthors(), root);
+			writeDataNodes(pathwayModel.getDataNodes(), root);
+			writeInteractions(pathwayModel.getInteractions(), root);
+			writeGraphicalLines(pathwayModel.getGraphicalLines(), root);
+			writeLabels(pathwayModel.getLabels(), root);
+			writeShapes(pathwayModel.getShapes(), root);
+			writeGroups(pathwayModel.getGroups(), root);
 
-		root.addContent(elementList);
-
-		writeAuthors(m, root);
-		writeAuthors(m.getAuthors(), root); //List<Author> authors
-		
-		<DataNode> dataNodes = m.getDataNodes(); // TODO And states
-		List<Interaction> interactions = m.getInteractions();
-		List<GraphicalLine> graphicaLines = m.getGraphicalLines();
-		List<Label> labels = m.getLabels();
-		List<Shape> shapes = m.getShapes();
-		List<Group> groups = m.getGroups();
-
-		List<Annotation> annotations = m.getAnnotations();
-		List<Citation> citations = m.getCitations();
-		List<Evidence> evidences = m.getEvidences();
-//			for (Evidence o: evidences) {
-//				Element e = createJdomElement(o);
-//				if (e ! = null)
-//					elementList.add(e);
-//			}
-
-		root.addContent(e);
+			List<Annotation> annotations = pathwayModel.getAnnotations();
+			List<Citation> citations = pathwayModel.getCitations();
+			List<Evidence> evidences = pathwayModel.getEvidences();
+		}
+//		root.addContent(e);
 		return doc;
 
 	}
 
-	protected void writeElementId(PathwayElement o, Element e) {
-		String elementId = o.getElementId();
-		if (elementId != null && !elementId.equals("")) {
-			e.setAttribute("elementId", elementId);
-		}
-	}
-
-	private void writeAuthors(PathwayModel m, Element root) throws ConverterException {
-		for (Author a : m.getAuthors()) {
-			if (a == null)
+	private void writeAuthors(List<Author> authors, Element root) throws ConverterException {
+		Element aus = new Element("Authors", root.getNamespace());
+		List<Element> auList = new ArrayList<Element>();
+		for (Author author : authors) {
+			if (author == null)
 				continue;
-			Element author = new Element("Author", root.getNamespace());
-			author.setAttribute("name", a.getName());
-			author.setAttribute("fullName", a.getFullName());
-			author.setAttribute("email", a.getEmail());
-			root.addContent(author);
+			Element au = new Element("Author", root.getNamespace());
+			au.setAttribute("name", author.getName());
+			au.setAttribute("fullName", author.getFullName());
+			au.setAttribute("email", author.getEmail());
+			if (au != null) {
+				auList.add(au);
+			}
+		}
+		if (auList != null && auList.isEmpty() == false) {
+			aus.addContent(auList);
+			root.addContent(aus);
 		}
 	}
 
@@ -130,32 +167,30 @@ public class GPML2021Writer {
 	 * @param o
 	 * @throws ConverterException
 	 */
-	protected void writePathway(Pathway p, Element root) throws ConverterException {
-		root.setAttribute("title", p.getTitle());
+	protected void writePathway(Pathway pathway, Element root) throws ConverterException {
+		root.setAttribute("title", pathway.getTitle());
 
-		Element graphics = new Element("Graphics", root.getNamespace());
-		root.addContent(graphics);
-		graphics.setAttribute("boardWidth", String.valueOf(p.getBoardWidth()));
-		graphics.setAttribute("boardHeight", String.valueOf(p.getBoardHeight()));
+		Element gfx = new Element("Graphics", root.getNamespace());
+		root.addContent(gfx);
+		gfx.setAttribute("boardWidth", String.valueOf(pathway.getBoardWidth()));
+		gfx.setAttribute("boardHeight", String.valueOf(pathway.getBoardHeight()));
 
-//		if (root != null) {
+		writeXref(pathway.getXref(), root);
 
-		writeXref(p.getXref(), root);
+		root.setAttribute("organism", pathway.getOrganism());
+		root.setAttribute("source", pathway.getSource());
+		root.setAttribute("version", pathway.getVersion());
+		root.setAttribute("license", pathway.getLicense());
 
-		root.setAttribute("organism", p.getOrganism());
-		root.setAttribute("source", p.getSource());
-		root.setAttribute("version", p.getVersion());
-		root.setAttribute("license", p.getLicense());
-
-		writeInfoBox(p.getInfoBox(), root);
-		writeComments(p.getComments(), root);
-		writeDynamicProperties(p.getDynamicProperties(), root);
-		writeAnnotationRefs(p.getAnnotationRefs(), root);
-		writeCitationRefs(p.getCitationRefs(), root);
-		writeEvidenceRefs(p.getEvidenceRefs(), root);
+		writeInfoBox(pathway.getInfoBox(), root);
+		writeComments(pathway.getComments(), root);
+		writeDynamicProperties(pathway.getDynamicProperties(), root);
+		writeAnnotationRefs(pathway.getAnnotationRefs(), root);
+		writeCitationRefs(pathway.getCitationRefs(), root);
+		writeEvidenceRefs(pathway.getEvidenceRefs(), root);
 	}
 
-	protected void writeXref(Xref xref, Element e) {
+	protected void writeXref(Xref xref, Element e) { // TODO boolean required
 		Element xrf = new Element("Xref", e.getNamespace());
 		String identifier = xref.getId();
 		String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
@@ -224,37 +259,12 @@ public class GPML2021Writer {
 		}
 	}
 
-	protected void writeGroupRef(Group parentGroup, Element e) {
-		String groupRef = parentGroup.getElementId();
-		if (groupRef != null && !groupRef.equals("")) {
-			e.setAttribute("GroupRef", groupRef);
-		}
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	private void writeElementInfo(ElementInfo o, Element e) throws ConverterException {
-		writeElementId(o, e);
-		writeComments(o, e);
-		writeAnnotationRefs(o, e);
-		writeCitationRefs(o, e);
-		writeEvidenceRefs(o, e);
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeRectProperty(ShapedElement o, Element e) throws ConverterException {
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		graphics.setAttribute("centerX", Double.toString(o.getRectProperty().getCenterXY().getX()));
-		graphics.setAttribute("centerY", Double.toString(o.getRectProperty().getCenterXY().getY()));
-		graphics.setAttribute("width", Double.toString(o.getRectProperty().getWidth()));
-		graphics.setAttribute("height", Double.toString(o.getRectProperty().getHeight()));
+	protected void writeRectProperty(RectProperty rectProp, Element e) throws ConverterException {
+		Element gfx = e.getChild("Graphics", e.getNamespace());
+		gfx.setAttribute("centerX", Double.toString(rectProp.getCenterXY().getX()));
+		gfx.setAttribute("centerY", Double.toString(rectProp.getCenterXY().getY()));
+		gfx.setAttribute("width", Double.toString(rectProp.getWidth()));
+		gfx.setAttribute("height", Double.toString(rectProp.getHeight()));
 	}
 
 	/**
@@ -262,155 +272,146 @@ public class GPML2021Writer {
 	 * Graphics element of the given pathway element.
 	 */
 	protected void writeFontProperty(FontProperty fontProp, Element e) throws ConverterException {
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		graphics.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor()));
-		graphics.setAttribute("fontName", fontProp.getFontName() == null ? "" : fontProp.getFontName());
-		graphics.setAttribute("fontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
-		graphics.setAttribute("fontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
-		graphics.setAttribute("fontDecoration", fontProp.getFontDecoration() ? "Underline" : "Normal");
-		graphics.setAttribute("fontStrikethru", fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
-		graphics.setAttribute("fontSize", Integer.toString((int) fontProp.getFontSize()));
-		graphics.setAttribute("hAlign", fontProp.getVAlign().getName());
-		graphics.setAttribute("vAlign", fontProp.getHAlign().getName());
+		Element gfx = e.getChild("Graphics", e.getNamespace());
+		gfx.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor()));
+		gfx.setAttribute("fontName", fontProp.getFontName() == null ? "" : fontProp.getFontName());
+		gfx.setAttribute("fontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
+		gfx.setAttribute("fontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
+		gfx.setAttribute("fontDecoration", fontProp.getFontDecoration() ? "Underline" : "Normal");
+		gfx.setAttribute("fontStrikethru", fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
+		gfx.setAttribute("fontSize", Integer.toString((int) fontProp.getFontSize()));
+		gfx.setAttribute("hAlign", fontProp.getVAlign().getName());
+		gfx.setAttribute("vAlign", fontProp.getHAlign().getName());
 	}
 
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element e) throws ConverterException {
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		graphics.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor()));
-		graphics.setAttribute("borderStyle", shapeProp.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
-		graphics.setAttribute("borderWidth", String.valueOf(shapeProp.getBorderWidth()));
-		graphics.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor()));
-		graphics.setAttribute("shapeType", shapeProp.getShapeType().getName());
-		graphics.setAttribute("zOrder", String.valueOf(shapeProp.getZOrder()));
+		Element gfx = e.getChild("Graphics", e.getNamespace());
+		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor()));
+		gfx.setAttribute("borderStyle", shapeProp.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		gfx.setAttribute("borderWidth", String.valueOf(shapeProp.getBorderWidth()));
+		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor()));
+		gfx.setAttribute("shapeType", shapeProp.getShapeType().getName());
+		gfx.setAttribute("zOrder", String.valueOf(shapeProp.getZOrder()));
 	}
 
-	
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeLineStyleProperty(LineElement o, Element e) throws ConverterException {
-		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		String lineColor = ColorUtils.colorToHex(o.getLineStyleProperty().getLineColor());
-		String lineStyle = o.getLineStyleProperty().getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken";
-		String lineWidth = String.valueOf(o.getLineStyleProperty().getLineWidth());
-		String connectorType = o.getLineStyleProperty().getConnectorType().getName();
-		String zOrder = String.valueOf(o.getLineStyleProperty().getZOrder());
-
-		// TODO COLOR
-		graphics.setAttribute("lineColor", lineColor);
-
-		graphics.setAttribute("lineStyle", lineStyle);
-		graphics.setAttribute("lineWidth", lineWidth);
-		// TODO ConnectorType enum
-		graphics.setAttribute("connectorType", connectorType);
-		graphics.setAttribute("zOrder", zOrder);
+	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element e) throws ConverterException {
+		Element gfx = e.getChild("Graphics", e.getNamespace());
+		gfx.setAttribute("lineColor", ColorUtils.colorToHex(lineProp.getLineColor()));
+		gfx.setAttribute("lineStyle", lineProp.getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		gfx.setAttribute("lineWidth", String.valueOf(lineProp.getLineWidth()));
+		gfx.setAttribute("connectorType", lineProp.getConnectorType().getName());
+		gfx.setAttribute("zOrder", String.valueOf(lineProp.getZOrder()));
 
 	}
 
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeDataNode(DataNode o, Element e) throws ConverterException {
+	protected void writeGroupRef(String groupRef, Element e) {
+		if (groupRef != null && !groupRef.equals(""))
+			e.setAttribute("groupRef", groupRef);
+	}
 
-		// TODO STATE
-		// TODO elementRef
-		String textLabel = o.getTextLabel();
-		String type = o.getType().getName();
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = o.getXref().getId();
-		String dataSource = o.getXref().getDataSource().getFullName();
-		e.setAttribute("textLabel", textLabel);
-		e.setAttribute("type", type);
-		xref.setAttribute("dataSource", dataSource == null ? "" : dataSource);
-		xref.setAttribute("identifier", identifier);
-//		writeCommon(o, e); //Comment, Attribute, Biopax 
-		writeShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
-									// ShapeStyleProperty
+	protected void writeElementRef(String elementRef, Element e) {
+		if (elementRef != null && !elementRef.equals(""))
+			e.setAttribute("elementRef", elementRef);
+	}
 
+	protected void writeElementId(String elementId, Element e) {
+		if (elementId != null && !elementId.equals(""))
+			e.setAttribute("elementId", elementId);
 	}
 
 	/**
-	 * @param o
-	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void writeState(State o, Element e) throws ConverterException {
-		writePathwayElement(o, e); // TODO: // ElemenId, CommentGroup
-		// TODO elementRef
-		e.setAttribute("State", "GraphRef", e, o.getElementRef()); // TODO Check if null
-		e.setAttribute("State", "TextLabel", e, o.getTextLabel());
-		e.setAttribute("State", "StateType", e, o.getType().getName());
-
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-//		graphics.setAttribute("State.Graphics", "RelX", graphics, "" + o.getRelX());
-//		graphics.setAttribute("State.Graphics", "RelY", graphics, "" + o.getRelY());
-//		
-//		graphics.setAttribute("State.Graphics", "Width", graphics, "" + o.getWidth());
-//		graphics.setAttribute("State.Graphics", "Height", graphics, "" + o.getHeight());
-//		/** FontProperty */
-//		graphics.setAttribute("State.Graphics", "FontName", graphics,
-//				o.getFontProperty().getFontName() == null ? "" : o.getFontProperty().getFontName());
-//		graphics.setAttribute("State.Graphics", "FontWeight", graphics, o.getFontProperty().getFontWeight() ? "Bold" : "Normal");
-//		graphics.setAttribute("State.Graphics", "FontStyle", graphics, o.getFontProperty().getFontStyle() ? "Italic" : "Normal");
-//		graphics.setAttribute("State.Graphics", "FontDecoration", graphics,
-//				o.getFontProperty().getFontDecoration() ? "Underline" : "Normal");
-//		graphics.setAttribute("State.Graphics", "FontStrikethru", graphics,
-//				o.getFontProperty().getFontStrikethru() ? "Strikethru" : "Normal");
-//		graphics.setAttribute("State.Graphics", "FontSize", graphics, Integer.toString((int) o.getFontProperty().getFontSize()));
-//		graphics.setAttribute("State.Graphics", "Align", graphics, o.getFontProperty().getVAlign().getName());
-//		graphics.setAttribute("State.Graphics", "Valign", graphics, o.getFontProperty().getHAlign().getName());
-//		/** TODO ShapeStyleProperty */
-		/** Xref */
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String dataSource = o.getXref().getDataSource().getFullName();
-		xref.setAttribute("dataSource", dataSource == null ? "" : dataSource);
-		xref.setAttribute("identifier", o.getXref().getId());
+	private void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+		writeElementId(elementInfo.getElementId(), e);
+		writeComments(elementInfo.getComments(), e);
+		writeDynamicProperties(elementInfo.getDynamicProperties(), e);
+		writeAnnotationRefs(elementInfo.getAnnotationRefs(), e);
+		writeCitationRefs(elementInfo.getCitationRefs(), e);
+		writeEvidenceRefs(elementInfo.getEvidenceRefs(), e);
 	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeRotation(Shape o, Element e) throws ConverterException {
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		setAttribute("Shape.Graphics", "Rotation", graphics, Double.toString(o.getRotation()));
-	}
-
-
-
-	
 
 	/**
 	 * DataNode, Label, Shape, Group
-	 * 
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
 	 */
-	private void writeShapedElement(ShapedElement o, Element e) throws ConverterException {
-		writePathwayElement(o, e); // TODO: ElementId, CommentGroup
-		String base = e.getName();
-
-		String groupRef = o.getGroupRef().getElementId();
-		if (groupRef != null && groupRef.equals("")) {
-			e.setAttribute("GroupRef", groupRef);
-		}
-		writeRectProperty(o, e);
-		writeFontProperty(o, e);
-		writeShapeStyleProperty(o, e);
+	private void writeShapedElement(ShapedElement shapedElement, Element e) throws ConverterException {
+		Element gfx = new Element("Graphics", e.getNamespace());
+		e.addContent(gfx);
+		writeRectProperty(shapedElement.getRectProperty(), e);
+		writeFontProperty(shapedElement.getFontProperty(), e);
+		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), e);
+		writeElementInfo(shapedElement, e);
+		writeGroupRef(shapedElement.getGroupRef().getElementId(), e); // TODO want it after...
 	}
+
+	/**
+	 * DataNode properties in the order to be written:
+	 * 
+	 * - elementId, elementRef, textLabel, type, groupRef
+	 * 
+	 * - Xref, States
+	 * 
+	 * - Graphics (RectAttributes, FontAttributes, ShapeStyleAttributes)
+	 * 
+	 * - Comment, Property, AnnotationRef, CitationRef, EvidenceRef
+	 */
+	protected void writeDataNodes(List<DataNode> dataNodes, Element e) throws ConverterException {
+		Element dns = new Element("DataNodes", e.getNamespace());
+		List<Element> dnList = new ArrayList<Element>();
+		for (DataNode dataNode : dataNodes) {
+			if (dataNode == null)
+				continue;
+			Element dn = new Element("DataNode", e.getNamespace());
+			writeXref(dataNode.getXref(), dn);
+			writeStates(dataNode.getStates(), dn);
+			writeShapedElement(dataNode, dn);
+			writeElementRef(dataNode.getElementRef().getElementId(), dn);
+			dn.setAttribute("textLabel", dataNode.getTextLabel());
+			dn.setAttribute("type", dataNode.getType().getName());
+
+			if (dn != null) {
+				dnList.add(dn);
+			}
+		}
+		if (dnList != null && dnList.isEmpty() == false) {
+			dns.addContent(dnList);
+			e.addContent(dns);
+		}
+	}
+
+	/**
+	 * NB: No elementRef in 2021
+	 */
+	protected void writeStates(List<State> states, Element e) throws ConverterException {
+		Element sts = new Element("States", e.getNamespace());
+		List<Element> stList = new ArrayList<Element>();
+		for (State state : states) {
+			if (state == null)
+				continue;
+			Element st = new Element("State", e.getNamespace());
+			writeXref(state.getXref(), st);
+			writeElementInfo(state, st);
+			st.setAttribute("textLabel", state.getTextLabel());
+			st.setAttribute("type", state.getType().getName());
+
+			Element gfx = new Element("Graphics", st.getNamespace());
+			st.addContent(gfx);
+			gfx.setAttribute("relX", Double.toString(state.getRelX()));
+			gfx.setAttribute("relY", Double.toString(state.getRelY()));
+			writeRectProperty(state.getRectProperty(), gfx); // TODO x and y may not be required...
+			writeFontProperty(state.getFontProperty(), gfx);
+			writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
+
+			if (st != null) {
+				stList.add(st);
+			}
+		}
+		if (stList != null && stList.isEmpty() == false) {
+			sts.addContent(stList);
+			e.addContent(sts);
+		}
+	}
+
 	/**
 	 * @param o
 	 * @param e
@@ -435,7 +436,7 @@ public class GPML2021Writer {
 		writePathwayElement(o, e); /** TODO elementId, CommentGroup */
 
 		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
+		Element gfx = e.getChild("Graphics", e.getNamespace());
 		String groupRef = o.getGroupRef().getElementId();
 		if (groupRef != null && groupRef.equals("")) {
 			e.setAttribute("GroupRef", groupRef);
@@ -448,7 +449,7 @@ public class GPML2021Writer {
 		for (int i = 0; i < pts.size(); i++) {
 			Point pt = pts.get(i);
 			Element point = new Element("Point", e.getNamespace());
-			graphics.addContent(point);
+			gfx.addContent(point);
 			writeElementId(pt, point); // TODO
 			setAttribute(base + ".Graphics.Point", "X", point, Double.toString(pt.getXY().getX()));
 			setAttribute(base + ".Graphics.Point", "Y", point, Double.toString(pt.getXY().getY()));
@@ -469,7 +470,7 @@ public class GPML2021Writer {
 			writeElementId(a, anchor); // TODO
 			setAttribute(base + ".Graphics.Anchor", "Position", anchor, Double.toString(a.getPosition()));
 			setAttribute(base + ".Graphics.Anchor", "Shape", anchor, a.getShapeType().getName());
-			graphics.addContent(anchor);
+			gfx.addContent(anchor);
 		}
 	}
 
@@ -489,18 +490,24 @@ public class GPML2021Writer {
 //
 //	}
 
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeLabel(Label o, Element e) throws ConverterException {
-		String textLabel = o.getTextLabel();
-		String href = o.getHref();
-		setAttribute("Label", "TextLabel", e, textLabel);
-		setAttribute("Label", "Href", e, href);
-		writeShapeStyleProperty(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
-										// ShapeStyleProperty
+	protected void writeLabels(List<Label> labels, Element e) throws ConverterException {
+		Element lbs = new Element("Labels", e.getNamespace());
+		List<Element> lbList = new ArrayList<Element>();
+		for (Label label : labels) {
+			if (label == null)
+				continue;
+			Element lb = new Element("Label", e.getNamespace());
+			writeShapedElement(label, lb);
+			lb.setAttribute("textLabel", label.getTextLabel());
+			lb.setAttribute("href", label.getHref());
+			if (lb != null) {
+				lbList.add(lb);
+			}
+		}
+		if (lbList != null && lbList.isEmpty() == false) {
+			lbs.addContent(lbList);
+			e.addContent(lbs);
+		}
 	}
 
 	/**
@@ -508,225 +515,47 @@ public class GPML2021Writer {
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void writeShape(Shape o, Element e) throws ConverterException {
-
-//		writeCommon(o, e); //CommentGroup, elementId
-		String textLabel = o.getTextLabel();
-		String type = o.getType().getName(); // TODO Shape type enum
-		setAttribute("Shape", "TextLabel", e, textLabel);
-		setAttribute("Shape", "Type", e, type);
-		writeShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
-									// ShapeStyleProperty
-		writeRotation(o, e); // TODO rotation
-		break;
-	}
-
-	protected void writeGroup(Group o, Element e) throws ConverterException {
-
-		// TODO 2013a group does not have graphics
-		writeShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
-									// ShapeStyleProperty
-		/** TODO GroupID */
-		String id = o.createGroupId();
-		if (id != null && !id.equals("")) {
-			e.setAttribute("GroupId", o.createGroupId());
-		}
-
-		String textLabel = o.getTextLabel();
-		String type = o.getType().getName(); // TODO Group type
-		setAttribute("Group", "TextLabel", e, textLabel);
-		setAttribute("Group", "Style", e, type);
-
-		/** Xref added in GPML2021 */
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = o.getXref().getId();
-		String dataSource = o.getXref().getDataSource().getFullName();
-		setAttribute("State.Xref", "Database", xref, dataSource == null ? "" : dataSource);
-		setAttribute("State.Xref", "ID", xref, identifier);
-
-	}
-
-	/**
-	 *
-	 */
-	public Document createJdom(Pathway p) throws ConverterException {
-		Document doc = new Document();
-
-		Element root = new Element("Pathway", getGpmlNamespace());
-		doc.setRootElement(root);
-
-		List<Element> elementList = new ArrayList<Element>();
-
-		// MappInfo
-		Xref xref = p.getXref();
-		List<Author> authors = p.getAuthors(); // length 0 to unbounded
-
-//		List<Annotation> annotations  // --> Manager Pathway.getCitationManager.getCitations()
-//		private List<Citation> citations; // --> Manager
-//		private List<Evidence> evidences; // --> Manager
-
-		List<Comment> comments = p.getComments(); // length 0 to unbounded
-		List<DynamicProperty> dynamicProperties = p.getDynamicProperties(); // length 0 to unbounded
-		List<AnnotationRef> annotationRefs = p.getAnnotationRefs(); // length 0 to unbounded
-//		List<Citation> citationRefs; // length 0 to unbounded
-//		List<Evidence> evidenceRef; // length 0 to unbounded
-		double boardWidth = p.getBoardWidth();
-		double boardHeight = p.getBoardHeight();
-
-		InfoBox i = p.getInfoBox();
-		Element ie = new Element("InfoBox", getGpmlNamespace());
-		writeInfoBox(i, ie);
-
-		e = new Element("Legend", getGpmlNamespace()); // TODO handle Legend
-
-		List<DataNode> dataNodes = p.getDataNodes(); // TODO States
-		Collections.sort(dataNodes); // TODO necessary?
-		for (DataNode o : dataNodes) {
-			Element e = new Element("DataNode", getGpmlNamespace());
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			e.addContent(new Element("Xref", getGpmlNamespace()));
-			writeDataNode(o, e);
-			if (e != null) {
-				elementList.add(e);
+	protected void writeShapes(List<Shape> shapes, Element e) throws ConverterException {
+		Element shs = new Element("Shapes", e.getNamespace());
+		List<Element> shList = new ArrayList<Element>();
+		for (Shape shape : shapes) {
+			if (shape == null)
+				continue;
+			Element sh = new Element("Shape", e.getNamespace());
+			sh.setAttribute("textLabel", shape.getTextLabel());
+			writeShapedElement(shape, sh);
+			Element gfx = sh.getChild("Graphics", sh.getNamespace());
+			gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
+			if (sh != null) {
+				shList.add(sh);
 			}
 		}
-
-		e = new Element("State", getGpmlNamespace());
-		e.addContent(new Element("Graphics", getGpmlNamespace()));
-		e.addContent(new Element("Xref", getGpmlNamespace()));
-
-		List<Interaction> interactions = p.getInteractions();
-		Collections.sort(interactions); // TODO necessary?
-		for (Interaction o : interactions) {
-			Element e = new Element("Interaction", getGpmlNamespace());
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			e.addContent(new Element("Xref", getGpmlNamespace()));
-			writeInteraction(o, e);
-			if (e != null) {
-				elementList.add(e);
-			}
-		}
-
-		List<GraphicalLine> graphicalLines = p.getGraphicalLines();
-		Collections.sort(graphicalLines); // TODO necessary?
-		for (GraphicalLine o : graphicalLines) {
-			Element e = new Element("GraphicalLine", getGpmlNamespace());
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			writeLineElement(o, e);
-			if (e != null) {
-				elementList.add(e);
-			}
-		}
-
-		List<Shape> shapes = p.getShapes();
-		Collections.sort(shapes); // TODO necessary?
-		for (Shape o : shapes) {
-			Element e = new Element("Shape", getGpmlNamespace());
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			writeShape(o, e);
-			if (e != null) {
-				elementList.add(e);
-			}
-		}
-
-		List<Group> groups = p.getGroups();
-		Collections.sort(groups); // TODO necessary?
-		for (Group o : groups) {
-			Element e = new Element("Group", getGpmlNamespace());
-			e.addContent(new Element("Graphics", getGpmlNamespace()));
-			writeGroup(o, e);
-			if (e != null) {
-				elementList.add(e);
-			}
-		}
-
-		// now sort the generated elements in the order defined by the xsd
-		Collections.sort(elementList, new ByElementName());
-		for (Element e : elementList) {
-			// make sure biopax references are sorted alphabetically by rdf-id
-			if (e.getName().equals("Biopax")) {
-				for (Element e3 : e.getChildren()) {
-					e3.removeChildren("AUTHORS", GpmlFormat.BIOPAX);
-				}
-				e.sortChildren(new BiopaxAttributeComparator());
-			}
-			root.addContent(e);
-		}
-
-		return doc;
-
-//		Collections.sort(pathwayElements);
-//		for (PathwayElement o : pathwayElements)
-//		{
-//			if (o.getObjectType() == ObjectType.MAPPINFO)
-//			{
-//				updateMappInfo(root, o);
-//			}
-//			else
-//			{
-//				Element e = createJdomElement(o);
-//				if (e != null)
-//					elementList.add(e);
-//			}
-//		}
-
-//					case BIOPAX:
-//						e = new Element("Biopax", getGpmlNamespace());
-//						writeBiopax(o, e);
-//						break;
-//					}if(e==null)
-//
-//	{
-//		throw new ConverterException("Error creating jdom element with objectType " + o.getObjectType());
-//	}return e;}
-
-	}
-
-	/**
-	 * Writes the JDOM document to the outputstream specified
-	 * 
-	 * @param out      the outputstream to which the JDOM document should be writed
-	 * @param validate if true, validate the dom structure before writing. If there
-	 *                 is a validation error, or the xsd is not in the classpath, an
-	 *                 exception will be thrown.
-	 * @throws ConverterException
-	 */
-	public void writeToXml(Pathway pwy, OutputStream out, boolean validate) throws ConverterException {
-		Document doc = createJdom(pwy);
-
-		// Validate the JDOM document
-		if (validate)
-			validateDocument(doc);
-		// Get the XML code
-		XMLOutputter xmlcode = new XMLOutputter(Format.getPrettyFormat());
-		Format f = xmlcode.getFormat();
-		f.setEncoding("UTF-8");
-		f.setTextMode(Format.TextMode.NORMALIZE);
-		xmlcode.setFormat(f);
-
-		try {
-			// Send XML code to the outputstream
-			xmlcode.output(doc, out);
-		} catch (IOException ie) {
-			throw new ConverterException(ie);
+		if (shList != null && shList.isEmpty() == false) {
+			shs.addContent(shList);
+			e.addContent(shs);
 		}
 	}
 
-	/**
-	 * Writes the JDOM document to the file specified
-	 * 
-	 * @param file     the file to which the JDOM document should be saved
-	 * @param validate if true, validate the dom structure before writing to file.
-	 *                 If there is a validation error, or the xsd is not in the
-	 *                 classpath, an exception will be thrown.
-	 */
-	public void writeToXml(Pathway pwy, File file, boolean validate) throws ConverterException {
-		OutputStream out;
-		try {
-			out = new FileOutputStream(file);
-		} catch (IOException ex) {
-			throw new ConverterException(ex);
+	protected void writeGroups(List<Group> groups, Element e) throws ConverterException {
+		Element gps = new Element("Shapes", e.getNamespace());
+		List<Element> gpList = new ArrayList<Element>();
+		for (Group group : groups) {
+			if (group == null)
+				continue;
+			Element gp = new Element("Shape", e.getNamespace());
+			writeXref(group.getXref(), gp);
+			writeShapedElement(group, gp);
+			gp.setAttribute("textLabel", group.getTextLabel());
+			gp.setAttribute("type", group.getType().getName());
+			if (gp != null) {
+				gpList.add(gp);
+			}
 		}
-		writeToXml(pwy, out, validate);
+		if (gpList != null && gpList.isEmpty() == false) {
+			gps.addContent(gpList);
+			e.addContent(gps);
+		}
 	}
+
+
 }
