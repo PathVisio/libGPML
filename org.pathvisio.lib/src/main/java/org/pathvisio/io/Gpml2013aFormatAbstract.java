@@ -303,6 +303,7 @@ public abstract class Gpml2013aFormatAbstract {
 		setAttribute("Pathway.Xref", "identifier", xref, identifier); // TODO also "" for identifier?
 		root.addContent(xref);
 
+		
 		// Add elements Author
 		for (Author a : p.getAuthors()) {
 			if (a == null)

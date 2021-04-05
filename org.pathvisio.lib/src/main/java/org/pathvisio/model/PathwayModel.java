@@ -507,7 +507,6 @@ public class PathwayModel {
 	public void initMappInfo() {
 		String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
 		pathway.setVersion(dateString);
-		pathway.setTitle("New Pathway");
 	}
 
 	public String summary() {

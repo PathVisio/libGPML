@@ -194,14 +194,23 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Returns the Xref for the data node.
+	 * Returns the Xref for the group.
 	 * 
-	 * @return xref the xref of the data node.
+	 * @return xref the xref of the group
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
+	/**
+	 * Sets the Xref for the group.
+	 * 
+	 * @param xref the xref of the group.
+	 */
+	public void setXref(Xref xref) {
+		this.xref = xref;
+	}
+	
 	/**
 	 * Instantiates data node Xref given identifier and dataSource. Checks whether
 	 * dataSource string is fullName, systemCode, or invalid.
@@ -210,7 +219,7 @@ public class Group extends ShapedElement {
 	 * @param dataSource the source of database entry.
 	 * @throws IllegalArgumentException is given dataSource does not exist.
 	 */
-	public void setXref(String identifier, String dataSource) {
+	public void createXref(String identifier, String dataSource) {
 		if (DataSource.fullNameExists(dataSource)) {
 			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		} else if (DataSource.systemCodeExists(dataSource)) {

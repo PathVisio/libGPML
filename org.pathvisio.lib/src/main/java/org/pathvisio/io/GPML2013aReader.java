@@ -50,6 +50,10 @@ import org.pathvisio.model.type.VAlignType;
 
 public class GPML2013aReader implements GPMLReader {
 
+	
+	//TODO Maintainer is Author????
+	
+	
 	/**
 	 * Gets a certain attribute value, and replaces it with a suitable default under
 	 * certain conditions.

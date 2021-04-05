@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package temp2;
 
 import java.awt.Color;
 import java.io.File;
@@ -210,18 +210,30 @@ public class GPML2021Reader {
 	 * Reads gpml FontAttributes from Graphics element and sets FontProperty values
 	 * in model.
 	 * 
-	 *  Default null values are automatically handled by jdom
+	 * NB: GPML 2013a Schema does not have FontAttribute textColor.
 	 * 
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
 	 */
 	protected FontProperty readFontProperty(Element e) throws ConverterException {
 		String base = e.getName();
 		Element gfx = e.getChild("Graphics", e.getNamespace());
 		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor"));
 		String fontName = gfx.getAttributeValue("fontName");
-		boolean fontWeight = gfx.getAttributeValue("fontWeight").equals("Bold");
-		boolean fontStyle = gfx.getAttributeValue("fontStyle").equals("Italic");
-		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equals("Underline");
-		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equals("Strikethru");
+		
+		String fWeight = gfx.getAttributeValue("fontWeight");
+		boolean fontWeight = fWeight != null && fWeight.equals("Bold");
+		
+		String fStyle = gfx.getAttributeValue("fontStyle");
+		boolean fontStyle = fStyle != null && fStyle.equals("Italic");
+		
+		String fDecor = gfx.getAttributeValue("fontDecoration");
+		boolean fontDecoration = fDecor != null && fDecor.equals("Underline");
+		
+		String fStikethru = gfx.getAttributeValue("fontStrikethru");
+		boolean fontStrikethru = fStikethru != null && fStikethru.equals("Strikethru");
+		
 		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize"));
 		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("hAlign"));
 		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("vAlign"));
@@ -229,7 +241,7 @@ public class GPML2021Reader {
 				hAlignType, vAlignType);
 	}
 
-	protected ShapeStyleProperty readShapeStyleProperty(ShapedElement o, Element e) throws ConverterException {
+	protected void readShapeStyleProperty(ShapedElement o, Element e) throws ConverterException {
 		String base = e.getName();
 		Element graphics = e.getChild("Graphics", e.getNamespace());
 		String borderColor = graphics.getAttributeValue("borderColor");

@@ -270,6 +270,15 @@ public class State extends ElementInfo {
 	public Xref getXref() {
 		return xref;
 	}
+	
+	/**
+	 * Sets the Xref for the state.
+	 * 
+	 * @param xref the xref of the state.
+	 */
+	public void setXref(Xref xref) {
+		this.xref = xref;
+	}
 
 	/**
 	 * Instantiates state Xref given identifier and dataSource. Checks whether
@@ -279,7 +288,7 @@ public class State extends ElementInfo {
 	 * @param dataSource the source of database entry.
 	 * @throws IllegalArgumentException is given dataSource does not exist.
 	 */
-	public void setXref(String identifier, String dataSource) {
+	public void createXref(String identifier, String dataSource) {
 		if (DataSource.fullNameExists(dataSource)) {
 			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		} else if (DataSource.systemCodeExists(dataSource)) {

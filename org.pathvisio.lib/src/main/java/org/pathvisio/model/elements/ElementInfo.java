@@ -89,6 +89,15 @@ public abstract class ElementInfo extends PathwayElement {
 	}
 
 	/**
+	 * Adds all comments from given list to comments list.
+	 * 
+	 * @param comments the comments to be added.
+	 */
+	public void addComments(List<Comment> commentList) {
+		comments.addAll(commentList);
+	}
+
+	/**
 	 * Removes given comment from comments list.
 	 * 
 	 * @param comment the comment to be removed.

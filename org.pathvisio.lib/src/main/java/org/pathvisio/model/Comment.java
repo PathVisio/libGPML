@@ -51,6 +51,26 @@ public class Comment {
 		this.content = content;
 		this.parent = parent;
 	}
+	
+	/**
+	 * Instantiates a Comment.
+	 * 
+	 * @param source  the source of the comment.
+	 * @param content the text of the comment, between Comment tags in GPML.
+	 */
+	public Comment(String source, String content) {
+		this.source = source;
+		this.content = content;
+	}
+
+	/**
+	 * Instantiates a Comment with no source.
+	 * 
+	 * @param content the text of the comment, between Comment tags in GPML.
+	 */
+	public Comment(String content) {
+		this.content = content;
+	}
 
 	/**
 	 * Gets the source of the Comment.

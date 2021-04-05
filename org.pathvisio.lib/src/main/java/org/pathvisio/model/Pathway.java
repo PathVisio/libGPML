@@ -69,16 +69,16 @@ public class Pathway {
 		private double boardHeight;
 		private Color backgroundColor;
 		private Coordinate infoBox;
+		private List<Comment> comments;
+		private Map<String, String> dynamicProperties;
+		private List<AnnotationRef> annotationRefs;
+		private List<Citation> citationRefs;
+		private List<Evidence> evidenceRefs;
 		private String organism; // optional
 		private String source; // optional
 		private String version; // optional
 		private String license; // optional
 		private Xref xref; // optional
-		private List<Comment> comments = new ArrayList<Comment>(); // 0 to unbounded
-		private Map<String, String> dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
-		private List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
-		private List<Citation> citationRefs = new ArrayList<Citation>(); // 0 to unbounded
-		private List<Evidence> evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
 
 		/**
 		 * Public constructor with required attribute name as parameter.
@@ -98,7 +98,11 @@ public class Pathway {
 			this.boardHeight = boardHeight;
 			this.backgroundColor = backgroundColor;
 			this.infoBox = infoBox;
-
+			this.comments = new ArrayList<Comment>(); // 0 to unbounded
+			this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
+			this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
+			this.citationRefs = new ArrayList<Citation>(); // 0 to unbounded
+			this.evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
 		}
 
 		/**
@@ -387,23 +391,32 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the Xref for this pathway.
+	 * Returns the Xref for the pathway.
 	 * 
-	 * @return xref the xref of this pathway.
+	 * @return xref the xref of the pathway.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
+	
+	/**
+	 * Sets the Xref for the pathway.
+	 * 
+	 * @param xref the xref of the pathway.
+	 */
+	public void setXref(Xref xref) {
+		this.xref = xref;
+	}
 
 	/**
-	 * Instantiates pathway Xref given identifier and dataSource. Checks whether
+	 * Creates Xref given identifier and dataSource. Checks whether
 	 * dataSource string is fullName, systemCode, or invalid.
 	 * 
 	 * @param identifier the identifier of the database entry.
 	 * @param dataSource the source of database entry.
 	 * @throws IllegalArgumentException is given dataSource does not exist.
 	 */
-	public void setXref(String identifier, String dataSource) {
+	public void createXref(String identifier, String dataSource) {
 		if (DataSource.fullNameExists(dataSource)) {
 			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		} else if (DataSource.systemCodeExists(dataSource)) {
@@ -430,7 +443,16 @@ public class Pathway {
 	public void addComment(Comment comment) {
 		comments.add(comment);
 	}
-
+	
+	/**
+	 * Adds all comments from given list to comments list.
+	 * 
+	 * @param comments the comments to be added.
+	 */
+	public void addComments(List<Comment> commentList) {
+		comments.addAll(commentList);
+	}
+	
 	/**
 	 * Removes given comment from comments list.
 	 * 

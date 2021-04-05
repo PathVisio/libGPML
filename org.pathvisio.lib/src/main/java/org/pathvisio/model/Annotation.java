@@ -142,16 +142,33 @@ public class Annotation extends PathwayElement {
 	public Xref getXref() {
 		return xref;
 	}
+	
+	
+	/**
+	 * Sets the Xref for the annotation.
+	 * 
+	 * @param xref the xref of the annotation.
+	 */
+	public void setXref(Xref xref) {
+		this.xref = xref;
+	}
 
 	/**
-	 * Instantiates and sets the value of Annotation Xref.
+	 * Instantiates state Xref given identifier and dataSource. Checks whether
+	 * dataSource string is fullName, systemCode, or invalid.
 	 * 
 	 * @param identifier the identifier of the database entry.
 	 * @param dataSource the source of database entry.
+	 * @throws IllegalArgumentException is given dataSource does not exist.
 	 */
-	public void setXref(String identifier, String dataSource) {
-		xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+	public void createXref(String identifier, String dataSource) {
+		if (DataSource.fullNameExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		} else if (DataSource.systemCodeExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		} else {
+			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+		}
 	}
 
 }

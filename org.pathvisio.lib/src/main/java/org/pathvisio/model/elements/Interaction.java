@@ -60,12 +60,21 @@ public class Interaction extends LineElement {
 	private Xref xref;
 
 	/**
-	 * Returns the Xref for the data node.
+	 * Returns the Xref for the interaction.
 	 * 
-	 * @return xref the xref of the data node.
+	 * @return xref the xref of interaction.
 	 */
 	public Xref getXref() {
 		return xref;
+	}
+	
+	/**
+	 * Sets the Xref for the interaction.
+	 * 
+	 * @param xref the xref of the interaction.
+	 */
+	public void setXref(Xref xref) {
+		this.xref = xref;
 	}
 
 	/**
@@ -76,7 +85,7 @@ public class Interaction extends LineElement {
 	 * @param dataSource the source of database entry.
 	 * @throws IllegalArgumentException is given dataSource does not exist.
 	 */
-	public void setXref(String identifier, String dataSource) {
+	public void createXref(String identifier, String dataSource) {
 		if (DataSource.fullNameExists(dataSource)) {
 			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 		} else if (DataSource.systemCodeExists(dataSource)) {
