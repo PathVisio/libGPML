@@ -41,7 +41,7 @@ import org.jdom2.output.XMLOutputter;
 import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
-import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.*;
 
 public class GPML2021Writer {
 
@@ -58,15 +58,16 @@ public class GPML2021Writer {
 //
 //	public Namespace getGpmlNamespace () { return nsGPML; }
 //	
-//		/**
-	 * Writes the JDOM document to the outputstream specified
+
+	/**
+	 * Writes the JDOM document to the outputstream specified**
 	 * 
-	 * @param out      the outputstream to which the JDOM document should be writed
-	 * @param validate if true, validate the dom structure before writing. If there
-	 *                 is a validation error, or the xsd is not in the classpath, an
-	 *                 exception will be thrown.
-	 * @throws ConverterException
+	 * @param out      the outputstream to which the JDOM document should be writed*
+	 * @param validate if true, validate the dom structure before writing. If there*
+	 *                 is a validation error, or the xsd is not in the classpath,an*
+	 *                 exception will be thrown.*@throws ConverterException
 	 */
+
 	public void writeToXml(PathwayModel pwy, OutputStream out, boolean validate) throws ConverterException {
 		Document doc = createJdom(pwy);
 
@@ -105,7 +106,6 @@ public class GPML2021Writer {
 		}
 		writeToXml(pwy, out, validate);
 	}
-	
 
 	SchemaFactory schemafac = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	Schema schema = schemafac.newSchema(new File("GPML2021.xsd"));
@@ -135,29 +135,8 @@ public class GPML2021Writer {
 			List<Citation> citations = pathwayModel.getCitations();
 			List<Evidence> evidences = pathwayModel.getEvidences();
 		}
-//		root.addContent(e);
 		return doc;
 
-	}
-
-	private void writeAuthors(List<Author> authors, Element root) throws ConverterException {
-		Element aus = new Element("Authors", root.getNamespace());
-		List<Element> auList = new ArrayList<Element>();
-		for (Author author : authors) {
-			if (author == null)
-				continue;
-			Element au = new Element("Author", root.getNamespace());
-			au.setAttribute("name", author.getName());
-			au.setAttribute("fullName", author.getFullName());
-			au.setAttribute("email", author.getEmail());
-			if (au != null) {
-				auList.add(au);
-			}
-		}
-		if (auList != null && auList.isEmpty() == false) {
-			aus.addContent(auList);
-			root.addContent(aus);
-		}
 	}
 
 	/**
@@ -259,6 +238,317 @@ public class GPML2021Writer {
 		}
 	}
 
+	private void writeAuthors(List<Author> authors, Element root) throws ConverterException {
+		Element aus = new Element("Authors", root.getNamespace());
+		List<Element> auList = new ArrayList<Element>();
+		for (Author author : authors) {
+			if (author == null)
+				continue;
+			Element au = new Element("Author", root.getNamespace());
+			au.setAttribute("name", author.getName());
+			au.setAttribute("fullName", author.getFullName());
+			au.setAttribute("email", author.getEmail());
+			if (au != null) {
+				auList.add(au);
+			}
+		}
+		if (auList != null && auList.isEmpty() == false) {
+			aus.addContent(auList);
+			root.addContent(aus);
+		}
+	}
+
+	/**
+	 * DataNode properties in the order to be written:
+	 * 
+	 * - elementId, elementRef, textLabel, type, groupRef
+	 * - Xref, States
+	 * - Graphics (RectAttributes, FontAttributes, ShapeStyleAttributes)
+	 * - Comment, Property, AnnotationRef, CitationRef, EvidenceRef
+	 */
+	protected void writeDataNodes(List<DataNode> dataNodes, Element root) throws ConverterException {
+		Element dns = new Element("DataNodes", root.getNamespace());
+		List<Element> dnList = new ArrayList<Element>();
+		for (DataNode dataNode : dataNodes) {
+			if (dataNode == null)
+				continue;
+			Element dn = new Element("DataNode", root.getNamespace());
+			writeXref(dataNode.getXref(), dn);
+			writeStates(dataNode.getStates(), dn);
+			writeShapedElement(dataNode, dn);
+			writeElementRef(dataNode.getElementRef().getElementId(), dn);
+			dn.setAttribute("textLabel", dataNode.getTextLabel());
+			dn.setAttribute("type", dataNode.getType().getName());
+
+			if (dn != null) {
+				dnList.add(dn);
+			}
+		}
+		if (dnList != null && dnList.isEmpty() == false) {
+			dns.addContent(dnList);
+			root.addContent(dns);
+		}
+	}
+
+	/**
+	 * NB: No elementRef in 2021
+	 */
+	protected void writeStates(List<State> states, Element dn) throws ConverterException {
+		Element sts = new Element("States", dn.getNamespace());
+		List<Element> stList = new ArrayList<Element>();
+		for (State state : states) {
+			if (state == null)
+				continue;
+			Element st = new Element("State", dn.getNamespace());
+			writeXref(state.getXref(), st);
+			writeElementInfo(state, st);
+			st.setAttribute("textLabel", state.getTextLabel());
+			st.setAttribute("type", state.getType().getName());
+
+			Element gfx = new Element("Graphics", st.getNamespace());
+			st.addContent(gfx);
+			gfx.setAttribute("relX", Double.toString(state.getRelX()));
+			gfx.setAttribute("relY", Double.toString(state.getRelY()));
+			writeRectProperty(state.getRectProperty(), gfx); // TODO x and y may not be required...
+			writeFontProperty(state.getFontProperty(), gfx);
+			writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
+
+			if (st != null) {
+				stList.add(st);
+			}
+		}
+		if (stList != null && stList.isEmpty() == false) {
+			sts.addContent(stList);
+			dn.addContent(sts);
+		}
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeInteractions(List<Interaction> interactions, Element root) throws ConverterException {
+		Element ias = new Element("Interactions", root.getNamespace());
+		List<Element> iaList = new ArrayList<Element>();
+		for (Interaction interaction : interactions) {
+			if (interaction == null)
+				continue;
+			Element ia = new Element("Interaction", root.getNamespace());
+			writeXref(interaction.getXref(), ia);
+			writeLineElement(interaction, ia);
+			if (ia != null) {
+				iaList.add(ia);
+			}
+		}
+		if (iaList != null && iaList.isEmpty() == false) {
+			ias.addContent(iaList);
+			root.addContent(ias);
+		}
+	}
+
+	protected void writeGraphicalLines(List<GraphicalLine> graphicalLines, Element root) throws ConverterException {
+		Element gfs = new Element("GraphicalLines", root.getNamespace());
+		List<Element> gfList = new ArrayList<Element>();
+		for (GraphicalLine graphicalLine : graphicalLines) {
+			if (graphicalLine == null)
+				continue;
+			Element gf = new Element("GraphicalLine", root.getNamespace());
+			writeLineElement(graphicalLine, gf);
+			if (gf != null) {
+				gfList.add(gf);
+			}
+		}
+		if (gfList != null && gfList.isEmpty() == false) {
+			gfs.addContent(gfList);
+			root.addContent(gfs);
+		}
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeLineElement(LineElement lineElement, Element e) throws ConverterException {
+		writeElementInfo(lineElement, e);
+		Element wyps = new Element("Waypoints", e.getNamespace());
+		e.addContent(wyps);
+		writePoints(lineElement.getPoints(), wyps);
+		writeAnchors(lineElement.getAnchors(), wyps);
+		writeGroupRef(lineElement.getGroupRef().getElementId(), e);
+		Element gfx = new Element("Graphics", e.getNamespace());
+		e.addContent(gfx);
+		writeLineStyleProperty(lineElement.getLineStyleProperty(), e);
+	}
+
+	/**
+	 * elementId, elementRef, arrowHead, x, y, relX, relY //TODO Order
+	 * 
+	 * @param points
+	 * @param ln
+	 * @throws ConverterException
+	 */
+	protected void writePoints(List<Point> points, Element ln) throws ConverterException {
+		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
+		List<Element> ptList = new ArrayList<Element>();
+		for (Point point : points) {
+			if (point == null)
+				continue;
+			Element pt = new Element("Point", ln.getNamespace());
+			writeElementId(point.getElementId(), pt);
+			pt.setAttribute("x", Double.toString(point.getXY().getX()));
+			pt.setAttribute("y", Double.toString(point.getXY().getY()));
+			if (point.getElementRef() != null && !point.getElementRef().equals("")) {
+				writeElementRef(point.getElementRef().getElementId(), pt);
+				pt.setAttribute("relX", Double.toString(point.getRelX()));
+				pt.setAttribute("relY", Double.toString(point.getRelY()));
+			}
+			pt.setAttribute("arrowHead", point.getArrowHead().getName());
+			if (pt != null) {
+				ptList.add(pt);
+			}
+		}
+		if (ptList != null && ptList.isEmpty() == false) {
+			wyps.addContent(ptList);
+		}
+	}
+
+	/**
+	 * elementId, x, y, position, shapeType //TODO Order
+	 * 
+	 * @param points
+	 * @param ln
+	 * @throws ConverterException
+	 */
+	protected void writeAnchors(List<Anchor> anchors, Element ln) throws ConverterException {
+		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
+		List<Element> anList = new ArrayList<Element>();
+		for (Anchor anchor : anchors) {
+			if (anchor == null)
+				continue;
+			Element an = new Element("Point", ln.getNamespace());
+			writeElementId(anchor.getElementId(), an);
+			an.setAttribute("x", Double.toString(anchor.getXY().getX()));
+			an.setAttribute("y", Double.toString(anchor.getXY().getY()));
+			an.setAttribute("position", Double.toString(anchor.getPosition()));
+			an.setAttribute("shapeType", anchor.getShapeType().getName());
+			if (an != null) {
+				anList.add(an);
+			}
+		}
+		if (anList != null && anList.isEmpty() == false) {
+			wyps.addContent(anList);
+		}
+	}
+
+	protected void writeLabels(List<Label> labels, Element root) throws ConverterException {
+		Element lbs = new Element("Labels", root.getNamespace());
+		List<Element> lbList = new ArrayList<Element>();
+		for (Label label : labels) {
+			if (label == null)
+				continue;
+			Element lb = new Element("Label", root.getNamespace());
+			writeShapedElement(label, lb);
+			lb.setAttribute("textLabel", label.getTextLabel());
+			lb.setAttribute("href", label.getHref());
+			if (lb != null) {
+				lbList.add(lb);
+			}
+		}
+		if (lbList != null && lbList.isEmpty() == false) {
+			lbs.addContent(lbList);
+			root.addContent(lbs);
+		}
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void writeShapes(List<Shape> shapes, Element root) throws ConverterException {
+		Element shs = new Element("Shapes", root.getNamespace());
+		List<Element> shList = new ArrayList<Element>();
+		for (Shape shape : shapes) {
+			if (shape == null)
+				continue;
+			Element sh = new Element("Shape", root.getNamespace());
+			sh.setAttribute("textLabel", shape.getTextLabel());
+			writeShapedElement(shape, sh);
+			Element gfx = sh.getChild("Graphics", sh.getNamespace());
+			gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
+			if (sh != null) {
+				shList.add(sh);
+			}
+		}
+		if (shList != null && shList.isEmpty() == false) {
+			shs.addContent(shList);
+			root.addContent(shs);
+		}
+	}
+
+	protected void writeGroups(List<Group> groups, Element root) throws ConverterException {
+		Element gps = new Element("Shapes", root.getNamespace());
+		List<Element> gpList = new ArrayList<Element>();
+		for (Group group : groups) {
+			if (group == null)
+				continue;
+			Element gp = new Element("Shape", root.getNamespace());
+			writeXref(group.getXref(), gp);
+			writeShapedElement(group, gp);
+			gp.setAttribute("textLabel", group.getTextLabel());
+			gp.setAttribute("type", group.getType().getName());
+			if (gp != null) {
+				gpList.add(gp);
+			}
+		}
+		if (gpList != null && gpList.isEmpty() == false) {
+			gps.addContent(gpList);
+			root.addContent(gps);
+		}
+	}
+
+	protected void writeElementId(String elementId, Element e) {
+		if (elementId != null && !elementId.equals(""))
+			e.setAttribute("elementId", elementId);
+	}
+
+	protected void writeElementRef(String elementRef, Element e) {
+		if (elementRef != null && !elementRef.equals(""))
+			e.setAttribute("elementRef", elementRef);
+	}
+
+	protected void writeGroupRef(String groupRef, Element e) {
+		if (groupRef != null && !groupRef.equals(""))
+			e.setAttribute("groupRef", groupRef);
+	}
+
+	/**
+	 * DataNode, Label, Shape, Group
+	 */
+	private void writeShapedElement(ShapedElement shapedElement, Element e) throws ConverterException {
+		Element gfx = new Element("Graphics", e.getNamespace());
+		e.addContent(gfx);
+		writeRectProperty(shapedElement.getRectProperty(), e);
+		writeFontProperty(shapedElement.getFontProperty(), e);
+		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), e);
+		writeElementInfo(shapedElement, e);
+		writeGroupRef(shapedElement.getGroupRef().getElementId(), e); // TODO want it after...
+	}
+
+	/**
+	 * @throws ConverterException
+	 */
+	private void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+		writeElementId(elementInfo.getElementId(), e);
+		writeComments(elementInfo.getComments(), e);
+		writeDynamicProperties(elementInfo.getDynamicProperties(), e);
+		writeAnnotationRefs(elementInfo.getAnnotationRefs(), e);
+		writeCitationRefs(elementInfo.getCitationRefs(), e);
+		writeEvidenceRefs(elementInfo.getEvidenceRefs(), e);
+	}
+
 	protected void writeRectProperty(RectProperty rectProp, Element e) throws ConverterException {
 		Element gfx = e.getChild("Graphics", e.getNamespace());
 		gfx.setAttribute("centerX", Double.toString(rectProp.getCenterXY().getX()));
@@ -303,259 +593,5 @@ public class GPML2021Writer {
 		gfx.setAttribute("zOrder", String.valueOf(lineProp.getZOrder()));
 
 	}
-
-	protected void writeGroupRef(String groupRef, Element e) {
-		if (groupRef != null && !groupRef.equals(""))
-			e.setAttribute("groupRef", groupRef);
-	}
-
-	protected void writeElementRef(String elementRef, Element e) {
-		if (elementRef != null && !elementRef.equals(""))
-			e.setAttribute("elementRef", elementRef);
-	}
-
-	protected void writeElementId(String elementId, Element e) {
-		if (elementId != null && !elementId.equals(""))
-			e.setAttribute("elementId", elementId);
-	}
-
-	/**
-	 * @throws ConverterException
-	 */
-	private void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
-		writeElementId(elementInfo.getElementId(), e);
-		writeComments(elementInfo.getComments(), e);
-		writeDynamicProperties(elementInfo.getDynamicProperties(), e);
-		writeAnnotationRefs(elementInfo.getAnnotationRefs(), e);
-		writeCitationRefs(elementInfo.getCitationRefs(), e);
-		writeEvidenceRefs(elementInfo.getEvidenceRefs(), e);
-	}
-
-	/**
-	 * DataNode, Label, Shape, Group
-	 */
-	private void writeShapedElement(ShapedElement shapedElement, Element e) throws ConverterException {
-		Element gfx = new Element("Graphics", e.getNamespace());
-		e.addContent(gfx);
-		writeRectProperty(shapedElement.getRectProperty(), e);
-		writeFontProperty(shapedElement.getFontProperty(), e);
-		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), e);
-		writeElementInfo(shapedElement, e);
-		writeGroupRef(shapedElement.getGroupRef().getElementId(), e); // TODO want it after...
-	}
-
-	/**
-	 * DataNode properties in the order to be written:
-	 * 
-	 * - elementId, elementRef, textLabel, type, groupRef
-	 * 
-	 * - Xref, States
-	 * 
-	 * - Graphics (RectAttributes, FontAttributes, ShapeStyleAttributes)
-	 * 
-	 * - Comment, Property, AnnotationRef, CitationRef, EvidenceRef
-	 */
-	protected void writeDataNodes(List<DataNode> dataNodes, Element e) throws ConverterException {
-		Element dns = new Element("DataNodes", e.getNamespace());
-		List<Element> dnList = new ArrayList<Element>();
-		for (DataNode dataNode : dataNodes) {
-			if (dataNode == null)
-				continue;
-			Element dn = new Element("DataNode", e.getNamespace());
-			writeXref(dataNode.getXref(), dn);
-			writeStates(dataNode.getStates(), dn);
-			writeShapedElement(dataNode, dn);
-			writeElementRef(dataNode.getElementRef().getElementId(), dn);
-			dn.setAttribute("textLabel", dataNode.getTextLabel());
-			dn.setAttribute("type", dataNode.getType().getName());
-
-			if (dn != null) {
-				dnList.add(dn);
-			}
-		}
-		if (dnList != null && dnList.isEmpty() == false) {
-			dns.addContent(dnList);
-			e.addContent(dns);
-		}
-	}
-
-	/**
-	 * NB: No elementRef in 2021
-	 */
-	protected void writeStates(List<State> states, Element e) throws ConverterException {
-		Element sts = new Element("States", e.getNamespace());
-		List<Element> stList = new ArrayList<Element>();
-		for (State state : states) {
-			if (state == null)
-				continue;
-			Element st = new Element("State", e.getNamespace());
-			writeXref(state.getXref(), st);
-			writeElementInfo(state, st);
-			st.setAttribute("textLabel", state.getTextLabel());
-			st.setAttribute("type", state.getType().getName());
-
-			Element gfx = new Element("Graphics", st.getNamespace());
-			st.addContent(gfx);
-			gfx.setAttribute("relX", Double.toString(state.getRelX()));
-			gfx.setAttribute("relY", Double.toString(state.getRelY()));
-			writeRectProperty(state.getRectProperty(), gfx); // TODO x and y may not be required...
-			writeFontProperty(state.getFontProperty(), gfx);
-			writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
-
-			if (st != null) {
-				stList.add(st);
-			}
-		}
-		if (stList != null && stList.isEmpty() == false) {
-			sts.addContent(stList);
-			e.addContent(sts);
-		}
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeInteraction(Interaction o, Element e) throws ConverterException {
-		writeLineElement(o, e);
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = o.getXref().getId();
-		String dataSource = o.getXref().getDataSource().getFullName();
-		setAttribute("Interaction.Xref", "Database", xref, dataSource == null ? "" : dataSource);
-		setAttribute("Interaction.Xref", "ID", xref, identifier);
-
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeLineElement(LineElement o, Element e) throws ConverterException {
-		writePathwayElement(o, e); /** TODO elementId, CommentGroup */
-
-		String base = e.getName();
-		Element gfx = e.getChild("Graphics", e.getNamespace());
-		String groupRef = o.getGroupRef().getElementId();
-		if (groupRef != null && groupRef.equals("")) {
-			e.setAttribute("GroupRef", groupRef);
-		}
-		writeLineStyleProperty(o, e);
-
-		// Writes the entire list
-		/** TODO GPML2021 Points not in Graphics */
-		List<Point> pts = o.getPoints();
-		for (int i = 0; i < pts.size(); i++) {
-			Point pt = pts.get(i);
-			Element point = new Element("Point", e.getNamespace());
-			gfx.addContent(point);
-			writeElementId(pt, point); // TODO
-			setAttribute(base + ".Graphics.Point", "X", point, Double.toString(pt.getXY().getX()));
-			setAttribute(base + ".Graphics.Point", "Y", point, Double.toString(pt.getXY().getY()));
-			if (pt.getElementRef() != null && !pt.getElementRef().equals("")) {
-				setAttribute(base + ".Graphics.Point", "GraphRef", point, pt.getElementRef());
-				setAttribute(base + ".Graphics.Point", "RelX", point, Double.toString(pt.getRelX()));
-				setAttribute(base + ".Graphics.Point", "RelY", point, Double.toString(pt.getRelY()));
-			}
-			if (pt.getArrowHead() != null) {
-				setAttribute(base + ".Graphics.Point", "ArrowHead", point, pt.getArrowHead().getName());
-			}
-		}
-
-		// Writes the entire list
-		/** TODO GPML2021 Anchors not in Graphics */
-		for (Anchor a : o.getAnchors()) {
-			Element anchor = new Element("Anchor", e.getNamespace());
-			writeElementId(a, anchor); // TODO
-			setAttribute(base + ".Graphics.Anchor", "Position", anchor, Double.toString(a.getPosition()));
-			setAttribute(base + ".Graphics.Anchor", "Shape", anchor, a.getShapeType().getName());
-			gfx.addContent(anchor);
-		}
-	}
-
-//
-//	List<Label> labels = p.getLabels();
-//	Collections.sort(labels); // TODO necessary?
-//	for (Label o : labels) {
-//		Element e = new Element("Label", getGpmlNamespace());
-//		e.addContent(new Element("Graphics", getGpmlNamespace()));
-//		writeLabel(o, e);
-//		if (e != null) {
-//			elementList.add(e);
-//		}
-//	}
-//	
-//	protected Label readLabels(List<Element> e) throws ConverterException {
-//
-//	}
-
-	protected void writeLabels(List<Label> labels, Element e) throws ConverterException {
-		Element lbs = new Element("Labels", e.getNamespace());
-		List<Element> lbList = new ArrayList<Element>();
-		for (Label label : labels) {
-			if (label == null)
-				continue;
-			Element lb = new Element("Label", e.getNamespace());
-			writeShapedElement(label, lb);
-			lb.setAttribute("textLabel", label.getTextLabel());
-			lb.setAttribute("href", label.getHref());
-			if (lb != null) {
-				lbList.add(lb);
-			}
-		}
-		if (lbList != null && lbList.isEmpty() == false) {
-			lbs.addContent(lbList);
-			e.addContent(lbs);
-		}
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void writeShapes(List<Shape> shapes, Element e) throws ConverterException {
-		Element shs = new Element("Shapes", e.getNamespace());
-		List<Element> shList = new ArrayList<Element>();
-		for (Shape shape : shapes) {
-			if (shape == null)
-				continue;
-			Element sh = new Element("Shape", e.getNamespace());
-			sh.setAttribute("textLabel", shape.getTextLabel());
-			writeShapedElement(shape, sh);
-			Element gfx = sh.getChild("Graphics", sh.getNamespace());
-			gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
-			if (sh != null) {
-				shList.add(sh);
-			}
-		}
-		if (shList != null && shList.isEmpty() == false) {
-			shs.addContent(shList);
-			e.addContent(shs);
-		}
-	}
-
-	protected void writeGroups(List<Group> groups, Element e) throws ConverterException {
-		Element gps = new Element("Shapes", e.getNamespace());
-		List<Element> gpList = new ArrayList<Element>();
-		for (Group group : groups) {
-			if (group == null)
-				continue;
-			Element gp = new Element("Shape", e.getNamespace());
-			writeXref(group.getXref(), gp);
-			writeShapedElement(group, gp);
-			gp.setAttribute("textLabel", group.getTextLabel());
-			gp.setAttribute("type", group.getType().getName());
-			if (gp != null) {
-				gpList.add(gp);
-			}
-		}
-		if (gpList != null && gpList.isEmpty() == false) {
-			gps.addContent(gpList);
-			e.addContent(gps);
-		}
-	}
-
 
 }
