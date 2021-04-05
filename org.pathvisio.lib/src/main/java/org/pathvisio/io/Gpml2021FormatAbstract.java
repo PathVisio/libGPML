@@ -69,69 +69,6 @@ public abstract class Gpml2021FormatAbstract {
 		return nsGPML;
 	}
 
-	/**
-	 * Updates pathway information.
-	 *
-	 * @param root the xml element
-	 * @param o    the pathway element
-	 * @throws ConverterException
-	 */
-	protected abstract void writeMappInfoVariable(Element root, Pathway p) throws ConverterException;
-
-	@Override
-	protected void writeMappInfoVariable(Element root, Pathway p) throws ConverterException {
-		setAttribute("Pathway", "License", root, p.getLicense());
-	}
-
-
-
-	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
-
-	public PathwayElement readElement(Element e) throws ConverterException {
-		return readElement(e, null);
-	}
-
-	protected void readComments(PathwayElement o, Element e) throws ConverterException {
-		for (Object f : e.getChildren("Comment", e.getNamespace())) {
-			o.addComment(((Element) f).getText(), getAttribute("Comment", "Source", (Element) f));
-		}
-	}
-
-
-
-
-	
-
-
-	// TODO
-	protected void readElementId(IElementIdContainer o, Element e) {
-		String id = e.getAttributeValue("GraphId");
-		// Never add graphid until all elements are readped, to prevent duplcate ids!
-//		if((id == null || id.equals("")) && o.getGmmlData() != null) {
-//			id = o.getGmmlData().getUniqueGraphId();
-//		}
-		if (id != null) {
-			o.setElementId(id);
-		}
-	}
-
-	// TODO
-	protected void writeElementId(IElementIdContainer o, Element e) {
-		String id = o.getElementId();
-		// id has to be unique!
-		if (id != null && !id.equals("")) {
-			e.setAttribute("GraphId", o.getElementId());
-		}
-	}
-
-	
-
-
-
-
-	//TODO p.setAuthor(root.getAttribute("Author"));
-	p.setEmail(root.getAttribute("Pathway", "Email", e));
-
 	// TODO HANDLE
 	protected void writeBiopax(PathwayElement o, Element e) throws ConverterException {
 		Document bp = ((BiopaxElement) o).getBiopax();

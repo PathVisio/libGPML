@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,24 +28,34 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.ValidatorHandler;
 
 import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderSchemaFactory;
 import org.jdom2.output.Format;
+import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
+import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
+import org.xml.sax.SAXException;
 
 public class GPML2021Writer {
+
+	static final File xsdFile = new File("GPML2021.xsd");
+	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021"); // TODO how to handle namespace
+																					// properly
 
 	/**
 	 * Writes the JDOM document to the outputstream specified**
@@ -57,10 +68,8 @@ public class GPML2021Writer {
 
 	public void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate) throws ConverterException {
 
-		File xsdfile = new File("GPML2021.xsd");
-		Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
 		SchemaFactory schemafac = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = schemafac.newSchema(xsdfile);
+		Schema schema = schemafac.newSchema(xsdFile);
 		XMLReaderJDOMFactory factory = new XMLReaderSchemaFactory(schema);
 		SAXBuilder sb = new SAXBuilder(factory);
 		Document doc = writePathwayModel(pathwayModel);
@@ -82,6 +91,48 @@ public class GPML2021Writer {
 			throw new ConverterException(ie);
 		}
 	}
+
+	/**
+	 * OLD METHOD TODO 
+	 * validates a JDOM document against the xml-schema definition specified by
+	 * 'xsdFile'
+	 * 
+	 * @param doc the document to validate
+	 */
+	public void validateDocument(Document doc) throws ConverterException {
+		ClassLoader cl = Pathway.class.getClassLoader();
+		InputStream is = cl.getResourceAsStream(xsdFile);
+		if (is != null) {
+			Schema schema;
+			try {
+				SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				StreamSource ss = new StreamSource(is);
+				schema = factory.newSchema(ss);
+				ValidatorHandler vh = schema.newValidatorHandler();
+				SAXOutputter so = new SAXOutputter(vh);
+				so.output(doc);
+				/* If no errors occur, this file is valid according to the gpml schema definition */
+				Logger.log
+						.info("Document is valid according to the xml schema definition '" + xsdFile.toString() + "'");
+			} catch (SAXException se) {
+				Logger.log.error("Could not parse the xml-schema definition", se);
+				throw new ConverterException(se);
+			} catch (JDOMException je) {
+				Logger.log.error("Document is invalid according to the xml-schema definition!: " + je.getMessage(), je);
+				XMLOutputter xmlcode = new XMLOutputter(Format.getPrettyFormat());
+
+				Logger.log.error("The invalid XML code:\n" + xmlcode.outputString(doc));
+				throw new ConverterException(je);
+			}
+		} else {
+			Logger.log.error("Document is not validated because the xml schema definition '" + xsdFile
+					+ "' could not be found in classpath");
+			throw new ConverterException("Document is not validated because the xml schema definition '" + xsdFile
+					+ "' could not be found in classpath");
+		}
+	}
+	
+	
 
 	/**
 	 * Writes the JDOM document to the file specified
@@ -112,7 +163,7 @@ public class GPML2021Writer {
 		if (root != null) {
 			writePathway(pathwayModel.getPathway(), root);
 			writeAuthors(pathwayModel.getAuthors(), root);
-			
+
 			writeDataNodes(pathwayModel.getDataNodes(), root);
 			writeInteractions(pathwayModel.getInteractions(), root);
 			writeGraphicalLines(pathwayModel.getGraphicalLines(), root);
