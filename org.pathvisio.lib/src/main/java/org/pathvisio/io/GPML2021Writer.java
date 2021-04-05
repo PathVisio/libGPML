@@ -33,6 +33,7 @@ import javax.xml.validation.SchemaFactory;
 import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderSchemaFactory;
@@ -45,20 +46,6 @@ import org.pathvisio.model.type.*;
 
 public class GPML2021Writer {
 
-//	protected GpmlFormatAbstract (String xsdFile, Namespace nsGPML)
-//	{
-//		this.xsdFile = xsdFile;
-//		this.nsGPML = nsGPML;
-//	}
-//
-//	private final Namespace nsGPML;
-//	private final String xsdFile;
-//	
-//	protected abstract Map<String, AttributeInfo> getAttributeInfo();
-//
-//	public Namespace getGpmlNamespace () { return nsGPML; }
-//	
-
 	/**
 	 * Writes the JDOM document to the outputstream specified**
 	 * 
@@ -68,10 +55,17 @@ public class GPML2021Writer {
 	 *                 exception will be thrown.*@throws ConverterException
 	 */
 
-	public void writeToXml(PathwayModel pwy, OutputStream out, boolean validate) throws ConverterException {
-		Document doc = createJdom(pwy);
+	public void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate) throws ConverterException {
 
-		// Validate the JDOM document
+		File xsdfile = new File("GPML2021.xsd");
+		Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
+		SchemaFactory schemafac = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		Schema schema = schemafac.newSchema(xsdfile);
+		XMLReaderJDOMFactory factory = new XMLReaderSchemaFactory(schema);
+		SAXBuilder sb = new SAXBuilder(factory);
+		Document doc = writePathwayModel(pathwayModel);
+
+		// Validate the JDOM document TODO ????
 		if (validate)
 			validateDocument(doc);
 		// Get the XML code
@@ -97,33 +91,28 @@ public class GPML2021Writer {
 	 *                 If there is a validation error, or the xsd is not in the
 	 *                 classpath, an exception will be thrown.
 	 */
-	public void writeToXml(Pathway pwy, File file, boolean validate) throws ConverterException {
+	public void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
 		OutputStream out;
 		try {
 			out = new FileOutputStream(file);
 		} catch (IOException ex) {
 			throw new ConverterException(ex);
 		}
-		writeToXml(pwy, out, validate);
+		writeToXml(pathwayModel, out, validate);
 	}
-
-	SchemaFactory schemafac = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	Schema schema = schemafac.newSchema(new File("GPML2021.xsd"));
-	XMLReaderJDOMFactory factory = new XMLReaderSchemaFactory(schema);
-	SAXBuilder sb = new SAXBuilder(factory);
-	Document doc = writePathwayModel(pathwayModel);
 
 	// TODO look up how to handle namespace properly
 
 	public Document writePathwayModel(PathwayModel pathwayModel) throws ConverterException {
 		Document doc = new Document();
 		Element root = new Element("Pathway");
+
 		doc.setRootElement(root);
 
 		if (root != null) {
-
 			writePathway(pathwayModel.getPathway(), root);
 			writeAuthors(pathwayModel.getAuthors(), root);
+			
 			writeDataNodes(pathwayModel.getDataNodes(), root);
 			writeInteractions(pathwayModel.getInteractions(), root);
 			writeGraphicalLines(pathwayModel.getGraphicalLines(), root);
@@ -131,12 +120,11 @@ public class GPML2021Writer {
 			writeShapes(pathwayModel.getShapes(), root);
 			writeGroups(pathwayModel.getGroups(), root);
 
-			List<Annotation> annotations = pathwayModel.getAnnotations();
-			List<Citation> citations = pathwayModel.getCitations();
-			List<Evidence> evidences = pathwayModel.getEvidences();
+			writeAnnotations(pathwayModel.getAnnotations(), root);
+			writeCitations(pathwayModel.getCitations(), root);
+			writeEvidences(pathwayModel.getEvidences(), root);
 		}
 		return doc;
-
 	}
 
 	/**
@@ -261,10 +249,9 @@ public class GPML2021Writer {
 	/**
 	 * DataNode properties in the order to be written:
 	 * 
-	 * - elementId, elementRef, textLabel, type, groupRef
-	 * - Xref, States
-	 * - Graphics (RectAttributes, FontAttributes, ShapeStyleAttributes)
-	 * - Comment, Property, AnnotationRef, CitationRef, EvidenceRef
+	 * - elementId, elementRef, textLabel, type, groupRef - Xref, States - Graphics
+	 * (RectAttributes, FontAttributes, ShapeStyleAttributes) - Comment, Property,
+	 * AnnotationRef, CitationRef, EvidenceRef
 	 */
 	protected void writeDataNodes(List<DataNode> dataNodes, Element root) throws ConverterException {
 		Element dns = new Element("DataNodes", root.getNamespace());
@@ -506,6 +493,79 @@ public class GPML2021Writer {
 		if (gpList != null && gpList.isEmpty() == false) {
 			gps.addContent(gpList);
 			root.addContent(gps);
+		}
+	}
+
+	protected void writeCitations(List<Citation> citations, Element root) throws ConverterException {
+		Element cits = new Element("Citations", root.getNamespace());
+		List<Element> citList = new ArrayList<Element>();
+		for (Citation citation : citations) {
+			if (citation == null)
+				continue;
+			Element cit = new Element("Citation", root.getNamespace());
+			writeElementId(citation.getElementId(), cit);
+			writeXref(citation.getXref(), cit);
+			if (citation.getUrl() != null) {
+				cit.setAttribute("url", citation.getUrl());
+			}
+			if (cit != null) {
+				citList.add(cit);
+			}
+		}
+		if (citList != null && citList.isEmpty() == false) {
+			cits.addContent(citList);
+			root.addContent(cits);
+		}
+	}
+
+	protected void writeAnnotations(List<Annotation> annotations, Element root) throws ConverterException {
+		Element annts = new Element("Annotations", root.getNamespace());
+		List<Element> anntList = new ArrayList<Element>();
+		for (Annotation annotation : annotations) {
+			if (annotation == null)
+				continue;
+			Element annt = new Element("Annotation", root.getNamespace());
+			writeElementId(annotation.getElementId(), annt);
+			annt.setAttribute("value", annotation.getValue());
+			annt.setAttribute("type", annotation.getType().getName());
+			if (annotation.getXref() != null) { // TODO optional Xref handling
+				writeXref(annotation.getXref(), annt);
+			}
+			if (annotation.getUrl() != null) {
+				annt.setAttribute("url", annotation.getUrl());
+			}
+			if (annt != null) {
+				anntList.add(annt);
+			}
+		}
+		if (anntList != null && anntList.isEmpty() == false) {
+			annts.addContent(anntList);
+			root.addContent(annts);
+		}
+	}
+
+	protected void writeEvidences(List<Evidence> evidences, Element root) throws ConverterException {
+		Element annts = new Element("Annotations", root.getNamespace());
+		List<Element> anntList = new ArrayList<Element>();
+		for (Evidence evidence : evidences) {
+			if (evidence == null)
+				continue;
+			Element annt = new Element("Annotation", root.getNamespace());
+			writeElementId(evidence.getElementId(), annt);
+			writeXref(evidence.getXref(), annt);
+			if (evidence.getValue() != null) {
+				annt.setAttribute("value", evidence.getValue());
+			}
+			if (evidence.getUrl() != null) {
+				annt.setAttribute("url", evidence.getUrl());
+			}
+			if (annt != null) {
+				anntList.add(annt);
+			}
+		}
+		if (anntList != null && anntList.isEmpty() == false) {
+			annts.addContent(anntList);
+			root.addContent(annts);
 		}
 	}
 
