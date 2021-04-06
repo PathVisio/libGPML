@@ -18,24 +18,12 @@ package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EventListener;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.elements.*;
-import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
@@ -519,81 +507,6 @@ public class PathwayModel {
 			}
 		}
 		return result;
-	}
-
-	// -------------------- OLD THINGS -------------------------------------
-
-	/*
-	 * Call when making a new mapp. TODO WHAT IS THIS?
-	 */
-	public void initMappInfo() {
-		String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
-		pathway.setVersion(dateString);
-	}
-
-	public String summary() {
-		String result = "    " + toString() + "\n    with Objects:";
-		for (PathwayElement pe : dataObjects) {
-			String code = pe.toString();
-			code = code.substring(code.lastIndexOf('@'), code.length() - 1);
-			result += "\n      " + code + " " + pe.getObjectType().getTag() + " " + pe.getParent();
-		}
-		return result;
-	}
-
-	/**
-	 * Check for any dangling references, and fix them if found This is called just
-	 * before writing out a pathway.
-	 *
-	 * This is a fallback solution for problems elsewhere in the reference handling
-	 * code. Theoretically, if the rest of the code is bug free, this should always
-	 * return 0.
-	 *
-	 * @return number of references fixed. Should be 0 under normal circumstances.
-	 */
-	public int fixReferences() {
-		int result = 0;
-		Set<String> graphIds = new HashSet<String>();
-		for (PathwayElement pe : dataObjects) {
-			String id = pe.getElementId();
-			if (id != null) {
-				graphIds.add(id);
-			}
-			for (PathwayElement.MAnchor pp : pe.getMAnchors()) {
-				String pid = pp.getElementId();
-				if (pid != null) {
-					graphIds.add(pid);
-				}
-			}
-		}
-		for (PathwayElement pe : dataObjects) {
-			if (pe.getObjectType() == ObjectType.LINE) {
-				String ref = pe.getStartGraphRef();
-				if (ref != null && !graphIds.contains(ref)) {
-					pe.setStartGraphRef(null);
-					result++;
-				}
-
-				ref = pe.getEndGraphRef();
-				if (ref != null && !graphIds.contains(ref)) {
-					pe.setEndGraphRef(null);
-					result++;
-				}
-			}
-		}
-		if (result > 0) {
-			Logger.log.warn("Pathway.fixReferences fixed " + result + " reference(s)");
-		}
-		for (String ref : biopaxReferenceToDelete) {
-			getBiopax().removeElement(getBiopax().getElement(ref));
-		}
-		return result;
-	}
-
-	public void printRefsDebugInfo() {
-		for (PathwayElement elt : dataObjects) {
-			elt.printRefsDebugInfo();
-		}
 	}
 
 }
