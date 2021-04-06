@@ -245,11 +245,11 @@ public class GPML2021Writer {
 		for (AnnotationRef annotationRef : annotationRefs) {
 			Element anntRef = new Element("AnnotationRef", e.getNamespace());
 			anntRef.setAttribute("elementRef", annotationRef.getAnnotation().getElementId());
-			for (Citation citationRef : annotationRef.getCitations()) {
+			for (Citation citationRef : annotationRef.getCitationRefs()) {
 				Element citRef = new Element("CitationRef", e.getNamespace());
 				citRef.setAttribute("elementRef", citationRef.getElementId());
 			}
-			for (Evidence evidence : annotationRef.getEvidences()) {
+			for (Evidence evidence : annotationRef.getEvidenceRefs()) {
 				Element evidRef = new Element("EvidenceRef", e.getNamespace());
 				evidRef.setAttribute("elementRef", evidence.getElementId());
 			}

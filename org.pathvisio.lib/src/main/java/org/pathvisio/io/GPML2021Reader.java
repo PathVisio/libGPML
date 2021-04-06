@@ -457,19 +457,27 @@ public class GPML2021Reader {
 		}
 	}
 
-	// TODO can cast to LinedElement? ---to save some code
+	// TODO can cast to LinedElement? to reduce duplicate code 
 	protected void readLinePoints(PathwayModel pathwayModel, Element e) throws ConverterException {
 		Element ias = root.getChild("Interactions", root.getNamespace());
 		for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
 			String elementId = ia.getAttributeValue("elementId");
 			Interaction interaction = (Interaction) pathwayModel.getPathwayElement(elementId);
 			readPoints(interaction, e);
+			// TODO check here
+			if (interaction.getPoints().size() <= 2) {
+				// TODO error!
+			}
 		}
 		Element glns = root.getChild("GraphicaLines", root.getNamespace());
 		for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
 			String elementId = gln.getAttributeValue("elementId");
 			GraphicalLine graphicalLine = (GraphicalLine) pathwayModel.getPathwayElement(elementId);
 			readPoints(graphicalLine, e);
+			// TODO check here
+			if (graphicalLine.getPoints().size() <= 2) {
+				// TODO error!
+			}
 		}
 	}
 
