@@ -50,8 +50,7 @@ public class ShapeStyleProperty {
 	 * @param parent      the parent pathway element of these properties.
 	 */
 	public ShapeStyleProperty(Color borderColor, LineStyleType borderStyle, double borderWidth, Color fillColor,
-			ShapeType shapeType, int zOrder, PathwayElement parent) {
-		super();
+			ShapeType shapeType, int zOrder) {
 		this.borderColor = borderColor;
 		this.borderStyle = borderStyle;
 		this.borderWidth = borderWidth;
@@ -65,8 +64,7 @@ public class ShapeStyleProperty {
 	 * attribute.
 	 */
 	public ShapeStyleProperty(Color borderColor, LineStyleType borderStyle, double borderWidth, Color fillColor,
-			ShapeType shapeType, PathwayElement parent) {
-		super();
+			ShapeType shapeType) {
 		this.borderColor = borderColor;
 		this.borderStyle = borderStyle;
 		this.borderWidth = borderWidth;

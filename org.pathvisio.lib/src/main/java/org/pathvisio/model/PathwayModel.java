@@ -61,7 +61,8 @@ import temp.ElementLink.ElementRefContainer;
 public class PathwayModel {
 
 	private Pathway pathway; // pathway information
-	private List<Author> authors = new ArrayList<Author>(); // move to Pathway?
+	private List<Author> authors; // move to Pathway?
+	private Map<String, PathwayElement> elementIdToPathwayElement;
 	private List<Annotation> annotations;
 	private List<Citation> citations;
 	private List<Evidence> evidences;
@@ -71,6 +72,21 @@ public class PathwayModel {
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;
+
+	public PathwayModel(Pathway pathway) {
+		this.pathway = pathway;
+		this.authors = new ArrayList<Author>();
+		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
+		this.annotations = new ArrayList<Annotation>();
+		this.citations = new ArrayList<Citation>();
+		this.evidences = new ArrayList<Evidence>();
+		this.dataNodes = new ArrayList<DataNode>();
+		this.interactions = new ArrayList<Interaction>();
+		this.graphicalLines = new ArrayList<GraphicalLine>();
+		this.labels = new ArrayList<Label>();
+		this.shapes = new ArrayList<Shape>();
+		this.groups = new ArrayList<Group>();
+	}
 
 	/**
 	 * Returns the pathway object containing metadata, e.g. title, organism...
@@ -120,13 +136,6 @@ public class PathwayModel {
 	/*
 	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
 	 */
-	/** Mapping of String elementId key to PathwayElement value. */
-	private Map<String, PathwayElement> elementIdToPathwayElement = new HashMap<String, PathwayElement>();
-
-	/** Mapping of String elementRef key to Set of PathwayElements. */
-	private Map<String, Set<PathwayElement>> elementRefToPathwayElements = new HashMap<String, Set<PathwayElement>>();
-	/** Mapping of String groupRef key to Set of PathwayElements of Group. */
-	private Map<String, Set<PathwayElement>> groupRefToPathwayElements = new HashMap<String, Set<PathwayElement>>();
 
 	/**
 	 * Returns a unique elementId.
@@ -184,65 +193,6 @@ public class PathwayModel {
 	 */
 	void removeElementId(String elementId) {
 		elementIdToPathwayElement.remove(elementId);
-	}
-
-	/**
-	 * Returns a set of points that refer to a pathway element with a particular
-	 * elementId.
-	 * 
-	 * TODO DataNode refer to Group as an alias.
-	 * 
-	 * @param elementRef the reference to elementId.
-	 */
-	public Set<Point> getReferringPoints(String elementId) {
-		Set<Point> result = new HashSet<Point>();
-		for (Interaction interaction : interactions) {
-			List<Point> points = interaction.getPoints();
-			for (Point point : points) {
-				if (point.getElementRef().getElementId() == elementId) {
-					result.add(point);
-				}
-			}
-		}
-		for (GraphicalLine graphicalLine : graphicalLines) {
-			List<Point> points = graphicalLine.getPoints();
-			for (Point point : points) {
-				if (point.getElementRef().getElementId() == elementId) {
-					result.add(point);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Inserts mapping of elementId key to ElementRefContainer value in the
-	 * elementIdToSetRefContainer hash map.
-	 * 
-	 * @param elementRef the reference to elementId.
-	 * @param target     the target ElementRefContainer.
-	 */
-	public void addElementRef(String elementRef, PathwayElement pathwayElement) {
-		Utils.multimapPut(elementRefToPathwayElements, elementRef, pathwayElement);
-	}
-
-	/**
-	 * Removes the mapping of the given elementId key from the
-	 * elementIdToSetRefContainer hash map.
-	 * 
-	 * @param elementRef the reference to elementId.
-	 * @param target     the target ElementRefContainer.
-	 * @throws IllegalArgumentException if hash map does not contain the given
-	 *                                  elementId key.
-	 */
-	public void removeElementRef(String elementRef, PathwayElement pathwayElement) {
-		if (!elementRefToPathwayElements.containsKey(elementRef)) {
-			throw new IllegalArgumentException();
-		} else {
-			elementRefToPathwayElements.get(elementRef).remove(pathwayElement);
-			// remove elementId key if zero ElementRefContainers values.
-			if (elementRefToPathwayElements.get(elementRef).size() == 0)
-				elementRefToPathwayElements.remove(elementRef);
-		}
 	}
 
 	/**

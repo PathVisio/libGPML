@@ -37,27 +37,31 @@ import org.pathvisio.model.type.*;
 
 public class GPML2021Reader {
 
-	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
-
-	public PathwayElement readElement(Element e) throws ConverterException {
-		return readElement(e, null);
-	}
-
 	XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdfile);
 	SAXBuilder builder = new SAXBuilder(schemafactory);
 	Document readDoc = builder.build(new File("test.xml"));
 	Element root = readDoc.getRootElement();
 
-	public void readRoot(Element root) throws ConverterException {
-		
-		readElement(root, pwy); // MappInfo
-		
-		Element pwy 
+	public PathwayModel readRoot(Element root) throws ConverterException {
 
-		// Iterate over direct children of the root element
-		for (Object e : root.getChildren()) {
-			readElement((Element) e, pwy);
-		}
+		Pathway pathway = readPathway(root);
+		PathwayModel pathwayModel = new PathwayModel(pathway); //TODO think about order
+		
+		readAuthors(pathwayModel, root);
+
+		readAnnotations(pathwayModel, root);
+		readCitations(pathwayModel, root);
+		readEvidences(pathwayModel, root);
+		
+		//TODO read CommentRefs 
+
+		readGroups(pathwayModel, root); // TODO group can have groupRef
+		readDataNodes(pathwayModel, root); // TODO will elementRef (refers to only Group?)
+		readInteractions(pathwayModel, root); // contains waypoints
+		readGraphicalLines(pathwayModel, root); // contains waypoints
+		readLabels()pathwayModel, root;
+		readShapes(pathwayModel, root);
+
 		Logger.log.trace("End copying read elements");
 
 		// Add graphIds for objects that don't have one
@@ -69,23 +73,14 @@ public class GPML2021Reader {
 	}
 
 	protected Pathway readPathway(Element root) throws ConverterException {
-
 		String title = root.getAttributeValue("title");
 		Element gfx = root.getChild("Graphics");
 		double boardWidth = Double.parseDouble(gfx.getAttributeValue("boardWidth"));
 		double boardHeight = Double.parseDouble(gfx.getAttributeValue("boardHeight"));
 		Color backgroundColor = ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor")); // TODO optional?
-		double centerX = Double.parseDouble(root.getAttributeValue("centerX"));
-		double centerY = Double.parseDouble(root.getAttributeValue("centerY"));
-		Coordinate infoBox = new Coordinate(centerX, centerY);
-		// build pathway object with required properties
+		Coordinate infoBox = readInfoBox(root);
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, backgroundColor, infoBox).build();
-
-		// insert comments, dynamic properties, annotationRefs, citationRefs, and
-		// evidenceRefs
-		pathway.addComments(readComments(root));
-
-		// set non-null optional properties
+		/* optional properties */
 		Xref xref = readXref(root);
 		String organism = root.getAttributeValue("organism");
 		String source = root.getAttributeValue("source");
@@ -119,6 +114,37 @@ public class GPML2021Reader {
 		}
 	}
 
+	protected Coordinate readInfoBox(Element root) {
+		double centerX = Double.parseDouble(root.getAttributeValue("centerX"));
+		double centerY = Double.parseDouble(root.getAttributeValue("centerY"));
+		return new Coordinate(centerX, centerY);
+	}
+
+	protected void readAuthors(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element aus = root.getChild("Authors", root.getNamespace());
+		for (Element au : aus.getChildren("Author", root.getNamespace())) {
+			String name = au.getAttributeValue("name");
+			String fullName = au.getAttributeValue("fullName");
+			String email = au.getAttributeValue("email");
+			Author author = new Author.AuthorBuilder(name).build();
+			if (fullName != null) {
+				author.setFullName(fullName);
+			}
+			if (email != null) {
+				author.setEmail(email);
+			}
+			pathwayModel.addAuthor(author);
+		}
+	}
+
+	protected Pathway readPathwayInfo(Pathway pathway, Element root) throws ConverterException {
+		pathway.addComment(null);
+		pathway.setDynamicProperty("", "");
+		pathway.addAnnotationRef(null);
+		pathway.addCitationRef(null);
+		pathway.addEvidenceRef(null);
+	}
+
 	protected List<Comment> readComments(Element e) throws ConverterException {
 		List<Comment> comments = new ArrayList<Comment>();
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
@@ -135,33 +161,50 @@ public class GPML2021Reader {
 		for (Element dp : e.getChildren("Property", e.getNamespace())) {
 			String key = dp.getAttributeValue("key");
 			String value = dp.getAttributeValue("value");
+			dynamicProperties.put(key, value);
+		}
+		return dynamicProperties;
+	}
 
+	protected List<AnnotationRef> readAnnotationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>();
+		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
+			Annotation annotation = (Annotation) pathwayModel
+					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
+			List<Citation> citationRefs = readCitationRefs(pathwayModel, o, anntRef);
+			List<Evidence> evidenceRefs = readEvidenceRefs(pathwayModel, o, anntRef);
+			AnnotationRef annotationRef = new AnnotationRef(annotation, citationRefs, evidenceRefs);
 		}
 	}
 
-	protected void readAnnotationRefs(ElementInfo o, Element e) throws ConverterException {
-		for (Element comment : e.getChildren("Comment", e.getNamespace())) {
-			String source = comment.getAttributeValue("Source");
-			String content = comment.getText();
-//			o.addComment(new Comment(source, content, e), ;
+	protected List<Citation> readCitationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<Citation> citationRefs = new ArrayList<Citation>();
+		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
+			Citation citationRef = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
+			citationRefs.add(citationRef);
 		}
+		return citationRefs;
 	}
 
-	protected void readCitationRefs(ElementInfo o, Element e) throws ConverterException {
-		for (Element comment : e.getChildren("Comment", e.getNamespace())) {
-			String source = comment.getAttributeValue("Source");
-			String content = comment.getText();
-//			o.addComment(new Comment(source, content, e), ;
+	protected List<Evidence> readEvidenceRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<Evidence> evidenceRefs = new ArrayList<Evidence>();
+		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+			Evidence evidenceRef = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+			evidenceRefs.add(evidenceRef);
 		}
+		return evidenceRefs;
 	}
 
 	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		readElementId(e);
 		readComments(e);
-		readDynamicProperties(e);
-		readAnnotationRefs(e);
-		readCitationRefs(e);
-		readEvidenceRefs(e);
+		readDynamicProperties(elementInfo, e);
+		readAnnotationRefs(elementInfo, e);
+		readCitationRefs(elementInfo, e);
+		readEvidenceRefs(elementInfo, e);
 	}
 
 	protected void readGroupRef(ShapedElement o, Element e) {
@@ -179,43 +222,22 @@ public class GPML2021Reader {
 	}
 
 	/**
-	 * Attribute in gpml
-	 * 
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
+	 * Reads gpml RectAttributes from Graphics element and returns RectProperty.
+	 * Default schema values are automatically handled by jdom
 	 */
-	protected void readDynamicProperty(PathwayElement o, Element e) throws ConverterException {
-		for (Object f : e.getChildren("Attribute", e.getNamespace())) {
-			String key = getAttribute("Attribute", "Key", (Element) f);
-			String value = getAttribute("Attribute", "Value", (Element) f);
-			o.addDynamicProperty(special); // TODO look into implementation
-		}
-	}
-
-	protected void readRectProperty(ShapedElement o, Element e) throws ConverterException {
-		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		double centerX = Double.parseDouble(graphics.getAttributeValue("centerX"));
-		double centerY = Double.parseDouble(graphics.getAttributeValue("centerY"));
-		double width = Double.parseDouble(graphics.getAttributeValue("width"));
-		double height = Double.parseDouble(graphics.getAttributeValue("height"));
-		o.getRectProperty().getCenterXY().setX(centerX);
-		o.getRectProperty().getCenterXY().setY(centerY);
-		o.getRectProperty().setWidth(width);
-		o.getRectProperty().setWidth(height);
+	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
+		double centerX = Double.parseDouble(gfx.getAttributeValue("centerX"));
+		double centerY = Double.parseDouble(gfx.getAttributeValue("centerY"));
+		double width = Double.parseDouble(gfx.getAttributeValue("width"));
+		double height = Double.parseDouble(gfx.getAttributeValue("height"));
+		return new RectProperty(new Coordinate(centerX, centerY), width, height);
 	}
 
 	/**
-	 * Reads gpml FontAttributes from Graphics element and sets FontProperty values
-	 * in model.
-	 * 
-	 *  Default null values are automatically handled by jdom
-	 * 
+	 * Reads gpml FontAttributes from Graphics element and returns FontProperty.
+	 * Default schema values are automatically handled by jdom
 	 */
-	protected FontProperty readFontProperty(Element e) throws ConverterException {
-		String base = e.getName();
-		Element gfx = e.getChild("Graphics", e.getNamespace());
+	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
 		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor"));
 		String fontName = gfx.getAttributeValue("fontName");
 		boolean fontWeight = gfx.getAttributeValue("fontWeight").equals("Bold");
@@ -229,97 +251,49 @@ public class GPML2021Reader {
 				hAlignType, vAlignType);
 	}
 
-	protected ShapeStyleProperty readShapeStyleProperty(ShapedElement o, Element e) throws ConverterException {
-		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		String borderColor = graphics.getAttributeValue("borderColor");
-		String borderStyle = graphics.getAttributeValue("borderStyle");
-		String borderWidth = graphics.getAttributeValue("borderWidth");
-		String fillColor = graphics.getAttributeValue("fillColor");
-		String shapeType = graphics.getAttributeValue("shapeType");
-		String zOrder = graphics.getAttributeValue("zOrder");
-
-		o.getShapeStyleProperty().setBorderColor(ColorUtils.stringToColor(borderColor));
-
-		o.getShapeStyleProperty().setBorderStyle(LineStyleType.fromName(borderStyle)); // TODO extensible?
-		o.getShapeStyleProperty().setBorderWidth(borderWidth == null ? 1.0 : Double.parseDouble(borderWidth));
-		o.getShapeStyleProperty().setFillColor(ColorUtils.stringToColor(fillColor));
-		if (ShapeType.getNames().contains(shapeType)) {
-			o.getShapeStyleProperty().setShapeType(ShapeType.fromName(shapeType));
-		} else {
-			o.getShapeStyleProperty().setShapeType(ShapeType.create(shapeType)); // TODO create handles actually
+	/**
+	 * Reads gpml ShapeStyleAttributes from Graphics element and returns
+	 * ShapeStyleProperty. Default schema values are automatically handled by jdom
+	 */
+	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
+		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("borderColor"));
+		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("borderStyle"));
+		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth"));
+		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("fillColor"));
+		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType"));
+		String zOrder = gfx.getAttributeValue("zOrder");
+		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(fillColor, borderStyle, borderWidth, fillColor,
+				shapeType);
+		if (zOrder != null) {
+			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder));
 		}
-		// TODO shapeType
-		if (zOrder != null)
-			o.getShapeStyleProperty().setZOrder(Integer.parseInt(zOrder));
+		return shapeStyleProperty;
 	}
 
 	/**
-	 * DataNode, Label, Shape, Group
-	 * 
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
+	 * Reads gpml LineStyleAttributes from Graphics element and returns
+	 * LineStyleProperty. Default schema values are automatically handled by jdom
 	 */
-	private void readShapedElement(ShapedElement o, Element e) throws ConverterException {
-		readPathwayElement(o, e); // TODO: // ElementId, CommentGroup
-		String base = e.getName();
-		readRectProperty(o, e);
-		readFontProperty(o, e);
-		readShapeStyleProperty(o, e);
-//		String groupRef = getAttribute(base, "GroupRef", e);
-//		o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(groupRef));
-	}
-
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void readLineStyleProperty(LineElement o, Element e) throws ConverterException {
-		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-
-		String lineColor = graphics.getAttributeValue("lineColor");
-		String lineStyle = graphics.getAttributeValue("lineStyle");
-		String lineWidth = graphics.getAttributeValue("lineWidth");
-		String connectorType = graphics.getAttributeValue("connectorType");
-		String zOrder = graphics.getAttributeValue("zOrder");
-
-		o.getLineStyleProperty().setLineColor(ColorUtils.stringToColor(lineColor));
-
-		// TODO lineStyle double
-		if ("Double".equals(o.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
-			o.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
-		} else {
-			o.getLineStyleProperty()
-					.setLineStyle((lineStyle.equals("Solid")) ? LineStyleType.SOLID : LineStyleType.DASHED);
+	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
+		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("lineColor"));
+		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("lineStyle"));
+		double lineWidth = Double.parseDouble(gfx.getAttributeValue("lineWidth"));
+		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("connectorType"));
+		String zOrder = gfx.getAttributeValue("zOrder");
+		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
+		if (zOrder != null) {
+			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
 		}
-		o.getLineStyleProperty().setLineWidth(lineWidth == null ? 1.0 : Double.parseDouble(lineWidth));
-		// TODO connectorType
-		o.getLineStyleProperty().setConnectorType(ConnectorType.fromName(connectorType));
-		if (zOrder != null)
-			o.getLineStyleProperty().setZOrder(Integer.parseInt(zOrder));
 	}
 
-	/**
-	 * @param o
-	 * @param e
-	 */
-	protected void readInfoBox(Pathway p, Element e) {
-		// TODO get child Infobox somewhere....
-		String centerX = e.getAttributeValue("CenterX");
-		String centerY = e.getAttributeValue("CenterY");
-		p.getInfoBox().setX(Double.parseDouble(centerX));
-		p.getInfoBox().setY(Double.parseDouble(centerY));
-	}
+
 
 	/**
 	 * @param o
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readDataNode(DataNode o, Element e) throws ConverterException {
+	protected void readDataNode(PathwayModel pathwayModel, Element e) throws ConverterException {
 		// TODO STATE
 		// TODO elementRef
 		String textLabel = e.getAttributeValue("textLabel");
@@ -339,7 +313,7 @@ public class GPML2021Reader {
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readState(State o, Element e) throws ConverterException {
+	protected void readState(DataNode dataNode, Element e) throws ConverterException {
 		readPathwayElement(o, e); // TODO: // ElemenId, CommentGroup
 		// TODO
 		String elementRef = ((Element) e.getParent()).getAttributeValue("elementId");
@@ -371,7 +345,7 @@ public class GPML2021Reader {
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readLineElement(LineElement o, Element e) throws ConverterException {
+	protected void readLineElement(PathwayModel pathwayModel, Element e) throws ConverterException {
 		readPathwayElement(o, e); /** TODO elementId, CommentGroup */
 
 		String base = e.getName();
@@ -426,7 +400,7 @@ public class GPML2021Reader {
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readInteraction(Interaction o, Element e) throws ConverterException {
+	protected void readInteraction(PathwayModel pathwayModel, Element e) throws ConverterException {
 		readLineElement(o, e);
 		Element xref = e.getChild("Xref", e.getNamespace());
 		String identifier = xref.getAttributeValue("identifier");
@@ -439,32 +413,62 @@ public class GPML2021Reader {
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readLabels(Label o, Element e) throws ConverterException {
-		String textLabel = e.getAttributeValue("textLabel");
-		String href = e.getAttributeValue("href");
-		o.setTextLabel(textLabel);
-		o.setHref(href);
+	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element lbs = root.getChild("Labels", root.getNamespace());
+		for (Element lb: lbs.getChildren("Label", lbs.getNamespace())) {
+			String elementId = lb.getAttributeValue("elementId"); 
+			String textLabel = lb.getAttributeValue("textLabel");
+			Element gfx = lb.getChild("Graphics", lb.getNamespace());
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
+			/* optional properties */
+			String href = lb.getAttributeValue("href");
+			String groupRef = lb.getAttributeValue("grouRef");
+			if (href != null)
+				label.setHref(href);
+			if (groupRef != null)
+				label.setGroupRef((Group) label.getPathwayModel().getPathwayElement(groupRef));
+			if (label != null)
+				pathwayModel.addLabel(label);
+		}
+
+		
+//		String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+//		ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, String href
+	
 		readShapeStyleProperty(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
 										// ShapeStyleProperty
 
 	}
 
-	protected List<Label> readLabels(List<Element> elist) throws ConverterException {
-		for (Element e : elist) {
-			String textLabel = e.getAttributeValue("textLabel");
-			String href = e.getAttributeValue("href");
-			o.setTextLabel(textLabel);
-			o.setHref(href);
-			readShapeStyleProperty(o, e);
-		}
-	}
 
+	
+	/**
+	 * DataNode, Label, Shape, Group
+	 * 
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	private void readShapedElement(ShapedElement o, Element e) throws ConverterException {
+		readPathwayElement(o, e); // TODO: // ElementId, CommentGroup
+		Element gfx = e.getChild("Graphics", e.getNamespace());
+		RectProperty rectProperty = readRectProperty(gfx);
+		FontProperty fontProperty = readFontProperty(gfx);
+		ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+
+//		String groupRef = getAttribute(base, "GroupRef", e);
+//		o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(groupRef));
+	}
+	
 	/**
 	 * @param o
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readShape(Shape o, Element e) throws ConverterException {
+	protected void readShape(PathwayModel pathwayModel, Element e) throws ConverterException {
 		String textLabel = e.getAttributeValue("textLabel");
 		String type = e.getAttributeValue("type");
 		String rotation = e.getAttributeValue("rotation");
@@ -477,7 +481,7 @@ public class GPML2021Reader {
 
 	}
 
-	protected void readGroup(Group o, Element e) throws ConverterException {
+	protected void readGroup(PathwayModel pathwayModel, Element e) throws ConverterException {
 
 		readShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
 									// ShapeStyleProperty

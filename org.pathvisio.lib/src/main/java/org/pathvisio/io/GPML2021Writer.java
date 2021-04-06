@@ -52,10 +52,10 @@ import org.pathvisio.model.type.*;
 import org.xml.sax.SAXException;
 
 public class GPML2021Writer {
-
+	
+	// TODO how to handle namespace properly
 	static final File xsdFile = new File("GPML2021.xsd");
-	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021"); // TODO how to handle namespace
-																					// properly
+	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
 
 	/**
 	 * Writes the JDOM document to the outputstream specified**
@@ -93,9 +93,8 @@ public class GPML2021Writer {
 	}
 
 	/**
-	 * OLD METHOD TODO 
-	 * validates a JDOM document against the xml-schema definition specified by
-	 * 'xsdFile'
+	 * OLD METHOD TODO validates a JDOM document against the xml-schema definition
+	 * specified by 'xsdFile'
 	 * 
 	 * @param doc the document to validate
 	 */
@@ -111,7 +110,10 @@ public class GPML2021Writer {
 				ValidatorHandler vh = schema.newValidatorHandler();
 				SAXOutputter so = new SAXOutputter(vh);
 				so.output(doc);
-				/* If no errors occur, this file is valid according to the gpml schema definition */
+				/*
+				 * If no errors occur, this file is valid according to the gpml schema
+				 * definition
+				 */
 				Logger.log
 						.info("Document is valid according to the xml schema definition '" + xsdFile.toString() + "'");
 			} catch (SAXException se) {
@@ -131,8 +133,6 @@ public class GPML2021Writer {
 					+ "' could not be found in classpath");
 		}
 	}
-	
-	
 
 	/**
 	 * Writes the JDOM document to the file specified
@@ -216,7 +216,7 @@ public class GPML2021Writer {
 		xrf.setAttribute("identifier", identifier == null ? "" : identifier);
 		e.addContent(xrf);
 	}
-
+	
 	protected void writeInfoBox(Coordinate infoBox, Element root) {
 		Element ifb = new Element("InfoBox", root.getNamespace());
 		ifb.setAttribute("centerX", Double.toString(infoBox.getX()));
@@ -242,37 +242,37 @@ public class GPML2021Writer {
 	}
 
 	protected void writeAnnotationRefs(List<AnnotationRef> annotationRefs, Element e) throws ConverterException {
-		for (AnnotationRef a : annotationRefs) {
-			Element annotationRef = new Element("AnnotationRef", e.getNamespace());
-			annotationRef.setAttribute("elementRef", a.getAnnotation().getElementId());
-			for (Citation c : a.getCitations()) {
-				Element citationRef = new Element("CitationRef", e.getNamespace());
-				citationRef.setAttribute("elementRef", c.getElementId());
+		for (AnnotationRef annotationRef : annotationRefs) {
+			Element anntRef = new Element("AnnotationRef", e.getNamespace());
+			anntRef.setAttribute("elementRef", annotationRef.getAnnotation().getElementId());
+			for (Citation citationRef : annotationRef.getCitations()) {
+				Element citRef = new Element("CitationRef", e.getNamespace());
+				citRef.setAttribute("elementRef", citationRef.getElementId());
 			}
-			for (Evidence ev : a.getEvidences()) {
-				Element evidenceRef = new Element("EvidenceRef", e.getNamespace());
-				evidenceRef.setAttribute("elementRef", ev.getElementId());
+			for (Evidence evidence : annotationRef.getEvidences()) {
+				Element evidRef = new Element("EvidenceRef", e.getNamespace());
+				evidRef.setAttribute("elementRef", evidence.getElementId());
 			}
-			e.addContent(annotationRef);
+			e.addContent(anntRef);
 		}
 	}
 
 	protected void writeCitationRefs(List<Citation> citationRefs, Element e) throws ConverterException {
 		if (e != null) {
-			for (Citation c : citationRefs) {
-				Element citationRef = new Element("CitationRef", e.getNamespace());
-				citationRef.setAttribute("elementRef", c.getElementId());
-				e.addContent(citationRef);
+			for (Citation citationRef : citationRefs) {
+				Element citRef = new Element("CitationRef", e.getNamespace());
+				citRef.setAttribute("elementRef", citationRef.getElementId());
+				e.addContent(citRef);
 			}
 		}
 	}
 
 	protected void writeEvidenceRefs(List<Evidence> evidenceRefs, Element e) throws ConverterException {
 		if (e != null) {
-			for (Evidence c : evidenceRefs) {
-				Element evidenceRef = new Element("EvidenceRef", e.getNamespace());
-				evidenceRef.setAttribute("elementRef", c.getElementId());
-				e.addContent(evidenceRef);
+			for (Evidence evidenceRef : evidenceRefs) {
+				Element evidRef = new Element("EvidenceRef", e.getNamespace());
+				evidRef.setAttribute("elementRef", evidenceRef.getElementId());
+				e.addContent(evidRef);
 			}
 		}
 	}
@@ -596,27 +596,27 @@ public class GPML2021Writer {
 	}
 
 	protected void writeEvidences(List<Evidence> evidences, Element root) throws ConverterException {
-		Element annts = new Element("Annotations", root.getNamespace());
-		List<Element> anntList = new ArrayList<Element>();
+		Element evids = new Element("Evidences", root.getNamespace());
+		List<Element> evidList = new ArrayList<Element>();
 		for (Evidence evidence : evidences) {
 			if (evidence == null)
 				continue;
-			Element annt = new Element("Annotation", root.getNamespace());
-			writeElementId(evidence.getElementId(), annt);
-			writeXref(evidence.getXref(), annt);
+			Element evid = new Element("Evidence", root.getNamespace());
+			writeElementId(evidence.getElementId(), evid);
+			writeXref(evidence.getXref(), evid);
 			if (evidence.getValue() != null) {
-				annt.setAttribute("value", evidence.getValue());
+				evid.setAttribute("value", evidence.getValue());
 			}
 			if (evidence.getUrl() != null) {
-				annt.setAttribute("url", evidence.getUrl());
+				evid.setAttribute("url", evidence.getUrl());
 			}
-			if (annt != null) {
-				anntList.add(annt);
+			if (evid != null) {
+				evidList.add(evid);
 			}
 		}
-		if (anntList != null && anntList.isEmpty() == false) {
-			annts.addContent(anntList);
-			root.addContent(annts);
+		if (evidList != null && evidList.isEmpty() == false) {
+			evids.addContent(evidList);
+			root.addContent(evids);
 		}
 	}
 
