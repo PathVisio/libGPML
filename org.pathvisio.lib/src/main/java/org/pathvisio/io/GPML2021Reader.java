@@ -19,6 +19,8 @@ package org.pathvisio.io;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,24 +47,32 @@ public class GPML2021Reader {
 	public PathwayModel readRoot(Element root) throws ConverterException {
 
 		Pathway pathway = readPathway(root);
-		PathwayModel pathwayModel = new PathwayModel(pathway); //TODO think about order
-		
+		PathwayModel pathwayModel = new PathwayModel(pathway); // TODO think about order
+
 		readAuthors(pathwayModel, root);
 
 		readAnnotations(pathwayModel, root);
 		readCitations(pathwayModel, root);
 		readEvidences(pathwayModel, root);
-		
-		//TODO read CommentRefs 
 
-		readGroups(pathwayModel, root); // TODO group can have groupRef
-		readDataNodes(pathwayModel, root); // TODO will elementRef (refers to only Group?)
-		readInteractions(pathwayModel, root); // contains waypoints
-		readGraphicalLines(pathwayModel, root); // contains waypoints
-		readLabels()pathwayModel, root;
+		readPathwayInfo(pathwayModel, root);
+		// TODO read CommentRefs
+		readGroups(pathwayModel, root); // TODO read group first
+		readLabels(pathwayModel, root);
 		readShapes(pathwayModel, root);
 
+		readDataNodes(pathwayModel, root); // TODO will elementRef (refers to only Group?)
+		readStates(pathwayModel, root);
+
+		readInteractions(pathwayModel, root); // contains waypoints
+		readGraphicalLines(pathwayModel, root); // contains waypoints
+		readAnchors(pathwayModel, root);
+		readPoints(pathwayModel, root);
+
 		Logger.log.trace("End copying read elements");
+
+		// TODO check groups have at least one pathwayElement inside?
+		// TODO check at least 2 points per line element?
 
 		// Add graphIds for objects that don't have one
 		addElementIds(pwy);
@@ -137,157 +147,210 @@ public class GPML2021Reader {
 		}
 	}
 
-	protected Pathway readPathwayInfo(Pathway pathway, Element root) throws ConverterException {
-		pathway.addComment(null);
-		pathway.setDynamicProperty("", "");
-		pathway.addAnnotationRef(null);
-		pathway.addCitationRef(null);
-		pathway.addEvidenceRef(null);
+	
+	protected void readAnnotations(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element annts = root.getChild("Annotations", root.getNamespace());
+		for (Element annt : annts.getChildren("Annotation", annts.getNamespace())) {
+			String elementId = annt.getAttributeValue("elementId");
+			String value = annt.getAttributeValue("value");
+			AnnotationType type = AnnotationType.register(annt.getAttributeValue("type"));
+			Annotation annotation = new Annotation(elementId, pathwayModel, value, type); 		
+			/* optional properties */
+			Xref xref = readXref(annt);
+			String url = annt.getAttributeValue("url");
+			if (xref != null)
+				annotation.setXref(xref);
+			if (url != null)
+				annotation.setUrl(url);
+			if (annotation != null)
+				pathwayModel.addAnnotation(annotation);
+		}
+	}
+	
+	protected void readCitations(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element cits = root.getChild("Citations", root.getNamespace());
+		for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
+			String elementId = cit.getAttributeValue("elementId");
+			Xref xref = readXref(cit);
+			Citation citation = new Citation(elementId, pathwayModel, xref); 		
+			/* optional properties */
+			String url = cit.getAttributeValue("url");
+			if (url != null)
+				citation.setUrl(url);
+			if (citation != null)
+				pathwayModel.addCitation(citation);
+		}
+	}
+	
+	protected void readEvidences(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element evids = root.getChild("Evidences", root.getNamespace());
+		for (Element evid : evids.getChildren("Evidence", evids.getNamespace())) {
+			String elementId = evid.getAttributeValue("elementId");
+			Xref xref = readXref(evid);
+			Evidence evidence = new Evidence(elementId, pathwayModel, xref); 		
+			/* optional properties */
+			String value = evid.getAttributeValue("value");
+			String url = evid.getAttributeValue("url");
+			if (value != null)
+				evidence.setValue(value);
+			if (url != null)
+				evidence.setUrl(url);
+			if (evidence != null)
+				pathwayModel.addEvidence(evidence);
+		}
+	}
+	
+	
+	protected void readPathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
+		readPathwayComments(pathwayModel, root);
+		readPathwayDynamicProperties(pathwayModel, root);
+		readPathwayAnnotationRefs(pathwayModel, root);
+		readPathwayCitationRefs(pathwayModel, root);
+		readPathwayEvidenceRefs(pathwayModel, root);
 	}
 
-	protected List<Comment> readComments(Element e) throws ConverterException {
-		List<Comment> comments = new ArrayList<Comment>();
-		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
+	protected void readPathwayComments(PathwayModel pathwayModel, Element root) throws ConverterException {
+		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = cmt.getAttributeValue("Source");
 			String content = cmt.getText();
-			// TODO check if null
-			comments.add(new Comment(source, content));
+			if (content != null && !content.equals("")) {
+				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
+				if (source != null && !source.equals(""))
+					comment.setSource(source);
+				pathwayModel.getPathway().addComment(new Comment(source, content));
+			}
 		}
-		return comments;
 	}
 
-	protected Map<String, String> readDynamicProperties(Element e) throws ConverterException {
-		Map<String, String> dynamicProperties = new TreeMap<String, String>();
-		for (Element dp : e.getChildren("Property", e.getNamespace())) {
+	protected void readPathwayDynamicProperties(PathwayModel pathwayModel, Element root) throws ConverterException {
+		for (Element dp : root.getChildren("Property", root.getNamespace())) {
 			String key = dp.getAttributeValue("key");
 			String value = dp.getAttributeValue("value");
-			dynamicProperties.put(key, value);
+			pathwayModel.getPathway().setDynamicProperty(key, value);
 		}
-		return dynamicProperties;
 	}
 
-	protected List<AnnotationRef> readAnnotationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
-			throws ConverterException {
-		List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>();
-		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
+	protected void readPathwayAnnotationRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
+		for (Element anntRef : root.getChildren("AnnotationRef", root.getNamespace())) {
 			Annotation annotation = (Annotation) pathwayModel
 					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
-			List<Citation> citationRefs = readCitationRefs(pathwayModel, o, anntRef);
-			List<Evidence> evidenceRefs = readEvidenceRefs(pathwayModel, o, anntRef);
-			AnnotationRef annotationRef = new AnnotationRef(annotation, citationRefs, evidenceRefs);
+			AnnotationRef annotationRef = new AnnotationRef(annotation);
+			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
+				Citation citationRef = (Citation) pathwayModel
+						.getPathwayElement(citRef.getAttributeValue("elementRef"));
+				if (citationRef != null)
+					annotationRef.addCitationRef(citationRef);
+			}
+			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
+				Evidence evidenceRef = (Evidence) pathwayModel
+						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+				if (evidenceRef != null)
+					annotationRef.addEvidenceRef(evidenceRef);
+			}
+			pathwayModel.getPathway().addAnnotationRef(annotationRef);
 		}
 	}
 
-	protected List<Citation> readCitationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
-			throws ConverterException {
-		List<Citation> citationRefs = new ArrayList<Citation>();
+	protected void readPathwayCitationRefs(PathwayModel pathwayModel, Element e) throws ConverterException {
 		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
 			Citation citationRef = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
-			citationRefs.add(citationRef);
+			if (citationRef != null)
+				pathwayModel.getPathway().addCitationRef(citationRef);
 		}
-		return citationRefs;
 	}
 
-	protected List<Evidence> readEvidenceRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
-			throws ConverterException {
-		List<Evidence> evidenceRefs = new ArrayList<Evidence>();
+	protected void readPathwayEvidenceRefs(PathwayModel pathwayModel, Element e) throws ConverterException {
 		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
 			Evidence evidenceRef = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-			evidenceRefs.add(evidenceRef);
-		}
-		return evidenceRefs;
-	}
-
-	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
-		readElementId(e);
-		readComments(e);
-		readDynamicProperties(elementInfo, e);
-		readAnnotationRefs(elementInfo, e);
-		readCitationRefs(elementInfo, e);
-		readEvidenceRefs(elementInfo, e);
-	}
-
-	protected void readGroupRef(ShapedElement o, Element e) {
-		String groupRef = e.getAttributeValue("groupRef");
-		if (groupRef != null && !groupRef.equals("")) {
-			o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(id));
+			if (evidenceRef != null)
+				pathwayModel.getPathway().addEvidenceRef(evidenceRef);
 		}
 	}
 
-	protected void readGroupRef(LineElement o, Element e) {
-		String groupRef = e.getAttributeValue("groupRef");
-		if (groupRef != null && !groupRef.equals("")) {
-			o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(id));
+	protected void readGroups(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element grps = root.getChild("Groups", root.getNamespace());
+		for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
+			String elementId = grp.getAttributeValue("elementId");
+			GroupType type = GroupType.register(grp.getAttributeValue("type"));
+			Element gfx = grp.getChild("Graphics", grp.getNamespace());
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
+			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
+			/* add CommentGroup, evidenceRefs */
+			readElementInfo(group, grp);
+			/* optional properties */
+			String textLabel = grp.getAttributeValue("textLabel");
+			Xref xref = readXref(grp);
+			if (xref != null)
+				group.setXref(xref);
+			if (textLabel != null)
+				group.setTextLabel(textLabel);
+			if (group != null)
+				pathwayModel.addGroup(group);
+		}
+		/**
+		 * Because a group may refer to another group not yet initialized. We read all
+		 * group elements before setting groupRef.
+		 */
+		for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
+			String groupRef = grp.getAttributeValue("groupRef");
+			if (groupRef != null && !groupRef.equals("")) {
+				String elementId = grp.getAttributeValue("elementId");
+				Group group = (Group) pathwayModel.getPathwayElement(elementId);
+				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
+			}
 		}
 	}
 
-	/**
-	 * Reads gpml RectAttributes from Graphics element and returns RectProperty.
-	 * Default schema values are automatically handled by jdom
-	 */
-	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
-		double centerX = Double.parseDouble(gfx.getAttributeValue("centerX"));
-		double centerY = Double.parseDouble(gfx.getAttributeValue("centerY"));
-		double width = Double.parseDouble(gfx.getAttributeValue("width"));
-		double height = Double.parseDouble(gfx.getAttributeValue("height"));
-		return new RectProperty(new Coordinate(centerX, centerY), width, height);
-	}
-
-	/**
-	 * Reads gpml FontAttributes from Graphics element and returns FontProperty.
-	 * Default schema values are automatically handled by jdom
-	 */
-	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
-		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor"));
-		String fontName = gfx.getAttributeValue("fontName");
-		boolean fontWeight = gfx.getAttributeValue("fontWeight").equals("Bold");
-		boolean fontStyle = gfx.getAttributeValue("fontStyle").equals("Italic");
-		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equals("Underline");
-		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equals("Strikethru");
-		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize"));
-		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("hAlign"));
-		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("vAlign"));
-		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
-				hAlignType, vAlignType);
-	}
-
-	/**
-	 * Reads gpml ShapeStyleAttributes from Graphics element and returns
-	 * ShapeStyleProperty. Default schema values are automatically handled by jdom
-	 */
-	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
-		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("borderColor"));
-		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("borderStyle"));
-		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth"));
-		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("fillColor"));
-		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType"));
-		String zOrder = gfx.getAttributeValue("zOrder");
-		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(fillColor, borderStyle, borderWidth, fillColor,
-				shapeType);
-		if (zOrder != null) {
-			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder));
-		}
-		return shapeStyleProperty;
-	}
-
-	/**
-	 * Reads gpml LineStyleAttributes from Graphics element and returns
-	 * LineStyleProperty. Default schema values are automatically handled by jdom
-	 */
-	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
-		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("lineColor"));
-		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("lineStyle"));
-		double lineWidth = Double.parseDouble(gfx.getAttributeValue("lineWidth"));
-		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("connectorType"));
-		String zOrder = gfx.getAttributeValue("zOrder");
-		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
-		if (zOrder != null) {
-			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
+	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element lbs = root.getChild("Labels", root.getNamespace());
+		for (Element lb : lbs.getChildren("Label", lbs.getNamespace())) {
+			String elementId = lb.getAttributeValue("elementId");
+			String textLabel = lb.getAttributeValue("textLabel");
+			Element gfx = lb.getChild("Graphics", lb.getNamespace());
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
+			readElementInfo(label, lb);
+			/* optional properties */
+			String href = lb.getAttributeValue("href");
+			String groupRef = lb.getAttributeValue("grouRef");
+			if (href != null)
+				label.setHref(href);
+			if (groupRef != null && !groupRef.equals(""))
+				label.setGroupRef((Group) label.getPathwayModel().getPathwayElement(groupRef));
+			if (label != null)
+				pathwayModel.addLabel(label);
 		}
 	}
 
-
-
+	protected void readShapes(PathwayModel pathwayModel, Element e) throws ConverterException {
+		Element shps = root.getChild("Shapes", root.getNamespace());
+		for (Element shp : shps.getChildren("Shape", shps.getNamespace())) {
+			String elementId = shp.getAttributeValue("elementId");
+			Element gfx = shp.getChild("Graphics", shp.getNamespace());
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
+			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
+			/* add CommentGroup, evidenceRefs */
+			readElementInfo(shape, shp);
+			/* optional properties */
+			String textLabel = shp.getAttributeValue("textLabel");
+			String groupRef = shp.getAttributeValue("grouRef");
+			if (textLabel != null)
+				shape.setTextLabel(textLabel);
+			if (groupRef != null && !groupRef.equals(""))
+				shape.setGroupRef((Group) shape.getPathwayModel().getPathwayElement(groupRef));
+			if (shape != null)
+				pathwayModel.addShape(shape);
+		}
+	}
+	
 	/**
 	 * @param o
 	 * @param e
@@ -408,147 +471,232 @@ public class GPML2021Reader {
 		o.setXref(identifier, dataSource);
 	}
 
+
+	private String readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+		readComments(elementInfo, e);
+		readDynamicProperties(elementInfo, e);
+		readAnnotationRefs(elementInfo, e);
+		readCitationRefs(elementInfo, e);
+		readEvidenceRefs(elementInfo, e);
+	}
+
+	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
+			String source = cmt.getAttributeValue("Source");
+			String content = cmt.getText();
+			if (content != null && !content.equals("")) {
+				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
+				if (source != null && !source.equals(""))
+					comment.setSource(source);
+				elementInfo.addComment(new Comment(source, content));
+			}
+		}
+	}
+
+	protected void readDynamicProperties(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element dp : root.getChildren("Property", root.getNamespace())) {
+			String key = dp.getAttributeValue("key");
+			String value = dp.getAttributeValue("value");
+			elementInfo.setDynamicProperty(key, value);
+		}
+	}
+
+	protected void readAnnotationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element anntRef : root.getChildren("AnnotationRef", root.getNamespace())) {
+			Annotation annotation = (Annotation) elementInfo.getPathwayModel()
+					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
+			AnnotationRef annotationRef = new AnnotationRef(annotation);
+			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
+				Citation citationRef = (Citation) elementInfo.getPathwayModel()
+						.getPathwayElement(citRef.getAttributeValue("elementRef"));
+				if (citationRef != null)
+					annotationRef.addCitationRef(citationRef);
+			}
+			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
+				Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
+						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+				if (evidenceRef != null)
+					annotationRef.addEvidenceRef(evidenceRef);
+			}
+			elementInfo.addAnnotationRef(annotationRef);
+		}
+	}
+
+	protected void readCitationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
+			Citation citationRef = (Citation) elementInfo.getPathwayModel()
+					.getPathwayElement(citRef.getAttributeValue("elementRef"));
+			if (citationRef != null) {
+				elementInfo.addCitationRef(citationRef);
+			}
+		}
+	}
+
+	protected void readEvidenceRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+			Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
+					.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+			if (evidenceRef != null)
+				elementInfo.addEvidenceRef(evidenceRef);
+		}
+	}
+
 	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
+	 * Reads gpml RectAttributes from Graphics element and returns RectProperty.
+	 * Default schema values are automatically handled by jdom
 	 */
-	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element lbs = root.getChild("Labels", root.getNamespace());
-		for (Element lb: lbs.getChildren("Label", lbs.getNamespace())) {
-			String elementId = lb.getAttributeValue("elementId"); 
-			String textLabel = lb.getAttributeValue("textLabel");
-			Element gfx = lb.getChild("Graphics", lb.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
-			/* optional properties */
-			String href = lb.getAttributeValue("href");
-			String groupRef = lb.getAttributeValue("grouRef");
-			if (href != null)
-				label.setHref(href);
-			if (groupRef != null)
-				label.setGroupRef((Group) label.getPathwayModel().getPathwayElement(groupRef));
-			if (label != null)
-				pathwayModel.addLabel(label);
+	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
+		double centerX = Double.parseDouble(gfx.getAttributeValue("centerX"));
+		double centerY = Double.parseDouble(gfx.getAttributeValue("centerY"));
+		double width = Double.parseDouble(gfx.getAttributeValue("width"));
+		double height = Double.parseDouble(gfx.getAttributeValue("height"));
+		return new RectProperty(new Coordinate(centerX, centerY), width, height);
+	}
+
+	/**
+	 * Reads gpml FontAttributes from Graphics element and returns FontProperty.
+	 * Default schema values are automatically handled by jdom
+	 */
+	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
+		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor"));
+		String fontName = gfx.getAttributeValue("fontName");
+		boolean fontWeight = gfx.getAttributeValue("fontWeight").equals("Bold");
+		boolean fontStyle = gfx.getAttributeValue("fontStyle").equals("Italic");
+		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equals("Underline");
+		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equals("Strikethru");
+		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize"));
+		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("hAlign"));
+		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("vAlign"));
+		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
+				hAlignType, vAlignType);
+	}
+
+	/**
+	 * Reads gpml ShapeStyleAttributes from Graphics element and returns
+	 * ShapeStyleProperty. Default schema values are automatically handled by jdom
+	 */
+	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
+		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("borderColor"));
+		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("borderStyle"));
+		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth"));
+		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("fillColor"));
+		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType"));
+		String zOrder = gfx.getAttributeValue("zOrder");
+		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(fillColor, borderStyle, borderWidth, fillColor,
+				shapeType);
+		if (zOrder != null) {
+			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder));
+		}
+		return shapeStyleProperty;
+	}
+
+	/**
+	 * Reads gpml LineStyleAttributes from Graphics element and returns
+	 * LineStyleProperty. Default schema values are automatically handled by jdom
+	 */
+	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
+		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("lineColor"));
+		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("lineStyle"));
+		double lineWidth = Double.parseDouble(gfx.getAttributeValue("lineWidth"));
+		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("connectorType"));
+		String zOrder = gfx.getAttributeValue("zOrder");
+		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
+		if (zOrder != null) {
+			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
 		}
 	}
 
-	protected void readShape(PathwayModel pathwayModel, Element e) throws ConverterException {
-		Element shps = root.getChild("Shapes", root.getNamespace());
-		for (Element shp: shps.getChildren("Shape", shps.getNamespace())) {
-			String elementId = shp.getAttributeValue("elementId"); 
-			Element gfx = shp.getChild("Graphics", shp.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			double rotation =  Double.parseDouble(gfx.getAttributeValue("rotation"));
-			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
-			/* optional properties */
-			String textLabel = shp.getAttributeValue("textLabel");
-			String groupRef = shp.getAttributeValue("grouRef");
-			if (textLabel != null)
-				shape.setTextLabel(textLabel);
-			if (groupRef != null)
-				shape.setGroupRef((Group) shape.getPathwayModel().getPathwayElement(groupRef));
-			if (shape != null)
-				pathwayModel.addShape(shape);
-		}
-	}
-		
-		
-		
-
-	protected void readGroup(PathwayModel pathwayModel, Element e) throws ConverterException {
-		Element grps = root.getChild("Shapes", root.getNamespace());
-		for (Element grp: grps.getChildren("Shape", grps.getNamespace())) {
-			String elementId = grp.getAttributeValue("elementId"); 
-			GroupType type = GroupType.register(grp.getAttributeValue("type")); 
-			Element gfx = grp.getChild("Graphics", grp.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			double rotation =  Double.parseDouble(gfx.getAttributeValue("rotation")); 
-			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
-			/* optional properties */
-			String textLabel = grp.getAttributeValue("textLabel");
-			String groupRef = grp.getAttributeValue("grouRef");
-			Xref xref = readXref(grp);
-			if (xref != null)
-				group.setXref(xref);
-			if (textLabel != null)
-				group.setTextLabel(textLabel);
-			if (groupRef != null)
-				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
-			if (group != null)
-				pathwayModel.addGroup(group);
-		}
-		//TODO  List<PathwayElement> pathwayElements,
-	}
 	
-	/**
-	 * DataNode, Label, Shape, Group
-	 * 
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	private void readShapedElement(ShapedElement o, Element e) throws ConverterException {
-		readPathwayElement(o, e); // TODO: // ElementId, CommentGroup
-		Element gfx = e.getChild("Graphics", e.getNamespace());
-		RectProperty rectProperty = readRectProperty(gfx);
-		FontProperty fontProperty = readFontProperty(gfx);
-		ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-
-//		String groupRef = getAttribute(base, "GroupRef", e);
-//		o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(groupRef));
+	/*---------------------------------------------MAYBE NOT USED ----------------------------------------*/
+	protected List<Comment> readComments(Element e) throws ConverterException {
+		List<Comment> comments = new ArrayList<Comment>();
+		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
+			String source = cmt.getAttributeValue("Source");
+			String content = cmt.getText();
+			// TODO check if null
+			comments.add(new Comment(source, content));
+		}
+		return comments;
 	}
 
-//	/**
-//	 * Converts deprecated shapes to contemporary analogs. This allows us to
-//	 * maintain backward compatibility while at the same time cleaning up old shape
-//	 * usages.
-//	 * 
-//	 */
-//	/**
-//	 * @param o
-//	 * @param e
-//	 * @throws ConverterException
-//	 */
-//	protected void readShapeType(Shape o, Element e) throws ConverterException {
-//		String base = e.getName();
-//		Element graphics = e.getChild("Graphics", e.getNamespace());
-//		IShape s = ShapeRegistry.fromName(graphics.getAttributeValue("shapeType"));
-//		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
-//			s = ShapeType.DEPRECATED_MAP.get(s);
-//			o.setShapeType(s);
-//			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
-//				o.setLineStyle(LineStyleType.DOUBLE);
-//				o.setLineThickness(3.0);
-//				o.setColor(Color.LIGHT_GRAY);
-//			}
-//		} else {
-//			o.setShapeType(s);
-//			mapLineStyle(o, e); // LineStyle
-//		}
-//	}
-
-	public void readFromRoot(Element root, Pathway pwy) throws ConverterException {
-		mapElement(root, pwy); // MappInfo
-
-		// Iterate over direct children of the root element
-		for (Object e : root.getChildren()) {
-			mapElement((Element) e, pwy);
+	protected Map<String, String> readDynamicProperties(Element e) throws ConverterException {
+		Map<String, String> dynamicProperties = new TreeMap<String, String>();
+		for (Element dp : e.getChildren("Property", e.getNamespace())) {
+			String key = dp.getAttributeValue("key");
+			String value = dp.getAttributeValue("value");
+			dynamicProperties.put(key, value);
 		}
-		Logger.log.trace("End copying map elements");
+		return dynamicProperties;
+	}
 
-		// Add graphIds for objects that don't have one
-		addElementIds(pwy);
+	protected List<AnnotationRef> readAnnotationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>();
+		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
+			Annotation annotation = (Annotation) pathwayModel
+					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
+			List<Citation> citationRefs = readCitationRefs(pathwayModel, o, anntRef);
+			List<Evidence> evidenceRefs = readEvidenceRefs(pathwayModel, o, anntRef);
+			AnnotationRef annotationRef = new AnnotationRef(annotation, citationRefs, evidenceRefs);
+		}
+	}
 
-		// Convert absolute point coordinates of linked points to
-		// relative coordinates
-		convertPointCoordinates(pwy);
+	protected List<Citation> readCitationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<Citation> citationRefs = new ArrayList<Citation>();
+		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
+			Citation citationRef = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
+			citationRefs.add(citationRef);
+		}
+		return citationRefs;
+	}
+
+	protected List<Evidence> readEvidenceRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<Evidence> evidenceRefs = new ArrayList<Evidence>();
+		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+			Evidence evidenceRef = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+			evidenceRefs.add(evidenceRef);
+		}
+		return evidenceRefs;
+	}
+
+	protected void readGroupRef(LineElement o, Element e) {
+		String groupRef = e.getAttributeValue("groupRef");
+		if (groupRef != null && !groupRef.equals("")) {
+			o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(id));
+		}
+	}
+
+	protected void readGroupRefs(PathwayModel pathwayModel, Element root) {
+		List<String> shpElements = Collections
+				.unmodifiableList(Arrays.asList("DataNodes", "Labels", "Shapes", "Groups"));
+		List<String> shpElement = Collections.unmodifiableList(Arrays.asList("DataNode", "Label", "Shape", "Group"));
+		for (int i = 0; i < shpElements.size(); i++) {
+			Element grps = root.getChild(shpElements.get(i), root.getNamespace());
+			for (Element grp : grps.getChildren(shpElement.get(i), grps.getNamespace())) {
+				String groupRef = grp.getAttributeValue("groupRef");
+				if (groupRef != null && !groupRef.equals("")) {
+					String elementId = grp.getAttributeValue("elementId");
+					ShapedElement shapedElement = (ShapedElement) pathwayModel.getPathwayElement(elementId);
+					shapedElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+				}
+			}
+		}
+		List<String> lnElements = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
+		List<String> lnElement = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
+		for (int i = 0; i < shpElements.size(); i++) {
+			Element grps = root.getChild(lnElements.get(i), root.getNamespace());
+			for (Element grp : grps.getChildren(lnElement.get(i), grps.getNamespace())) {
+				String groupRef = grp.getAttributeValue("groupRef");
+				if (groupRef != null && !groupRef.equals("")) {
+					String elementId = grp.getAttributeValue("elementId");
+					LineElement lineElement = (Group) pathwayModel.getPathwayElement(elementId);
+					lineElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+
+				}
+			}
+		}
 	}
 
 	private static void addElementIds(Pathway pathway) throws ConverterException {
@@ -577,6 +725,35 @@ public class GPML2021Reader {
 					pe.setElementId(newId);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Converts deprecated shapes to contemporary analogs. This allows us to
+	 * maintain backward compatibility while at the same time cleaning up old shape
+	 * usages.
+	 * 
+	 */
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void readShapeType(Shape o, Element e) throws ConverterException {
+		String base = e.getName();
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		IShape s = ShapeRegistry.fromName(graphics.getAttributeValue("shapeType"));
+		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
+			s = ShapeType.DEPRECATED_MAP.get(s);
+			o.setShapeType(s);
+			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
+				o.setLineStyle(LineStyleType.DOUBLE);
+				o.setLineThickness(3.0);
+				o.setColor(Color.LIGHT_GRAY);
+			}
+		} else {
+			o.setShapeType(s);
+			mapLineStyle(o, e); // LineStyle
 		}
 	}
 

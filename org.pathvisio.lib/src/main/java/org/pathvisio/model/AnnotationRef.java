@@ -27,8 +27,8 @@ import java.util.List;
 public class AnnotationRef {
 
 	private Annotation annotation; // elementRef in GPML is this.annotation.getElementId()
-	private List<Citation> citations; // 0 to unbounded
-	private List<Evidence> evidences; // 0 to unbounded
+	private List<Citation> citationRefs; // 0 to unbounded
+	private List<Evidence> evidenceRefs; // 0 to unbounded
 
 	//TODO Annotation reference tricky...
 	
@@ -40,8 +40,8 @@ public class AnnotationRef {
 	 */
 	public AnnotationRef(Annotation annotation) {
 		this.annotation = annotation;
-		this.citations = new ArrayList<Citation>();
-		this.evidences = new ArrayList<Evidence>();
+		this.citationRefs = new ArrayList<Citation>();
+		this.evidenceRefs = new ArrayList<Evidence>();
 	}
 
 	public Annotation getAnnotation() {
@@ -52,27 +52,27 @@ public class AnnotationRef {
 		this.annotation = annotation;
 	}
 
-	public List<Citation> getCitations() {
-		return citations;
+	public List<Citation> getCitationRefs() {
+		return citationRefs;
 	}
 
-	public void addCitation(Citation citation) {
-		citations.add(citation);
+	public void addCitationRef(Citation citationRef) {
+		citationRefs.add(citationRef);
 	}
 	
-	public void removeCitation(Citation citation) {
-		citations.remove(citation);
+	public void removeCitationRef(Citation citationRef) {
+		citationRefs.remove(citationRef);
 	}
 
-	public List<Evidence> getEvidences() {
-		return evidences;
+	public List<Evidence> getEvidenceRefs() {
+		return evidenceRefs;
 	}
 
-	public void addEvidence(Evidence evidence) {
-		evidences.add(evidence);
+	public void addEvidenceRef(Evidence evidenceRef) {
+		evidenceRefs.add(evidenceRef);
 	}
 
-	public void removeEvidence(Evidence evidence) {
-		evidences.remove(evidence);
+	public void removeEvidenceRef(Evidence evidenceRef) {
+		evidenceRefs.remove(evidenceRef);
 	}
 }
