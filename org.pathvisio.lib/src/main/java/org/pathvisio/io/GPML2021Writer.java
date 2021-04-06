@@ -386,20 +386,20 @@ public class GPML2021Writer {
 	}
 
 	protected void writeGraphicalLines(List<GraphicalLine> graphicalLines, Element root) throws ConverterException {
-		Element gfs = new Element("GraphicalLines", root.getNamespace());
-		List<Element> gfList = new ArrayList<Element>();
+		Element glns = new Element("GraphicalLines", root.getNamespace());
+		List<Element> glnList = new ArrayList<Element>();
 		for (GraphicalLine graphicalLine : graphicalLines) {
 			if (graphicalLine == null)
 				continue;
-			Element gf = new Element("GraphicalLine", root.getNamespace());
-			writeLineElement(graphicalLine, gf);
-			if (gf != null) {
-				gfList.add(gf);
+			Element gln = new Element("GraphicalLine", root.getNamespace());
+			writeLineElement(graphicalLine, gln);
+			if (gln != null) {
+				glnList.add(gln);
 			}
 		}
-		if (gfList != null && gfList.isEmpty() == false) {
-			gfs.addContent(gfList);
-			root.addContent(gfs);
+		if (glnList != null && glnList.isEmpty() == false) {
+			glns.addContent(glnList);
+			root.addContent(glns);
 		}
 	}
 

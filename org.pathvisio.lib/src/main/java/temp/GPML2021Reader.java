@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package temp;
 
 import java.awt.Color;
 import java.io.File;
@@ -29,10 +29,8 @@ import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
-import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.*;
@@ -41,10 +39,7 @@ import org.pathvisio.model.type.*;
 
 public class GPML2021Reader {
 
-	static final File xsdFile = new File("GPML2021.xsd");
-	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
-	
-	XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile);
+	XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdfile);
 	SAXBuilder builder = new SAXBuilder(schemafactory);
 	Document readDoc = builder.build(new File("test.xml"));
 	Element root = readDoc.getRootElement();
@@ -60,25 +55,32 @@ public class GPML2021Reader {
 		readCitations(pathwayModel, root);
 		readEvidences(pathwayModel, root);
 
-		readPathwayInfo(pathwayModel, root); //comment group and evidenceRefs
-
+		readPathwayInfo(pathwayModel, root);
+		// TODO read CommentRefs
 		readGroups(pathwayModel, root); // TODO read group first
 		readLabels(pathwayModel, root);
 		readShapes(pathwayModel, root);
 
 		readDataNodes(pathwayModel, root); // TODO will elementRef (refers to only Group?)
+		readStates(pathwayModel, root);
 
-		readInteractions(pathwayModel, root);
-		readGraphicalLines(pathwayModel, root);
-		readLinePoints(pathwayModel, root); // TODO reads points last due to possible reference to anchor
+		readInteractions(pathwayModel, root); // contains waypoints
+		readGraphicalLines(pathwayModel, root); // contains waypoints
+		readAnchors(pathwayModel, root);
+		readPoints(pathwayModel, root);
 
 		Logger.log.trace("End copying read elements");
+
 		// TODO check groups have at least one pathwayElement inside?
 		// TODO check at least 2 points per line element?
-		//TODO handle relative and absolute coordinates
 
+		// Add graphIds for objects that don't have one
+		addElementIds(pwy);
+
+		// Convert absolute point coordinates of linked points to
+		// relative coordinates
+		convertPointCoordinates(pwy);
 	}
-
 
 	protected Pathway readPathway(Element root) throws ConverterException {
 		String title = root.getAttributeValue("title");
@@ -324,7 +326,7 @@ public class GPML2021Reader {
 		}
 	}
 
-	protected void readShapes(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readShapes(PathwayModel pathwayModel, Element e) throws ConverterException {
 		Element shps = root.getChild("Shapes", root.getNamespace());
 		for (Element shp : shps.getChildren("Shape", shps.getNamespace())) {
 			String elementId = shp.getAttributeValue("elementId");
@@ -370,7 +372,7 @@ public class GPML2021Reader {
 			String elementRef = dn.getAttributeValue("elementRef");
 			if (groupRef != null && !groupRef.equals(""))
 				dataNode.setGroupRef((Group) dataNode.getPathwayModel().getPathwayElement(groupRef));
-			if (elementRef != null && !elementRef.equals(""))
+			if (elementRef != null && !groupRef.equals(""))
 				dataNode.setElementRef(dataNode.getPathwayModel().getPathwayElement(elementRef));
 			if (dataNode != null)
 				pathwayModel.addDataNode(dataNode);
@@ -425,14 +427,14 @@ public class GPML2021Reader {
 		}
 	}
 
+
 	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element ias = root.getChild("Interactions", root.getNamespace());
 		for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
 			String elementId = ia.getAttributeValue("elementId");
-			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			Xref xref = readXref(ia);
-			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
+			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
 			/* read comment group, evidenceRefs */
 			readElementInfo(interaction, ia);
 			/* read anchors (NB: points are read later) */
@@ -446,54 +448,112 @@ public class GPML2021Reader {
 		}
 	}
 
-	protected void readAnchors(LineElement lineElement, Element e) throws ConverterException {
-		Element wyps = e.getChild("Waypoints", e.getNamespace());
-		for (Element an : wyps.getChildren("Anchor", e.getNamespace())) {
-			String elementId = an.getAttributeValue("elementId");
-			double position = Double.parseDouble(an.getAttributeValue("position"));
-			Coordinate xy = new Coordinate(Double.parseDouble(an.getAttributeValue("x")),
-					Double.parseDouble(an.getAttributeValue("y")));
-			AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType"));
-			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), position, xy, shapeType);
-			if (anchor != null)
-				lineElement.addAnchor(anchor);
-		}
-	}
-
-	// TODO can cast to LinedElement? ---to save some code
-	protected void readLinePoints(PathwayModel pathwayModel, Element e) throws ConverterException {
-		Element ias = root.getChild("Interactions", root.getNamespace());
-		for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
-			String elementId = ia.getAttributeValue("elementId");
-			Interaction interaction = (Interaction) pathwayModel.getPathwayElement(elementId);
-			readPoints(interaction, e);
-		}
-		Element glns = root.getChild("GraphicaLines", root.getNamespace());
-		for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
-			String elementId = gln.getAttributeValue("elementId");
-			GraphicalLine graphicalLine = (GraphicalLine) pathwayModel.getPathwayElement(elementId);
-			readPoints(graphicalLine, e);
-		}
-	}
-
-	protected void readPoints(LineElement lineElement, Element e) throws ConverterException {
-		Element wyps = e.getChild("Waypoints", e.getNamespace());
-		for (Element pt : wyps.getChildren("Anchor", e.getNamespace())) {
-			String elementId = pt.getAttributeValue("elementId");
-			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("elementId"));
-			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
-					Double.parseDouble(pt.getAttributeValue("y")));
-			Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
+	/**
+	 * TODO should absolute x and y be optional?
+	 */
+	protected void readPoints(LineElement lineElement, Element dn) throws ConverterException {
+		Element sts = dn.getChild("States", dn.getNamespace());
+		for (Element st : sts.getChildren("State", sts.getNamespace())) {
+			String elementId = st.getAttributeValue("elementId");
+			String textLabel = st.getAttributeValue("textLabel");
+			StateType type = StateType.register(st.getAttributeValue("type"));
+			Element gfx = st.getChild("Graphics", st.getNamespace());
+			double relX = Double.parseDouble(gfx.getAttributeValue("relX"));
+			double relY = Double.parseDouble(gfx.getAttributeValue("relY"));
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			State state = new State();
+			/* read comment group, evidenceRefs */
+			readElementInfo(dataNode, st);
 			/* set optional properties */
-			String elementRef = pt.getAttributeValue("elementRef");
-			double relX = Double.parseDouble(pt.getAttributeValue("relX"));
-			double relY = Double.parseDouble(pt.getAttributeValue("relY"));
-			if (elementRef != null && !elementRef.equals(""))
-				point.setElementRef(point.getPathwayModel().getPathwayElement(elementRef));
-			point.setRelX(relX);
-			point.setRelY(relY);
-			if (point != null)
-				lineElement.addPoint(point);
+			Xref xref = readXref(st);
+			if (xref != null)
+				state.setXref(xref);
+			if (state != null)
+				dataNode.addState(state);
+		}
+	}
+
+	/**
+	 * TODO should absolute x and y be optional?
+	 */
+	protected void readAnchors(LineElement lineElement, Element dn) throws ConverterException {
+		Element sts = dn.getChild("States", dn.getNamespace());
+		for (Element st : sts.getChildren("State", sts.getNamespace())) {
+			String elementId = st.getAttributeValue("elementId");
+			String textLabel = st.getAttributeValue("textLabel");
+			StateType type = StateType.register(st.getAttributeValue("type"));
+			Element gfx = st.getChild("Graphics", st.getNamespace());
+			double relX = Double.parseDouble(gfx.getAttributeValue("relX"));
+			double relY = Double.parseDouble(gfx.getAttributeValue("relY"));
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			State state = new State();
+			/* read comment group, evidenceRefs */
+			readElementInfo(dataNode, st);
+			/* set optional properties */
+			Xref xref = readXref(st);
+			if (xref != null)
+				state.setXref(xref);
+			if (state != null)
+				dataNode.addState(state);
+		}
+	}
+
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void readLineElement(PathwayModel pathwayModel, Element e) throws ConverterException {
+		readPathwayElement(o, e); /** TODO elementId, CommentGroup */
+
+		String base = e.getName();
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+
+		String groupRef = getAttribute(base, "GroupRef", e); // TODO GroupRef
+		o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(groupRef));
+		readLineStyleProperty(o, e);
+
+		String startType = null;
+		String endType = null;
+
+		// Reads the entire list
+		List<Point> pts = new ArrayList<Point>(); // TODO Should be added
+		List<Element> points = graphics.getChildren("Point", e.getNamespace());
+		for (int i = 0; i < points.size(); i++) {
+			Element point = points.get(i);
+			String elementId = getAttribute(base + ".Graphics.Point", "GraphId", point); // TODO ElementId
+			double x = Double.parseDouble(getAttribute(base + ".Graphics.Point", "X", point));
+			double y = Double.parseDouble(getAttribute(base + ".Graphics.Point", "Y", point));
+			LineType arrowHead = getAttribute("Interaction.Graphics.Point", "ArrowHead", point) == null ? LineType.LINE
+					: LineType.fromName(getAttribute("Interaction.Graphics.Point", "ArrowHead", point));
+			String elementRef = getAttribute(base + ".Graphics.Point", "GraphRef", point);
+			Point pt = new Point(elementId, arrowHead, new Coordinate(x, y));
+			pts.add(pt);
+			if (elementRef != null) {
+				double relX = Double.parseDouble(point.getAttributeValue("RelX"));
+				double relY = Double.parseDouble(point.getAttributeValue("RelY"));
+				pt.setElementRef(elementRef);
+				pt.setRelX(relX);
+				pt.setRelY(relY);
+			}
+		}
+
+		// Reads the entire list
+		List<Element> anchors = graphics.getChildren("Anchor", e.getNamespace());
+		for (Element anchor : anchors) {
+			String elementId = getAttribute(base + ".Graphics.Anchor", "GraphId", anchor); // TODO ElementId
+			double position = Double.parseDouble(getAttribute("Interaction.Graphics.Anchor", "Position", anchor));
+			Coordinate xy = new Coordinate(0, 0); // method to calculate
+			AnchorType shapeType = AnchorType.fromName(getAttribute("Interaction.Graphics.Anchor", "Shape", anchor));
+//			if (shape != null) {
+//				a.setShape(AnchorType.fromName(shape)); //TODO default shapeType handle? 
+//			}
+			Anchor a = new Anchor(elementId, position, xy, shapeType);
+			o.addAnchor(a);
 		}
 	}
 
@@ -631,111 +691,154 @@ public class GPML2021Reader {
 		}
 	}
 
-	/*-------------------------------------------- OLD METHODS ----------------------------------------*/
+	/*---------------------------------------------MAYBE NOT USED ----------------------------------------*/
+	protected List<Comment> readComments(Element e) throws ConverterException {
+		List<Comment> comments = new ArrayList<Comment>();
+		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
+			String source = cmt.getAttributeValue("Source");
+			String content = cmt.getText();
+			// TODO check if null
+			comments.add(new Comment(source, content));
+		}
+		return comments;
+	}
 
-//	
-//	// OLD METHOD Add graphIds for objects that don't have one
-////	addElementIds(pwy);
-//
-//	// OLD METHOD Convert absolute point coordinates of linked points to
-//	// relative coordinates
-////	convertPointCoordinates(pwy);
-//	
-//	
-//	protected void readGroupRef(LineElement o, Element e) {
-//		String groupRef = e.getAttributeValue("groupRef");
-//		if (groupRef != null && !groupRef.equals("")) {
-//			o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(id));
-//		}
-//	}
-//
-//	protected void readGroupRefs(PathwayModel pathwayModel, Element root) {
-//		List<String> shpElements = Collections
-//				.unmodifiableList(Arrays.asList("DataNodes", "Labels", "Shapes", "Groups"));
-//		List<String> shpElement = Collections.unmodifiableList(Arrays.asList("DataNode", "Label", "Shape", "Group"));
-//		for (int i = 0; i < shpElements.size(); i++) {
-//			Element grps = root.getChild(shpElements.get(i), root.getNamespace());
-//			for (Element grp : grps.getChildren(shpElement.get(i), grps.getNamespace())) {
-//				String groupRef = grp.getAttributeValue("groupRef");
-//				if (groupRef != null && !groupRef.equals("")) {
-//					String elementId = grp.getAttributeValue("elementId");
-//					ShapedElement shapedElement = (ShapedElement) pathwayModel.getPathwayElement(elementId);
-//					shapedElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
-//				}
-//			}
-//		}
-//		List<String> lnElements = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
-//		List<String> lnElement = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
-//		for (int i = 0; i < shpElements.size(); i++) {
-//			Element grps = root.getChild(lnElements.get(i), root.getNamespace());
-//			for (Element grp : grps.getChildren(lnElement.get(i), grps.getNamespace())) {
-//				String groupRef = grp.getAttributeValue("groupRef");
-//				if (groupRef != null && !groupRef.equals("")) {
-//					String elementId = grp.getAttributeValue("elementId");
-//					LineElement lineElement = (Group) pathwayModel.getPathwayElement(elementId);
-//					lineElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
-//
-//				}
-//			}
-//		}
-//	}
-//
-//	private static void addElementIds(Pathway pathway) throws ConverterException {
-//		for (PathwayElement pe : pathway.getDataObjects()) {
-//			String id = pe.getElementId();
-//			if (id == null || "".equals(id)) {
-//				if (pe.getObjectType() == ObjectType.LINE || pe.getObjectType() == ObjectType.GRAPHLINE) {
-//					// because we forgot to write out graphId's on Lines on older pathways
-//					// generate a graphId based on hash of coordinates
-//					// so that pathways with branching history still have the same id.
-//					// This part may be removed for future versions of GPML (2010+)
-//					StringBuilder builder = new StringBuilder();
-//					builder.append(pe.getMStartX());
-//					builder.append(pe.getMStartY());
-//					builder.append(pe.getMEndX());
-//					builder.append(pe.getMEndY());
-//					builder.append(pe.getStartLineType());
-//					builder.append(pe.getEndLineType());
-//
-//					String newId;
-//					int i = 1;
-//					do {
-//						newId = "id" + Integer.toHexString((builder.toString() + ("_" + i)).hashCode());
-//						i++;
-//					} while (pathway.getGraphIds().contains(newId));
-//					pe.setElementId(newId);
-//				}
-//			}
-//		}
-//	}
-//
-//	/**
-//	 * Converts deprecated shapes to contemporary analogs. This allows us to
-//	 * maintain backward compatibility while at the same time cleaning up old shape
-//	 * usages.
-//	 * 
-//	 */
-//	/**
-//	 * @param o
-//	 * @param e
-//	 * @throws ConverterException
-//	 */
-//	protected void readShapeType(Shape o, Element e) throws ConverterException {
-//		String base = e.getName();
-//		Element graphics = e.getChild("Graphics", e.getNamespace());
-//		IShape s = ShapeRegistry.fromName(graphics.getAttributeValue("shapeType"));
-//		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
-//			s = ShapeType.DEPRECATED_MAP.get(s);
-//			o.setShapeType(s);
-//			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
-//				o.setLineStyle(LineStyleType.DOUBLE);
-//				o.setLineThickness(3.0);
-//				o.setColor(Color.LIGHT_GRAY);
-//			}
-//		} else {
-//			o.setShapeType(s);
-//			mapLineStyle(o, e); // LineStyle
-//		}
-//	}
-//
-//}
+	protected Map<String, String> readDynamicProperties(Element e) throws ConverterException {
+		Map<String, String> dynamicProperties = new TreeMap<String, String>();
+		for (Element dp : e.getChildren("Property", e.getNamespace())) {
+			String key = dp.getAttributeValue("key");
+			String value = dp.getAttributeValue("value");
+			dynamicProperties.put(key, value);
+		}
+		return dynamicProperties;
+	}
+
+	protected List<AnnotationRef> readAnnotationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<AnnotationRef> annotationRefs = new ArrayList<AnnotationRef>();
+		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
+			Annotation annotation = (Annotation) pathwayModel
+					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
+			List<Citation> citationRefs = readCitationRefs(pathwayModel, o, anntRef);
+			List<Evidence> evidenceRefs = readEvidenceRefs(pathwayModel, o, anntRef);
+			AnnotationRef annotationRef = new AnnotationRef(annotation, citationRefs, evidenceRefs);
+		}
+	}
+
+	protected List<Citation> readCitationRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<Citation> citationRefs = new ArrayList<Citation>();
+		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
+			Citation citationRef = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
+			citationRefs.add(citationRef);
+		}
+		return citationRefs;
+	}
+
+	protected List<Evidence> readEvidenceRefs(PathwayModel pathwayModel, ElementInfo o, Element e)
+			throws ConverterException {
+		List<Evidence> evidenceRefs = new ArrayList<Evidence>();
+		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+			Evidence evidenceRef = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+			evidenceRefs.add(evidenceRef);
+		}
+		return evidenceRefs;
+	}
+
+	protected void readGroupRef(LineElement o, Element e) {
+		String groupRef = e.getAttributeValue("groupRef");
+		if (groupRef != null && !groupRef.equals("")) {
+			o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(id));
+		}
+	}
+
+	protected void readGroupRefs(PathwayModel pathwayModel, Element root) {
+		List<String> shpElements = Collections
+				.unmodifiableList(Arrays.asList("DataNodes", "Labels", "Shapes", "Groups"));
+		List<String> shpElement = Collections.unmodifiableList(Arrays.asList("DataNode", "Label", "Shape", "Group"));
+		for (int i = 0; i < shpElements.size(); i++) {
+			Element grps = root.getChild(shpElements.get(i), root.getNamespace());
+			for (Element grp : grps.getChildren(shpElement.get(i), grps.getNamespace())) {
+				String groupRef = grp.getAttributeValue("groupRef");
+				if (groupRef != null && !groupRef.equals("")) {
+					String elementId = grp.getAttributeValue("elementId");
+					ShapedElement shapedElement = (ShapedElement) pathwayModel.getPathwayElement(elementId);
+					shapedElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+				}
+			}
+		}
+		List<String> lnElements = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
+		List<String> lnElement = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
+		for (int i = 0; i < shpElements.size(); i++) {
+			Element grps = root.getChild(lnElements.get(i), root.getNamespace());
+			for (Element grp : grps.getChildren(lnElement.get(i), grps.getNamespace())) {
+				String groupRef = grp.getAttributeValue("groupRef");
+				if (groupRef != null && !groupRef.equals("")) {
+					String elementId = grp.getAttributeValue("elementId");
+					LineElement lineElement = (Group) pathwayModel.getPathwayElement(elementId);
+					lineElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+
+				}
+			}
+		}
+	}
+
+	private static void addElementIds(Pathway pathway) throws ConverterException {
+		for (PathwayElement pe : pathway.getDataObjects()) {
+			String id = pe.getElementId();
+			if (id == null || "".equals(id)) {
+				if (pe.getObjectType() == ObjectType.LINE || pe.getObjectType() == ObjectType.GRAPHLINE) {
+					// because we forgot to write out graphId's on Lines on older pathways
+					// generate a graphId based on hash of coordinates
+					// so that pathways with branching history still have the same id.
+					// This part may be removed for future versions of GPML (2010+)
+					StringBuilder builder = new StringBuilder();
+					builder.append(pe.getMStartX());
+					builder.append(pe.getMStartY());
+					builder.append(pe.getMEndX());
+					builder.append(pe.getMEndY());
+					builder.append(pe.getStartLineType());
+					builder.append(pe.getEndLineType());
+
+					String newId;
+					int i = 1;
+					do {
+						newId = "id" + Integer.toHexString((builder.toString() + ("_" + i)).hashCode());
+						i++;
+					} while (pathway.getGraphIds().contains(newId));
+					pe.setElementId(newId);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Converts deprecated shapes to contemporary analogs. This allows us to
+	 * maintain backward compatibility while at the same time cleaning up old shape
+	 * usages.
+	 * 
+	 */
+	/**
+	 * @param o
+	 * @param e
+	 * @throws ConverterException
+	 */
+	protected void readShapeType(Shape o, Element e) throws ConverterException {
+		String base = e.getName();
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		IShape s = ShapeRegistry.fromName(graphics.getAttributeValue("shapeType"));
+		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
+			s = ShapeType.DEPRECATED_MAP.get(s);
+			o.setShapeType(s);
+			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
+				o.setLineStyle(LineStyleType.DOUBLE);
+				o.setLineThickness(3.0);
+				o.setColor(Color.LIGHT_GRAY);
+			}
+		} else {
+			o.setShapeType(s);
+			mapLineStyle(o, e); // LineStyle
+		}
+	}
+
+}

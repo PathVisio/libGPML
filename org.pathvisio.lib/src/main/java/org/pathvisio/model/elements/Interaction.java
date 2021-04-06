@@ -42,9 +42,9 @@ public class Interaction extends LineElement {
 	 *                          belongs.
 	 * @param xref              the interaction Xref.
 	 */
-	public Interaction(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
-			LineStyleProperty lineStyleProperty, Group groupRef, Xref xref) {
-		super(elementId, pathwayModel, points, anchors, lineStyleProperty, groupRef);
+	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Group groupRef,
+			Xref xref) {
+		super(elementId, pathwayModel, lineStyleProperty, groupRef);
 		this.xref = xref;
 	}
 
@@ -52,9 +52,8 @@ public class Interaction extends LineElement {
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except groupRef, because the interaction does not belong in a group.
 	 */
-	public Interaction(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
-			LineStyleProperty lineStyleProperty, Xref xref) {
-		this(elementId, pathwayModel, points, anchors, lineStyleProperty, null, xref);
+	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Xref xref) {
+		this(elementId, pathwayModel, lineStyleProperty, null, xref);
 	}
 
 	private Xref xref;
@@ -67,7 +66,7 @@ public class Interaction extends LineElement {
 	public Xref getXref() {
 		return xref;
 	}
-	
+
 	/**
 	 * Sets the Xref for the interaction.
 	 * 

@@ -54,8 +54,8 @@ public abstract class LineElement extends ElementInfo {
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 */
-	public LineElement(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
-			LineStyleProperty lineStyleProperty, Group groupRef) {
+	public LineElement(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
+			Group groupRef) {
 		super(elementId, pathwayModel);
 		this.points = new ArrayList<Point>(); // TODO minimum 2!?
 		this.anchors = new ArrayList<Anchor>();
@@ -69,9 +69,8 @@ public abstract class LineElement extends ElementInfo {
 	 * Instantiates a line pathway element given all possible parameters except
 	 * groupRef, because the pathway element is not a member of a group.
 	 */
-	public LineElement(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
-			LineStyleProperty lineStyleProperty) {
-		this(elementId, pathwayModel, new ArrayList<Point>(), new ArrayList<Anchor>(), lineStyleProperty, null);
+	public LineElement(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty) {
+		this(elementId, pathwayModel, lineStyleProperty, null);
 	}
 
 	/**
@@ -177,8 +176,8 @@ public abstract class LineElement extends ElementInfo {
 	}
 
 	/**
-	 * Sets the parent group of the pathway element. The pathway element is added to the pathwayElements
-	 * list of the parent group.
+	 * Sets the parent group of the pathway element. The pathway element is added to
+	 * the pathwayElements list of the parent group.
 	 * 
 	 * @param groupRef the parent group of the pathway element.
 	 */

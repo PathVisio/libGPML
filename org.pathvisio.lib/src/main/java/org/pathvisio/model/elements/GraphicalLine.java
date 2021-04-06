@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.elements;
 
-import java.util.List;
-
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.LineStyleProperty;
 
@@ -40,18 +38,17 @@ public class GraphicalLine extends LineElement {
 	 *                          belongs.
 	 * @param xref              the interaction Xref.
 	 */
-	public GraphicalLine(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
-			LineStyleProperty lineStyleProperty, Group groupRef) {
-		super(elementId, pathwayModel, points, anchors, lineStyleProperty, groupRef);
+	public GraphicalLine(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
+			Group groupRef) {
+		super(elementId, pathwayModel, lineStyleProperty, groupRef);
 	}
 
 	/**
 	 * Instantiates a GraphicalLine pathway element given all possible parameters
 	 * except groupRef, because the interaction does not belong in a group.
 	 */
-	public GraphicalLine(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
-			LineStyleProperty lineStyleProperty) {
-		this(elementId, pathwayModel, points, anchors, lineStyleProperty, null);
+	public GraphicalLine(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty) {
+		this(elementId, pathwayModel, lineStyleProperty, null);
 	}
 
 }
