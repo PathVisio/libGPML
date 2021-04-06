@@ -80,9 +80,9 @@ public class State extends ElementInfo {
 	 * Instantiates a State pathway element given all possible parameters except
 	 * xref.
 	 */
-	public State(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, DataNode dataNode, String textLabel, StateType type, double relX,
-			double relY) {
+	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
+			double relX, double relY, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty) {
 		this(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, rectProperty, fontProperty,
 				shapeStyleProperty, null);
 	}

@@ -147,14 +147,13 @@ public class GPML2021Reader {
 		}
 	}
 
-	
 	protected void readAnnotations(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element annts = root.getChild("Annotations", root.getNamespace());
 		for (Element annt : annts.getChildren("Annotation", annts.getNamespace())) {
 			String elementId = annt.getAttributeValue("elementId");
 			String value = annt.getAttributeValue("value");
 			AnnotationType type = AnnotationType.register(annt.getAttributeValue("type"));
-			Annotation annotation = new Annotation(elementId, pathwayModel, value, type); 		
+			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
 			/* optional properties */
 			Xref xref = readXref(annt);
 			String url = annt.getAttributeValue("url");
@@ -166,13 +165,13 @@ public class GPML2021Reader {
 				pathwayModel.addAnnotation(annotation);
 		}
 	}
-	
+
 	protected void readCitations(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element cits = root.getChild("Citations", root.getNamespace());
 		for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
 			String elementId = cit.getAttributeValue("elementId");
 			Xref xref = readXref(cit);
-			Citation citation = new Citation(elementId, pathwayModel, xref); 		
+			Citation citation = new Citation(elementId, pathwayModel, xref);
 			/* optional properties */
 			String url = cit.getAttributeValue("url");
 			if (url != null)
@@ -181,13 +180,13 @@ public class GPML2021Reader {
 				pathwayModel.addCitation(citation);
 		}
 	}
-	
+
 	protected void readEvidences(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element evids = root.getChild("Evidences", root.getNamespace());
 		for (Element evid : evids.getChildren("Evidence", evids.getNamespace())) {
 			String elementId = evid.getAttributeValue("elementId");
 			Xref xref = readXref(evid);
-			Evidence evidence = new Evidence(elementId, pathwayModel, xref); 		
+			Evidence evidence = new Evidence(elementId, pathwayModel, xref);
 			/* optional properties */
 			String value = evid.getAttributeValue("value");
 			String url = evid.getAttributeValue("url");
@@ -199,8 +198,7 @@ public class GPML2021Reader {
 				pathwayModel.addEvidence(evidence);
 		}
 	}
-	
-	
+
 	protected void readPathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
 		readPathwayComments(pathwayModel, root);
 		readPathwayDynamicProperties(pathwayModel, root);
@@ -278,9 +276,9 @@ public class GPML2021Reader {
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
 			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
-			/* add CommentGroup, evidenceRefs */
+			/* read comment group, evidenceRefs */
 			readElementInfo(group, grp);
-			/* optional properties */
+			/* set optional properties */
 			String textLabel = grp.getAttributeValue("textLabel");
 			Xref xref = readXref(grp);
 			if (xref != null)
@@ -314,8 +312,9 @@ public class GPML2021Reader {
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
+			/* read comment group, evidenceRefs */
 			readElementInfo(label, lb);
-			/* optional properties */
+			/* set optional properties */
 			String href = lb.getAttributeValue("href");
 			String groupRef = lb.getAttributeValue("grouRef");
 			if (href != null)
@@ -337,9 +336,9 @@ public class GPML2021Reader {
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
 			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
-			/* add CommentGroup, evidenceRefs */
+			/* read comment group, evidenceRefs */
 			readElementInfo(shape, shp);
-			/* optional properties */
+			/* set optional properties */
 			String textLabel = shp.getAttributeValue("textLabel");
 			String groupRef = shp.getAttributeValue("grouRef");
 			if (textLabel != null)
@@ -350,57 +349,69 @@ public class GPML2021Reader {
 				pathwayModel.addShape(shape);
 		}
 	}
-	
+
 	/**
 	 * @param o
 	 * @param e
 	 * @throws ConverterException
 	 */
-	protected void readDataNode(PathwayModel pathwayModel, Element e) throws ConverterException {
-		// TODO STATE
-		// TODO elementRef
-		String textLabel = e.getAttributeValue("textLabel");
-		String type = e.getAttributeValue("type");
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = xref.getAttributeValue("identifier");
-		String dataSource = xref.getAttributeValue("dataSource");
-		o.setTextLabel(textLabel);
-		o.setType(DataNodeType.fromName(type));
-		o.setXref(identifier, dataSource);
-		readShapedElement(o, e); // elementId, CommentGroup, RectProperty, FontProperty,
-									// ShapeStyleProperty
+	protected void readDataNodes(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element dns = root.getChild("DataNodes", root.getNamespace());
+		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
+			String elementId = dn.getAttributeValue("elementId");
+			Element gfx = dn.getChild("Graphics", dn.getNamespace());
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			String textLabel = dn.getAttributeValue("textLabel");
+			DataNodeType type = DataNodeType.register(dn.getAttributeValue("type"));
+			Xref xref = readXref(dn);
+			double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
+			DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
+					textLabel, type, xref);
+			/* read comment group, evidenceRefs */
+			readElementInfo(dataNode, dn);
+			/* read states */
+			readStates(dataNode, dn);
+			/* set optional properties */
+			String groupRef = dn.getAttributeValue("groupRef");
+			String elementRef = dn.getAttributeValue("elementRef");
+			if (groupRef != null && !groupRef.equals(""))
+				dataNode.setGroupRef((Group) dataNode.getPathwayModel().getPathwayElement(groupRef));
+			if (elementRef != null && !groupRef.equals(""))
+				dataNode.setElementRef(dataNode.getPathwayModel().getPathwayElement(elementRef));
+			if (dataNode != null)
+				pathwayModel.addDataNode(dataNode);
+		}
+
 	}
 
 	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
+	 * TODO should absolute x and y be optional?
 	 */
-	protected void readState(DataNode dataNode, Element e) throws ConverterException {
-		readPathwayElement(o, e); // TODO: // ElemenId, CommentGroup
-		// TODO
-		String elementRef = ((Element) e.getParent()).getAttributeValue("elementId");
-
-		if (elementRef != null) {
-			o.setDataNode((DataNode) o.getPathwayModel().getPathwayElement(elementRef)); // TODO have element
+	protected void readStates(DataNode dataNode, Element dn) throws ConverterException {
+		Element sts = dn.getChild("States", dn.getNamespace());
+		for (Element st : sts.getChildren("State", sts.getNamespace())) {
+			String elementId = st.getAttributeValue("elementId");
+			String textLabel = st.getAttributeValue("textLabel");
+			StateType type = StateType.register(st.getAttributeValue("type"));
+			Element gfx = st.getChild("Graphics", st.getNamespace());
+			double relX = Double.parseDouble(gfx.getAttributeValue("relX"));
+			double relY = Double.parseDouble(gfx.getAttributeValue("relY"));
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			State state = new State(elementId, dataNode.getPathwayModel(), dataNode, textLabel, type, relX, relY,
+					rectProperty, fontProperty, shapeStyleProperty);
+			/* read comment group, evidenceRefs */
+			readElementInfo(dataNode, st);
+			/* set optional properties */
+			Xref xref = readXref(st);
+			if (xref != null)
+				state.setXref(xref);
+			if (state != null)
+				dataNode.addState(state);
 		}
-		o.setTextLabel(e.getAttributeValue("textLabel"));
-		o.setType(StateType.fromName(e.getAttributeValue("type"))); // TODO Enum
-		/** Graphics */
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		o.setRelX(Double.parseDouble(graphics.getAttributeValue("relX")));
-		o.setRelY(Double.parseDouble(graphics.getAttributeValue("relY")));
-
-		readShapedElement(o, e);
-
-		/** TODO ShapeStyleProperty */
-
-		/** Xref */
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = xref.getAttributeValue("identifier");
-		String dataSource = xref.getAttributeValue("dataSource");
-		o.setXref(identifier, dataSource);
-
 	}
 
 	/**
@@ -470,7 +481,6 @@ public class GPML2021Reader {
 		String dataSource = xref.getAttributeValue("dataSource");
 		o.setXref(identifier, dataSource);
 	}
-
 
 	private String readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		readComments(elementInfo, e);
@@ -606,7 +616,6 @@ public class GPML2021Reader {
 		}
 	}
 
-	
 	/*---------------------------------------------MAYBE NOT USED ----------------------------------------*/
 	protected List<Comment> readComments(Element e) throws ConverterException {
 		List<Comment> comments = new ArrayList<Comment>();
