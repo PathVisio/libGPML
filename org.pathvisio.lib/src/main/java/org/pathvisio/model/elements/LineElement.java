@@ -57,7 +57,7 @@ public abstract class LineElement extends ElementInfo {
 	public LineElement(String elementId, PathwayModel pathwayModel, List<Point> points, List<Anchor> anchors,
 			LineStyleProperty lineStyleProperty, Group groupRef) {
 		super(elementId, pathwayModel);
-		this.points = new ArrayList<Point>(); //TODO minimum 2!? 
+		this.points = new ArrayList<Point>(); // TODO minimum 2!?
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
 		if (groupRef != null) {
@@ -167,23 +167,25 @@ public abstract class LineElement extends ElementInfo {
 	}
 
 	/**
-	 * Returns the parent group of the line. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * Returns the parent group of the pathway element. In GPML, groupRef refers to
+	 * the elementId (formerly groupId) of the parent gpml:Group.
 	 * 
-	 * @return groupRef the parent group of the line.
+	 * @return groupRef the parent group of the pathway element.
 	 */
 	public Group getGroupRef() {
 		return groupRef;
 	}
 
 	/**
-	 * Sets the parent group of the line. The group is added to the pathwayElements
+	 * Sets the parent group of the pathway element. The pathway element is added to the pathwayElements
 	 * list of the parent group.
 	 * 
-	 * @param groupRef the parent group of the line.
+	 * @param groupRef the parent group of the pathway element.
 	 */
 	public void setGroupRef(Group groupRef) {
-		groupRef.addPathwayElement(this);
-		this.groupRef = groupRef;
+		if (groupRef.getPathwayElements() != null && groupRef != null) {
+			groupRef.addPathwayElement(this);
+			this.groupRef = groupRef;
+		}
 	}
 }

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model.elements;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
@@ -38,7 +39,7 @@ public class Group extends ShapedElement {
 	private List<PathwayElement> pathwayElements; // 0 to unbounded TODO should have at least one?
 	private String textLabel; // optional
 	private Xref xref; // optional
-	
+
 	/**
 	 * Instantiates a Group given all possible parameters.
 	 * 
@@ -55,11 +56,10 @@ public class Group extends ShapedElement {
 	 * @param xref               the group Xref.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, List<PathwayElement> pathwayElements,
-			String textLabel, Xref xref) {
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, String textLabel, Xref xref) {
 		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
 		this.type = type;
-		this.pathwayElements= pathwayElements; //TODO new ArrayList<PathwayElement>();
+		this.pathwayElements = new ArrayList<PathwayElement>(); // TODO new ArrayList<PathwayElement>();
 		this.textLabel = textLabel;
 		this.xref = xref;
 	}
@@ -68,30 +68,24 @@ public class Group extends ShapedElement {
 	 * Instantiates a Group given all possible parameters except textLabel.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, List<PathwayElement> pathwayElements,
-			Xref xref) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, type, pathwayElements,
-				null, xref);
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, Xref xref) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, type, null, xref);
 	}
 
 	/**
 	 * Instantiates a Group given all possible parameters except xref.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, List<PathwayElement> pathwayElements,
-			String textLabel) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, type, pathwayElements,
-				textLabel, null);
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, String textLabel) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, type, textLabel, null);
 	}
 
 	/**
 	 * Instantiates a Group given all possible parameters except textLabel and xref.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type,
-			List<PathwayElement> pathwayElements) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, type, pathwayElements,
-				null, null);
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, type, null, null);
 	}
 
 	/**
@@ -99,10 +93,8 @@ public class Group extends ShapedElement {
 	 * the group does not belong in another group.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements,
-			String textLabel, Xref xref) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements,
-				textLabel, xref);
+			ShapeStyleProperty shapeStyleProperty, GroupType type, String textLabel, Xref xref) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, textLabel, xref);
 	}
 
 	/**
@@ -110,10 +102,8 @@ public class Group extends ShapedElement {
 	 * because the group neither belongs in another group nor has xref.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements,
-			String textLabel) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements,
-				textLabel, null);
+			ShapeStyleProperty shapeStyleProperty, GroupType type, String textLabel) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, textLabel, null);
 	}
 
 	/**
@@ -122,9 +112,8 @@ public class Group extends ShapedElement {
 	 * textLabel.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements, Xref xref) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements, null,
-				xref);
+			ShapeStyleProperty shapeStyleProperty, GroupType type, Xref xref) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, null, xref);
 	}
 
 	/**
@@ -133,9 +122,8 @@ public class Group extends ShapedElement {
 	 * has a textLabel, nor has xref.
 	 */
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, GroupType type, List<PathwayElement> pathwayElements) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, pathwayElements, null,
-				null);
+			ShapeStyleProperty shapeStyleProperty, GroupType type) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, type, null, null);
 	}
 
 	/**
@@ -210,7 +198,7 @@ public class Group extends ShapedElement {
 	public void setXref(Xref xref) {
 		this.xref = xref;
 	}
-	
+
 	/**
 	 * Instantiates data node Xref given identifier and dataSource. Checks whether
 	 * dataSource string is fullName, systemCode, or invalid.

@@ -506,44 +506,44 @@ public class GPML2021Writer {
 	 * @throws ConverterException
 	 */
 	protected void writeShapes(List<Shape> shapes, Element root) throws ConverterException {
-		Element shs = new Element("Shapes", root.getNamespace());
-		List<Element> shList = new ArrayList<Element>();
+		Element shps = new Element("Shapes", root.getNamespace());
+		List<Element> shpList = new ArrayList<Element>();
 		for (Shape shape : shapes) {
 			if (shape == null)
 				continue;
-			Element sh = new Element("Shape", root.getNamespace());
-			sh.setAttribute("textLabel", shape.getTextLabel());
-			writeShapedElement(shape, sh);
-			Element gfx = sh.getChild("Graphics", sh.getNamespace());
+			Element shp = new Element("Shape", root.getNamespace());
+			shp.setAttribute("textLabel", shape.getTextLabel());
+			writeShapedElement(shape, shp);
+			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
-			if (sh != null) {
-				shList.add(sh);
+			if (shp != null) {
+				shpList.add(shp);
 			}
 		}
-		if (shList != null && shList.isEmpty() == false) {
-			shs.addContent(shList);
-			root.addContent(shs);
+		if (shpList != null && shpList.isEmpty() == false) {
+			shps.addContent(shpList);
+			root.addContent(shps);
 		}
 	}
 
 	protected void writeGroups(List<Group> groups, Element root) throws ConverterException {
-		Element gps = new Element("Shapes", root.getNamespace());
-		List<Element> gpList = new ArrayList<Element>();
+		Element grps = new Element("Shapes", root.getNamespace());
+		List<Element> grpList = new ArrayList<Element>();
 		for (Group group : groups) {
 			if (group == null)
 				continue;
-			Element gp = new Element("Shape", root.getNamespace());
-			writeXref(group.getXref(), gp);
-			writeShapedElement(group, gp);
-			gp.setAttribute("textLabel", group.getTextLabel());
-			gp.setAttribute("type", group.getType().getName());
-			if (gp != null) {
-				gpList.add(gp);
+			Element grp = new Element("Shape", root.getNamespace());
+			writeXref(group.getXref(), grp);
+			writeShapedElement(group, grp);
+			grp.setAttribute("textLabel", group.getTextLabel());
+			grp.setAttribute("type", group.getType().getName());
+			if (grp != null) {
+				grpList.add(grp);
 			}
 		}
-		if (gpList != null && gpList.isEmpty() == false) {
-			gps.addContent(gpList);
-			root.addContent(gps);
+		if (grpList != null && grpList.isEmpty() == false) {
+			grps.addContent(grpList);
+			root.addContent(grps);
 		}
 	}
 

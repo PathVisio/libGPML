@@ -22,32 +22,20 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.pathvisio.model.elements.DataNode;
-import org.pathvisio.model.elements.GraphicalLine;
-import org.pathvisio.model.elements.Group;
-import org.pathvisio.model.elements.Interaction;
-import org.pathvisio.model.elements.Label;
-import org.pathvisio.model.elements.Point;
-import org.pathvisio.model.elements.Shape;
-import org.pathvisio.model.elements.State;
+import org.pathvisio.model.elements.*;
 import org.pathvisio.util.Utils;
-
-import temp.ElementLink.ElementIdContainer;
-import temp.ElementLink.ElementRefContainer;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
@@ -73,6 +61,12 @@ public class PathwayModel {
 	private List<Shape> shapes;
 	private List<Group> groups;
 
+	/**
+	 * Initializes a pathway model object.
+	 * 
+	 * @param pathway the pathway object containing metadata information, e.g.
+	 *                title, organism...
+	 */
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
 		this.authors = new ArrayList<Author>();
@@ -132,10 +126,6 @@ public class PathwayModel {
 	public void removeAuthor(Author author) {
 		authors.remove(author);
 	}
-
-	/*
-	 * -------------------------- ELEMENTID & ELEMENTREF ---------------------------
-	 */
 
 	/**
 	 * Returns a unique elementId.
@@ -222,10 +212,6 @@ public class PathwayModel {
 		return result;
 	}
 
-	/*
-	 * ------------------------------- CommentGroup -------------------------------
-	 */
-
 	/**
 	 * Returns the list of annotations.
 	 * 
@@ -307,78 +293,164 @@ public class PathwayModel {
 		evidences.remove(evidence);
 	}
 
-	// TODO CitationRef/Annotation Manager
-
-	/*------------------------------- Pathway Elements ------------------------------*/
-
+	/**
+	 * Returns the list of data node pathway elements.
+	 * 
+	 * @return dataNodes the list of data nodes.
+	 */
 	public List<DataNode> getDataNodes() {
 		return dataNodes;
 	}
 
+	/**
+	 * Adds the given dataNode to dataNodes list.
+	 * 
+	 * @param dataNode the data node to be added.
+	 */
 	public void addDataNode(DataNode dataNode) {
 		dataNodes.add(dataNode);
 	}
 
+	/**
+	 * Removes the given dataNodes from dataNodes list.
+	 * 
+	 * @param dataNode the data node to be removed.
+	 */
 	public void removeDataNode(DataNode dataNode) {
 		dataNodes.remove(dataNode);
 	}
 
+	/**
+	 * Returns the list of interaction pathway elements.
+	 * 
+	 * @return interactions the list of interactions.
+	 */
 	public List<Interaction> getInteractions() {
 		return interactions;
 	}
 
+	/**
+	 * Adds the given interaction to interactions list.
+	 * 
+	 * @param interaction the interaction to be added.
+	 */
 	public void addInteraction(Interaction interaction) {
 		interactions.add(interaction);
 	}
 
+	/**
+	 * Removes the given interaction from interactions list.
+	 * 
+	 * @param interaction the interaction to be removed.
+	 */
 	public void removeInteraction(Interaction interaction) {
 		interactions.remove(interaction);
 	}
 
+	/**
+	 * Returns the list of graphical line pathway elements.
+	 * 
+	 * @return graphicalLines the list of graphicalLines.
+	 */
 	public List<GraphicalLine> getGraphicalLines() {
 		return graphicalLines;
 	}
 
+	/**
+	 * Adds the given graphicalLine to graphicalLines list.
+	 * 
+	 * @param graphicalLine the graphicalLine to be added.
+	 */
 	public void addGraphicalLine(GraphicalLine graphicalLine) {
 		graphicalLines.add(graphicalLine);
 	}
 
+	/**
+	 * Removes the given graphicalLine from graphicalLines list.
+	 * 
+	 * @param graphicalLine the graphicalLine to be removed.
+	 */
 	public void removeGraphicalLine(GraphicalLine graphicalLine) {
 		graphicalLines.remove(graphicalLine);
 	}
 
+	/**
+	 * Returns the list of label pathway elements.
+	 * 
+	 * @return labels the list of labels.
+	 */
 	public List<Label> getLabels() {
 		return labels;
 	}
 
+	/**
+	 * Adds the given label to labels list.
+	 * 
+	 * @param label the label to be added.
+	 */
 	public void addLabel(Label label) {
 		labels.add(label);
 	}
 
+	/**
+	 * Removes the given label from labels list.
+	 * 
+	 * @param label the label to be removed.
+	 */
 	public void removeLabel(Label label) {
 		labels.remove(label);
 	}
 
+	/**
+	 * Returns the list of shape pathway elements.
+	 * 
+	 * @return shapes the list of shapes.
+	 */
 	public List<Shape> getShapes() {
 		return shapes;
 	}
 
+	/**
+	 * Adds the given shape to shapes list.
+	 * 
+	 * @param shape the shape to be added.
+	 */
 	public void addShape(Shape shape) {
 		shapes.add(shape);
 	}
 
+	/**
+	 * Removes the given shape from shapes list.
+	 * 
+	 * @param shape the shape to be removed.
+	 */
 	public void removeShape(Shape shape) {
 		shapes.remove(shape);
 	}
 
+	/**
+	 * Returns the list of group pathway elements.
+	 * 
+	 * @return groups the list of groups.
+	 */
 	public List<Group> getGroups() {
 		return groups;
 	}
 
+	/**
+	 * Adds the given group to groups list.
+	 * 
+	 * @param group the group to be added.
+	 */
 	public void addGroup(Group group) {
 		groups.add(group);
 	}
 
+	/**
+	 * Removes the given group from groups list.
+	 * 
+	 * @param group the group to be removed.
+	 */
 	public void removeGroup(Group group) {
 		groups.remove(group);
 	}

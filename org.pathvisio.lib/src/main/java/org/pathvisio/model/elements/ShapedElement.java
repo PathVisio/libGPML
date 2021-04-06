@@ -126,20 +126,20 @@ public abstract class ShapedElement extends ElementInfo {
 	}
 
 	/**
-	 * Returns the parent group of the group. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
+	 * Returns the parent group of the pathway element. In GPML, groupRef refers to
+	 * the elementId (formerly groupId) of the parent gpml:Group.
 	 * 
-	 * @return groupRef the parent group of the group.
+	 * @return groupRef the parent group of the pathway element.
 	 */
 	public Group getGroupRef() {
 		return groupRef;
 	}
 
 	/**
-	 * Sets the parent group of the group. The group is added to the pathwayElements
-	 * list of the parent group.
+	 * Sets the parent group of the pathway element. The pathway element is added to
+	 * the pathwayElements list of the parent group.
 	 * 
-	 * @param groupRef the parent group of the group.
+	 * @param groupRef the parent group of the pathway element.
 	 */
 	public void setGroupRef(Group groupRef) {
 		if (groupRef.getPathwayElements() != null && groupRef != null) {

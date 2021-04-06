@@ -433,17 +433,59 @@ public class GPML2021Reader {
 			if (label != null)
 				pathwayModel.addLabel(label);
 		}
-
-		
-//		String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-//		ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, String href
-	
-		readShapeStyleProperty(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
-										// ShapeStyleProperty
-
 	}
 
+	protected void readShape(PathwayModel pathwayModel, Element e) throws ConverterException {
+		Element shps = root.getChild("Shapes", root.getNamespace());
+		for (Element shp: shps.getChildren("Shape", shps.getNamespace())) {
+			String elementId = shp.getAttributeValue("elementId"); 
+			Element gfx = shp.getChild("Graphics", shp.getNamespace());
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			double rotation =  Double.parseDouble(gfx.getAttributeValue("rotation"));
+			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
+			/* optional properties */
+			String textLabel = shp.getAttributeValue("textLabel");
+			String groupRef = shp.getAttributeValue("grouRef");
+			if (textLabel != null)
+				shape.setTextLabel(textLabel);
+			if (groupRef != null)
+				shape.setGroupRef((Group) shape.getPathwayModel().getPathwayElement(groupRef));
+			if (shape != null)
+				pathwayModel.addShape(shape);
+		}
+	}
+		
+		
+		
 
+	protected void readGroup(PathwayModel pathwayModel, Element e) throws ConverterException {
+		Element grps = root.getChild("Shapes", root.getNamespace());
+		for (Element grp: grps.getChildren("Shape", grps.getNamespace())) {
+			String elementId = grp.getAttributeValue("elementId"); 
+			GroupType type = GroupType.register(grp.getAttributeValue("type")); 
+			Element gfx = grp.getChild("Graphics", grp.getNamespace());
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = readFontProperty(gfx);
+			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			double rotation =  Double.parseDouble(gfx.getAttributeValue("rotation")); 
+			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
+			/* optional properties */
+			String textLabel = grp.getAttributeValue("textLabel");
+			String groupRef = grp.getAttributeValue("grouRef");
+			Xref xref = readXref(grp);
+			if (xref != null)
+				group.setXref(xref);
+			if (textLabel != null)
+				group.setTextLabel(textLabel);
+			if (groupRef != null)
+				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
+			if (group != null)
+				pathwayModel.addGroup(group);
+		}
+		//TODO  List<PathwayElement> pathwayElements,
+	}
 	
 	/**
 	 * DataNode, Label, Shape, Group
@@ -461,50 +503,6 @@ public class GPML2021Reader {
 
 //		String groupRef = getAttribute(base, "GroupRef", e);
 //		o.setGroupRef((Group) o.getPathwayModel().getPathwayElement(groupRef));
-	}
-	
-	/**
-	 * @param o
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void readShape(PathwayModel pathwayModel, Element e) throws ConverterException {
-		String textLabel = e.getAttributeValue("textLabel");
-		String type = e.getAttributeValue("type");
-		String rotation = e.getAttributeValue("rotation");
-		o.setTextLabel(textLabel);
-		o.setType(ShapeType.fromName(type)); // TODO ShapeType
-		readShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
-									// ShapeStyleProperty
-		// TODO Rotation
-		o.setRotation(rotation);
-
-	}
-
-	protected void readGroup(PathwayModel pathwayModel, Element e) throws ConverterException {
-
-		readShapedElement(o, e); // elementId, CommentGroup, groupRef, RectProperty, FontProperty,
-									// ShapeStyleProperty
-		/** TODO GroupID */
-		String groupId = e.getAttributeValue("GroupId");
-		if ((groupId == null || groupId.equals("")) && o.getPathwayModel() != null) {
-			groupId = o.getPathwayModel().getUniqueGroupId();
-		}
-		o.setGroupId(groupId);
-
-		String textLabel = e.getAttributeValue("textLabel");
-		String type = e.getAttributeValue("type"); // NB. GroupType was named Style
-		if (textLabel != null) {
-			o.setTextLabel(textLabel);
-		}
-		o.setType(GroupType.fromName(type));
-
-		/** Xref added in GPML2021 */
-		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = xref.getAttributeValue("identifier");
-		String dataSource = xref.getAttributeValue("dataSource");
-		o.setXref(identifier, dataSource);
-
 	}
 
 //	/**
