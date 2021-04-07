@@ -298,21 +298,7 @@ public class OldUtils {
 		}
 	}
 
-		List<String> lnElements = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
-		List<String> lnElement = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
-		for (int i = 0; i < shpElements.size(); i++) {
-			Element grps = root.getChild(lnElements.get(i), root.getNamespace());
-			for (Element grp : grps.getChildren(lnElement.get(i), grps.getNamespace())) {
-				String groupRef = grp.getAttributeValue("groupRef");
-				if (groupRef != null && !groupRef.equals("")) {
-					String elementId = grp.getAttributeValue("elementId");
-					LineElement lineElement = (Group) pathwayModel.getPathwayElement(elementId);
-					lineElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
 
-				}
-			}
-		}
-	}
 
 	private static void addElementIds(Pathway pathway) throws ConverterException {
 		for (PathwayElement pe : pathway.getDataObjects()) {

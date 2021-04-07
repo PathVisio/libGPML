@@ -23,10 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class GPML2021ReaderTest {
 	
-	
-	
-
-	private static final File PATHVISIO_BASEDIR = new File("../..");
+	File file = new File("text.xml");  
 	
 	@Test 
 	public static void testRead2021() throws ConverterException, IOException {
