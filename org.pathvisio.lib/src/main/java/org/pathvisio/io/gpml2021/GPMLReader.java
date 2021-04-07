@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2019 BiGCaT Bioinformatics
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -14,31 +14,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.io.gpml2021;
 
-import oldclasses.io.PathwayExporter;
-import oldclasses.io.PathwayImporter;
+import java.io.File;
+import java.io.InputStream;
+
+import org.jdom2.Element;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.model.PathwayModel;
 
 /**
- * Exception that occurs during import, export, save or load of a Pathway.
- * @see PathwayExporter#doExport
- * @see PathwayImporter#doImport
- * @see Pathway#readFromXml
- * @see Pathway#writeToXml
+ * Interface for an importer that reads a pathway model from various different types.
  */
-public class ConverterException extends Exception {
+public interface GPMLReader extends GPMLVersion {
 
+	public PathwayModel readGPML(InputStream is) throws ConverterException;
 
-	public ConverterException(String msg)
-	{
-		super(msg);
-	}
-
-	public ConverterException(Exception e)
-	{
-		super(e.getClass() + ": " + e.getMessage(), e);
-		setStackTrace(e.getStackTrace());
-	}
+	public PathwayModel readGPML(File file) throws ConverterException;
+	
+	public PathwayModel readGPML(String str) throws ConverterException;
+	
+	public PathwayModel readRoot(Element root) throws ConverterException;
 
 
 }

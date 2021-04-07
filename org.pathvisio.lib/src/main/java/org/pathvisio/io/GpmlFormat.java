@@ -37,8 +37,9 @@ import org.pathvisio.util.RootElementFinder;
 import org.pathvisio.model.*;
 import org.xml.sax.InputSource;
 
-import temp2.GpmlFormat200X;
-import temp2.GpmlFormat2010a;
+import oldclasses.io.GpmlFormat200X;
+import oldclasses.io.GpmlFormat2010a;
+import oldclasses.io.GpmlFormatReader;
 
 /**
  * Class responsible for interaction with Gpml format. Contains all
