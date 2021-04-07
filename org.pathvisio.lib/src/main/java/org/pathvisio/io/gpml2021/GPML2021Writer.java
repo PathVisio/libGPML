@@ -39,6 +39,11 @@ import org.pathvisio.model.type.*;
 
 public class GPML2021Writer extends GPML2021FormatAbstract implements GPMLWriter {
 
+	
+	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer (
+			"GPML2021.xsd", Namespace.getNamespace("http://pathvisio.org/GPML/2021")
+		);
+
 	//TODO needed? 
 	protected GPML2021Writer(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);

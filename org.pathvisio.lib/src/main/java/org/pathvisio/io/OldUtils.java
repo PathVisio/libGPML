@@ -298,21 +298,6 @@ public class OldUtils {
 		}
 	}
 
-	protected void readGroupRefs(PathwayModel pathwayModel, Element root) {
-		List<String> shpElements = Collections
-				.unmodifiableList(Arrays.asList("DataNodes", "Labels", "Shapes", "Groups"));
-		List<String> shpElement = Collections.unmodifiableList(Arrays.asList("DataNode", "Label", "Shape", "Group"));
-		for (int i = 0; i < shpElements.size(); i++) {
-			Element grps = root.getChild(shpElements.get(i), root.getNamespace());
-			for (Element grp : grps.getChildren(shpElement.get(i), grps.getNamespace())) {
-				String groupRef = grp.getAttributeValue("groupRef");
-				if (groupRef != null && !groupRef.equals("")) {
-					String elementId = grp.getAttributeValue("elementId");
-					ShapedElement shapedElement = (ShapedElement) pathwayModel.getPathwayElement(elementId);
-					shapedElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
-				}
-			}
-		}
 		List<String> lnElements = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
 		List<String> lnElement = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
 		for (int i = 0; i < shpElements.size(); i++) {
