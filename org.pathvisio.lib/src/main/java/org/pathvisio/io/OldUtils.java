@@ -62,13 +62,13 @@ public class OldUtils {
 	
 	
 	public void writeMapp(File file) throws ConverterException {
-		new MappFormat().doExport(file, this);
+		new MappFormat().writeToFile(file, this);
 	}
 
 	public void writeSvg(File file) throws ConverterException {
 		// Use Batik instead of SvgFormat
 		// SvgFormat.writeToSvg (this, file);
-		new BatikImageExporter(ImageExporter.TYPE_SVG).doExport(file, this);
+		new BatikImageExporter(ImageExporter.TYPE_SVG).writeToFile(file, this);
 	}
 	
 	

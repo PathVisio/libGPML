@@ -36,41 +36,20 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.pathvisio.core.biopax.BiopaxElement;
-import org.pathvisio.core.model.PathwayElement.MPoint;
-import org.pathvisio.core.view.ShapeRegistry;
+import org.pathvisio.model.*;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
-import org.pathvisio.model.*;
-import org.pathvisio.model.elements.Anchor;
-import org.pathvisio.model.elements.LineElement;
-import org.pathvisio.model.elements.Point;
-import org.pathvisio.model.elements.ShapedElement;
-import org.pathvisio.model.graphics.Coordinate;
-import org.pathvisio.model.pathwayelements.DataNode;
-import org.pathvisio.model.pathwayelements.GraphicalLine;
-import org.pathvisio.model.pathwayelements.Group;
-import org.pathvisio.model.pathwayelements.Interaction;
-import org.pathvisio.model.pathwayelements.Label;
-import org.pathvisio.model.pathwayelements.Shape;
-import org.pathvisio.model.pathwayelements.State;
-import org.pathvisio.model.type.AnchorType;
-import org.pathvisio.model.type.ConnectorType;
-import org.pathvisio.model.type.DataNodeType;
-import org.pathvisio.model.type.GroupType;
-import org.pathvisio.model.type.HAlignType;
-import org.pathvisio.model.type.LineStyleType;
-import org.pathvisio.model.type.ShapeType;
-import org.pathvisio.model.type.StateType;
-import org.pathvisio.model.type.VAlignType;
+import org.pathvisio.io.gpml2013.GPML2013aFormatAbstract.AttributeInfo;
+import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.elements.*;
+import org.pathvisio.model.type.*;
 
-import keep.DynamicProperty;
-import keep.Legend;
 import oldclasses.io.GpmlFormatReader;
 import oldclasses.io.GpmlFormatWriter;
 
-class Gpml2013aFormat extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
-	public static final GpmlFormat2013a GPML_2013A = new GpmlFormat2013a("GPML2013a.xsd",
+class Gpml2013aFormat extends GPML2013aFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
+	
+	public static final Gpml2013aFormat GPML_2013A = new Gpml2013aFormat("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
 	/**
@@ -1325,6 +1304,42 @@ class Gpml2013aFormat extends GpmlFormatAbstract implements GpmlFormatReader, Gp
 					((Element) f).getChild("TERM", GpmlFormat.BIOPAX).getText(),
 					((Element) f).getChild("Ontology", GpmlFormat.BIOPAX).getText());
 		}
+	}
+
+	public Document createJdom(PathwayModel data) throws ConverterException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Element createJdomElement(PathwayElement o) throws ConverterException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void writeToXml(PathwayModel pwyModel, File file, boolean validate) throws ConverterException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void writeToXml(PathwayModel pwyModel, OutputStream out, boolean validate) throws ConverterException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public PathwayElement mapElement(Element e) throws ConverterException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void readFromRoot(Element root, PathwayModel pwyModel) throws ConverterException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PathwayElement readElement(Element e, Pathway p) throws ConverterException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

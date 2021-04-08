@@ -20,9 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import oldclasses.io.PathwayExporter;
-import oldclasses.io.PathwayImporter;
-
 /**
  * Abstract base class which implements PathwayImporter and PathwayExporter
  * warnings mechanism.

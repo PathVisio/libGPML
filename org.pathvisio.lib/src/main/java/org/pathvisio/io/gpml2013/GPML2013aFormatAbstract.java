@@ -39,15 +39,12 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
-import org.pathvisio.core.biopax.BiopaxElement;
-import org.pathvisio.core.debug.Logger;
+import org.pathvisio.debug.Logger;
 import org.pathvisio.io.ColorUtils;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.*;
 import org.xml.sax.SAXException;
-
-import keep.IElementIdContainer;
 
 /**
  * This abstract class is for the reading and writing of GPML files. Base

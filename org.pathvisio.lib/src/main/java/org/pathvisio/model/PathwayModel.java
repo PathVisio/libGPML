@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -23,6 +25,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.bridgedb.Xref;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GpmlFormat;
+import org.pathvisio.io.Reader;
 import org.pathvisio.model.elements.*;
 
 /**
@@ -507,6 +512,26 @@ public class PathwayModel {
 			}
 		}
 		return result;
+	}
+	
+	
+	public PathwayModel readXML(Reader in) throws ConverterException {
+		GpmlFormat.readGPML(in);
+		setSourceFile(null);
+		clearChangedFlag();
+	}
+
+	public void readXML(InputStream in) throws ConverterException {
+		GpmlFormat.readFromXml(this, in);
+		setSourceFile(null);
+		clearChangedFlag();
+	}
+
+	public void readXMLl(File file) throws ConverterException {
+		Logger.log.info("Start reading the XML file: " + file);
+		GpmlFormat.readFromXml(this, file);
+		setSourceFile(file);
+		clearChangedFlag();
 	}
 
 }

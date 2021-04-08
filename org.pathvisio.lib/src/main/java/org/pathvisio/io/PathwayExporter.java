@@ -14,11 +14,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package oldclasses.io;
+package org.pathvisio.io;
 
 import java.io.File;
 
-import org.pathvisio.io.ConverterException;
 import org.pathvisio.model.PathwayModel;
 
 /**
@@ -32,7 +31,7 @@ public interface PathwayExporter extends PathwayIO
 	 * @param pathway The pathway to export
 	 * @throws ConverterException when there is a fatal conversion problem. Implementations should only throw in case there is a non-recoverable error. Ohterwise, it should emit a warning.
 	 */
-	public void doExport(File file, PathwayModel pathwayModel) throws ConverterException;
+	public void writeToFile(File file, PathwayModel pathwayModel) throws ConverterException;
 
 
 	
@@ -43,6 +42,6 @@ public interface PathwayExporter extends PathwayIO
 	 * @param zoom 
 	 * @throws ConverterException when there is a fatal conversion problem. Implementations should only throw in case there is a non-recoverable error. Ohterwise, it should emit a warning.
 	 */
-	public void doExport(File file, PathwayModel pathwayModel, int zoom) throws ConverterException;
+	public void writeToFile(File file, PathwayModel pathwayModel, int zoom) throws ConverterException;
 //	public void doExport(File file, Pathway pathway, int width, int height) throws ConverterException;
 }

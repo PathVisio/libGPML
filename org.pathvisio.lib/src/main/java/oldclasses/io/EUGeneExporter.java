@@ -30,6 +30,7 @@ import org.bridgedb.Xref;
 import org.bridgedb.bio.BioDataSource;
 import org.pathvisio.core.debug.Logger;
 import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.PathwayExporter;
 
 /**
  * Exports to pathway format understood by the EuGene pathway statistics

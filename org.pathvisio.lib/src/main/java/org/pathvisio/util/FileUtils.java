@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.util;
 
-import org.pathvisio.core.debug.Logger;
+import org.pathvisio.debug.Logger;
 
 import java.io.*;
 import java.net.URL;

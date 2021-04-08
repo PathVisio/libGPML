@@ -48,7 +48,7 @@ import oldclasses.io.GpmlFormatReader;
  */
 public class GpmlFormat extends AbstractPathwayFormat {
 
-	static private final GpmlFormat2021 CURRENT = GpmlFormat2021.GPML_2021;
+	static private final GPML2021Format CURRENT = GPML2021Format.GPML_2021;
 	static private final GpmlFormat2013a PREVIOUS = GpmlFormat2013a.GPML_2013A; // TODO
 	public static final Namespace RDF = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 	public static final Namespace RDFS = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -70,8 +70,8 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 * @return pathwayModel the pathway model.
 	 * @throws Converter Exception
 	 */
-	public PathwayModel doImport(File file) throws ConverterException {
-		PathwayModel pathwayModel = new PathwayModel();
+	public PathwayModel readFromFile(File file) throws ConverterException {
+		PathwayModel pathwayModel = 
 		readFromXml(pathwayModel, file, true);
 //		pathway.clearChangedFlag();
 		return pathwayModel;
@@ -84,7 +84,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 * @return pathway the Pathway.
 	 * @throws ConverterException.
 	 */
-	public void doExport(File file, PathwayModel pathway) throws ConverterException {
+	public void writeToFile(File file, PathwayModel pathway) throws ConverterException {
 		writeToXml(pathway, file, true);
 	}
 
@@ -176,8 +176,8 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 *                 classpath, an exception will be thrown.
 	 * @throws ConverterException
 	 */
-	static public void readFromXml(PathwayModel pwy, InputStream in, boolean validate) throws ConverterException {
-		readFromXmlImpl(pwy, new InputSource(in), validate);
+	static public void readFromXml(PathwayModel pathwayModel, InputStream in, boolean validate) throws ConverterException {
+		readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
 	/**
@@ -190,8 +190,8 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 *                 classpath, an exception will be thrown.
 	 * @throws ConverterException
 	 */
-	static public void readFromXml(PathwayModel pwy, Reader in, boolean validate) throws ConverterException {
-		readFromXmlImpl(pwy, new InputSource(in), validate);
+	static public void readFromXml(PathwayModel pathwayModel, Reader in, boolean validate) throws ConverterException {
+		readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 *                 classpath, an exception will be thrown.
 	 * @throws ConverterException
 	 */
-	private static void readFromXmlImpl(PathwayModel pwy, InputSource in, boolean validate) throws ConverterException {
+	private static void readFromXmlImpl(PathwayModel pathwayModel, InputSource in, boolean validate) throws ConverterException {
 		// Start XML processing
 
 		SAXBuilder builder = new SAXBuilder(false); // SAXBuilder(XMLReaders.NONVALIDATING)?
@@ -252,7 +252,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 				format.validateDocument(doc);
 			Logger.log.trace("Copy map elements");
 
-			format.readFromRoot(root, pwy);
+			format.readFromRoot(root, pathwayModel);
 		} catch (JDOMParseException pe) {
 			throw new ConverterException(pe);
 		} catch (JDOMException e) {
@@ -281,7 +281,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	}
 
 	@Override
-	public void doExport(File file, PathwayModel pathway, int zoom) throws ConverterException {
+	public void writeToFile(File file, PathwayModel pathwayModel, int zoom) throws ConverterException {
 		// TODO Auto-generated method stub
 
 	}

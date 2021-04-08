@@ -14,11 +14,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package oldclasses.io;
+package org.pathvisio.io;
 
 import java.io.File;
 
-import org.pathvisio.io.ConverterException;
 import org.pathvisio.model.PathwayModel;
 
 public interface PathwayImporter extends PathwayIO 
@@ -42,5 +41,5 @@ public interface PathwayImporter extends PathwayIO
 	 * @throws ConverterException if the input file could not be read or parsed,
 	 * 		or doesn't contain correct pathway information.
 	 */
-	public PathwayModel doImport(File file) throws ConverterException;
+	public PathwayModel readFromFile(File file) throws ConverterException;
 }

@@ -16,9 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
-import oldclasses.io.PathwayExporter;
-import oldclasses.io.PathwayImporter;
-
 /**
  * Exception that occurs during import, export, save or load of a Pathway.
  * @see PathwayExporter#doExport
