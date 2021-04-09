@@ -108,22 +108,22 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		CURRENT.writeToXml(pwy, out, validate);
 	}
 
-//	/**
-//	 * Read the JDOM document from the file specified
-//	 * 
-//	 * @param file the file from which the JDOM document should be read.
-//	 * @throws ConverterException
-//	 */
-//	static public PathwayModel readFromXml(PathwayModel pathwayModel, File file, boolean validate)
-//			throws ConverterException {
-//		InputStream in;
-//		try {
-//			in = new FileInputStream(file);
-//		} catch (FileNotFoundException e) {
-//			throw new ConverterException(e);
-//		}
-//		return readFromXmlImpl(pathwayModel, new InputSource(in), true);
-//	}
+	/**
+	 * Read the JDOM document from the file specified
+	 * 
+	 * @param file the file from which the JDOM document should be read.
+	 * @throws ConverterException
+	 */
+	static public PathwayModel readFromXml(PathwayModel pathwayModel, File file, boolean validate)
+			throws ConverterException {
+		InputStream in;
+		try {
+			in = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			throw new ConverterException(e);
+		}
+		return readFromXmlImpl(pathwayModel, new InputSource(in), true);
+	}
 
 	/**
 	 * Read the JDOM document from the file specified
@@ -145,15 +145,15 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return readFromXmlImpl(pathwayModel, new InputSource(in), true);
 	}
 
-	static public void readFromXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
-		InputStream inf;
-		try {
-			inf = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			throw new ConverterException(e);
-		}
-		readFromXmlImpl(pathwayModel, new InputSource(inf), validate);
-	}
+//	static public void readFromXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
+//		InputStream inf;
+//		try {
+//			inf = new FileInputStream(file);
+//		} catch (FileNotFoundException e) {
+//			throw new ConverterException(e);
+//		}
+//		readFromXmlImpl(pathwayModel, new InputSource(inf), validate);
+//	}
 //
 //	
 	static public void readFromXml(PathwayModel pathwayModel, InputStream in, boolean validate) throws ConverterException {
@@ -178,61 +178,21 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	
 	
 
-//	static final File xsdFile = new File("C:\\Users\\p70073399\\Documents\\GitHub\\libPathVisio\\org.pathvisio.lib\\src\\test\\java\\org\\pathvisio\\io\\GPML2021.xsd");
 
-//	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
-//			throws ConverterException {
-////		PathwayModel pathwayModel = null;
-//		try {
-//			
-//			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
-//			SAXBuilder builder = new SAXBuilder(schemafactory);
-//			Document doc = builder.build(is);
-//			
-//			System.out.println("file validate success");
-//
-//			Element root = doc.getRootElement();
-//
-//			Namespace ns = root.getNamespace();
-//			GpmlFormatReader format = getReaderForNamespace(ns);
-//			if (format == null) {
-//				throw new ConverterException("This file looks like a pathwayModel, " + "but the namespace " + ns
-//						+ " was not recognized. This application might be out of date.");
-//			}
-//			Logger.log.info("Recognized format " + ns);
-//			Logger.log.trace("Start Validation");
-//			if (validate)
-//				format.validateDocument(doc);
-//			Logger.log.trace("Copy map elements");
-//			format.readFromRoot(pathwayModel, root);
-//		} catch (JDOMException e) {
-//			throw new ConverterException(e);
-//		} catch (IOException e) {
-//			throw new ConverterException(e);
-//		} catch (Exception e) {
-//			throw new ConverterException(e); // TODO e.printStackTrace()?
-//		}
-//		return pathwayModel;// TODO do we want to return pathway or not?
-//	}
-
-	
-	private static void readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
+	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
-		// Start XML processing
-
-		SAXBuilder builder = new SAXBuilder(false); // no validation when reading the xml file
-		// try to read the file; if an error occurs, catch the exception and print
-		// feedback
+//		PathwayModel pathwayModel = null;
 		try {
-			Logger.log.trace("Build JDOM tree");
-			// build JDOM tree
-			Document doc = builder.build(is);
+			File xsdFile = new File("C:\\Users\\p70073399\\Documents\\GitHub\\libPathVisio\\org.pathvisio.lib\\src\\test\\resources\\GPML2021.xsd");
 
-			// Copy the pathwayModel information to a VPathway
+			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
+			System.out.println("file exists, i think");
+			SAXBuilder builder = new SAXBuilder(schemafactory);
+			Document doc = builder.build(is);
+			
+			System.out.println("file validate success");
+
 			Element root = doc.getRootElement();
-			if (!root.getName().equals("Pathway")) {
-				throw new ConverterException("Not a PathwayModel file");
-			}
 
 			Namespace ns = root.getNamespace();
 			GpmlFormatReader format = getReaderForNamespace(ns);
@@ -241,27 +201,68 @@ public class GpmlFormat extends AbstractPathwayFormat {
 						+ " was not recognized. This application might be out of date.");
 			}
 			Logger.log.info("Recognized format " + ns);
-
 			Logger.log.trace("Start Validation");
 			if (validate)
 				format.validateDocument(doc);
 			Logger.log.trace("Copy map elements");
-
 			format.readFromRoot(pathwayModel, root);
-		} catch (JDOMParseException pe) {
-			throw new ConverterException(pe);
 		} catch (JDOMException e) {
 			throw new ConverterException(e);
 		} catch (IOException e) {
 			throw new ConverterException(e);
-		} catch (NullPointerException e) {
-			throw new ConverterException(e);
-		} catch (IllegalArgumentException e) {
-			throw new ConverterException(e);
-		} catch (Exception e) { // Make all types of exceptions a ConverterException
-			throw new ConverterException(e);
+		} catch (Exception e) {
+			throw new ConverterException(e); // TODO e.printStackTrace()?
 		}
+		return pathwayModel;// TODO do we want to return pathway or not?
 	}
+
+	
+//	private static void readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
+//			throws ConverterException {
+//		// Start XML processing
+//
+//		SAXBuilder builder = new SAXBuilder(false); // no validation when reading the xml file
+//		// try to read the file; if an error occurs, catch the exception and print
+//		// feedback
+//		try {
+//			Logger.log.trace("Build JDOM tree");
+//			// build JDOM tree
+//			Document doc = builder.build(is);
+//
+//			// Copy the pathwayModel information to a VPathway
+//			Element root = doc.getRootElement();
+//			if (!root.getName().equals("Pathway")) {
+//				throw new ConverterException("Not a PathwayModel file");
+//			}
+//
+//			Namespace ns = root.getNamespace();
+//			GpmlFormatReader format = getReaderForNamespace(ns);
+//			if (format == null) {
+//				throw new ConverterException("This file looks like a pathwayModel, " + "but the namespace " + ns
+//						+ " was not recognized. This application might be out of date.");
+//			}
+//			Logger.log.info("Recognized format " + ns);
+//
+//			Logger.log.trace("Start Validation");
+//			if (validate)
+//				format.validateDocument(doc);
+//			Logger.log.trace("Copy map elements");
+//
+//			format.readFromRoot(pathwayModel, root);
+//		} catch (JDOMParseException pe) {
+//			throw new ConverterException(pe);
+//		} catch (JDOMException e) {
+//			throw new ConverterException(e);
+//		} catch (IOException e) {
+//			throw new ConverterException(e);
+//		} catch (NullPointerException e) {
+//			throw new ConverterException(e);
+//		} catch (IllegalArgumentException e) {
+//			throw new ConverterException(e);
+//		} catch (Exception e) { // Make all types of exceptions a ConverterException
+//			throw new ConverterException(e);
+//		}
+//	}
 
 	@Override
 	public boolean isCorrectType(File f) {
