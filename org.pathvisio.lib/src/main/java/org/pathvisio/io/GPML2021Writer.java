@@ -37,8 +37,6 @@ import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
 
-import oldclasses.io.PathwayElement;
-
 public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWriter {
 
 	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer("GPML2021.xsd",

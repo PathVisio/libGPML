@@ -493,23 +493,23 @@ public abstract class GpmlFormatAbstract {
 //	}
 
 	// TODO deprecated
-	public void readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
-//		mapElement(root, pwy); // MappInfo
+//	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
+////		mapElement(root, pwy); // MappInfo
+////
+////		// Iterate over direct children of the root element
+////		for (Object e : root.getChildren())
+////		{
+////			mapElement((Element)e, pwy);
+////		}
+//		Logger.log.trace("End copying map elements");
 //
-//		// Iterate over direct children of the root element
-//		for (Object e : root.getChildren())
-//		{
-//			mapElement((Element)e, pwy);
-//		}
-		Logger.log.trace("End copying map elements");
-
-		// Add graphIds for objects that don't have one
-//		addGraphIds(pwy);
-
-		// Convert absolute point coordinates of linked points to
-		// relative coordinates
-//		convertPointCoordinates(pwy);
-	}
+//		// Add graphIds for objects that don't have one
+////		addGraphIds(pwy);
+//
+//		// Convert absolute point coordinates of linked points to
+//		// relative coordinates
+////		convertPointCoordinates(pwy);
+//	}
 
 //	private static void addGraphIds(Pathway pathway) throws ConverterException {
 //		for(PathwayElement pe : pathway.getDataObjects()) {
@@ -582,9 +582,6 @@ public abstract class GpmlFormatAbstract {
 	 */
 	public void validateDocument(Document doc) throws ConverterException
 	{
-//		ClassLoader cl = getClass().getClassLoader();	
-		
-//		InputStream is = getClass().getResourceAsStream(xsdFile);
 		ClassLoader cl = PathwayModel.class.getClassLoader();	
 		InputStream is = cl.getResourceAsStream(xsdFile);
 		

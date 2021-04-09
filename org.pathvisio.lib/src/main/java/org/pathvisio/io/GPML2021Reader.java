@@ -53,86 +53,87 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		super(xsdFile, nsGPML);
 	}
 
-	static final File xsdFile = new File("GPML2021.xsd");
-	// TODO how to best handle namespace?
-	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
-
 	/*------------------------------------MY METHODS --------------------------------------*/
-	
-	public PathwayModel readFromXml(InputStream is) throws ConverterException {
-		PathwayModel pathwayModel = null;
-		try {
-			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
-			SAXBuilder builder = new SAXBuilder(schemafactory);
-			Document doc = builder.build(is);
-			Element root = doc.getRootElement();
-			System.out.println("Root: " + doc.getRootElement());
-			pathwayModel = readFromRoot(pathwayModel, root);
-		} catch (JDOMException e) {
-			throw new ConverterException(e);
-		} catch (IOException e) {
-			throw new ConverterException(e);
-		} catch (Exception e) {
-			throw new ConverterException(e); // TODO e.printStackTrace()?
-		}
-		return pathwayModel;// TODO do we want to return pathway or not?
-	}
-
-	/**
-	 * Read the JDOM document from the file specified
-	 * 
-	 * @param file the file from which the JDOM document should be read.
-	 * @throws ConverterException
-	 */
-	public PathwayModel readFromXml(File file) throws ConverterException {
-		InputStream is;
-		try {
-			is = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			throw new ConverterException(e);
-		}
-		return readFromXml(is);
-	}
-
-	/**
-	 * Read the JDOM document from the file specified
-	 * 
-	 * @param s      the string input.
-	 * @param string the file from which the JDOM document should be read.
-	 * @throws ConverterException
-	 */
-	public PathwayModel readFromXml(String str) throws ConverterException {
-		if (str == null)
-			return null;
-		InputStream is;
-		try {
-			is = stringToInputStream(str);// TODO does this work?
-		} catch (Exception e) {
-			throw new ConverterException(e);
-		}
-		return readFromXml(is);
-	}
-
-	// METHOD FROM UTILS
-	public static InputStream stringToInputStream(String str) {
-		if (str == null)
-			return null;
-		InputStream is = null;
-		try {
-			is = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
-		} catch (Exception ex) {
-		}
-		return is;
-	}
+//
+//	public PathwayModel readFromXml(InputStream is) throws ConverterException {
+//		PathwayModel pathwayModel = null;
+//		try {
+//			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
+//			SAXBuilder builder = new SAXBuilder(schemafactory);
+//			Document doc = builder.build(is);
+//			Element root = doc.getRootElement();
+//			System.out.println("Root: " + doc.getRootElement());
+//			pathwayModel = readFromRoot(pathwayModel, root);
+//		} catch (JDOMException e) {
+//			throw new ConverterException(e);
+//		} catch (IOException e) {
+//			throw new ConverterException(e);
+//		} catch (Exception e) {
+//			throw new ConverterException(e); // TODO e.printStackTrace()?
+//		}
+//		return pathwayModel;// TODO do we want to return pathway or not?
+//	}
+//
+//	/**
+//	 * Read the JDOM document from the file specified
+//	 * 
+//	 * @param file the file from which the JDOM document should be read.
+//	 * @throws ConverterException
+//	 */
+//	public PathwayModel readFromXml(File file) throws ConverterException {
+//		InputStream is;
+//		try {
+//			is = new FileInputStream(file);
+//		} catch (FileNotFoundException e) {
+//			throw new ConverterException(e);
+//		}
+//		return readFromXml(is);
+//	}
+//
+//	/**
+//	 * Read the JDOM document from the file specified
+//	 * 
+//	 * @param s      the string input.
+//	 * @param string the file from which the JDOM document should be read.
+//	 * @throws ConverterException
+//	 */
+//	public PathwayModel readFromXml(String str) throws ConverterException {
+//		if (str == null)
+//			return null;
+//		InputStream is;
+//		try {
+//			is = stringToInputStream(str);// TODO does this work?
+//		} catch (Exception e) {
+//			throw new ConverterException(e);
+//		}
+//		return readFromXml(is);
+//	}
+//
+//	// METHOD FROM UTILS
+//	public static InputStream stringToInputStream(String str) {
+//		if (str == null)
+//			return null;
+//		InputStream is = null;
+//		try {
+//			is = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
+//		} catch (Exception ex) {
+//		}
+//		return is;
+//	}
 
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Pathway pathway = readPathway(root);
+		System.out.println("read pathway");
+
 		pathwayModel.setPathway(pathway); // = new PathwayModel(pathway); // TODO think about order
+		System.out.println("set pathway");
 
 		readAuthors(pathwayModel, root);
-
+		System.out.println("read authors");
 		readAnnotations(pathwayModel, root);
+		System.out.println("read success");
 		readCitations(pathwayModel, root);
+		System.out.println("read success");
 		readEvidences(pathwayModel, root);
 
 		readPathwayInfo(pathwayModel, root); // comment group and evidenceRefs
@@ -165,7 +166,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 	protected Pathway readPathway(Element root) throws ConverterException {
 		String title = root.getAttributeValue("title");
-		Element gfx = root.getChild("Graphics");
+		Element gfx = root.getChild("Graphics", root.getNamespace());
 		double boardWidth = Double.parseDouble(gfx.getAttributeValue("boardWidth"));
 		double boardHeight = Double.parseDouble(gfx.getAttributeValue("boardHeight"));
 		Color backgroundColor = ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor")); // TODO optional?
@@ -192,91 +193,102 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 	protected Xref readXref(Element e) throws ConverterException {
 		Element xref = e.getChild("Xref", e.getNamespace());
-		String identifier = xref.getAttributeValue("identifier");
-		String dataSource = xref.getAttributeValue("dataSource");
-		if (DataSource.fullNameExists(dataSource)) {
-			return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		} else if (DataSource.systemCodeExists(dataSource)) {
-			return new Xref(identifier, DataSource.getByAlias(dataSource));
-		} else {
-			System.out.println("Invalid xref dataSource: " + dataSource);
-			return null;
+		if (xref != null) {
+			String identifier = xref.getAttributeValue("identifier");
+			String dataSource = xref.getAttributeValue("dataSource");
+			if (DataSource.fullNameExists(dataSource)) {
+				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+			} else if (DataSource.systemCodeExists(dataSource)) {
+				return new Xref(identifier, DataSource.getByAlias(dataSource));
+			} else {
+				System.out.println("Invalid xref dataSource: " + dataSource);
+				return null; // TODO how to handle better
 //			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+			}
 		}
+		return null;
 	}
 
 	protected Coordinate readInfoBox(Element root) {
-		double centerX = Double.parseDouble(root.getAttributeValue("centerX"));
-		double centerY = Double.parseDouble(root.getAttributeValue("centerY"));
+		Element ifbx = root.getChild("InfoBox", root.getNamespace());
+		double centerX = Double.parseDouble(ifbx.getAttributeValue("centerX"));
+		double centerY = Double.parseDouble(ifbx.getAttributeValue("centerY"));
 		return new Coordinate(centerX, centerY);
 	}
 
 	protected void readAuthors(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element aus = root.getChild("Authors", root.getNamespace());
-		for (Element au : aus.getChildren("Author", root.getNamespace())) {
-			String name = au.getAttributeValue("name");
-			String fullName = au.getAttributeValue("fullName");
-			String email = au.getAttributeValue("email");
-			Author author = new Author.AuthorBuilder(name).build();
-			if (fullName != null) {
-				author.setFullName(fullName);
+		if (aus != null) {
+			for (Element au : aus.getChildren("Author", aus.getNamespace())) {
+				String name = au.getAttributeValue("name");
+				String fullName = au.getAttributeValue("fullName");
+				String email = au.getAttributeValue("email");
+				Author author = new Author.AuthorBuilder(name).build();
+				if (fullName != null)
+					author.setFullName(fullName);
+				if (email != null)
+					author.setEmail(email);
+				if (author != null)
+					pathwayModel.addAuthor(author);
 			}
-			if (email != null) {
-				author.setEmail(email);
-			}
-			pathwayModel.addAuthor(author);
 		}
 	}
 
 	protected void readAnnotations(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element annts = root.getChild("Annotations", root.getNamespace());
-		for (Element annt : annts.getChildren("Annotation", annts.getNamespace())) {
-			String elementId = annt.getAttributeValue("elementId");
-			String value = annt.getAttributeValue("value");
-			AnnotationType type = AnnotationType.register(annt.getAttributeValue("type"));
-			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-			/* optional properties */
-			Xref xref = readXref(annt);
-			String url = annt.getAttributeValue("url");
-			if (xref != null)
-				annotation.setXref(xref);
-			if (url != null)
-				annotation.setUrl(url);
-			if (annotation != null)
-				pathwayModel.addAnnotation(annotation);
+		if (annts != null) {
+			for (Element annt : annts.getChildren("Annotation", annts.getNamespace())) {
+				String elementId = annt.getAttributeValue("elementId");
+				String value = annt.getAttributeValue("value");
+				AnnotationType type = AnnotationType.register(annt.getAttributeValue("type"));
+				Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
+				/* optional properties */
+				Xref xref = readXref(annt);
+				String url = annt.getAttributeValue("url");
+				if (xref != null)
+					annotation.setXref(xref);
+				if (url != null)
+					annotation.setUrl(url);
+				if (annotation != null)
+					pathwayModel.addAnnotation(annotation);
+			}
 		}
 	}
 
 	protected void readCitations(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element cits = root.getChild("Citations", root.getNamespace());
-		for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
-			String elementId = cit.getAttributeValue("elementId");
-			Xref xref = readXref(cit);
-			Citation citation = new Citation(elementId, pathwayModel, xref);
-			/* optional properties */
-			String url = cit.getAttributeValue("url");
-			if (url != null)
-				citation.setUrl(url);
-			if (citation != null)
-				pathwayModel.addCitation(citation);
+		if (cits != null) {
+			for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
+				String elementId = cit.getAttributeValue("elementId");
+				Xref xref = readXref(cit);
+				Citation citation = new Citation(elementId, pathwayModel, xref);
+				/* optional properties */
+				String url = cit.getAttributeValue("url");
+				if (url != null)
+					citation.setUrl(url);
+				if (citation != null)
+					pathwayModel.addCitation(citation);
+			}
 		}
 	}
 
 	protected void readEvidences(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element evids = root.getChild("Evidences", root.getNamespace());
-		for (Element evid : evids.getChildren("Evidence", evids.getNamespace())) {
-			String elementId = evid.getAttributeValue("elementId");
-			Xref xref = readXref(evid);
-			Evidence evidence = new Evidence(elementId, pathwayModel, xref);
-			/* optional properties */
-			String value = evid.getAttributeValue("value");
-			String url = evid.getAttributeValue("url");
-			if (value != null)
-				evidence.setValue(value);
-			if (url != null)
-				evidence.setUrl(url);
-			if (evidence != null)
-				pathwayModel.addEvidence(evidence);
+		if (evids != null) {
+			for (Element evid : evids.getChildren("Evidence", evids.getNamespace())) {
+				String elementId = evid.getAttributeValue("elementId");
+				Xref xref = readXref(evid);
+				Evidence evidence = new Evidence(elementId, pathwayModel, xref);
+				/* optional properties */
+				String value = evid.getAttributeValue("value");
+				String url = evid.getAttributeValue("url");
+				if (value != null)
+					evidence.setValue(value);
+				if (url != null)
+					evidence.setUrl(url);
+				if (evidence != null)
+					pathwayModel.addEvidence(evidence);
+			}
 		}
 	}
 
@@ -348,114 +360,124 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 	protected void readGroups(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element grps = root.getChild("Groups", root.getNamespace());
-		for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
-			String elementId = grp.getAttributeValue("elementId");
-			GroupType type = GroupType.register(grp.getAttributeValue("type"));
-			Element gfx = grp.getChild("Graphics", grp.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
-			/* read comment group, evidenceRefs */
-			readElementInfo(group, grp);
-			/* set optional properties */
-			String textLabel = grp.getAttributeValue("textLabel");
-			Xref xref = readXref(grp);
-			if (xref != null)
-				group.setXref(xref);
-			if (textLabel != null)
-				group.setTextLabel(textLabel);
-			if (group != null)
-				pathwayModel.addGroup(group);
-		}
-		/**
-		 * Because a group may refer to another group not yet initialized. We read all
-		 * group elements before setting groupRef.
-		 */
-		for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
-			String groupRef = grp.getAttributeValue("groupRef");
-			if (groupRef != null && !groupRef.equals("")) {
+		if (grps != null) {
+			for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
 				String elementId = grp.getAttributeValue("elementId");
-				Group group = (Group) pathwayModel.getPathwayElement(elementId);
-				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
+				GroupType type = GroupType.register(grp.getAttributeValue("type"));
+				Element gfx = grp.getChild("Graphics", grp.getNamespace());
+				RectProperty rectProperty = readRectProperty(gfx);
+				FontProperty fontProperty = readFontProperty(gfx);
+				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+				Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
+				/* read comment group, evidenceRefs */
+				readElementInfo(group, grp);
+				/* set optional properties */
+				String textLabel = grp.getAttributeValue("textLabel");
+				Xref xref = readXref(grp);
+				if (xref != null)
+					group.setXref(xref);
+				if (textLabel != null)
+					group.setTextLabel(textLabel);
+				if (group != null)
+					pathwayModel.addGroup(group);
+			}
+			/**
+			 * Because a group may refer to another group not yet initialized. We read all
+			 * group elements before setting groupRef.
+			 */
+			for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
+				String groupRef = grp.getAttributeValue("groupRef");
+				if (groupRef != null && !groupRef.equals("")) {
+					String elementId = grp.getAttributeValue("elementId");
+					Group group = (Group) pathwayModel.getPathwayElement(elementId);
+					group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
+				}
 			}
 		}
 	}
 
 	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element lbs = root.getChild("Labels", root.getNamespace());
-		for (Element lb : lbs.getChildren("Label", lbs.getNamespace())) {
-			String elementId = lb.getAttributeValue("elementId");
-			String textLabel = lb.getAttributeValue("textLabel");
-			Element gfx = lb.getChild("Graphics", lb.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
-			/* read comment group, evidenceRefs */
-			readElementInfo(label, lb);
-			/* set optional properties */
-			String href = lb.getAttributeValue("href");
-			String groupRef = lb.getAttributeValue("grouRef");
-			if (href != null)
-				label.setHref(href);
-			if (groupRef != null && !groupRef.equals(""))
-				label.setGroupRef((Group) label.getPathwayModel().getPathwayElement(groupRef));
-			if (label != null)
-				pathwayModel.addLabel(label);
+		if (lbs != null) {
+			for (Element lb : lbs.getChildren("Label", lbs.getNamespace())) {
+				String elementId = lb.getAttributeValue("elementId");
+				String textLabel = lb.getAttributeValue("textLabel");
+				Element gfx = lb.getChild("Graphics", lb.getNamespace());
+				RectProperty rectProperty = readRectProperty(gfx);
+				FontProperty fontProperty = readFontProperty(gfx);
+				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+				Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
+						textLabel);
+				/* read comment group, evidenceRefs */
+				readElementInfo(label, lb);
+				/* set optional properties */
+				String href = lb.getAttributeValue("href");
+				String groupRef = lb.getAttributeValue("grouRef");
+				if (href != null)
+					label.setHref(href);
+				if (groupRef != null && !groupRef.equals(""))
+					label.setGroupRef((Group) label.getPathwayModel().getPathwayElement(groupRef));
+				if (label != null)
+					pathwayModel.addLabel(label);
+			}
 		}
 	}
 
 	protected void readShapes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element shps = root.getChild("Shapes", root.getNamespace());
-		for (Element shp : shps.getChildren("Shape", shps.getNamespace())) {
-			String elementId = shp.getAttributeValue("elementId");
-			Element gfx = shp.getChild("Graphics", shp.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
-			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
-			/* read comment group, evidenceRefs */
-			readElementInfo(shape, shp);
-			/* set optional properties */
-			String textLabel = shp.getAttributeValue("textLabel");
-			String groupRef = shp.getAttributeValue("grouRef");
-			if (textLabel != null)
-				shape.setTextLabel(textLabel);
-			if (groupRef != null && !groupRef.equals(""))
-				shape.setGroupRef((Group) shape.getPathwayModel().getPathwayElement(groupRef));
-			if (shape != null)
-				pathwayModel.addShape(shape);
+		if (shps != null) {
+			for (Element shp : shps.getChildren("Shape", shps.getNamespace())) {
+				String elementId = shp.getAttributeValue("elementId");
+				Element gfx = shp.getChild("Graphics", shp.getNamespace());
+				RectProperty rectProperty = readRectProperty(gfx);
+				FontProperty fontProperty = readFontProperty(gfx);
+				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+				double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
+				Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
+						rotation);
+				/* read comment group, evidenceRefs */
+				readElementInfo(shape, shp);
+				/* set optional properties */
+				String textLabel = shp.getAttributeValue("textLabel");
+				String groupRef = shp.getAttributeValue("grouRef");
+				if (textLabel != null)
+					shape.setTextLabel(textLabel);
+				if (groupRef != null && !groupRef.equals(""))
+					shape.setGroupRef((Group) shape.getPathwayModel().getPathwayElement(groupRef));
+				if (shape != null)
+					pathwayModel.addShape(shape);
+			}
 		}
 	}
 
 	protected void readDataNodes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element dns = root.getChild("DataNodes", root.getNamespace());
-		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
-			String elementId = dn.getAttributeValue("elementId");
-			Element gfx = dn.getChild("Graphics", dn.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			String textLabel = dn.getAttributeValue("textLabel");
-			DataNodeType type = DataNodeType.register(dn.getAttributeValue("type"));
-			Xref xref = readXref(dn);
-			DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
-					textLabel, type, xref);
-			/* read comment group, evidenceRefs */
-			readElementInfo(dataNode, dn);
-			/* read states */
-			readStates(dataNode, dn);
-			/* set optional properties */
-			String groupRef = dn.getAttributeValue("groupRef");
-			String elementRef = dn.getAttributeValue("elementRef");
-			if (groupRef != null && !groupRef.equals(""))
-				dataNode.setGroupRef((Group) dataNode.getPathwayModel().getPathwayElement(groupRef));
-			if (elementRef != null && !elementRef.equals(""))
-				dataNode.setElementRef(dataNode.getPathwayModel().getPathwayElement(elementRef));
-			if (dataNode != null)
-				pathwayModel.addDataNode(dataNode);
+		if (dns != null) {
+			for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
+				String elementId = dn.getAttributeValue("elementId");
+				Element gfx = dn.getChild("Graphics", dn.getNamespace());
+				RectProperty rectProperty = readRectProperty(gfx);
+				FontProperty fontProperty = readFontProperty(gfx);
+				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+				String textLabel = dn.getAttributeValue("textLabel");
+				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type"));
+				Xref xref = readXref(dn);
+				DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty,
+						shapeStyleProperty, textLabel, type, xref);
+				/* read comment group, evidenceRefs */
+				readElementInfo(dataNode, dn);
+				/* read states */
+				readStates(dataNode, dn);
+				/* set optional properties */
+				String groupRef = dn.getAttributeValue("groupRef");
+				String elementRef = dn.getAttributeValue("elementRef");
+				if (groupRef != null && !groupRef.equals(""))
+					dataNode.setGroupRef((Group) dataNode.getPathwayModel().getPathwayElement(groupRef));
+				if (elementRef != null && !elementRef.equals(""))
+					dataNode.setElementRef(dataNode.getPathwayModel().getPathwayElement(elementRef));
+				if (dataNode != null)
+					pathwayModel.addDataNode(dataNode);
+			}
 		}
 	}
 
@@ -464,104 +486,116 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 */
 	protected void readStates(DataNode dataNode, Element dn) throws ConverterException {
 		Element sts = dn.getChild("States", dn.getNamespace());
-		for (Element st : sts.getChildren("State", sts.getNamespace())) {
-			String elementId = st.getAttributeValue("elementId");
-			String textLabel = st.getAttributeValue("textLabel");
-			StateType type = StateType.register(st.getAttributeValue("type"));
-			Element gfx = st.getChild("Graphics", st.getNamespace());
-			double relX = Double.parseDouble(gfx.getAttributeValue("relX"));
-			double relY = Double.parseDouble(gfx.getAttributeValue("relY"));
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			State state = new State(elementId, dataNode.getPathwayModel(), dataNode, textLabel, type, relX, relY,
-					rectProperty, fontProperty, shapeStyleProperty);
-			/* read comment group, evidenceRefs */
-			readElementInfo(dataNode, st);
-			/* set optional properties */
-			Xref xref = readXref(st);
-			if (xref != null)
-				state.setXref(xref);
-			if (state != null)
-				dataNode.addState(state);
+		if (sts != null) {
+			for (Element st : sts.getChildren("State", sts.getNamespace())) {
+				String elementId = st.getAttributeValue("elementId");
+				String textLabel = st.getAttributeValue("textLabel");
+				StateType type = StateType.register(st.getAttributeValue("type"));
+				Element gfx = st.getChild("Graphics", st.getNamespace());
+				double relX = Double.parseDouble(gfx.getAttributeValue("relX"));
+				double relY = Double.parseDouble(gfx.getAttributeValue("relY"));
+				RectProperty rectProperty = readRectProperty(gfx);
+				FontProperty fontProperty = readFontProperty(gfx);
+				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+				State state = new State(elementId, dataNode.getPathwayModel(), dataNode, textLabel, type, relX, relY,
+						rectProperty, fontProperty, shapeStyleProperty);
+				/* read comment group, evidenceRefs */
+				readElementInfo(dataNode, st);
+				/* set optional properties */
+				Xref xref = readXref(st);
+				if (xref != null)
+					state.setXref(xref);
+				if (state != null)
+					dataNode.addState(state);
+			}
 		}
 	}
 
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element glns = root.getChild("GraphicaLines", root.getNamespace());
-		for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
-			String elementId = gln.getAttributeValue("elementId");
-			Element gfx = gln.getChild("Graphics", gln.getNamespace());
-			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
-			GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
-			/* read comment group, evidenceRefs */
-			readElementInfo(graphicalLine, gln);
-			/* read anchors (NB: points are read later) */
-			readAnchors(graphicalLine, gln);
-			/* set optional properties */
-			String groupRef = gln.getAttributeValue("groupRef");
-			if (groupRef != null && !groupRef.equals(""))
-				graphicalLine.setGroupRef((Group) graphicalLine.getPathwayModel().getPathwayElement(groupRef));
-			if (graphicalLine != null)
-				pathwayModel.addGraphicalLine(graphicalLine);
+		if (glns != null) {
+			for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
+				String elementId = gln.getAttributeValue("elementId");
+				Element gfx = gln.getChild("Graphics", gln.getNamespace());
+				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
+				GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
+				/* read comment group, evidenceRefs */
+				readElementInfo(graphicalLine, gln);
+				/* read anchors (NB: points are read later) */
+				readAnchors(graphicalLine, gln);
+				/* set optional properties */
+				String groupRef = gln.getAttributeValue("groupRef");
+				if (groupRef != null && !groupRef.equals(""))
+					graphicalLine.setGroupRef((Group) graphicalLine.getPathwayModel().getPathwayElement(groupRef));
+				if (graphicalLine != null)
+					pathwayModel.addGraphicalLine(graphicalLine);
+			}
 		}
 	}
 
 	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element ias = root.getChild("Interactions", root.getNamespace());
-		for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
-			String elementId = ia.getAttributeValue("elementId");
-			Element gfx = ia.getChild("Graphics", ia.getNamespace());
-			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
-			Xref xref = readXref(ia);
-			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
-			/* read comment group, evidenceRefs */
-			readElementInfo(interaction, ia);
-			/* read anchors (NB: points are read later) */
-			readAnchors(interaction, ia);
-			/* set optional properties */
-			String groupRef = ia.getAttributeValue("groupRef");
-			if (groupRef != null && !groupRef.equals(""))
-				interaction.setGroupRef((Group) interaction.getPathwayModel().getPathwayElement(groupRef));
-			if (interaction != null)
-				pathwayModel.addInteraction(interaction);
+		if (ias != null) {
+			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
+				String elementId = ia.getAttributeValue("elementId");
+				Element gfx = ia.getChild("Graphics", ia.getNamespace());
+				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
+				Xref xref = readXref(ia);
+				Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
+				/* read comment group, evidenceRefs */
+				readElementInfo(interaction, ia);
+				/* read anchors (NB: points are read later) */
+				readAnchors(interaction, ia);
+				/* set optional properties */
+				String groupRef = ia.getAttributeValue("groupRef");
+				if (groupRef != null && !groupRef.equals(""))
+					interaction.setGroupRef((Group) interaction.getPathwayModel().getPathwayElement(groupRef));
+				if (interaction != null)
+					pathwayModel.addInteraction(interaction);
+			}
 		}
 	}
 
 	protected void readAnchors(LineElement lineElement, Element e) throws ConverterException {
 		Element wyps = e.getChild("Waypoints", e.getNamespace());
-		for (Element an : wyps.getChildren("Anchor", e.getNamespace())) {
-			String elementId = an.getAttributeValue("elementId");
-			double position = Double.parseDouble(an.getAttributeValue("position"));
-			Coordinate xy = new Coordinate(Double.parseDouble(an.getAttributeValue("x")),
-					Double.parseDouble(an.getAttributeValue("y")));
-			AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType"));
-			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), position, xy, shapeType);
-			if (anchor != null)
-				lineElement.addAnchor(anchor);
+		if (wyps != null) {
+			for (Element an : wyps.getChildren("Anchor", e.getNamespace())) {
+				String elementId = an.getAttributeValue("elementId");
+				double position = Double.parseDouble(an.getAttributeValue("position"));
+				Coordinate xy = new Coordinate(Double.parseDouble(an.getAttributeValue("x")),
+						Double.parseDouble(an.getAttributeValue("y")));
+				AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType"));
+				Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), position, xy, shapeType);
+				if (anchor != null)
+					lineElement.addAnchor(anchor);
+			}
 		}
 	}
 
 	// TODO can cast to LinedElement? to reduce duplicate code
 	protected void readLinePoints(PathwayModel pathwayModel, Element e) throws ConverterException {
 		Element ias = e.getChild("Interactions", e.getNamespace());
-		for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
-			String elementId = ia.getAttributeValue("elementId");
-			Interaction interaction = (Interaction) pathwayModel.getPathwayElement(elementId);
-			readPoints(interaction, e);
-			// TODO check here
-			if (interaction.getPoints().size() <= 2) {
-				// TODO error!
+		if (ias != null) {
+			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
+				String elementId = ia.getAttributeValue("elementId");
+				Interaction interaction = (Interaction) pathwayModel.getPathwayElement(elementId);
+				readPoints(interaction, e);
+				// TODO check here
+				if (interaction.getPoints().size() <= 2) {
+					// TODO error!
+				}
 			}
 		}
 		Element glns = e.getChild("GraphicaLines", e.getNamespace());
-		for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
-			String elementId = gln.getAttributeValue("elementId");
-			GraphicalLine graphicalLine = (GraphicalLine) pathwayModel.getPathwayElement(elementId);
-			readPoints(graphicalLine, e);
-			// TODO check here
-			if (graphicalLine.getPoints().size() <= 2) {
-				// TODO error!
+		if (glns != null) {
+			for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
+				String elementId = gln.getAttributeValue("elementId");
+				GraphicalLine graphicalLine = (GraphicalLine) pathwayModel.getPathwayElement(elementId);
+				readPoints(graphicalLine, e);
+				// TODO check here
+				if (graphicalLine.getPoints().size() <= 2) {
+					// TODO error!
+				}
 			}
 		}
 	}
