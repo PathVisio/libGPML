@@ -34,7 +34,7 @@ public interface GPMLReader extends GPMLVersion {
 	
 	public PathwayModel readGPML(String str) throws ConverterException;
 	
-	public PathwayModel readRoot(Element root) throws ConverterException;
+	public PathwayModel readFromRoot(Element root) throws ConverterException;
 
 
 }

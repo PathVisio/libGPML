@@ -62,7 +62,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GPMLReader
 	// TODO how to best handle namespace?
 	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
 
-	public PathwayModel readGPML(InputStream is) throws ConverterException {
+	public void readGPML(InputStream is) throws ConverterException {
 		PathwayModel pathwayModel = null;
 		try {
 			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
@@ -128,9 +128,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GPMLReader
 		return is;
 	}
 
-	public PathwayModel readRoot(Element root) throws ConverterException {
+	public void readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Pathway pathway = readPathway(root);
-		PathwayModel pathwayModel = new PathwayModel(pathway); // TODO think about order
+		pathwayModel.setPathway(pathway); //= new PathwayModel(pathway); // TODO think about order
 
 		readAuthors(pathwayModel, root);
 
@@ -154,7 +154,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GPMLReader
 		// TODO check groups have at least one pathwayElement inside?
 		// TODO check at least 2 points per line element?
 		// TODO handle relative and absolute coordinates
-		return pathwayModel;
+//		return pathwayModel;
 	}
 
 	protected Pathway readPathway(Element root) throws ConverterException {

@@ -40,6 +40,7 @@ import org.pathvisio.model.*;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.io.gpml2013.GPML2013aFormatAbstract.AttributeInfo;
+import org.pathvisio.io.gpml2013.GPML2013aFormatAbstract.ByElementName;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
@@ -47,16 +48,16 @@ import org.pathvisio.model.type.*;
 import oldclasses.io.GpmlFormatReader;
 import oldclasses.io.GpmlFormatWriter;
 
-class Gpml2013aFormat extends GPML2013aFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
+class GpmlFormat2013a extends GPML2013aFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
 	
-	public static final Gpml2013aFormat GPML_2013A = new Gpml2013aFormat("GPML2013a.xsd",
+	public static final GpmlFormat2013a GPML_2013A = new GpmlFormat2013a("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
 	/**
 	 * @param xsdFile
 	 * @param ns
 	 */
-	public Gpml2013aFormat(String xsdFile, Namespace ns) {
+	public GpmlFormat2013a(String xsdFile, Namespace ns) {
 		super(xsdFile, ns);
 	}
 

@@ -16,26 +16,17 @@
  ******************************************************************************/
 package org.pathvisio.core.model.io;
 
-/**
- * Exception that occurs during import, export, save or load of a Patway.
- * @see PathwayExporter#doExport
- * @see PathwayImporter#doImport
- * @see Pathway#readFromXml
- * @see Pathway#writeToXml
- */
-public class ConverterException extends Exception {
+import java.io.File;
+import java.io.OutputStream;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.pathvisio.core.model.PathwayElement;
 
-	public ConverterException(String msg)
-	{
-		super(msg);
-	}
-
-	public ConverterException(Exception e)
-	{
-		super(e.getClass() + ": " + e.getMessage(), e);
-		setStackTrace(e.getStackTrace());
-	}
-
-
+public interface GpmlFormatWriter extends GpmlFormatVersion 
+{
+	Document createJdom(Pathway data) throws ConverterException;
+	Element createJdomElement(PathwayElement o) throws ConverterException;
+	void writeToXml(Pathway pwy, File file, boolean validate) throws ConverterException;
+	void writeToXml(Pathway pwy, OutputStream out, boolean validate) throws ConverterException;
 }

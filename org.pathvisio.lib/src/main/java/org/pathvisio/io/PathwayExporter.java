@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2019 BiGCaT Bioinformatics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -14,11 +14,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.core.model.io;
 
 import java.io.File;
-
-import org.pathvisio.model.PathwayModel;
 
 /**
  * Interface for an exporter that writes a pathway to a file
@@ -31,7 +29,7 @@ public interface PathwayExporter extends PathwayIO
 	 * @param pathway The pathway to export
 	 * @throws ConverterException when there is a fatal conversion problem. Implementations should only throw in case there is a non-recoverable error. Ohterwise, it should emit a warning.
 	 */
-	public void writeToFile(File file, PathwayModel pathwayModel) throws ConverterException;
+	public void doExport(File file, Pathway pathway) throws ConverterException;
 
 
 	
@@ -42,6 +40,6 @@ public interface PathwayExporter extends PathwayIO
 	 * @param zoom 
 	 * @throws ConverterException when there is a fatal conversion problem. Implementations should only throw in case there is a non-recoverable error. Ohterwise, it should emit a warning.
 	 */
-	public void writeToFile(File file, PathwayModel pathwayModel, int zoom) throws ConverterException;
+	public void doExport(File file, Pathway pathway, int zoom) throws ConverterException;
 //	public void doExport(File file, Pathway pathway, int width, int height) throws ConverterException;
 }

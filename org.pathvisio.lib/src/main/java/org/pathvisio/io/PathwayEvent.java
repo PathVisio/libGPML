@@ -16,30 +16,39 @@
  ******************************************************************************/
 package org.pathvisio.core.model.io;
 
-import java.util.List;
+import org.pathvisio.core.model.PathwayElement;
 
 /**
- * Common methods for {@link PathwayImporter}s and {@link PathwayExporter}s
+ * Used to notify listeners of changes to the model, i.e a Pathway or PathwayElement.
+ * This can mean the addition or removal of whole elements, or just a modification to
+ * one of the properties of an existing element.
+ *
+ * This event is currently used both by PathwayListener's and  PathwayElementListener's.
+ * That may change in the future.
  */
-public interface PathwayIO
+public class PathwayEvent
 {
-	public String getName();
+	/**
+	 * Sent to listeners of Pathway when an object was deleted
+	 */
+	public static final int DELETED = 2;
 
 	/**
-	 * Get the possible extensions this importer/exporter can read (e.g. txt).
-	 * The extensions do not have to be unique. 
-	 * In case two importers use the same extension, the correct one will be chosen
-	 * based on the result of PathwayImporter.isCorrectFileType().
-	 * If that doesn't help, the user may be asked to pick an importer.
-	 * The first item in the array is assumed to be the preferred extension.
-	 * @return An array with the possible extensions (without '.')
+	 * Sent to listeners of Pathway when a new object was added
 	 */
-	public String[] getExtensions();
+	public static final int ADDED = 3;
 
-	/**
-	 * After import or export, this can be used to check if there are any warnings
-	 * @returns a list of warning messages, or an empty list if there are none.
-	 */
-	public List<String> getWarnings();
+	public static final int RESIZED = 4;
 
+	private PathwayElement affectedData;
+	public PathwayElement getAffectedData () { return affectedData; }
+
+	private int type;
+	public int getType() { return type; }
+
+	public PathwayEvent (PathwayElement object, int t)
+	{
+		affectedData = object;
+		type = t;
+	}
 }

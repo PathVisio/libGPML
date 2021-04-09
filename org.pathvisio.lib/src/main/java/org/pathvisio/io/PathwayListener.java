@@ -16,26 +16,19 @@
  ******************************************************************************/
 package org.pathvisio.core.model.io;
 
+import java.util.EventListener;
+
 /**
- * Exception that occurs during import, export, save or load of a Patway.
- * @see PathwayExporter#doExport
- * @see PathwayImporter#doImport
- * @see Pathway#readFromXml
- * @see Pathway#writeToXml
+ * Implement this if you want to be notified of changes to a Pathway.
+ *
+ * This means addition of new elements to a Pathway and
+ * removal of elements from a Pathway, but not
+ * changes to properties of a single PathwayElement
+ *
+ * For example this is used by VPathway to refresh itself when a new
+ * element is added.
  */
-public class ConverterException extends Exception {
-
-
-	public ConverterException(String msg)
-	{
-		super(msg);
-	}
-
-	public ConverterException(Exception e)
-	{
-		super(e.getClass() + ": " + e.getMessage(), e);
-		setStackTrace(e.getStackTrace());
-	}
-
-
+public interface PathwayListener extends EventListener
+{
+	public void pathwayModified(PathwayEvent e);
 }

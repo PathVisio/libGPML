@@ -25,9 +25,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.bridgedb.Xref;
+import org.pathvisio.debug.Logger;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
-import org.pathvisio.io.Reader;
+import java.io.Reader;
 import org.pathvisio.model.elements.*;
 
 /**
@@ -53,6 +54,34 @@ public class PathwayModel {
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;
+	
+	private File sourceFile;
+
+	public File getSourceFile() {
+		return sourceFile;
+	}
+
+	public void setSourceFile(File sourceFile) {
+		this.sourceFile = sourceFile;
+	}
+
+	/**
+	 * Constructor for this class, creates a new gpml document
+	 */
+	public PathwayModel() {
+		this.pathway = null;
+		this.authors = new ArrayList<Author>();
+		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
+		this.annotations = new ArrayList<Annotation>();
+		this.citations = new ArrayList<Citation>();
+		this.evidences = new ArrayList<Evidence>();
+		this.dataNodes = new ArrayList<DataNode>();
+		this.interactions = new ArrayList<Interaction>();
+		this.graphicalLines = new ArrayList<GraphicalLine>();
+		this.labels = new ArrayList<Label>();
+		this.shapes = new ArrayList<Shape>();
+		this.groups = new ArrayList<Group>();
+	}
 
 	/**
 	 * Initializes a pathway model object.
@@ -513,25 +542,21 @@ public class PathwayModel {
 		}
 		return result;
 	}
-	
-	
-	public PathwayModel readXML(Reader in) throws ConverterException {
-		GpmlFormat.readGPML(in);
+
+	public PathwayModel readFromXml(Reader in) throws ConverterException {
+		GpmlFormat.readFromXml(in);
 		setSourceFile(null);
-		clearChangedFlag();
 	}
 
-	public void readXML(InputStream in) throws ConverterException {
+	public void readFromXml(InputStream in) throws ConverterException {
 		GpmlFormat.readFromXml(this, in);
 		setSourceFile(null);
-		clearChangedFlag();
 	}
 
-	public void readXMLl(File file) throws ConverterException {
+	public void readFromXml(File file) throws ConverterException {
 		Logger.log.info("Start reading the XML file: " + file);
 		GpmlFormat.readFromXml(this, file);
 		setSourceFile(file);
-		clearChangedFlag();
 	}
 
 }

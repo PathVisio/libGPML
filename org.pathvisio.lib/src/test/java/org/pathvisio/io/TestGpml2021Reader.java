@@ -21,6 +21,8 @@ import java.io.IOException;
 
 import org.pathvisio.model.*;
 
+import oldclasses.io.GpmlFormat2010a;
+
 //import junit.framework.TestCase;
 
 public class TestGpml2021Reader extends TestCase 

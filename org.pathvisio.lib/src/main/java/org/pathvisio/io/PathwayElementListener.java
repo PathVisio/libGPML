@@ -16,26 +16,15 @@
  ******************************************************************************/
 package org.pathvisio.core.model.io;
 
+import java.util.EventListener;
+
 /**
- * Exception that occurs during import, export, save or load of a Patway.
- * @see PathwayExporter#doExport
- * @see PathwayImporter#doImport
- * @see Pathway#readFromXml
- * @see Pathway#writeToXml
+ * Implement this if you want to be notified of changes to properties of a PathwayElement.
+ *
+ * For example, this is used by DatanodeDialog or by PropertyTableModel
+ * to keep up to date with changes in the selected PathwayElement.
  */
-public class ConverterException extends Exception {
-
-
-	public ConverterException(String msg)
-	{
-		super(msg);
-	}
-
-	public ConverterException(Exception e)
-	{
-		super(e.getClass() + ": " + e.getMessage(), e);
-		setStackTrace(e.getStackTrace());
-	}
-
-
+public interface PathwayElementListener extends EventListener
+{
+	public void gmmlObjectModified(PathwayElementEvent e);
 }

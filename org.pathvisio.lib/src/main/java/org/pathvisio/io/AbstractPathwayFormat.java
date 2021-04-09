@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2019 BiGCaT Bioinformatics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -14,42 +14,41 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.core.model.io;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstract base class which implements PathwayImporter and PathwayExporter
- * warnings mechanism.
- * 
- * @author unknown, finterly
+ * base implementation of PathwayImporter and PathwayExporter warnings mechanism. 
  */
-public abstract class AbstractPathwayFormat implements PathwayImporter, PathwayExporter {
+public abstract class AbstractPathwayFormat implements PathwayImporter, PathwayExporter
+{
 	private List<String> warnings = new ArrayList<String>();
-
-	protected void clearWarnings() {
+	
+	protected void clearWarnings()
+	{
 		warnings.clear();
 	}
-
+	
 	/**
-	 * Can be used by overriding classes to add to the list of warnings. Don't
-	 * forget to call {@link clearWarnings} at the start of conversion.
-	 *
-	 * @param warning the string.
+	 * Can be used by overriding classes to add to the list of warnings. Don't forget to call {@link clearWarnings} at the start of conversion.
 	 */
-	protected void emitWarning(String warning) {
-		warnings.add(warning);
+	protected void emitWarning (String warning)
+	{
+		warnings.add (warning);
 	}
-
+	
 	@Override
-	public boolean isCorrectType(File f) {
+	public boolean isCorrectType(File f)
+	{
 		return true;
 	}
 
 	@Override
-	public List<String> getWarnings() {
+	public List<String> getWarnings()
+	{
 		return warnings;
 	}
 
