@@ -19,6 +19,8 @@ package org.pathvisio.model;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.EventListener;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +30,10 @@ import org.bridgedb.Xref;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
+import org.pathvisio.io.*;
 import java.io.Reader;
+import java.text.SimpleDateFormat;
+
 import org.pathvisio.model.elements.*;
 
 /**
@@ -54,16 +59,6 @@ public class PathwayModel {
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;
-	
-	private File sourceFile;
-
-	public File getSourceFile() {
-		return sourceFile;
-	}
-
-	public void setSourceFile(File sourceFile) {
-		this.sourceFile = sourceFile;
-	}
 
 	/**
 	 * Constructor for this class, creates a new gpml document
@@ -542,21 +537,162 @@ public class PathwayModel {
 		}
 		return result;
 	}
+	
+	
+	
+	
 
-	public PathwayModel readFromXml(Reader in) throws ConverterException {
-		GpmlFormat.readFromXml(in);
-		setSourceFile(null);
+	private File sourceFile = null;
+
+	/**
+	 * Gets the xml file containing the Gpml/mapp pathway currently displayed
+	 * 
+	 * @return current xml file
+	 */
+	public File getSourceFile() {
+		return sourceFile;
 	}
 
-	public void readFromXml(InputStream in) throws ConverterException {
-		GpmlFormat.readFromXml(this, in);
-		setSourceFile(null);
+	public void setSourceFile(File file) {
+		sourceFile = file;
 	}
 
-	public void readFromXml(File file) throws ConverterException {
-		Logger.log.info("Start reading the XML file: " + file);
-		GpmlFormat.readFromXml(this, file);
+//	/**
+//	 * Contructor for this class, creates a new gpml document
+//	 */
+//	public Pathway()
+//	{
+//		mappInfo = PathwayElement.createPathwayElement(ObjectType.MAPPINFO);
+//		this.add (mappInfo);
+//		infoBox = PathwayElement.createPathwayElement(ObjectType.INFOBOX);
+//		this.add (infoBox);
+//	}
+//
+//	/*
+//	 * Call when making a new mapp.
+//	 */
+//	public void initMappInfo()
+//	{
+//		String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
+//		mappInfo.setVersion(dateString);
+//		mappInfo.setMapInfoName("New Pathway");
+//	}
+
+	/**
+	 * Writes the JDOM document to the file specified
+	 * 
+	 * @param file     the file to which the JDOM document should be saved
+	 * @param validate if true, validate the dom structure before writing to file.
+	 *                 If there is a validation error, or the xsd is not in the
+	 *                 classpath, an exception will be thrown.
+	 */
+	public void writeToXml(File file, boolean validate) throws ConverterException {
+		GpmlFormat.writeToXml(this, file, validate);
 		setSourceFile(file);
+//		clearChangedFlag();
+
 	}
+
+	public void readFromXml(Reader in, boolean validate) throws ConverterException {
+		GpmlFormat.readFromXml(this, in, validate);
+		setSourceFile(null);
+//		clearChangedFlag();
+	}
+
+	public void readFromXml(InputStream in, boolean validate) throws ConverterException {
+		GpmlFormat.readFromXml(this, in, validate);
+		setSourceFile(null);
+//		clearChangedFlag();
+	}
+
+	public void readFromXml(File file, boolean validate) throws ConverterException {
+		Logger.log.info("Start reading the XML file: " + file);
+		GpmlFormat.readFromXml(this, file, validate);
+		setSourceFile(file);
+//		clearChangedFlag();
+	}
+
+//	public void writeToMapp (File file) throws ConverterException
+//	{
+//		new MappFormat().doExport(file, this);
+//	}
+//
+//	public void writeToSvg (File file) throws ConverterException
+//	{
+//		//Use Batik instead of SvgFormat
+//		//SvgFormat.writeToSvg (this, file);
+//		new BatikImageExporter(ImageExporter.TYPE_SVG).doExport(file, this);
+//	}
+//
+//	/**
+//	 * Implement this interface if you want to be notified when the "changed" status changes.
+//	 * This happens e.g. when the user makes a change to an unchanged pathway,
+//	 * or when a changed pathway is saved.
+//	 */
+//	public interface StatusFlagListener extends EventListener
+//	{
+//		public void statusFlagChanged (StatusFlagEvent e);
+//	}
+//
+//	/**
+//	 * Event for a change in the "changed" status of this Pathway
+//	 */
+//	public static class StatusFlagEvent
+//	{
+//		private boolean newStatus;
+//		public StatusFlagEvent (boolean newStatus) { this.newStatus = newStatus; }
+//		public boolean getNewStatus() {
+//			return newStatus;
+//		}
+//	}
+//
+//	private List<StatusFlagListener> statusFlagListeners = new ArrayList<StatusFlagListener>();
+//
+//	/**
+//	 * Register a status flag listener
+//	 */
+//	public void addStatusFlagListener (StatusFlagListener v)
+//	{
+//		if (!statusFlagListeners.contains(v)) statusFlagListeners.add(v);
+//	}
+//
+//	/**
+//	 * Remove a status flag listener
+//	 */
+//	public void removeStatusFlagListener (StatusFlagListener v)
+//	{
+//		statusFlagListeners.remove(v);
+//	}
+//
+//	//TODO: make private
+//	public void fireStatusFlagEvent(StatusFlagEvent e)
+//	{
+//		for (StatusFlagListener g : statusFlagListeners)
+//		{
+//			g.statusFlagChanged (e);
+//		}
+//	}
+//
+//	private List<PathwayListener> listeners = new ArrayList<PathwayListener>();
+//
+//	public void addListener(PathwayListener v)
+//	{
+//		if(!listeners.contains(v)) listeners.add(v);
+//	}
+//
+//	public void removeListener(PathwayListener v) { listeners.remove(v); }
+//
+//    /**
+//	   Firing the ObjectModifiedEvent has the side effect of
+//	   marking the Pathway as changed.
+//	 */
+//	public void fireObjectModifiedEvent(PathwayEvent e)
+//	{
+//		markChanged();
+//		for (PathwayListener g : listeners)
+//		{
+//			g.pathwayModified(e);
+//		}
+//	}
 
 }

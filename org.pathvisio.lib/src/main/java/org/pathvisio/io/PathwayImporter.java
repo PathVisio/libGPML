@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2019 BiGCaT Bioinformatics
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -14,9 +14,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.core.model.io;
+package org.pathvisio.io;
 
 import java.io.File;
+
+import org.pathvisio.model.PathwayModel;
 
 /** implemented by classes that can import a pathway from various different types */
 public interface PathwayImporter extends PathwayIO 
@@ -40,5 +42,5 @@ public interface PathwayImporter extends PathwayIO
 	 * @throws ConverterException if the input file could not be read or parsed,
 	 * 		or doesn't contain correct pathway information.
 	 */
-	public Pathway doImport(File file) throws ConverterException;
+	public PathwayModel doImport(File file) throws ConverterException;
 }

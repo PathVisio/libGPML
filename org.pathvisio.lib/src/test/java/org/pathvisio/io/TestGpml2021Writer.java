@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
-import org.pathvisio.io.gpml2021.GPML2021Writer;
 import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.Coordinate;
 

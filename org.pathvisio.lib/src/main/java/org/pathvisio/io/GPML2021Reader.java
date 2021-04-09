@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io.gpml2021;
+package org.pathvisio.io;
 
 import java.awt.Color;
 import java.io.File;
@@ -38,8 +38,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.io.ColorUtils;
-import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.Group;
 import org.pathvisio.io.LineElement;
 import org.pathvisio.io.PathwayModel;
@@ -49,7 +47,11 @@ import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 
-public class GPML2021Reader extends GPML2021FormatAbstract implements GPMLReader {
+import oldclasses.io.GpmlFormatAbstract;
+import oldclasses.io.GpmlFormatReader;
+import oldclasses.io.GpmlFormatWriter;
+
+public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatReader  {
 
 	public static final GPML2021Reader GPML2021READER = new GPML2021Reader("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));

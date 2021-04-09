@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io.gpml2021;
+package org.pathvisio.io;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,14 +30,13 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.pathvisio.io.ColorUtils;
-import org.pathvisio.io.ConverterException;
 import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
 
-public class GPML2021Writer extends GPML2021FormatAbstract implements GPMLWriter {
+
+public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWriter  {
 
 	
 	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer (
