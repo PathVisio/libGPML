@@ -21,9 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -35,25 +37,20 @@ import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
 
+import oldclasses.io.PathwayElement;
 
-public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWriter  {
+public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWriter {
 
-	
-	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer (
-			"GPML2021.xsd", Namespace.getNamespace("http://pathvisio.org/GPML/2021")
-		);
+	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer("GPML2021.xsd",
+			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
 
-	//TODO needed? 
+	// TODO needed?
 	protected GPML2021Writer(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
-	static final String xsdFile = "GPML2021.xsd";
-	// TODO how to best handle namespace?
-	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
-
 	/**
-	 * Writes the JDOM document to the outputstream specified. 
+	 * Writes the JDOM document to the outputstream specified.
 	 * 
 	 * @param out      the outputstream to which the JDOM document should be written
 	 * @param validate if true, validate the dom structure before writing. If there
@@ -61,11 +58,12 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 *                 exception will be thrown.
 	 * @throws ConverterException
 	 */
-	public void writeGPML(PathwayModel pathwayModel, OutputStream output) throws ConverterException {
+	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
 
-		Document doc = writePathwayModel(pathwayModel);
+		Document doc = createJdom(pathwayModel);
+		System.out.println(doc);
 
-		validateDocument(doc);
+		validateDocument(doc); // TODO Boolean validate not relevant to 2021...
 
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
@@ -92,23 +90,23 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @param validate if true, validate the dom structure before writing to file.
 	 *                 If there is a validation error, or the xsd is not in the
 	 *                 classpath, an exception will be thrown.
+	 * 
+	 * 
 	 */
-	public void writeGPML(PathwayModel pathwayModel, File file) throws ConverterException {
+	public void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
 		OutputStream out;
 		try {
 			out = new FileOutputStream(file);
 		} catch (IOException ex) {
 			throw new ConverterException(ex);
 		}
-		writeGPML(pathwayModel, out);
+		writeToXml(pathwayModel, out, true);
 	}
 
-
-
-	public Document writePathwayModel(PathwayModel pathwayModel) throws ConverterException {
+	// TODO using old method name for now...
+	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
 		Document doc = new Document();
-		Element root = new Element("Pathway");
-
+		Element root = new Element("Pathway", getGpmlNamespace());
 		doc.setRootElement(root);
 
 		if (root != null) {
@@ -125,6 +123,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 			writeAnnotations(pathwayModel.getAnnotations(), root);
 			writeCitations(pathwayModel.getCitations(), root);
 			writeEvidences(pathwayModel.getEvidences(), root);
+
 		}
 		return doc;
 	}
@@ -132,39 +131,52 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	protected void writePathway(Pathway pathway, Element root) throws ConverterException {
 		root.setAttribute("title", pathway.getTitle());
 
-		Element gfx = new Element("Graphics", root.getNamespace());
-		root.addContent(gfx);
-		gfx.setAttribute("boardWidth", String.valueOf(pathway.getBoardWidth()));
-		gfx.setAttribute("boardHeight", String.valueOf(pathway.getBoardHeight()));
-
-		writeXref(pathway.getXref(), root);
-
-		root.setAttribute("organism", pathway.getOrganism());
-		root.setAttribute("source", pathway.getSource());
-		root.setAttribute("version", pathway.getVersion());
-		root.setAttribute("license", pathway.getLicense());
-
-		writeInfoBox(pathway.getInfoBox(), root);
 		writeComments(pathway.getComments(), root);
 		writeDynamicProperties(pathway.getDynamicProperties(), root);
 		writeAnnotationRefs(pathway.getAnnotationRefs(), root);
 		writeCitationRefs(pathway.getCitationRefs(), root);
 		writeEvidenceRefs(pathway.getEvidenceRefs(), root);
+
+		Element gfx = new Element("Graphics", root.getNamespace());
+		root.addContent(gfx);
+		gfx.setAttribute("boardWidth", String.valueOf(pathway.getBoardWidth()));
+		gfx.setAttribute("boardHeight", String.valueOf(pathway.getBoardHeight()));
+
+		writeInfoBox(pathway.getInfoBox(), root);
+
+		/* write optional properties */
+		if (pathway.getXref() != null)
+			writeXref(pathway.getXref(), root);
+		if (pathway.getOrganism() != null)
+			root.setAttribute("organism", pathway.getOrganism());
+		if (pathway.getSource() != null)
+			root.setAttribute("source", pathway.getSource());
+		if (pathway.getVersion() != null)
+			root.setAttribute("version", pathway.getVersion());
+		if (pathway.getLicense() != null)
+			root.setAttribute("license", pathway.getLicense());
 	}
 
 	protected void writeXref(Xref xref, Element e) { // TODO boolean required
 		Element xrf = new Element("Xref", e.getNamespace());
 		String identifier = xref.getId();
-		String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
-		xrf.setAttribute("dataSource", dataSource == null ? "" : dataSource); // TODO null handling
+		DataSource dataSrc = xref.getDataSource();
+		if (dataSrc != null) {
+			String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
+			xrf.setAttribute("dataSource", dataSource == null ? "" : dataSource); // TODO null handling
+		}
+		xrf.setAttribute("dataSource", ""); // TODO null handling
 		xrf.setAttribute("identifier", identifier == null ? "" : identifier);
 		e.addContent(xrf);
+		System.out.println(xrf);
 	}
 
 	protected void writeInfoBox(Coordinate infoBox, Element root) {
 		Element ifb = new Element("InfoBox", root.getNamespace());
 		ifb.setAttribute("centerX", Double.toString(infoBox.getX()));
 		ifb.setAttribute("centerY", Double.toString(infoBox.getY()));
+		root.addContent(ifb);
+		System.out.println(ifb);
 	}
 
 	protected void writeComments(List<Comment> comments, Element e) throws ConverterException {
@@ -172,16 +184,18 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 			Element cmt = new Element("Comment", e.getNamespace());
 			cmt.setText(comment.getContent());
 			cmt.setAttribute("source", comment.getSource());
-			e.addContent(cmt);
+			if (cmt != null)
+				e.addContent(cmt);
 		}
 	}
 
 	protected void writeDynamicProperties(Map<String, String> dynamicProperties, Element e) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
-			Element property = new Element("Property", e.getNamespace());
-			property.setAttribute("key", key);
-			property.setAttribute("value", dynamicProperties.get(key));
-			e.addContent(property);
+			Element dp = new Element("Property", e.getNamespace());
+			dp.setAttribute("key", key);
+			dp.setAttribute("value", dynamicProperties.get(key));
+			if (dp != null)
+				e.addContent(dp);
 		}
 	}
 
@@ -197,7 +211,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				Element evidRef = new Element("EvidenceRef", e.getNamespace());
 				evidRef.setAttribute("elementRef", evidence.getElementId());
 			}
-			e.addContent(anntRef);
+			if (anntRef != null)
+				e.addContent(anntRef);
 		}
 	}
 
@@ -206,7 +221,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 			for (Citation citationRef : citationRefs) {
 				Element citRef = new Element("CitationRef", e.getNamespace());
 				citRef.setAttribute("elementRef", citationRef.getElementId());
-				e.addContent(citRef);
+				if (citRef != null)
+					e.addContent(citRef);
 			}
 		}
 	}
@@ -216,7 +232,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 			for (Evidence evidenceRef : evidenceRefs) {
 				Element evidRef = new Element("EvidenceRef", e.getNamespace());
 				evidRef.setAttribute("elementRef", evidenceRef.getElementId());
-				e.addContent(evidRef);
+				if (evidRef != null)
+					e.addContent(evidRef);
 			}
 		}
 	}

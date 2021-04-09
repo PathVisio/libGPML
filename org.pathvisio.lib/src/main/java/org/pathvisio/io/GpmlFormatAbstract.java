@@ -18,6 +18,7 @@ package org.pathvisio.io;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -47,20 +48,20 @@ import org.xml.sax.SAXException;
  * Read / write GPML files. Base implementation for different GpmlFormat
  * versions. Code that is shared between multiple versions is located here.
  */
-public abstract class GpmlFormatAbstract
-{
-	protected GpmlFormatAbstract (String xsdFile, Namespace nsGPML)
-	{
+public abstract class GpmlFormatAbstract {
+	protected GpmlFormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}
 
 	private final Namespace nsGPML;
 	private final String xsdFile;
-	
+
 //	protected abstract Map<String, AttributeInfo> getAttributeInfo();
 
-	public Namespace getGpmlNamespace () { return nsGPML; }
+	public Namespace getGpmlNamespace() {
+		return nsGPML;
+	}
 //
 //	/**
 //	 * name of resource containing the gpml schema definition
@@ -491,9 +492,8 @@ public abstract class GpmlFormatAbstract
 //		}
 //	}
 
-
-	public void readFromRoot(Element root, Pathway pwy) throws ConverterException
-	{
+	// TODO deprecated
+	public void readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 //		mapElement(root, pwy); // MappInfo
 //
 //		// Iterate over direct children of the root element
@@ -501,13 +501,13 @@ public abstract class GpmlFormatAbstract
 //		{
 //			mapElement((Element)e, pwy);
 //		}
-		Logger.log.trace ("End copying map elements");
+		Logger.log.trace("End copying map elements");
 
-		//Add graphIds for objects that don't have one
+		// Add graphIds for objects that don't have one
 //		addGraphIds(pwy);
 
-		//Convert absolute point coordinates of linked points to
-		//relative coordinates
+		// Convert absolute point coordinates of linked points to
+		// relative coordinates
 //		convertPointCoordinates(pwy);
 	}
 
@@ -582,8 +582,13 @@ public abstract class GpmlFormatAbstract
 	 */
 	public void validateDocument(Document doc) throws ConverterException
 	{
-		ClassLoader cl = Pathway.class.getClassLoader();
+//		ClassLoader cl = getClass().getClassLoader();	
+		
+//		InputStream is = getClass().getResourceAsStream(xsdFile);
+		ClassLoader cl = PathwayModel.class.getClassLoader();	
 		InputStream is = cl.getResourceAsStream(xsdFile);
+		
+		System.out.println(xsdFile);
 		if(is != null) {
 			Schema schema;
 			try {
@@ -614,5 +619,6 @@ public abstract class GpmlFormatAbstract
 					xsdFile + "' could not be found in classpath");
 		}
 	}
+
 
 }

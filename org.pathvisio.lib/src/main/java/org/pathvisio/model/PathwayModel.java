@@ -19,20 +19,15 @@ package org.pathvisio.model;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.EventListener;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.bridgedb.Xref;
-import org.pathvisio.debug.Logger;
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GpmlFormat;
+import org.pathvisio.debug.*;
 import org.pathvisio.io.*;
 import java.io.Reader;
-import java.text.SimpleDateFormat;
 
 import org.pathvisio.model.elements.*;
 

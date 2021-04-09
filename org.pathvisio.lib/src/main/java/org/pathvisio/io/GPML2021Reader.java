@@ -38,20 +38,13 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.io.Group;
-import org.pathvisio.io.LineElement;
-import org.pathvisio.io.PathwayModel;
-import org.pathvisio.io.ShapedElement;
+import org.pathvisio.io.*;
 import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 
-import oldclasses.io.GpmlFormatAbstract;
-import oldclasses.io.GpmlFormatReader;
-import oldclasses.io.GpmlFormatWriter;
-
-public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatReader  {
+public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatReader {
 
 	public static final GPML2021Reader GPML2021READER = new GPML2021Reader("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
@@ -64,7 +57,9 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	// TODO how to best handle namespace?
 	static final Namespace nsGPML = Namespace.getNamespace("http://pathvisio.org/GPML/2021");
 
-	public void readGPML(InputStream is) throws ConverterException {
+	/*------------------------------------MY METHODS --------------------------------------*/
+	
+	public PathwayModel readFromXml(InputStream is) throws ConverterException {
 		PathwayModel pathwayModel = null;
 		try {
 			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
@@ -72,7 +67,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 			Document doc = builder.build(is);
 			Element root = doc.getRootElement();
 			System.out.println("Root: " + doc.getRootElement());
-			pathwayModel = readRoot(root);
+			pathwayModel = readFromRoot(pathwayModel, root);
 		} catch (JDOMException e) {
 			throw new ConverterException(e);
 		} catch (IOException e) {
@@ -80,7 +75,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		} catch (Exception e) {
 			throw new ConverterException(e); // TODO e.printStackTrace()?
 		}
-		return pathwayModel; // TODO do we want to return pathway or not?
+		return pathwayModel;// TODO do we want to return pathway or not?
 	}
 
 	/**
@@ -89,14 +84,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 * @param file the file from which the JDOM document should be read.
 	 * @throws ConverterException
 	 */
-	public PathwayModel readGPML(File file) throws ConverterException {
+	public PathwayModel readFromXml(File file) throws ConverterException {
 		InputStream is;
 		try {
 			is = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
 			throw new ConverterException(e);
 		}
-		return readGPML(is);
+		return readFromXml(is);
 	}
 
 	/**
@@ -106,7 +101,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 * @param string the file from which the JDOM document should be read.
 	 * @throws ConverterException
 	 */
-	public PathwayModel readGPML(String str) throws ConverterException {
+	public PathwayModel readFromXml(String str) throws ConverterException {
 		if (str == null)
 			return null;
 		InputStream is;
@@ -115,7 +110,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		} catch (Exception e) {
 			throw new ConverterException(e);
 		}
-		return readGPML(is);
+		return readFromXml(is);
 	}
 
 	// METHOD FROM UTILS
@@ -130,9 +125,9 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		return is;
 	}
 
-	public void readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
+	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Pathway pathway = readPathway(root);
-		pathwayModel.setPathway(pathway); //= new PathwayModel(pathway); // TODO think about order
+		pathwayModel.setPathway(pathway); // = new PathwayModel(pathway); // TODO think about order
 
 		readAuthors(pathwayModel, root);
 
@@ -153,11 +148,20 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		readLinePoints(pathwayModel, root); // TODO reads points last due to possible reference to anchor
 
 		Logger.log.trace("End reading gpml");
+
+		return pathwayModel;
 		// TODO check groups have at least one pathwayElement inside?
 		// TODO check at least 2 points per line element?
 		// TODO handle relative and absolute coordinates
 //		return pathwayModel;
 	}
+
+	/*------------------------------------MY METHODS --------------------------------------*/
+
+//	public void readFromRoot(Element root, PathwayModel pathwayModel) throws ConverterException {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	protected Pathway readPathway(Element root) throws ConverterException {
 		String title = root.getAttributeValue("title");
@@ -718,7 +722,6 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		return lineStyleProperty;
 	}
 
-	
 	/*---------------------------------------------------------------------------*/
 	protected void readGroupRefs(PathwayModel pathwayModel, Element root) {
 		List<String> shpElements = Collections

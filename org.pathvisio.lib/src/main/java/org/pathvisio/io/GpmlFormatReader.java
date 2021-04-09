@@ -22,5 +22,6 @@ import org.pathvisio.model.*;
 public interface GpmlFormatReader extends GpmlFormatVersion 
 {
 //	public PathwayElement mapElement(Element e) throws ConverterException;
-	public void readFromRoot(Element root, PathwayModel pathwayModel) throws ConverterException;
+	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException;
+	// TODO Return void or PathwayModel??? 
 }
