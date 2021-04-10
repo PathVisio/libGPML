@@ -34,32 +34,37 @@ public class TestGpml extends TestCase {
 	private static final File PATHVISIO_BASEDIR = new File ("../..");
 
 	
-//	public static void testWrite2021() throws IOException, ConverterException
-//	{
-////		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2008a.gpml");
-////		assertTrue (in.exists());
-////		
-//		Pathway pathway = new Pathway.PathwayBuilder("Title", 100, 100, Color.decode("#ffffff"), new Coordinate(2, 2))
-//				.setOrganism("Homo Sapiens").setSource("WikiPathways").setVersion("r1").setLicense("CC0").build();
-//		PathwayModel pathwayModel = new PathwayModel(pathway);
-////		pathwayModel.readFromXml(in, true);
-//
-//		File tmp = File.createTempFile("testwrite", "gpml");
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//	}
-	
-
-	public static void testRead2021() throws ConverterException, IOException
+	public static void testWrite2021() throws IOException, ConverterException
 	{
-		URL url = Thread.currentThread().getContextClassLoader().getResource("readtestsimple.xml");
-		File file = new File(url.getPath());
-//		File in = new File ("readtest.xml");
-		assertTrue (file.exists());
-	
-		PathwayModel pathwayModel = new PathwayModel();
-		pathwayModel.readFromXml(file, true);
+//		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2008a.gpml");
+//		assertTrue (in.exists());
+//		
+		Pathway pathway = new Pathway.PathwayBuilder("Title", 100, 100, Color.decode("#ffffff"), new Coordinate(2, 2))
+				.setOrganism("Homo Sapiens").setSource("WikiPathways").setVersion("r1").setLicense("CC0").build();
+		PathwayModel pathwayModel = new PathwayModel(pathway);
+		
+		Author author = new Author.AuthorBuilder("henry").setFullName("fullName").setEmail("email@").build();
+		pathwayModel.addAuthor(author);
+//		pathwayModel.readFromXml(in, true);
+
+		File tmp = File.createTempFile("testwrite", "gpml");
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+		System.out.println(tmp);
+
 	}
 	
+//
+//	public static void testRead2021() throws ConverterException, IOException
+//	{
+//		URL url = Thread.currentThread().getContextClassLoader().getResource("readtest.xml");
+//		File file = new File(url.getPath());
+////		File in = new File ("readtest.xml");
+//		assertTrue (file.exists());
+//	
+//		PathwayModel pathwayModel = new PathwayModel();
+//		pathwayModel.readFromXml(file, true);
+//	}
+//	
 	
 //	public static void testConvert08a13a() throws ConverterException, IOException
 //	{
