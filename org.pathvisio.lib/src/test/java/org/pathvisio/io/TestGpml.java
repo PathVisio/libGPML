@@ -35,98 +35,17 @@ public class TestGpml extends TestCase {
 
 	private static final File PATHVISIO_BASEDIR = new File("../..");
 
-	public static void testWrite2021() throws IOException, ConverterException {
-//		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2008a.gpml");
-//		assertTrue (in.exists());
-//		
-		Pathway pathway = new Pathway.PathwayBuilder("Title", 100, 100, Color.decode("#ffffff"), new Coordinate(2, 2))
-				.setOrganism("Homo Sapiens").setSource("WikiPathways").setVersion("r1").setLicense("CC0").build();
-		PathwayModel pathwayModel = new PathwayModel(pathway);
-
-		Author author = new Author.AuthorBuilder("henry").setFullName("fullName").setEmail("email@").build();
-		pathwayModel.addAuthor(author);
-
-		Annotation annotation = new Annotation("a1", pathwayModel, "homo sapien", AnnotationType.ONTOLOGY,
-				"www.website");
-
-		DataNode dataNode = new DataNode("d1", pathwayModel, new RectProperty(new Coordinate(1, 1), 1, 1),
-				new FontProperty(null, "Arial", false, false, false, false, 0, null, null), new ShapeStyleProperty(),
-				"TextLabel", DataNodeType.ALIAS, null);
-		State state = new State("s1", pathwayModel, dataNode, null, StateType.EPIGENETIC_MODIFICATION, 0, 0,
-				new RectProperty(new Coordinate(1, 1), 1, 1),
-				new FontProperty(null, "Arial", false, false, false, false, 0, null, null), new ShapeStyleProperty());
+	public static void testReadWrite() throws IOException, ConverterException {
+		URL url = Thread.currentThread().getContextClassLoader().getResource("readtest.xml");
+		File file = new File(url.getPath());
+		assertTrue (file.exists());
+	
+		PathwayModel pathwayModel = new PathwayModel();
+		pathwayModel.readFromXml(file, true);
 		
-		Interaction interaction = new Interaction("i1", pathwayModel, new LineStyleProperty(null, null, 0, null), null, null);
-		Point point = new Point("p1", pathwayModel, ArrowHeadType.ARROW, new Coordinate(1, 1));
-		Point point2 = new Point("p2", pathwayModel, ArrowHeadType.ARROW, new Coordinate(1, 1));
-		interaction.addPoint(point);
-		interaction.addPoint(point2);
-		dataNode.addState(state);
-		pathwayModel.addAnnotation(annotation);
-		pathwayModel.addDataNode(dataNode);
-		pathwayModel.addInteraction(interaction);
-
-//		pathwayModel.readFromXml(in, true);
+//		
 		File tmp = File.createTempFile("testwrite", "gpml");
 		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
-
 	}
-
-//
-//	public static void testRead2021() throws ConverterException, IOException
-//	{
-//		URL url = Thread.currentThread().getContextClassLoader().getResource("readtest.xml");
-//		File file = new File(url.getPath());
-////		File in = new File ("readtest.xml");
-//		assertTrue (file.exists());
-//	
-//		PathwayModel pathwayModel = new PathwayModel();
-//		pathwayModel.readFromXml(file, true);
-//	}
-//	
-
-//	public static void testConvert08a13a() throws ConverterException, IOException
-//	{
-//		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2008a.gpml");
-//		assertTrue (in.exists());
-//		
-//		Pathway pwy = new Pathway();
-//		pwy.readFromXml(in, true);
-//		
-//		File tmp = File.createTempFile("test", "gpml");
-//		GpmlFormat2013a.GPML_2013A.writeToXml(pwy, tmp, true);		
-//	}
-//	
-//	/**
-//	 * Test reading 2008a & 2010a files, then writing them as 2013a
-//	 */
-//	public static void testConvert10a13a() throws ConverterException, IOException
-//	{
-//		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2010a.gpml");
-//		assertTrue (in.exists());
-//		
-//		Pathway pwy = new Pathway();
-//		pwy.readFromXml(in, true);
-//		
-//		File tmp = File.createTempFile("test", "gpml");
-//		GpmlFormat2013a.GPML_2013A.writeToXml(pwy, tmp, true);		
-//	}
-//	
-//	
-//	
-//	private static final File FILE1 = 
-//		new File (PATHVISIO_BASEDIR, "testData/2008a-deprecation-test.gpml");
-//	
-//	public void testDeprecatedFields() throws ConverterException
-//	{
-//		assertTrue (FILE1.exists());
-//		
-//		Pathway pwy = new Pathway();
-//		GpmlFormat.readFromXml(pwy, FILE1, true);
-//		
-//		PathwayElement dn = pwy.getElementById("e4fa1");
-//		assertEquals ("This is a backpage head", dn.getDynamicProperty("org.pathvisio.model.BackpageHead"));
-//	}
-//	
 }
