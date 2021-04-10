@@ -180,14 +180,22 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @param required if true, xref is a required property.
 	 */
 	protected void writeXref(Xref xref, Element e, boolean required) { // TODO boolean required
-		String identifier = xref.getId();
-		DataSource dataSrc = xref.getDataSource();
-		if (dataSrc != null && identifier != null || required) {
+		if (xref == null && required) {
 			Element xrf = new Element("Xref", e.getNamespace());
-			String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
-			xrf.setAttribute("dataSource", dataSource == null ? "" : dataSource); // TODO null handling
-			xrf.setAttribute("identifier", identifier == null ? "" : identifier);
+			xrf.setAttribute("dataSource", ""); // TODO null handling
+			xrf.setAttribute("identifier", "");
 			e.addContent(xrf);
+		}
+		if (xref != null) {
+			String identifier = xref.getId();
+			DataSource dataSrc = xref.getDataSource();
+			if (dataSrc != null && identifier != null || required) {
+				Element xrf = new Element("Xref", e.getNamespace());
+				String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
+				xrf.setAttribute("dataSource", dataSource == null ? "" : dataSource); // TODO null handling
+				xrf.setAttribute("identifier", identifier == null ? "" : identifier);
+				e.addContent(xrf);
+			}
 		}
 	}
 
@@ -348,7 +356,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				writeXref(dataNode.getXref(), dn, true);
 				writeStates(dataNode.getStates(), dn);
 				writeShapedElement(dataNode, dn);
-				writeElementRef(dataNode.getElementRef().getElementId(), dn);
+				writeElementRef(dataNode.getElementRef(), dn);
 				dn.setAttribute("textLabel", dataNode.getTextLabel());
 				dn.setAttribute("type", dataNode.getType().getName());
 
@@ -470,7 +478,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		ln.addContent(wyps);
 		writePoints(lineElement.getPoints(), wyps);
 		writeAnchors(lineElement.getAnchors(), wyps);
-		writeGroupRef(lineElement.getGroupRef().getElementId(), ln);
+		writeGroupRef(lineElement.getGroupRef(), ln);
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
@@ -493,20 +501,16 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 			writeElementId(point.getElementId(), pt);
 			pt.setAttribute("x", Double.toString(point.getXY().getX()));
 			pt.setAttribute("y", Double.toString(point.getXY().getY()));
-			String elementRef = point.getElementRef().getElementId();
-			if (elementRef != null && !elementRef.equals("")) {
-				writeElementRef(elementRef, pt);
+			if (writeElementRef(point.getElementRef(), pt)) {
 				pt.setAttribute("relX", Double.toString(point.getRelX()));
 				pt.setAttribute("relY", Double.toString(point.getRelY()));
 			}
 			pt.setAttribute("arrowHead", point.getArrowHead().getName());
-			if (pt != null) {
+			if (pt != null)
 				ptList.add(pt);
-			}
 		}
-		if (ptList != null && ptList.isEmpty() == false) {
+		if (ptList != null && ptList.isEmpty() == false)
 			wyps.addContent(ptList);
-		}
 	}
 
 	/**
@@ -743,10 +747,16 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * 
 	 * @param elementRef the elementRef.
 	 * @param e          the parent element.
+	 * @return true if elementRef exists and is successfully written.
 	 */
-	protected void writeElementRef(String elementRef, Element e) {
-		if (elementRef != null && !elementRef.equals(""))
-			e.setAttribute("elementRef", elementRef);
+	protected boolean writeElementRef(PathwayElement elementRf, Element e) {
+		if (elementRf != null) {
+			String elementRef = elementRf.getElementId();
+			if (elementRef != null && !elementRef.equals(""))
+				e.setAttribute("elementRef", elementRef);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -755,9 +765,12 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @param groupRef the groupRef.
 	 * @param e        the parent element.
 	 */
-	protected void writeGroupRef(String groupRef, Element e) {
-		if (groupRef != null && !groupRef.equals(""))
-			e.setAttribute("groupRef", groupRef);
+	protected void writeGroupRef(Group groupRf, Element e) {
+		if (groupRf != null) {
+			String groupRef = groupRf.getElementId();
+			if (groupRef != null && !groupRef.equals(""))
+				e.setAttribute("groupRef", groupRef);
+		}
 	}
 
 	/**
@@ -774,7 +787,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		writeFontProperty(shapedElement.getFontProperty(), gfx);
 		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx);
 		writeElementInfo(shapedElement, se);
-		writeGroupRef(shapedElement.getGroupRef().getElementId(), se); // TODO want it after...
+		writeGroupRef(shapedElement.getGroupRef(), se); // TODO want it after...
 	}
 
 	/**
@@ -823,8 +836,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		gfx.setAttribute("fontDecoration", fontProp.getFontDecoration() ? "Underline" : "Normal");
 		gfx.setAttribute("fontStrikethru", fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
 		gfx.setAttribute("fontSize", Integer.toString((int) fontProp.getFontSize()));
-		gfx.setAttribute("hAlign", fontProp.getVAlign().getName());
-		gfx.setAttribute("vAlign", fontProp.getHAlign().getName());
+		gfx.setAttribute("hAlign", fontProp.getHAlign().getName());
+		gfx.setAttribute("vAlign", fontProp.getVAlign().getName());
 	}
 
 	/**

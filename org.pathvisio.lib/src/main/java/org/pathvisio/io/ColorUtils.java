@@ -15,7 +15,7 @@ public class ColorUtils {
 	 * @param color
 	 */
 	public static String colorToHex(Color color) {
-		String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+		String hex = String.format("%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
 		return hex;
 	}
 
@@ -50,7 +50,7 @@ public class ColorUtils {
 		cMap.put("Black", Color.decode("#000000"));
 		cMap.put("Blue", Color.decode("#0000ff"));
 		cMap.put("Fuchsia", Color.decode("#ff00ff"));
-		cMap.put("Gray", Color.decode("808080"));
+		cMap.put("Gray", Color.decode("#808080"));
 		cMap.put("Green", Color.decode("#008000"));
 		cMap.put("Lime", Color.decode("#00ff00"));
 		cMap.put("Maroon", Color.decode("#800000"));

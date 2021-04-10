@@ -25,34 +25,43 @@ import java.net.URL;
 import org.bridgedb.Xref;
 import org.pathvisio.io.*;
 import org.pathvisio.model.*;
-import org.pathvisio.model.graphics.Coordinate;
+import org.pathvisio.model.elements.*;
+import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.type.*;
 
 import junit.framework.TestCase;
 
 public class TestGpml extends TestCase {
-	
-	private static final File PATHVISIO_BASEDIR = new File ("../..");
 
-	
-	public static void testWrite2021() throws IOException, ConverterException
-	{
+	private static final File PATHVISIO_BASEDIR = new File("../..");
+
+	public static void testWrite2021() throws IOException, ConverterException {
 //		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2008a.gpml");
 //		assertTrue (in.exists());
 //		
 		Pathway pathway = new Pathway.PathwayBuilder("Title", 100, 100, Color.decode("#ffffff"), new Coordinate(2, 2))
 				.setOrganism("Homo Sapiens").setSource("WikiPathways").setVersion("r1").setLicense("CC0").build();
 		PathwayModel pathwayModel = new PathwayModel(pathway);
-		
+
 		Author author = new Author.AuthorBuilder("henry").setFullName("fullName").setEmail("email@").build();
 		pathwayModel.addAuthor(author);
-//		pathwayModel.readFromXml(in, true);
 
+		Annotation annotation = new Annotation("a1", pathwayModel, "homo sapien", AnnotationType.ONTOLOGY,
+				"www.website");
+
+		DataNode dataNode = new DataNode("d1", pathwayModel, new RectProperty(new Coordinate(1, 1), 1, 1), new FontProperty(null, "Arial", false, false, false, false, 0, null, null),  new ShapeStyleProperty(),
+				"TextLabel", DataNodeType.ALIAS, null);
+
+		pathwayModel.addAnnotation(annotation);
+		pathwayModel.addDataNode(dataNode);
+
+//		pathwayModel.readFromXml(in, true);
 		File tmp = File.createTempFile("testwrite", "gpml");
 		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}
-	
+
 //
 //	public static void testRead2021() throws ConverterException, IOException
 //	{
@@ -65,7 +74,7 @@ public class TestGpml extends TestCase {
 //		pathwayModel.readFromXml(file, true);
 //	}
 //	
-	
+
 //	public static void testConvert08a13a() throws ConverterException, IOException
 //	{
 //		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2008a.gpml");

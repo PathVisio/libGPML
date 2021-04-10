@@ -59,6 +59,10 @@ public class ShapeStyleProperty {
 		this.zOrder = zOrder;
 	}
 
+	public ShapeStyleProperty() {
+		// TODO 
+	}
+
 	/**
 	 * Constructor for all shape style properties except zOrder, an optional
 	 * attribute.
