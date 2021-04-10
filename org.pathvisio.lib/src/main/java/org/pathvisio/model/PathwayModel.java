@@ -185,6 +185,7 @@ public class PathwayModel {
 			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
 		}
 		elementIdToPathwayElement.put(elementId, pathwayElement);
+		System.out.println("Added!");
 	}
 
 	/**

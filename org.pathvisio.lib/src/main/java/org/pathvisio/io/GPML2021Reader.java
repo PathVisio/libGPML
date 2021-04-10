@@ -135,6 +135,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		readCitations(pathwayModel, root);
 		System.out.println("read success");
 		readEvidences(pathwayModel, root);
+		System.out.println(pathwayModel.getElementIds());
 
 		readPathwayInfo(pathwayModel, root); // comment group and evidenceRefs
 
@@ -472,9 +473,9 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				String groupRef = dn.getAttributeValue("groupRef");
 				String elementRef = dn.getAttributeValue("elementRef");
 				if (groupRef != null && !groupRef.equals(""))
-					dataNode.setGroupRef((Group) dataNode.getPathwayModel().getPathwayElement(groupRef));
+					dataNode.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
 				if (elementRef != null && !elementRef.equals(""))
-					dataNode.setElementRef(dataNode.getPathwayModel().getPathwayElement(elementRef));
+					dataNode.setElementRef(pathwayModel.getPathwayElement(elementRef));
 				if (dataNode != null)
 					pathwayModel.addDataNode(dataNode);
 			}
@@ -556,10 +557,10 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
-	protected void readAnchors(LineElement lineElement, Element e) throws ConverterException {
-		Element wyps = e.getChild("Waypoints", e.getNamespace());
+	protected void readAnchors(LineElement lineElement, Element ln) throws ConverterException {
+		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
 		if (wyps != null) {
-			for (Element an : wyps.getChildren("Anchor", e.getNamespace())) {
+			for (Element an : wyps.getChildren("Anchor", wyps.getNamespace())) {
 				String elementId = an.getAttributeValue("elementId");
 				double position = Double.parseDouble(an.getAttributeValue("position"));
 				Coordinate xy = new Coordinate(Double.parseDouble(an.getAttributeValue("x")),
@@ -573,51 +574,57 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	}
 
 	// TODO can cast to LinedElement? to reduce duplicate code
-	protected void readLinePoints(PathwayModel pathwayModel, Element e) throws ConverterException {
-		Element ias = e.getChild("Interactions", e.getNamespace());
+	protected void readLinePoints(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element ias = root.getChild("Interactions", root.getNamespace());
 		if (ias != null) {
 			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
 				String elementId = ia.getAttributeValue("elementId");
+				System.out.println(elementId);
 				Interaction interaction = (Interaction) pathwayModel.getPathwayElement(elementId);
-				readPoints(interaction, e);
+				System.out.println(interaction);
+				readPoints(interaction, ia);
 				// TODO check here
 				if (interaction.getPoints().size() <= 2) {
-					// TODO error!
+					System.out.println("Interaction has" + interaction.getPoints().size()
+							+ " points, must have at least 2 points");// TODO error!
 				}
 			}
 		}
-		Element glns = e.getChild("GraphicaLines", e.getNamespace());
+		Element glns = root.getChild("GraphicaLines", root.getNamespace());
 		if (glns != null) {
 			for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
 				String elementId = gln.getAttributeValue("elementId");
 				GraphicalLine graphicalLine = (GraphicalLine) pathwayModel.getPathwayElement(elementId);
-				readPoints(graphicalLine, e);
+				readPoints(graphicalLine, gln);
 				// TODO check here
 				if (graphicalLine.getPoints().size() <= 2) {
-					// TODO error!
+					System.out.println("Graphical line" + graphicalLine.getPoints().size()
+							+ " points,  must have at least 2 points");// TODO error!
 				}
 			}
 		}
 	}
 
-	protected void readPoints(LineElement lineElement, Element e) throws ConverterException {
-		Element wyps = e.getChild("Waypoints", e.getNamespace());
-		for (Element pt : wyps.getChildren("Anchor", e.getNamespace())) {
-			String elementId = pt.getAttributeValue("elementId");
-			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("elementId"));
-			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
-					Double.parseDouble(pt.getAttributeValue("y")));
-			Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
-			/* set optional properties */
-			String elementRef = pt.getAttributeValue("elementRef");
-			double relX = Double.parseDouble(pt.getAttributeValue("relX"));
-			double relY = Double.parseDouble(pt.getAttributeValue("relY"));
-			if (elementRef != null && !elementRef.equals(""))
-				point.setElementRef(point.getPathwayModel().getPathwayElement(elementRef));
-			point.setRelX(relX);
-			point.setRelY(relY);
-			if (point != null)
-				lineElement.addPoint(point);
+	protected void readPoints(LineElement lineElement, Element ln) throws ConverterException {
+		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
+		if (wyps != null) {
+			for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
+				String elementId = pt.getAttributeValue("elementId");
+				ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("elementId"));
+				Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
+						Double.parseDouble(pt.getAttributeValue("y")));
+				Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
+				/* set optional properties */
+				String elementRef = pt.getAttributeValue("elementRef");
+				double relX = Double.parseDouble(pt.getAttributeValue("relX"));
+				double relY = Double.parseDouble(pt.getAttributeValue("relY"));
+				if (elementRef != null && !elementRef.equals(""))
+					point.setElementRef(point.getPathwayModel().getPathwayElement(elementRef));
+				point.setRelX(relX);
+				point.setRelY(relY);
+				if (point != null)
+					lineElement.addPoint(point);
+			}
 		}
 	}
 

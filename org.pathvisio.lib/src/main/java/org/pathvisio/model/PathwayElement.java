@@ -39,7 +39,7 @@ public abstract class PathwayElement {
 	 * @param pathwayModel the parent pathway model.
 	 */
 	public PathwayElement(String elementId, PathwayModel pathwayModel) {
-		this.elementId = elementId; // TODO Setter
+		setElementId(elementId); // TODO Setter
 		this.pathwayModel = pathwayModel;
 	}
 
@@ -71,6 +71,7 @@ public abstract class PathwayElement {
 					pathwayModel.addElementId(newElementId, this);
 				}
 				this.elementId = newElementId;
+				System.out.println("Added!OK!");
 			}
 		}
 	}

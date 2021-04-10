@@ -141,10 +141,10 @@ public abstract class ShapedElement extends ElementInfo {
 	 * 
 	 * @param groupRef the parent group of the pathway element.
 	 */
-	public void setGroupRef(Group groupRef) {
-		if (groupRef.getPathwayElements() != null && groupRef != null) {
-			groupRef.addPathwayElement(this);
-			this.groupRef = groupRef;
+	public void setGroupRef(Group grpRf) {
+		if (grpRf != null && grpRf.getPathwayElements() != null) {
+			grpRf.addPathwayElement(this);
+			this.groupRef = grpRf;
 		}
 
 		// TODO how to handle groupRef properly...

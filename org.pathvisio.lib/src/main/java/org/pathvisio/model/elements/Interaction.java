@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.elements;
 
-import java.util.List;
-
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayModel;

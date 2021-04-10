@@ -388,7 +388,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				Element st = new Element("State", dn.getNamespace());
 				writeXref(state.getXref(), st, false);
 				writeElementInfo(state, st);
-				st.setAttribute("textLabel", state.getTextLabel());
+				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
 				st.setAttribute("type", state.getType().getName());
 
 				Element gfx = new Element("Graphics", st.getNamespace());
@@ -749,9 +749,9 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @param e          the parent element.
 	 * @return true if elementRef exists and is successfully written.
 	 */
-	protected boolean writeElementRef(PathwayElement elementRf, Element e) {
-		if (elementRf != null) {
-			String elementRef = elementRf.getElementId();
+	protected boolean writeElementRef(PathwayElement elemRf, Element e) {
+		if (elemRf != null) {
+			String elementRef = elemRf.getElementId();
 			if (elementRef != null && !elementRef.equals(""))
 				e.setAttribute("elementRef", elementRef);
 			return true;
@@ -765,9 +765,9 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @param groupRef the groupRef.
 	 * @param e        the parent element.
 	 */
-	protected void writeGroupRef(Group groupRf, Element e) {
-		if (groupRf != null) {
-			String groupRef = groupRf.getElementId();
+	protected void writeGroupRef(Group grpRf, Element e) {
+		if (grpRf != null) {
+			String groupRef = grpRf.getElementId();
 			if (groupRef != null && !groupRef.equals(""))
 				e.setAttribute("groupRef", groupRef);
 		}
