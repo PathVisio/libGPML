@@ -515,6 +515,28 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element ias = root.getChild("Interactions", root.getNamespace());
+		if (ias != null) {
+			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
+				String elementId = ia.getAttributeValue("elementId");
+				Element gfx = ia.getChild("Graphics", ia.getNamespace());
+				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
+				Xref xref = readXref(ia);
+				Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
+				/* read comment group, evidenceRefs */
+				readLineElement(interaction, ia);
+				if (interaction != null) {
+					if (interaction.getPoints().size() < 2) {
+						System.out.println("Interaction elementId:" + elementId + "has" + interaction.getPoints().size()
+								+ " points,  must have at least 2 points");// TODO error!
+					}
+					pathwayModel.addInteraction(interaction);
+				}
+			}
+		}
+	}
+
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element glns = root.getChild("GraphicaLines", root.getNamespace());
 		if (glns != null) {
@@ -544,28 +566,6 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		String groupRef = ln.getAttributeValue("groupRef");
 		if (groupRef != null && !groupRef.equals(""))
 			lineElement.setGroupRef((Group) lineElement.getPathwayModel().getPathwayElement(groupRef));
-	}
-
-	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element ias = root.getChild("Interactions", root.getNamespace());
-		if (ias != null) {
-			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
-				String elementId = ia.getAttributeValue("elementId");
-				Element gfx = ia.getChild("Graphics", ia.getNamespace());
-				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
-				Xref xref = readXref(ia);
-				Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
-				/* read comment group, evidenceRefs */
-				readLineElement(interaction, ia);
-				if (interaction != null) {
-					if (interaction.getPoints().size() < 2) {
-						System.out.println("Interaction elementId:" + elementId + "has" + interaction.getPoints().size()
-								+ " points,  must have at least 2 points");// TODO error!
-					}
-					pathwayModel.addInteraction(interaction);
-				}
-			}
-		}
 	}
 
 	protected void readAnchors(LineElement lineElement, Element wyps) throws ConverterException {
