@@ -4,9 +4,13 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.pathvisio.debug.Logger;
 
+/**
+ * This utils class for converting color. 
+ * 
+ * @author finterly
+ */
 public class ColorUtils {
 
 	/**

@@ -37,12 +37,9 @@ import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
 
 /**
- * @author p70073399
- *
- */
-/**
- * @author p70073399
- *
+ * This class writes a PathwayModel to an output (GPML 2021).
+ * 
+ * @author finterly
  */
 public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWriter {
 
@@ -67,7 +64,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		Document doc = createJdom(pathwayModel);
 		System.out.println(doc);
 
-		validateDocument(doc); // TODO Boolean validate not relevant to 2021...
+		if (validate)
+			validateDocument(doc); // TODO Boolean validate not relevant to 2021...
 
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
@@ -105,7 +103,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes the JDOM document from given pathwayModel data.
+	 * Creates and returns the JDOM document written from given pathwayModel data.
 	 * 
 	 * @param pathwayModel the pathway model to be written.
 	 * @throws ConverterException

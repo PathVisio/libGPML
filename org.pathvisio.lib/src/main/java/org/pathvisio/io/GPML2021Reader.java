@@ -44,6 +44,11 @@ import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 
+/**
+ * This class reads a PathwayModel from an input source (GPML 2021).
+ * 
+ * @author finterly
+ */
 public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatReader {
 
 	public static final GPML2021Reader GPML2021READER = new GPML2021Reader("GPML2021.xsd",
@@ -53,121 +58,54 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		super(xsdFile, nsGPML);
 	}
 
-	/*------------------------------------MY METHODS --------------------------------------*/
-//
-//	public PathwayModel readFromXml(InputStream is) throws ConverterException {
-//		PathwayModel pathwayModel = null;
-//		try {
-//			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
-//			SAXBuilder builder = new SAXBuilder(schemafactory);
-//			Document doc = builder.build(is);
-//			Element root = doc.getRootElement();
-//			System.out.println("Root: " + doc.getRootElement());
-//			pathwayModel = readFromRoot(pathwayModel, root);
-//		} catch (JDOMException e) {
-//			throw new ConverterException(e);
-//		} catch (IOException e) {
-//			throw new ConverterException(e);
-//		} catch (Exception e) {
-//			throw new ConverterException(e); // TODO e.printStackTrace()?
-//		}
-//		return pathwayModel;// TODO do we want to return pathway or not?
-//	}
-//
-//	/**
-//	 * Read the JDOM document from the file specified
-//	 * 
-//	 * @param file the file from which the JDOM document should be read.
-//	 * @throws ConverterException
-//	 */
-//	public PathwayModel readFromXml(File file) throws ConverterException {
-//		InputStream is;
-//		try {
-//			is = new FileInputStream(file);
-//		} catch (FileNotFoundException e) {
-//			throw new ConverterException(e);
-//		}
-//		return readFromXml(is);
-//	}
-//
-//	/**
-//	 * Read the JDOM document from the file specified
-//	 * 
-//	 * @param s      the string input.
-//	 * @param string the file from which the JDOM document should be read.
-//	 * @throws ConverterException
-//	 */
-//	public PathwayModel readFromXml(String str) throws ConverterException {
-//		if (str == null)
-//			return null;
-//		InputStream is;
-//		try {
-//			is = stringToInputStream(str);// TODO does this work?
-//		} catch (Exception e) {
-//			throw new ConverterException(e);
-//		}
-//		return readFromXml(is);
-//	}
-//
-//	// METHOD FROM UTILS
-//	public static InputStream stringToInputStream(String str) {
-//		if (str == null)
-//			return null;
-//		InputStream is = null;
-//		try {
-//			is = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
-//		} catch (Exception ex) {
-//		}
-//		return is;
-//	}
-
+	/**
+	 * Reads information from root element of Jdom document to the pathwayModel.
+	 * 
+	 * @param pathwayModel the given pathway model.
+	 * @param root         the root element of given Jdom document.
+	 * @returns pathwayModel the pathway model after reading root element.
+	 * @throws ConverterException
+	 */
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Pathway pathway = readPathway(root);
-		System.out.println("read pathway");
 
-		pathwayModel.setPathway(pathway); // = new PathwayModel(pathway); // TODO think about order
-		System.out.println("set pathway");
+		Pathway pathway = readPathway(root);
+		pathwayModel.setPathway(pathway); // TODO, should allow instantiate pathwayModel without Pathway???
 
 		readAuthors(pathwayModel, root);
-		System.out.println("read authors");
+
 		readAnnotations(pathwayModel, root);
-		System.out.println("read success");
 		readCitations(pathwayModel, root);
-		System.out.println("read success");
 		readEvidences(pathwayModel, root);
-		System.out.println(pathwayModel.getElementIds());
 
-		readPathwayInfo(pathwayModel, root); // comment group and evidenceRefs
-
+		readPathwayInfo(pathwayModel, root);
+		/* read groups first */
 		readGroups(pathwayModel, root); // TODO read group first
 		readLabels(pathwayModel, root);
 		readShapes(pathwayModel, root);
-
 		readDataNodes(pathwayModel, root); // TODO will elementRef (refers to only Group?)
-
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
-
-		// Read ElementRefs last
-		readDataNodeElementRef(pathwayModel, root); // TODO reads points last due to possible reference to anchor
-		readPointElementRef(pathwayModel, root); // TODO reads points last due to possible reference to anchor
+		/* read elementRefs last */
+		readDataNodeElementRef(pathwayModel, root);
+		readPointElementRef(pathwayModel, root);
 
 		Logger.log.trace("End reading gpml");
 
-		return pathwayModel;
 		// TODO check groups have at least one pathwayElement inside?
 		// TODO check at least 2 points per line element?
 		// TODO handle relative and absolute coordinates
-//		return pathwayModel;
+		return pathwayModel;
+
 	}
 
-	/*------------------------------------MY METHODS --------------------------------------*/
-
-//	public void readFromRoot(Element root, PathwayModel pathwayModel) throws ConverterException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
+	/**
+	 * Reads pathway information from root element. Instantiates and returns the
+	 * pathway object.
+	 * 
+	 * @param root the root element.
+	 * @return pathway the pathway object.
+	 * @throws ConverterException
+	 */
 	protected Pathway readPathway(Element root) throws ConverterException {
 		String title = root.getAttributeValue("title");
 		Element gfx = root.getChild("Graphics", root.getNamespace());
@@ -195,6 +133,15 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		return pathway;
 	}
 
+	/**
+	 * Reads xref information from element. Xref is required for DataNodes,
+	 * Interactions, Citations and Evidences. Xref is optional for the Pathway,
+	 * States, Groups, and Annotations.
+	 * 
+	 * @param e the element.
+	 * @return xref the new xref or null if no or invalid xref information.
+	 * @throws ConverterException
+	 */
 	protected Xref readXref(Element e) throws ConverterException {
 		Element xref = e.getChild("Xref", e.getNamespace());
 		if (xref != null) {
@@ -213,6 +160,12 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		return null;
 	}
 
+	/**
+	 * Reads the infobox x and y coordinate information.
+	 * 
+	 * @param root the root element.
+	 * @return the infoBox as coordinates.
+	 */
 	protected Coordinate readInfoBox(Element root) {
 		Element ifbx = root.getChild("InfoBox", root.getNamespace());
 		double centerX = Double.parseDouble(ifbx.getAttributeValue("centerX"));
@@ -220,6 +173,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		return new Coordinate(centerX, centerY);
 	}
 
+	/**
+	 * Reads author information for pathwayModel from root element. 
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readAuthors(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element aus = root.getChild("Authors", root.getNamespace());
 		if (aus != null) {
@@ -238,6 +198,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads annotation information for pathwayModel from root element. 
+	 * 
+	 * @param pathwayModel the pathway model. 
+	 * @param root the root element. 
+	 * @throws ConverterException
+	 */
 	protected void readAnnotations(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element annts = root.getChild("Annotations", root.getNamespace());
 		if (annts != null) {
@@ -770,6 +737,80 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 			}
 		}
 	}
+	/*--------------------THESE METHODS MOVED TO GpmlFormatAbstract.java-------------------------------*/
+
+	/*------------------------------------MY METHODS --------------------------------------*/
+
+//	public void readFromRoot(Element root, PathwayModel pathwayModel) throws ConverterException {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	public PathwayModel readFromXml(InputStream is) throws ConverterException {
+//		PathwayModel pathwayModel = null;
+//		try {
+//			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
+//			SAXBuilder builder = new SAXBuilder(schemafactory);
+//			Document doc = builder.build(is);
+//			Element root = doc.getRootElement();
+//			System.out.println("Root: " + doc.getRootElement());
+//			pathwayModel = readFromRoot(pathwayModel, root);
+//		} catch (JDOMException e) {
+//			throw new ConverterException(e);
+//		} catch (IOException e) {
+//			throw new ConverterException(e);
+//		} catch (Exception e) {
+//			throw new ConverterException(e); // TODO e.printStackTrace()?
+//		}
+//		return pathwayModel;// TODO do we want to return pathway or not?
+//	}
+//
+//	/**
+//	 * Read the JDOM document from the file specified
+//	 * 
+//	 * @param file the file from which the JDOM document should be read.
+//	 * @throws ConverterException
+//	 */
+//	public PathwayModel readFromXml(File file) throws ConverterException {
+//		InputStream is;
+//		try {
+//			is = new FileInputStream(file);
+//		} catch (FileNotFoundException e) {
+//			throw new ConverterException(e);
+//		}
+//		return readFromXml(is);
+//	}
+//
+//	/**
+//	 * Read the JDOM document from the file specified
+//	 * 
+//	 * @param s      the string input.
+//	 * @param string the file from which the JDOM document should be read.
+//	 * @throws ConverterException
+//	 */
+//	public PathwayModel readFromXml(String str) throws ConverterException {
+//		if (str == null)
+//			return null;
+//		InputStream is;
+//		try {
+//			is = stringToInputStream(str);// TODO does this work?
+//		} catch (Exception e) {
+//			throw new ConverterException(e);
+//		}
+//		return readFromXml(is);
+//	}
+//
+//	// METHOD FROM UTILS
+//	public static InputStream stringToInputStream(String str) {
+//		if (str == null)
+//			return null;
+//		InputStream is = null;
+//		try {
+//			is = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
+//		} catch (Exception ex) {
+//		}
+//		return is;
+//	}
 
 	// TODO PROBLEM CASTING?
 //	protected void readGroupRefs(PathwayModel pathwayModel, Element root) {
