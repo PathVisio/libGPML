@@ -306,7 +306,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 	protected void readPathwayComments(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
-			String source = cmt.getAttributeValue("Source");
+			String source = cmt.getAttributeValue("source");
 			String content = cmt.getText();
 			if (content != null && !content.equals("")) {
 				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
@@ -504,7 +504,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				State state = new State(elementId, dataNode.getPathwayModel(), dataNode, textLabel, type, relX, relY,
 						rectProperty, fontProperty, shapeStyleProperty);
 				/* read comment group, evidenceRefs */
-				readElementInfo(dataNode, st);
+				readElementInfo(state, st);
 				/* set optional properties */
 				Xref xref = readXref(st);
 				if (xref != null)
@@ -584,7 +584,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	protected void readPoints(LineElement lineElement, Element wyps) throws ConverterException {
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 			String elementId = pt.getAttributeValue("elementId");
-			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("elementId"));
+			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead"));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
 					Double.parseDouble(pt.getAttributeValue("y")));
 			Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
@@ -603,7 +603,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
-			String source = cmt.getAttributeValue("Source");
+			String source = cmt.getAttributeValue("source");
 			String content = cmt.getText();
 			if (content != null && !content.equals("")) {
 				Comment comment = new Comment(content); // TODO needs parent pathwayModel?

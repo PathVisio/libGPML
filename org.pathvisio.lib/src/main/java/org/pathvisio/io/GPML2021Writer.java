@@ -182,8 +182,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	protected void writeXref(Xref xref, Element e, boolean required) { // TODO boolean required
 		if (xref == null && required) {
 			Element xrf = new Element("Xref", e.getNamespace());
-			xrf.setAttribute("dataSource", ""); // TODO null handling
 			xrf.setAttribute("identifier", "");
+			xrf.setAttribute("dataSource", ""); // TODO null handling
 			e.addContent(xrf);
 		}
 		if (xref != null) {
@@ -192,8 +192,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 			if (dataSrc != null && identifier != null || required) {
 				Element xrf = new Element("Xref", e.getNamespace());
 				String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
-				xrf.setAttribute("dataSource", dataSource == null ? "" : dataSource); // TODO null handling
 				xrf.setAttribute("identifier", identifier == null ? "" : identifier);
+				xrf.setAttribute("dataSource", dataSource == null ? "" : dataSource); // TODO null handling
 				e.addContent(xrf);
 			}
 		}
@@ -361,6 +361,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				writeElementRef(dataNode.getElementRef(), dn);
 				dn.setAttribute("textLabel", dataNode.getTextLabel());
 				dn.setAttribute("type", dataNode.getType().getName());
+				writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
 
 				if (dn != null) {
 					dnList.add(dn);
@@ -389,9 +390,6 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 					continue;
 				Element st = new Element("State", dn.getNamespace());
 				writeXref(state.getXref(), st, false);
-				writeElementInfo(state, st);
-				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
-				st.setAttribute("type", state.getType().getName());
 
 				Element gfx = new Element("Graphics", st.getNamespace());
 				st.addContent(gfx);
@@ -400,6 +398,10 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				writeRectProperty(state.getRectProperty(), gfx); // TODO x and y may not be required...
 				writeFontProperty(state.getFontProperty(), gfx);
 				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
+
+				writeElementInfo(state, st);
+				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
+				st.setAttribute("type", state.getType().getName());
 
 				if (st != null) {
 					stList.add(st);
@@ -484,6 +486,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
 		writeElementInfo(lineElement, ln);
+		writeGroupRef(lineElement.getGroupRef(), ln); // TODO location
+
 	}
 
 	/**
@@ -563,6 +567,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				lb.setAttribute("textLabel", label.getTextLabel());
 				if (label.getHref() != null)
 					lb.setAttribute("href", label.getHref());
+				writeGroupRef(label.getGroupRef(), lb); // TODO location
 				if (lb != null) {
 					lbList.add(lb);
 				}
@@ -592,6 +597,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				if (shape.getTextLabel() != null)
 					shp.setAttribute("textLabel", shape.getTextLabel());
 				writeShapedElement(shape, shp);
+				writeGroupRef(shape.getGroupRef(), shp); // TODO location
 				Element gfx = shp.getChild("Graphics", shp.getNamespace());
 				gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
 				if (shp != null) {
@@ -625,6 +631,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				if (group.getTextLabel() != null)
 					grp.setAttribute("textLabel", group.getTextLabel());
 				grp.setAttribute("type", group.getType().getName());
+				writeGroupRef(group.getGroupRef(), grp); // TODO location
 				if (grp != null) {
 					grpList.add(grp);
 				}
@@ -792,7 +799,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		writeFontProperty(shapedElement.getFontProperty(), gfx);
 		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx);
 		writeElementInfo(shapedElement, se);
-		writeGroupRef(shapedElement.getGroupRef(), se); // TODO want it after...
+//		writeGroupRef(shapedElement.getGroupRef(), se); // TODO REMOVE
 	}
 
 	/**
@@ -874,7 +881,5 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		gfx.setAttribute("lineWidth", String.valueOf(lineProp.getLineWidth()));
 		gfx.setAttribute("connectorType", lineProp.getConnectorType().getName());
 		gfx.setAttribute("zOrder", String.valueOf(lineProp.getZOrder()));
-
 	}
-
 }

@@ -66,31 +66,31 @@ public class ColorUtils {
 		colorMap = Collections.unmodifiableMap(cMap);
 	}
 	
-	/**
-	 * Checks if fill color is equal to null or the alpha value is equal to 0.
-	 * 
-	 * @return true if fill color equal to null or alpha value equal to 0, false
-	 *         otherwise.
-	 */
-	public boolean isTransparent() {
-		return fillColor == null || fillColor.getAlpha() == 0;
-	}
-	/**
-	 * TODO: Logic seems weird...
-	 * 
-	 * Sets the alpha component of fillColor to 0 if true, sets the alpha component
-	 * of fillColor to 255 if false.
-	 * 
-	 * @param value the boolean value.
-	 */
-	public void setTransparent(boolean value) {
-		if (isTransparent() != value) {
-			if (fillColor == null) {
-				fillColor = Color.WHITE;
-			}
-			int alpha = value ? 0 : 255;
-			fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
-		}
-	}
+//	/**
+//	 * Checks if fill color is equal to null or the alpha value is equal to 0.
+//	 * 
+//	 * @return true if fill color equal to null or alpha value equal to 0, false
+//	 *         otherwise.
+//	 */
+//	public boolean isTransparent() {
+//		return fillColor == null || fillColor.getAlpha() == 0;
+//	}
+//	/**
+//	 * TODO: Logic seems weird...
+//	 * 
+//	 * Sets the alpha component of fillColor to 0 if true, sets the alpha component
+//	 * of fillColor to 255 if false.
+//	 * 
+//	 * @param value the boolean value.
+//	 */
+//	public void setTransparent(boolean value) {
+//		if (isTransparent() != value) {
+//			if (fillColor == null) {
+//				fillColor = Color.WHITE;
+//			}
+//			int alpha = value ? 0 : 255;
+//			fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
+//		}
+//	}
 
 }

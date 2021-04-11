@@ -87,7 +87,7 @@ public class Comment {
 	 * @param source the source of the comment.
 	 */
 	public void setSource(String source) {
-		if (source != null && !this.source.equals(source)) {
+		if (source != null) {
 			this.source = source;
 			// changed();
 		}
