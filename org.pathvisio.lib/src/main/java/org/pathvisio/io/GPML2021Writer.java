@@ -51,7 +51,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes the JDOM document to the outputstream specified.
+	 * Writes the JDOM {@link Document} document to the outputstream specified.
 	 * 
 	 * @param out      the outputstream to which the JDOM document should be written
 	 * @param validate if true, validate the dom structure before writing. If there
@@ -103,7 +103,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Creates and returns the JDOM document written from given pathwayModel data.
+	 * Creates and returns the JDOM document {@link Document} written from given
+	 * pathwayModel {@link PathwayModel} data.
 	 * 
 	 * @param pathwayModel the pathway model to be written.
 	 * @throws ConverterException
@@ -132,7 +133,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes information from pathway object and authors list to root element.
+	 * Writes pathway object {@link Pathway} information and authors list to root
+	 * element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -169,9 +171,9 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes xref information to new element. Xref is required for DataNodes,
-	 * Interactions, Citations and Evidences. Xref is optional for the Pathway,
-	 * States, Groups, and Annotations.
+	 * Writes xref {@link Xref} information to new element. Xref is required for
+	 * DataNodes, Interactions, Citations and Evidences. Xref is optional for the
+	 * Pathway, States, Groups, and Annotations.
 	 * 
 	 * @param xref     the xref of the pathway or pathway element.
 	 * @param e        the parent element.
@@ -198,7 +200,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes author information.
+	 * Writes author {@link Author} information.
 	 * 
 	 * @param authors the list of authors.
 	 * @param root    the root element.
@@ -227,7 +229,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes comments information for pathway or pathway element.
+	 * Writes comments {@link Comment} information for pathway or pathway element.
 	 * 
 	 * @param comments the list of comments of pathway or pathway element.
 	 * @param e        the parent element.
@@ -247,6 +249,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 
 	/**
 	 * Writes dynamic property information for pathway or pathway element.
+	 * {@link Pathway#getDynamicProperty() , ElementInfo#getDynamicProperty()}
 	 * 
 	 * @param dynamicProperties the list of dynamic properties.
 	 * @param e                 the parent element.
@@ -264,6 +267,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 
 	/**
 	 * Writes annotation reference information for pathway or pathway element.
+	 * {@link Pathway#getAnnotationRefs() , ElementInfo#getAnnotationRefs()}.
 	 * 
 	 * @param annotationRefs the list of annotation references.
 	 * @param e              the parent element.
@@ -288,7 +292,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 
 	/**
 	 * Writes citation reference information for pathway or pathway element.
-	 * 
+	 * {@link Pathway#getCitationRefs() , ElementInfo#getCitationRefs()}.
 	 * 
 	 * @param citationRefs the list of citation references.
 	 * @param e            the parent element.
@@ -306,7 +310,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes evidence reference information for pathway or pathway element.
+	 * Writes evidence reference information for pathway or pathway element
+	 * {@link Pathway#getEvidenceRefs() , ElementInfo#getEvidenceRefs()}.
 	 * 
 	 * 
 	 * @param evidenceRefs the list of evidence references.
@@ -325,7 +330,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes the infobox x and y coordinate information.
+	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox()} n
+	 * information.
 	 * 
 	 * @param infoBox the infobox xy coordinates.
 	 * @param root    the root element.
@@ -339,7 +345,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes datanode information.
+	 * Writes datanode {@link DataNode} information.
 	 * 
 	 * @param dataNodes the list of datanodes.
 	 * @param root      the root element.
@@ -373,7 +379,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes state information.
+	 * Writes state {@link State} information.
 	 * 
 	 * @param states the list of states.
 	 * @param dn     the parent data node element.
@@ -413,7 +419,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes interaction information.
+	 * Writes interaction {@link Interaction} information.
 	 * 
 	 * @param interactions the list of interactions.
 	 * @param root         the root element;
@@ -441,7 +447,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes graphical line information.
+	 * Writes graphical line {@link GraphicalLine} information.
 	 * 
 	 * @param graphicalLines the list of graphical lines.
 	 * @param root           the root element.
@@ -468,7 +474,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes information for interactions or graphicalLines.
+	 * Writes line element {@link LineElement} information for interactions or
+	 * graphicalLines.
 	 * 
 	 * @param lineElement the interaction or graphicalLine.
 	 * @param ln          the line element.
@@ -489,8 +496,10 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes point information. TODO elementId, elementRef, arrowHead, x, y, relX,
-	 * relY (Order)
+	 * Writes point {@link Point} information.
+	 * 
+	 * 
+	 * TODO elementId, elementRef, arrowHead, x, y, relX, relY (Order)
 	 * 
 	 * @param points the list of points.
 	 * @param wyps   the parent element.
@@ -518,7 +527,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes anchor information. TODO elementId, x, y, position, shapeType (Order)
+	 * Writes anchor {@link Anchor} information. TODO elementId, x, y, position,
+	 * shapeType (Order)
 	 * 
 	 * @param anchors the list of anchors.
 	 * @param wyps    the parent element.
@@ -547,7 +557,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes label information.
+	 * Writes label {@link Label} information.
 	 * 
 	 * @param labels the list of labels.
 	 * @param root   the root element.
@@ -578,7 +588,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write shape information.
+	 * Writes shape {@link Shape} information.
 	 * 
 	 * @param shapes the list of shapes.
 	 * @param root   the root element.
@@ -610,7 +620,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write group information.
+	 * Writes group {@link Group} information.
 	 * 
 	 * @param groups the list of groups.
 	 * @param root   the root element.
@@ -642,7 +652,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write citation information.
+	 * Writes citation {@link Citation} information.
 	 * 
 	 * @param citations the list of citations.
 	 * @param root      the root element.
@@ -673,7 +683,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write annotation information.
+	 * Writes annotation {@link Annotation} information.
 	 * 
 	 * @param annotations the list of annotations.
 	 * @param root        the root element.
@@ -708,7 +718,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write evidence information.
+	 * Writes evidence {@link Evidence} information.
 	 * 
 	 * @param evidences the list of evidences.
 	 * @param root      the root element.
@@ -742,7 +752,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write elementId property information.
+	 * Writes elementId {@link PathwayElement} property information.
 	 * 
 	 * @param elementId the elementId.
 	 * @param e         the parent element.
@@ -753,7 +763,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write elementRef property information.
+	 * Writes elementRef property information.
 	 * 
 	 * @param elementRef the elementRef.
 	 * @param e          the parent element.
@@ -770,7 +780,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Write groupRef property information.
+	 * Writes groupRef property information.
 	 * 
 	 * @param groupRef the groupRef.
 	 * @param e        the parent element.
@@ -784,7 +794,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes shapedElement information for datanodes, labels, shapes, or groups.
+	 * Writes shapedElement {@link ShapedElement} information for datanodes, labels,
+	 * shapes, or groups.
 	 * 
 	 * @param shapedElement the datanode, label, shape, or group.
 	 * @param e             the shape element.
@@ -801,7 +812,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes elementId, comment group and evidenceRef information for datanodes,
+	 * Writes elementId, comment group {comment, dynamic property, annotationRef,
+	 * citationRef) and evidenceRef {@link ElementInfo} information for datanodes,
 	 * interactions, graphicalLines, labels, shapes, and group.
 	 * 
 	 * @param elementInfo the pathway element.
@@ -818,7 +830,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes rectproperty information.
+	 * Writes rect property {@link RectProperty} information.
 	 * 
 	 * @param rectProp the rectproperties.
 	 * @param gfx      the parent graphics element.
@@ -832,7 +844,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes font property information.
+	 * Writes font property {@link FontProperty} information.
 	 * 
 	 * @param fontProp the font properties.
 	 * @param gfx      the parent graphics element.
@@ -851,7 +863,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes shape style property information.
+	 * Writes shape style property {@link ShapeStyleProperty} information.
 	 * 
 	 * @param shapeProp the shape style properties.
 	 * @param gfx       the parent graphics element.
@@ -867,7 +879,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes line style property information.
+	 * Writes line style property {@link LineStyleProperty} information.
 	 * 
 	 * @param lineProp the line style properties.
 	 * @param gfx      the parent graphics element.

@@ -59,7 +59,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	}
 
 	/**
-	 * Reads information from root element of Jdom document to the pathwayModel.
+	 * Reads information from root element of Jdom document {@link Document} to the
+	 * pathway model {@link PathwayModel}.
+	 * 
+	 * NB: Order of reading is done in such as way that referenced elements are read
+	 * first. Groups are read first as other pathway elements reference groupRef.
+	 * Point and DataNode elementRef are read last to ensure the Pathway Elements
+	 * referenced are already instantiated.
 	 * 
 	 * @param pathwayModel the given pathway model.
 	 * @param root         the root element of given Jdom document.
@@ -79,10 +85,10 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 		readPathwayInfo(pathwayModel, root);
 		/* read groups first */
-		readGroups(pathwayModel, root); // TODO read group first
+		readGroups(pathwayModel, root);
 		readLabels(pathwayModel, root);
 		readShapes(pathwayModel, root);
-		readDataNodes(pathwayModel, root); // TODO will elementRef (refers to only Group?)
+		readDataNodes(pathwayModel, root);
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
 		/* read elementRefs last */
@@ -100,7 +106,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 	/**
 	 * Reads pathway information from root element. Instantiates and returns the
-	 * pathway object.
+	 * pathway object {@link Pathway}.
 	 * 
 	 * @param root the root element.
 	 * @return pathway the pathway object.
@@ -134,9 +140,9 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	}
 
 	/**
-	 * Reads xref information from element. Xref is required for DataNodes,
-	 * Interactions, Citations and Evidences. Xref is optional for the Pathway,
-	 * States, Groups, and Annotations.
+	 * Reads xref {@link Xref} information from element. Xref is required for
+	 * DataNodes, Interactions, Citations and Evidences. Xref is optional for the
+	 * Pathway, States, Groups, and Annotations.
 	 * 
 	 * @param e the element.
 	 * @return xref the new xref or null if no or invalid xref information.
@@ -161,7 +167,8 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	}
 
 	/**
-	 * Reads the infobox x and y coordinate information.
+	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox()}
+	 * information.
 	 * 
 	 * @param root the root element.
 	 * @return the infoBox as coordinates.
@@ -174,7 +181,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	}
 
 	/**
-	 * Reads author information for pathwayModel from root element. 
+	 * Reads author {@link Author} information for pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -199,10 +206,11 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	}
 
 	/**
-	 * Reads annotation information for pathwayModel from root element. 
+	 * Reads annotation {@link Annotation} information for pathway model from root
+	 * element.
 	 * 
-	 * @param pathwayModel the pathway model. 
-	 * @param root the root element. 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
 	protected void readAnnotations(PathwayModel pathwayModel, Element root) throws ConverterException {
@@ -226,6 +234,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads citation {@link Citation} information for pathway model from root
+	 * element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readCitations(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element cits = root.getChild("Citations", root.getNamespace());
 		if (cits != null) {
@@ -243,6 +259,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads evidence {@link Evidence} information for pathway model from root
+	 * element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readEvidences(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element evids = root.getChild("Evidences", root.getNamespace());
 		if (evids != null) {
@@ -263,6 +287,15 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads comment group (comment, dynamic property, annotationRef, citationRef)
+	 * and evidencRef information {@link PathwayModel} for pathway model from root
+	 * element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readPathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
 		readPathwayComments(pathwayModel, root);
 		readPathwayDynamicProperties(pathwayModel, root);
@@ -271,6 +304,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		readPathwayEvidenceRefs(pathwayModel, root);
 	}
 
+	/**
+	 * Reads comment {@link Comment} information for pathway from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readPathwayComments(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
@@ -284,6 +324,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads dynamic property {@link Pathway#setDynamicProperty()} information for
+	 * pathway from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readPathwayDynamicProperties(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element dp : root.getChildren("Property", root.getNamespace())) {
 			String key = dp.getAttributeValue("key");
@@ -292,6 +340,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads annotation reference {@link Pathway#addAnnotationRef()} information for
+	 * pathway from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readPathwayAnnotationRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element anntRef : root.getChildren("AnnotationRef", root.getNamespace())) {
 			Annotation annotation = (Annotation) pathwayModel
@@ -313,22 +369,45 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
-	protected void readPathwayCitationRefs(PathwayModel pathwayModel, Element e) throws ConverterException {
-		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
+	/**
+	 * Reads citation reference {@link Pathway#addCitationRef()} information for
+	 * pathway model from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
+	protected void readPathwayCitationRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
+		for (Element citRef : root.getChildren("CitationRef", root.getNamespace())) {
 			Citation citationRef = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
 			if (citationRef != null)
 				pathwayModel.getPathway().addCitationRef(citationRef);
 		}
 	}
 
-	protected void readPathwayEvidenceRefs(PathwayModel pathwayModel, Element e) throws ConverterException {
-		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+	/**
+	 * Reads evidence reference {@link Pathway#addEvidenceRef()} information for
+	 * pathway from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
+	protected void readPathwayEvidenceRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
+		for (Element evidRef : root.getChildren("EvidenceRef", root.getNamespace())) {
 			Evidence evidenceRef = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
 			if (evidenceRef != null)
 				pathwayModel.getPathway().addEvidenceRef(evidenceRef);
 		}
 	}
 
+	/**
+	 * Reads group {@link Group} information for pathway model from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readGroups(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element grps = root.getChild("Groups", root.getNamespace());
 		if (grps != null) {
@@ -367,6 +446,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads label {@link Label} information for pathway model from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element lbs = root.getChild("Labels", root.getNamespace());
 		if (lbs != null) {
@@ -394,6 +480,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads shape {@link Shape} information for pathway model from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readShapes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element shps = root.getChild("Shapes", root.getNamespace());
 		if (shps != null) {
@@ -421,6 +514,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads data node {@link DataNode} information for pathway model from root
+	 * element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readDataNodes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element dns = root.getChild("DataNodes", root.getNamespace());
 		if (dns != null) {
@@ -454,6 +555,12 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 
 	/**
 	 * TODO should absolute x and y be optional?
+	 * 
+	 * Reads state {@link State} information for data node from element.
+	 * 
+	 * @param dataNode the data node object {@link DataNode}.
+	 * @param dn       the data node element.
+	 * @throws ConverterException
 	 */
 	protected void readStates(DataNode dataNode, Element dn) throws ConverterException {
 		Element sts = dn.getChild("States", dn.getNamespace());
@@ -482,6 +589,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads interaction {@link Interaction} information for pathway model from root
+	 * element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element ias = root.getChild("Interactions", root.getNamespace());
 		if (ias != null) {
@@ -504,6 +619,14 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads graphical line {@link GraphicalLine} information for pathway model from
+	 * root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element glns = root.getChild("GraphicaLines", root.getNamespace());
 		if (glns != null) {
@@ -524,8 +647,16 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads line element {@link LineElement} information for interaction or
+	 * graphical line from element.
+	 * 
+	 * @param lineElement the line element object.
+	 * @param ln          the line element.
+	 * @throws ConverterException
+	 */
 	protected void readLineElement(LineElement lineElement, Element ln) throws ConverterException {
-		readElementInfo(lineElement, ln); // comment group and evidence Ref
+		readElementInfo(lineElement, ln); // comment group and evidenceRef
 		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
 		readPoints(lineElement, wyps);
 		readAnchors(lineElement, wyps);
@@ -535,6 +666,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 			lineElement.setGroupRef((Group) lineElement.getPathwayModel().getPathwayElement(groupRef));
 	}
 
+	/**
+	 * Reads anchor {@link Anchor} information for line element from element.
+	 * 
+	 * @param lineElement the line element object.
+	 * @param wyps        the waypoints element.
+	 * @throws ConverterException
+	 */
 	protected void readAnchors(LineElement lineElement, Element wyps) throws ConverterException {
 		for (Element an : wyps.getChildren("Anchor", wyps.getNamespace())) {
 			String elementId = an.getAttributeValue("elementId");
@@ -548,6 +686,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
+	/**
+	 * Reads point {@link Point} information for line element from element.
+	 * 
+	 * @param lineElement the line element object.
+	 * @param wyps        the waypoints element.
+	 * @throws ConverterException
+	 */
 	protected void readPoints(LineElement lineElement, Element wyps) throws ConverterException {
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 			String elementId = pt.getAttributeValue("elementId");
@@ -560,143 +705,36 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
-	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
-		readComments(elementInfo, e);
-		readDynamicProperties(elementInfo, e);
-		readAnnotationRefs(elementInfo, e);
-		readCitationRefs(elementInfo, e);
-		readEvidenceRefs(elementInfo, e);
-	}
-
-	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
-			String source = cmt.getAttributeValue("source");
-			String content = cmt.getText();
-			if (content != null && !content.equals("")) {
-				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
-				if (source != null && !source.equals(""))
-					comment.setSource(source);
-				elementInfo.addComment(new Comment(source, content));
+	/**
+	 * Reads elementRef {@link DataNode#setElementRef()} for pathway model
+	 * datanodes.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
+	protected void readDataNodeElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
+		Element dns = root.getChild("DataNodes", root.getNamespace());
+		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
+			String elementRef = dn.getAttributeValue("elementRef");
+			if (elementRef != null && !elementRef.equals("")) {
+				PathwayElement elemRf = pathwayModel.getPathwayElement(elementRef);
+				if (elemRf != null) {
+					String elementId = dn.getAttributeValue("elementId");
+					DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementId);
+					dataNode.setElementRef(elemRf);
+				}
 			}
 		}
 	}
 
-	protected void readDynamicProperties(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element dp : e.getChildren("Property", e.getNamespace())) {
-			String key = dp.getAttributeValue("key");
-			String value = dp.getAttributeValue("value");
-			elementInfo.setDynamicProperty(key, value);
-		}
-	}
-
-	protected void readAnnotationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
-			Annotation annotation = (Annotation) elementInfo.getPathwayModel()
-					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = new AnnotationRef(annotation);
-			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
-				Citation citationRef = (Citation) elementInfo.getPathwayModel()
-						.getPathwayElement(citRef.getAttributeValue("elementRef"));
-				if (citationRef != null)
-					annotationRef.addCitationRef(citationRef);
-			}
-			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
-				Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
-						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-				if (evidenceRef != null)
-					annotationRef.addEvidenceRef(evidenceRef);
-			}
-			elementInfo.addAnnotationRef(annotationRef);
-		}
-	}
-
-	protected void readCitationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
-			Citation citationRef = (Citation) elementInfo.getPathwayModel()
-					.getPathwayElement(citRef.getAttributeValue("elementRef"));
-			if (citationRef != null) {
-				elementInfo.addCitationRef(citationRef);
-			}
-		}
-	}
-
-	protected void readEvidenceRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
-			Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
-					.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-			if (evidenceRef != null)
-				elementInfo.addEvidenceRef(evidenceRef);
-		}
-	}
-
 	/**
-	 * Reads gpml RectAttributes from Graphics element and returns RectProperty.
-	 * Default schema values are automatically handled by jdom
+	 * Reads elementRef {@link Point#setElementRef()} for pathway model points.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
 	 */
-	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
-		double centerX = Double.parseDouble(gfx.getAttributeValue("centerX"));
-		double centerY = Double.parseDouble(gfx.getAttributeValue("centerY"));
-		double width = Double.parseDouble(gfx.getAttributeValue("width"));
-		double height = Double.parseDouble(gfx.getAttributeValue("height"));
-		return new RectProperty(new Coordinate(centerX, centerY), width, height);
-	}
-
-	/**
-	 * Reads gpml FontAttributes from Graphics element and returns FontProperty.
-	 * Default schema values are automatically handled by jdom
-	 */
-	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
-		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor"));
-		String fontName = gfx.getAttributeValue("fontName");
-		boolean fontWeight = gfx.getAttributeValue("fontWeight").equals("Bold");
-		boolean fontStyle = gfx.getAttributeValue("fontStyle").equals("Italic");
-		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equals("Underline");
-		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equals("Strikethru");
-		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize"));
-		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("hAlign"));
-		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("vAlign"));
-		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
-				hAlignType, vAlignType);
-	}
-
-	/**
-	 * Reads gpml ShapeStyleAttributes from Graphics element and returns
-	 * ShapeStyleProperty. Default schema values are automatically handled by jdom
-	 */
-	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
-		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("borderColor"));
-		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("borderStyle"));
-		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth"));
-		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("fillColor"));
-		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType"));
-		String zOrder = gfx.getAttributeValue("zOrder");
-		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
-				shapeType);
-		if (zOrder != null) {
-			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder));
-		}
-		return shapeStyleProperty;
-	}
-
-	/**
-	 * Reads gpml LineStyleAttributes from Graphics element and returns
-	 * LineStyleProperty. Default schema values are automatically handled by jdom
-	 */
-	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
-		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("lineColor"));
-		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("lineStyle"));
-		double lineWidth = Double.parseDouble(gfx.getAttributeValue("lineWidth"));
-		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("connectorType"));
-		String zOrder = gfx.getAttributeValue("zOrder");
-		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
-		if (zOrder != null) {
-			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
-		}
-		return lineStyleProperty;
-	}
-
-	/*---------------------------------------------------------------------------*/
-
 	protected void readPointElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
 		List<String> lnElementNames = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
 		List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
@@ -723,20 +761,203 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		}
 	}
 
-	protected void readDataNodeElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element dns = root.getChild("DataNodes", root.getNamespace());
-		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
-			String elementRef = dn.getAttributeValue("elementRef");
-			if (elementRef != null && !elementRef.equals("")) {
-				PathwayElement elemRf = pathwayModel.getPathwayElement(elementRef);
-				if (elemRf != null) {
-					String elementId = dn.getAttributeValue("elementId");
-					DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementId);
-					dataNode.setElementRef(elemRf);
-				}
+	/**
+	 * Reads comment group (comment, dynamic property, annotationRef, citationRef)
+	 * and elementRef {@link ElementInfo} information, , for pathway element from
+	 * element.
+	 * 
+	 * @param elementInfo the element info pathway element object.
+	 * @param e           the pathway element element.
+	 * @throws ConverterException
+	 */
+	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+		readComments(elementInfo, e);
+		readDynamicProperties(elementInfo, e);
+		readAnnotationRefs(elementInfo, e);
+		readCitationRefs(elementInfo, e);
+		readEvidenceRefs(elementInfo, e);
+	}
+
+	/**
+	 * Reads comment {@link Comment} information for pathway element from element.
+	 * 
+	 * @param elementInfo the element info pathway element object.
+	 * @param e           the pathway element element.
+	 * @throws ConverterException
+	 */
+	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
+			String source = cmt.getAttributeValue("source");
+			String content = cmt.getText();
+			if (content != null && !content.equals("")) {
+				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
+				if (source != null && !source.equals(""))
+					comment.setSource(source);
+				elementInfo.addComment(new Comment(source, content));
 			}
 		}
 	}
+
+	/**
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
+	 * for pathway element from element.
+	 * 
+	 * @param elementInfo the element info pathway element object .
+	 * @param e           the pathway element element.
+	 * @throws ConverterException
+	 */
+	protected void readDynamicProperties(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element dp : e.getChildren("Property", e.getNamespace())) {
+			String key = dp.getAttributeValue("key");
+			String value = dp.getAttributeValue("value");
+			elementInfo.setDynamicProperty(key, value);
+		}
+	}
+
+	/**
+	 * Reads annotationRef {@link ElementInfo#addAnnotationRef()} information for
+	 * pathway element from element.
+	 * 
+	 * @param elementInfo the element info pathway element object.
+	 * @param e           the pathway element element.
+	 * @throws ConverterException
+	 */
+	protected void readAnnotationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
+			Annotation annotation = (Annotation) elementInfo.getPathwayModel()
+					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
+			AnnotationRef annotationRef = new AnnotationRef(annotation);
+			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
+				Citation citationRef = (Citation) elementInfo.getPathwayModel()
+						.getPathwayElement(citRef.getAttributeValue("elementRef"));
+				if (citationRef != null)
+					annotationRef.addCitationRef(citationRef);
+			}
+			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
+				Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
+						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+				if (evidenceRef != null)
+					annotationRef.addEvidenceRef(evidenceRef);
+			}
+			elementInfo.addAnnotationRef(annotationRef);
+		}
+	}
+
+	/**
+	 * Reads citationRef {@link ElementInfo#addCitationRef()} information for
+	 * pathway element from element.
+	 * 
+	 * @param elementInfo the element info pathway element object.
+	 * @param e           the pathway element element.
+	 * @throws ConverterException
+	 */
+	protected void readCitationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
+			Citation citationRef = (Citation) elementInfo.getPathwayModel()
+					.getPathwayElement(citRef.getAttributeValue("elementRef"));
+			if (citationRef != null) {
+				elementInfo.addCitationRef(citationRef);
+			}
+		}
+	}
+
+	/**
+	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef()} information for
+	 * pathway element from element.
+	 * 
+	 * @param elementInfo the element info pathway element object.
+	 * @param e           the pathway element element.
+	 * @throws ConverterException
+	 */
+	protected void readEvidenceRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+			Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
+					.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+			if (evidenceRef != null)
+				elementInfo.addEvidenceRef(evidenceRef);
+		}
+	}
+
+	/**
+	 * Reads rect property {@link RectProperty} information. Jdom handles schema
+	 * default values.
+	 * 
+	 * @param gfx the parent graphics element.
+	 * @throws ConverterException
+	 */
+	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
+		double centerX = Double.parseDouble(gfx.getAttributeValue("centerX"));
+		double centerY = Double.parseDouble(gfx.getAttributeValue("centerY"));
+		double width = Double.parseDouble(gfx.getAttributeValue("width"));
+		double height = Double.parseDouble(gfx.getAttributeValue("height"));
+		return new RectProperty(new Coordinate(centerX, centerY), width, height);
+	}
+
+	/**
+	 * Reads font property {@link FontProperty} information. Jdom handles schema
+	 * default values.
+	 * 
+	 * @param gfx the parent graphics element.
+	 * @throws ConverterException
+	 */
+	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
+		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor"));
+		String fontName = gfx.getAttributeValue("fontName");
+		boolean fontWeight = gfx.getAttributeValue("fontWeight").equals("Bold");
+		boolean fontStyle = gfx.getAttributeValue("fontStyle").equals("Italic");
+		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equals("Underline");
+		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equals("Strikethru");
+		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize"));
+		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("hAlign"));
+		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("vAlign"));
+		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
+				hAlignType, vAlignType);
+	}
+
+	/**
+	 * Reads shape style property {@link ShapeStyleProperty} information. Jdom
+	 * handles schema default values.
+	 * 
+	 * @param gfx the parent graphics element.
+	 * @throws ConverterException
+	 */
+	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
+		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("borderColor"));
+		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("borderStyle"));
+		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth"));
+		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("fillColor"));
+		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType"));
+		String zOrder = gfx.getAttributeValue("zOrder");
+		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
+				shapeType);
+		if (zOrder != null) {
+			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder));
+		}
+		return shapeStyleProperty;
+	}
+
+	/**
+	 * Reads line style property {@link LineStyleProperty} information. Jdom handles
+	 * schema default values.
+	 * 
+	 * @param gfx the parent graphics element.
+	 * @throws ConverterException
+	 */
+	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
+		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("lineColor"));
+		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("lineStyle"));
+		double lineWidth = Double.parseDouble(gfx.getAttributeValue("lineWidth"));
+		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("connectorType"));
+		String zOrder = gfx.getAttributeValue("zOrder");
+		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
+		if (zOrder != null) {
+			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
+		}
+		return lineStyleProperty;
+	}
+
+	/*---------------------------------------------------------------------------*/
+
 	/*--------------------THESE METHODS MOVED TO GpmlFormatAbstract.java-------------------------------*/
 
 	/*------------------------------------MY METHODS --------------------------------------*/
