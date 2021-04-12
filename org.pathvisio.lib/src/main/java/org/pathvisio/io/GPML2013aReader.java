@@ -54,10 +54,6 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	public static final GPML2013aReader GPML2013aREADER = new GPML2013aReader("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
-	protected GPML2013aReader(String xsdFile, Namespace nsGPML) {
-		super(xsdFile, nsGPML);
-	}
-
 	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
 	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
 	public final static String PATHWAY_EMAIL = "pathway_email_gpml2013a";
@@ -67,6 +63,10 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
 	public final static String ATTRIBUTE_BIOPAXREF = "attribute_biopaxRef_gpml2013a";
+
+	protected GPML2013aReader(String xsdFile, Namespace nsGPML) {
+		super(xsdFile, nsGPML);
+	}
 
 	/**
 	 * Reads information from root element of Jdom document {@link Document} to the
@@ -87,7 +87,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		Pathway pathway = readPathway(root);
 		pathwayModel.setPathway(pathway); // TODO, should allow instantiate pathwayModel without Pathway???
 
-		readAnnotations(pathwayModel, root);// TODO Should be biopax....
+		readBiopax(pathwayModel, root);// TODO Should be biopax....
 		readCitations(pathwayModel, root); //
 
 		readPathwayInfo(pathwayModel, root);
@@ -129,7 +129,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		/* backgroundColor default is ffffff (white) */
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff"), infoBox)
 				.build();
-		/* optional properties */
+		/* set optional properties */
 		String organism = root.getAttributeValue("Organism");
 		String source = root.getAttributeValue("Data-Source");
 		String version = root.getAttributeValue("Version");
@@ -142,20 +142,20 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			pathway.setVersion(version);
 		if (license != null)
 			pathway.setLicense(license);
-		/* optional dynamic properties */
+		/* set optional dynamic properties */
 		String author = root.getAttributeValue("Author");
+		String maintainer = root.getAttributeValue("Maintainer");
+		String email = root.getAttributeValue("Email");
+		String lastModified = root.getAttributeValue("Last-Modified");
 		if (author != null) {
 			pathway.setDynamicProperty(PATHWAY_AUTHOR, author);
 		}
-		String maintainer = root.getAttributeValue("Maintainer");
 		if (maintainer != null) {
 			pathway.setDynamicProperty(PATHWAY_MAINTAINER, maintainer);
 		}
-		String email = root.getAttributeValue("Email");
 		if (email != null) {
 			pathway.setDynamicProperty(PATHWAY_EMAIL, email);
 		}
-		String lastModified = root.getAttributeValue("Last-Modified");
 		if (lastModified != null) {
 			pathway.setDynamicProperty(PATHWAY_LASTMODIFIED, lastModified);
 		}
@@ -205,7 +205,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readAnnotations(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readBiopax(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element annts = root.getChild("Annotations", root.getNamespace());
 		if (annts != null) {
 			for (Element annt : annts.getChildren("Annotation", annts.getNamespace())) {
@@ -213,7 +213,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 				String value = annt.getAttributeValue("value");
 				AnnotationType type = AnnotationType.register(annt.getAttributeValue("type"));
 				Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-				/* optional properties */
+				/* set optional properties */
 				Xref xref = readXref(annt);
 				String url = annt.getAttributeValue("url");
 				if (xref != null)
@@ -241,7 +241,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 				String elementId = cit.getAttributeValue("elementId");
 				Xref xref = readXref(cit);
 				Citation citation = new Citation(elementId, pathwayModel, xref);
-				/* optional properties */
+				/* set optional properties */
 				String url = cit.getAttributeValue("url");
 				if (url != null)
 					citation.setUrl(url);
@@ -532,7 +532,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 					fontProperty, shapeStyleProperty);
 			/* read comment group, evidenceRefs */
 			readElementInfo(state, st);
-			// TODO looks okay for now? 
+			// TODO looks okay for now?
 			if ("Double".equals(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 				state.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			}
@@ -545,7 +545,6 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		}
 	}
 
-	
 	/**
 	 * Reads line element {@link LineElement} information for interaction or
 	 * graphical line from element.
@@ -556,36 +555,31 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 */
 	protected void readShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
 		readElementInfo(shapedElement, se); // comment group and evidenceRef
-		// TODO looks okay for now? 
+		// TODO looks okay for now?
 		if ("Double".equals(shapedElement.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 			shapedElement.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 		}
 	}
-	
-	//TODO ShapeType is tricky....See CellularComponentType.java
-	protected void mapShapeType(PathwayElement o, Element e) throws ConverterException
-	{
+
+	// TODO ShapeType is tricky....See CellularComponentType.java
+	protected void mapShapeType(PathwayElement o, Element e) throws ConverterException {
 		String base = e.getName();
-    	Element graphics = e.getChild("Graphics", e.getNamespace());
-    	IShape s= ShapeRegistry.fromName(getAttribute(base + ".Graphics", "ShapeType", graphics));
-    	if (ShapeType.DEPRECATED_MAP.containsKey(s)){
-    		s = ShapeType.DEPRECATED_MAP.get(s);
-    		o.setShapeType(s);
-       		if (s.equals(ShapeType.ROUNDED_RECTANGLE) 
-       				|| s.equals(ShapeType.OVAL)){
-    			o.setLineStyle(LineStyle.DOUBLE);
-    			o.setLineThickness(3.0);
-    			o.setColor(Color.LIGHT_GRAY);
-    		}
-    	} 
-    	else 
-    	{
-    	o.setShapeType (s);
-		mapLineStyle(o, e); // LineStyle
-    	}
+		Element graphics = e.getChild("Graphics", e.getNamespace());
+		IShape s = ShapeRegistry.fromName(getAttribute(base + ".Graphics", "ShapeType", graphics));
+		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
+			s = ShapeType.DEPRECATED_MAP.get(s);
+			o.setShapeType(s);
+			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
+				o.setLineStyle(LineStyle.DOUBLE);
+				o.setLineThickness(3.0);
+				o.setColor(Color.LIGHT_GRAY);
+			}
+		} else {
+			o.setShapeType(s);
+			mapLineStyle(o, e); // LineStyle
+		}
 	}
 
-	
 	/**
 	 * Reads interaction {@link Interaction} information for pathway model from root
 	 * element.
@@ -647,7 +641,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 */
 	protected void readLineElement(LineElement lineElement, Element ln) throws ConverterException {
 		readElementInfo(lineElement, ln); // comment group and evidenceRef
-		// TODO looks okay for now? 
+		// TODO looks okay for now?
 		if ("Double".equals(lineElement.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 			lineElement.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
 		}
@@ -791,10 +785,9 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 */
 	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		readComments(elementInfo, e);
-		readDynamicProperties(elementInfo, e);
-		readAnnotationRefs(elementInfo, e);
-		readCitationRefs(elementInfo, e);
-		readEvidenceRefs(elementInfo, e);
+		readPublicationXrefs(elementInfo, e);
+		readBiopaxRefs(elementInfo, e);
+		readAttributes(elementInfo, e);
 	}
 
 	/**
@@ -818,22 +811,6 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
-	 * for pathway element from element.
-	 * 
-	 * @param elementInfo the element info pathway element object .
-	 * @param e           the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readDynamicProperties(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element dp : e.getChildren("Property", e.getNamespace())) {
-			String key = dp.getAttributeValue("key");
-			String value = dp.getAttributeValue("value");
-			elementInfo.setDynamicProperty(key, value);
-		}
-	}
-
-	/**
 	 * Reads annotationRef {@link ElementInfo#addAnnotationRef()} information for
 	 * pathway element from element.
 	 * 
@@ -841,7 +818,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readAnnotationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void readBiopaxRefs(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
 			Annotation annotation = (Annotation) elementInfo.getPathwayModel()
 					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
@@ -870,7 +847,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readCitationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void readPublicationXrefs(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
 			Citation citationRef = (Citation) elementInfo.getPathwayModel()
 					.getPathwayElement(citRef.getAttributeValue("elementRef"));
@@ -881,19 +858,18 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
-	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef()} information for
-	 * pathway element from element.
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
+	 * for pathway element from element.
 	 * 
-	 * @param elementInfo the element info pathway element object.
+	 * @param elementInfo the element info pathway element object .
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readEvidenceRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
-			Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
-					.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-			if (evidenceRef != null)
-				elementInfo.addEvidenceRef(evidenceRef);
+	protected void readAttributes(ElementInfo elementInfo, Element e) throws ConverterException {
+		for (Element dp : e.getChildren("Attribute", e.getNamespace())) {
+			String key = dp.getAttributeValue("key");
+			String value = dp.getAttributeValue("value");
+			elementInfo.setDynamicProperty(key, value);
 		}
 	}
 
@@ -913,6 +889,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
+	 * TODO fix...
+	 * 
 	 * Reads font property {@link FontProperty} information. Jdom handles schema
 	 * default values.
 	 * 
@@ -934,6 +912,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
+	 * TODO fix...
+	 * 
 	 * Reads shape style property {@link ShapeStyleProperty} information. Jdom
 	 * handles schema default values.
 	 * 
@@ -956,6 +936,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
+	 * TODO fix...
+	 * 
 	 * Reads line style property {@link LineStyleProperty} information. Jdom handles
 	 * schema default values.
 	 * 

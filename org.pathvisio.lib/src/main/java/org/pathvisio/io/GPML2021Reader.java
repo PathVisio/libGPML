@@ -120,7 +120,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		Color backgroundColor = ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor")); // TODO optional?
 		Coordinate infoBox = readInfoBox(root);
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, backgroundColor, infoBox).build();
-		/* optional properties */
+		/* set optional properties */
 		Xref xref = readXref(root);
 		String organism = root.getAttributeValue("organism");
 		String source = root.getAttributeValue("source");
@@ -221,7 +221,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				String value = annt.getAttributeValue("value");
 				AnnotationType type = AnnotationType.register(annt.getAttributeValue("type"));
 				Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-				/* optional properties */
+				/* set optional properties */
 				Xref xref = readXref(annt);
 				String url = annt.getAttributeValue("url");
 				if (xref != null)
@@ -249,7 +249,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				String elementId = cit.getAttributeValue("elementId");
 				Xref xref = readXref(cit);
 				Citation citation = new Citation(elementId, pathwayModel, xref);
-				/* optional properties */
+				/* set optional properties */
 				String url = cit.getAttributeValue("url");
 				if (url != null)
 					citation.setUrl(url);
@@ -274,7 +274,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				String elementId = evid.getAttributeValue("elementId");
 				Xref xref = readXref(evid);
 				Evidence evidence = new Evidence(elementId, pathwayModel, xref);
-				/* optional properties */
+				/* set optional properties */
 				String value = evid.getAttributeValue("value");
 				String url = evid.getAttributeValue("url");
 				if (value != null)

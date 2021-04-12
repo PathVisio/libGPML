@@ -46,6 +46,17 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
+	// TODO copied from READER....
+	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
+	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
+	public final static String PATHWAY_EMAIL = "pathway_email_gpml2013a";
+	public final static String PATHWAY_LASTMODIFIED = "pathway_lastModified_gpml2013a";
+	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
+	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
+
+	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
+	public final static String ATTRIBUTE_BIOPAXREF = "attribute_biopaxRef_gpml2013a";
+
 	protected GPML2013aWriter(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
@@ -118,23 +129,26 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 			writePathwayInfo(pathwayModel, root);
 
 			writeDataNodes(pathwayModel.getDataNodes(), root);
+			writeStates(pathwayModel, root);
 			writeInteractions(pathwayModel.getInteractions(), root);
 			writeGraphicalLines(pathwayModel.getGraphicalLines(), root);
 			writeLabels(pathwayModel.getLabels(), root);
 			writeShapes(pathwayModel.getShapes(), root);
 			writeGroups(pathwayModel.getGroups(), root);
 
-			writeAnnotations(pathwayModel.getAnnotations(), root);
-			writeCitations(pathwayModel.getCitations(), root);
-			writeEvidences(pathwayModel.getEvidences(), root);
+			writeInfoBox(pathwayModel.getPathway().getInfoBox(), root);
+			writeLegend(pathwayModel.getPathway(), root);
 
+//			writeAnnotations(pathwayModel.getAnnotations(), root);
+//			writeCitations(pathwayModel.getCitations(), root);
+//			writeEvidences(pathwayModel.getEvidences(), root);
+//			<xsd:element ref="gpml:Biopax" minOccurs="0" maxOccurs="1"/>
 		}
 		return doc;
 	}
 
 	/**
-	 * Writes pathway object {@link Pathway} information and authors list to root
-	 * element.
+	 * Writes pathway object {@link Pathway} information to root element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -142,32 +156,48 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 */
 	protected void writePathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Pathway pathway = pathwayModel.getPathway();
-		root.setAttribute("title", pathway.getTitle());
-		if (pathway.getOrganism() != null)
-			root.setAttribute("organism", pathway.getOrganism());
-		if (pathway.getSource() != null)
-			root.setAttribute("source", pathway.getSource());
-		if (pathway.getVersion() != null)
-			root.setAttribute("version", pathway.getVersion());
-		if (pathway.getLicense() != null)
-			root.setAttribute("license", pathway.getLicense());
-
-		if (pathway.getXref() != null)
-			writeXref(pathway.getXref(), root, false);
-
-		writeAuthors(pathwayModel.getAuthors(), root);
-
+		root.setAttribute("Name", pathway.getTitle());
+		/* set optional properties, in the order written in gpml 2013a */
+		String source = pathway.getSource();
+		String version = pathway.getVersion();
+		String author = pathway.getDynamicProperty(PATHWAY_AUTHOR);
+		String maintainer = pathway.getDynamicProperty(PATHWAY_MAINTAINER);
+		String email = pathway.getDynamicProperty(PATHWAY_EMAIL);
+		String lastModified = pathway.getDynamicProperty(PATHWAY_LASTMODIFIED);
+		String organism = pathway.getOrganism();
+		String license = pathway.getLicense();
+		if (source != null)
+			root.setAttribute("Data-Source", source);
+		if (version != null)
+			root.setAttribute("Version", version);
+		if (author != null)
+			root.setAttribute("Author", author);
+		if (maintainer != null)
+			root.setAttribute("Maintainer", maintainer);
+		if (email != null)
+			root.setAttribute("Email", email);
+		if (lastModified != null)
+			root.setAttribute("Last-Modified", lastModified);
+		if (organism != null)
+			root.setAttribute("Organism", organism);
+		if (license != null)
+			root.setAttribute("License", license);
+		
+		/* set comment group */
 		writeComments(pathway.getComments(), root);
-		writeDynamicProperties(pathway.getDynamicProperties(), root);
-		writeAnnotationRefs(pathway.getAnnotationRefs(), root);
-		writeCitationRefs(pathway.getCitationRefs(), root);
-		writeEvidenceRefs(pathway.getEvidenceRefs(), root);
-
+		// TODO BiopaxRef
+		// TODO PublicationRef
+		writeAttributes(pathway.getDynamicProperties(), root);
+		
+		/* set graphics */
 		Element gfx = new Element("Graphics", root.getNamespace());
 		root.addContent(gfx);
-		gfx.setAttribute("boardWidth", String.valueOf(pathway.getBoardWidth()));
-		gfx.setAttribute("boardHeight", String.valueOf(pathway.getBoardHeight()));
-		writeInfoBox(pathway.getInfoBox(), root);
+		gfx.setAttribute("BoardWidth", String.valueOf(pathway.getBoardWidth()));
+		gfx.setAttribute("BoardHeight", String.valueOf(pathway.getBoardHeight()));
+
+
+//		result.put("Pathway@BiopaxRef", new AttributeInfo ("xsd:string", null, "optional"));
+
 	}
 
 	/**
@@ -200,35 +230,6 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	}
 
 	/**
-	 * Writes author {@link Author} information.
-	 * 
-	 * @param authors the list of authors.
-	 * @param root    the root element.
-	 * @throws ConverterException
-	 */
-	private void writeAuthors(List<Author> authors, Element root) throws ConverterException {
-		if (!authors.isEmpty()) {
-			Element aus = new Element("Authors", root.getNamespace());
-			List<Element> auList = new ArrayList<Element>();
-			for (Author author : authors) {
-				if (author == null)
-					continue;
-				Element au = new Element("Author", root.getNamespace());
-				au.setAttribute("name", author.getName());
-				au.setAttribute("fullName", author.getFullName());
-				au.setAttribute("email", author.getEmail());
-				if (au != null) {
-					auList.add(au);
-				}
-			}
-			if (auList != null && auList.isEmpty() == false) {
-				aus.addContent(auList);
-				root.addContent(aus);
-			}
-		}
-	}
-
-	/**
 	 * Writes comments {@link Comment} information for pathway or pathway element.
 	 * 
 	 * @param comments the list of comments of pathway or pathway element.
@@ -255,7 +256,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @param e                 the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writeDynamicProperties(Map<String, String> dynamicProperties, Element e) throws ConverterException {
+	protected void writeAttributes(Map<String, String> dynamicProperties, Element e) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
 			Element dp = new Element("Property", e.getNamespace());
 			dp.setAttribute("key", key);
@@ -265,15 +266,8 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		}
 	}
 
-	/**
-	 * Writes annotation reference information for pathway or pathway element.
-	 * {@link Pathway#getAnnotationRefs() , ElementInfo#getAnnotationRefs()}.
-	 * 
-	 * @param annotationRefs the list of annotation references.
-	 * @param e              the parent element.
-	 * @throws ConverterException
-	 */
-	protected void writeAnnotationRefs(List<AnnotationRef> annotationRefs, Element e) throws ConverterException {
+	// TODO
+	protected void writeBiopaxRefs(List<AnnotationRef> annotationRefs, Element e) throws ConverterException {
 		for (AnnotationRef annotationRef : annotationRefs) {
 			Element anntRef = new Element("AnnotationRef", e.getNamespace());
 			anntRef.setAttribute("elementRef", annotationRef.getAnnotation().getElementId());
@@ -291,14 +285,9 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	}
 
 	/**
-	 * Writes citation reference information for pathway or pathway element.
-	 * {@link Pathway#getCitationRefs() , ElementInfo#getCitationRefs()}.
-	 * 
-	 * @param citationRefs the list of citation references.
-	 * @param e            the parent element.
-	 * @throws ConverterException
+	 * TODO
 	 */
-	protected void writeCitationRefs(List<Citation> citationRefs, Element e) throws ConverterException {
+	protected void writePublicationXrefs(List<Citation> citationRefs, Element e) throws ConverterException {
 		if (e != null) {
 			for (Citation citationRef : citationRefs) {
 				Element citRef = new Element("CitationRef", e.getNamespace());
@@ -310,27 +299,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	}
 
 	/**
-	 * Writes evidence reference information for pathway or pathway element
-	 * {@link Pathway#getEvidenceRefs() , ElementInfo#getEvidenceRefs()}.
-	 * 
-	 * 
-	 * @param evidenceRefs the list of evidence references.
-	 * @param e            the parent element.
-	 * @throws ConverterException
-	 */
-	protected void writeEvidenceRefs(List<Evidence> evidenceRefs, Element e) throws ConverterException {
-		if (e != null) {
-		}
-		for (Evidence evidenceRef : evidenceRefs) {
-			Element evidRef = new Element("EvidenceRef", e.getNamespace());
-			evidRef.setAttribute("elementRef", evidenceRef.getElementId());
-			if (evidRef != null)
-				e.addContent(evidRef);
-		}
-	}
-
-	/**
-	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox()} n
+	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox()}
 	 * information.
 	 * 
 	 * @param infoBox the infobox xy coordinates.
@@ -341,7 +310,19 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		ifb.setAttribute("centerX", Double.toString(infoBox.getX()));
 		ifb.setAttribute("centerY", Double.toString(infoBox.getY()));
 		root.addContent(ifb);
-		System.out.println(ifb);
+	}
+
+	/**
+	 * Writes the legend x and y coordinate information.
+	 * 
+	 * @param pathway the pathway.
+	 * @param root    the root element.
+	 */
+	protected void writeLegend(Pathway pathway, Element root) {
+		Element lgd = new Element("Legend", root.getNamespace());
+		lgd.setAttribute("centerX", pathway.getDynamicProperty(LEGEND_CENTER_X));
+		lgd.setAttribute("centerY", pathway.getDynamicProperty(LEGEND_CENTER_Y));
+		root.addContent(lgd);
 	}
 
 	/**
@@ -397,9 +378,10 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 
 				Element gfx = new Element("Graphics", st.getNamespace());
 				st.addContent(gfx);
-				gfx.setAttribute("relX", Double.toString(state.getRelX()));
-				gfx.setAttribute("relY", Double.toString(state.getRelY()));
-				writeRectProperty(state.getRectProperty(), gfx); // TODO x and y may not be required...
+				gfx.setAttribute("RelX", Double.toString(state.getRelX()));
+				gfx.setAttribute("RelY", Double.toString(state.getRelY()));
+				gfx.setAttribute("Width", Double.toString(state.getWidth()));
+				gfx.setAttribute("Height", Double.toString(state.getHeight()));
 				writeFontProperty(state.getFontProperty(), gfx);
 				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
 
@@ -652,44 +634,9 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	}
 
 	/**
-	 * Writes citation {@link Citation} information.
-	 * 
-	 * @param citations the list of citations.
-	 * @param root      the root element.
-	 * @throws ConverterException
+	 * TODO
 	 */
-	protected void writeCitations(List<Citation> citations, Element root) throws ConverterException {
-		if (!citations.isEmpty()) {
-			Element cits = new Element("Citations", root.getNamespace());
-			List<Element> citList = new ArrayList<Element>();
-			for (Citation citation : citations) {
-				if (citation == null)
-					continue;
-				Element cit = new Element("Citation", root.getNamespace());
-				writeElementId(citation.getElementId(), cit);
-				writeXref(citation.getXref(), cit, true);
-				if (citation.getUrl() != null) {
-					cit.setAttribute("url", citation.getUrl());
-				}
-				if (cit != null) {
-					citList.add(cit);
-				}
-			}
-			if (citList != null && citList.isEmpty() == false) {
-				cits.addContent(citList);
-				root.addContent(cits);
-			}
-		}
-	}
-
-	/**
-	 * Writes annotation {@link Annotation} information.
-	 * 
-	 * @param annotations the list of annotations.
-	 * @param root        the root element.
-	 * @throws ConverterException
-	 */
-	protected void writeAnnotations(List<Annotation> annotations, Element root) throws ConverterException {
+	protected void WriteBiopax(List<Annotation> annotations, Element root) throws ConverterException {
 		if (!annotations.isEmpty()) {
 			Element annts = new Element("Annotations", root.getNamespace());
 			List<Element> anntList = new ArrayList<Element>();
@@ -718,35 +665,28 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	}
 
 	/**
-	 * Writes evidence {@link Evidence} information.
-	 * 
-	 * @param evidences the list of evidences.
-	 * @param root      the root element.
-	 * @throws ConverterException
+	 * TODO
 	 */
-	protected void writeEvidences(List<Evidence> evidences, Element root) throws ConverterException {
-		if (!evidences.isEmpty()) {
-			Element evids = new Element("Evidences", root.getNamespace());
-			List<Element> evidList = new ArrayList<Element>();
-			for (Evidence evidence : evidences) {
-				if (evidence == null)
+	protected void writePublicationXRefs(List<Citation> citations, Element root) throws ConverterException {
+		if (!citations.isEmpty()) {
+			Element cits = new Element("Citations", root.getNamespace());
+			List<Element> citList = new ArrayList<Element>();
+			for (Citation citation : citations) {
+				if (citation == null)
 					continue;
-				Element evid = new Element("Evidence", root.getNamespace());
-				writeElementId(evidence.getElementId(), evid);
-				writeXref(evidence.getXref(), evid, true);
-				if (evidence.getValue() != null) {
-					evid.setAttribute("value", evidence.getValue());
+				Element cit = new Element("Citation", root.getNamespace());
+				writeElementId(citation.getElementId(), cit);
+				writeXref(citation.getXref(), cit, true);
+				if (citation.getUrl() != null) {
+					cit.setAttribute("url", citation.getUrl());
 				}
-				if (evidence.getUrl() != null) {
-					evid.setAttribute("url", evidence.getUrl());
-				}
-				if (evid != null) {
-					evidList.add(evid);
+				if (cit != null) {
+					citList.add(cit);
 				}
 			}
-			if (evidList != null && evidList.isEmpty() == false) {
-				evids.addContent(evidList);
-				root.addContent(evids);
+			if (citList != null && citList.isEmpty() == false) {
+				cits.addContent(citList);
+				root.addContent(cits);
 			}
 		}
 	}
@@ -823,10 +763,9 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	private void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
-		writeDynamicProperties(elementInfo.getDynamicProperties(), e);
-		writeAnnotationRefs(elementInfo.getAnnotationRefs(), e);
-		writeCitationRefs(elementInfo.getCitationRefs(), e);
-		writeEvidenceRefs(elementInfo.getEvidenceRefs(), e);
+		writeBiopaxRefs(elementInfo.getAnnotationRefs(), e);
+		writePublicationXrefs(elementInfo.getCitationRefs(), e);
+		writeAttributes(elementInfo.getDynamicProperties(), e);
 	}
 
 	/**
@@ -837,45 +776,48 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	protected void writeRectProperty(RectProperty rectProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("centerX", Double.toString(rectProp.getCenterXY().getX()));
-		gfx.setAttribute("centerY", Double.toString(rectProp.getCenterXY().getY()));
-		gfx.setAttribute("width", Double.toString(rectProp.getWidth()));
-		gfx.setAttribute("height", Double.toString(rectProp.getHeight()));
+		gfx.setAttribute("CenterX", Double.toString(rectProp.getCenterXY().getX()));
+		gfx.setAttribute("CenterY", Double.toString(rectProp.getCenterXY().getY()));
+		gfx.setAttribute("Width", Double.toString(rectProp.getWidth()));
+		gfx.setAttribute("Height", Double.toString(rectProp.getHeight()));
 	}
 
 	/**
 	 * Writes font property {@link FontProperty} information.
+	 * 
+	 * NB: TODO Color is set by textColor
 	 * 
 	 * @param fontProp the font properties.
 	 * @param gfx      the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(FontProperty fontProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor()));
-		gfx.setAttribute("fontName", fontProp.getFontName() == null ? "" : fontProp.getFontName());
-		gfx.setAttribute("fontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
-		gfx.setAttribute("fontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
-		gfx.setAttribute("fontDecoration", fontProp.getFontDecoration() ? "Underline" : "Normal");
-		gfx.setAttribute("fontStrikethru", fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
-		gfx.setAttribute("fontSize", Integer.toString((int) fontProp.getFontSize()));
-		gfx.setAttribute("hAlign", fontProp.getHAlign().getName());
-		gfx.setAttribute("vAlign", fontProp.getVAlign().getName());
+		gfx.setAttribute("Color", ColorUtils.colorToHex(fontProp.getTextColor()));
+		gfx.setAttribute("FontName", fontProp.getFontName() == null ? "" : fontProp.getFontName());
+		gfx.setAttribute("FontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
+		gfx.setAttribute("FontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
+		gfx.setAttribute("FontDecoration", fontProp.getFontDecoration() ? "Underline" : "Normal");
+		gfx.setAttribute("FontStrikethru", fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
+		gfx.setAttribute("FontSize", Integer.toString((int) fontProp.getFontSize()));
+		gfx.setAttribute("Align", fontProp.getHAlign().getName());
+		gfx.setAttribute("Valign", fontProp.getVAlign().getName());
 	}
 
 	/**
 	 * Writes shape style property {@link ShapeStyleProperty} information.
+	 * 
+	 * TODO NB: borderColor is not set, Color is set solely by textColor.
 	 * 
 	 * @param shapeProp the shape style properties.
 	 * @param gfx       the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor()));
-		gfx.setAttribute("borderStyle", shapeProp.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
-		gfx.setAttribute("borderWidth", String.valueOf(shapeProp.getBorderWidth()));
-		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor()));
-		gfx.setAttribute("shapeType", shapeProp.getShapeType().getName());
-		gfx.setAttribute("zOrder", String.valueOf(shapeProp.getZOrder()));
+		gfx.setAttribute("LineStyle", shapeProp.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		gfx.setAttribute("LineThickness", String.valueOf(shapeProp.getBorderWidth()));
+		gfx.setAttribute("FillColor", ColorUtils.colorToHex(shapeProp.getFillColor()));
+		gfx.setAttribute("ShapeType", shapeProp.getShapeType().getName());
+		gfx.setAttribute("ZOrder", String.valueOf(shapeProp.getZOrder()));
 	}
 
 	/**
@@ -886,10 +828,10 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("lineColor", ColorUtils.colorToHex(lineProp.getLineColor()));
-		gfx.setAttribute("lineStyle", lineProp.getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
-		gfx.setAttribute("lineWidth", String.valueOf(lineProp.getLineWidth()));
-		gfx.setAttribute("connectorType", lineProp.getConnectorType().getName());
-		gfx.setAttribute("zOrder", String.valueOf(lineProp.getZOrder()));
+		gfx.setAttribute("LineColor", ColorUtils.colorToHex(lineProp.getLineColor()));
+		gfx.setAttribute("LineStyle", lineProp.getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		gfx.setAttribute("LineThickness", String.valueOf(lineProp.getLineWidth()));
+		gfx.setAttribute("ConnectorType", lineProp.getConnectorType().getName());
+		gfx.setAttribute("ZOrder", String.valueOf(lineProp.getZOrder()));
 	}
 }

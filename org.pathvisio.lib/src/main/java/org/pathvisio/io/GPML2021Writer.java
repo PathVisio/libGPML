@@ -341,7 +341,6 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		ifb.setAttribute("centerX", Double.toString(infoBox.getX()));
 		ifb.setAttribute("centerY", Double.toString(infoBox.getY()));
 		root.addContent(ifb);
-		System.out.println(ifb);
 	}
 
 	/**
@@ -399,7 +398,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				st.addContent(gfx);
 				gfx.setAttribute("relX", Double.toString(state.getRelX()));
 				gfx.setAttribute("relY", Double.toString(state.getRelY()));
-				//TODO coordinate xy???? 
+				// TODO coordinate xy????
 				gfx.setAttribute("width", Double.toString(state.getWidth()));
 				gfx.setAttribute("height", Double.toString(state.getHeight()));
 				writeFontProperty(state.getFontProperty(), gfx);
@@ -654,37 +653,6 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	}
 
 	/**
-	 * Writes citation {@link Citation} information.
-	 * 
-	 * @param citations the list of citations.
-	 * @param root      the root element.
-	 * @throws ConverterException
-	 */
-	protected void writeCitations(List<Citation> citations, Element root) throws ConverterException {
-		if (!citations.isEmpty()) {
-			Element cits = new Element("Citations", root.getNamespace());
-			List<Element> citList = new ArrayList<Element>();
-			for (Citation citation : citations) {
-				if (citation == null)
-					continue;
-				Element cit = new Element("Citation", root.getNamespace());
-				writeElementId(citation.getElementId(), cit);
-				writeXref(citation.getXref(), cit, true);
-				if (citation.getUrl() != null) {
-					cit.setAttribute("url", citation.getUrl());
-				}
-				if (cit != null) {
-					citList.add(cit);
-				}
-			}
-			if (citList != null && citList.isEmpty() == false) {
-				cits.addContent(citList);
-				root.addContent(cits);
-			}
-		}
-	}
-
-	/**
 	 * Writes annotation {@link Annotation} information.
 	 * 
 	 * @param annotations the list of annotations.
@@ -715,6 +683,37 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 			if (anntList != null && anntList.isEmpty() == false) {
 				annts.addContent(anntList);
 				root.addContent(annts);
+			}
+		}
+	}
+
+	/**
+	 * Writes citation {@link Citation} information.
+	 * 
+	 * @param citations the list of citations.
+	 * @param root      the root element.
+	 * @throws ConverterException
+	 */
+	protected void writeCitations(List<Citation> citations, Element root) throws ConverterException {
+		if (!citations.isEmpty()) {
+			Element cits = new Element("Citations", root.getNamespace());
+			List<Element> citList = new ArrayList<Element>();
+			for (Citation citation : citations) {
+				if (citation == null)
+					continue;
+				Element cit = new Element("Citation", root.getNamespace());
+				writeElementId(citation.getElementId(), cit);
+				writeXref(citation.getXref(), cit, true);
+				if (citation.getUrl() != null) {
+					cit.setAttribute("url", citation.getUrl());
+				}
+				if (cit != null) {
+					citList.add(cit);
+				}
+			}
+			if (citList != null && citList.isEmpty() == false) {
+				cits.addContent(citList);
+				root.addContent(cits);
 			}
 		}
 	}
