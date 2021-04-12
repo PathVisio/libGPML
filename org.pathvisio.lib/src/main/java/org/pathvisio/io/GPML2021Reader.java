@@ -665,6 +665,25 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	}
 
 	/**
+	 * Reads point {@link Point} information for line element from element.
+	 * 
+	 * @param lineElement the line element object.
+	 * @param wyps        the waypoints element.
+	 * @throws ConverterException
+	 */
+	protected void readPoints(LineElement lineElement, Element wyps) throws ConverterException {
+		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
+			String elementId = pt.getAttributeValue("elementId");
+			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead"));
+			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
+					Double.parseDouble(pt.getAttributeValue("y")));
+			Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
+			if (point != null) // set elementRef and optional properties later
+				lineElement.addPoint(point);
+		}
+	}
+
+	/**
 	 * Reads anchor {@link Anchor} information for line element from element.
 	 * 
 	 * @param lineElement the line element object.
@@ -681,25 +700,6 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), position, xy, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
-		}
-	}
-
-	/**
-	 * Reads point {@link Point} information for line element from element.
-	 * 
-	 * @param lineElement the line element object.
-	 * @param wyps        the waypoints element.
-	 * @throws ConverterException
-	 */
-	protected void readPoints(LineElement lineElement, Element wyps) throws ConverterException {
-		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
-			String elementId = pt.getAttributeValue("elementId");
-			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead"));
-			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
-					Double.parseDouble(pt.getAttributeValue("y")));
-			Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
-			if (point != null) // set elementRef and optional properties later
-				lineElement.addPoint(point);
 		}
 	}
 
