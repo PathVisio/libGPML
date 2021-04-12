@@ -37,16 +37,16 @@ import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
 
 /**
- * This class writes a PathwayModel to an output (GPML 2021).
+ * This class writes a PathwayModel to an output (GPML 2013a).
  * 
  * @author finterly
  */
-public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWriter {
+public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWriter {
 
-	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer("GPML2021.xsd",
-			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
+	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
+			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
-	protected GPML2021Writer(String xsdFile, Namespace nsGPML) {
+	protected GPML2013aWriter(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
@@ -399,9 +399,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				st.addContent(gfx);
 				gfx.setAttribute("relX", Double.toString(state.getRelX()));
 				gfx.setAttribute("relY", Double.toString(state.getRelY()));
-				//TODO coordinate xy???? 
-				gfx.setAttribute("width", Double.toString(state.getWidth()));
-				gfx.setAttribute("height", Double.toString(state.getHeight()));
+				writeRectProperty(state.getRectProperty(), gfx); // TODO x and y may not be required...
 				writeFontProperty(state.getFontProperty(), gfx);
 				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
 

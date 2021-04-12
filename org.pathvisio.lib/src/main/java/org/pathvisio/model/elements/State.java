@@ -18,10 +18,8 @@ package org.pathvisio.model.elements;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.graphics.FontProperty;
-import org.pathvisio.model.graphics.RectProperty;
-import org.pathvisio.model.graphics.ShapeStyleProperty;
+import org.pathvisio.model.*;
+import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.StateType;
 
 /**
@@ -36,7 +34,9 @@ public class State extends ElementInfo {
 	private StateType type;
 	private double relX;
 	private double relY;
-	private RectProperty rectProperty; // TODO get x and y Coordinates!!!! x and y may be optional TODO 
+//	private Coordinate centerXY; // TODO
+	private double width;
+	private double height;
 	private FontProperty fontProperty;
 	private ShapeStyleProperty shapeStyleProperty;
 	private Xref xref; // optional
@@ -46,9 +46,6 @@ public class State extends ElementInfo {
 	 * 
 	 * @param elementId          the unique pathway element identifier.
 	 * @param pathwayModel       the parent pathway model.
-	 * @param rectProperty       the centering (position) and dimension properties.
-	 * @param fontProperty       the font properties, e.g. textColor, fontName...
-	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
 	 * @param dataNode           the parent data node (NB: elementRef was formerly
 	 *                           elementId of parent data node).
 	 * @param textLabel          the text label of the state.
@@ -59,10 +56,15 @@ public class State extends ElementInfo {
 	 * @param relY               the relative y coordinates on the parent object,
 	 *                           where 0,0 is at the center of the object and 1,1 at
 	 *                           the bottom-right corner of the object.
+	 * @param centerXY           TODO
+	 * @param width              the pixel value for the x dimensional length.
+	 * @param height             the pixel value for the y dimensional length.
+	 * @param fontProperty       the font properties, e.g. textColor, fontName...
+	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
 	 * @param xref               the state xref.
 	 */
 	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
-			double relX, double relY, RectProperty rectProperty, FontProperty fontProperty,
+			double relX, double relY, double width, double height, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Xref xref) {
 		super(elementId, pathwayModel);
 		this.dataNode = dataNode;
@@ -70,7 +72,9 @@ public class State extends ElementInfo {
 		this.type = type;
 		this.relX = relX;
 		this.relY = relY;
-		this.rectProperty = rectProperty;
+//		this.centerXY = centerXY; // TODO optional???
+		this.width = width;
+		this.height = height;
 		this.fontProperty = fontProperty;
 		this.shapeStyleProperty = shapeStyleProperty;
 		this.xref = xref;
@@ -81,9 +85,9 @@ public class State extends ElementInfo {
 	 * xref.
 	 */
 	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
-			double relX, double relY, RectProperty rectProperty, FontProperty fontProperty,
+			double relX, double relY, double width, double height, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty) {
-		this(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, rectProperty, fontProperty,
+		this(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height, fontProperty,
 				shapeStyleProperty, null);
 	}
 
@@ -206,22 +210,68 @@ public class State extends ElementInfo {
 		}
 	}
 
+//	/**
+//	 * Returns the center x and y coordinate of the state.
+//	 * 
+//	 * @return xy the absolute coordinate of the middle of the state.
+//	 */
+//	public Coordinate getCenterXY() {
+//		return centerXY;
+//	}
+//
+//	/**
+//	 * Sets the center x and y coordinate of the state.
+//	 * 
+//	 * @param xy the absolute coordinate of the middle of the state.
+//	 */
+//	public void setCenterXY(Coordinate centerXY) {
+//		this.centerXY = centerXY;
+//	}
+
 	/**
-	 * Returns the centering and dimension properties of the pathway element.
+	 * Returns the width of the state.
 	 * 
-	 * @return rectProperty the centering and dimension properties.
+	 * @return width the width of the state.
 	 */
-	public RectProperty getRectProperty() {
-		return rectProperty;
+	public double getWidth() {
+		return width;
 	}
 
 	/**
-	 * Sets the centering and dimension properties of the pathway element.
+	 * Sets the width of the state.
 	 * 
-	 * @param rectProperty the centering and dimension properties.
+	 * @param width the width of the state.
+	 * @throws IllegalArgumentException if width is a negative value.
 	 */
-	public void setRectProperty(RectProperty rectProperty) {
-		this.rectProperty = rectProperty;
+	public void setWidth(double width) {
+		if (width < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + width);
+		} else {
+			this.width = width;
+		}
+	}
+
+	/**
+	 * Returns the height of the state.
+	 * 
+	 * @return height the height of the state.
+	 */
+	public double getHeight() {
+		return height;
+	}
+
+	/**
+	 * Sets the height of the state.
+	 * 
+	 * @param height the height of the state.
+	 * @throws IllegalArgumentException if height is a negative value.
+	 */
+	public void setHeight(double height) {
+		if (height < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + height);
+		} else {
+			this.height = height;
+		}
 	}
 
 	/**
@@ -270,7 +320,7 @@ public class State extends ElementInfo {
 	public Xref getXref() {
 		return xref;
 	}
-	
+
 	/**
 	 * Sets the Xref for the state.
 	 * 
