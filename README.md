@@ -11,7 +11,7 @@ _Italicized_ packages contain old pathvisio code that will eventually be modifie
 - _oldclasses.pathway_
 - _org.pathvisio.debug_
 ```diff
-+ **org.pathvisio.io**
++ org.pathvisio.io
 ```
 - _org.pathvisio.io.gpml2013_
 - _org.pathvisio.io.gpml2021_
