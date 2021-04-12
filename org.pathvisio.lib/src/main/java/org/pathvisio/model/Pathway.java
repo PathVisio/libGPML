@@ -64,7 +64,7 @@ public class Pathway {
 	 */
 	public static class PathwayBuilder {
 
-		private String title;
+		private String title; //TODO = "New Pathway";? 
 		private double boardWidth;
 		private double boardHeight;
 		private Color backgroundColor;

@@ -560,8 +560,31 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		if ("Double".equals(shapedElement.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 			shapedElement.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 		}
-
 	}
+	
+	//TODO ShapeType is tricky....See CellularComponentType.java
+	protected void mapShapeType(PathwayElement o, Element e) throws ConverterException
+	{
+		String base = e.getName();
+    	Element graphics = e.getChild("Graphics", e.getNamespace());
+    	IShape s= ShapeRegistry.fromName(getAttribute(base + ".Graphics", "ShapeType", graphics));
+    	if (ShapeType.DEPRECATED_MAP.containsKey(s)){
+    		s = ShapeType.DEPRECATED_MAP.get(s);
+    		o.setShapeType(s);
+       		if (s.equals(ShapeType.ROUNDED_RECTANGLE) 
+       				|| s.equals(ShapeType.OVAL)){
+    			o.setLineStyle(LineStyle.DOUBLE);
+    			o.setLineThickness(3.0);
+    			o.setColor(Color.LIGHT_GRAY);
+    		}
+    	} 
+    	else 
+    	{
+    	o.setShapeType (s);
+		mapLineStyle(o, e); // LineStyle
+    	}
+	}
+
 	
 	/**
 	 * Reads interaction {@link Interaction} information for pathway model from root
@@ -919,13 +942,11 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 */
 	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
 		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("Color"));
-		// TODO handle dynamic properties....
 		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("LineStyle"));
 		double borderWidth = Double.parseDouble(gfx.getAttributeValue("LineThickness"));
 		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("FillColor"));
 		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("ShapeType"));
 		String zOrder = gfx.getAttributeValue("ZOrder");
-		// TODO handle dynamic properties....
 		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
 				shapeType);
 		if (zOrder != null) {
@@ -938,13 +959,11 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * Reads line style property {@link LineStyleProperty} information. Jdom handles
 	 * schema default values.
 	 * 
-	 * @paramt lb the parent line element.
 	 * @param gfx the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
 		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("Color"));
-		// TODO handle dynamic properties....
 		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("LineStyle"));
 		double lineWidth = Double.parseDouble(gfx.getAttributeValue("LineThickness"));
 		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("ConnectorType"));
