@@ -8,7 +8,7 @@ In Progress:
 - _oldclasses.model_
 - _oldclasses.pathway_
 - _org.pathvisio.debug_
-- <span style="color:blue">**org.pathvisio.io**</span>
+- **org.pathvisio.io**
 - _org.pathvisio.io.gpml2013_
 - _org.pathvisio.io.gpml2021_
 - **org.pathvisio.model**
