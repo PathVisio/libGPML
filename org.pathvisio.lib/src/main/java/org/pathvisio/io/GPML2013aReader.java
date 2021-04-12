@@ -664,6 +664,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readPoints(LineElement lineElement, Element gfx) throws ConverterException {
 		for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
 			String elementId = pt.getAttributeValue("GraphId");
+			if (elementId == null) // TODO graphId is optional in GPML2013a
+				elementId = lineElement.getPathwayModel().getUniqueElementId();
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("ArrowHead"));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("X")),
 					Double.parseDouble(pt.getAttributeValue("Y")));
@@ -672,6 +674,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 				lineElement.addPoint(point);
 		}
 	}
+
+	
 
 	/**
 	 * Reads anchor {@link Anchor} information for line element from element.
@@ -683,35 +687,14 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readAnchors(LineElement lineElement, Element gfx) throws ConverterException {
 		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
 			String elementId = an.getAttributeValue("GraphId");
+			if (elementId == null) // TODO graphId is optional in GPML2013a
+				elementId = lineElement.getPathwayModel().getUniqueElementId();
 			double position = Double.parseDouble(an.getAttributeValue("Position"));
 			Coordinate xy = new Coordinate(); // TODO calculate!!
 			AnchorType shapeType = AnchorType.register(an.getAttributeValue("Shape"));
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), position, xy, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
-		}
-	}
-
-	/**
-	 * Reads elementRef {@link DataNode#setElementRef()} for pathway model
-	 * datanodes.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
-	 * @throws ConverterException
-	 */
-	protected void readDataNodeElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element dns = root.getChild("DataNodes", root.getNamespace());
-		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
-			String elementRef = dn.getAttributeValue("GraphRef");
-			if (elementRef != null && !elementRef.equals("")) {
-				PathwayElement elemRf = pathwayModel.getPathwayElement(elementRef);
-				if (elemRf != null) {
-					String elementId = dn.getAttributeValue("GraphId");
-					DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementId);
-					dataNode.setElementRef(elemRf);
-				}
-			}
 		}
 	}
 

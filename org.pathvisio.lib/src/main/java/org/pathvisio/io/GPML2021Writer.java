@@ -487,13 +487,11 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		ln.addContent(wyps);
 		writePoints(lineElement.getPoints(), wyps);
 		writeAnchors(lineElement.getAnchors(), wyps);
-		writeGroupRef(lineElement.getGroupRef(), ln);
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
 		writeElementInfo(lineElement, ln);
 		writeGroupRef(lineElement.getGroupRef(), ln); // TODO location
-
 	}
 
 	/**

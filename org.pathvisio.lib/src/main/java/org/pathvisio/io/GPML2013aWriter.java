@@ -182,19 +182,18 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 			root.setAttribute("Organism", organism);
 		if (license != null)
 			root.setAttribute("License", license);
-		
+
 		/* set comment group */
 		writeComments(pathway.getComments(), root);
 		// TODO BiopaxRef
 		// TODO PublicationRef
 		writeAttributes(pathway.getDynamicProperties(), root);
-		
+
 		/* set graphics */
 		Element gfx = new Element("Graphics", root.getNamespace());
 		root.addContent(gfx);
 		gfx.setAttribute("BoardWidth", String.valueOf(pathway.getBoardWidth()));
 		gfx.setAttribute("BoardHeight", String.valueOf(pathway.getBoardHeight()));
-
 
 //		result.put("Pathway@BiopaxRef", new AttributeInfo ("xsd:string", null, "optional"));
 
@@ -334,27 +333,18 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 */
 	protected void writeDataNodes(List<DataNode> dataNodes, Element root) throws ConverterException {
 		if (!dataNodes.isEmpty()) {
-			Element dns = new Element("DataNodes", root.getNamespace());
-			List<Element> dnList = new ArrayList<Element>();
 			for (DataNode dataNode : dataNodes) {
 				if (dataNode == null)
 					continue;
 				Element dn = new Element("DataNode", root.getNamespace());
-				writeXref(dataNode.getXref(), dn, true);
-				writeStates(dataNode.getStates(), dn);
+				dn.setAttribute("TextLabel", dataNode.getTextLabel());
 				writeShapedElement(dataNode, dn);
-				writeElementRef(dataNode.getElementRef(), dn);
-				dn.setAttribute("textLabel", dataNode.getTextLabel());
-				dn.setAttribute("type", dataNode.getType().getName());
+				dn.setAttribute("Type", dataNode.getType().getName());
 				writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
-
+				writeXref(dataNode.getXref(), dn, true);
 				if (dn != null) {
-					dnList.add(dn);
+					root.addContent(dn);
 				}
-			}
-			if (dnList != null && dnList.isEmpty() == false) {
-				dns.addContent(dnList);
-				root.addContent(dns);
 			}
 		}
 	}
@@ -366,36 +356,36 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @param dn     the parent data node element.
 	 * @throws ConverterException
 	 */
-	protected void writeStates(List<State> states, Element dn) throws ConverterException {
-		if (!states.isEmpty()) {
-			Element sts = new Element("States", dn.getNamespace());
-			List<Element> stList = new ArrayList<Element>();
-			for (State state : states) {
-				if (state == null)
-					continue;
-				Element st = new Element("State", dn.getNamespace());
-				writeXref(state.getXref(), st, false);
+	protected void writeStates(List<DataNode> dataNodes, Element root) throws ConverterException {
+		if (!dataNodes.isEmpty()) {
+			for (DataNode dataNode : dataNodes) {
+				List<State> states = dataNode.getStates();
+				if (!states.isEmpty()) {
+					for (State state : states) {
+						if (state == null)
+							continue;
+						Element st = new Element("State", root.getNamespace());
+						st.setAttribute("StateType", state.getType().getName()); // TODO order? was not implemented?
+						st.setAttribute("GraphRef", dataNode.getElementId());
+						st.setAttribute("TextLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
+						writeElementInfo(state, st);
 
-				Element gfx = new Element("Graphics", st.getNamespace());
-				st.addContent(gfx);
-				gfx.setAttribute("RelX", Double.toString(state.getRelX()));
-				gfx.setAttribute("RelY", Double.toString(state.getRelY()));
-				gfx.setAttribute("Width", Double.toString(state.getWidth()));
-				gfx.setAttribute("Height", Double.toString(state.getHeight()));
-				writeFontProperty(state.getFontProperty(), gfx);
-				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
+						Element gfx = new Element("Graphics", st.getNamespace());
+						st.addContent(gfx);
+						gfx.setAttribute("RelX", Double.toString(state.getRelX()));
+						gfx.setAttribute("RelY", Double.toString(state.getRelY()));
+						gfx.setAttribute("Width", Double.toString(state.getWidth()));
+						gfx.setAttribute("Height", Double.toString(state.getHeight()));
+						writeFontProperty(state.getFontProperty(), gfx);
+						writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
 
-				writeElementInfo(state, st);
-				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
-				st.setAttribute("type", state.getType().getName());
-
-				if (st != null) {
-					stList.add(st);
+						writeXref(state.getXref(), st, false);
+						
+						if (st != null) {
+							root.addContent(st);
+						}
+					}
 				}
-			}
-			if (stList != null && stList.isEmpty() == false) {
-				sts.addContent(stList);
-				dn.addContent(sts);
 			}
 		}
 	}
@@ -464,14 +454,11 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	protected void writeLineElement(LineElement lineElement, Element ln) throws ConverterException {
-		Element wyps = new Element("Waypoints", ln.getNamespace());
-		ln.addContent(wyps);
-		writePoints(lineElement.getPoints(), wyps);
-		writeAnchors(lineElement.getAnchors(), wyps);
-		writeGroupRef(lineElement.getGroupRef(), ln);
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
+		writePoints(lineElement.getPoints(), gfx);
+		writeAnchors(lineElement.getAnchors(), gfx);
 		writeElementInfo(lineElement, ln);
 		writeGroupRef(lineElement.getGroupRef(), ln); // TODO location
 
@@ -493,14 +480,14 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 			if (point == null)
 				continue;
 			Element pt = new Element("Point", wyps.getNamespace());
-			writeElementId(point.getElementId(), pt);
-			pt.setAttribute("x", Double.toString(point.getXY().getX()));
-			pt.setAttribute("y", Double.toString(point.getXY().getY()));
+			writeElementId(point.getElementId(), pt); //TODO optional....
+			pt.setAttribute("X", Double.toString(point.getXY().getX()));
+			pt.setAttribute("Y", Double.toString(point.getXY().getY()));
 			if (writeElementRef(point.getElementRef(), pt)) {
-				pt.setAttribute("relX", Double.toString(point.getRelX()));
-				pt.setAttribute("relY", Double.toString(point.getRelY()));
+				pt.setAttribute("RelX", Double.toString(point.getRelX()));
+				pt.setAttribute("RelY", Double.toString(point.getRelY()));
 			}
-			pt.setAttribute("arrowHead", point.getArrowHead().getName());
+			pt.setAttribute("ArrowHead", point.getArrowHead().getName());
 			if (pt != null)
 				ptList.add(pt);
 		}
@@ -699,7 +686,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 */
 	protected void writeElementId(String elementId, Element e) {
 		if (elementId != null && !elementId.equals(""))
-			e.setAttribute("elementId", elementId);
+			e.setAttribute("GraphId", elementId);
 	}
 
 	/**
@@ -713,7 +700,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		if (elemRf != null) {
 			String elementRef = elemRf.getElementId();
 			if (elementRef != null && !elementRef.equals(""))
-				e.setAttribute("elementRef", elementRef);
+				e.setAttribute("GraphRef", elementRef);
 			return true;
 		}
 		return false;
@@ -729,7 +716,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		if (grpRf != null) {
 			String groupRef = grpRf.getElementId();
 			if (groupRef != null && !groupRef.equals(""))
-				e.setAttribute("groupRef", groupRef);
+				e.setAttribute("GroupRef", groupRef);
 		}
 	}
 
@@ -742,13 +729,12 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	private void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
+		writeElementInfo(shapedElement, se);
 		Element gfx = new Element("Graphics", se.getNamespace());
 		se.addContent(gfx);
 		writeRectProperty(shapedElement.getRectProperty(), gfx);
 		writeFontProperty(shapedElement.getFontProperty(), gfx);
 		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx);
-		writeElementInfo(shapedElement, se);
-//		writeGroupRef(shapedElement.getGroupRef(), se); // TODO REMOVE
 	}
 
 	/**
@@ -828,10 +814,10 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("LineColor", ColorUtils.colorToHex(lineProp.getLineColor()));
-		gfx.setAttribute("LineStyle", lineProp.getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
-		gfx.setAttribute("LineThickness", String.valueOf(lineProp.getLineWidth()));
 		gfx.setAttribute("ConnectorType", lineProp.getConnectorType().getName());
 		gfx.setAttribute("ZOrder", String.valueOf(lineProp.getZOrder()));
+		gfx.setAttribute("LineStyle", lineProp.getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		gfx.setAttribute("LineThickness", String.valueOf(lineProp.getLineWidth()));
+		gfx.setAttribute("Color", ColorUtils.colorToHex(lineProp.getLineColor()));
 	}
 }
