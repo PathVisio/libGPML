@@ -4,7 +4,7 @@ Java library for reading / writing GPML files
 In Progress: 
 ```diff
 + Packages with classes for the new libPathVisio. 
-```diff
+```
 _Italicized_ packages contain old pathvisio code that will eventually be modified or removed.  
 
 - _oldclasses.io_</span>.
