@@ -380,7 +380,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 						writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
 
 						writeXref(state.getXref(), st, false);
-						
+
 						if (st != null) {
 							root.addContent(st);
 						}
@@ -405,8 +405,8 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 				if (interaction == null)
 					continue;
 				Element ia = new Element("Interaction", root.getNamespace());
-				writeXref(interaction.getXref(), ia, true);
 				writeLineElement(interaction, ia);
+				writeXref(interaction.getXref(), ia, true);
 				if (ia != null) {
 					iaList.add(ia);
 				}
@@ -480,7 +480,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 			if (point == null)
 				continue;
 			Element pt = new Element("Point", wyps.getNamespace());
-			writeElementId(point.getElementId(), pt); //TODO optional....
+			writeElementId(point.getElementId(), pt); // TODO optional....
 			pt.setAttribute("X", Double.toString(point.getXY().getX()));
 			pt.setAttribute("Y", Double.toString(point.getXY().getY()));
 			if (writeElementRef(point.getElementRef(), pt)) {
@@ -540,10 +540,10 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 				if (label == null)
 					continue;
 				Element lb = new Element("Label", root.getNamespace());
+				lb.setAttribute("TextLabel", label.getTextLabel());
 				writeShapedElement(label, lb);
-				lb.setAttribute("textLabel", label.getTextLabel());
 				if (label.getHref() != null)
-					lb.setAttribute("href", label.getHref());
+					lb.setAttribute("Href", label.getHref());
 				writeGroupRef(label.getGroupRef(), lb); // TODO location
 				if (lb != null) {
 					lbList.add(lb);
@@ -572,11 +572,11 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 					continue;
 				Element shp = new Element("Shape", root.getNamespace());
 				if (shape.getTextLabel() != null)
-					shp.setAttribute("textLabel", shape.getTextLabel());
+					shp.setAttribute("TextLabel", shape.getTextLabel());
 				writeShapedElement(shape, shp);
 				writeGroupRef(shape.getGroupRef(), shp); // TODO location
 				Element gfx = shp.getChild("Graphics", shp.getNamespace());
-				gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
+				gfx.setAttribute("Rotation", Double.toString(shape.getRotation()));
 				if (shp != null) {
 					shpList.add(shp);
 				}
@@ -605,9 +605,11 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 				Element grp = new Element("Group", root.getNamespace());
 				writeXref(group.getXref(), grp, false);
 				writeShapedElement(group, grp);
+				grp.setAttribute("GroupID", group.getElementId());
+				grp.setAttribute("GraphId", group.getDynamicProperty(GROUP_GRAPHID)); //TODO check if ok 
+				grp.setAttribute("Style", group.getType().getName());
 				if (group.getTextLabel() != null)
-					grp.setAttribute("textLabel", group.getTextLabel());
-				grp.setAttribute("type", group.getType().getName());
+					grp.setAttribute("TextLabel", group.getTextLabel());
 				writeGroupRef(group.getGroupRef(), grp); // TODO location
 				if (grp != null) {
 					grpList.add(grp);
@@ -747,7 +749,8 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	private void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
-		writeElementId(elementInfo.getElementId(), e);
+		if (elementInfo.getClass() != Group.class)
+			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
 		writeBiopaxRefs(elementInfo.getAnnotationRefs(), e);
 		writePublicationXrefs(elementInfo.getCitationRefs(), e);

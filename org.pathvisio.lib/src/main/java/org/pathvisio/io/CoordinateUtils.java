@@ -3,6 +3,17 @@ package org.pathvisio.io;
 public class CoordinateUtils {
 
 	
+	public Point2D toAbsoluteCoordinate(Point2D p) {
+		Point2D l = ((MLine)getParent()).getConnectorShape().fromLineCoordinate(getPosition());
+		return new Point2D.Double(p.getX() + l.getX(), p.getY() + l.getY());
+	}
+
+	public Point2D toRelativeCoordinate(Point2D p) {
+		Point2D l = ((MLine)getParent()).getConnectorShape().fromLineCoordinate(getPosition());
+		return new Point2D.Double(p.getX() - l.getX(), p.getY() - l.getY());
+	}
+
+
 	
 	/**
 	 * @param mp a point in absolute model coordinates

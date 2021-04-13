@@ -44,7 +44,7 @@ public class Pathway {
 	private String title;
 	private double boardWidth;
 	private double boardHeight;
-	private Color backgroundColor; // default #ffffff (white) TODO or optional
+	private Color backgroundColor; 
 	private Coordinate infoBox; // the centerXY of gpml:InfoBox
 	private String organism;
 	private String source;
@@ -67,7 +67,7 @@ public class Pathway {
 		private String title; //TODO = "New Pathway";? 
 		private double boardWidth;
 		private double boardHeight;
-		private Color backgroundColor;
+		private Color backgroundColor = Color.decode("#ffffff"); // default #ffffff (white) TODO or optional
 		private Coordinate infoBox;
 		private List<Comment> comments;
 		private Map<String, String> dynamicProperties;

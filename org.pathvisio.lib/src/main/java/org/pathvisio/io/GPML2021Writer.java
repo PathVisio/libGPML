@@ -601,9 +601,9 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				if (shape == null)
 					continue;
 				Element shp = new Element("Shape", root.getNamespace());
+				writeShapedElement(shape, shp);
 				if (shape.getTextLabel() != null)
 					shp.setAttribute("textLabel", shape.getTextLabel());
-				writeShapedElement(shape, shp);
 				writeGroupRef(shape.getGroupRef(), shp); // TODO location
 				Element gfx = shp.getChild("Graphics", shp.getNamespace());
 				gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
