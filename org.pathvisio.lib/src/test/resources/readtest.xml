@@ -22,8 +22,7 @@
 			<Xref identifier="Q99798" dataSource="uniprot" />
 			<States>
 				<State elementId="b0e40" textLabel="P" type="phosphate">
-					<Graphics relX="1.0" relY="1.0" centerX="311"
-						centerY="107" width="15.0" height="15.0" shapeType="Oval" />
+					<Graphics relX="1.0" relY="1.0" width="15.0" height="15.0" shapeType="Oval" />
 					<Comment>Phosphate</Comment>
 				</State>
 			</States>

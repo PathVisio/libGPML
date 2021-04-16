@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.bridgedb.bio.DataSourceTxt;
@@ -61,13 +62,13 @@ public class GpmlFormat extends AbstractPathwayFormat {
 
 	public PathwayModel doImport(File file) throws ConverterException {
 		PathwayModel pathwayModel = new PathwayModel();
-		readFromXml(pathwayModel, file, true);
+		readFromXml(pathwayModel, file, true); //TODO validate always true here? 
 //		pathwayModel.clearChangedFlag();
 		return pathwayModel;
 	}
 
 	public void doExport(File file, PathwayModel pathwayModel) throws ConverterException {
-		writeToXml(pathwayModel, file, true);
+		writeToXml(pathwayModel, file, true); //TODO validate always true here? 
 	}
 
 	public String[] getExtensions() {
@@ -122,7 +123,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		} catch (FileNotFoundException e) {
 			throw new ConverterException(e);
 		}
-		return readFromXmlImpl(pathwayModel, new InputSource(in), true);
+		return readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
 	/**
@@ -142,7 +143,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		} catch (Exception e) {
 			throw new ConverterException(e);
 		}
-		return readFromXmlImpl(pathwayModel, new InputSource(in), true);
+		return readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
 //	static public void readFromXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
@@ -156,7 +157,8 @@ public class GpmlFormat extends AbstractPathwayFormat {
 //	}
 //
 //	
-	static public void readFromXml(PathwayModel pathwayModel, InputStream in, boolean validate) throws ConverterException {
+	static public void readFromXml(PathwayModel pathwayModel, InputStream in, boolean validate)
+			throws ConverterException {
 		readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
@@ -175,23 +177,24 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		}
 		return null;
 	}
-	
-	
-
 
 	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 //		PathwayModel pathwayModel = null;
-		try {
-			File xsdFile = new File("C:\\Users\\p70073399\\Documents\\GitHub\\libPathVisio\\org.pathvisio.lib\\src\\test\\resources\\GPML2021.xsd");
+		//TODO fix schema file etc...
+		URL url = Thread.currentThread().getContextClassLoader().getResource(CURRENT.getSchemaFile());
+		File xsdFile = new File(url.getPath());
 
+		try {
 			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
-			System.out.println("file exists, i think");\
-			//TODO if validate turn off and on
-			SAXBuilder builder = new SAXBuilder(schemafactory);
+
+			SAXBuilder builder = new SAXBuilder();
+			/* if validate by schema*/
+			if (validate)
+				builder = new SAXBuilder(schemafactory);
 			Document doc = builder.build(is);
-			
-			System.out.println("file validate success");
+
+			System.out.println("file validated");
 
 			Element root = doc.getRootElement();
 
@@ -217,7 +220,6 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return pathwayModel;// TODO do we want to return pathway or not?
 	}
 
-	
 //	private static void readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 //			throws ConverterException {
 //		// Start XML processing

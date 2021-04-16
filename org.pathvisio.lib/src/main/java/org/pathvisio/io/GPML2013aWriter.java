@@ -74,7 +74,6 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
 
 		Document doc = createJdom(pathwayModel);
-		System.out.println(doc);
 
 		if (validate)
 			validateDocument(doc); // TODO Boolean validate not relevant to 2021...

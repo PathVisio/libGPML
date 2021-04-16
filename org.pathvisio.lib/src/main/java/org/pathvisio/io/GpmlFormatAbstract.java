@@ -54,14 +54,21 @@ public abstract class GpmlFormatAbstract {
 		this.nsGPML = nsGPML;
 	}
 
-	private final Namespace nsGPML;
 	private final String xsdFile;
+	private final Namespace nsGPML;
 
 //	protected abstract Map<String, AttributeInfo> getAttributeInfo();
-
+	
+	public String getSchemaFile() {
+		return xsdFile;
+	}
+	
 	public Namespace getGpmlNamespace() {
 		return nsGPML;
 	}
+
+
+
 //
 //	/**
 //	 * name of resource containing the gpml schema definition
@@ -577,45 +584,45 @@ public abstract class GpmlFormatAbstract {
 //	}
 
 	/**
-	 * validates a JDOM document against the xml-schema definition specified by 'xsdFile'
+	 * validates a JDOM document against the xml-schema definition specified by
+	 * 'xsdFile'
+	 * 
 	 * @param doc the document to validate
 	 */
-	public void validateDocument(Document doc) throws ConverterException
-	{
-		ClassLoader cl = PathwayModel.class.getClassLoader();	
+	public void validateDocument(Document doc) throws ConverterException {
+		ClassLoader cl = PathwayModel.class.getClassLoader();
 		InputStream is = cl.getResourceAsStream(xsdFile);
-		
+
 		System.out.println(xsdFile);
-		if(is != null) {
+		if (is != null) {
 			Schema schema;
 			try {
 				SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				StreamSource ss = new StreamSource (is);
+				StreamSource ss = new StreamSource(is);
 				schema = factory.newSchema(ss);
-				ValidatorHandler vh =  schema.newValidatorHandler();
+				ValidatorHandler vh = schema.newValidatorHandler();
 				SAXOutputter so = new SAXOutputter(vh);
 				so.output(doc);
-				// If no errors occur, the file is valid according to the gpml xml schema definition
-				Logger.log.info("Document is valid according to the xml schema definition '" +
-						xsdFile.toString() + "'");
+				// If no errors occur, the file is valid according to the gpml xml schema
+				// definition
+				Logger.log
+						.info("Document is valid according to the xml schema definition '" + xsdFile.toString() + "'");
 			} catch (SAXException se) {
 				Logger.log.error("Could not parse the xml-schema definition", se);
-				throw new ConverterException (se);
+				throw new ConverterException(se);
 			} catch (JDOMException je) {
-				Logger.log.error("Document is invalid according to the xml-schema definition!: " +
-						je.getMessage(), je);
+				Logger.log.error("Document is invalid according to the xml-schema definition!: " + je.getMessage(), je);
 				XMLOutputter xmlcode = new XMLOutputter(Format.getPrettyFormat());
 
 				Logger.log.error("The invalid XML code:\n" + xmlcode.outputString(doc));
-				throw new ConverterException (je);
+				throw new ConverterException(je);
 			}
 		} else {
-			Logger.log.error("Document is not validated because the xml schema definition '" +
-					xsdFile + "' could not be found in classpath");
-			throw new ConverterException ("Document is not validated because the xml schema definition '" +
-					xsdFile + "' could not be found in classpath");
+			Logger.log.error("Document is not validated because the xml schema definition '" + xsdFile
+					+ "' could not be found in classpath");
+			throw new ConverterException("Document is not validated because the xml schema definition '" + xsdFile
+					+ "' could not be found in classpath");
 		}
 	}
-
 
 }

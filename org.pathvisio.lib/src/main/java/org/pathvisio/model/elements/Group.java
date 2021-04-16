@@ -213,7 +213,9 @@ public class Group extends ShapedElement {
 		} else if (DataSource.systemCodeExists(dataSource)) {
 			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
 		} else {
-			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+			DataSource.register(dataSource, dataSource);
+			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
 		}
 	}
 

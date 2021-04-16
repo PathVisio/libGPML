@@ -159,9 +159,9 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 			} else if (DataSource.systemCodeExists(dataSource)) {
 				return new Xref(identifier, DataSource.getByAlias(dataSource));
 			} else {
-				System.out.println("Invalid xref dataSource: " + dataSource);
-				return null; // TODO how to handle better
-//			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+				DataSource.register(dataSource, dataSource);
+				System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+				return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
 			}
 		}
 		return null;
@@ -900,9 +900,9 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 * @throws ConverterException
 	 */
 	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
-		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor"));
+		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor", "000000")); // TODO default
 		String fontName = gfx.getAttributeValue("fontName");
-		boolean fontWeight = gfx.getAttributeValue("fontWeight").equals("Bold");
+		boolean fontWeight = gfx.getAttributeValue("fontWeight", "Normal").equals("Bold"); // TODO default...
 		boolean fontStyle = gfx.getAttributeValue("fontStyle").equals("Italic");
 		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equals("Underline");
 		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equals("Strikethru");

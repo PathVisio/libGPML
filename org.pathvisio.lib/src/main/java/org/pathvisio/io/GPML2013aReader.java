@@ -676,8 +676,6 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		}
 	}
 
-	
-
 	/**
 	 * Reads anchor {@link Anchor} information for line element from element.
 	 * 
@@ -750,9 +748,9 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			} else if (DataSource.systemCodeExists(dataSource)) {
 				return new Xref(identifier, DataSource.getByAlias(dataSource));
 			} else {
-				System.out.println("Invalid xref dataSource: " + dataSource);
-				return null; // TODO how to handle better
-//			throw new IllegalArgumentException("Invalid xref dataSource: " + dataSource);
+				DataSource.register(dataSource, dataSource);
+				System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+				return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
 			}
 		}
 		return null;
