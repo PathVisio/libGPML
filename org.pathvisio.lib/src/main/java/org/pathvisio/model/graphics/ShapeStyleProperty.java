@@ -59,10 +59,6 @@ public class ShapeStyleProperty {
 		this.zOrder = zOrder;
 	}
 
-	public ShapeStyleProperty() {
-		// TODO 
-	}
-
 	/**
 	 * Constructor for all shape style properties except zOrder, an optional
 	 * attribute.
@@ -153,7 +149,8 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Returns the color used to paint the area of an object, not including its border.
+	 * Returns the color used to paint the area of an object, not including its
+	 * border.
 	 * 
 	 * @return fillColor the fill color of an object.
 	 */
@@ -180,8 +177,8 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
-	 * Mitochondria, Oval.
+	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle,
+	 * Arc, Mitochondria, Oval.
 	 * 
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
 	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
@@ -197,8 +194,8 @@ public class ShapeStyleProperty {
 	}
 
 	/**
-	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle, Arc,
-	 * Mitochondria, Oval.
+	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle,
+	 * Arc, Mitochondria, Oval.
 	 * 
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
 	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".

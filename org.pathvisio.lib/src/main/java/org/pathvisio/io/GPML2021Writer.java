@@ -67,7 +67,6 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 
 		if (validate)
 			validateDocument(doc); // TODO Boolean validate not relevant to 2021...
-
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
@@ -111,6 +110,9 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @throws ConverterException
 	 */
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
+		/* Checks if pathway model interactions/graphicaLines and groups are valid */
+		checkLineAndGroupSize(pathwayModel); // TODO
+		
 		Document doc = new Document();
 		Element root = new Element("Pathway", getGpmlNamespace());
 		doc.setRootElement(root);
@@ -131,6 +133,34 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 
 		}
 		return doc;
+	}
+
+	/**
+	 * Checks whether interactions and graphicaLines have at least two points, and
+	 * groups have at least two pathway element members.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @throws ConverterException
+	 */
+	protected void checkLineAndGroupSize(PathwayModel pathwayModel) throws ConverterException {
+		for (Interaction interaction : pathwayModel.getInteractions()) {
+			if (interaction.getPoints().size() < 2) {
+				throw new ConverterException("Interaction " + interaction.getElementId() + " has "
+						+ interaction.getPoints().size() + " point(s),  must have at least 2.");
+			}
+		}
+		for (GraphicalLine graphicalLine : pathwayModel.getGraphicalLines()) {
+			if (graphicalLine.getPoints().size() < 2) {
+				throw new ConverterException("GraphicalLine " + graphicalLine.getElementId() + " has "
+						+ graphicalLine.getPoints().size() + " point(s),  must have at least 2.");
+			}
+		}
+		for (Group group : pathwayModel.getGroups()) {
+			if (group.getPathwayElements().size() < 2) {
+				throw new ConverterException("Group " + group.getElementId() + " has "
+						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
+			}
+		}
 	}
 
 	/**
@@ -190,7 +220,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		if (xref != null) {
 			String identifier = xref.getId();
 			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null && identifier != null || required) { //TODO identifier can be null? 
+			if (dataSrc != null && identifier != null || required) { // TODO identifier can be null?
 				Element xrf = new Element("Xref", e.getNamespace());
 				String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
 				xrf.setAttribute("identifier", identifier == null ? "" : identifier);

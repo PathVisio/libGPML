@@ -79,11 +79,11 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		pathwayModel.setPathway(pathway); // TODO, should allow instantiate pathwayModel without Pathway???
 
 		readAuthors(pathwayModel, root);
-
+		/* read before annotationRef, citationRef, evidenceRef */
 		readAnnotations(pathwayModel, root);
 		readCitations(pathwayModel, root);
 		readEvidences(pathwayModel, root);
-
+		/* read pathway info */
 		readPathwayInfo(pathwayModel, root);
 		/* read groups first */
 		readGroups(pathwayModel, root);
@@ -92,14 +92,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		readDataNodes(pathwayModel, root);
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
+		/* check groups have at least two pathway elements */
+		checkGroupSize(pathwayModel.getGroups());
 		/* read elementRefs last */
 		readDataNodeElementRef(pathwayModel, root);
 		readPointElementRef(pathwayModel, root);
+		Logger.log.trace("Completed reading gpml. Success.");
 
-		Logger.log.trace("End reading gpml");
-
-		// TODO check groups have at least one pathwayElement inside?
-		// TODO check at least 2 points per line element?
 		// TODO handle relative and absolute coordinates
 		return pathwayModel;
 
@@ -610,13 +609,8 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
 				/* read comment group, evidenceRefs */
 				readLineElement(interaction, ia);
-				if (interaction != null) {
-					if (interaction.getPoints().size() < 2) {
-						System.out.println("Interaction elementId:" + elementId + "has" + interaction.getPoints().size()
-								+ " points,  must have at least 2 points");// TODO error!
-					}
+				if (interaction != null)
 					pathwayModel.addInteraction(interaction);
-				}
 			}
 		}
 	}
@@ -639,12 +633,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
 				readLineElement(graphicalLine, gln);
 				if (graphicalLine != null)
-					if (graphicalLine.getPoints().size() < 2) {
-						System.out.println("GraphicalLine elementId:" + elementId + "has"
-								+ graphicalLine.getPoints().size() + " points,  must have at least 2 points");// TODO //
-																												// error!
-					}
-				pathwayModel.addGraphicalLine(graphicalLine);
+					pathwayModel.addGraphicalLine(graphicalLine);
 			}
 		}
 	}
@@ -661,6 +650,11 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		readElementInfo(lineElement, ln); // comment group and evidenceRef
 		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
 		readPoints(lineElement, wyps);
+		/* check if line has at least 2 point */
+		if (lineElement.getPoints().size() < 2) {
+			throw new ConverterException("Line " + lineElement.getElementId() + " has " + lineElement.getPoints().size()
+					+ " point(s),  must have at least 2.");
+		}
 		readAnchors(lineElement, wyps);
 		/* set optional properties */
 		String groupRef = ln.getAttributeValue("groupRef");
@@ -885,6 +879,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 * default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the rectProperty object.
 	 * @throws ConverterException
 	 */
 	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
@@ -900,6 +895,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 * default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the fontProperty object.
 	 * @throws ConverterException
 	 */
 	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
@@ -921,6 +917,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 * handles schema default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
@@ -943,6 +940,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	 * schema default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the lineStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
@@ -958,6 +956,21 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		return lineStyleProperty;
 	}
 
+	/**
+	 * Checks whether groups have at least two pathway element members.
+	 * 
+	 * @param groups the list of groups.
+	 * @throws ConverterException
+	 */
+	protected void checkGroupSize(List<Group> groups) throws ConverterException {
+		for (Group group : groups) {
+			if (group.getPathwayElements().size() < 2) {
+				throw new ConverterException("Group " + group.getElementId() + " has "
+						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
+			}
+		}
+	}
+	
 	/*---------------------------------------------------------------------------*/
 
 	/*--------------------THESE METHODS MOVED TO GpmlFormatAbstract.java-------------------------------*/

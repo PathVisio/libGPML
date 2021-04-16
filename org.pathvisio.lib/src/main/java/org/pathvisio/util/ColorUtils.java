@@ -7,7 +7,7 @@ import java.util.Map;
 import org.pathvisio.debug.Logger;
 
 /**
- * This utils class for converting color. 
+ * This utils class for converting color.
  * 
  * @author finterly
  */
@@ -19,8 +19,12 @@ public class ColorUtils {
 	 * @param color
 	 */
 	public static String colorToHex(Color color) {
-		String hex = String.format("%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
-		return hex;
+		if (color.getAlpha() == 255) {
+			return String.format("%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+		} else {
+			return String.format("#%02x%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue(),
+					color.getAlpha());
+		}
 	}
 
 	/**
@@ -69,7 +73,7 @@ public class ColorUtils {
 		cMap.put("Transparent", Color.decode("#00000000")); // TODO
 		colorMap = Collections.unmodifiableMap(cMap);
 	}
-	
+
 //	/**
 //	 * Checks if fill color is equal to null or the alpha value is equal to 0.
 //	 * 

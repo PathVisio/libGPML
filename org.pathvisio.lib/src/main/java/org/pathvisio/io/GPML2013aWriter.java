@@ -121,6 +121,10 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
+		
+		/* Checks if pathway model interactions/graphicaLines and groups are valid */
+		checkLineAndGroupSize(pathwayModel); // TODO
+		
 		Document doc = new Document();
 		Element root = new Element("Pathway", getGpmlNamespace());
 		doc.setRootElement(root);
@@ -147,6 +151,34 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		return doc;
 	}
 
+	/**
+	 * Checks whether interactions and graphicaLines have at least two points, and
+	 * groups have at least two pathway element members.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @throws ConverterException
+	 */
+	protected void checkLineAndGroupSize(PathwayModel pathwayModel) throws ConverterException {
+		for (Interaction interaction : pathwayModel.getInteractions()) {
+			if (interaction.getPoints().size() < 2) {
+				throw new ConverterException("Interaction " + interaction.getElementId() + " has "
+						+ interaction.getPoints().size() + " point(s),  must have at least 2.");
+			}
+		}
+		for (GraphicalLine graphicalLine : pathwayModel.getGraphicalLines()) {
+			if (graphicalLine.getPoints().size() < 2) {
+				throw new ConverterException("GraphicalLine " + graphicalLine.getElementId() + " has "
+						+ graphicalLine.getPoints().size() + " point(s),  must have at least 2.");
+			}
+		}
+		for (Group group : pathwayModel.getGroups()) {
+			if (group.getPathwayElements().size() < 2) {
+				throw new ConverterException("Group " + group.getElementId() + " has "
+						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
+			}
+		}
+	}
+	
 	/**
 	 * Writes pathway object {@link Pathway} information to root element.
 	 * 

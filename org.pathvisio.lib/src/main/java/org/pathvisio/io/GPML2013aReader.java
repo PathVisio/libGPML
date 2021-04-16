@@ -94,12 +94,15 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		readPathwayInfo(pathwayModel, root);
 		/* read groups first */
 		readGroups(pathwayModel, root);
+		readGroupGroupRef(pathwayModel, root);
 		readLabels(pathwayModel, root);
 		readShapes(pathwayModel, root);
 		readDataNodes(pathwayModel, root);
 		readStates(pathwayModel, root); // state elementRef refers to parent DataNode
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
+		/* check groups have at least two pathway elements */
+		checkGroupSize(pathwayModel.getGroups());
 		/* read elementRefs last */
 		readDataNodeElementRef(pathwayModel, root);
 		readPointElementRef(pathwayModel, root);
@@ -239,7 +242,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		Element cits = root.getChild("Citations", root.getNamespace());
 		if (cits != null) {
 			for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
-				String elementId = cit.getAttributeValue("elementId");
+				String elementId = cit.getAttributeValue("elementId"); // TODO
 				Xref xref = readXref(cit);
 				Citation citation = new Citation(elementId, pathwayModel, xref);
 				/* set optional properties */
@@ -353,7 +356,9 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	/**
 	 * Reads group {@link Group} information for pathway model from root element.
 	 * 
-	 * TODO notes about groupId and graphId...
+	 * NB: A group has identifier GroupId (essentially ElementId), while GraphId is
+	 * optional. A group has GraphId if there is at least one {@link Point}
+	 * referring to this group by GraphRef.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -361,21 +366,25 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 */
 	protected void readGroups(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
-			/* for group, groupId is essentially elementId */
 			String elementId = grp.getAttributeValue("GroupId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			GroupType type = GroupType.register(grp.getAttributeValue("Style"));
 			Element gfx = grp.getChild("Graphics", grp.getNamespace());
-			RectProperty rectProperty = new RectProperty(); // TODO Groups did not have these....
-			FontProperty fontProperty = new FontProperty(); // TODO Set based on Type...?
-			ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(); // TODO
+			RectProperty rectProperty = readRectProperty(gfx);
+			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
+					12, HAlignType.CENTER, VAlignType.MIDDLE);
+			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
 			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
+			/* group of type "Pathway" has custom default font size and name */
+			if (type.getName() == "Pathway") {
+				group.getFontProperty().setFontSize(32);
+				group.getFontProperty().setFontName("Times"); // TODO
+			}
 			/* read comment group, evidenceRefs */
 			readElementInfo(group, grp);
 			/* set optional properties */
 			String textLabel = grp.getAttributeValue("TextLabel");
-			/* for group, graphId is optional and referred to only by points */
 			String graphId = grp.getAttributeValue("GraphId");
 			String biopaxRef = grp.getAttributeValue("BiopaxRef");
 			if (textLabel != null)
@@ -389,10 +398,22 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			if (group != null)
 				pathwayModel.addGroup(group);
 		}
-		/**
-		 * Because a group may refer to another group not yet initialized. We read all
-		 * group elements before setting groupRef.
-		 */
+
+	}
+
+	/**
+	 * Reads groupRef property {@link Group#setGroupRef(Group)} information of group
+	 * pathway element. Because a group may refer to another group not yet
+	 * initialized. We read and set groupRef after reading all group elements.
+	 * 
+	 * NB: this method is separated out because {@link #readGroups()} method became
+	 * long.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
+	protected void readGroupGroupRef(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
 			String groupRef = grp.getAttributeValue("GroupRef");
 			if (groupRef != null && !groupRef.equals("")) {
@@ -400,6 +421,37 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 				Group group = (Group) pathwayModel.getPathwayElement(elementId);
 				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
 			}
+		}
+	}
+
+	/**
+	 * Reads default shape style property for type of group. In 2013a, group
+	 * graphics was hard coded for each group type in GroupPainterRegistry.java.
+	 * {@link Group#setShapeStyleProperty()}. Hover fillColor implemented in view.
+	 * 
+	 * @param type the group type.
+	 * @returns the shapeStyleProperty object.
+	 * @throws ConverterException
+	 */
+	protected ShapeStyleProperty readGroupShapeStyleProperty(GroupType type) throws ConverterException {
+		if (type.getName() == "Group") {
+			/* fillColor translucent blue, hovers to transparent */
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, Color.decode("#0000ff0c"),
+					ShapeType.RECTANGLE);
+		} else if (type.getName() == "Complex") {
+			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, Color.decode("#b4b46419"),
+					ShapeType.OCTAGON);
+		} else if (type.getName() == "Pathway") {
+			/* fontSize 32, fontName "Times" (was not implemented) */
+			/* fillColor translucent green, hovers to more opaque green #00ff0019 */
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, Color.decode("#00ff000c"),
+					ShapeType.RECTANGLE);
+		} else {
+			/* GroupType "None", or default */
+			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, Color.decode("#b4b46419"),
+					ShapeType.RECTANGLE);
 		}
 	}
 
@@ -448,6 +500,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readShapes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element shp : root.getChildren("Shape", root.getNamespace())) {
 			String elementId = shp.getAttributeValue("GraphId");
+			if (elementId == null) // TODO graphId is optional in GPML2013a
+				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
@@ -482,6 +536,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readDataNodes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element dn : root.getChildren("DataNode", root.getNamespace())) {
 			String elementId = dn.getAttributeValue("GraphId");
+			if (elementId == null) // TODO graphId is optional in GPML2013a
+				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = dn.getChild("Graphics", dn.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
@@ -516,6 +572,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readStates(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element st : root.getChildren("State", root.getNamespace())) {
 			String elementId = st.getAttributeValue("GraphId");
+			if (elementId == null) // TODO graphId is optional in GPML2013a
+				elementId = pathwayModel.getUniqueElementId();
 			String textLabel = st.getAttributeValue("TextLabel");
 			StateType type = StateType.register(st.getAttributeValue("StateType"));
 			Element gfx = st.getChild("Graphics", st.getNamespace());
@@ -592,19 +650,16 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
 			String elementId = ia.getAttributeValue("GraphId");
+			if (elementId == null) // TODO graphId is optional in GPML2013a
+				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			Xref xref = readXref(ia);
 			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
 			/* read comment group, evidenceRefs */
 			readLineElement(interaction, ia);
-			if (interaction != null) {
-				if (interaction.getPoints().size() < 2) {
-					System.out.println("Interaction elementId:" + elementId + "has" + interaction.getPoints().size()
-							+ " points,  must have at least 2 points");// TODO error!
-				}
+			if (interaction != null)
 				pathwayModel.addInteraction(interaction);
-			}
 		}
 	}
 
@@ -619,16 +674,14 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element gln : root.getChildren("GraphicaLine", root.getNamespace())) {
 			String elementId = gln.getAttributeValue("GraphId");
+			if (elementId == null) // TODO graphId is optional in GPML2013a
+				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
 			readLineElement(graphicalLine, gln);
 			if (graphicalLine != null)
-				if (graphicalLine.getPoints().size() < 2) {
-					System.out.println("GraphicalLine elementId:" + elementId + "has" + graphicalLine.getPoints().size()
-							+ " points,  must have at least 2 points");// TODO error!
-				}
-			pathwayModel.addGraphicalLine(graphicalLine);
+				pathwayModel.addGraphicalLine(graphicalLine);
 		}
 	}
 
@@ -648,6 +701,11 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		}
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
 		readPoints(lineElement, gfx);
+		/* check if line has at least 2 point */
+		if (lineElement.getPoints().size() < 2) {
+			throw new ConverterException("Line " + lineElement.getElementId() + " has " + lineElement.getPoints().size()
+					+ " point(s),  must have at least 2.");
+		}
 		readAnchors(lineElement, gfx);
 		/* set optional properties */
 		String groupRef = ln.getAttributeValue("GroupRef");
@@ -862,6 +920,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the rectProperty object.
 	 * @throws ConverterException
 	 */
 	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
@@ -879,6 +938,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the fontProperty object.
 	 * @throws ConverterException
 	 */
 	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
@@ -902,6 +962,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * handles schema default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
@@ -926,6 +987,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * schema default values.
 	 * 
 	 * @param gfx the parent graphics element.
+	 * @returns the lineStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
@@ -939,6 +1001,21 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
 		}
 		return lineStyleProperty;
+	}
+
+	/**
+	 * Checks whether groups have at least two pathway element members.
+	 * 
+	 * @param groups the list of groups.
+	 * @throws ConverterException
+	 */
+	protected void checkGroupSize(List<Group> groups) throws ConverterException {
+		for (Group group : groups) {
+			if (group.getPathwayElements().size() < 2) {
+				throw new ConverterException("Group " + group.getElementId() + " has "
+						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
+			}
+		}
 	}
 
 }
