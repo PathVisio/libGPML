@@ -186,7 +186,8 @@ public class GpmlFormat extends AbstractPathwayFormat {
 			File xsdFile = new File("C:\\Users\\p70073399\\Documents\\GitHub\\libPathVisio\\org.pathvisio.lib\\src\\test\\resources\\GPML2021.xsd");
 
 			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
-			System.out.println("file exists, i think");
+			System.out.println("file exists, i think");\
+			//TODO if validate turn off and on
 			SAXBuilder builder = new SAXBuilder(schemafactory);
 			Document doc = builder.build(is);
 			

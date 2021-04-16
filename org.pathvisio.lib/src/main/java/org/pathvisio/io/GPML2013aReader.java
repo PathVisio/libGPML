@@ -43,6 +43,7 @@ import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
+import org.pathvisio.util.ColorUtils;
 
 /**
  * This class reads a PathwayModel from an input source (GPML 2013a).

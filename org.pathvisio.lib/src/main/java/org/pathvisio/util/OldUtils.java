@@ -1,4 +1,4 @@
-package org.pathvisio.io;
+package org.pathvisio.util;
 
 import java.awt.geom.Point2D;
 import java.io.File;
@@ -12,6 +12,8 @@ import java.util.Set;
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
 

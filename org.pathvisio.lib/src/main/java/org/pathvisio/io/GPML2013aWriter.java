@@ -35,6 +35,7 @@ import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
+import org.pathvisio.util.ColorUtils;
 
 /**
  * This class writes a PathwayModel to an output (GPML 2013a).

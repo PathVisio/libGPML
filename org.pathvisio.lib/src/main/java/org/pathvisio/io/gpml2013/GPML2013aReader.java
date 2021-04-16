@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.jdom2.Element;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.io.ColorUtils;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
 import org.pathvisio.io.gpml2021.GPMLReader;
@@ -50,6 +49,7 @@ import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.model.type.VAlignType;
+import org.pathvisio.util.ColorUtils;
 
 public class GPML2013aReader implements GPMLReader {
 

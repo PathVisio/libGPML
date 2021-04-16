@@ -1,4 +1,4 @@
-package org.pathvisio.io;
+package org.pathvisio.util;
 
 import java.awt.Color;
 import java.util.Collections;

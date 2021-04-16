@@ -40,10 +40,10 @@ import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.io.ColorUtils;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.*;
+import org.pathvisio.util.ColorUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -273,61 +273,18 @@ public abstract class GPML2013aFormatAbstract {
 		setAttribute("Pathway", "Organism", root, p.getOrganism());
 		setAttribute("Pathway", "Data-Source", root, p.getSource());
 		setAttribute("Pathway", "Version", root, p.getVersion());
-
-		// TODO License?
-
-		// TODO Handle
 		setAttribute("Pathway", "Author", root, p.getAuthor.getName());
 		setAttribute("Pathway", "Email", root, p.getEmail());
 		setAttribute("Pathway", "Maintainer", root, p.getMaintainer());
 		setAttribute("Pathway", "Last-Modified", root, p.getLastModified());
-		writeComments(p, root);
-		writeBiopaxRef(p, root);
-		writeAttributes(p, root);
-		
-
-		Element graphics = new Element("Graphics", nsGPML);
-		root.addContent(graphics);
 		setAttribute("Pathway.Graphics", "BoardWidth", graphics, String.valueOf(p.getBoardWidth()));
 		setAttribute("Pathway.Graphics", "BoardHeight", graphics, String.valueOf(p.getBoardHeight()));
-
-		writeMappInfoVariable(root, p);
-		
-		// Add element Xref
-		Element xref = new Element("Xref", getGpmlNamespace());
-
-		// TODO: How to handle DataSource properly?
-		String identifier = p.getXref().getId();
-		String dataSource = p.getXref().getDataSource().getFullName();
 		setAttribute("Pathway.Xref", "dataSource", xref, dataSource == null ? "" : dataSource);
 		setAttribute("Pathway.Xref", "identifier", xref, identifier); // TODO also "" for identifier?
-		root.addContent(xref);
-
-		
-		// Add elements Author
-		for (Author a : p.getAuthors()) {
-			if (a == null)
-				continue;
-			Element author = new Element("Author", getGpmlNamespace());
-			setAttribute("Pathway.Author", "name", author, a.getName());
-			setAttribute("Pathway.Author", "fullName", author, a.getFullName());
-			setAttribute("Pathway.Author", "email", author, a.getEmail());
-			root.addContent(author);
-		}
-
-		Element graphics = new Element("Graphics", nsGPML);
-		root.addContent(graphics);
 		setAttribute("Pathway.Graphics", "BoardWidth", graphics, String.valueOf(p.getBoardWidth()));
 		setAttribute("Pathway.Graphics", "BoardHeight", graphics, String.valueOf(p.getBoardHeight()));
 	}
-	}
-
-	public abstract PathwayElement readElement(Element e, Pathway p) throws ConverterException;
-
-	public PathwayElement readElement(Element e) throws ConverterException {
-		return readElement(e, null);
-	}
-
+	
 
 
 	protected void readComments(PathwayElement o, Element e) throws ConverterException {

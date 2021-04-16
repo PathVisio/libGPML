@@ -1,4 +1,4 @@
-package org.pathvisio.io;
+package org.pathvisio.util;
 
 public class CoordinateUtils {
 

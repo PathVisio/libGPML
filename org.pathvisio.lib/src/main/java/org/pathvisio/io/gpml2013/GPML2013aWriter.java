@@ -30,7 +30,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.pathvisio.io.ColorUtils;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.io.GpmlFormatAbstract.AttributeInfo;
@@ -54,6 +53,7 @@ import org.pathvisio.model.pathwayelements.Label;
 import org.pathvisio.model.pathwayelements.Shape;
 import org.pathvisio.model.pathwayelements.State;
 import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.util.ColorUtils;
 
 import keep.DynamicProperty;
 import keep.IElementIdContainer;

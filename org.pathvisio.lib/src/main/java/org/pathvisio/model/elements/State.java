@@ -34,7 +34,6 @@ public class State extends ElementInfo {
 	private StateType type;
 	private double relX;
 	private double relY;
-//	private Coordinate centerXY; // TODO
 	private double width;
 	private double height;
 	private FontProperty fontProperty;
@@ -209,24 +208,6 @@ public class State extends ElementInfo {
 			throw new IllegalArgumentException("relY " + relY + " should be between -1.0 and 1.0");
 		}
 	}
-
-//	/**
-//	 * Returns the center x and y coordinate of the state.
-//	 * 
-//	 * @return xy the absolute coordinate of the middle of the state.
-//	 */
-//	public Coordinate getCenterXY() {
-//		return centerXY;
-//	}
-//
-//	/**
-//	 * Sets the center x and y coordinate of the state.
-//	 * 
-//	 * @param xy the absolute coordinate of the middle of the state.
-//	 */
-//	public void setCenterXY(Coordinate centerXY) {
-//		this.centerXY = centerXY;
-//	}
 
 	/**
 	 * Returns the width of the state.
