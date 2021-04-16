@@ -63,7 +63,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
 
 		Document doc = createJdom(pathwayModel);
-		System.out.println(doc);
+//		System.out.println(doc);
 
 		if (validate)
 			validateDocument(doc); // TODO Boolean validate not relevant to 2021...
@@ -190,11 +190,11 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 		if (xref != null) {
 			String identifier = xref.getId();
 			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null && identifier != null || required) {
+			if (dataSrc != null && identifier != null || required) { //TODO identifier can be null? 
 				Element xrf = new Element("Xref", e.getNamespace());
 				String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
 				xrf.setAttribute("identifier", identifier == null ? "" : identifier);
-				xrf.setAttribute("dataSource", dataSource == null ? "" : dataSource); // TODO null handling
+				xrf.setAttribute("dataSource", dataSource); // TODO null handling
 				e.addContent(xrf);
 			}
 		}
@@ -399,7 +399,6 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 				st.addContent(gfx);
 				gfx.setAttribute("relX", Double.toString(state.getRelX()));
 				gfx.setAttribute("relY", Double.toString(state.getRelY()));
-				// TODO coordinate xy????
 				gfx.setAttribute("width", Double.toString(state.getWidth()));
 				gfx.setAttribute("height", Double.toString(state.getHeight()));
 				writeFontProperty(state.getFontProperty(), gfx);

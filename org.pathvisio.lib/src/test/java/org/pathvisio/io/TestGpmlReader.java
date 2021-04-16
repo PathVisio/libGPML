@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 
 public class TestGpmlReader extends TestCase {
 
-	private static final File PATHVISIO_BASEDIR = new File("../..");
+//	private static final File PATHVISIO_BASEDIR = new File("../..");
 
 
 	public static void testRead2021() throws ConverterException, IOException

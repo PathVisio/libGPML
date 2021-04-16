@@ -16,30 +16,27 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-
-import org.bridgedb.Xref;
-import org.pathvisio.io.*;
 import org.pathvisio.model.*;
-import org.pathvisio.model.elements.*;
-import org.pathvisio.model.graphics.*;
-import org.pathvisio.model.type.*;
+
 
 import junit.framework.TestCase;
 
 public class TestGpml extends TestCase {
 
-	private static final File PATHVISIO_BASEDIR = new File("../..");
+//	private static final File PATHVISIO_BASEDIR = new File("../..");
 
 	public static void testReadWrite() throws IOException, ConverterException {
+		
+		System.out.println("OK until here");
+
 		URL url = Thread.currentThread().getContextClassLoader().getResource("readtest.xml");
+		
 		File file = new File(url.getPath());
 		assertTrue (file.exists());
-	
+
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 		

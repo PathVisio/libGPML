@@ -52,16 +52,16 @@ public class TestGpmlWriter extends TestCase {
 		DataNode dataNode = new DataNode("d1", pathwayModel, new RectProperty(new Coordinate(1, 1), 1, 1),
 				new FontProperty(null, "Arial", false, false, false, false, 0, null, null), new ShapeStyleProperty(),
 				"TextLabel", DataNodeType.ALIAS, null);
-		State state = new State("s1", pathwayModel, dataNode, null, StateType.EPIGENETIC_MODIFICATION, 0, 0,
-				new RectProperty(new Coordinate(1, 1), 1, 1),
-				new FontProperty(null, "Arial", false, false, false, false, 0, null, null), new ShapeStyleProperty());
+		
+//		State state = new State("s1", pathwayModel, dataNode, null, StateType.EPIGENETIC_MODIFICATION, 0, 0, 1, 1,
+//				new FontProperty(null, "Arial", false, false, false, false, 0, null, null), new ShapeStyleProperty());
 		
 		Interaction interaction = new Interaction("i1", pathwayModel, new LineStyleProperty(null, null, 0, null), null, null);
 		Point point = new Point("p1", pathwayModel, ArrowHeadType.ARROW, new Coordinate(1, 1));
 		Point point2 = new Point("p2", pathwayModel, ArrowHeadType.ARROW, new Coordinate(1, 1));
 		interaction.addPoint(point);
 		interaction.addPoint(point2);
-		dataNode.addState(state);
+//		dataNode.addState(state);
 		pathwayModel.addAnnotation(annotation);
 		pathwayModel.addDataNode(dataNode);
 		pathwayModel.addInteraction(interaction);
@@ -69,7 +69,7 @@ public class TestGpmlWriter extends TestCase {
 //		pathwayModel.readFromXml(in, true);
 		File tmp = File.createTempFile("testwrite", "gpml");
 		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-		System.out.println(tmp);
+//		System.out.println(tmp);
 
 	}
 

@@ -154,16 +154,19 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 		if (xref != null) {
 			String identifier = xref.getAttributeValue("identifier");
 			String dataSource = xref.getAttributeValue("dataSource");
-			if (DataSource.fullNameExists(dataSource)) {
-				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-			} else if (DataSource.systemCodeExists(dataSource)) {
-				return new Xref(identifier, DataSource.getByAlias(dataSource));
-			} else {
-				DataSource.register(dataSource, dataSource);
-				System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
-				return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
+			if (dataSource != null && !dataSource.equals("")) {
+				if (DataSource.fullNameExists(dataSource)) {
+					return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+				} else if (DataSource.systemCodeExists(dataSource)) {
+					return new Xref(identifier, DataSource.getByAlias(dataSource));
+				} else {
+					DataSource.register(dataSource, dataSource);
+					System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
+				}
 			}
 		}
+		System.out.println("Write null");
 		return null;
 	}
 

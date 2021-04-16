@@ -71,7 +71,6 @@ public class State extends ElementInfo {
 		this.type = type;
 		this.relX = relX;
 		this.relY = relY;
-//		this.centerXY = centerXY; // TODO optional???
 		this.width = width;
 		this.height = height;
 		this.fontProperty = fontProperty;

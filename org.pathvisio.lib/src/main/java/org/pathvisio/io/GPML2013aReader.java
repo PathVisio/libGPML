@@ -741,16 +741,18 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected Xref readXref(Element e) throws ConverterException {
 		Element xref = e.getChild("Xref", e.getNamespace());
 		if (xref != null) {
-			String identifier = xref.getAttributeValue("ID");
-			String dataSource = xref.getAttributeValue("Database");
-			if (DataSource.fullNameExists(dataSource)) {
-				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-			} else if (DataSource.systemCodeExists(dataSource)) {
-				return new Xref(identifier, DataSource.getByAlias(dataSource));
-			} else {
-				DataSource.register(dataSource, dataSource);
-				System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
-				return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
+			String identifier = xref.getAttributeValue("identifier");
+			String dataSource = xref.getAttributeValue("dataSource");
+			if (dataSource != null && !dataSource.equals("")) {
+				if (DataSource.fullNameExists(dataSource)) {
+					return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+				} else if (DataSource.systemCodeExists(dataSource)) {
+					return new Xref(identifier, DataSource.getByAlias(dataSource));
+				} else {
+					DataSource.register(dataSource, dataSource);
+					System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
+				}
 			}
 		}
 		return null;
