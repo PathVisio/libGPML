@@ -59,7 +59,7 @@ public class Group extends ShapedElement {
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, String textLabel, Xref xref) {
 		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
 		this.type = type;
-		this.pathwayElements = new ArrayList<PathwayElement>(); // TODO new ArrayList<PathwayElement>();
+		this.pathwayElements = new ArrayList<PathwayElement>(); 
 		this.textLabel = textLabel;
 		this.xref = xref;
 	}
@@ -169,14 +169,29 @@ public class Group extends ShapedElement {
 		this.type = type;
 	}
 
+	/**
+	 * Returns the list of pathway element members of the group.
+	 * 
+	 * @return pathwayElements the list of pathway elements belonging to the group.
+	 */
 	public List<PathwayElement> getPathwayElements() {
 		return pathwayElements;
 	}
 
+	/**
+	 * Adds the given pathway element to pathwayElements list of the group.
+	 * 
+	 * @param pathwayElement the given pathwayElement to add.
+	 */
 	public void addPathwayElement(PathwayElement pathwayElement) {
 		pathwayElements.add(pathwayElement);
 	}
 
+	/**
+	 * Removes the given pathway element from pathwayElements list of the group.
+	 * 
+	 * @param pathwayElement the given pathwayElement to remove.
+	 */
 	public void removePathwayElement(PathwayElement pathwayElement) {
 		pathwayElements.remove(pathwayElement);
 	}

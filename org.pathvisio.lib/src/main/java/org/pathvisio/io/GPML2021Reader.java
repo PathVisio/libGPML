@@ -675,7 +675,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead"));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
 					Double.parseDouble(pt.getAttributeValue("y")));
-			Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
+			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 			if (point != null) // set elementRef and optional properties later
 				lineElement.addPoint(point);
 		}
@@ -695,7 +695,7 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 			Coordinate xy = new Coordinate(Double.parseDouble(an.getAttributeValue("x")),
 					Double.parseDouble(an.getAttributeValue("y")));
 			AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType"));
-			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), position, xy, shapeType);
+			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, xy, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
 		}

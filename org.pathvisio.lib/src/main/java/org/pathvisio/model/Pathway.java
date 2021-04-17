@@ -64,10 +64,10 @@ public class Pathway {
 	 */
 	public static class PathwayBuilder {
 
-		private String title; //TODO = "New Pathway";? 
-		private double boardWidth;
-		private double boardHeight;
-		private Color backgroundColor = Color.decode("#ffffff"); // default #ffffff (white) TODO or optional
+		private String title = "Click to add title"; //TODO  
+		private double boardWidth = 0;
+		private double boardHeight = 0;
+		private Color backgroundColor = Color.decode("#ffffff"); 
 		private Coordinate infoBox;
 		private List<Comment> comments;
 		private Map<String, String> dynamicProperties;

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -28,11 +29,12 @@ import org.bridgedb.Xref;
  */
 public class Evidence extends PathwayElement {
 
+	/* list of parent pathway elements which have evidenceRef for this evidence. */
+	private List<PathwayElement> pathwayElements;
 	private String value; // optional
 	private Xref xref;
 	private String url; // optional
-	/* list of parent pathway elements which have evidenceRef for this evidence. */
-	private List<PathwayElement> parentElements;
+
 	/*
 	 * NB: Manipulated the order of variables to overload constructor. This is not
 	 * best practice, however variable inheritance complicates use of a builder.
@@ -50,6 +52,7 @@ public class Evidence extends PathwayElement {
 	 */
 	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref, String url) {
 		super(elementId, pathwayModel);
+		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.value = value;
 		this.xref = xref;
 		this.url = url;
@@ -74,6 +77,34 @@ public class Evidence extends PathwayElement {
 	 */
 	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref) {
 		this(elementId, pathwayModel, null, xref, null);
+	}
+
+	/**
+	 * Returns the list of pathway elements with evidenceRef for the evidence.
+	 * 
+	 * @return pathwayElements the list of pathway elements which reference the
+	 *         evidence.
+	 */
+	public List<PathwayElement> getPathwayElements() {
+		return pathwayElements;
+	}
+
+	/**
+	 * Adds the given pathway element to pathwayElements list of the evidence.
+	 * 
+	 * @param pathwayElement the given pathwayElement to add.
+	 */
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.add(pathwayElement);
+	}
+
+	/**
+	 * Removes the given pathway element from pathwayElements list of the evidence.
+	 * 
+	 * @param pathwayElement the given pathwayElement to remove.
+	 */
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.remove(pathwayElement);
 	}
 
 	/**

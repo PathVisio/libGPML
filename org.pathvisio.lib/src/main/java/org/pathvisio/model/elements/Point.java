@@ -28,11 +28,12 @@ import org.pathvisio.model.type.ArrowHeadType;
  */
 public class Point extends PathwayElement {
 
+	private LineElement lineElement; // parent line element
 	private ArrowHeadType arrowHead; // line by default
 	private Coordinate xy;
 	/*
 	 * The pathway element to which the point refers to. In GPML, this is elementRef
-	 * which refers to the elementId of a pathway element. 
+	 * which refers to the elementId of a pathway element.
 	 */
 	private PathwayElement elementRef; // optional
 	private double relX; // optional
@@ -51,9 +52,10 @@ public class Point extends PathwayElement {
 	 * @param relX       the relative x coordinate.
 	 * @param relY       the relative x coordinate.
 	 */
-	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy,
-			PathwayElement elementRef, double relX, double relY) {
+	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
+			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
 		super(elementId, pathwayModel);
+		this.lineElement = lineElement;
 		this.arrowHead = arrowHead;
 		this.xy = xy;
 		this.elementRef = elementRef;
@@ -70,10 +72,29 @@ public class Point extends PathwayElement {
 	 * @param x         the x coordinate position of the point.
 	 * @param y         the y coordinate position of the point.
 	 */
-	public Point(String elementId, PathwayModel pathwayModel, ArrowHeadType arrowHead, Coordinate xy) {
+	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead, Coordinate xy) {
 		super(elementId, pathwayModel);
+		this.lineElement = lineElement;
 		this.arrowHead = arrowHead;
 		this.xy = xy;
+	}
+
+	/**
+	 * Returns the parent interaction or graphicalLine to which the point belongs.
+	 * 
+	 * @return lineElement the parent line element of the point.
+	 */
+	public LineElement getLineElement() {
+		return lineElement;
+	}
+
+	/**
+	 * Sets the parent interaction or graphicalLine to which the point belongs.
+	 * 
+	 * @param lineElement the parent line element of the point.
+	 */
+	public void setLineElement(LineElement lineElement) {
+		this.lineElement = lineElement;
 	}
 
 	/**

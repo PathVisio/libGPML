@@ -29,6 +29,7 @@ import org.pathvisio.model.type.AnchorType;
  */
 public class Anchor extends PathwayElement {
 
+	private LineElement lineElement; // parent line element
 	private double position;
 	private Coordinate xy;
 	private AnchorType shapeType = AnchorType.NONE;
@@ -45,8 +46,9 @@ public class Anchor extends PathwayElement {
 	 * @param y         the y coordinate position of the anchor.
 	 * @param shapeType the visual representation of an anchor.
 	 */
-	public Anchor(String elementId, PathwayModel pathwayModel, double position, Coordinate xy, AnchorType shapeType) {
+	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position, Coordinate xy, AnchorType shapeType) {
 		super(elementId, pathwayModel);
+		this.lineElement = lineElement;
 		if (position < 0 || position > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
@@ -55,6 +57,25 @@ public class Anchor extends PathwayElement {
 		if (shapeType != null)
 			this.shapeType = shapeType;
 	}
+	
+	/**
+	 * Returns the parent interaction or graphicalLine to which the anchor belongs.
+	 * 
+	 * @return lineElement the parent line element of the anchor.
+	 */
+	public LineElement getLineElement() {
+		return lineElement;
+	}
+
+	/**
+	 * Sets the parent interaction or graphicalLine to which the anchor belongs.
+	 * 
+	 * @param lineElement the parent line element of the anchor.
+	 */
+	public void setLineElement(LineElement lineElement) {
+		this.lineElement = lineElement;
+	}
+	
 
 	/**
 	 * Gets the proportional distance of an anchor along the line it belongs to,

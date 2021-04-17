@@ -728,7 +728,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("ArrowHead"));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("X")),
 					Double.parseDouble(pt.getAttributeValue("Y")));
-			Point point = new Point(elementId, lineElement.getPathwayModel(), arrowHead, xy);
+			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 			if (point != null) // set elementRef and optional properties later
 				lineElement.addPoint(point);
 		}
@@ -749,7 +749,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			double position = Double.parseDouble(an.getAttributeValue("Position"));
 			Coordinate xy = new Coordinate(); // TODO calculate!!
 			AnchorType shapeType = AnchorType.register(an.getAttributeValue("Shape"));
-			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), position, xy, shapeType);
+			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, xy, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
 		}

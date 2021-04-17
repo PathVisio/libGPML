@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import org.pathvisio.io.*;
 import java.io.Reader;
 
 import org.pathvisio.model.elements.*;
+import org.pathvisio.model.graphics.Coordinate;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
@@ -56,25 +58,7 @@ public class PathwayModel {
 	private List<Group> groups;
 
 	/**
-	 * Constructor for this class, creates a new gpml document
-	 */
-	public PathwayModel() {
-		this.pathway = null;
-		this.authors = new ArrayList<Author>();
-		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
-		this.annotations = new ArrayList<Annotation>();
-		this.citations = new ArrayList<Citation>();
-		this.evidences = new ArrayList<Evidence>();
-		this.dataNodes = new ArrayList<DataNode>();
-		this.interactions = new ArrayList<Interaction>();
-		this.graphicalLines = new ArrayList<GraphicalLine>();
-		this.labels = new ArrayList<Label>();
-		this.shapes = new ArrayList<Shape>();
-		this.groups = new ArrayList<Group>();
-	}
-
-	/**
-	 * Initializes a pathway model object.
+	 * Initializes a pathway model object with {@link Pathway} information.
 	 * 
 	 * @param pathway the pathway object containing metadata information, e.g.
 	 *                title, organism...
@@ -92,6 +76,14 @@ public class PathwayModel {
 		this.labels = new ArrayList<Label>();
 		this.shapes = new ArrayList<Shape>();
 		this.groups = new ArrayList<Group>();
+	}
+
+	/**
+	 * Initializes a pathway model object with {@link Pathway} default values.
+	 */
+	public PathwayModel() {
+		this(new Pathway.PathwayBuilder("Click to add title", 0, 0, Color.decode("#ffffff"), new Coordinate(0, 0))
+				.build());
 	}
 
 	/**
@@ -533,10 +525,6 @@ public class PathwayModel {
 		}
 		return result;
 	}
-	
-	
-	
-	
 
 	private File sourceFile = null;
 

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -29,9 +30,10 @@ import org.bridgedb.Xref;
 public class Citation extends PathwayElement {
 
 	private Xref xref;
-	private String url; // optional
 	/* list of parent pathway elements with citationRef for this citation. */
-	private List<PathwayElement> parentElements;
+	private List<PathwayElement> pathwayElements;
+	private String url; // optional
+	
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters:
@@ -45,6 +47,7 @@ public class Citation extends PathwayElement {
 	public Citation(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
 		super(elementId, pathwayModel);
 		this.xref = xref;
+		this.pathwayElements = new ArrayList<PathwayElement>(); 
 		this.url = url;
 	}
 
@@ -96,6 +99,33 @@ public class Citation extends PathwayElement {
 			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
 			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
 		}
+	}
+
+	/**
+	 * Returns the list of pathway elements with citationRef for the citation.
+	 * 
+	 * @return pathwayElements the list of pathway elements which reference the citation. 
+	 */
+	public List<PathwayElement> getPathwayElements() {
+		return pathwayElements;
+	}
+
+	/**
+	 * Adds the given pathway element to pathwayElements list of the citation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to add.
+	 */
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.add(pathwayElement);
+	}
+
+	/**
+	 * Removes the given pathway element from pathwayElements list of the citation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to remove.
+	 */
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.remove(pathwayElement);
 	}
 
 	/**

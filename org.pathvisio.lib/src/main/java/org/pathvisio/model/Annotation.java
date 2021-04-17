@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.DataSource;
@@ -31,10 +32,11 @@ public class Annotation extends PathwayElement {
 
 	private String value;
 	private AnnotationType type;
+	/* list of parent pathway elements with annotationRef for this annotation. */
+	private List<PathwayElement> pathwayElements;
 	private Xref xref; // optional
 	private String url; // optional
-	/* list of parent pathway elements which have annotationRef for this annotation. */
-	private List<PathwayElement> Refs; //TODO AnnotationRef....
+
 	/**
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.
@@ -51,6 +53,7 @@ public class Annotation extends PathwayElement {
 		super(elementId, pathwayModel);
 		this.value = value;
 		this.type = type;
+		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.xref = xref;
 		this.url = url;
 	}
@@ -116,6 +119,35 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
+	 * Returns the list of pathway elements with annotationRef for the annotation.
+	 * 
+	 * @return pathwayElements the list of pathway elements which reference the
+	 *         annotation.
+	 */
+	public List<PathwayElement> getPathwayElements() {
+		return pathwayElements;
+	}
+
+	/**
+	 * Adds the given pathway element to pathwayElements list of the annotation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to add.
+	 */
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.add(pathwayElement);
+	}
+
+	/**
+	 * Removes the given pathway element from pathwayElements list of the
+	 * annotation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to remove.
+	 */
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.remove(pathwayElement);
+	}
+
+	/**
 	 * Gets the url of the annotation.
 	 * 
 	 * @return url the url of the annotation.
@@ -141,8 +173,7 @@ public class Annotation extends PathwayElement {
 	public Xref getXref() {
 		return xref;
 	}
-	
-	
+
 	/**
 	 * Sets the Xref for the annotation.
 	 * 
