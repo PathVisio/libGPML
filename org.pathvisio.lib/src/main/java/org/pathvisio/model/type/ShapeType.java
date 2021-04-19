@@ -17,6 +17,7 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +47,15 @@ public class ShapeType {
 
 	public static final ShapeType MITOCHONDRIA = new ShapeType("Mitochondria");
 	public static final ShapeType SARCOPLASMIC_RETICULUM = new ShapeType("Sarcoplasmic Reticulum");
-	public static final ShapeType ENDOPLASMICRETICULUM = new ShapeType("Endoplasmic Reticulum");
+	public static final ShapeType ENDOPLASMIC_RETICULUM = new ShapeType("Endoplasmic Reticulum");
 	public static final ShapeType GOLGI_APPARATUS = new ShapeType("Golgi Apparatus");
 
+	//From CellularComponent.java
+	public static final ShapeType NUCLEOLUS= new ShapeType("Nucleolus");
+	public static final ShapeType VACUOLE= new ShapeType("Vacuole");
+	public static final ShapeType LYSOSOME= new ShapeType("Lysosome"); 
+	public static final ShapeType CYTOSOL= new ShapeType("Cytosol region");
+	public static final ShapeType EXTRACELLULAR= new ShapeType("Extracellular region");
 	// Deprecated
 	public static final ShapeType CELL = new ShapeType("Cell"); // Rounded rectangle
 	public static final ShapeType NUCLEUS = new ShapeType("Nucleus"); // Oval
@@ -63,11 +70,73 @@ public class ShapeType {
 	public static final ShapeType PROTEINB = new ShapeType("ProteinB"); // Hexagon
 
 	/**
-	 * From CellularComponentType.java: NUCLEOLUS("Nucleolus"), VACUOLE("Vacuole"),
-	 * LYSOSOME("Lysosome"), CYTOSOL("Cytosol region"), EXTRACELLULAR("Extracellular
-	 * region"),
+	 * This map is used to track deprecated shape types for conversion and exclusion.
 	 */
-
+	public static final Map<ShapeType, ShapeType> DEPRECATED_MAP = new HashMap<ShapeType, ShapeType>();
+//	private static final List<ShapeType> VISIBLE_VALUES = new ArrayList<ShapeType>();
+	static {
+		DEPRECATED_MAP.put(CELL, ROUNDED_RECTANGLE); //TODO 
+		DEPRECATED_MAP.put(ORGANELLE, ROUNDED_RECTANGLE); //TODO 
+		DEPRECATED_MAP.put(MEMBRANE, ROUNDED_RECTANGLE);
+		DEPRECATED_MAP.put(CELLA, OVAL);
+		DEPRECATED_MAP.put(NUCLEUS, OVAL); //TODO 
+		DEPRECATED_MAP.put(ORGANA, OVAL);
+		DEPRECATED_MAP.put(ORGANB, OVAL);
+		DEPRECATED_MAP.put(ORGANC, OVAL);
+		DEPRECATED_MAP.put(VESICLE, OVAL); //TODO 
+		DEPRECATED_MAP.put(PROTEINB, HEXAGON);
+		DEPRECATED_MAP.put(RIBOSOME, HEXAGON);
+//		// prune from list for gui.
+//		for (ShapeType s : values()) {
+//			if (!DEPRECATED_MAP.containsKey(s)) {
+//				VISIBLE_VALUES.add(s);
+//			}
+//		}
+	}
+	
+	/**
+	 * Temporary Dynamic Property for cellular component (for GPML2013a and earlier) 
+	 */
+	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
+	//CommonActions.java
+	public static final Map<ShapeType, ShapeType> CELL_CMPNT_MAP = new HashMap<ShapeType, ShapeType>();
+	static {
+		CELL_CMPNT_MAP.put(CELL, ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(NUCLEUS, OVAL);
+		CELL_CMPNT_MAP.put(ENDOPLASMIC_RETICULUM, ENDOPLASMIC_RETICULUM);
+		CELL_CMPNT_MAP.put(GOLGI_APPARATUS, GOLGI_APPARATUS);
+		CELL_CMPNT_MAP.put(MITOCHONDRIA, MITOCHONDRIA);
+		CELL_CMPNT_MAP.put(SARCOPLASMIC_RETICULUM, SARCOPLASMIC_RETICULUM);
+		CELL_CMPNT_MAP.put(ORGANELLE, ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(LYSOSOME, OVAL);
+		CELL_CMPNT_MAP.put(NUCLEOLUS, OVAL);
+		CELL_CMPNT_MAP.put(VACUOLE, OVAL);
+		CELL_CMPNT_MAP.put(VESICLE, OVAL);	
+		CELL_CMPNT_MAP.put(CYTOSOL, ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(EXTRACELLULAR, ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(MEMBRANE, ROUNDED_RECTANGLE);
+	}	
+	
+//	
+//	public static final Set<ShapeType> CELL_CMPNT_SET = new HashSet<ShapeType>();
+//	static {
+//		CELL_CMPNT_SET.add(NONE);
+//		CELL_CMPNT_SET.add(CELL);
+//		CELL_CMPNT_SET.add(NUCLEUS);
+//		CELL_CMPNT_SET.add(MITOCHONDRIA);
+//		CELL_CMPNT_SET.add(GOLGI_APPARATUS);
+//		CELL_CMPNT_SET.add(ENDOPLASMIC_RETICULUM);
+//		CELL_CMPNT_SET.add(SARCOPLASMIC_RETICULUM);
+//		CELL_CMPNT_SET.add(VESICLE);
+//		CELL_CMPNT_SET.add(ORGANELLE);
+//		CELL_CMPNT_SET.add(NUCLEOLUS);
+//		CELL_CMPNT_SET.add(VACUOLE);
+//		CELL_CMPNT_SET.add(LYSOSOME);
+//		CELL_CMPNT_SET.add(CYTOSOL);
+//		CELL_CMPNT_SET.add(EXTRACELLULAR);
+//		CELL_CMPNT_SET.add(MEMBRANE);
+//	}
+	
 	private String name;
 
 	/**
@@ -151,29 +220,4 @@ public class ShapeType {
 		return name;
 	}
 
-//	/**
-//	 * This map is used to track deprecated shapetypes for conversion and exclusion.
-//	 */
-//	public static final Map<ShapeType, ShapeType> DEPRECATED_MAP = new HashMap<ShapeType, ShapeType>();
-//	private static final List<ShapeType> VISIBLE_VALUES = new ArrayList<ShapeType>();
-//	static {
-//		DEPRECATED_MAP.put(CELL, ROUNDED_RECTANGLE);
-//		DEPRECATED_MAP.put(ORGANELLE, ROUNDED_RECTANGLE);
-//		DEPRECATED_MAP.put(MEMBRANE, ROUNDED_RECTANGLE);
-//		DEPRECATED_MAP.put(CELLA, OVAL);
-//		DEPRECATED_MAP.put(NUCLEUS, OVAL);
-//		DEPRECATED_MAP.put(ORGANA, OVAL);
-//		DEPRECATED_MAP.put(ORGANB, OVAL);
-//		DEPRECATED_MAP.put(ORGANC, OVAL);
-//		DEPRECATED_MAP.put(VESICLE, OVAL);
-//		DEPRECATED_MAP.put(PROTEINB, HEXAGON);
-//		DEPRECATED_MAP.put(RIBOSOME, HEXAGON);
-//
-//		// prune from list for gui.
-//		for (ShapeType s : values()) {
-//			if (!DEPRECATED_MAP.containsKey(s)) {
-//				VISIBLE_VALUES.add(s);
-//			}
-//		}
-//	}
 }

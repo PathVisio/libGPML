@@ -26,7 +26,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.ByteArrayInputStream;
 
 import org.bridgedb.DataSource;
@@ -65,6 +67,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
 	public final static String ATTRIBUTE_BIOPAXREF = "attribute_biopaxRef_gpml2013a";
+	
+
 
 	protected GPML2013aReader(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
@@ -640,24 +644,22 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		}
 	}
 
-	// TODO ShapeType is tricky....See CellularComponentType.java
-	protected void mapShapeType(PathwayElement o, Element e) throws ConverterException {
+	// TODO ShapeType is tricky....See CellularComponentType.java REPEAT FOR STATE....
+	protected void mapShapeType(ShapedElement shapedElement, Element e) throws ConverterException {
 		String base = e.getName();
-		Element graphics = e.getChild("Graphics", e.getNamespace());
-		IShape s = ShapeRegistry.fromName(getAttribute(base + ".Graphics", "ShapeType", graphics));
-		if (ShapeType.DEPRECATED_MAP.containsKey(s)) {
-			s = ShapeType.DEPRECATED_MAP.get(s);
-			o.setShapeType(s);
-			if (s.equals(ShapeType.ROUNDED_RECTANGLE) || s.equals(ShapeType.OVAL)) {
-				o.setLineStyle(LineStyle.DOUBLE);
-				o.setLineThickness(3.0);
-				o.setColor(Color.LIGHT_GRAY);
-			}
+		Element gfx = e.getChild("Graphics", e.getNamespace());
+		ShapeType shapeType = ShapeType.fromName(gfx.getAttributeValue("ShapeType"));
+		
+		/* check deprecated shape type map */
+		if (ShapeType.DEPRECATED_MAP.containsKey(shapeType)) {
+			ShapeType shapeTypeNew = ShapeType.DEPRECATED_MAP.get(shapeType);
+			shapedElement.getShapeStyleProperty().setShapeType(shapeTypeNew);
 		} else {
-			o.setShapeType(s);
-			mapLineStyle(o, e); // LineStyle
+			shapedElement.getShapeStyleProperty().setShapeType(shapeType);
 		}
 	}
+	
+	
 
 	/**
 	 * Reads interaction {@link Interaction} information for pathway model from root
