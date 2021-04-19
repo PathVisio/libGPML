@@ -653,95 +653,94 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		List<Annotation> annotations = pathwayModel.getAnnotations();
 		List<Citation> citations = pathwayModel.getCitations();
 		Element bp = new Element("Biopax", root.getNamespace());
-
-		if (!annotations.isEmpty() || !citations.isEmpty()) {
-
+		writeBiopaxOpenControlledVocabulary(annotations, bp);
+		writeBiopaxPublicationXref(citations, bp);
+		if (!bp.getChildren().isEmpty()) {
+			root.addContent(bp);
 		}
-
 	}
 
 	/**
-	 * Writes gpml:Biopax OpenControlledVocabulary {@link Annotation} information.
+	 * Writes gpml:Biopax bp:OpenControlledVocabulary {@link Annotation}
+	 * information.
 	 * 
 	 * @param annotations the list of annotations.
 	 * @param root        the root element.
 	 * @throws ConverterException
 	 */
-	protected void writeBiopaxOpenControlledVocabulary(List<Annotation> annotations, Element bp) throws ConverterException {
+	protected void writeBiopaxOpenControlledVocabulary(List<Annotation> annotations, Element bp)
+			throws ConverterException {
 		if (!annotations.isEmpty()) {
 			for (Annotation annotation : annotations) {
 				if (annotation == null)
 					continue;
 				Element ocv = new Element("openControlledVocabulary", GpmlFormat.BIOPAX);
 				Element term = new Element("TERM", GpmlFormat.BIOPAX);
+				Element id = new Element("ID", GpmlFormat.BIOPAX);
+				Element onto = new Element("Ontology", GpmlFormat.BIOPAX);
 				term.setText(annotation.getValue());
-				
-				
-				ocv.addContent(term); //TODO better method? 
-				
-				
-				
-				String value = ocv.getChild("TERM", ).getText();
-				String biopaxOntology = ocv.getChild("Ontology", GpmlFormat.BIOPAX).getText();
-				AnnotationType type = AnnotationType.register(biopaxOntology);
-				Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-				/*
-				 * save ID as Xref with biopaxOntology as dataSource TODO is Xref required...?
-				 */
-				String biopaxId = ocv.getChild("ID", GpmlFormat.BIOPAX).getText();
-				Xref xref = readBiopaxXref(biopaxId, biopaxOntology);
-				if (xref != null)
-					annotation.setXref(xref);
-				if (annotation != null)
-					pathwayModel.addAnnotation(annotation);
-				
-				
-				writeElementId(annotation.getElementId(), annt);
-				annt.setAttribute("value", annotation.getValue());
-				annt.setAttribute("type", annotation.getType().getName());
-				if (annotation.getXref() != null) { // TODO optional Xref handling
-					writeXref(annotation.getXref(), annt, false);
+				id.setText(annotation.getXref().getId());
+				onto.setText(annotation.getType().getName());
+				ocv.addContent(term); // TODO more concise method?
+				ocv.addContent(id);
+				ocv.addContent(onto);
+				if (ocv != null) {
+					bp.addContent(ocv);
 				}
-				if (annotation.getUrl() != null) {
-					annt.setAttribute("url", annotation.getUrl());
-				}
-				if (annt != null) {
-					anntList.add(annt);
-				}
-			}}
-
-			
-		
+			}
+		}
 	}
 
 	/**
-	 * Writes gpml:BiopaxPublicationXref {@link Citation} information.
+	 * Writes gpml:Biopax bp:PublicationXref {@link Citation} information.
 	 * 
 	 * @param citations the list of citations.
 	 * @param root      the root element.
 	 * @throws ConverterException
 	 */
-	protected void writeBiopaxPublicationXref(List<Citation> citations, Element root) throws ConverterException {
+	protected void writeBiopaxPublicationXref(List<Citation> citations, Element bp) throws ConverterException {
 		if (!citations.isEmpty()) {
-			Element cits = new Element("Citations", root.getNamespace());
-			List<Element> citList = new ArrayList<Element>();
 			for (Citation citation : citations) {
 				if (citation == null)
 					continue;
-				Element cit = new Element("Citation", root.getNamespace());
-				writeElementId(citation.getElementId(), cit);
-				writeXref(citation.getXref(), cit, true);
-				if (citation.getUrl() != null) {
-					cit.setAttribute("url", citation.getUrl());
-				}
-				if (cit != null) {
-					citList.add(cit);
-				}
+				Element pubxf = new Element("PublicationXref", GpmlFormat.BIOPAX);
+				pubxf.setAttribute("id", citation.getElementId(), GpmlFormat.RDF);
+				// TODO add empty or drop?
+				String biopaxId = citation.getXref().getId();
+				String biopaxDatabase = citation.getXref().getDataSource().getFullName();
+				String title = citation.getTitle();
+				String source = citation.getSource();
+				String year = citation.getYear();
+				List<String> authors = citation.getAuthors();
+				writePublicationXrefInfo(biopaxId, "ID", pubxf);
+				writePublicationXrefInfo(biopaxDatabase, "DB", pubxf);
+				writePublicationXrefInfo(title, "TITLE", pubxf);
+				writePublicationXrefInfo(source, "SOURCE", pubxf);
+				writePublicationXrefInfo(year, "YEAR", pubxf);
+				for (String author : authors)
+					writePublicationXrefInfo(author, "AUTHOR", pubxf);
+				if (pubxf != null)
+					bp.addContent(pubxf);
 			}
-			if (citList != null && citList.isEmpty() == false) {
-				cits.addContent(citList);
-				root.addContent(cits);
-			}
+		}
+	}
+
+	/**
+	 * Writes Biopax PublicationXref information to PublicationXref element. NB: The
+	 * main purpose of this method is to make {@link #writeBiopaxPublicationXref}
+	 * more concise.
+	 * 
+	 * @param propertyValue the value of the property.
+	 * @param elementName   the name for new child element of pubxf element.
+	 * @param pubxf         the PublicationXref element.
+	 * @throws ConverterException
+	 */
+	protected void writePublicationXrefInfo(String propertyValue, String elementName, Element pubxf)
+			throws ConverterException {
+		if (propertyValue != null && !propertyValue.equals("")) {
+			Element e = new Element(elementName, GpmlFormat.BIOPAX);
+			e.setText(propertyValue);
+			pubxf.addContent(e);
 		}
 	}
 

@@ -269,8 +269,8 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	protected void writeComments(List<Comment> comments, Element e) throws ConverterException {
 		for (Comment comment : comments) {
 			Element cmt = new Element("Comment", e.getNamespace());
-			if (comment.getContent() != null) // TODO may be excessive
-				cmt.setText(comment.getContent());
+			if (comment.getCommentText() != null) // TODO may be excessive
+				cmt.setText(comment.getCommentText());
 			if (comment.getSource() != null)
 				cmt.setAttribute("source", comment.getSource());
 			if (cmt != null)

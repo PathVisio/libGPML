@@ -213,8 +213,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
-	 * Reads gpml:Biopax OpenControlledVocabulary information to {@link Annotation}
-	 * for pathway model from root element.
+	 * Reads gpml:Biopax bp:OpenControlledVocabulary information to
+	 * {@link Annotation} for pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param biopax       the biopax element.
@@ -240,8 +240,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
-	 * Reads gpml:Biopax PublicationXref information to {@link Citation} for pathway
-	 * model from root element.
+	 * Reads gpml:Biopax bp:PublicationXref information to {@link Citation} for
+	 * pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param biopax       the biopax element.
@@ -250,7 +250,6 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readBiopaxPublicationXref(PathwayModel pathwayModel, Element bp) throws ConverterException {
 
 		for (Element pubxf : bp.getChildren("PublicationXref", GpmlFormat.BIOPAX)) {
-
 			// TODO Is there ever multiple title, source, year?
 			String elementId = pubxf.getAttributeValue("id", GpmlFormat.RDF);
 			String biopaxId = pubxf.getChild("ID", GpmlFormat.BIOPAX).getText();
@@ -261,13 +260,13 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			String title = pubxf.getChild("TITLE", GpmlFormat.BIOPAX).getText();
 			String source = pubxf.getChild("SOURCE", GpmlFormat.BIOPAX).getText();
 			String year = pubxf.getChild("YEAR", GpmlFormat.BIOPAX).getText();
-			if (title != null) {
+			if (title != null && !title.equals("")) {
 				citation.setTitle(title);
 			}
-			if (source != null) {
+			if (source != null && !source.equals("")) {
 				citation.setSource(source);
 			}
-			if (year != null) {
+			if (year != null && !year.equals("")) {
 				citation.setYear(year);
 			}
 			List<String> authors = new ArrayList<String>();
@@ -283,6 +282,14 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		}
 	}
 
+	/**
+	 * Reads biopax xref information.
+	 * 
+	 * @param identifier the xref identifier.
+	 * @param dataSource the xref data source.
+	 * @return the xref with given identifier and dataSource.
+	 * @throws ConverterException
+	 */
 	protected Xref readBiopaxXref(String identifier, String dataSource) throws ConverterException {
 		if (dataSource != null && !dataSource.equals("")) {
 			if (DataSource.fullNameExists(dataSource)) {
