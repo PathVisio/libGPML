@@ -712,13 +712,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	protected void readDataNodeElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element dns = root.getChild("DataNodes", root.getNamespace());
 		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
-			String elementRef = dn.getAttributeValue("elementRef");
-			if (elementRef != null && !elementRef.equals("")) {
-				PathwayElement elemRf = pathwayModel.getPathwayElement(elementRef);
-				if (elemRf != null) {
+			String elementRefStr = dn.getAttributeValue("elementRef");
+			if (elementRefStr != null && !elementRefStr.equals("")) {
+				PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+				if (elementRef != null) {
 					String elementId = dn.getAttributeValue("elementId");
 					DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementId);
-					dataNode.setElementRef(elemRf);
+					dataNode.setElementRef(elementRef);
 				}
 			}
 		}
@@ -740,13 +740,13 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 				for (Element ia : ias.getChildren(lnElementName.get(i), ias.getNamespace())) {
 					Element wyps = ia.getChild("Waypoints", ia.getNamespace());
 					for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
-						String elementRef = pt.getAttributeValue("elementRef");
-						if (elementRef != null && !elementRef.equals("")) {
-							PathwayElement elemRf = pathwayModel.getPathwayElement(elementRef);
-							if (elemRf != null) {
+						String elementRefStr = pt.getAttributeValue("elementRef");
+						if (elementRefStr != null && !elementRefStr.equals("")) {
+							PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+							if (elementRef != null) {
 								String elementId = pt.getAttributeValue("elementId");
 								Point point = (Point) pathwayModel.getPathwayElement(elementId);
-								point.setElementRef(elemRf);
+								point.setElementRef(elementRef);
 								point.setRelX(Double.parseDouble(pt.getAttributeValue("relX")));
 								point.setRelY(Double.parseDouble(pt.getAttributeValue("relY")));
 							}
@@ -1046,37 +1046,6 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 //		} catch (Exception ex) {
 //		}
 //		return is;
-//	}
-
-	// TODO PROBLEM CASTING?
-//	protected void readGroupRefs(PathwayModel pathwayModel, Element root) {
-//		List<String> shpElements = Collections
-//				.unmodifiableList(Arrays.asList("DataNodes", "Labels", "Shapes", "Groups"));
-//		List<String> shpElement = Collections.unmodifiableList(Arrays.asList("DataNode", "Label", "Shape", "Group"));
-//		for (int i = 0; i < shpElements.size(); i++) {
-//			Element grps = root.getChild(shpElements.get(i), root.getNamespace());
-//			for (Element grp : grps.getChildren(shpElement.get(i), grps.getNamespace())) {
-//				String groupRef = grp.getAttributeValue("groupRef");
-//				if (groupRef != null && !groupRef.equals("")) {
-//					String elementId = grp.getAttributeValue("elementId");
-//					ShapedElement shapedElement = (ShapedElement) pathwayModel.getPathwayElement(elementId);
-//					shapedElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
-//				}
-//			}
-//		}
-//		List<String> lnElements = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
-//		List<String> lnElement = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
-//		for (int i = 0; i < shpElements.size(); i++) {
-//			Element grps = root.getChild(lnElements.get(i), root.getNamespace());
-//			for (Element grp : grps.getChildren(lnElement.get(i), grps.getNamespace())) {
-//				String groupRef = grp.getAttributeValue("groupRef");
-//				if (groupRef != null && !groupRef.equals("")) {
-//					String elementId = grp.getAttributeValue("elementId");
-//					LineElement lineElement = (LineElement) pathwayModel.getPathwayElement(elementId);
-//					lineElement.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
-//				}
-//			}
-//		}
 //	}
 
 }

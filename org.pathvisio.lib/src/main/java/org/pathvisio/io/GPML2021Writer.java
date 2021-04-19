@@ -798,11 +798,11 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @param e          the parent element.
 	 * @return true if elementRef exists and is successfully written.
 	 */
-	protected boolean writeElementRef(PathwayElement elemRf, Element e) {
-		if (elemRf != null) {
-			String elementRef = elemRf.getElementId();
-			if (elementRef != null && !elementRef.equals(""))
-				e.setAttribute("elementRef", elementRef);
+	protected boolean writeElementRef(PathwayElement elementRef, Element e) {
+		if (elementRef != null) {
+			String elementRefStr = elementRef.getElementId();
+			if (elementRefStr != null && !elementRefStr.equals(""))
+				e.setAttribute("elementRef", elementRefStr);
 			return true;
 		}
 		return false;
@@ -814,11 +814,11 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @param groupRef the groupRef.
 	 * @param e        the parent element.
 	 */
-	protected void writeGroupRef(Group grpRf, Element e) {
-		if (grpRf != null) {
-			String groupRef = grpRf.getElementId();
-			if (groupRef != null && !groupRef.equals(""))
-				e.setAttribute("groupRef", groupRef);
+	protected void writeGroupRef(Group groupRef, Element e) {
+		if (groupRef != null) {
+			String groupRefStr = groupRef.getElementId();
+			if (groupRefStr != null && !groupRefStr.equals(""))
+				e.setAttribute("groupRef", groupRefStr);
 		}
 	}
 

@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -88,9 +89,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		Pathway pathway = readPathway(root);
 		pathwayModel.setPathway(pathway); // TODO, should allow instantiate pathwayModel without Pathway???
 
-		readBiopax(pathwayModel, root);// TODO Should be biopax....
-		readCitations(pathwayModel, root); //
-
+		readBiopax(pathwayModel, root);// TODO
 		readPathwayInfo(pathwayModel, root);
 		/* read groups first */
 		readGroups(pathwayModel, root);
@@ -103,8 +102,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		readGraphicalLines(pathwayModel, root);
 		/* check groups have at least two pathway elements */
 		checkGroupSize(pathwayModel.getGroups());
-		/* read elementRefs last */
-		readDataNodeElementRef(pathwayModel, root);
+		/* read point elementRefs last */
 		readPointElementRef(pathwayModel, root);
 
 		Logger.log.trace("End reading gpml");
@@ -191,7 +189,6 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readLegend(Pathway pathway, Element root) {
 		Element lgd = root.getChild("Legend", root.getNamespace());
 		if (lgd != null) {
-			// TODO will need to be able to handle legend as coordinates later
 			String centerX = lgd.getAttributeValue("CenterX");
 			pathway.setDynamicProperty(LEGEND_CENTER_X, centerX);
 			String centerY = lgd.getAttributeValue("CenterY");
@@ -199,60 +196,106 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		}
 	}
 
-	// TODO BIOPAX!!!
-
 	/**
-	 * Reads annotation {@link Annotation} information for pathway model from root
-	 * element.
+	 * Read gpml:Biopax information openControlledVocabulary and PublicationXref.
+	 * {@link #readBiopaxOpenControlledVocabulary(), #readBiopaxPublicationXref()}.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
 	protected void readBiopax(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element annts = root.getChild("Annotations", root.getNamespace());
-		if (annts != null) {
-			for (Element annt : annts.getChildren("Annotation", annts.getNamespace())) {
-				String elementId = annt.getAttributeValue("elementId");
-				String value = annt.getAttributeValue("value");
-				AnnotationType type = AnnotationType.register(annt.getAttributeValue("type"));
-				Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-				/* set optional properties */
-				Xref xref = readXref(annt);
-				String url = annt.getAttributeValue("url");
-				if (xref != null)
-					annotation.setXref(xref);
-				if (url != null)
-					annotation.setUrl(url);
-				if (annotation != null)
-					pathwayModel.addAnnotation(annotation);
-			}
+		Element bp = root.getChild("Biopax", root.getNamespace());
+		if (bp != null) {
+			readBiopaxOpenControlledVocabulary(pathwayModel, bp);
+			readBiopaxPublicationXref(pathwayModel, bp);
 		}
 	}
 
 	/**
-	 * Reads citation {@link Citation} information for pathway model from root
-	 * element.
+	 * Reads gpml:Biopax OpenControlledVocabulary information to {@link Annotation}
+	 * for pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param biopax       the biopax element.
 	 * @throws ConverterException
 	 */
-	protected void readCitations(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element cits = root.getChild("Citations", root.getNamespace());
-		if (cits != null) {
-			for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
-				String elementId = cit.getAttributeValue("elementId"); // TODO
-				Xref xref = readXref(cit);
-				Citation citation = new Citation(elementId, pathwayModel, xref);
-				/* set optional properties */
-				String url = cit.getAttributeValue("url");
-				if (url != null)
-					citation.setUrl(url);
-				if (citation != null)
-					pathwayModel.addCitation(citation);
+	protected void readBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp) throws ConverterException {
+		for (Element ocv : bp.getChildren("openControlledVocabulary", GpmlFormat.BIOPAX)) {
+			String elementId = pathwayModel.getUniqueElementId();
+			String value = ocv.getChild("TERM", GpmlFormat.BIOPAX).getText();
+			String biopaxOntology = ocv.getChild("Ontology", GpmlFormat.BIOPAX).getText();
+			AnnotationType type = AnnotationType.register(biopaxOntology);
+			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
+			/*
+			 * save ID as Xref with biopaxOntology as dataSource TODO is Xref required...?
+			 */
+			String biopaxId = ocv.getChild("ID", GpmlFormat.BIOPAX).getText();
+			Xref xref = readBiopaxXref(biopaxId, biopaxOntology);
+			if (xref != null)
+				annotation.setXref(xref);
+			if (annotation != null)
+				pathwayModel.addAnnotation(annotation);
+		}
+	}
+
+	/**
+	 * Reads gpml:Biopax PublicationXref information to {@link Citation} for pathway
+	 * model from root element.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param biopax       the biopax element.
+	 * @throws ConverterException
+	 */
+	protected void readBiopaxPublicationXref(PathwayModel pathwayModel, Element bp) throws ConverterException {
+
+		for (Element pubxf : bp.getChildren("PublicationXref", GpmlFormat.BIOPAX)) {
+
+			// TODO Is there ever multiple title, source, year?
+			String elementId = pubxf.getAttributeValue("id", GpmlFormat.RDF);
+			String biopaxId = pubxf.getChild("ID", GpmlFormat.BIOPAX).getText();
+			String biopaxDatabase = pubxf.getChild("DB", GpmlFormat.BIOPAX).getText();
+			Xref xref = readBiopaxXref(biopaxId, biopaxDatabase);
+			Citation citation = new Citation(elementId, pathwayModel, xref);
+			/* set optional properties */
+			String title = pubxf.getChild("TITLE", GpmlFormat.BIOPAX).getText();
+			String source = pubxf.getChild("SOURCE", GpmlFormat.BIOPAX).getText();
+			String year = pubxf.getChild("YEAR", GpmlFormat.BIOPAX).getText();
+			if (title != null) {
+				citation.setTitle(title);
+			}
+			if (source != null) {
+				citation.setSource(source);
+			}
+			if (year != null) {
+				citation.setYear(year);
+			}
+			List<String> authors = new ArrayList<String>();
+			for (Element au : pubxf.getChildren("AUTHORS", GpmlFormat.BIOPAX)) {
+				String author = au.getText();
+				if (author != null)
+					authors.add(author);
+			}
+			if (!authors.isEmpty())
+				citation.setAuthors(authors);
+			if (citation != null)
+				pathwayModel.addCitation(citation);
+		}
+	}
+
+	protected Xref readBiopaxXref(String identifier, String dataSource) throws ConverterException {
+		if (dataSource != null && !dataSource.equals("")) {
+			if (DataSource.fullNameExists(dataSource)) {
+				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+			} else if (DataSource.systemCodeExists(dataSource)) {
+				return new Xref(identifier, DataSource.getByAlias(dataSource));
+			} else {
+				DataSource.register(dataSource, dataSource);
+				System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 			}
 		}
+		return null;
 	}
 
 	/**
@@ -266,7 +309,6 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 */
 	protected void readPathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
 		readPathwayComments(pathwayModel, root);
-		readPathwayPublicationXrefs(pathwayModel, root);
 		readPathwayBiopaxRefs(pathwayModel, root);
 		readPathwayAttributes(pathwayModel, root); // dynamic properties
 	}
@@ -283,7 +325,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 			String source = cmt.getAttributeValue("source");
 			String content = cmt.getText();
 			if (content != null && !content.equals("")) {
-				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
+				Comment comment = new Comment(content);
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
 				pathwayModel.getPathway().addComment(new Comment(source, content));
@@ -292,48 +334,19 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
-	 * Reads gpml:PublicationXre or citation reference
-	 * {@link Pathway#addCitationRef()} information for pathway model from root
-	 * element.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
-	 * @throws ConverterException
-	 */
-	protected void readPathwayPublicationXrefs(PathwayModel pathwayModel, Element root) throws ConverterException {
-		for (Element citRef : root.getChildren("CitationRef", root.getNamespace())) {
-			Citation citationRef = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
-			if (citationRef != null)
-				pathwayModel.getPathway().addCitationRef(citationRef);
-		}
-	}
-
-	/**
-	 * Reads gpml:BiopaxRef or annotation reference
-	 * {@link Pathway#addAnnotationRef()} information for pathway from root element.
+	 * Reads biopax reference information {@link Pathway#addCitationRef()} for
+	 * pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
 	protected void readPathwayBiopaxRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
-		for (Element anntRef : root.getChildren("AnnotationRef", root.getNamespace())) {
-			Annotation annotation = (Annotation) pathwayModel
-					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = new AnnotationRef(annotation);
-			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
-				Citation citationRef = (Citation) pathwayModel
-						.getPathwayElement(citRef.getAttributeValue("elementRef"));
-				if (citationRef != null)
-					annotationRef.addCitationRef(citationRef);
+		for (Element bpRef : root.getChildren("BiopaxRef", root.getNamespace())) {
+			Citation biopaxRef = (Citation) pathwayModel.getPathwayElement(bpRef.getText());
+			if (biopaxRef != null) {
+				pathwayModel.getPathway().addCitationRef(biopaxRef);
 			}
-			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
-				Evidence evidenceRef = (Evidence) pathwayModel
-						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-				if (evidenceRef != null)
-					annotationRef.addEvidenceRef(evidenceRef);
-			}
-			pathwayModel.getPathway().addAnnotationRef(annotationRef);
 		}
 	}
 
@@ -465,7 +478,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element lb : root.getChildren("Label", root.getNamespace())) {
 			String elementId = lb.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			String textLabel = lb.getAttributeValue("TextLabel");
 			Element gfx = lb.getChild("Graphics", lb.getNamespace());
@@ -500,7 +513,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readShapes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element shp : root.getChildren("Shape", root.getNamespace())) {
 			String elementId = shp.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
@@ -536,7 +549,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readDataNodes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element dn : root.getChildren("DataNode", root.getNamespace())) {
 			String elementId = dn.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = dn.getChild("Graphics", dn.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
@@ -572,7 +585,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readStates(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element st : root.getChildren("State", root.getNamespace())) {
 			String elementId = st.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			String textLabel = st.getAttributeValue("TextLabel");
 			StateType type = StateType.register(st.getAttributeValue("StateType"));
@@ -650,7 +663,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
 			String elementId = ia.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
@@ -674,7 +687,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element gln : root.getChildren("GraphicaLine", root.getNamespace())) {
 			String elementId = gln.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
@@ -723,7 +736,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readPoints(LineElement lineElement, Element gfx) throws ConverterException {
 		for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
 			String elementId = pt.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = lineElement.getPathwayModel().getUniqueElementId();
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("ArrowHead"));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("X")),
@@ -744,7 +757,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected void readAnchors(LineElement lineElement, Element gfx) throws ConverterException {
 		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
 			String elementId = an.getAttributeValue("GraphId");
-			if (elementId == null) // TODO graphId is optional in GPML2013a
+			if (elementId == null)
 				elementId = lineElement.getPathwayModel().getUniqueElementId();
 			double position = Double.parseDouble(an.getAttributeValue("Position"));
 			Coordinate xy = new Coordinate(); // TODO calculate!!
@@ -771,13 +784,13 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 				for (Element ia : ias.getChildren(lnElementName.get(i), ias.getNamespace())) {
 					Element gfx = ia.getChild("Graphics", ia.getNamespace());
 					for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-						String elementRef = pt.getAttributeValue("GraphRef");
-						if (elementRef != null && !elementRef.equals("")) {
-							PathwayElement elemRf = pathwayModel.getPathwayElement(elementRef);
-							if (elemRf != null) {
+						String elementRefStr = pt.getAttributeValue("GraphRef");
+						if (elementRefStr != null && !elementRefStr.equals("")) {
+							PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+							if (elementRef != null) {
 								String elementId = pt.getAttributeValue("GraphId");
 								Point point = (Point) pathwayModel.getPathwayElement(elementId);
-								point.setElementRef(elemRf);
+								point.setElementRef(elementRef);
 								point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX")));
 								point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY")));
 							}
@@ -826,8 +839,14 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @throws ConverterException
 	 */
 	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+		// TODO
+		String biopaxRefStr = e.getAttributeValue("BiopaxRef");
+		if (biopaxRefStr != null) {
+			Citation biopaxRef = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRefStr);
+			if (biopaxRef != null)
+				elementInfo.addCitationRef(biopaxRef);
+		}
 		readComments(elementInfo, e);
-		readPublicationXrefs(elementInfo, e);
 		readBiopaxRefs(elementInfo, e);
 		readAttributes(elementInfo, e);
 	}
@@ -853,48 +872,18 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
-	 * Reads annotationRef {@link ElementInfo#addAnnotationRef()} information for
-	 * pathway element from element.
+	 * Reads BiopaxRef information to {@link ElementInfo#addCitationRef()}
+	 * information for pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
-			Annotation annotation = (Annotation) elementInfo.getPathwayModel()
-					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = new AnnotationRef(annotation);
-			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
-				Citation citationRef = (Citation) elementInfo.getPathwayModel()
-						.getPathwayElement(citRef.getAttributeValue("elementRef"));
-				if (citationRef != null)
-					annotationRef.addCitationRef(citationRef);
-			}
-			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
-				Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
-						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-				if (evidenceRef != null)
-					annotationRef.addEvidenceRef(evidenceRef);
-			}
-			elementInfo.addAnnotationRef(annotationRef);
-		}
-	}
-
-	/**
-	 * Reads citationRef {@link ElementInfo#addCitationRef()} information for
-	 * pathway element from element.
-	 * 
-	 * @param elementInfo the element info pathway element object.
-	 * @param e           the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readPublicationXrefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
-			Citation citationRef = (Citation) elementInfo.getPathwayModel()
-					.getPathwayElement(citRef.getAttributeValue("elementRef"));
-			if (citationRef != null) {
-				elementInfo.addCitationRef(citationRef);
+		for (Element bpRef : e.getChildren("BiopaxRef", e.getNamespace())) {
+			Citation biopaxRef = (Citation) elementInfo.getPathwayModel().getPathwayElement(bpRef.getText());
+			if (biopaxRef != null) {
+				elementInfo.addCitationRef(biopaxRef);
 			}
 		}
 	}
@@ -902,6 +891,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	/**
 	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
 	 * for pathway element from element.
+	 * 
+	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
 	 * @param elementInfo the element info pathway element object .
 	 * @param e           the pathway element element.
@@ -981,7 +972,7 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	}
 
 	/**
-	 * TODO fix...
+	 * TODO fix...DOUBLE....
 	 * 
 	 * Reads line style property {@link LineStyleProperty} information. Jdom handles
 	 * schema default values.

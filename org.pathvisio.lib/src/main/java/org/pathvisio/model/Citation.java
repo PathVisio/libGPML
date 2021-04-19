@@ -33,7 +33,11 @@ public class Citation extends PathwayElement {
 	/* list of parent pathway elements with citationRef for this citation. */
 	private List<PathwayElement> pathwayElements;
 	private String url; // optional
-	
+	/* for GPML2013a Biopax */
+	private String title;
+	private String source;
+	private String year;
+	private List<String> authors; //TODO discuss 
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters:
@@ -47,7 +51,7 @@ public class Citation extends PathwayElement {
 	public Citation(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
 		super(elementId, pathwayModel);
 		this.xref = xref;
-		this.pathwayElements = new ArrayList<PathwayElement>(); 
+		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.url = url;
 	}
 
@@ -104,7 +108,8 @@ public class Citation extends PathwayElement {
 	/**
 	 * Returns the list of pathway elements with citationRef for the citation.
 	 * 
-	 * @return pathwayElements the list of pathway elements which reference the citation. 
+	 * @return pathwayElements the list of pathway elements which reference the
+	 *         citation.
 	 */
 	public List<PathwayElement> getPathwayElements() {
 		return pathwayElements;
@@ -146,4 +151,75 @@ public class Citation extends PathwayElement {
 		this.url = url;
 	}
 
+	/**
+	 * Returns source for the citation (for GPML2013a Biopax).
+	 * 
+	 * @return source the source.
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * Sets source for the citation (for GPML2013a Biopax).
+	 * 
+	 * @param source the source.
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * Returns source for the citation (for GPML2013a Biopax).
+	 * 
+	 * @return source the source.
+	 */
+	public String getSource() {
+		return source;
+	}
+
+	/**
+	 * Sets source for the citation (for GPML2013a Biopax).
+	 * 
+	 * @param source the source.
+	 */
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	/**
+	 * Returns year for the citation (for GPML2013a Biopax).
+	 * 
+	 * @return year the year.
+	 */
+	public String getYear() {
+		return year;
+	}
+
+	/**
+	 * Sets year for the citation (for GPML2013a Biopax).
+	 * 
+	 * @param year the year.
+	 */
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	/**
+	 * Returns list of authors for the citation (for GPML2013a Biopax).
+	 * 
+	 * @return authors the list of authors.
+	 */
+	public List<String> getAuthors() {
+		return authors;
+	}
+
+	/**
+	 * Sets list of authors for the citation (for GPML2013a Biopax).
+	 * 
+	 * @param authors the list of authors.
+	 */
+	public void setAuthors(List<String> authors) {
+		this.authors = authors;
+	}
 }
