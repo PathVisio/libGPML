@@ -269,8 +269,8 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	protected void writeComments(List<Comment> comments, Element e) throws ConverterException {
 		for (Comment comment : comments) {
 			Element cmt = new Element("Comment", e.getNamespace());
-			if (comment.getContent() != null) // TODO may be excessive
-				cmt.setText(comment.getContent());
+			if (comment.getCommentText() != null) // TODO may be excessive
+				cmt.setText(comment.getCommentText());
 			if (comment.getSource() != null)
 				cmt.setAttribute("source", comment.getSource());
 			if (cmt != null)
@@ -654,12 +654,12 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		List<Citation> citations = pathwayModel.getCitations();
 		Element bp = new Element("Biopax", root.getNamespace());
 
-		if (!annotations.isEmpty() || !citations.isEmpty() ) {
-			
+		if (!annotations.isEmpty() || !citations.isEmpty()) {
+
 		}
 
 	}
-	
+
 	/**
 	 * Writes gpml:Biopax OpenControlledVocabulary {@link Annotation} information.
 	 * 
@@ -673,9 +673,15 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 				if (annotation == null)
 					continue;
 				Element ocv = new Element("openControlledVocabulary", GpmlFormat.BIOPAX);
-				Element term = new Element("TERM", )
+				Element term = new Element("TERM", GpmlFormat.BIOPAX);
+				term.setText(annotation.getValue());
 				
-				String value = ocv.getChild("TERM", GpmlFormat.BIOPAX).getText();
+				
+				ocv.addContent(term); //TODO better method? 
+				
+				
+				
+				String value = ocv.getChild("TERM", ).getText();
 				String biopaxOntology = ocv.getChild("Ontology", GpmlFormat.BIOPAX).getText();
 				AnnotationType type = AnnotationType.register(biopaxOntology);
 				Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
@@ -702,16 +708,11 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 				if (annt != null) {
 					anntList.add(annt);
 				}
-			}
-			if (anntList != null && anntList.isEmpty() == false) {
-				annts.addContent(anntList);
-				root.addContent(annts);
-			}
-		}
-	}
-	
-	
+			}}
 
+			
+		
+	}
 
 	/**
 	 * Writes gpml:BiopaxPublicationXref {@link Citation} information.

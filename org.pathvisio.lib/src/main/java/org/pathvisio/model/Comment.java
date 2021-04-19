@@ -27,49 +27,49 @@ package org.pathvisio.model;
 public class Comment {
 
 	private String source; // optional
-	private String content;
-	private PathwayElement parent; // TODO
+	private String commentText;
+//	private PathwayElement parent; // TODO
 
-	/**
-	 * Instantiates a Comment.
-	 * 
-	 * @param source  the source of the comment.
-	 * @param content the text of the comment, between Comment tags in GPML.
-	 */
-	public Comment(String source, String content, PathwayElement parent) {
-		this.source = source;
-		this.content = content;
-		this.parent = parent;
-	}
-
-	/**
-	 * Instantiates a Comment with no source.
-	 * 
-	 * @param content the text of the comment, between Comment tags in GPML.
-	 */
-	public Comment(String content, PathwayElement parent) {
-		this.content = content;
-		this.parent = parent;
-	}
+//	/**
+//	 * Instantiates a Comment.
+//	 * 
+//	 * @param source  the source of the comment.
+//	 * @param text the text of the comment, between Comment tags in GPML.
+//	 */
+//	public Comment(String source, String text, PathwayElement parent) {
+//		this.source = source;
+//		this.text = text;
+//		this.parent = parent;
+//	}
+//
+//	/**
+//	 * Instantiates a Comment with no source.
+//	 * 
+//	 * @param text the text of the comment, between Comment tags in GPML.
+//	 */
+//	public Comment(String text, PathwayElement parent) {
+//		this.text = text;
+//		this.parent = parent;
+//	}
 	
 	/**
 	 * Instantiates a Comment.
 	 * 
 	 * @param source  the source of the comment.
-	 * @param content the text of the comment, between Comment tags in GPML.
+	 * @param text the text of the comment, between Comment tags in GPML.
 	 */
-	public Comment(String source, String content) {
+	public Comment(String source, String commentText) {
 		this.source = source;
-		this.content = content;
+		this.commentText = commentText;
 	}
 
 	/**
 	 * Instantiates a Comment with no source.
 	 * 
-	 * @param content the text of the comment, between Comment tags in GPML.
+	 * @param text the text of the comment, between Comment tags in GPML.
 	 */
-	public Comment(String content) {
-		this.content = content;
+	public Comment(String commentText) {
+		this.commentText = commentText;
 	}
 
 	/**
@@ -98,8 +98,8 @@ public class Comment {
 	 * 
 	 * @return comment the text of the comment.
 	 */
-	public String getContent() {
-		return content;
+	public String getCommentText() {
+		return commentText;
 	}
 
 	/**
@@ -107,34 +107,31 @@ public class Comment {
 	 * 
 	 * @param comment the text of the comment.
 	 */
-	public void setContent(String content) {
-		if (content != null) {
-			this.content = content;
+	public void setCommentText(String commentText) {
+		if (commentText != null) {
+			this.commentText = commentText;
 		}
 	}
-
-	/**
-	 * Gets the parent PathwayElement to which the Comment belongs.
-	 * 
-	 * @return parent the parent pathway element.
-	 */
-	public PathwayElement getParent() {
-		return parent;
-	}
-
-	/**
-	 * Sets the parent PathwayElement to which the Comment belongs.
-	 * 
-	 * @param parent the parent pathway element.
-	 */
-	public void setCommentText(PathwayElement parent) {
-		this.parent = parent;
-
-	}
-
-//	
-//	public Object clone() throws CloneNotSupportedException {
-//		return super.clone();
+//
+//	/**
+//	 * Gets the parent PathwayElement to which the Comment belongs.
+//	 * 
+//	 * @return parent the parent pathway element.
+//	 */
+//	public PathwayElement getParent() {
+//		return parent;
 //	}
+//
+//	/**
+//	 * Sets the parent PathwayElement to which the Comment belongs.
+//	 * 
+//	 * @param parent the parent pathway element.
+//	 */
+//	public void setCommentText(PathwayElement parent) {
+//		this.parent = parent;
+//
+//	}
+
+
 
 }

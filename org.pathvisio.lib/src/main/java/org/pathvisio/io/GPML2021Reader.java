@@ -784,12 +784,12 @@ public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatRead
 	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
-			String content = cmt.getText();
-			if (content != null && !content.equals("")) {
-				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
+			String commentText = cmt.getCommentText();
+			if (commentText != null && !commentText.equals("")) {
+				Comment comment = new Comment(commentText); // TODO needs parent pathwayModel?
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
-				elementInfo.addComment(new Comment(source, content));
+				elementInfo.addComment(new Comment(source, commentText));
 			}
 		}
 	}
