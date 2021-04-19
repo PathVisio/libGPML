@@ -142,10 +142,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 			writeInfoBox(pathwayModel.getPathway().getInfoBox(), root);
 			writeLegend(pathwayModel.getPathway(), root);
 
-//			writeAnnotations(pathwayModel.getAnnotations(), root);
-//			writeCitations(pathwayModel.getCitations(), root);
-//			writeEvidences(pathwayModel.getEvidences(), root);
-//			<xsd:element ref="gpml:Biopax" minOccurs="0" maxOccurs="1"/>
+			writeBiopax(pathwayModel, root);
 		}
 		return doc;
 	}
@@ -216,8 +213,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 
 		/* set comment group */
 		writeComments(pathway.getComments(), root);
-		// TODO BiopaxRef
-		// TODO PublicationRef
+		writeBiopaxRefs(pathway.getCitationRefs(), root);
 		writeAttributes(pathway.getDynamicProperties(), root);
 
 		/* set graphics */
@@ -296,34 +292,22 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		}
 	}
 
-	// TODO
-	protected void writeBiopaxRefs(List<AnnotationRef> annotationRefs, Element e) throws ConverterException {
-		for (AnnotationRef annotationRef : annotationRefs) {
-			Element anntRef = new Element("AnnotationRef", e.getNamespace());
-			anntRef.setAttribute("elementRef", annotationRef.getAnnotation().getElementId());
-			for (Citation citationRef : annotationRef.getCitationRefs()) {
-				Element citRef = new Element("CitationRef", e.getNamespace());
-				citRef.setAttribute("elementRef", citationRef.getElementId());
-			}
-			for (Evidence evidence : annotationRef.getEvidenceRefs()) {
-				Element evidRef = new Element("EvidenceRef", e.getNamespace());
-				evidRef.setAttribute("elementRef", evidence.getElementId());
-			}
-			if (anntRef != null)
-				e.addContent(anntRef);
-		}
-	}
 
 	/**
-	 * TODO
+	 * Writes BiopaxRef information from {@link ElementInfo#getCitationRef()}
+	 * for pathway or pathway element.
+	 * 
+	 * @param citationRefs
+	 * @param e
+	 * @throws ConverterException
 	 */
-	protected void writePublicationXrefs(List<Citation> citationRefs, Element e) throws ConverterException {
+	protected void writeBiopaxRefs(List<Citation> citationRefs, Element e) throws ConverterException {
 		if (e != null) {
 			for (Citation citationRef : citationRefs) {
-				Element citRef = new Element("CitationRef", e.getNamespace());
-				citRef.setAttribute("elementRef", citationRef.getElementId());
-				if (citRef != null)
-					e.addContent(citRef);
+				Element bpRef = new Element("BiopaxRef", e.getNamespace());
+				bpRef.setAttribute("BiopaxRef", citationRef.getElementId());
+				if (bpRef != null)
+					e.addContent(bpRef);
 			}
 		}
 	}
@@ -650,11 +634,9 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	}
 
 	protected void writeBiopax(PathwayModel pathwayModel, Element root) throws ConverterException {
-		List<Annotation> annotations = pathwayModel.getAnnotations();
-		List<Citation> citations = pathwayModel.getCitations();
 		Element bp = new Element("Biopax", root.getNamespace());
-		writeBiopaxOpenControlledVocabulary(annotations, bp);
-		writeBiopaxPublicationXref(citations, bp);
+		writeBiopaxOpenControlledVocabulary(pathwayModel.getAnnotations(), bp);
+		writeBiopaxPublicationXref(pathwayModel.getCitations(), bp);
 		if (!bp.getChildren().isEmpty()) {
 			root.addContent(bp);
 		}
@@ -712,13 +694,13 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 				String source = citation.getSource();
 				String year = citation.getYear();
 				List<String> authors = citation.getAuthors();
-				writePublicationXrefInfo(biopaxId, "ID", pubxf);
-				writePublicationXrefInfo(biopaxDatabase, "DB", pubxf);
-				writePublicationXrefInfo(title, "TITLE", pubxf);
-				writePublicationXrefInfo(source, "SOURCE", pubxf);
-				writePublicationXrefInfo(year, "YEAR", pubxf);
+				writePubxfInfo(biopaxId, "ID", pubxf);
+				writePubxfInfo(biopaxDatabase, "DB", pubxf);
+				writePubxfInfo(title, "TITLE", pubxf);
+				writePubxfInfo(source, "SOURCE", pubxf);
+				writePubxfInfo(year, "YEAR", pubxf);
 				for (String author : authors)
-					writePublicationXrefInfo(author, "AUTHOR", pubxf);
+					writePubxfInfo(author, "AUTHOR", pubxf);
 				if (pubxf != null)
 					bp.addContent(pubxf);
 			}
@@ -735,7 +717,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @param pubxf         the PublicationXref element.
 	 * @throws ConverterException
 	 */
-	protected void writePublicationXrefInfo(String propertyValue, String elementName, Element pubxf)
+	protected void writePubxfInfo(String propertyValue, String elementName, Element pubxf)
 			throws ConverterException {
 		if (propertyValue != null && !propertyValue.equals("")) {
 			Element e = new Element(elementName, GpmlFormat.BIOPAX);
@@ -756,7 +738,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	}
 
 	/**
-	 * Writes elementRef property information.
+	 * Writes elementRef property information. {@link #writePoints()}
 	 * 
 	 * @param elementRef the elementRef.
 	 * @param e          the parent element.
@@ -816,8 +798,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		if (elementInfo.getClass() != Group.class)
 			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
-		writeBiopaxRefs(elementInfo.getAnnotationRefs(), e);
-		writePublicationXrefs(elementInfo.getCitationRefs(), e);
+		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
 		writeAttributes(elementInfo.getDynamicProperties(), e);
 	}
 
