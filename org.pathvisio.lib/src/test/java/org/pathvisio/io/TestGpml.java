@@ -32,7 +32,7 @@ public class TestGpml extends TestCase {
 		
 		System.out.println("OK until here");
 
-		URL url = Thread.currentThread().getContextClassLoader().getResource("readtest.xml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2021.xml");
 		
 		File file = new File(url.getPath());
 		assertTrue (file.exists());

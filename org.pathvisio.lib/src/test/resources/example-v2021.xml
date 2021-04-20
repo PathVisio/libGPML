@@ -5,28 +5,10 @@
 		<Author name="Mkutmon" fullName="Martina Kutmon" email="xxx@xxx.com"/>
 		<Author name="Egonw" fullName="Egon Willighagen" email="xxx@xxx.com"/>
 	</Authors>
-	<Annotations>
-		<Annotation elementId="a1" value="Homo sapiens" url="	https://identifiers.org/taxonomy:9606" type="species">
-			<Xref identifier="9606" dataSource="taxonomy"/>
-		</Annotation>
-		<Annotation elementId="a2" value="thyroid cancer" url="https://identifiers.org/DOID:1781" type="disease">
-			<Xref identifier="1781" dataSource="DOID"/>
-		</Annotation>
-		<Annotation elementId="a3" value="signaling pathway" url="https://identifiers.org/PW:0000003" type="pathway">
-			<Xref identifier="0000003" dataSource="PW"/>
-		</Annotation>
-	</Annotations>
-	<Citations>
-		<Citation elementId="cbc" url="https://identifiers.org/pubmed:7730304">
-			<Xref identifier="7730304" dataSource="pubmed"/>
-		</Citation>
-	</Citations>
-	
 	<Comment source="WikiPathways-description">Description of the pathway</Comment>
 	<AnnotationRef elementRef="a1"/>
 	<AnnotationRef elementRef="a2"/>
 	<AnnotationRef elementRef="a3"/>
-
 	<Graphics boardWidth="543.9626948775056" boardHeight="279.2271714922049"/>
 	<InfoBox centerX="0.0" centerY="0.0"/>
 	<DataNodes>
@@ -34,7 +16,7 @@
 			<Xref identifier="Q99798" dataSource="uniprot"/>
 			<States>
 				<State elementId="b0e40" textLabel="P" type="phosphate">
-					<Graphics relX="1.0" relY="1.0" centerX="311" centerY="107" width="15.0" height="15.0" shapeType="Oval"/>
+					<Graphics relX="1.0" relY="1.0" width="15.0" height="15.0" shapeType="Oval"/>
 					<Comment>Phosphate</Comment>
 				</State>
 			</States>
@@ -79,13 +61,29 @@
 		</Label>
 	</Labels>
 	<Shapes>
-		<Shape elementId="f3231" type="Nucleus">
+		<Shape elementId="f3231">
 			<Graphics centerX="310.50890868596883" centerY="143.26614699331856" width="404.98218262806233" height="207.46770601336317" zOrder="16384" fontSize="12" vAlign="Middle" shapeType="Oval" borderStyle="double" borderWidth="3.0" borderColor="c0c0c0" textColor="c0c0c0" rotation="0.0"/>
 		</Shape>
 	</Shapes>
 	<Groups>
-		<Group elementId="bcdd3" type="Complex" >		
+		<Group elementId="bcdd3" type="Complex">
 			<Graphics centerX="311.5540089086858" centerY="94.9337416481" width="90.0" height="25.0"/>
 		</Group>
 	</Groups>
+	<Annotations>
+		<Annotation elementId="a1" value="Homo sapiens" url="	https://identifiers.org/taxonomy:9606" type="species">
+			<Xref identifier="9606" dataSource="taxonomy"/>
+		</Annotation>
+		<Annotation elementId="a2" value="thyroid cancer" url="https://identifiers.org/DOID:1781" type="disease">
+			<Xref identifier="1781" dataSource="DOID"/>
+		</Annotation>
+		<Annotation elementId="a3" value="signaling pathway" url="https://identifiers.org/PW:0000003" type="pathway">
+			<Xref identifier="0000003" dataSource="PW"/>
+		</Annotation>
+	</Annotations>
+	<Citations>
+		<Citation elementId="cbc" url="https://identifiers.org/pubmed:7730304">
+			<Xref identifier="7730304" dataSource="pubmed"/>
+		</Citation>
+	</Citations>
 </Pathway>

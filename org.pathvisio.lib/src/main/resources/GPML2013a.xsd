@@ -511,7 +511,7 @@
 
 <!-- Group -->
 
-	<xsd:element name="Group">
+	<xsd:element name="Group">	
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:group ref="gpml:CommentGroup" />

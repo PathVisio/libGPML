@@ -463,7 +463,7 @@ public class Pathway {
 	public String findComment(String source) {
 		for (Comment comment : comments) {
 			if (source.equals(comment.getSource())) {
-				return comment.getContent();
+				return comment.getCommentText();
 			}
 		}
 		return null;
