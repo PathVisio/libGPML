@@ -46,7 +46,8 @@ public class Anchor extends PathwayElement {
 	 * @param y         the y coordinate position of the anchor.
 	 * @param shapeType the visual representation of an anchor.
 	 */
-	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position, Coordinate xy, AnchorType shapeType) {
+	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position, Coordinate xy,
+			AnchorType shapeType) {
 		super(elementId, pathwayModel);
 		this.lineElement = lineElement;
 		if (position < 0 || position > 1) {
@@ -57,7 +58,13 @@ public class Anchor extends PathwayElement {
 		if (shapeType != null)
 			this.shapeType = shapeType;
 	}
-	
+
+	// TODO anchor without xy coordinates
+	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position,
+			AnchorType shapeType) {
+		this(elementId, pathwayModel, lineElement, position, null, shapeType);
+	}
+
 	/**
 	 * Returns the parent interaction or graphicalLine to which the anchor belongs.
 	 * 
@@ -75,7 +82,6 @@ public class Anchor extends PathwayElement {
 	public void setLineElement(LineElement lineElement) {
 		this.lineElement = lineElement;
 	}
-	
 
 	/**
 	 * Gets the proportional distance of an anchor along the line it belongs to,

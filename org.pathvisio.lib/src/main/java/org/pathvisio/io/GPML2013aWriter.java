@@ -47,7 +47,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
-	// TODO same as from READER....
+	/* Duplicate */
 	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
 	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
 	public final static String PATHWAY_EMAIL = "pathway_email_gpml2013a";
@@ -56,7 +56,11 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
 
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
-	public final static String ATTRIBUTE_BIOPAXREF = "attribute_biopaxRef_gpml2013a";
+	public final static String OPT_BIOPAXREF = "optional_attribute_biopaxRef_gpml2013a";
+
+	/* static variables for dynamic properties (named Attribute in GPML2013a) */
+	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
+	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 
 	protected GPML2013aWriter(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
@@ -213,8 +217,9 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 
 		/* set comment group */
 		writeComments(pathway.getComments(), root);
+		// TODO PublicationXref?
 		writeBiopaxRefs(pathway.getCitationRefs(), root);
-		writeAttributes(pathway.getDynamicProperties(), root);
+		writePathwayDynamicProperties(pathway.getDynamicProperties(), root);
 
 		/* set graphics */
 		Element gfx = new Element("Graphics", root.getNamespace());
@@ -282,20 +287,21 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @param e                 the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writeAttributes(Map<String, String> dynamicProperties, Element e) throws ConverterException {
+	protected void writePathwayDynamicProperties(Map<String, String> dynamicProperties, Element e)
+			throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
 			Element dp = new Element("Property", e.getNamespace());
 			dp.setAttribute("key", key);
 			dp.setAttribute("value", dynamicProperties.get(key));
+			// TODO may need to handle BiopaxRef attribute
 			if (dp != null)
 				e.addContent(dp);
 		}
 	}
 
-
 	/**
-	 * Writes BiopaxRef information from {@link ElementInfo#getCitationRef()}
-	 * for pathway or pathway element.
+	 * Writes BiopaxRef information from {@link ElementInfo#getCitationRef()} for
+	 * pathway or pathway element.
 	 * 
 	 * @param citationRefs
 	 * @param e
@@ -383,6 +389,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 				st.setAttribute("GraphRef", dataNode.getElementId());
 				st.setAttribute("TextLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
 				writeElementInfo(state, st);
+				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProperty(), st);
 				/* sets graphics properties */
 				Element gfx = new Element("Graphics", st.getNamespace());
 				st.addContent(gfx);
@@ -465,14 +472,14 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	protected void writeLineElement(LineElement lineElement, Element ln) throws ConverterException {
+		writeElementInfo(lineElement, ln);
+		writeLineDynamicProperties(lineElement.getDynamicProperties(), lineElement.getLineStyleProperty(), ln);
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
 		writePoints(lineElement.getPoints(), gfx);
 		writeAnchors(lineElement.getAnchors(), gfx);
-		writeElementInfo(lineElement, ln);
 		writeGroupRef(lineElement.getGroupRef(), ln); // TODO location
-
 	}
 
 	/**
@@ -522,8 +529,8 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 					continue;
 				Element an = new Element("Anchor", wyps.getNamespace());
 				writeElementId(anchor.getElementId(), an);
-				an.setAttribute("x", Double.toString(anchor.getXY().getX()));
-				an.setAttribute("y", Double.toString(anchor.getXY().getY()));
+//				an.setAttribute("x", Double.toString(anchor.getXY().getX()));
+//				an.setAttribute("y", Double.toString(anchor.getXY().getY()));
 				an.setAttribute("position", Double.toString(anchor.getPosition()));
 				an.setAttribute("shapeType", anchor.getShapeType().getName());
 				if (an != null) {
@@ -717,8 +724,7 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @param pubxf         the PublicationXref element.
 	 * @throws ConverterException
 	 */
-	protected void writePubxfInfo(String propertyValue, String elementName, Element pubxf)
-			throws ConverterException {
+	protected void writePubxfInfo(String propertyValue, String elementName, Element pubxf) throws ConverterException {
 		if (propertyValue != null && !propertyValue.equals("")) {
 			Element e = new Element(elementName, GpmlFormat.BIOPAX);
 			e.setText(propertyValue);
@@ -778,6 +784,8 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 */
 	private void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
 		writeElementInfo(shapedElement, se);
+		writeShapedOrStateDynamicProperties(shapedElement.getDynamicProperties(), shapedElement.getShapeStyleProperty(),
+				se);
 		Element gfx = new Element("Graphics", se.getNamespace());
 		se.addContent(gfx);
 		writeRectProperty(shapedElement.getRectProperty(), gfx);
@@ -798,8 +806,76 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		if (elementInfo.getClass() != Group.class)
 			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
+		// TODO PublicationXref
 		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
-		writeAttributes(elementInfo.getDynamicProperties(), e);
+//		writeAttributes(elementInfo.getDynamicProperties(), e);
+	}
+
+	protected void writeShapedOrStateDynamicProperties(Map<String, String> dynamicProperties,
+			ShapeStyleProperty shapeProp, Element se) throws ConverterException {
+		for (String key : dynamicProperties.keySet()) {
+			Element dp = new Element("Property", se.getNamespace());
+			dp.setAttribute("Key", key);
+			dp.setAttribute("Value", dynamicProperties.get(key));
+			// TODO may need to handle BiopaxRef attribute
+			if (dp != null)
+				se.addContent(dp);
+		}
+		LineStyleType lineStyle = shapeProp.getBorderStyle();
+		if (lineStyle.getName().equals("Double")) {
+			/*
+			 * In GPML2013a, double lineStyle is stored in dynamic property rather than
+			 * lineStyle.
+			 */
+			shapeProp.setBorderStyle(null);
+			Element dp = new Element("Property", se.getNamespace());
+			dp.setAttribute("Key", DOUBLE_LINE_KEY);
+			dp.setAttribute("Value", lineStyle.getName());
+			if (dp != null)
+				se.addContent(dp);
+		}
+		ShapeType shapeType = shapeProp.getShapeType();
+		if (ShapeType.CELL_CMPNT_MAP.containsKey(shapeType)) {
+			/*
+			 * In GPML2013a, shapeType info is stored in dynamic property. While Graphics
+			 * shapeType is more like the View shapeType. E.g. "Nucleus" is stored in
+			 * dynamic property and shapeType is "Oval".
+			 */
+			ShapeType shapeTypeView = ShapeType.CELL_CMPNT_MAP.get(shapeType);
+			shapeProp.setShapeType(shapeTypeView);
+			Element dp = new Element("Property", se.getNamespace());
+			dp.setAttribute("Key", CELL_CMPNT_KEY);
+			dp.setAttribute("Value", shapeType.getName());
+			if (dp != null)
+				se.addContent(dp);
+
+		}
+
+	}
+
+	protected void writeLineDynamicProperties(Map<String, String> dynamicProperties, LineStyleProperty lineProp,
+			Element ln) throws ConverterException {
+		for (String key : dynamicProperties.keySet()) {
+			Element dp = new Element("Property", ln.getNamespace());
+			dp.setAttribute("key", key);
+			dp.setAttribute("value", dynamicProperties.get(key));
+			// TODO may need to handle BiopaxRef attribute
+			if (dp != null)
+				ln.addContent(dp);
+		}
+		LineStyleType lineStyle = lineProp.getLineStyle();
+		if (lineStyle.getName().equals("Double")) {
+			/*
+			 * In GPML2013a, double lineStyle is stored in dynamic property rather than
+			 * lineStyle.
+			 */
+			lineProp.setLineStyle(null);
+			Element dp = new Element("Property", ln.getNamespace());
+			dp.setAttribute("Key", DOUBLE_LINE_KEY);
+			dp.setAttribute("Value", lineStyle.getName());
+			if (dp != null)
+				ln.addContent(dp);
+		}
 	}
 
 	/**
@@ -847,7 +923,9 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("LineStyle", shapeProp.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		LineStyleType borderStyle = shapeProp.getBorderStyle();
+		if (borderStyle != null)
+			gfx.setAttribute("LineStyle", borderStyle.getName());
 		gfx.setAttribute("LineThickness", String.valueOf(shapeProp.getBorderWidth()));
 		gfx.setAttribute("FillColor", ColorUtils.colorToHex(shapeProp.getFillColor()));
 		gfx.setAttribute("ShapeType", shapeProp.getShapeType().getName());
@@ -864,7 +942,9 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
 		gfx.setAttribute("ConnectorType", lineProp.getConnectorType().getName());
 		gfx.setAttribute("ZOrder", String.valueOf(lineProp.getZOrder()));
-		gfx.setAttribute("LineStyle", lineProp.getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		LineStyleType lineStyle = lineProp.getLineStyle();
+		if (lineStyle != null)
+			gfx.setAttribute("LineStyle", lineStyle.getName());
 		gfx.setAttribute("LineThickness", String.valueOf(lineProp.getLineWidth()));
 		gfx.setAttribute("Color", ColorUtils.colorToHex(lineProp.getLineColor()));
 	}

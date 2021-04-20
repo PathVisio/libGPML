@@ -95,10 +95,8 @@ public class ShapeType {
 	}
 	
 	/**
-	 * Temporary Dynamic Property for cellular component (for GPML2013a and earlier) 
+	 * MOSTLY FOR VISUAL....Temporary Dynamic Property for cellular component (for GPML2013a and earlier) 
 	 */
-	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
-	//CommonActions.java
 	public static final Map<ShapeType, ShapeType> CELL_CMPNT_MAP = new HashMap<ShapeType, ShapeType>();
 	static {
 		CELL_CMPNT_MAP.put(CELL, ROUNDED_RECTANGLE);

@@ -110,7 +110,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 * @throws ConverterException
 	 */
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
-		/* Checks if pathway model interactions/graphicaLines and groups are valid */
+		/* checks if pathway model interactions/graphicaLines and groups are valid */
 		checkLineAndGroupSize(pathwayModel); // TODO
 		
 		Document doc = new Document();
@@ -881,7 +881,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 */
 	protected void writeFontProperty(FontProperty fontProp, Element gfx) throws ConverterException {
 		gfx.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor()));
-		gfx.setAttribute("fontName", fontProp.getFontName() == null ? "" : fontProp.getFontName());
+		gfx.setAttribute("fontName", fontProp.getFontName() == null ? "Arial" : fontProp.getFontName());
 		gfx.setAttribute("fontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
 		gfx.setAttribute("fontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
 		gfx.setAttribute("fontDecoration", fontProp.getFontDecoration() ? "Underline" : "Normal");
@@ -900,7 +900,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
 		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor()));
-		gfx.setAttribute("borderStyle", shapeProp.getBorderStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		gfx.setAttribute("borderStyle", shapeProp.getBorderStyle().getName());
 		gfx.setAttribute("borderWidth", String.valueOf(shapeProp.getBorderWidth()));
 		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor()));
 		gfx.setAttribute("shapeType", shapeProp.getShapeType().getName());
@@ -916,7 +916,7 @@ public class GPML2021Writer extends GpmlFormatAbstract implements GpmlFormatWrit
 	 */
 	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
 		gfx.setAttribute("lineColor", ColorUtils.colorToHex(lineProp.getLineColor()));
-		gfx.setAttribute("lineStyle", lineProp.getLineStyle() != LineStyleType.DASHED ? "Solid" : "Broken");
+		gfx.setAttribute("lineStyle", lineProp.getLineStyle().getName());
 		gfx.setAttribute("lineWidth", String.valueOf(lineProp.getLineWidth()));
 		gfx.setAttribute("connectorType", lineProp.getConnectorType().getName());
 		gfx.setAttribute("zOrder", String.valueOf(lineProp.getZOrder()));
