@@ -48,8 +48,8 @@ import org.xml.sax.SAXException;
  * Read / write GPML files. Base implementation for different GpmlFormat
  * versions. Code that is shared between multiple versions is located here.
  */
-public abstract class GpmlFormatAbstract {
-	protected GpmlFormatAbstract(String xsdFile, Namespace nsGPML) {
+public abstract class Gpml2021FormatAbstract {
+	protected Gpml2021FormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}

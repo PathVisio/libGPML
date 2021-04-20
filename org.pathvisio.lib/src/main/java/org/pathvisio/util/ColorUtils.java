@@ -16,15 +16,27 @@ public class ColorUtils {
 	/**
 	 * Converts a {@link Color} object to a hexBinary string.
 	 * 
-	 * @param color
+	 * @param color the color object.
+	 * @param hash  the boolean, if true appends "#" to beginning of hex string.
+	 * @return the resulting hex string.
 	 */
-	public static String colorToHex(Color color) {
-		if (color.getAlpha() == 255) {
-			return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+	public static String colorToHex(Color color, boolean appendHash) {
+		int a = color.getAlpha();
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		if (a == 255) {
+			if (appendHash) {
+				return String.format("#%02x%02x%02x", r, g, b);
+			} else {
+				return String.format("%02x%02x%02x", r, g, b);
+			}
 		} else {
-			return String.format("#%02x%02x%02x%02x", color.getAlpha(), color.getRed(), color.getGreen(),
-					color.getBlue());
-
+			if (appendHash) {
+				return String.format("#%02x%02x%02x%02x", a, r, g, b);
+			} else {
+				return String.format("%02x%02x%02x%02x", a, r, g, b);
+			}
 		}
 	}
 
@@ -37,10 +49,13 @@ public class ColorUtils {
 	 */
 	public static Color hexToColor(String hex) {
 		if (hex.length() < 8) {
+			if (!hex.contains("+"))
+				hex = "#" + hex;
 			return Color.decode(hex);
 		} else {
-			/* removes # character is necessary */
-			hex = hex.replace("#", "");
+			/* removes # character if necessary */
+			if (hex.contains("#"))
+				hex = hex.replace("#", "");
 			long i = Long.parseLong(hex, 16);
 			int r = (int) (i & 0xff);
 			int g = (int) ((i >> 8) & 0xff);
@@ -67,7 +82,7 @@ public class ColorUtils {
 						+ " is not valid, element color is set to black", e);
 			}
 		}
-		return Color.decode("000000");
+		return Color.decode("#000000");
 	}
 
 	/**

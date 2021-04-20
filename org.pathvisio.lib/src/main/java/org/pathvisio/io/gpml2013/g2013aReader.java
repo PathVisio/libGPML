@@ -51,7 +51,7 @@ import org.pathvisio.model.type.StateType;
 import org.pathvisio.model.type.VAlignType;
 import org.pathvisio.util.ColorUtils;
 
-public class GPML2013aReader implements GPMLReader {
+public class g2013aReader  {
 
 	
 	//TODO Maintainer is Author????

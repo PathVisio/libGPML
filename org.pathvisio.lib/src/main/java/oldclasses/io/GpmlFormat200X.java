@@ -42,7 +42,7 @@ import org.pathvisio.core.view.ShapeRegistry;
  * GpmlFormat reader / writer for version 2007 and 2008A.
  * Code shared with other versions is in GpmlFormatAbstract.`
  */
-class GpmlFormat200X extends GpmlFormatAbstract implements GpmlFormatReader
+class GpmlFormat200X extends Gpml2021FormatAbstract implements GpmlFormatReader
 {
 	public static final GpmlFormatReader GPML_2007 = new GpmlFormat200X (
 		"GPML2007.xsd", Namespace.getNamespace("http://genmapp.org/GPML/2007")

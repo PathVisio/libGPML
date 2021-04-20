@@ -42,25 +42,10 @@ import org.pathvisio.util.ColorUtils;
  * 
  * @author finterly
  */
-public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWriter {
+public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlFormatWriter {
 
 	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
-
-	/* Duplicate */
-	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
-	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
-	public final static String PATHWAY_EMAIL = "pathway_email_gpml2013a";
-	public final static String PATHWAY_LASTMODIFIED = "pathway_lastModified_gpml2013a";
-	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
-	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
-
-	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
-	public final static String OPT_BIOPAXREF = "optional_attribute_biopaxRef_gpml2013a";
-
-	/* static variables for dynamic properties (named Attribute in GPML2013a) */
-	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
-	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 
 	protected GPML2013aWriter(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
@@ -948,4 +933,5 @@ public class GPML2013aWriter extends GpmlFormatAbstract implements GpmlFormatWri
 		gfx.setAttribute("LineThickness", String.valueOf(lineProp.getLineWidth()));
 		gfx.setAttribute("Color", ColorUtils.colorToHex(lineProp.getLineColor()));
 	}
+
 }

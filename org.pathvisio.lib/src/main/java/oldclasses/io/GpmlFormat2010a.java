@@ -50,7 +50,7 @@ import org.pathvisio.core.model.PathwayElement.MPoint;
 import org.pathvisio.core.view.ShapeRegistry;
 import org.pathvisio.core.view.State;
 
-class GpmlFormat2010a extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter 
+class GpmlFormat2010a extends Gpml2021FormatAbstract implements GpmlFormatReader, GpmlFormatWriter 
 {
 	public static final GpmlFormat2010a GPML_2010A = new GpmlFormat2010a (
 			"GPML2010a.xsd", Namespace.getNamespace("http://genmapp.org/GPML/2010a")

@@ -50,7 +50,7 @@ import org.pathvisio.core.model.PathwayElement.MAnchor;
 import org.pathvisio.core.model.PathwayElement.MPoint;
 import org.pathvisio.core.view.ShapeRegistry;
 
-class GpmlFormat2013a extends GpmlFormatAbstract implements GpmlFormatReader, GpmlFormatWriter 
+class GpmlFormat2013a extends Gpml2021FormatAbstract implements GpmlFormatReader, GpmlFormatWriter 
 {
 	public static final GpmlFormat2013a GPML_2013A = new GpmlFormat2013a (
 			"GPML2013a.xsd", Namespace.getNamespace("http://pathvisio.org/GPML/2013a")

@@ -50,7 +50,7 @@ import org.pathvisio.util.ColorUtils;
  * 
  * @author finterly
  */
-public class GPML2021Reader extends GpmlFormatAbstract implements GpmlFormatReader {
+public class GPML2021Reader extends Gpml2021FormatAbstract implements GpmlFormatReader {
 
 	public static final GPML2021Reader GPML2021READER = new GPML2021Reader("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));

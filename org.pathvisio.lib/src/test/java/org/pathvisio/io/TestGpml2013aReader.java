@@ -44,7 +44,7 @@ public class TestGpml2013aReader extends TestCase {
 		assertTrue (file.exists());
 	
 		PathwayModel pathwayModel = new PathwayModel();
-		pathwayModel.readFromXml(file, true);
+		pathwayModel.readFromXml(file, false);
 	}
 	
 

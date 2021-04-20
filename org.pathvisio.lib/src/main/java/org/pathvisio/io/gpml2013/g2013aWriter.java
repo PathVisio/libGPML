@@ -59,7 +59,7 @@ import keep.DynamicProperty;
 import keep.IElementIdContainer;
 import keep.Legend;
 
-public class GPML2013aWriter implements GPMLWriter {
+public class g2013aWriter implements GPMLWriter {
 
 	/**
 	 * Sets a certain attribute value, performs a basic check for some types, and

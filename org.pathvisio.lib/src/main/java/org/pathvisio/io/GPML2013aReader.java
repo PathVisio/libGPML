@@ -39,24 +39,10 @@ import org.pathvisio.util.ColorUtils;
  * 
  * @author finterly
  */
-public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatReader {
+public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlFormatReader {
 
 	public static final GPML2013aReader GPML2013aREADER = new GPML2013aReader("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
-
-	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
-	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
-	public final static String PATHWAY_EMAIL = "pathway_email_gpml2013a";
-	public final static String PATHWAY_LASTMODIFIED = "pathway_lastModified_gpml2013a";
-	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
-	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
-
-	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
-	public final static String OPT_BIOPAXREF = "optional_attribute_biopaxRef_gpml2013a";
-
-	/* static variables for dynamic properties (named Attribute in GPML2013a) */
-	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
-	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 
 	protected GPML2013aReader(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
@@ -114,20 +100,20 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @return pathway the pathway object.
 	 * @throws ConverterException
 	 */
-	protected Pathway readPathway(Element root) throws ConverterException {
-		String title = root.getAttributeValue("Name");
+	protected Pathway readPathway(Element root) throws ConverterException {	
+		String title = getAttr("Pathway", "Name", root);
 		Element gfx = root.getChild("Graphics", root.getNamespace());
-		double boardWidth = Double.parseDouble(gfx.getAttributeValue("BoardWidth"));
-		double boardHeight = Double.parseDouble(gfx.getAttributeValue("BoardHeight"));
+		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx));
+		double boardHeight = Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx));
 		Coordinate infoBox = readInfoBox(root);
 		/* backgroundColor default is ffffff (white) */
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff"), infoBox)
 				.build();
 		/* sets optional properties */
-		String organism = root.getAttributeValue("Organism");
-		String source = root.getAttributeValue("Data-Source");
-		String version = root.getAttributeValue("Version");
-		String license = root.getAttributeValue("License");
+		String organism = getAttr("Pathway", "Organism", root);
+		String source = getAttr("Pathway", "Data-Source", root);
+		String version = getAttr("Pathway", "Version", root);
+		String license = getAttr("Pathway", "License", root);
 		if (organism != null)
 			pathway.setOrganism(organism);
 		if (source != null)
@@ -137,10 +123,10 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 		if (license != null)
 			pathway.setLicense(license);
 		/* sets optional dynamic properties */
-		String author = root.getAttributeValue("Author");
-		String maintainer = root.getAttributeValue("Maintainer");
-		String email = root.getAttributeValue("Email");
-		String lastModified = root.getAttributeValue("Last-Modified");
+		String author = getAttr("Pathway", "Author", root);
+		String maintainer = getAttr("Pathway", "Maintainer", root);
+		String email = getAttr("Pathway", "Email", root);
+		String lastModified = getAttr("Pathway", "Last-Modified", root);
 		if (author != null) {
 			pathway.setDynamicProperty(PATHWAY_AUTHOR, author);
 		}
@@ -386,8 +372,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 				elementId = pathwayModel.getUniqueElementId();
 			GroupType type = GroupType.register(grp.getAttributeValue("Style"));
 			Element gfx = grp.getChild("Graphics", grp.getNamespace());
-			//TODO Group has no RectProperty...CenterX, CenterY, width, Height!!!!
-			RectProperty rectProperty = new RectProperty(new Coordinate(0,0), 2,2); 
+			// TODO Group has no RectProperty...CenterX, CenterY, width, Height!!!!
+			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 2, 2);
 			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
@@ -449,22 +435,22 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected ShapeStyleProperty readGroupShapeStyleProperty(GroupType type) throws ConverterException {
 		if (type.getName() == "Group") {
 			/* fillColor translucent blue, hovers to transparent */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, ColorUtils.hexToColor("#0000ff0c"),
-					ShapeType.RECTANGLE);
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0,
+					ColorUtils.hexToColor("#0000ff0c"), ShapeType.RECTANGLE);
 		} else if (type.getName() == "Complex") {
 			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, ColorUtils.hexToColor("#b4b46419"),
-					ShapeType.OCTAGON);
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0,
+					ColorUtils.hexToColor("#b4b46419"), ShapeType.OCTAGON);
 		} else if (type.getName() == "Pathway") {
 			/* fontSize 32, fontName "Times" (was not implemented) */
 			/* fillColor translucent green, hovers to more opaque green #00ff0019 */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, ColorUtils.hexToColor("#00ff000c"),
-					ShapeType.RECTANGLE);
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0,
+					ColorUtils.hexToColor("#00ff000c"), ShapeType.RECTANGLE);
 		} else {
 			/* GroupType "None", or default */
 			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, ColorUtils.hexToColor("#b4b46419"),
-					ShapeType.RECTANGLE);
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0,
+					ColorUtils.hexToColor("#b4b46419"), ShapeType.RECTANGLE);
 		}
 	}
 
@@ -840,9 +826,9 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 //				elementInfo.addCitationRef(biopaxRef);
 		}
 		readComments(elementInfo, e);
-		//PublicationXref TODO
+		// PublicationXref TODO
 		readBiopaxRefs(elementInfo, e);
-		//readDynamicProperties (see above)
+		// readDynamicProperties (see above)
 	}
 
 	/**
@@ -987,15 +973,20 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @throws ConverterException
 	 */
 	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
-		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("Color"));
-		String fontName = gfx.getAttributeValue("FontName");
-		boolean fontWeight = gfx.getAttributeValue("FontWeight").equals("Bold");
-		boolean fontStyle = gfx.getAttributeValue("FontStyle").equals("Italic");
-		boolean fontDecoration = gfx.getAttributeValue("FontDecoration").equals("Underline");
-		boolean fontStrikethru = gfx.getAttributeValue("FontStrikethru").equals("Strikethru");
-		int fontSize = Integer.parseInt(gfx.getAttributeValue("FontSize"));
-		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("Align"));
-		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("Valign"));
+		String base = ((Element) gfx.getParent()).getName();
+		Color textColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
+		String fontName = getAttr(base + ".Graphics", "FontName", gfx);
+		String fontWeightStr = getAttr(base + ".Graphics", "FontWeight", gfx);
+		String fontStyleStr = getAttr(base + ".Graphics", "FontStyle", gfx);
+		String fontDecorationStr = getAttr(base + ".Graphics", "FontDecoration", gfx);
+		String fontStrikethruStr = getAttr(base + ".Graphics", "FontStrikethru", gfx);
+		boolean fontWeight = fontWeightStr != null && fontWeightStr.equals("Bold");
+		boolean fontStyle = fontStyleStr != null && fontStyleStr.equals("Italic");
+		boolean fontDecoration = fontDecorationStr != null && fontDecorationStr.equals("Underline");
+		boolean fontStrikethru = fontStrikethruStr != null && fontStrikethruStr.equals("Strikethru");
+		int fontSize = Integer.parseInt(getAttr(base + ".Graphics", "FontSize", gfx));
+		HAlignType hAlignType = HAlignType.fromName(getAttr(base + ".Graphics", "Align", gfx));
+		VAlignType vAlignType =VAlignType.fromName(getAttr(base + ".Graphics", "Valign", gfx));
 		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
 				hAlignType, vAlignType);
 	}
@@ -1011,12 +1002,13 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @throws ConverterException
 	 */
 	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
-		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("Color"));
-		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("LineStyle"));
-		double borderWidth = Double.parseDouble(gfx.getAttributeValue("LineThickness"));
-		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("FillColor"));
-		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("ShapeType"));
-		String zOrder = gfx.getAttributeValue("ZOrder");
+		String base = ((Element) gfx.getParent()).getName();	
+		Color borderColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
+		LineStyleType borderStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
+		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx));
+		Color fillColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "FillColor", gfx));
+		ShapeType shapeType = ShapeType.register(getAttr(base + ".Graphics", "ShapeType", gfx));
+		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
 		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
 				shapeType);
 		if (zOrder != null) {
@@ -1036,11 +1028,12 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	 * @throws ConverterException
 	 */
 	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
-		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("Color"));
-		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("LineStyle"));
-		double lineWidth = Double.parseDouble(gfx.getAttributeValue("LineThickness"));
-		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("ConnectorType"));
-		String zOrder = gfx.getAttributeValue("ZOrder");
+		String base = ((Element) gfx.getParent()).getName();	
+		Color lineColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
+		LineStyleType lineStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
+		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx));
+		ConnectorType connectorType = ConnectorType.register(getAttr(base + ".Graphics", "ConnectorType", gfx));
+		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
 		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
 		if (zOrder != null) {
 			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));

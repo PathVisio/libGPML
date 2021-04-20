@@ -51,8 +51,8 @@ import org.xml.sax.SAXException;
  * implementation for different GpmlFormat versions. Code that is shared between
  * multiple versions is located here.
  */
-public abstract class GPML2013aFormatAbstract {
-	protected GPML2013aFormatAbstract(String xsdFile, Namespace nsGPML) {
+public abstract class G2013aFormatAbstract {
+	protected G2013aFormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}

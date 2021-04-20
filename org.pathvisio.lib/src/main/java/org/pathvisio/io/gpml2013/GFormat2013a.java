@@ -48,7 +48,7 @@ import org.pathvisio.model.type.*;
 import oldclasses.io.GpmlFormatReader;
 import oldclasses.io.GpmlFormatWriter;
 
-class GpmlFormat2013a extends GPML2013aFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
+class GFormat2013a extends GPML2013aFormatAbstract implements GpmlFormatReader, GpmlFormatWriter {
 	
 	public static final GpmlFormat2013a GPML_2013A = new GpmlFormat2013a("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
@@ -57,7 +57,7 @@ class GpmlFormat2013a extends GPML2013aFormatAbstract implements GpmlFormatReade
 	 * @param xsdFile
 	 * @param ns
 	 */
-	public GpmlFormat2013a(String xsdFile, Namespace ns) {
+	public GFormat2013a(String xsdFile, Namespace ns) {
 		super(xsdFile, ns);
 	}
 
