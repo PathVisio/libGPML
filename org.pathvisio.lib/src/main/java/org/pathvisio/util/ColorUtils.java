@@ -20,10 +20,33 @@ public class ColorUtils {
 	 */
 	public static String colorToHex(Color color) {
 		if (color.getAlpha() == 255) {
-			return String.format("%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+			return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
 		} else {
-			return String.format("#%02x%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue(),
-					color.getAlpha());
+			return String.format("#%02x%02x%02x%02x", color.getAlpha(), color.getRed(), color.getGreen(),
+					color.getBlue());
+
+		}
+	}
+
+	/**
+	 * Converts a hexBinary string to {@link Color}. If color is opaque,
+	 * {@link Color#decode(String))} method used. For transparent to translucent *
+	 * colors (alpha != 255), a custom conversion is used.
+	 * 
+	 * @param color
+	 */
+	public static Color hexToColor(String hex) {
+		if (hex.length() < 8) {
+			return Color.decode(hex);
+		} else {
+			/* removes # character is necessary */
+			hex = hex.replace("#", "");
+			long i = Long.parseLong(hex, 16);
+			int r = (int) (i & 0xff);
+			int g = (int) ((i >> 8) & 0xff);
+			int b = (int) ((i >> 16) & 0xff);
+			int a = (int) ((i >> 24) & 0xff);
+			return new Color(r, g, b, a);
 		}
 	}
 
@@ -38,13 +61,13 @@ public class ColorUtils {
 			return colorMap.get(stringColor);
 		} else {
 			try {
-				return Color.decode("#" + stringColor);
+				return hexToColor(stringColor);
 			} catch (Exception e) {
 				Logger.log.error("while converting color: " + "Color " + stringColor
 						+ " is not valid, element color is set to black", e);
 			}
 		}
-		return Color.decode("#000000");
+		return Color.decode("000000");
 	}
 
 	/**
@@ -70,7 +93,7 @@ public class ColorUtils {
 		cMap.put("Teal", Color.decode("#008080"));
 		cMap.put("White", Color.decode("#ffffff"));
 		cMap.put("Yellow", Color.decode("#ffff00"));
-		cMap.put("Transparent", Color.decode("#00000000")); // TODO
+		cMap.put("Transparent", hexToColor("#00000000")); // TODO
 		colorMap = Collections.unmodifiableMap(cMap);
 	}
 

@@ -386,7 +386,8 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 				elementId = pathwayModel.getUniqueElementId();
 			GroupType type = GroupType.register(grp.getAttributeValue("Style"));
 			Element gfx = grp.getChild("Graphics", grp.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
+			//TODO Group has no RectProperty...CenterX, CenterY, width, Height!!!!
+			RectProperty rectProperty = new RectProperty(new Coordinate(0,0), 2,2); 
 			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
@@ -448,21 +449,21 @@ public class GPML2013aReader extends GpmlFormatAbstract implements GpmlFormatRea
 	protected ShapeStyleProperty readGroupShapeStyleProperty(GroupType type) throws ConverterException {
 		if (type.getName() == "Group") {
 			/* fillColor translucent blue, hovers to transparent */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, Color.decode("#0000ff0c"),
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, ColorUtils.hexToColor("#0000ff0c"),
 					ShapeType.RECTANGLE);
 		} else if (type.getName() == "Complex") {
 			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, Color.decode("#b4b46419"),
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, ColorUtils.hexToColor("#b4b46419"),
 					ShapeType.OCTAGON);
 		} else if (type.getName() == "Pathway") {
 			/* fontSize 32, fontName "Times" (was not implemented) */
 			/* fillColor translucent green, hovers to more opaque green #00ff0019 */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, Color.decode("#00ff000c"),
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0, ColorUtils.hexToColor("#00ff000c"),
 					ShapeType.RECTANGLE);
 		} else {
 			/* GroupType "None", or default */
 			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, Color.decode("#b4b46419"),
+			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0, ColorUtils.hexToColor("#b4b46419"),
 					ShapeType.RECTANGLE);
 		}
 	}

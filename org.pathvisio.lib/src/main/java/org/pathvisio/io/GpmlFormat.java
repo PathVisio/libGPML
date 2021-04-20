@@ -49,6 +49,8 @@ import org.xml.sax.InputSource;
  */
 public class GpmlFormat extends AbstractPathwayFormat {
 	static private final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
+	static private final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
+
 //	static private final GpmlFormat2013a PREVIOUS = GpmlFormat2013a.GPML_2013A;
 	public static final Namespace RDF = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 	public static final Namespace RDFS = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -167,7 +169,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	}
 
 	public static GpmlFormatReader getReaderForNamespace(Namespace ns) {
-		GpmlFormatReader[] formats = new GpmlFormatReader[] { GPML2021Reader.GPML2021READER };
+		GpmlFormatReader[] formats = new GpmlFormatReader[] { GPML2021Reader.GPML2021READER, GPML2013aReader.GPML2013aREADER };
 
 //		GpmlFormat200X.GPML_2007, GpmlFormat200X.GPML_2008A, GpmlFormat2010a.GPML_2010A , 
 		for (GpmlFormatReader format : formats) {
@@ -182,7 +184,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 			throws ConverterException {
 //		PathwayModel pathwayModel = null;
 		//TODO fix schema file etc...
-		URL url = Thread.currentThread().getContextClassLoader().getResource(CURRENT.getSchemaFile());
+		URL url = Thread.currentThread().getContextClassLoader().getResource(PREVIOUS.getSchemaFile());
 		File xsdFile = new File(url.getPath());
 
 		try {
