@@ -13,10 +13,6 @@ _Italicized_ packages contain old pathvisio code that will eventually be modifie
 - _org.pathvisio.debug_
 ```diff
 + org.pathvisio.io
-```
-- _org.pathvisio.io.gpml2013_
-- _org.pathvisio.io.gpml2021_
-```diff
 + org.pathvisio.model
 + org.pathvisio.model.elements
 + org.pathvisio.model.graphics
