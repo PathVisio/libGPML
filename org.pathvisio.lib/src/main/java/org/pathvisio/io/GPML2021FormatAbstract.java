@@ -14,9 +14,17 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io.gpml2021;
+package org.pathvisio.io;
 
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
@@ -24,51 +32,52 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.ValidatorHandler;
 
+import org.jdom2.Content;
 import org.jdom2.Document;
+import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.io.ConverterException;
 import org.pathvisio.model.*;
-import org.pathvisio.model.elements.*;
 import org.xml.sax.SAXException;
 
-
 /**
- * This abstract class is for the reading and writing of GPML files. Base
- * implementation for different GpmlFormat versions. Code that is shared between
- * multiple versions is located here.
+ * Read / write GPML files. Base implementation for different GpmlFormat
+ * versions. Code that is shared between multiple versions is located here.
  */
 public abstract class GPML2021FormatAbstract {
-	
-	
 	protected GPML2021FormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}
 
-	private final Namespace nsGPML;
 	private final String xsdFile;
+	private final Namespace nsGPML;
 
-	/**
-	 * @return nsGPML the gpml namespace.
-	 */
+//	protected abstract Map<String, AttributeInfo> getAttributeInfo();
+	
+	public String getSchemaFile() {
+		return xsdFile;
+	}
+	
 	public Namespace getGpmlNamespace() {
 		return nsGPML;
 	}
 
 	/**
-	 * OLD validation method TODO validates a JDOM document against the xml-schema
-	 * definition specified by 'xsdFile'
+	 * validates a JDOM document against the xml-schema definition specified by
+	 * 'xsdFile'
 	 * 
 	 * @param doc the document to validate
 	 */
 	public void validateDocument(Document doc) throws ConverterException {
-		ClassLoader cl = Pathway.class.getClassLoader();
+		ClassLoader cl = PathwayModel.class.getClassLoader();
 		InputStream is = cl.getResourceAsStream(xsdFile);
+
+		System.out.println(xsdFile);
 		if (is != null) {
 			Schema schema;
 			try {
@@ -78,7 +87,8 @@ public abstract class GPML2021FormatAbstract {
 				ValidatorHandler vh = schema.newValidatorHandler();
 				SAXOutputter so = new SAXOutputter(vh);
 				so.output(doc);
-				/* if no errors occur, this gpml file is valid and conforms to gpml schema */
+				// If no errors occur, the file is valid according to the gpml xml schema
+				// definition
 				Logger.log
 						.info("Document is valid according to the xml schema definition '" + xsdFile.toString() + "'");
 			} catch (SAXException se) {

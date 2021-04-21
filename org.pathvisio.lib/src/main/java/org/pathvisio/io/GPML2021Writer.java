@@ -34,7 +34,6 @@ import org.jdom2.output.XMLOutputter;
 import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
-import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 
 /**
@@ -42,7 +41,7 @@ import org.pathvisio.util.ColorUtils;
  * 
  * @author finterly
  */
-public class GPML2021Writer extends Gpml2021FormatAbstract implements GpmlFormatWriter {
+public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormatWriter {
 
 	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
