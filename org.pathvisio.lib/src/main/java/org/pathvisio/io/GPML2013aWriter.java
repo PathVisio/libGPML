@@ -696,11 +696,20 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e          the parent element.
 	 * @return true if elementRef exists and is successfully written.
 	 */
-	protected boolean writeElementRef(PathwayElement elemRf, Element e) {
-		if (elemRf != null) {
-			String elementRef = elemRf.getElementId();
-			if (elementRef != null && !elementRef.equals(""))
-				e.setAttribute("GraphRef", elementRef);
+	protected boolean writeElementRef(PathwayElement elementRef, Element e) {
+		System.out.println("WRITE " + elementRef);
+		if (elementRef != null && elementRef.getClass() ==  Group.class) { 
+			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);
+			System.out.println(elementRefStr);
+			if (elementRefStr != null && !elementRefStr.equals(""))
+				e.setAttribute("GraphRef", elementRefStr);
+			return true;	
+		}
+		if (elementRef != null) {
+			String elementRefStr = elementRef.getElementId();
+			System.out.println(elementRefStr);
+			if (elementRefStr != null && !elementRefStr.equals(""))
+				e.setAttribute("GraphRef", elementRefStr);
 			return true;
 		}
 		return false;

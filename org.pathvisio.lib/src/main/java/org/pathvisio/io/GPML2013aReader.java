@@ -80,8 +80,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readGraphicalLines(pathwayModel, root);
 		/* checks groups have at least two pathway elements */
 		checkGroupSize(pathwayModel.getGroups());
-		/* reads point elementRefs last */
-		readPointElementRef(pathwayModel, root);
+		/* reads points last */
+		readPoints(pathwayModel, root);
 
 		Logger.log.trace("End reading gpml");
 
@@ -686,39 +686,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readElementInfo(lineElement, ln); // comment group and evidenceRef
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
-		readPoints(lineElement, gfx);
-		/* checks if line has at least 2 point */
-		if (lineElement.getPoints().size() < 2) {
-			throw new ConverterException("Line " + lineElement.getElementId() + " has " + lineElement.getPoints().size()
-					+ " point(s),  must have at least 2.");
-		}
 		readAnchors(lineElement, gfx);
 		/* sets optional properties */
 		String groupRef = getAttr(base, "GroupRef", ln);
 		if (groupRef != null && !groupRef.equals(""))
 			lineElement.setGroupRef((Group) lineElement.getPathwayModel().getPathwayElement(groupRef));
-	}
-
-	/**
-	 * Reads point {@link Point} information for line element from element.
-	 * 
-	 * @param lineElement the line element object.
-	 * @param gfx         the graphics element.
-	 * @throws ConverterException
-	 */
-	protected void readPoints(LineElement lineElement, Element gfx) throws ConverterException {
-		String base = ((Element) gfx.getParent()).getName();
-		for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-			String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
-			if (elementId == null)
-				elementId = lineElement.getPathwayModel().getUniqueElementId();
-			ArrowHeadType arrowHead = ArrowHeadType.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
-			Coordinate xy = new Coordinate(Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt)),
-					Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt)));
-			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
-			if (point != null) // sets elementRef and optional properties later
-				lineElement.addPoint(point);
-		}
 	}
 
 	/**
@@ -743,39 +715,52 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 
+
 	/**
-	 * Reads elementRef {@link Point#setElementRef()} for pathway model points.
+	 * Reads points {@link Point} for pathway model line pathway elements.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readPointElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
-		List<String> lnElementNames = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
+	protected void readPoints(PathwayModel pathwayModel, Element root) throws ConverterException {
 		List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
-		for (int i = 0; i < lnElementNames.size(); i++) {
-			Element ias = root.getChild(lnElementNames.get(i), root.getNamespace());
-			if (ias != null) {
-				for (Element ia : ias.getChildren(lnElementName.get(i), ias.getNamespace())) {
-					Element gfx = ia.getChild("Graphics", ia.getNamespace());
-					String base = ((Element) gfx.getParent()).getName();
-					for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-						String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
-						if (elementRefStr != null && !elementRefStr.equals("")) {
-							PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
-							if (elementRef != null) {
-								String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
-								Point point = (Point) pathwayModel.getPathwayElement(elementId);
-								point.setElementRef(elementRef);
-								point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX")));
-								point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY")));
-							}
+		for (int i = 0; i < lnElementName.size(); i++) {
+			for (Element ln : root.getChildren(lnElementName.get(i), root.getNamespace())) {
+				String base = ln.getName();
+				String lineElementId = getAttr(lnElementName.get(i), "GraphId", ln);
+				LineElement lineElement = (LineElement) pathwayModel.getPathwayElement(lineElementId);
+				Element gfx = ln.getChild("Graphics", ln.getNamespace());
+				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
+					String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
+					if (elementId == null)
+						elementId = lineElement.getPathwayModel().getUniqueElementId();
+					ArrowHeadType arrowHead = ArrowHeadType
+							.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
+					Coordinate xy = new Coordinate(Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt)),
+							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt)));
+					Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
+					if (point != null)
+						lineElement.addPoint(point);
+					/* set optional parameters for this point */
+					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
+					System.out.println("READ " + elementRefStr);
+					if (elementRefStr != null && !elementRefStr.equals("")) {
+						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+						if (elementRef != null) {
+							point.setElementRef(elementRef);
+							point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX")));
+							point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY")));
 						}
 					}
 				}
+				if (lineElement.getPoints().size() < 2) // checks line has at least 2 points
+					throw new ConverterException("Line " + lineElement.getElementId() + " has "
+							+ lineElement.getPoints().size() + " point(s),  must have at least 2.");
 			}
 		}
 	}
+
 
 	/**
 	 * Reads xref {@link Xref} information from element. Xref is required for
@@ -1062,5 +1047,64 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 		}
 	}
-
 }
+
+///**
+//* Reads elementRef {@link Point#setElementRef()} for pathway model points.
+//* 
+//* @param pathwayModel the pathway model.
+//* @param root         the root element.
+//* @throws ConverterException
+//*/
+//protected void readPointElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
+//	List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
+//	for (int i = 0; i < lnElementName.size(); i++) {
+//			for (Element ln : root.getChildren(lnElementName.get(i), root.getNamespace())) {
+//				Element gfx = ln.getChild("Graphics", ln.getNamespace());
+//				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
+//					String base = ln.getName();
+//					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
+//					System.out.println(elementRefStr);
+//					if (elementRefStr != null && !elementRefStr.equals("")) {
+//						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+//						if (elementRef != null) {
+//							String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
+//							System.out.println(elementId);
+//							Point point = (Point) pathwayModel.getPathwayElement(elementId);
+//							point.setElementRef(elementRef);
+//							point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX")));
+//							point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY")));
+//						}
+//					}
+//				}
+//			}readPoints(lineElement, gfx);
+//			/* checks if line has at least 2 point */
+//			if (lineElement.getPoints().size() < 2) {
+//				throw new ConverterException("Line " + lineElement.getElementId() + " has " + lineElement.getPoints().size()
+//						+ " point(s),  must have at least 2.");
+//			}
+//		}
+//	}
+//
+
+///**
+//* Reads point {@link Point} information for line element from element.
+//* 
+//* @param lineElement the line element object.
+//* @param gfx         the graphics element.
+//* @throws ConverterException
+//*/
+//protected void readPoints(LineElement lineElement, Element gfx) throws ConverterException {
+//	String base = ((Element) gfx.getParent()).getName();
+//	for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
+//		String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
+//		if (elementId == null)
+//			elementId = lineElement.getPathwayModel().getUniqueElementId();
+//		ArrowHeadType arrowHead = ArrowHeadType.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
+//		Coordinate xy = new Coordinate(Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt)),
+//				Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt)));
+//		Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
+//		if (point != null) // sets elementRef and optional properties later
+//			lineElement.addPoint(point);
+//	}
+//}
