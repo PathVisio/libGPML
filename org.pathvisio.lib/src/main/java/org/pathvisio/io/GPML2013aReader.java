@@ -75,13 +75,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readLabels(pathwayModel, root);
 		readShapes(pathwayModel, root);
 		readDataNodes(pathwayModel, root);
-		readStates(pathwayModel, root); // state elementRef refers to parent DataNode
+		/* states read after data nodes */
+		readStates(pathwayModel, root); 
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
-		/* checks groups have at least two pathway elements */
-		checkGroupSize(pathwayModel.getGroups());
 		/* reads points last */
 		readPoints(pathwayModel, root);
+		/* checks groups have at least two pathway elements */
+		checkGroupSize(pathwayModel.getGroups());
 
 		Logger.log.trace("End reading gpml");
 
@@ -715,9 +716,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 
-
 	/**
-	 * Reads points {@link Point} for pathway model line pathway elements.
+	 * Reads points {@link Point} for pathway model line pathway elements. Points
+	 * must be read after the pathway elements they refer to. Therefore points are
+	 * read last in {@link #readFromRoot()}.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -742,7 +744,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 					if (point != null)
 						lineElement.addPoint(point);
-					/* set optional parameters for this point */
+					/* set optional parameters including elementRef, named GraphRef in GPML 2013a */
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					System.out.println("READ " + elementRefStr);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
@@ -760,7 +762,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 		}
 	}
-
 
 	/**
 	 * Reads xref {@link Xref} information from element. Xref is required for
@@ -801,7 +802,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * {@link #readStateDynamicProperties()}
 	 * 
 	 * @param elementInfo the element info pathway element object.
-	 * @param e           the pathway element element.
+	 * @param e           the jdom pathway element element.
 	 * @throws ConverterException
 	 */
 	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
@@ -826,7 +827,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads comment {@link Comment} information for pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
-	 * @param e           the pathway element element.
+	 * @param e           the jdom pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
@@ -847,7 +848,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * information for pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
-	 * @param e           the pathway element element.
+	 * @param e           the jdom pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxRefs(ElementInfo elementInfo, Element e) throws ConverterException {
@@ -867,7 +868,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
 	 * @param lineElement the line pathway element.
-	 * @param ln          the line element element.
+	 * @param ln          the jdom line pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readLineDynamicProperties(LineElement lineElement, Element ln) throws ConverterException {
@@ -892,7 +893,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
 	 * @param shapedElement the shaped pathway element.
-	 * @param se            the shaped element element.
+	 * @param se            the jdom shaped pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readShapedDynamicProperties(ShapedElement shapedElement, Element se) throws ConverterException {
@@ -919,7 +920,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
 	 * @param state the state pathway element.
-	 * @param st    the state element element.
+	 * @param st    the jdom state pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readStateDynamicProperties(State state, Element st) throws ConverterException {
@@ -1049,62 +1050,4 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 }
 
-///**
-//* Reads elementRef {@link Point#setElementRef()} for pathway model points.
-//* 
-//* @param pathwayModel the pathway model.
-//* @param root         the root element.
-//* @throws ConverterException
-//*/
-//protected void readPointElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
-//	List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
-//	for (int i = 0; i < lnElementName.size(); i++) {
-//			for (Element ln : root.getChildren(lnElementName.get(i), root.getNamespace())) {
-//				Element gfx = ln.getChild("Graphics", ln.getNamespace());
-//				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-//					String base = ln.getName();
-//					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
-//					System.out.println(elementRefStr);
-//					if (elementRefStr != null && !elementRefStr.equals("")) {
-//						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
-//						if (elementRef != null) {
-//							String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
-//							System.out.println(elementId);
-//							Point point = (Point) pathwayModel.getPathwayElement(elementId);
-//							point.setElementRef(elementRef);
-//							point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX")));
-//							point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY")));
-//						}
-//					}
-//				}
-//			}readPoints(lineElement, gfx);
-//			/* checks if line has at least 2 point */
-//			if (lineElement.getPoints().size() < 2) {
-//				throw new ConverterException("Line " + lineElement.getElementId() + " has " + lineElement.getPoints().size()
-//						+ " point(s),  must have at least 2.");
-//			}
-//		}
-//	}
-//
 
-///**
-//* Reads point {@link Point} information for line element from element.
-//* 
-//* @param lineElement the line element object.
-//* @param gfx         the graphics element.
-//* @throws ConverterException
-//*/
-//protected void readPoints(LineElement lineElement, Element gfx) throws ConverterException {
-//	String base = ((Element) gfx.getParent()).getName();
-//	for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-//		String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
-//		if (elementId == null)
-//			elementId = lineElement.getPathwayModel().getUniqueElementId();
-//		ArrowHeadType arrowHead = ArrowHeadType.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
-//		Coordinate xy = new Coordinate(Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt)),
-//				Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt)));
-//		Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
-//		if (point != null) // sets elementRef and optional properties later
-//			lineElement.addPoint(point);
-//	}
-//}

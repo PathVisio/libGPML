@@ -475,7 +475,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			String base = ((Element) gfx.getParent()).getName();
 			setAttr(base + ".Graphics.Point", "X", pt, Double.toString(point.getXY().getX()));
 			setAttr(base + ".Graphics.Point", "Y", pt, Double.toString(point.getXY().getY()));
-			if (writeElementRef(point.getElementRef(), pt)) {
+			if (writePointElementRef(point.getElementRef(), pt)) {
 				setAttr(base + ".Graphics.Point", "RelX", pt, Double.toString(point.getRelX()));
 				setAttr(base + ".Graphics.Point", "RelY", pt, Double.toString(point.getRelY()));
 			}
@@ -690,34 +690,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes elementRef property information as GraphRef. {@link #writePoints()}.
-	 * When {@link Point} refers to {@link Group}, GraphRef refers to the Group's
-	 * GraphId rather than GroupId.
-	 * 
-	 * @param elementRef the elementRef.
-	 * @param e          the parent element.
-	 * @return true if elementRef exists and is successfully written.
-	 */
-	protected boolean writePointElementRef(PathwayElement elementRef, Element e) {
-		System.out.println("WRITE " + elementRef);
-		if (elementRef != null && elementRef.getClass() == Group.class) {
-			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);
-			System.out.println(elementRefStr);
-			if (elementRefStr != null && !elementRefStr.equals(""))
-				e.setAttribute("GraphRef", elementRefStr);
-			return true;
-		}
-		if (elementRef != null) {
-			String elementRefStr = elementRef.getElementId();
-			System.out.println(elementRefStr);
-			if (elementRefStr != null && !elementRefStr.equals(""))
-				e.setAttribute("GraphRef", elementRefStr);
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Writes groupRef property information. {@link Group} stores GroupId as its
 	 * elementId.
 	 * 
@@ -730,6 +702,34 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (groupRef != null && !groupRef.equals(""))
 				e.setAttribute("GroupRef", groupRef);
 		}
+	}
+
+	/**
+	 * Writes point elementRef property information as GraphRef. When {@link Point}
+	 * refers to {@link Group}, GraphRef refers to the group GraphId rather than
+	 * GroupId. This method is used only by {@link #writePoints}
+	 * 
+	 * @param elementRef the pathway element point refers to. .
+	 * @param pt         the jdom point element.
+	 * @return true if elementRef exists and is successfully written.
+	 */
+	protected boolean writePointElementRef(PathwayElement elementRef, Element pt) {
+		System.out.println("WRITE " + elementRef);
+		if (elementRef != null && elementRef.getClass() == Group.class) {
+			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);
+			System.out.println(elementRefStr);
+			if (elementRefStr != null && !elementRefStr.equals(""))
+				pt.setAttribute("GraphRef", elementRefStr);
+			return true;
+		}
+		if (elementRef != null) {
+			String elementRefStr = elementRef.getElementId();
+			System.out.println(elementRefStr);
+			if (elementRefStr != null && !elementRefStr.equals(""))
+				pt.setAttribute("GraphRef", elementRefStr);
+			return true;
+		}
+		return false;
 	}
 
 	/**
