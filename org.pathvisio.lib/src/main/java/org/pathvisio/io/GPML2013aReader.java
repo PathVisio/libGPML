@@ -100,7 +100,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @return pathway the pathway object.
 	 * @throws ConverterException
 	 */
-	protected Pathway readPathway(Element root) throws ConverterException {	
+	protected Pathway readPathway(Element root) throws ConverterException {
 		String title = getAttr("Pathway", "Name", root);
 		Element gfx = root.getChild("Graphics", root.getNamespace());
 		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx));
@@ -308,13 +308,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readPathwayComments(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
-			String source = cmt.getAttributeValue("source");
-			String content = cmt.getText();
-			if (content != null && !content.equals("")) {
-				Comment comment = new Comment(content);
+			String source = getAttr("Comment", "Source", cmt);
+			String commentText = cmt.getText();
+			if (commentText != null && !commentText.equals("")) {
+				Comment comment = new Comment(commentText);
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
-				pathwayModel.getPathway().addComment(new Comment(source, content));
+				pathwayModel.getPathway().addComment(new Comment(source, commentText));
 			}
 		}
 	}
@@ -348,8 +348,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readPathwayDynamicProperties(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element dp : root.getChildren("Attribute", root.getNamespace())) {
-			String key = dp.getAttributeValue("Key");
-			String value = dp.getAttributeValue("Value");
+			String key = getAttr("Attribute", "Key", dp);
+			String value = getAttr("Attribute", "Value", dp);
 			pathwayModel.getPathway().setDynamicProperty(key, value);
 		}
 	}
@@ -367,11 +367,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readGroups(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
-			String elementId = grp.getAttributeValue("GroupId");
+			String elementId = getAttr("Group", "GroupId", grp);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
-			GroupType type = GroupType.register(grp.getAttributeValue("Style"));
-			Element gfx = grp.getChild("Graphics", grp.getNamespace());
+			GroupType type = GroupType.register(getAttr("Group", "Style", grp));
 			// TODO Group has no RectProperty...CenterX, CenterY, width, Height!!!!
 			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 2, 2);
 			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
@@ -386,8 +385,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			/* reads comment group, evidenceRefs */
 			readElementInfo(group, grp);
 			/* sets optional properties */
-			String textLabel = grp.getAttributeValue("TextLabel");
-			String graphId = grp.getAttributeValue("GraphId");
+			String textLabel = getAttr("Group", "TextLabel", grp);
+			String graphId = getAttr("Group", "GraphId", grp);
 			if (textLabel != null)
 				group.setTextLabel(textLabel);
 			if (graphId != null) {
@@ -414,9 +413,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readGroupGroupRef(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
-			String groupRef = grp.getAttributeValue("GroupRef");
+			String groupRef = getAttr("Group", "GroupRef", grp);
 			if (groupRef != null && !groupRef.equals("")) {
-				String elementId = grp.getAttributeValue("GroupId");
+				String elementId = getAttr("Group", "GroupId", grp);
 				Group group = (Group) pathwayModel.getPathwayElement(elementId);
 				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
 			}
@@ -463,10 +462,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element lb : root.getChildren("Label", root.getNamespace())) {
-			String elementId = lb.getAttributeValue("GraphId");
+			String elementId = getAttr("Label", "GraphId", lb);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
-			String textLabel = lb.getAttributeValue("TextLabel");
+			String textLabel = getAttr("Label", "TextLabel", lb);
 			Element gfx = lb.getChild("Graphics", lb.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
@@ -475,8 +474,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			/* reads comment group, evidenceRefs */
 			readShapedElement(label, lb);
 			/* sets optional properties */
-			String href = lb.getAttributeValue("Href");
-			String groupRef = lb.getAttributeValue("GroupRef");
+			String href = getAttr("Label", "Href", lb);
+			String groupRef = getAttr("Label", "GroupRef", lb);
 			if (href != null)
 				label.setHref(href);
 			if (groupRef != null && !groupRef.equals(""))
@@ -495,20 +494,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readShapes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element shp : root.getChildren("Shape", root.getNamespace())) {
-			String elementId = shp.getAttributeValue("GraphId");
+			String elementId = getAttr("Shape", "GraphId", shp);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			double rotation = Double.parseDouble(gfx.getAttributeValue("Rotation"));
+			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx));
 			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
 			/* reads comment group, evidenceRefs */
 			readShapedElement(shape, shp); // TODO handle dynamic properties....
 			/* sets optional properties */
-			String textLabel = shp.getAttributeValue("TextLabel");
-			String groupRef = shp.getAttributeValue("GroupRef");
+			String textLabel = getAttr("Shape", "TextLabel", shp);
+			String groupRef = getAttr("Shape", "GroupRef", shp);
 			if (textLabel != null)
 				shape.setTextLabel(textLabel);
 			if (groupRef != null && !groupRef.equals(""))
@@ -528,22 +527,22 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readDataNodes(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element dn : root.getChildren("DataNode", root.getNamespace())) {
-			String elementId = dn.getAttributeValue("GraphId");
+			String elementId = getAttr("DataNode", "GraphId", dn);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = dn.getChild("Graphics", dn.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			String textLabel = dn.getAttributeValue("TextLabel");
-			DataNodeType type = DataNodeType.register(dn.getAttributeValue("Type"));
+			String textLabel = getAttr("DataNode", "TextLabel", dn);
+			DataNodeType type = DataNodeType.register(getAttr("DataNode", "Type", dn));
 			Xref xref = readXref(dn);
 			DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
 					textLabel, type, xref);
 			/* reads comment group, evidenceRefs */
 			readShapedElement(dataNode, dn);
 			/* sets optional properties */
-			String groupRef = dn.getAttributeValue("GroupRef");
+			String groupRef = getAttr("DataNode", "GroupRef", dn);
 			if (groupRef != null && !groupRef.equals(""))
 				dataNode.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
 			if (dataNode != null)
@@ -561,20 +560,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readStates(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element st : root.getChildren("State", root.getNamespace())) {
-			String elementId = st.getAttributeValue("GraphId");
+			String elementId = getAttr("State", "GraphId", st);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
-			String textLabel = st.getAttributeValue("TextLabel");
-			StateType type = StateType.register(st.getAttributeValue("StateType"));
+			String textLabel = getAttr("State", "TextLabel", st);
+			StateType type = StateType.register(getAttr("State", "StateType", st));
 			Element gfx = st.getChild("Graphics", st.getNamespace());
-			double relX = Double.parseDouble(gfx.getAttributeValue("RelX"));
-			double relY = Double.parseDouble(gfx.getAttributeValue("RelY"));
-			double width = Double.parseDouble(gfx.getAttributeValue("Width"));
-			double height = Double.parseDouble(gfx.getAttributeValue("Height"));
+			double relX = Double.parseDouble(getAttr("State.Graphics", "RelX", gfx));
+			double relY = Double.parseDouble(getAttr("State.Graphics", "RelY", gfx));
+			double width = Double.parseDouble(getAttr("State.Graphics", "Width", gfx));
+			double height = Double.parseDouble(getAttr("State.Graphics", "Height", gfx));
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			/* finds parent datanode from state elementRef */
-			String elementRef = st.getAttributeValue("ElementRef");
+			String elementRef = getAttr("State", "ElementRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementRef);
 			/* finally instantiate state */
 			State state = new State(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height,
@@ -614,9 +613,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void mapShapeType(ShapedElement shapedElement, Element e) throws ConverterException {
+		String base = e.getName();
 		Element gfx = e.getChild("Graphics", e.getNamespace());
-		ShapeType shapeType = ShapeType.fromName(gfx.getAttributeValue("ShapeType"));
-
+		ShapeType shapeType = ShapeType.fromName(getAttr(base + ".Graphics", "ShapeType", gfx));
 		/* check deprecated shape type map */
 		if (ShapeType.DEPRECATED_MAP.containsKey(shapeType)) {
 			ShapeType shapeTypeNew = ShapeType.DEPRECATED_MAP.get(shapeType);
@@ -636,7 +635,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
-			String elementId = ia.getAttributeValue("GraphId");
+			String elementId = getAttr("Interaction", "GraphId", ia);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
@@ -660,7 +659,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element gln : root.getChildren("GraphicaLine", root.getNamespace())) {
-			String elementId = gln.getAttributeValue("GraphId");
+			String elementId = getAttr("GraphicaLine", "GraphId", gln);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
@@ -681,6 +680,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void readLineElement(LineElement lineElement, Element ln) throws ConverterException {
+		String base = ln.getName();
 		readElementInfo(lineElement, ln); // comment group and evidenceRef
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
@@ -692,7 +692,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		}
 		readAnchors(lineElement, gfx);
 		/* sets optional properties */
-		String groupRef = ln.getAttributeValue("GroupRef");
+		String groupRef = getAttr(base, "GroupRef", ln);
 		if (groupRef != null && !groupRef.equals(""))
 			lineElement.setGroupRef((Group) lineElement.getPathwayModel().getPathwayElement(groupRef));
 	}
@@ -705,13 +705,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void readPoints(LineElement lineElement, Element gfx) throws ConverterException {
+		String base = ((Element) gfx.getParent()).getName();
 		for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-			String elementId = pt.getAttributeValue("GraphId");
+			String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
 			if (elementId == null)
 				elementId = lineElement.getPathwayModel().getUniqueElementId();
-			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("ArrowHead"));
-			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("X")),
-					Double.parseDouble(pt.getAttributeValue("Y")));
+			ArrowHeadType arrowHead = ArrowHeadType.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
+			Coordinate xy = new Coordinate(Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt)),
+					Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt)));
 			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 			if (point != null) // sets elementRef and optional properties later
 				lineElement.addPoint(point);
@@ -726,13 +727,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void readAnchors(LineElement lineElement, Element gfx) throws ConverterException {
+		String base = ((Element) gfx.getParent()).getName();
 		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
-			String elementId = an.getAttributeValue("GraphId");
+			String elementId = getAttr(base + ".Graphics.Anchor", "GraphId", an);
 			if (elementId == null)
 				elementId = lineElement.getPathwayModel().getUniqueElementId();
-			double position = Double.parseDouble(an.getAttributeValue("Position"));
+			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an));
 //			Coordinate xy = new Coordinate(); // TODO calculate!!
-			AnchorType shapeType = AnchorType.register(an.getAttributeValue("Shape"));
+			AnchorType shapeType = AnchorType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
@@ -754,12 +756,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (ias != null) {
 				for (Element ia : ias.getChildren(lnElementName.get(i), ias.getNamespace())) {
 					Element gfx = ia.getChild("Graphics", ia.getNamespace());
+					String base = ((Element) gfx.getParent()).getName();
 					for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-						String elementRefStr = pt.getAttributeValue("GraphRef");
+						String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 						if (elementRefStr != null && !elementRefStr.equals("")) {
 							PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
 							if (elementRef != null) {
-								String elementId = pt.getAttributeValue("GraphId");
+								String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
 								Point point = (Point) pathwayModel.getPathwayElement(elementId);
 								point.setElementRef(elementRef);
 								point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX")));
@@ -783,8 +786,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected Xref readXref(Element e) throws ConverterException {
 		Element xref = e.getChild("Xref", e.getNamespace());
 		if (xref != null) {
-			String identifier = xref.getAttributeValue("identifier");
-			String dataSource = xref.getAttributeValue("dataSource");
+			String base = e.getName();
+			String identifier = getAttr(base + ".Xref", "ID", xref);
+			String dataSource = getAttr(base + ".Xref", "Database", xref);
 			if (dataSource != null && !dataSource.equals("")) {
 				if (DataSource.fullNameExists(dataSource)) {
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
@@ -816,7 +820,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		/*
 		 * Biopax attribute for DataNode, State, Interaction, GraphicalLine, Label,
-		 * Shape, Group TODO
+		 * Shape, Group TODO MAYBE REMOVE??????
 		 */
 		String biopaxRefStr = e.getAttributeValue("BiopaxRef");
 		if (biopaxRefStr != null) {
@@ -840,7 +844,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
-			String source = cmt.getAttributeValue("source");
+			String source = cmt.getAttributeValue("source"); // TODO use getAttr?
 			String content = cmt.getText();
 			if (content != null && !content.equals("")) {
 				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
@@ -881,8 +885,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readLineDynamicProperties(LineElement lineElement, Element ln) throws ConverterException {
 		for (Element dp : ln.getChildren("Attribute", ln.getNamespace())) {
-			String key = dp.getAttributeValue("Key");
-			String value = dp.getAttributeValue("Value");
+			String base = ln.getName();
+			String key = getAttr(base + ".Attribute", "Key", dp);
+			String value = getAttr(base + ".Attribute", "Value", dp);
 			/* dynamic property DoubleLineProperty sets lineStyle */
 			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
 				lineElement.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
@@ -906,8 +911,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readShapedDynamicProperties(ShapedElement shapedElement, Element se) throws ConverterException {
 		for (Element dp : se.getChildren("Attribute", se.getNamespace())) {
-			String key = dp.getAttributeValue("Key");
-			String value = dp.getAttributeValue("Value");
+			String base = se.getName();
+			String key = getAttr(base + ".Attribute", "Key", dp);
+			String value = getAttr(base + ".Attribute", "Value", dp);
 			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
 				shapedElement.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
@@ -933,8 +939,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readStateDynamicProperties(State state, Element st) throws ConverterException {
 		for (Element dp : st.getChildren("Attribute", st.getNamespace())) {
-			String key = dp.getAttributeValue("Key");
-			String value = dp.getAttributeValue("Value");
+			String key = getAttr("State.Attribute", "Key", dp);
+			String value = getAttr("State.Attribute", "Value", dp);
 			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
 				state.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
@@ -955,10 +961,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
-		double centerX = Double.parseDouble(gfx.getAttributeValue("CenterX"));
-		double centerY = Double.parseDouble(gfx.getAttributeValue("CenterY"));
-		double width = Double.parseDouble(gfx.getAttributeValue("Width"));
-		double height = Double.parseDouble(gfx.getAttributeValue("Height"));
+		String base = ((Element) gfx.getParent()).getName();
+		double centerX = Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx));
+		double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx));
+		double width = Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx));
+		double height = Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx));
 		return new RectProperty(new Coordinate(centerX, centerY), width, height);
 	}
 
@@ -986,7 +993,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		boolean fontStrikethru = fontStrikethruStr != null && fontStrikethruStr.equals("Strikethru");
 		int fontSize = Integer.parseInt(getAttr(base + ".Graphics", "FontSize", gfx));
 		HAlignType hAlignType = HAlignType.fromName(getAttr(base + ".Graphics", "Align", gfx));
-		VAlignType vAlignType =VAlignType.fromName(getAttr(base + ".Graphics", "Valign", gfx));
+		VAlignType vAlignType = VAlignType.fromName(getAttr(base + ".Graphics", "Valign", gfx));
 		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
 				hAlignType, vAlignType);
 	}
@@ -1002,7 +1009,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
-		String base = ((Element) gfx.getParent()).getName();	
+		String base = ((Element) gfx.getParent()).getName();
 		Color borderColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		LineStyleType borderStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
 		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx));
@@ -1028,7 +1035,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
-		String base = ((Element) gfx.getParent()).getName();	
+		String base = ((Element) gfx.getParent()).getName();
 		Color lineColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		LineStyleType lineStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
 		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx));
