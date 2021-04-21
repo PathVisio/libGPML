@@ -690,20 +690,22 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes elementRef property information. {@link #writePoints()}
+	 * Writes elementRef property information as GraphRef. {@link #writePoints()}.
+	 * When {@link Point} refers to {@link Group}, GraphRef refers to the Group's
+	 * GraphId rather than GroupId.
 	 * 
 	 * @param elementRef the elementRef.
 	 * @param e          the parent element.
 	 * @return true if elementRef exists and is successfully written.
 	 */
-	protected boolean writeElementRef(PathwayElement elementRef, Element e) {
+	protected boolean writePointElementRef(PathwayElement elementRef, Element e) {
 		System.out.println("WRITE " + elementRef);
-		if (elementRef != null && elementRef.getClass() ==  Group.class) { 
+		if (elementRef != null && elementRef.getClass() == Group.class) {
 			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);
 			System.out.println(elementRefStr);
 			if (elementRefStr != null && !elementRefStr.equals(""))
 				e.setAttribute("GraphRef", elementRefStr);
-			return true;	
+			return true;
 		}
 		if (elementRef != null) {
 			String elementRefStr = elementRef.getElementId();
@@ -716,7 +718,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes groupRef property information.
+	 * Writes groupRef property information. {@link Group} stores GroupId as its
+	 * elementId.
 	 * 
 	 * @param groupRef the groupRef.
 	 * @param e        the parent element.
