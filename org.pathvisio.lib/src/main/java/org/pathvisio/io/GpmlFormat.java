@@ -82,7 +82,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	}
 
 	public static Document createJdom(PathwayModel data) throws ConverterException {
-		return CURRENT.createJdom(data);
+		return PREVIOUS.createJdom(data);
 	}
 
 //	static public Element createJdomElement(PathwayElement o) throws ConverterException
@@ -104,11 +104,11 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 *                 classpath, an exception will be thrown.
 	 */
 	static public void writeToXml(PathwayModel pwy, File file, boolean validate) throws ConverterException {
-		CURRENT.writeToXml(pwy, file, validate);
+		PREVIOUS.writeToXml(pwy, file, validate);
 	}
 
 	static public void writeToXml(PathwayModel pwy, OutputStream out, boolean validate) throws ConverterException {
-		CURRENT.writeToXml(pwy, out, validate);
+		PREVIOUS.writeToXml(pwy, out, validate);
 	}
 
 	/**

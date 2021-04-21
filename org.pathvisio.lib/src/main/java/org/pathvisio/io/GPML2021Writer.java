@@ -111,7 +111,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
 		/* checks if pathway model interactions/graphicaLines and groups are valid */
 		checkLineAndGroupSize(pathwayModel); // TODO
-		
+
 		Document doc = new Document();
 		Element root = new Element("Pathway", getGpmlNamespace());
 		doc.setRootElement(root);
@@ -570,8 +570,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					continue;
 				Element an = new Element("Anchor", wyps.getNamespace());
 				writeElementId(anchor.getElementId(), an);
-				an.setAttribute("x", Double.toString(anchor.getXY().getX())); //TODO CALCULATE....
-				an.setAttribute("y", Double.toString(anchor.getXY().getY()));
+				if (anchor.getXY() != null) {
+					an.setAttribute("x", Double.toString(anchor.getXY().getX())); // TODO CALCULATE....
+					an.setAttribute("y", Double.toString(anchor.getXY().getY()));
+				}
 				an.setAttribute("position", Double.toString(anchor.getPosition()));
 				an.setAttribute("shapeType", anchor.getShapeType().getName());
 				if (an != null) {
@@ -879,7 +881,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(FontProperty fontProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor(),true));
+		gfx.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor(), false));
 		gfx.setAttribute("fontName", fontProp.getFontName() == null ? "Arial" : fontProp.getFontName());
 		gfx.setAttribute("fontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
 		gfx.setAttribute("fontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
@@ -898,10 +900,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor(), true));
+		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor(), false));
 		gfx.setAttribute("borderStyle", shapeProp.getBorderStyle().getName());
 		gfx.setAttribute("borderWidth", String.valueOf(shapeProp.getBorderWidth()));
-		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor(), true));
+		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor(), false));
 		gfx.setAttribute("shapeType", shapeProp.getShapeType().getName());
 		gfx.setAttribute("zOrder", String.valueOf(shapeProp.getZOrder()));
 	}
@@ -914,7 +916,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("lineColor", ColorUtils.colorToHex(lineProp.getLineColor(), true));
+		gfx.setAttribute("lineColor", ColorUtils.colorToHex(lineProp.getLineColor(), false));
 		gfx.setAttribute("lineStyle", lineProp.getLineStyle().getName());
 		gfx.setAttribute("lineWidth", String.valueOf(lineProp.getLineWidth()));
 		gfx.setAttribute("connectorType", lineProp.getConnectorType().getName());

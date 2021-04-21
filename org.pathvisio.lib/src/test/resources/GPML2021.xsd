@@ -1358,8 +1358,8 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="x" type="xsd:float" use="required" />
-			<xsd:attribute name="y" type="xsd:float" use="required" />
+			<xsd:attribute name="x" type="xsd:float" use="optional" />
+			<xsd:attribute name="y" type="xsd:float" use="optional" />
 	        <xsd:attribute name="shapeType" default="Square" type="xsd:string" >
 				<xsd:annotation>
 					<xsd:documentation>

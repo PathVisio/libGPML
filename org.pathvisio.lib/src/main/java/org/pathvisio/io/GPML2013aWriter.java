@@ -121,7 +121,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (root != null) {
 			writePathwayInfo(pathwayModel, root);
 
-			writeDataNodes(pathwayModel.getDataNodes(), root); // writeStates called from writeDataNodes
+			writeDataNodes(pathwayModel.getDataNodes(), root);
+			writeStates(pathwayModel.getDataNodes(), root);
 			writeInteractions(pathwayModel.getInteractions(), root);
 			writeGraphicalLines(pathwayModel.getGraphicalLines(), root);
 			writeLabels(pathwayModel.getLabels(), root);
@@ -239,8 +240,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				Element xrf = new Element("Xref", e.getNamespace());
 				String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
 				String base = e.getName();
-				setAttr(base + ".Xref", "ID", xrf, identifier == null ? "" : identifier);
 				setAttr(base + ".Xref", "Database", xrf, dataSource == null ? "" : dataSource);
+				setAttr(base + ".Xref", "ID", xrf, identifier == null ? "" : identifier);
 				e.addContent(xrf);
 			}
 		}
@@ -259,7 +260,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (comment.getCommentText() != null) // TODO may be excessive
 				cmt.setText(comment.getCommentText());
 			if (comment.getSource() != null)
-				cmt.setAttribute("source", comment.getSource());
+				cmt.setAttribute("Source", comment.getSource());
 			if (cmt != null)
 				e.addContent(cmt);
 		}
@@ -276,7 +277,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writePathwayDynamicProperties(Map<String, String> dynamicProperties, Element e)
 			throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
-			Element dp = new Element("Property", e.getNamespace());
+			Element dp = new Element("Attribute", e.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
 			// TODO may need to handle BiopaxRef attribute
@@ -325,10 +326,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root    the root element.
 	 */
 	protected void writeLegend(Pathway pathway, Element root) {
-		Element lgd = new Element("Legend", root.getNamespace());
-		lgd.setAttribute("CenterX", pathway.getDynamicProperty(LEGEND_CENTER_X));
-		lgd.setAttribute("CenterY", pathway.getDynamicProperty(LEGEND_CENTER_Y));
-		root.addContent(lgd);
+		String centerX = pathway.getDynamicProperty(LEGEND_CENTER_X);
+		String centerY = pathway.getDynamicProperty(LEGEND_CENTER_Y);
+		if (centerX != null && centerY != null) {
+			Element lgd = new Element("Legend", root.getNamespace());
+			lgd.setAttribute("CenterX", centerX);
+			lgd.setAttribute("CenterY", centerY);
+			root.addContent(lgd);
+		}
 	}
 
 	/**
@@ -351,8 +356,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				writeXref(dataNode.getXref(), dn, true);
 				if (dn != null)
 					root.addContent(dn);
-				/* write states for each dataNode */
-				writeStates(dataNode, root);
 			}
 		}
 	}
@@ -364,9 +367,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root     the root element.
 	 * @throws ConverterException
 	 */
-	protected void writeStates(DataNode dataNode, Element root) throws ConverterException {
-		List<State> states = dataNode.getStates();
-		if (!states.isEmpty()) {
+	protected void writeStates(List<DataNode> dataNodes, Element root) throws ConverterException {
+		for (DataNode dataNode : dataNodes) {
+			List<State> states = dataNode.getStates();
 			for (State state : states) {
 				if (state == null)
 					continue;
@@ -402,22 +405,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeInteractions(List<Interaction> interactions, Element root) throws ConverterException {
-		if (!interactions.isEmpty()) {
-			Element ias = new Element("Interactions", root.getNamespace());
-			List<Element> iaList = new ArrayList<Element>();
-			for (Interaction interaction : interactions) {
-				if (interaction == null)
-					continue;
-				Element ia = new Element("Interaction", root.getNamespace());
-				writeLineElement(interaction, ia);
-				writeXref(interaction.getXref(), ia, true);
-				if (ia != null) {
-					iaList.add(ia);
-				}
-			}
-			if (iaList != null && iaList.isEmpty() == false) {
-				ias.addContent(iaList);
-				root.addContent(ias);
+		for (Interaction interaction : interactions) {
+			if (interaction == null)
+				continue;
+			Element ia = new Element("Interaction", root.getNamespace());
+			writeLineElement(interaction, ia);
+			writeXref(interaction.getXref(), ia, true);
+			if (ia != null) {
+				root.addContent(ia);
 			}
 		}
 	}
@@ -430,21 +425,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeGraphicalLines(List<GraphicalLine> graphicalLines, Element root) throws ConverterException {
-		if (!graphicalLines.isEmpty()) {
-			Element glns = new Element("GraphicalLines", root.getNamespace());
-			List<Element> glnList = new ArrayList<Element>();
-			for (GraphicalLine graphicalLine : graphicalLines) {
-				if (graphicalLine == null)
-					continue;
-				Element gln = new Element("GraphicalLine", root.getNamespace());
-				writeLineElement(graphicalLine, gln);
-				if (gln != null) {
-					glnList.add(gln);
-				}
-			}
-			if (glnList != null && glnList.isEmpty() == false) {
-				glns.addContent(glnList);
-				root.addContent(glns);
+		for (GraphicalLine graphicalLine : graphicalLines) {
+			if (graphicalLine == null)
+				continue;
+			Element gln = new Element("GraphicalLine", root.getNamespace());
+			writeLineElement(graphicalLine, gln);
+			if (gln != null) {
+				root.addContent(gln);
 			}
 		}
 	}
@@ -537,25 +524,17 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeLabels(List<Label> labels, Element root) throws ConverterException {
-		if (!labels.isEmpty()) {
-			Element lbs = new Element("Labels", root.getNamespace());
-			List<Element> lbList = new ArrayList<Element>();
-			for (Label label : labels) {
-				if (label == null)
-					continue;
-				Element lb = new Element("Label", root.getNamespace());
-				setAttr("Label", "TextLabel", lb, label.getTextLabel());
-				writeShapedElement(label, lb);
-				if (label.getHref() != null)
-					setAttr("Label", "Href", lb, label.getHref());
-				writeGroupRef(label.getGroupRef(), lb); // TODO location
-				if (lb != null) {
-					lbList.add(lb);
-				}
-			}
-			if (lbList != null && lbList.isEmpty() == false) {
-				lbs.addContent(lbList);
-				root.addContent(lbs);
+		for (Label label : labels) {
+			if (label == null)
+				continue;
+			Element lb = new Element("Label", root.getNamespace());
+			setAttr("Label", "TextLabel", lb, label.getTextLabel());
+			writeShapedElement(label, lb);
+			if (label.getHref() != null)
+				setAttr("Label", "Href", lb, label.getHref());
+			writeGroupRef(label.getGroupRef(), lb); // TODO location
+			if (lb != null) {
+				root.addContent(lb);
 			}
 		}
 	}
@@ -568,26 +547,18 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeShapes(List<Shape> shapes, Element root) throws ConverterException {
-		if (!shapes.isEmpty()) {
-			Element shps = new Element("Shapes", root.getNamespace());
-			List<Element> shpList = new ArrayList<Element>();
-			for (Shape shape : shapes) {
-				if (shape == null)
-					continue;
-				Element shp = new Element("Shape", root.getNamespace());
-				if (shape.getTextLabel() != null)
-					setAttr("Shape", "TextLabel", shp, shape.getTextLabel());
-				writeShapedElement(shape, shp);
-				writeGroupRef(shape.getGroupRef(), shp); // TODO location
-				Element gfx = shp.getChild("Graphics", shp.getNamespace());
-				setAttr("Shape.Graphics", "Rotation", gfx, Double.toString(shape.getRotation()));
-				if (shp != null) {
-					shpList.add(shp);
-				}
-			}
-			if (shpList != null && shpList.isEmpty() == false) {
-				shps.addContent(shpList);
-				root.addContent(shps);
+		for (Shape shape : shapes) {
+			if (shape == null)
+				continue;
+			Element shp = new Element("Shape", root.getNamespace());
+			if (shape.getTextLabel() != null)
+				setAttr("Shape", "TextLabel", shp, shape.getTextLabel());
+			writeShapedElement(shape, shp);
+			writeGroupRef(shape.getGroupRef(), shp); // TODO location
+			Element gfx = shp.getChild("Graphics", shp.getNamespace());
+			setAttr("Shape.Graphics", "Rotation", gfx, Double.toString(shape.getRotation()));
+			if (shp != null) {
+				root.addContent(shp);
 			}
 		}
 	}
@@ -600,28 +571,21 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeGroups(List<Group> groups, Element root) throws ConverterException {
-		if (!groups.isEmpty()) {
-			Element grps = new Element("Groups", root.getNamespace());
-			List<Element> grpList = new ArrayList<Element>();
-			for (Group group : groups) {
-				if (group == null)
-					continue;
-				Element grp = new Element("Group", root.getNamespace());
-				writeXref(group.getXref(), grp, false);
-				writeShapedElement(group, grp);
-				setAttr("Group", "GroupID", grp, group.getElementId());
-				setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID)); // TODO check if ok
-				setAttr("Group", "Style", grp, group.getType().getName());
-				if (group.getTextLabel() != null)
-					setAttr("Group", "TextLabel", grp, group.getTextLabel());
-				writeGroupRef(group.getGroupRef(), grp); // TODO location
-				if (grp != null) {
-					grpList.add(grp);
-				}
-			}
-			if (grpList != null && grpList.isEmpty() == false) {
-				grps.addContent(grpList);
-				root.addContent(grps);
+		for (Group group : groups) {
+			if (group == null)
+				continue;
+			Element grp = new Element("Group", root.getNamespace());
+			writeXref(group.getXref(), grp, false);
+			writeElementInfo(group, grp);
+			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group.getShapeStyleProperty(), grp);
+			setAttr("Group", "GroupId", grp, group.getElementId());
+			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID)); // TODO check if ok
+			setAttr("Group", "Style", grp, group.getType().getName());
+			if (group.getTextLabel() != null)
+				setAttr("Group", "TextLabel", grp, group.getTextLabel());
+			writeGroupRef(group.getGroupRef(), grp); // TODO location
+			if (grp != null) {
+				root.addContent(grp);
 			}
 		}
 	}
@@ -645,23 +609,21 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeBiopaxOpenControlledVocabulary(List<Annotation> annotations, Element bp)
 			throws ConverterException {
-		if (!annotations.isEmpty()) {
-			for (Annotation annotation : annotations) {
-				if (annotation == null)
-					continue;
-				Element ocv = new Element("openControlledVocabulary", GpmlFormat.BIOPAX);
-				Element term = new Element("TERM", GpmlFormat.BIOPAX);
-				Element id = new Element("ID", GpmlFormat.BIOPAX);
-				Element onto = new Element("Ontology", GpmlFormat.BIOPAX);
-				term.setText(annotation.getValue());
-				id.setText(annotation.getXref().getId());
-				onto.setText(annotation.getType().getName());
-				ocv.addContent(term); // TODO more concise method?
-				ocv.addContent(id);
-				ocv.addContent(onto);
-				if (ocv != null) {
-					bp.addContent(ocv);
-				}
+		for (Annotation annotation : annotations) {
+			if (annotation == null)
+				continue;
+			Element ocv = new Element("openControlledVocabulary", GpmlFormat.BIOPAX);
+			Element term = new Element("TERM", GpmlFormat.BIOPAX);
+			Element id = new Element("ID", GpmlFormat.BIOPAX);
+			Element onto = new Element("Ontology", GpmlFormat.BIOPAX);
+			term.setText(annotation.getValue());
+			id.setText(annotation.getXref().getId());
+			onto.setText(annotation.getType().getName());
+			ocv.addContent(term); // TODO more concise method?
+			ocv.addContent(id);
+			ocv.addContent(onto);
+			if (ocv != null) {
+				bp.addContent(ocv);
 			}
 		}
 	}
@@ -674,29 +636,27 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeBiopaxPublicationXref(List<Citation> citations, Element bp) throws ConverterException {
-		if (!citations.isEmpty()) {
-			for (Citation citation : citations) {
-				if (citation == null)
-					continue;
-				Element pubxf = new Element("PublicationXref", GpmlFormat.BIOPAX);
-				pubxf.setAttribute("id", citation.getElementId(), GpmlFormat.RDF);
-				// TODO add empty or drop?
-				String biopaxId = citation.getXref().getId();
-				String biopaxDatabase = citation.getXref().getDataSource().getFullName();
-				String title = citation.getTitle();
-				String source = citation.getSource();
-				String year = citation.getYear();
-				List<String> authors = citation.getAuthors();
-				writePubxfInfo(biopaxId, "ID", pubxf);
-				writePubxfInfo(biopaxDatabase, "DB", pubxf);
-				writePubxfInfo(title, "TITLE", pubxf);
-				writePubxfInfo(source, "SOURCE", pubxf);
-				writePubxfInfo(year, "YEAR", pubxf);
-				for (String author : authors)
-					writePubxfInfo(author, "AUTHOR", pubxf);
-				if (pubxf != null)
-					bp.addContent(pubxf);
-			}
+		for (Citation citation : citations) {
+			if (citation == null)
+				continue;
+			Element pubxf = new Element("PublicationXref", GpmlFormat.BIOPAX);
+			pubxf.setAttribute("id", citation.getElementId(), GpmlFormat.RDF);
+			// TODO add empty or drop?
+			String biopaxId = citation.getXref().getId();
+			String biopaxDatabase = citation.getXref().getDataSource().getFullName();
+			String title = citation.getTitle();
+			String source = citation.getSource();
+			String year = citation.getYear();
+			List<String> authors = citation.getAuthors();
+			writePubxfInfo(biopaxId, "ID", pubxf);
+			writePubxfInfo(biopaxDatabase, "DB", pubxf);
+			writePubxfInfo(title, "TITLE", pubxf);
+			writePubxfInfo(source, "SOURCE", pubxf);
+			writePubxfInfo(year, "YEAR", pubxf);
+			for (String author : authors)
+				writePubxfInfo(author, "AUTHOR", pubxf);
+			if (pubxf != null)
+				bp.addContent(pubxf);
 		}
 	}
 
@@ -809,7 +769,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeShapedOrStateDynamicProperties(Map<String, String> dynamicProperties,
 			ShapeStyleProperty shapeProp, Element se) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
-			Element dp = new Element("Property", se.getNamespace());
+			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
 			// TODO may need to handle BiopaxRef attribute
@@ -819,7 +779,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		LineStyleType borderStyle = shapeProp.getBorderStyle();
 		if (borderStyle.getName().equals("Double")) {
 			/* double lineStyle is stored in dynamic property in GPML2013a */
-			Element dp = new Element("Property", se.getNamespace());
+			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
 			setAttr("Attribute", "Value", dp, "Double");
 			if (dp != null)
@@ -828,7 +788,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		ShapeType shapeType = shapeProp.getShapeType();
 		if (ShapeType.CELL_CMPNT_MAP.containsKey(shapeType)) {
 			/* if shape in cellular component map, store info in dynamic property */
-			Element dp = new Element("Property", se.getNamespace());
+			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, CELL_CMPNT_KEY);
 			setAttr("Attribute", "Value", dp, shapeType.getName());
 			if (dp != null)
@@ -847,7 +807,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeLineDynamicProperties(Map<String, String> dynamicProperties, LineStyleProperty lineProp,
 			Element ln) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
-			Element dp = new Element("Property", ln.getNamespace());
+			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
 			// TODO may need to handle BiopaxRef attribute
@@ -857,7 +817,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		LineStyleType lineStyle = lineProp.getLineStyle();
 		if (lineStyle.getName().equals("Double")) {
 			/* double lineStyle is stored in dynamic property in GPML2013a */
-			Element dp = new Element("Property", ln.getNamespace());
+			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
 			setAttr("Attribute", "Value", dp, "Double");
 			if (dp != null)
