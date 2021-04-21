@@ -1,4 +1,4 @@
-package oldclasses.model;
+package oldclasses;
 
 import org.pathvisio.model.BatikImageExporter;
 import org.pathvisio.model.ConverterException;
