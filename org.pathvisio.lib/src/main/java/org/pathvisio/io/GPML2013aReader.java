@@ -570,10 +570,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			double relY = Double.parseDouble(getAttr("State.Graphics", "RelY", gfx));
 			double width = Double.parseDouble(getAttr("State.Graphics", "Width", gfx));
 			double height = Double.parseDouble(getAttr("State.Graphics", "Height", gfx));
-			FontProperty fontProperty = readFontProperty(gfx);
+			/* state does not have font properties in GPML2013a, set default values */
+			FontProperty fontProperty = new FontProperty(Color.decode("#000000"), "Arial", false, false, false, false,
+					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			/* finds parent datanode from state elementRef */
-			String elementRef = getAttr("State", "ElementRef", st);
+			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementRef);
 			/* finally instantiate state */
 			State state = new State(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height,
@@ -885,9 +887,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readLineDynamicProperties(LineElement lineElement, Element ln) throws ConverterException {
 		for (Element dp : ln.getChildren("Attribute", ln.getNamespace())) {
-			String base = ln.getName();
-			String key = getAttr(base + ".Attribute", "Key", dp);
-			String value = getAttr(base + ".Attribute", "Value", dp);
+			String key = getAttr("Attribute", "Key", dp);
+			String value = getAttr("Attribute", "Value", dp);
 			/* dynamic property DoubleLineProperty sets lineStyle */
 			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
 				lineElement.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
@@ -911,9 +912,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readShapedDynamicProperties(ShapedElement shapedElement, Element se) throws ConverterException {
 		for (Element dp : se.getChildren("Attribute", se.getNamespace())) {
-			String base = se.getName();
-			String key = getAttr(base + ".Attribute", "Key", dp);
-			String value = getAttr(base + ".Attribute", "Value", dp);
+			String key = getAttr("Attribute", "Key", dp);
+			String value = getAttr("Attribute", "Value", dp);
 			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
 				shapedElement.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
@@ -939,8 +939,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readStateDynamicProperties(State state, Element st) throws ConverterException {
 		for (Element dp : st.getChildren("Attribute", st.getNamespace())) {
-			String key = getAttr("State.Attribute", "Key", dp);
-			String value = getAttr("State.Attribute", "Value", dp);
+			String key = getAttr("Attribute", "Key", dp);
+			String value = getAttr("Attribute", "Value", dp);
 			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
 				state.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {

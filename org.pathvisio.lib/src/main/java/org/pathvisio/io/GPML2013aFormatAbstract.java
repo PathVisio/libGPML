@@ -49,6 +49,10 @@ public abstract class GPML2013aFormatAbstract {
 	private final Namespace nsGPML;
 	private final String xsdFile;
 
+	public String getSchemaFile() {
+		return xsdFile;
+	}
+	
 	public Namespace getGpmlNamespace() {
 		return nsGPML;
 	}
