@@ -7,9 +7,7 @@ In Progress:
 ```
 _Italicized_ packages contain old pathvisio code that will eventually be modified or removed.  
 
-- _oldclasses.io_</span>.
-- _oldclasses.model_
-- _oldclasses.pathway_
+- _oldclasses_</span>.
 - _org.pathvisio.debug_
 ```diff
 + org.pathvisio.io
@@ -18,5 +16,4 @@ _Italicized_ packages contain old pathvisio code that will eventually be modifie
 + org.pathvisio.model.graphics
 + org.pathvisio.model.type
 ```
-- _org.pathvisio.preferences_
 - _org.pathvisio.util_
