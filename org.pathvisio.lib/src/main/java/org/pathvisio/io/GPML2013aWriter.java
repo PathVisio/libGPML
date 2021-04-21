@@ -890,15 +890,16 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(FontProperty fontProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("Color", ColorUtils.colorToHex(fontProp.getTextColor(), false));
-		gfx.setAttribute("FontName", fontProp.getFontName() == null ? "" : fontProp.getFontName());
-		gfx.setAttribute("FontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
-		gfx.setAttribute("FontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
-		gfx.setAttribute("FontDecoration", fontProp.getFontDecoration() ? "Underline" : "Normal");
-		gfx.setAttribute("FontStrikethru", fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
-		gfx.setAttribute("FontSize", Integer.toString((int) fontProp.getFontSize()));
-		gfx.setAttribute("Align", fontProp.getHAlign().getName());
-		gfx.setAttribute("Valign", fontProp.getVAlign().getName());
+		String base = ((Element) gfx.getParent()).getName();
+		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(fontProp.getTextColor(), false));
+		setAttr(base + ".Graphics", "FontName", gfx, fontProp.getFontName() == null ? "" : fontProp.getFontName());
+		setAttr(base + ".Graphics", "FontWeight", gfx, fontProp.getFontWeight() ? "Bold" : "Normal");
+		setAttr(base + ".Graphics", "FontStyle", gfx, fontProp.getFontStyle() ? "Italic" : "Normal");
+		setAttr(base + ".Graphics", "FontDecoration", gfx, fontProp.getFontDecoration() ? "Underline" : "Normal");
+		setAttr(base + ".Graphics", "FontStrikethru", gfx, fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
+		setAttr(base + ".Graphics", "FontSize", gfx, Integer.toString((int) fontProp.getFontSize()));
+		setAttr(base + ".Graphics", "Align", gfx, fontProp.getHAlign().getName());
+		setAttr(base + ".Graphics", "Valign", gfx, fontProp.getVAlign().getName());
 	}
 
 	/**
@@ -911,21 +912,21 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
+		String base = ((Element) gfx.getParent()).getName();
 		LineStyleType borderStyle = shapeProp.getBorderStyle();
-		if (borderStyle != null && !borderStyle.getName().equals("Double")) {
-			gfx.setAttribute("LineStyle", borderStyle.getName());
-		}
-		gfx.setAttribute("LineThickness", String.valueOf(shapeProp.getBorderWidth()));
-		gfx.setAttribute("FillColor", ColorUtils.colorToHex(shapeProp.getFillColor(), false));
+		if (borderStyle != null && !borderStyle.getName().equals("Double"))
+			setAttr(base + ".Graphics", "LineStyle", gfx, borderStyle.getName());
+		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapeProp.getBorderWidth()));
+		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapeProp.getFillColor(), false));
 		ShapeType shapeType = shapeProp.getShapeType();
 		if (ShapeType.CELL_CMPNT_MAP.containsKey(shapeType)) {
 			ShapeType shapeTypeNew = ShapeType.CELL_CMPNT_MAP.get(shapeType);
-			gfx.setAttribute("ShapeType", shapeTypeNew.getName());
+			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeNew.getName());
 		} else {
-			gfx.setAttribute("ShapeType", shapeType.getName());
+			setAttr(base + ".Graphics", "ShapeType", gfx, shapeType.getName());
 
 		}
-		gfx.setAttribute("ZOrder", String.valueOf(shapeProp.getZOrder()));
+		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapeProp.getZOrder()));
 	}
 
 	/**
@@ -936,13 +937,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("ConnectorType", lineProp.getConnectorType().getName());
-		gfx.setAttribute("ZOrder", String.valueOf(lineProp.getZOrder()));
+		String base = ((Element) gfx.getParent()).getName();
+		setAttr(base + ".Graphics", "ConnectorType", gfx, lineProp.getConnectorType().getName());
+		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(lineProp.getZOrder()));
 		LineStyleType lineStyle = lineProp.getLineStyle();
 		if (lineStyle != null && !lineStyle.getName().equals("Double"))
-			gfx.setAttribute("LineStyle", lineStyle.getName());
-		gfx.setAttribute("LineThickness", String.valueOf(lineProp.getLineWidth()));
-		gfx.setAttribute("Color", ColorUtils.colorToHex(lineProp.getLineColor(), false));
+			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyle.getName());
+		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineProp.getLineWidth()));
+		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(lineProp.getLineColor(), false));
 	}
 
 }

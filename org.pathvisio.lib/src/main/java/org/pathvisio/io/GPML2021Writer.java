@@ -880,7 +880,7 @@ public class GPML2021Writer extends Gpml2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(FontProperty fontProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor()));
+		gfx.setAttribute("textColor", ColorUtils.colorToHex(fontProp.getTextColor(),true));
 		gfx.setAttribute("fontName", fontProp.getFontName() == null ? "Arial" : fontProp.getFontName());
 		gfx.setAttribute("fontWeight", fontProp.getFontWeight() ? "Bold" : "Normal");
 		gfx.setAttribute("fontStyle", fontProp.getFontStyle() ? "Italic" : "Normal");
@@ -899,10 +899,10 @@ public class GPML2021Writer extends Gpml2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor()));
+		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor(), true));
 		gfx.setAttribute("borderStyle", shapeProp.getBorderStyle().getName());
 		gfx.setAttribute("borderWidth", String.valueOf(shapeProp.getBorderWidth()));
-		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor()));
+		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor(), true));
 		gfx.setAttribute("shapeType", shapeProp.getShapeType().getName());
 		gfx.setAttribute("zOrder", String.valueOf(shapeProp.getZOrder()));
 	}
@@ -915,7 +915,7 @@ public class GPML2021Writer extends Gpml2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
-		gfx.setAttribute("lineColor", ColorUtils.colorToHex(lineProp.getLineColor()));
+		gfx.setAttribute("lineColor", ColorUtils.colorToHex(lineProp.getLineColor(), true));
 		gfx.setAttribute("lineStyle", lineProp.getLineStyle().getName());
 		gfx.setAttribute("lineWidth", String.valueOf(lineProp.getLineWidth()));
 		gfx.setAttribute("connectorType", lineProp.getConnectorType().getName());
