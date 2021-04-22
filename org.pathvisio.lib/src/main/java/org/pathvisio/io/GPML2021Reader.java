@@ -901,10 +901,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
 		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor", "000000")); // TODO default
 		String fontName = gfx.getAttributeValue("fontName");
-		boolean fontWeight = gfx.getAttributeValue("fontWeight", "Normal").equals("Bold"); // TODO default...
+		boolean fontWeight = gfx.getAttributeValue("fontWeight", "Normal").equalsIgnoreCase("Bold"); // TODO default...
 		boolean fontStyle = gfx.getAttributeValue("fontStyle").equals("Italic");
-		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equals("Underline");
-		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equals("Strikethru");
+		boolean fontDecoration = gfx.getAttributeValue("fontDecoration").equalsIgnoreCase("Underline");
+		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru").equalsIgnoreCase("Strikethru");
 		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize"));
 		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("hAlign"));
 		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("vAlign"));

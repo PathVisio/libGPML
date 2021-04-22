@@ -32,7 +32,7 @@ public class TestGpml extends TestCase {
 		
 		System.out.println("OK until here");
 
-		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2021.xml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("example2-v2021.xml");
 		
 		File file = new File(url.getPath());
 		assertTrue (file.exists());
@@ -42,7 +42,8 @@ public class TestGpml extends TestCase {
 		
 //		
 		File tmp = File.createTempFile("testwrite", "gpml");
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 	}
 }

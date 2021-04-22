@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.jdom2.Document;
@@ -178,9 +179,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		/* set optional properties, in the order written in gpml 2013a */
 		String source = pathway.getSource();
 		String version = pathway.getVersion();
-		String author = pathway.getDynamicProperty(PATHWAY_AUTHOR);
+		String author = writeAuthorEmail(pathwayModel)[0];
 		String maintainer = pathway.getDynamicProperty(PATHWAY_MAINTAINER);
-		String email = pathway.getDynamicProperty(PATHWAY_EMAIL);
+		String email = writeAuthorEmail(pathwayModel)[1];
 		String lastModified = pathway.getDynamicProperty(PATHWAY_LASTMODIFIED);
 		String organism = pathway.getOrganism();
 		String license = pathway.getLicense();
@@ -188,11 +189,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Pathway", "Data-Source", root, source);
 		if (version != null)
 			setAttr("Pathway", "Version", root, version);
-		if (author != null)
+		if (author != null && !author.equals(""))
 			setAttr("Pathway", "Author", root, author);
 		if (maintainer != null)
 			setAttr("Pathway", "Maintainer", root, maintainer);
-		if (email != null)
+		if (email != null && !email.equals(""))
 			setAttr("Pathway", "Email", root, email);
 		if (lastModified != null)
 			setAttr("Pathway", "Last-Modified", root, lastModified);
@@ -200,7 +201,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Pathway", "Organism", root, organism);
 		if (license != null)
 			setAttr("Pathway", "License", root, license);
-
 		/* set comment group */
 		writeComments(pathway.getComments(), root);
 		// TODO PublicationXref?
@@ -214,6 +214,43 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		setAttr("Pathway.Graphics", "BoardHeight", gfx, String.valueOf(pathway.getBoardHeight()));
 //		result.put("Pathway@BiopaxRef", new AttributeInfo ("xsd:string", null, "optional"));
 
+	}
+
+	/**
+	 * Combines information...
+	 * 
+	 * @param pathwayModel
+	 * @return
+	 * @throws ConverterException
+	 */
+	protected String[] writeAuthorEmail(PathwayModel pathwayModel) throws ConverterException {
+		List<String> authorList = new ArrayList<String>();
+		List<String> emailList = new ArrayList<String>();
+		String authorStr = pathwayModel.getPathway().getDynamicProperty(PATHWAY_AUTHOR);
+		String emailStr = pathwayModel.getPathway().getDynamicProperty(PATHWAY_EMAIL);
+		if (authorStr != null)
+			authorList.add(authorStr);
+		if (emailStr != null)
+			emailList.add(emailStr);
+		List<Author> authors = pathwayModel.getAuthors();
+		if (!authors.isEmpty()) {
+			for (Author author : authors) {
+				if (author == null)
+					continue;
+				String name = author.getName();
+				String fullName = author.getFullName();
+				if (fullName != null)
+					name = name + "(" + fullName + ")";
+				if (name != null)
+					authorList.add(name);
+				String email = author.getEmail();
+				if (email != null)
+					emailList.add(email);
+			}
+		}
+		String authorListStr = StringUtils.join(authorList, ", ");
+		String emailListStr = StringUtils.join(emailList, ", ");
+		return new String[] { authorListStr, emailListStr };
 	}
 
 	/**
@@ -653,8 +690,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writePubxfInfo(title, "TITLE", pubxf);
 			writePubxfInfo(source, "SOURCE", pubxf);
 			writePubxfInfo(year, "YEAR", pubxf);
-			for (String author : authors)
-				writePubxfInfo(author, "AUTHOR", pubxf);
+			if (authors != null && !authors.isEmpty()) {
+				for (String author : authors)
+					writePubxfInfo(author, "AUTHOR", pubxf);
+			}
 			if (pubxf != null)
 				bp.addContent(pubxf);
 		}
@@ -789,7 +828,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				se.addContent(dp);
 		}
 		LineStyleType borderStyle = shapeProp.getBorderStyle();
-		if (borderStyle.getName().equals("Double")) {
+		System.out.println("BORDERSTYLETYLE" + borderStyle);
+		if (borderStyle.getName().equalsIgnoreCase("Double")) {
 			/* double lineStyle is stored in dynamic property in GPML2013a */
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
@@ -827,7 +867,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				ln.addContent(dp);
 		}
 		LineStyleType lineStyle = lineProp.getLineStyle();
-		if (lineStyle.getName().equals("Double")) {
+		System.out.println("LINESTYLE" + lineStyle);
+		if (lineStyle.getName().equalsIgnoreCase("Double")) {
 			/* double lineStyle is stored in dynamic property in GPML2013a */
 			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
@@ -885,8 +926,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
+		/* do not set borderColor, Color is set by textColor */
 		LineStyleType borderStyle = shapeProp.getBorderStyle();
-		if (borderStyle != null && !borderStyle.getName().equals("Double"))
+		if (borderStyle != null && !borderStyle.getName().equalsIgnoreCase("Double"))
 			setAttr(base + ".Graphics", "LineStyle", gfx, borderStyle.getName());
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapeProp.getBorderWidth()));
 		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapeProp.getFillColor(), false));
@@ -913,7 +955,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		setAttr(base + ".Graphics", "ConnectorType", gfx, lineProp.getConnectorType().getName());
 		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(lineProp.getZOrder()));
 		LineStyleType lineStyle = lineProp.getLineStyle();
-		if (lineStyle != null && !lineStyle.getName().equals("Double"))
+		if (lineStyle != null && !lineStyle.getName().equalsIgnoreCase("Double"))
 			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyle.getName());
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineProp.getLineWidth()));
 		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(lineProp.getLineColor(), false));

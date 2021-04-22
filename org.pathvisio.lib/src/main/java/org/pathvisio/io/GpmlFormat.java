@@ -170,8 +170,6 @@ public class GpmlFormat extends AbstractPathwayFormat {
 
 	public static GpmlFormatReader getReaderForNamespace(Namespace ns) {
 		GpmlFormatReader[] formats = new GpmlFormatReader[] { GPML2021Reader.GPML2021READER, GPML2013aReader.GPML2013aREADER };
-
-//		GpmlFormat200X.GPML_2007, GpmlFormat200X.GPML_2008A, GpmlFormat2010a.GPML_2010A , 
 		for (GpmlFormatReader format : formats) {
 			if (ns.equals(format.getGpmlNamespace())) {
 				return format;
@@ -179,18 +177,21 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		}
 		return null;
 	}
+	
 
 	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
-//		PathwayModel pathwayModel = null;
+		
 		//TODO fix schema file etc...
-		URL url = Thread.currentThread().getContextClassLoader().getResource(PREVIOUS.getSchemaFile());
+
+		URL url = Thread.currentThread().getContextClassLoader().getResource(CURRENT.getSchemaFile());
 		File xsdFile = new File(url.getPath());
 
 		try {
 			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
 
 			SAXBuilder builder = new SAXBuilder();
+			
 			/* if validate by schema*/
 			if (validate)
 				builder = new SAXBuilder(schemafactory);

@@ -585,7 +585,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			readElementInfo(state, st);
 			readStateDynamicProperties(state, st);
 			// TODO looks okay for now?
-			if ("Double".equals(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
+			if ("Double".equalsIgnoreCase(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 				state.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			}
 			/* sets optional properties */
@@ -876,7 +876,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String key = getAttr("Attribute", "Key", dp);
 			String value = getAttr("Attribute", "Value", dp);
 			/* dynamic property DoubleLineProperty sets lineStyle */
-			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
+			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
 				lineElement.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
 			} else {
 				lineElement.setDynamicProperty(key, value);
@@ -900,7 +900,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element dp : se.getChildren("Attribute", se.getNamespace())) {
 			String key = getAttr("Attribute", "Key", dp);
 			String value = getAttr("Attribute", "Value", dp);
-			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
+			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
 				shapedElement.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
 				ShapeType type = ShapeType.register(value);
@@ -973,10 +973,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		String fontStyleStr = getAttr(base + ".Graphics", "FontStyle", gfx);
 		String fontDecorationStr = getAttr(base + ".Graphics", "FontDecoration", gfx);
 		String fontStrikethruStr = getAttr(base + ".Graphics", "FontStrikethru", gfx);
-		boolean fontWeight = fontWeightStr != null && fontWeightStr.equals("Bold");
-		boolean fontStyle = fontStyleStr != null && fontStyleStr.equals("Italic");
-		boolean fontDecoration = fontDecorationStr != null && fontDecorationStr.equals("Underline");
-		boolean fontStrikethru = fontStrikethruStr != null && fontStrikethruStr.equals("Strikethru");
+		boolean fontWeight = fontWeightStr != null && fontWeightStr.equalsIgnoreCase("Bold");
+		boolean fontStyle = fontStyleStr != null && fontStyleStr.equalsIgnoreCase("Italic");
+		boolean fontDecoration = fontDecorationStr != null && fontDecorationStr.equalsIgnoreCase("Underline");
+		boolean fontStrikethru = fontStrikethruStr != null && fontStrikethruStr.equalsIgnoreCase("Strikethru");
 		int fontSize = Integer.parseInt(getAttr(base + ".Graphics", "FontSize", gfx));
 		HAlignType hAlignType = HAlignType.fromName(getAttr(base + ".Graphics", "Align", gfx));
 		VAlignType vAlignType = VAlignType.fromName(getAttr(base + ".Graphics", "Valign", gfx));
