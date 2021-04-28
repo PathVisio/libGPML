@@ -49,20 +49,19 @@ import org.xml.sax.SAXException;
  * versions. Code that is shared between multiple versions is located here.
  */
 public abstract class GPML2021FormatAbstract {
+	
+	private final String xsdFile;
+	private final Namespace nsGPML;
+
 	protected GPML2021FormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}
 
-	private final String xsdFile;
-	private final Namespace nsGPML;
-
-//	protected abstract Map<String, AttributeInfo> getAttributeInfo();
-	
 	public String getSchemaFile() {
 		return xsdFile;
 	}
-	
+
 	public Namespace getGpmlNamespace() {
 		return nsGPML;
 	}

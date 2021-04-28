@@ -206,7 +206,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String biopaxOntology = ocv.getChild("Ontology", GpmlFormat.BIOPAX).getText();
 			AnnotationType type = AnnotationType.register(biopaxOntology);
 			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-			String biopaxIdDbStr = ocv.getChild("ID", GpmlFormat.BIOPAX).getText(); //e.g PW:0000650 
+			String biopaxIdDbStr = ocv.getChild("ID", GpmlFormat.BIOPAX).getText(); // e.g PW:0000650
 			String[] biopaxIdDb = biopaxIdDbStr.split(":");
 			String biopaxDatabase = biopaxIdDb[0]; // e.g. PW
 			String biopaxId = biopaxIdDb[1]; // e.g 0000650
@@ -347,10 +347,32 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void readPathwayDynamicProperties(PathwayModel pathwayModel, Element root) throws ConverterException {
+		String pwyXrefId = "";
+		String pwyXrefDb = null;
 		for (Element dp : root.getChildren("Attribute", root.getNamespace())) {
 			String key = getAttr("Attribute", "Key", dp);
 			String value = getAttr("Attribute", "Value", dp);
-			pathwayModel.getPathway().setDynamicProperty(key, value);
+			if (key.equals(PATHWAY_XREF_ID)) {
+				pwyXrefId = value;
+			}
+			else if (key.equals(PATHWAY_XREF_DB)) {
+				pwyXrefDb = value;
+			}
+			else if (key.equals(PATHWAY_BACKGROUNDCOLOR)) {
+				pathwayModel.getPathway().setBackgroundColor(ColorUtils.stringToColor(value));
+			} else
+				pathwayModel.getPathway().setDynamicProperty(key, value);
+		}
+		if (pwyXrefDb != null && !pwyXrefDb.equals("")) {
+			if (DataSource.fullNameExists(pwyXrefDb)) {
+				pathwayModel.getPathway().setXref(new Xref(pwyXrefId, DataSource.getExistingByFullName(pwyXrefDb)));
+			} else if (DataSource.systemCodeExists(pwyXrefDb)) {
+				pathwayModel.getPathway().setXref(new Xref(pwyXrefId, DataSource.getByAlias(pwyXrefDb)));
+			} else {
+				DataSource.register(pwyXrefDb, pwyXrefDb);
+				System.out.println("Registered xref datasource: " + pwyXrefDb);
+				pathwayModel.getPathway().setXref(new Xref(pwyXrefId, DataSource.getExistingByFullName(pwyXrefDb))); 
+			}
 		}
 	}
 

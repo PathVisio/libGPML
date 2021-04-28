@@ -219,11 +219,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		if (xref != null) {
 			String identifier = xref.getId();
 			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null && identifier != null || required) { // TODO identifier can be null?
+			if (dataSrc != null) { 
 				Element xrf = new Element("Xref", e.getNamespace());
-				String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
+				String dataSource = xref.getDataSource().getFullName(); 
 				xrf.setAttribute("identifier", identifier == null ? "" : identifier);
-				xrf.setAttribute("dataSource", dataSource); // TODO null handling
+				xrf.setAttribute("dataSource", dataSource);
 				e.addContent(xrf);
 			}
 		}

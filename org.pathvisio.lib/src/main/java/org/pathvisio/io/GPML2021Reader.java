@@ -160,7 +160,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					return new Xref(identifier, DataSource.getByAlias(dataSource));
 				} else {
 					DataSource.register(dataSource, dataSource);
-					System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+					System.out.println("Registered xref dataSource: " + dataSource); 
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
 				}
 			}

@@ -204,7 +204,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		/* set comment group */
 		writeComments(pathway.getComments(), root);
 		writeBiopaxRefs(pathway.getCitationRefs(), root);
-		writePathwayDynamicProperties(pathway.getDynamicProperties(), root);
+		writePathwayDynamicProperties(pathway, root);
+		if (!pathwayModel.getEvidences().isEmpty()) {
+			System.out.println(
+					"Warning: Conversion GPML2021 to older GPML2013a format: Pathway evidence and evidenceRef info lost.");
+		}
 
 		/* set graphics */
 		Element gfx = new Element("Graphics", root.getNamespace());
@@ -264,17 +268,17 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (xref == null && required) {
 			Element xrf = new Element("Xref", e.getNamespace());
 			xrf.setAttribute("ID", "");
-			xrf.setAttribute("Database", ""); // TODO null handling?
+			xrf.setAttribute("Database", "");
 			e.addContent(xrf);
 		}
 		if (xref != null) {
 			String identifier = xref.getId();
 			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null && identifier != null || required) {
+			if (dataSrc != null) {
 				Element xrf = new Element("Xref", e.getNamespace());
-				String dataSource = xref.getDataSource().getFullName(); // TODO dataSource
+				String dataSource = xref.getDataSource().getFullName();
 				String base = e.getName();
-				setAttr(base + ".Xref", "Database", xrf, dataSource == null ? "" : dataSource);
+				setAttr(base + ".Xref", "Database", xrf, dataSource);
 				setAttr(base + ".Xref", "ID", xrf, identifier == null ? "" : identifier);
 				e.addContent(xrf);
 			}
@@ -308,14 +312,40 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e                 the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writePathwayDynamicProperties(Map<String, String> dynamicProperties, Element e)
-			throws ConverterException {
+	protected void writePathwayDynamicProperties(Pathway pathway, Element e) throws ConverterException {
+		Map<String, String> dynamicProperties = pathway.getDynamicProperties();
 		for (String key : dynamicProperties.keySet()) {
 			Element dp = new Element("Attribute", e.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
 			if (dp != null)
 				e.addContent(dp);
+		}
+		String backgroundColor = ColorUtils.colorToHex(pathway.getBackgroundColor(), false);
+		if (backgroundColor != null && !backgroundColor.equals("") && !backgroundColor.equals("ffffff")) {
+			Element dp = new Element("Attribute", e.getNamespace());
+			setAttr("Attribute", "Key", dp, PATHWAY_BACKGROUNDCOLOR);
+			setAttr("Attribute", "Value", dp, backgroundColor);
+			if (dp != null)
+				e.addContent(dp);
+		}
+		Xref xref = pathway.getXref();
+		if (xref != null) {
+			String pwyXrefId = xref.getId();
+			DataSource dataSrc = xref.getDataSource();
+			if (dataSrc != null) {
+				Element dpId = new Element("Attribute", e.getNamespace());
+				Element dpDb = new Element("Attribute", e.getNamespace());
+				String pwyXrefDb = xref.getDataSource().getFullName();
+				setAttr("Attribute", "Key", dpId, PATHWAY_XREF_ID);
+				setAttr("Attribute", "Value", dpId, pwyXrefId == null ? "" : pwyXrefId);
+				setAttr("Attribute", "Key", dpDb, PATHWAY_XREF_DB);
+				setAttr("Attribute", "Value", dpDb, pwyXrefDb == null ? "" : pwyXrefDb);
+				if (dpId != null && dpDb != null) {
+					e.addContent(dpId);
+					e.addContent(dpDb);
+				}
+			}
 		}
 	}
 
@@ -658,6 +688,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (ocv != null) {
 				bp.addContent(ocv);
 			}
+			if (annotation.getUrl() != null) {
+				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Annotation " + annotation.getElementId()
+						+ " url info lost.");
+			}
 		}
 	}
 
@@ -686,6 +720,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			if (pubxf != null)
 				bp.addContent(pubxf);
+			if (citation.getUrl() != null) {
+				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Citation " + citation.getElementId()
+						+ " url info lost.");
+			}
 		}
 	}
 
