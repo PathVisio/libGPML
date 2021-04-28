@@ -28,35 +28,12 @@ public class Comment {
 
 	private String source; // optional
 	private String commentText;
-//	private PathwayElement parent; // TODO
 
-//	/**
-//	 * Instantiates a Comment.
-//	 * 
-//	 * @param source  the source of the comment.
-//	 * @param text the text of the comment, between Comment tags in GPML.
-//	 */
-//	public Comment(String source, String text, PathwayElement parent) {
-//		this.source = source;
-//		this.text = text;
-//		this.parent = parent;
-//	}
-//
-//	/**
-//	 * Instantiates a Comment with no source.
-//	 * 
-//	 * @param text the text of the comment, between Comment tags in GPML.
-//	 */
-//	public Comment(String text, PathwayElement parent) {
-//		this.text = text;
-//		this.parent = parent;
-//	}
-	
 	/**
 	 * Instantiates a Comment.
 	 * 
-	 * @param source  the source of the comment.
-	 * @param text the text of the comment, between Comment tags in GPML.
+	 * @param source the source of the comment.
+	 * @param text   the text of the comment, between Comment tags in GPML.
 	 */
 	public Comment(String source, String commentText) {
 		this.source = source;
@@ -112,26 +89,5 @@ public class Comment {
 			this.commentText = commentText;
 		}
 	}
-//
-//	/**
-//	 * Gets the parent PathwayElement to which the Comment belongs.
-//	 * 
-//	 * @return parent the parent pathway element.
-//	 */
-//	public PathwayElement getParent() {
-//		return parent;
-//	}
-//
-//	/**
-//	 * Sets the parent PathwayElement to which the Comment belongs.
-//	 * 
-//	 * @param parent the parent pathway element.
-//	 */
-//	public void setCommentText(PathwayElement parent) {
-//		this.parent = parent;
-//
-//	}
-
-
 
 }

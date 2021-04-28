@@ -838,7 +838,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				se.addContent(dp);
 		}
 		ShapeType shapeType = shapeProp.getShapeType();
-		if (ShapeType.CELL_CMPNT_MAP.containsKey(shapeType)) {
+		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
 			/* if shape in cellular component map, store info in dynamic property */
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, CELL_CMPNT_KEY);
@@ -933,8 +933,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapeProp.getBorderWidth()));
 		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapeProp.getFillColor(), false));
 		ShapeType shapeType = shapeProp.getShapeType();
-		if (ShapeType.CELL_CMPNT_MAP.containsKey(shapeType)) {
-			ShapeType shapeTypeNew = ShapeType.CELL_CMPNT_MAP.get(shapeType);
+		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
+			ShapeType shapeTypeNew = CELL_CMPNT_MAP.get(shapeType);
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeNew.getName());
 		} else {
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeType.getName());

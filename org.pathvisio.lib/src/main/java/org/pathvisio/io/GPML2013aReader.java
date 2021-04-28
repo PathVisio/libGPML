@@ -285,7 +285,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads comment group (comment, dynamic property, annotationRef, citationRef)
+	 * Reads comment group (comment, biopaxref, dynamic property)
 	 * and evidencRef information {@link PathwayModel} for pathway model from root
 	 * element.
 	 * 
@@ -620,8 +620,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Element gfx = e.getChild("Graphics", e.getNamespace());
 		ShapeType shapeType = ShapeType.fromName(getAttr(base + ".Graphics", "ShapeType", gfx));
 		/* check deprecated shape type map */
-		if (ShapeType.DEPRECATED_MAP.containsKey(shapeType)) {
-			ShapeType shapeTypeNew = ShapeType.DEPRECATED_MAP.get(shapeType);
+		if (DEPRECATED_MAP.containsKey(shapeType)) {
+			ShapeType shapeTypeNew = DEPRECATED_MAP.get(shapeType);
 			shapedElement.getShapeStyleProperty().setShapeType(shapeTypeNew);
 		} else {
 			shapedElement.getShapeStyleProperty().setShapeType(shapeType);
@@ -793,7 +793,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads comment group (comment, dynamic property, annotationRef, citationRef)
+	 * Reads comment group (comment, biopaxref, dynamic property)
 	 * and elementRef {@link ElementInfo} information, , for pathway element from
 	 * element.
 	 * 

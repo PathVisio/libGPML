@@ -30,10 +30,10 @@ import org.pathvisio.model.type.AnnotationType;
  */
 public class Annotation extends PathwayElement {
 
-	private String value;
-	private AnnotationType type;
 	/* list of parent pathway elements with annotationRef for this annotation. */
 	private List<PathwayElement> pathwayElements;
+	private String value;
+	private AnnotationType type;
 	private Xref xref; // optional
 	private String url; // optional
 
@@ -51,9 +51,9 @@ public class Annotation extends PathwayElement {
 	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref,
 			String url) {
 		super(elementId, pathwayModel);
+		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.value = value;
 		this.type = type;
-		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.xref = xref;
 		this.url = url;
 	}
@@ -80,7 +80,34 @@ public class Annotation extends PathwayElement {
 		this(elementId, pathwayModel, value, type, null, null);
 	}
 
-	// Add Constructors
+	/**
+	 * Returns the list of pathway elements with annotationRef for the annotation.
+	 * 
+	 * @return pathwayElements the list of pathway elements which reference the
+	 *         annotation.
+	 */
+	public List<PathwayElement> getPathwayElements() {
+		return pathwayElements;
+	}
+
+	/**
+	 * Adds the given pathway element to pathwayElements list of the annotation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to add.
+	 */
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.add(pathwayElement);
+	}
+
+	/**
+	 * Removes the given pathway element from pathwayElements list of the
+	 * annotation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to remove.
+	 */
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.remove(pathwayElement);
+	}
 
 	/**
 	 * Gets the name, term, or text of the annotation.
@@ -116,35 +143,6 @@ public class Annotation extends PathwayElement {
 	 */
 	public void setType(AnnotationType type) {
 		this.type = type;
-	}
-
-	/**
-	 * Returns the list of pathway elements with annotationRef for the annotation.
-	 * 
-	 * @return pathwayElements the list of pathway elements which reference the
-	 *         annotation.
-	 */
-	public List<PathwayElement> getPathwayElements() {
-		return pathwayElements;
-	}
-
-	/**
-	 * Adds the given pathway element to pathwayElements list of the annotation.
-	 * 
-	 * @param pathwayElement the given pathwayElement to add.
-	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.add(pathwayElement);
-	}
-
-	/**
-	 * Removes the given pathway element from pathwayElements list of the
-	 * annotation.
-	 * 
-	 * @param pathwayElement the given pathwayElement to remove.
-	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.remove(pathwayElement);
 	}
 
 	/**

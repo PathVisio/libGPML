@@ -25,19 +25,19 @@ import org.bridgedb.Xref;
 /**
  * This class stores information for a Citation.
  * 
- * @author saurabh, finterly
+ * @author finterly
  */
 public class Citation extends PathwayElement {
 
-	private Xref xref;
 	/* list of parent pathway elements with citationRef for this citation. */
 	private List<PathwayElement> pathwayElements;
+	private Xref xref;
 	private String url; // optional
 	/* for GPML2013a Biopax */
 	private String title;
 	private String source;
 	private String year;
-	private List<String> authors; //TODO discuss 
+	private List<String> authors; // TODO discuss
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters:
@@ -50,8 +50,8 @@ public class Citation extends PathwayElement {
 	 */
 	public Citation(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
 		super(elementId, pathwayModel);
-		this.xref = xref;
 		this.pathwayElements = new ArrayList<PathwayElement>();
+		this.xref = xref;
 		this.url = url;
 	}
 
@@ -65,6 +65,34 @@ public class Citation extends PathwayElement {
 	 */
 	public Citation(String elementId, PathwayModel pathwayModel, Xref xref) {
 		this(elementId, pathwayModel, xref, null);
+	}
+
+	/**
+	 * Returns the list of pathway elements with citationRef for the citation.
+	 * 
+	 * @return pathwayElements the list of pathway elements which reference the
+	 *         citation.
+	 */
+	public List<PathwayElement> getPathwayElements() {
+		return pathwayElements;
+	}
+
+	/**
+	 * Adds the given pathway element to pathwayElements list of the citation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to add.
+	 */
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.add(pathwayElement);
+	}
+
+	/**
+	 * Removes the given pathway element from pathwayElements list of the citation.
+	 * 
+	 * @param pathwayElement the given pathwayElement to remove.
+	 */
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.remove(pathwayElement);
 	}
 
 	/**
@@ -103,34 +131,6 @@ public class Citation extends PathwayElement {
 			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
 			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
 		}
-	}
-
-	/**
-	 * Returns the list of pathway elements with citationRef for the citation.
-	 * 
-	 * @return pathwayElements the list of pathway elements which reference the
-	 *         citation.
-	 */
-	public List<PathwayElement> getPathwayElements() {
-		return pathwayElements;
-	}
-
-	/**
-	 * Adds the given pathway element to pathwayElements list of the citation.
-	 * 
-	 * @param pathwayElement the given pathwayElement to add.
-	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.add(pathwayElement);
-	}
-
-	/**
-	 * Removes the given pathway element from pathwayElements list of the citation.
-	 * 
-	 * @param pathwayElement the given pathwayElement to remove.
-	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.remove(pathwayElement);
 	}
 
 	/**

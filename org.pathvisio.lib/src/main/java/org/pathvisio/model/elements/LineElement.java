@@ -176,15 +176,22 @@ public abstract class LineElement extends ElementInfo {
 	}
 
 	/**
-	 * Sets the parent group of the pathway element. The pathway element is added to
-	 * the pathwayElements list of the parent group.
+	 * Verifies if given parent group is new and valid. Sets the parent group of the
+	 * pathway element. Adds this pathway element to the the pathwayElements list of
+	 * the new parent group. If there is an old parent group, this pathway element
+	 * is removed from its pathwayElements list.
 	 * 
-	 * @param groupRef the parent group of the pathway element.
+	 * @param groupRefNew the new parent group to set.
 	 */
-	public void setGroupRef(Group groupRef) {
-		if (groupRef.getPathwayElements() != null && groupRef != null) {
-			groupRef.addPathwayElement(this);
-			this.groupRef = groupRef;
+	public void setGroupRef(Group groupRefNew) {
+		if (this.getPathwayModel() != null) {
+			if (groupRefNew != null && !groupRef.equals(groupRefNew)) {
+				if (groupRef != null) {
+					groupRef.removePathwayElement(this);
+				}
+				groupRefNew.addPathwayElement(this);
+				this.groupRef = groupRefNew;
+			}
 		}
 	}
 }

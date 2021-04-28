@@ -34,9 +34,9 @@ import org.pathvisio.model.type.GroupType;
  */
 public class Group extends ShapedElement {
 
-	private GroupType type = GroupType.GROUP;
 	/* list of pathway elements which belong to the group. */
 	private List<PathwayElement> pathwayElements; // 0 to unbounded TODO should have at least one?
+	private GroupType type = GroupType.GROUP;
 	private String textLabel; // optional
 	private Xref xref; // optional
 
@@ -58,8 +58,8 @@ public class Group extends ShapedElement {
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, String textLabel, Xref xref) {
 		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
+		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.type = type;
-		this.pathwayElements = new ArrayList<PathwayElement>(); 
 		this.textLabel = textLabel;
 		this.xref = xref;
 	}
@@ -127,23 +127,30 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Gets the text of of the group.
+	 * Returns the list of pathway element members of the group.
 	 * 
-	 * @return textLabel the text of of the group.
-	 * 
+	 * @return pathwayElements the list of pathway elements belonging to the group.
 	 */
-	public String getTextLabel() {
-		return textLabel;
+	public List<PathwayElement> getPathwayElements() {
+		return pathwayElements;
 	}
 
 	/**
-	 * Sets the text of of the group.
+	 * Adds the given pathway element to pathwayElements list of the group.
 	 * 
-	 * @param textLabel the text of of the group.
-	 * 
+	 * @param pathwayElement the given pathwayElement to add.
 	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.add(pathwayElement);
+	}
+
+	/**
+	 * Removes the given pathway element from pathwayElements list of the group.
+	 * 
+	 * @param pathwayElement the given pathwayElement to remove.
+	 */
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		pathwayElements.remove(pathwayElement);
 	}
 
 	/**
@@ -170,30 +177,23 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Returns the list of pathway element members of the group.
+	 * Gets the text of of the group.
 	 * 
-	 * @return pathwayElements the list of pathway elements belonging to the group.
+	 * @return textLabel the text of of the group.
+	 * 
 	 */
-	public List<PathwayElement> getPathwayElements() {
-		return pathwayElements;
+	public String getTextLabel() {
+		return textLabel;
 	}
 
 	/**
-	 * Adds the given pathway element to pathwayElements list of the group.
+	 * Sets the text of of the group.
 	 * 
-	 * @param pathwayElement the given pathwayElement to add.
-	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.add(pathwayElement);
-	}
-
-	/**
-	 * Removes the given pathway element from pathwayElements list of the group.
+	 * @param textLabel the text of of the group.
 	 * 
-	 * @param pathwayElement the given pathwayElement to remove.
 	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.remove(pathwayElement);
+	public void setTextLabel(String textLabel) {
+		this.textLabel = textLabel;
 	}
 
 	/**

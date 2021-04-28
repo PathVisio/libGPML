@@ -22,26 +22,6 @@
     <Graphics CenterX="420.5" CenterY="176.0092973904516" Width="127.0" Height="27.5" ZOrder="32768" FontSize="12" Valign="Middle" Color="0000ff" />
     <Xref Database="ChEBI" ID="CHEBI:30887" />
   </DataNode>
-  <State GraphRef="dbf54" TextLabel="P" GraphId="b0e40">
-    <Graphics RelX="1.0" RelY="-1.0" Width="15.0" Height="15.0" ShapeType="Oval" />
-    <Xref Database="" ID="" />
-  </State>
-  <Interaction GraphId="id3a44746">
-    <Graphics ZOrder="12288" LineThickness="1.0">
-      <Point X="311.5540089086858" Y="131.93374164810686" GraphRef="bcdd3" RelX="0.0" RelY="1.0" />
-      <Point X="311.5" Y="176.0092973904516" GraphRef="e447e" RelX="0.0" RelY="0.0" ArrowHead="mim-catalysis" />
-    </Graphics>
-    <Xref Database="" ID="" />
-  </Interaction>
-  <Interaction GraphId="idd3dddaa3">
-    <BiopaxRef>cbc</BiopaxRef>
-    <Graphics ZOrder="12288" LineThickness="1.0">
-      <Point X="266.0" Y="176.0092973904516" GraphRef="f5660" RelX="1.0" RelY="0.0" />
-      <Point X="357.0" Y="176.0092973904516" GraphRef="fd2c5" RelX="-1.0" RelY="0.0" ArrowHead="mim-conversion" />
-      <Anchor Position="0.5" Shape="None" GraphId="e447e" />
-    </Graphics>
-    <Xref Database="" ID="" />
-  </Interaction>
   <Label TextLabel="Test" GraphId="a307c">
     <Graphics CenterX="307.49122807017545" CenterY="223.5087719298246" Width="90.0" Height="25.0" ZOrder="28672" FillColor="ffffff" FontWeight="Bold" FontStyle="Italic" FontSize="14" Valign="Middle" Color="ff0000" />
   </Label>

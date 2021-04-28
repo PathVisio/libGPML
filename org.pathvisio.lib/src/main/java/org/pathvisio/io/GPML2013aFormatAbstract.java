@@ -36,6 +36,7 @@ import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;
 import org.xml.sax.SAXException;
 
@@ -71,6 +72,49 @@ public abstract class GPML2013aFormatAbstract {
 	/* static variables for dynamic properties (named Attribute in GPML2013a) */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
+	public final static String OLD_ANCHOR_SHAPE = "ReceptorRound"; //TODO
+			
+			
+	/**
+	 * Deprecated map used to track deprecated shape types for conversion and exclusion.
+	 */
+	public static final Map<ShapeType, ShapeType> DEPRECATED_MAP = new HashMap<ShapeType, ShapeType>();
+//	private static final List<ShapeType> VISIBLE_VALUES = new ArrayList<ShapeType>();
+	static {
+		DEPRECATED_MAP.put(ShapeType.CELL, ShapeType.ROUNDED_RECTANGLE); //TODO 
+		DEPRECATED_MAP.put(ShapeType.ORGANELLE, ShapeType.ROUNDED_RECTANGLE); //TODO 
+		DEPRECATED_MAP.put(ShapeType.MEMBRANE, ShapeType.ROUNDED_RECTANGLE);
+		DEPRECATED_MAP.put(ShapeType.CELLA, ShapeType.OVAL);
+		DEPRECATED_MAP.put(ShapeType.NUCLEUS, ShapeType.OVAL); //TODO 
+		DEPRECATED_MAP.put(ShapeType.ORGANA, ShapeType.OVAL);
+		DEPRECATED_MAP.put(ShapeType.ORGANB, ShapeType.OVAL);
+		DEPRECATED_MAP.put(ShapeType.ORGANC, ShapeType.OVAL);
+		DEPRECATED_MAP.put(ShapeType.VESICLE, ShapeType.OVAL); //TODO 
+		DEPRECATED_MAP.put(ShapeType.PROTEINB, ShapeType.HEXAGON);
+		DEPRECATED_MAP.put(ShapeType.RIBOSOME, ShapeType.HEXAGON);
+	}
+	
+	/**
+	 * Cellular Component map used for 
+	 * Temporary Dynamic Property for cellular component (for GPML2013a and earlier) 
+	 */
+	public static final Map<ShapeType, ShapeType> CELL_CMPNT_MAP = new HashMap<ShapeType, ShapeType>();
+	static {
+		CELL_CMPNT_MAP.put(ShapeType.CELL, ShapeType.ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(ShapeType.NUCLEUS, ShapeType.OVAL);
+		CELL_CMPNT_MAP.put(ShapeType.ENDOPLASMIC_RETICULUM, ShapeType.ENDOPLASMIC_RETICULUM);
+		CELL_CMPNT_MAP.put(ShapeType.GOLGI_APPARATUS, ShapeType.GOLGI_APPARATUS);
+		CELL_CMPNT_MAP.put(ShapeType.MITOCHONDRIA, ShapeType.MITOCHONDRIA);
+		CELL_CMPNT_MAP.put(ShapeType.SARCOPLASMIC_RETICULUM, ShapeType.SARCOPLASMIC_RETICULUM);
+		CELL_CMPNT_MAP.put(ShapeType.ORGANELLE, ShapeType.ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(ShapeType.LYSOSOME, ShapeType.OVAL);
+		CELL_CMPNT_MAP.put(ShapeType.NUCLEOLUS, ShapeType.OVAL);
+		CELL_CMPNT_MAP.put(ShapeType.VACUOLE, ShapeType.OVAL);
+		CELL_CMPNT_MAP.put(ShapeType.VESICLE, ShapeType.OVAL);	
+		CELL_CMPNT_MAP.put(ShapeType.CYTOSOL, ShapeType.ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(ShapeType.EXTRACELLULAR, ShapeType.ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(ShapeType.MEMBRANE, ShapeType.ROUNDED_RECTANGLE);
+	}	
 
 //	protected abstract Map<String, AttributeInfo> getAttributeInfo();
 

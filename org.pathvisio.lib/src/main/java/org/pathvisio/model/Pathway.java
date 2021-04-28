@@ -536,6 +536,7 @@ public class Pathway {
 	 * @param annotationRef the annotationRef to be removed.
 	 */
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		
 		annotationRefs.remove(annotationRef);
 	}
 

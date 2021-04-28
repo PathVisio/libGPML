@@ -207,6 +207,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * @param citationRef the citationRef to be added.
 	 */
 	public void addCitationRef(Citation citationRef) {
+		citationRef.addPathwayElement(this);
 		citationRefs.add(citationRef);
 	}
 
@@ -216,6 +217,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * @param citationRef the citationRef to be removed.
 	 */
 	public void removeCitationRef(Citation citationRef) {
+		citationRef.removePathwayElement(this);
 		citationRefs.remove(citationRef);
 	}
 
@@ -235,6 +237,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
 	public void addEvidenceRef(Evidence evidenceRef) {
+		evidenceRef.addPathwayElement(this);
 		evidenceRefs.add(evidenceRef);
 	}
 
@@ -244,6 +247,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */
 	public void removeEvidenceRef(Evidence evidenceRef) {
+		evidenceRef.removePathwayElement(this);
 		evidenceRefs.remove(evidenceRef);
 	}
 }
