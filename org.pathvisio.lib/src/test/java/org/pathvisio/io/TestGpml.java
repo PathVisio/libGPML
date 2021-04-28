@@ -30,7 +30,7 @@ public class TestGpml extends TestCase {
 
 	public static void testReadWrite() throws IOException, ConverterException {
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("double-edge.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("sampleGPML2013a/fill-and-stroke.gpml.xml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("sampleGPML2013a/WP1818_73650.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue (file.exists());

@@ -165,7 +165,7 @@
   <Interaction GroupRef="a7eff">
     <Graphics ConnectorType="Segmented" LineThickness="1.0" ZOrder="12288">
       <Point GraphRef="f4785" RelX="0.5" RelY="1.0" X="90.5946214093097" Y="130.03856793686316" />
-      <Point X="-85.87310263683058" Y="232.6716646538107" />
+      <Point X="85.87310263683058" Y="232.6716646538107" />
       <Point GraphRef="fce8d" RelX="-0.5" RelY="-1.0" X="168.61684172465343" Y="118.07452925829" />
     </Graphics>
     <Xref Database="" ID="" />

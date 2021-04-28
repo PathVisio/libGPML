@@ -78,12 +78,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readDataNodes(pathwayModel, root);
 		/* states read after data nodes */
 		readStates(pathwayModel, root);
-		readInteractions(pathwayModel, root);
-		readGraphicalLines(pathwayModel, root);
+		List<String> lineList = new ArrayList<String>();
+		lineList = readInteractions(pathwayModel, root, lineList);
+		lineList = readGraphicalLines(pathwayModel, root, lineList);
 		/* reads points last */
-		readPoints(pathwayModel, root);
+		readPoints(pathwayModel, root, lineList);
 		/* checks groups have at least two pathway elements */
-		checkGroupSize(pathwayModel.getGroups());
+//		checkGroupSize(pathwayModel.getGroups());
 
 		Logger.log.trace("End reading gpml");
 
@@ -636,11 +637,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected List<String> readInteractions(PathwayModel pathwayModel, Element root, List<String> lineList)
+			throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
 			String elementId = getAttr("Interaction", "GraphId", ia);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
+			lineList.add(elementId);
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			Xref xref = readXref(ia);
@@ -650,6 +653,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (interaction != null)
 				pathwayModel.addInteraction(interaction);
 		}
+		return lineList;
 	}
 
 	/**
@@ -660,11 +664,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected List<String> readGraphicalLines(PathwayModel pathwayModel, Element root, List<String> lineList)
+			throws ConverterException {
 		for (Element gln : root.getChildren("GraphicalLine", root.getNamespace())) {
 			String elementId = getAttr("GraphicalLine", "GraphId", gln);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
+			lineList.add(elementId);
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
@@ -672,6 +678,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (graphicalLine != null)
 				pathwayModel.addGraphicalLine(graphicalLine);
 		}
+		return lineList;
 	}
 
 	/**
@@ -725,17 +732,23 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readPoints(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readPoints(PathwayModel pathwayModel, Element root, List<String> lineList)
+			throws ConverterException {
+
 		List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
+		int lineListIndex = 0;
 		for (int i = 0; i < lnElementName.size(); i++) {
 			for (Element ln : root.getChildren(lnElementName.get(i), root.getNamespace())) {
 				String base = ln.getName();
 				String lineElementId = getAttr(lnElementName.get(i), "GraphId", ln);
-				System.out.println(lineElementId);
-
 				LineElement lineElement = (LineElement) pathwayModel.getPathwayElement(lineElementId);
-
-				System.out.println(lineElement);
+				/* some lines do not have a graphId, extrapolate line identity by read order */
+				if (lineElementId == null && lineElement == null) {
+					lineElement = (LineElement) pathwayModel.getPathwayElement(lineList.get(lineListIndex));
+				}
+				System.out.println(lineElementId);
+				System.out.println(lineList.get(lineListIndex));
+				System.out.println(lineElement.getElementId());
 
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
@@ -751,7 +764,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						lineElement.addPoint(point);
 					/* set optional parameters including elementRef, named GraphRef in GPML 2013a */
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
-					System.out.println("READ " + elementRefStr);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
 						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
 						if (elementRef != null) {
@@ -764,6 +776,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				if (lineElement.getPoints().size() < 2) // checks line has at least 2 points
 					throw new ConverterException("Line " + lineElement.getElementId() + " has "
 							+ lineElement.getPoints().size() + " point(s),  must have at least 2.");
+				lineListIndex += 1;
 			}
 		}
 	}

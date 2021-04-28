@@ -215,7 +215,7 @@
   <Interaction GraphId="b7a13">
     <Graphics ZOrder="12288" LineThickness="1.0">
       <Point X="666.0639019723551" Y="351.7224080267558" GraphRef="be79c" RelX="0.0" RelY="1.0" />
-      <Point X="665.9204152249134" Y="548.7301038062283" GraphRef="bf781" RelX="-0.4375" RelY="-1.0357142857142858" ArrowHead="Arrow" />
+      <Point X="665.9204152249134" Y="548.7301038062283" GraphRef="bf781" RelX="-0.4375" RelY="-1.0" ArrowHead="Arrow" />
     </Graphics>
     <Xref Database="" ID="" />
   </Interaction>
@@ -284,7 +284,7 @@
   </Interaction>
   <Interaction GraphId="ba2e2">
     <Graphics ZOrder="12288" LineThickness="1.0">
-      <Point X="664.9204152249134" Y="606.7301038062283" GraphRef="bf781" RelX="-0.4583333333333333" RelY="1.0357142857142858" />
+      <Point X="664.9204152249134" Y="606.7301038062283" GraphRef="bf781" RelX="-0.4583333333333333" RelY="1.0" />
       <Point X="590.0" Y="673.0" GraphRef="a0083" RelX="0.9375" RelY="-0.8571428571428571" ArrowHead="Arrow" />
     </Graphics>
     <Xref Database="" ID="" />
