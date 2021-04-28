@@ -551,8 +551,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 
-	
-
 	/**
 	 * TODO should absolute x and y be calculated??? Reads state {@link State}
 	 * information for pathway model from root element.
@@ -663,8 +661,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
-		for (Element gln : root.getChildren("GraphicaLine", root.getNamespace())) {
-			String elementId = getAttr("GraphicaLine", "GraphId", gln);
+		for (Element gln : root.getChildren("GraphicalLine", root.getNamespace())) {
+			String elementId = getAttr("GraphicalLine", "GraphId", gln);
 			if (elementId == null)
 				elementId = pathwayModel.getUniqueElementId();
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
@@ -733,7 +731,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			for (Element ln : root.getChildren(lnElementName.get(i), root.getNamespace())) {
 				String base = ln.getName();
 				String lineElementId = getAttr(lnElementName.get(i), "GraphId", ln);
+				System.out.println(lineElementId);
+
 				LineElement lineElement = (LineElement) pathwayModel.getPathwayElement(lineElementId);
+
+				System.out.println(lineElement);
+
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
 					String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
@@ -1039,7 +1042,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 		}
 	}
-	
+
 	/**
 	 * Reads DataNode elementRef from a GPML2013a which was converted from a
 	 * GPML2021 **** special case

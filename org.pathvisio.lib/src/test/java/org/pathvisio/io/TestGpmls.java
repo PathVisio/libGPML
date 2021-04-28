@@ -18,30 +18,43 @@ package org.pathvisio.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import org.pathvisio.model.*;
 
-
 import junit.framework.TestCase;
 
-public class TestGpml extends TestCase {
+public class TestGpmls extends TestCase {
 
 //	private static final File PATHVISIO_BASEDIR = new File("../..");
 
 	public static void testReadWrite() throws IOException, ConverterException {
-//		URL url = Thread.currentThread().getContextClassLoader().getResource("double-edge.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("sampleGPML2013a/fill-and-stroke.gpml.xml");
 
-		File file = new File(url.getPath());
-		assertTrue (file.exists());
+		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 
-		PathwayModel pathwayModel = new PathwayModel();
-		pathwayModel.readFromXml(file, true);
-		
-//		
-		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
-		System.out.println(tmp);
+//		File folder = new File(System.getProperty("sampleGPML2013a")+"/src/test/resources/");
+		File[] listOfFiles = folderGPML2013a.listFiles();
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+			File file = listOfFiles[i];
+			if (file.isFile()) {
+				System.out.println("File: " + file.getName());
+//				URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
+//				System.out.println(url.getPath());
+				assertTrue(file.exists());
+				PathwayModel pathwayModel = new PathwayModel();
+				pathwayModel.readFromXml(file, true);
+
+			} else if (listOfFiles[i].isDirectory()) {
+				System.out.println("Directory " + listOfFiles[i].getName());
+			}
+		}
+
+////		
+//		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
+////		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+//		System.out.println(tmp);
+
 	}
 }

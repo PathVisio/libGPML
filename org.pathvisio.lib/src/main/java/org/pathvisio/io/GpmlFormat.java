@@ -182,7 +182,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 
-		String schemaFile = CURRENT.getSchemaFile();
+		String schemaFile = PREVIOUS.getSchemaFile();
 		URL url = Thread.currentThread().getContextClassLoader().getResource(schemaFile);
 		File xsdFile = new File(url.getPath());
 

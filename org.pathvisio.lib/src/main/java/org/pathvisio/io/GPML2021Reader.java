@@ -623,9 +623,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element glns = root.getChild("GraphicaLines", root.getNamespace());
+		Element glns = root.getChild("GraphicalLines", root.getNamespace());
 		if (glns != null) {
-			for (Element gln : glns.getChildren("GraphicaLine", glns.getNamespace())) {
+			for (Element gln : glns.getChildren("GraphicalLine", glns.getNamespace())) {
 				String elementId = gln.getAttributeValue("elementId");
 				Element gfx = gln.getChild("Graphics", gln.getNamespace());
 				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
