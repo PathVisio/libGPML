@@ -68,7 +68,6 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
 	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
-	public final static String OPT_BIOPAXREF = "optional_attribute_biopaxRef_gpml2013a";
 	/* static variables for dynamic properties (named Attribute in GPML2013a) */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";

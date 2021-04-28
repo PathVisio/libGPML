@@ -203,7 +203,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Pathway", "License", root, license);
 		/* set comment group */
 		writeComments(pathway.getComments(), root);
-		// TODO PublicationXref?
 		writeBiopaxRefs(pathway.getCitationRefs(), root);
 		writePathwayDynamicProperties(pathway.getDynamicProperties(), root);
 
@@ -212,8 +211,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		root.addContent(gfx);
 		setAttr("Pathway.Graphics", "BoardWidth", gfx, String.valueOf(pathway.getBoardWidth()));
 		setAttr("Pathway.Graphics", "BoardHeight", gfx, String.valueOf(pathway.getBoardHeight()));
-//		result.put("Pathway@BiopaxRef", new AttributeInfo ("xsd:string", null, "optional"));
-
 	}
 
 	/**
@@ -317,7 +314,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", e.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
-			// TODO may need to handle BiopaxRef attribute
 			if (dp != null)
 				e.addContent(dp);
 		}
@@ -654,9 +650,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element id = new Element("ID", GpmlFormat.BIOPAX);
 			Element onto = new Element("Ontology", GpmlFormat.BIOPAX);
 			term.setText(annotation.getValue());
-			id.setText(annotation.getXref().getId());
+			id.setText(annotation.getXref().getDataSource().getFullName() + ":" + annotation.getXref().getId());
 			onto.setText(annotation.getType().getName());
-			ocv.addContent(term); // TODO more concise method?
+			ocv.addContent(term);
 			ocv.addContent(id);
 			ocv.addContent(onto);
 			if (ocv != null) {
@@ -678,18 +674,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				continue;
 			Element pubxf = new Element("PublicationXref", GpmlFormat.BIOPAX);
 			pubxf.setAttribute("id", citation.getElementId(), GpmlFormat.RDF);
-			// TODO add empty or drop?
-			String biopaxId = citation.getXref().getId();
-			String biopaxDatabase = citation.getXref().getDataSource().getFullName();
-			String title = citation.getTitle();
-			String source = citation.getSource();
-			String year = citation.getYear();
 			List<String> authors = citation.getAuthors();
-			writePubxfInfo(biopaxId, "ID", pubxf);
-			writePubxfInfo(biopaxDatabase, "DB", pubxf);
-			writePubxfInfo(title, "TITLE", pubxf);
-			writePubxfInfo(source, "SOURCE", pubxf);
-			writePubxfInfo(year, "YEAR", pubxf);
+			writePubxfInfo(citation.getXref().getId(), "ID", pubxf);
+			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf);
+			writePubxfInfo(citation.getTitle(), "TITLE", pubxf);
+			writePubxfInfo(citation.getSource(), "SOURCE", pubxf);
+			writePubxfInfo(citation.getYear(), "YEAR", pubxf);
 			if (authors != null && !authors.isEmpty()) {
 				for (String author : authors)
 					writePubxfInfo(author, "AUTHOR", pubxf);
@@ -713,7 +703,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (propertyValue != null && !propertyValue.equals("")) {
 			Element e = new Element(elementName, GpmlFormat.BIOPAX);
 			e.setText(propertyValue);
-			pubxf.addContent(e);
+			if (e != null)
+				pubxf.addContent(e);
 		}
 	}
 
@@ -797,7 +788,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * NB: writing of dynamic properties (gpml:Attribute) requires special handling
 	 * of DoubleLineProperty and CellularComponentProperty for shaped, state, or
-	 * line pathway elements.
+	 * line pathway elements. {@link #writeLineDynamicProperties()} ,
+	 * {@link #writeShapedOrStateDynamicProperties()}
 	 * 
 	 * @param elementInfo the pathway element.
 	 * @param e           the parent element.
@@ -807,7 +799,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (elementInfo.getClass() != Group.class)
 			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
-		// TODO PublicationXref
 		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
 	}
 
@@ -862,7 +853,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
-			// TODO may need to handle BiopaxRef attribute
 			if (dp != null)
 				ln.addContent(dp);
 		}

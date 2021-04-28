@@ -76,7 +76,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readShapes(pathwayModel, root);
 		readDataNodes(pathwayModel, root);
 		/* states read after data nodes */
-		readStates(pathwayModel, root); 
+		readStates(pathwayModel, root);
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
 		/* reads points last */
@@ -206,11 +206,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String biopaxOntology = ocv.getChild("Ontology", GpmlFormat.BIOPAX).getText();
 			AnnotationType type = AnnotationType.register(biopaxOntology);
 			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-			/*
-			 * saves ID as Xref with biopaxOntology as dataSource TODO is Xref required...?
-			 */
-			String biopaxId = ocv.getChild("ID", GpmlFormat.BIOPAX).getText();
-			Xref xref = readBiopaxXref(biopaxId, biopaxOntology);
+			String biopaxIdDbStr = ocv.getChild("ID", GpmlFormat.BIOPAX).getText(); //e.g PW:0000650 
+			String[] biopaxIdDb = biopaxIdDbStr.split(":");
+			String biopaxDatabase = biopaxIdDb[0]; // e.g. PW
+			String biopaxId = biopaxIdDb[1]; // e.g 0000650
+			Xref xref = readBiopaxXref(biopaxId, biopaxDatabase);
 			if (xref != null)
 				annotation.setXref(xref);
 			if (annotation != null)
@@ -285,9 +285,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads comment group (comment, biopaxref, dynamic property)
-	 * and evidencRef information {@link PathwayModel} for pathway model from root
-	 * element.
+	 * Reads comment group (comment, biopaxref, dynamic property) and evidencRef
+	 * information {@link PathwayModel} for pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -793,34 +792,22 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads comment group (comment, biopaxref, dynamic property)
-	 * and elementRef {@link ElementInfo} information, , for pathway element from
-	 * element.
+	 * Reads comment and biopaxref {@link ElementInfo} information, for pathway
+	 * element from element.
 	 * 
 	 * NB: dynamic properties read by {@link #readLineDynamicProperties()} ,
 	 * {@link #readShapedDynamicProperties()} ,
-	 * {@link #readStateDynamicProperties()}
+	 * {@link #readStateDynamicProperties()}. PublicationXref (element in
+	 * CommentGroup) and BiopaxRef (an attribute) in the GPML2013a schema were never
+	 * implemented.
 	 * 
 	 * @param elementInfo the element info pathway element object.
 	 * @param e           the jdom pathway element element.
 	 * @throws ConverterException
 	 */
 	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
-		/*
-		 * Biopax attribute for DataNode, State, Interaction, GraphicalLine, Label,
-		 * Shape, Group TODO MAYBE REMOVE??????
-		 */
-		String biopaxRefStr = e.getAttributeValue("BiopaxRef");
-		if (biopaxRefStr != null) {
-			elementInfo.setDynamicProperty(OPT_BIOPAXREF, biopaxRefStr);
-//			Citation biopaxRef = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRefStr);
-//			if (biopaxRef != null)
-//				elementInfo.addCitationRef(biopaxRef);
-		}
 		readComments(elementInfo, e);
-		// PublicationXref TODO
 		readBiopaxRefs(elementInfo, e);
-		// readDynamicProperties (see above)
 	}
 
 	/**
@@ -845,7 +832,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads BiopaxRef information to {@link ElementInfo#addCitationRef()}
-	 * information for pathway element from element.
+	 * information for pathway element from element. NB: BiopaxRef is also an
+	 * attribute in the GPML2013a schema but was never implemented.
 	 * 
 	 * @param elementInfo the element info pathway element object.
 	 * @param e           the jdom pathway element element.
@@ -1049,5 +1037,3 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 }
-
-
