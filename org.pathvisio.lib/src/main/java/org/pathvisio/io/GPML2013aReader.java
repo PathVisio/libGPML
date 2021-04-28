@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
@@ -347,32 +348,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void readPathwayDynamicProperties(PathwayModel pathwayModel, Element root) throws ConverterException {
-		String pwyXrefId = "";
-		String pwyXrefDb = null;
 		for (Element dp : root.getChildren("Attribute", root.getNamespace())) {
 			String key = getAttr("Attribute", "Key", dp);
 			String value = getAttr("Attribute", "Value", dp);
-			if (key.equals(PATHWAY_XREF_ID)) {
-				pwyXrefId = value;
-			}
-			else if (key.equals(PATHWAY_XREF_DB)) {
-				pwyXrefDb = value;
-			}
-			else if (key.equals(PATHWAY_BACKGROUNDCOLOR)) {
-				pathwayModel.getPathway().setBackgroundColor(ColorUtils.stringToColor(value));
-			} else
-				pathwayModel.getPathway().setDynamicProperty(key, value);
-		}
-		if (pwyXrefDb != null && !pwyXrefDb.equals("")) {
-			if (DataSource.fullNameExists(pwyXrefDb)) {
-				pathwayModel.getPathway().setXref(new Xref(pwyXrefId, DataSource.getExistingByFullName(pwyXrefDb)));
-			} else if (DataSource.systemCodeExists(pwyXrefDb)) {
-				pathwayModel.getPathway().setXref(new Xref(pwyXrefId, DataSource.getByAlias(pwyXrefDb)));
-			} else {
-				DataSource.register(pwyXrefDb, pwyXrefDb);
-				System.out.println("Registered xref datasource: " + pwyXrefDb);
-				pathwayModel.getPathway().setXref(new Xref(pwyXrefId, DataSource.getExistingByFullName(pwyXrefDb))); 
-			}
+			pathwayModel.getPathway().setDynamicProperty(key, value);
 		}
 	}
 
@@ -571,6 +550,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				pathwayModel.addDataNode(dataNode);
 		}
 	}
+
+	
 
 	/**
 	 * TODO should absolute x and y be calculated??? Reads state {@link State}
@@ -1055,6 +1036,47 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (group.getPathwayElements().size() < 2) {
 				throw new ConverterException("Group " + group.getElementId() + " has "
 						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
+			}
+		}
+	}
+	
+	/**
+	 * Reads DataNode elementRef from a GPML2013a which was converted from a
+	 * GPML2021 **** special case
+	 * 
+	 * @param pathwayModel
+	 * @param root
+	 * @throws ConverterException
+	 */
+	protected void readGPML2013a2021(PathwayModel pathwayModel, Element root) throws ConverterException {
+		for (DataNode dataNode : pathwayModel.getDataNodes()) {
+			Map<String, String> dynamicProperties = dataNode.getDynamicProperties();
+			if (dynamicProperties.containsKey(DATANODE_ELEMENTREF)) {
+				String elementRefStr = dynamicProperties.get(DATANODE_ELEMENTREF);
+				PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+				if (elementRef != null) {
+					dynamicProperties.remove(DATANODE_ELEMENTREF);
+					dataNode.setElementRef(elementRef);
+				}
+			}
+		}
+		Pathway pathway = pathwayModel.getPathway();
+		String backgroundColor = pathway.getDynamicProperties().get(PATHWAY_XREF_ID);
+		if (backgroundColor != null) {
+			pathway.setBackgroundColor(ColorUtils.stringToColor(backgroundColor));
+			pathway.getDynamicProperties().remove(PATHWAY_XREF_ID);
+		}
+		String xrefId = pathway.getDynamicProperties().get(PATHWAY_XREF_ID);
+		String xrefDb = pathway.getDynamicProperties().get(PATHWAY_XREF_DB);
+		if (xrefDb != null && !xrefDb.equals("")) {
+			if (DataSource.fullNameExists(xrefDb)) {
+				pathwayModel.getPathway().setXref(new Xref(xrefId, DataSource.getExistingByFullName(xrefDb)));
+			} else if (DataSource.systemCodeExists(xrefDb)) {
+				pathwayModel.getPathway().setXref(new Xref(xrefId, DataSource.getByAlias(xrefDb)));
+			} else {
+				DataSource.register(xrefDb, xrefDb);
+				System.out.println("Registered xref datasource: " + xrefDb);
+				pathwayModel.getPathway().setXref(new Xref(xrefId, DataSource.getExistingByFullName(xrefDb)));
 			}
 		}
 	}

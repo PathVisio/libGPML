@@ -77,7 +77,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			// Send XML code to the outputstream
 			xmlOutput.output(doc, output); // new FileOutputStream(new File("fileName.gpml")
 			// Create a new file and write XML to it
-			System.out.println("Wrote pathway model to gpml file");
+			System.out.println("Wrote pathway model successfully to gpml file");
 		} catch (IOException e) {
 			throw new ConverterException(e);
 		}

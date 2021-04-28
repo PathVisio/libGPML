@@ -185,7 +185,7 @@ public abstract class LineElement extends ElementInfo {
 	 */
 	public void setGroupRef(Group groupRefNew) {
 		if (this.getPathwayModel() != null) {
-			if (groupRefNew != null && !groupRef.equals(groupRefNew)) {
+			if (groupRefNew != null && groupRef != groupRefNew) {
 				if (groupRef != null) {
 					groupRef.removePathwayElement(this);
 				}

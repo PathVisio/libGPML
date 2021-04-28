@@ -165,7 +165,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				}
 			}
 		}
-		System.out.println("Write null");
 		return null;
 	}
 

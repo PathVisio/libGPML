@@ -448,7 +448,7 @@ public abstract class GPML2013aFormatAbstract {
 		ClassLoader cl = PathwayModel.class.getClassLoader();
 		InputStream is = cl.getResourceAsStream(xsdFile);
 
-		System.out.println(xsdFile);
+		System.out.println("Validated with schema: " + xsdFile);
 		if (is != null) {
 			Schema schema;
 			try {

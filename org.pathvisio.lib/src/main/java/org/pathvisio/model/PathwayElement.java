@@ -72,7 +72,6 @@ public abstract class PathwayElement {
 					pathwayModel.addElementId(newElementId, this);
 				}
 				this.elementId = newElementId;
-				System.out.println("Added!OK!");
 			}
 		}
 	}

@@ -29,9 +29,6 @@ public class TestGpml extends TestCase {
 //	private static final File PATHVISIO_BASEDIR = new File("../..");
 
 	public static void testReadWrite() throws IOException, ConverterException {
-		
-		System.out.println("OK until here");
-
 		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2021.xml");
 		
 		File file = new File(url.getPath());

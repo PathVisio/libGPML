@@ -64,13 +64,13 @@ public class GpmlFormat extends AbstractPathwayFormat {
 
 	public PathwayModel doImport(File file) throws ConverterException {
 		PathwayModel pathwayModel = new PathwayModel();
-		readFromXml(pathwayModel, file, true); //TODO validate always true here? 
+		readFromXml(pathwayModel, file, true); // TODO validate always true here?
 //		pathwayModel.clearChangedFlag();
 		return pathwayModel;
 	}
 
 	public void doExport(File file, PathwayModel pathwayModel) throws ConverterException {
-		writeToXml(pathwayModel, file, true); //TODO validate always true here? 
+		writeToXml(pathwayModel, file, true); // TODO validate always true here?
 	}
 
 	public String[] getExtensions() {
@@ -169,7 +169,8 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	}
 
 	public static GpmlFormatReader getReaderForNamespace(Namespace ns) {
-		GpmlFormatReader[] formats = new GpmlFormatReader[] { GPML2021Reader.GPML2021READER, GPML2013aReader.GPML2013aREADER };
+		GpmlFormatReader[] formats = new GpmlFormatReader[] { GPML2021Reader.GPML2021READER,
+				GPML2013aReader.GPML2013aREADER };
 		for (GpmlFormatReader format : formats) {
 			if (ns.equals(format.getGpmlNamespace())) {
 				return format;
@@ -177,28 +178,25 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		}
 		return null;
 	}
-	
 
 	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
-		
-		//TODO fix schema file etc...
 
-		URL url = Thread.currentThread().getContextClassLoader().getResource(CURRENT.getSchemaFile());
+		String schemaFile = CURRENT.getSchemaFile();
+		URL url = Thread.currentThread().getContextClassLoader().getResource(schemaFile);
 		File xsdFile = new File(url.getPath());
 
 		try {
 			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
 
 			SAXBuilder builder = new SAXBuilder();
-			
-			/* if validate by schema*/
-			if (validate)
+
+			/* if validate by schema */
+			if (validate) {
 				builder = new SAXBuilder(schemafactory);
+				System.out.println("Validated with schema: " + schemaFile);
+			}
 			Document doc = builder.build(is);
-
-			System.out.println("file validated");
-
 			Element root = doc.getRootElement();
 
 			Namespace ns = root.getNamespace();
@@ -213,6 +211,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 				format.validateDocument(doc);
 			Logger.log.trace("Copy map elements");
 			format.readFromRoot(pathwayModel, root);
+			System.out.println("Read pathway model successfully from gpml file");
 		} catch (JDOMException e) {
 			throw new ConverterException(e);
 		} catch (IOException e) {

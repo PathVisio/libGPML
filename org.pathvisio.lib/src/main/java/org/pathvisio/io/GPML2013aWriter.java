@@ -79,7 +79,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			// Send XML code to the outputstream
 			xmlOutput.output(doc, output); // new FileOutputStream(new File("fileName.gpml")
 			// Create a new file and write XML to it
-			System.out.println("Wrote pathway model to gpml file");
+			System.out.println("Wrote pathway model successfully to gpml file");
 		} catch (IOException e) {
 			throw new ConverterException(e);
 		}
@@ -206,10 +206,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		writeBiopaxRefs(pathway.getCitationRefs(), root);
 		writePathwayDynamicProperties(pathway, root);
 		if (!pathwayModel.getEvidences().isEmpty()) {
-			System.out.println(
-					"Warning: Conversion GPML2021 to older GPML2013a format: Pathway evidence and evidenceRef info lost.");
+			System.out.println("Warning: Conversion GPML2021 to older GPML2013a format: Pathway evidence info lost.");
 		}
-
 		/* set graphics */
 		Element gfx = new Element("Graphics", root.getNamespace());
 		root.addContent(gfx);
@@ -312,40 +310,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e                 the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writePathwayDynamicProperties(Pathway pathway, Element e) throws ConverterException {
+	protected void writePathwayDynamicProperties(Pathway pathway, Element root) throws ConverterException {
 		Map<String, String> dynamicProperties = pathway.getDynamicProperties();
 		for (String key : dynamicProperties.keySet()) {
-			Element dp = new Element("Attribute", e.getNamespace());
+			Element dp = new Element("Attribute", root.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
 			if (dp != null)
-				e.addContent(dp);
-		}
-		String backgroundColor = ColorUtils.colorToHex(pathway.getBackgroundColor(), false);
-		if (backgroundColor != null && !backgroundColor.equals("") && !backgroundColor.equals("ffffff")) {
-			Element dp = new Element("Attribute", e.getNamespace());
-			setAttr("Attribute", "Key", dp, PATHWAY_BACKGROUNDCOLOR);
-			setAttr("Attribute", "Value", dp, backgroundColor);
-			if (dp != null)
-				e.addContent(dp);
-		}
-		Xref xref = pathway.getXref();
-		if (xref != null) {
-			String pwyXrefId = xref.getId();
-			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null) {
-				Element dpId = new Element("Attribute", e.getNamespace());
-				Element dpDb = new Element("Attribute", e.getNamespace());
-				String pwyXrefDb = xref.getDataSource().getFullName();
-				setAttr("Attribute", "Key", dpId, PATHWAY_XREF_ID);
-				setAttr("Attribute", "Value", dpId, pwyXrefId == null ? "" : pwyXrefId);
-				setAttr("Attribute", "Key", dpDb, PATHWAY_XREF_DB);
-				setAttr("Attribute", "Value", dpDb, pwyXrefDb == null ? "" : pwyXrefDb);
-				if (dpId != null && dpDb != null) {
-					e.addContent(dpId);
-					e.addContent(dpDb);
-				}
-			}
+				root.addContent(dp);
 		}
 	}
 
@@ -407,18 +379,55 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeDataNodes(List<DataNode> dataNodes, Element root) throws ConverterException {
-		if (!dataNodes.isEmpty()) {
-			for (DataNode dataNode : dataNodes) {
-				if (dataNode == null)
-					continue;
-				Element dn = new Element("DataNode", root.getNamespace());
-				setAttr("DataNode", "TextLabel", dn, dataNode.getTextLabel());
-				writeShapedElement(dataNode, dn);
-				setAttr("DataNode", "Type", dn, dataNode.getType().getName());
-				writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
-				writeXref(dataNode.getXref(), dn, true);
-				if (dn != null)
-					root.addContent(dn);
+		for (DataNode dataNode : dataNodes) {
+			if (dataNode == null)
+				continue;
+			Element dn = new Element("DataNode", root.getNamespace());
+			setAttr("DataNode", "TextLabel", dn, dataNode.getTextLabel());
+			writeShapedElement(dataNode, dn);
+			setAttr("DataNode", "Type", dn, dataNode.getType().getName());
+			writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
+			writeXref(dataNode.getXref(), dn, true);
+			PathwayElement elementRef = dataNode.getElementRef();
+			if (elementRef != null) {
+				String elementRefStr = elementRef.getElementId();
+				Element dp = new Element("Attribute", dn.getNamespace());
+				setAttr("Attribute", "Key", dp, DATANODE_ELEMENTREF);
+				setAttr("Attribute", "Value", dp, elementRefStr);
+				if (dp != null)
+					dn.addContent(dp);
+			}
+			if (dn != null)
+				root.addContent(dn);
+		}
+	}
+
+	protected void writeGPML2013a2021(PathwayModel pathwayModel, Element e) throws ConverterException {
+		Pathway pathway = pathwayModel.getPathway();
+		String backgroundColor = ColorUtils.colorToHex(pathway.getBackgroundColor(), false);
+		if (backgroundColor != null && !backgroundColor.equals("") && !backgroundColor.equals("ffffff")) {
+			Element dp = new Element("Attribute", e.getNamespace());
+			setAttr("Attribute", "Key", dp, PATHWAY_BACKGROUNDCOLOR);
+			setAttr("Attribute", "Value", dp, backgroundColor);
+			if (dp != null)
+				e.addContent(dp);
+		}
+		Xref xref = pathway.getXref();
+		if (xref != null) {
+			String pwyXrefId = xref.getId();
+			DataSource dataSrc = xref.getDataSource();
+			if (dataSrc != null) {
+				Element dpId = new Element("Attribute", e.getNamespace());
+				Element dpDb = new Element("Attribute", e.getNamespace());
+				String pwyXrefDb = xref.getDataSource().getFullName();
+				setAttr("Attribute", "Key", dpId, PATHWAY_XREF_ID);
+				setAttr("Attribute", "Value", dpId, pwyXrefId == null ? "" : pwyXrefId);
+				setAttr("Attribute", "Key", dpDb, PATHWAY_XREF_DB);
+				setAttr("Attribute", "Value", dpDb, pwyXrefDb == null ? "" : pwyXrefDb);
+				if (dpId != null && dpDb != null) {
+					e.addContent(dpId);
+					e.addContent(dpDb);
+				}
 			}
 		}
 	}
@@ -627,7 +636,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes group {@link Group} information.
+	 * Writes group {@link Group} information. In GPML2013a, group has default font
+	 * properties and shape style properties which are not written to the gpml.
 	 * 
 	 * @param groups the list of groups.
 	 * @param root   the root element.
@@ -689,8 +699,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				bp.addContent(ocv);
 			}
 			if (annotation.getUrl() != null) {
-				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Annotation " + annotation.getElementId()
-						+ " url info lost.");
+				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Annotation "
+						+ annotation.getElementId() + " url info lost.");
 			}
 		}
 	}
@@ -721,8 +731,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (pubxf != null)
 				bp.addContent(pubxf);
 			if (citation.getUrl() != null) {
-				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Citation " + citation.getElementId()
-						+ " url info lost.");
+				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Citation "
+						+ citation.getElementId() + " url info lost.");
 			}
 		}
 	}
@@ -782,17 +792,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @return true if elementRef exists and is successfully written.
 	 */
 	protected boolean writePointElementRef(PathwayElement elementRef, Element pt) {
-		System.out.println("WRITE " + elementRef);
 		if (elementRef != null && elementRef.getClass() == Group.class) {
 			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);
-			System.out.println(elementRefStr);
 			if (elementRefStr != null && !elementRefStr.equals(""))
 				pt.setAttribute("GraphRef", elementRefStr);
 			return true;
 		}
 		if (elementRef != null) {
 			String elementRefStr = elementRef.getElementId();
-			System.out.println(elementRefStr);
 			if (elementRefStr != null && !elementRefStr.equals(""))
 				pt.setAttribute("GraphRef", elementRefStr);
 			return true;
@@ -838,6 +845,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
 		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
+		if (!elementInfo.getAnnotationRefs().isEmpty()) {
+			System.out.println("Warning: Conversion GPML2021 to older GPML2013a format: AnnotationRef info lost.");
+		}
+		if (!elementInfo.getEvidenceRefs().isEmpty()) {
+			System.out.println("Warning: Conversion GPML2021 to older GPML2013a format: EvidenceRef info lost.");
+		}
 	}
 
 	/**
@@ -857,7 +870,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				se.addContent(dp);
 		}
 		LineStyleType borderStyle = shapeProp.getBorderStyle();
-		System.out.println("BORDERSTYLETYLE" + borderStyle);
 		if (borderStyle.getName().equalsIgnoreCase("Double")) {
 			/* double lineStyle is stored in dynamic property in GPML2013a */
 			Element dp = new Element("Attribute", se.getNamespace());
@@ -895,7 +907,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				ln.addContent(dp);
 		}
 		LineStyleType lineStyle = lineProp.getLineStyle();
-		System.out.println("LINESTYLE" + lineStyle);
 		if (lineStyle.getName().equalsIgnoreCase("Double")) {
 			/* double lineStyle is stored in dynamic property in GPML2013a */
 			Element dp = new Element("Attribute", ln.getNamespace());
