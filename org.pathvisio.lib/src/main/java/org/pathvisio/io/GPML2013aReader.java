@@ -238,17 +238,23 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Xref xref = readBiopaxXref(biopaxId, biopaxDatabase);
 			Citation citation = new Citation(elementId, pathwayModel, xref);
 			/* sets optional properties */
-			String title = pubxf.getChild("TITLE", GpmlFormat.BIOPAX).getText();
-			String source = pubxf.getChild("SOURCE", GpmlFormat.BIOPAX).getText();
-			String year = pubxf.getChild("YEAR", GpmlFormat.BIOPAX).getText();
-			if (title != null && !title.equals("")) {
-				citation.setTitle(title);
+			Element tle = pubxf.getChild("DB", GpmlFormat.BIOPAX);
+			Element src = pubxf.getChild("SOURCE", GpmlFormat.BIOPAX);
+			Element yr = pubxf.getChild("YEAR", GpmlFormat.BIOPAX);
+			if (yr != null) {
+				String title = tle.getText();
+				if (title != null && !title.equals(""))
+					citation.setTitle(title);
 			}
-			if (source != null && !source.equals("")) {
-				citation.setSource(source);
+			if (src != null) {
+				String source = src.getText();
+				if (source != null && !source.equals(""))
+					citation.setSource(source);
 			}
-			if (year != null && !year.equals("")) {
-				citation.setYear(year);
+			if (yr != null) {
+				String year = yr.getText();
+				if (year != null && !year.equals(""))
+					citation.setYear(year);
 			}
 			List<String> authors = new ArrayList<String>();
 			for (Element au : pubxf.getChildren("AUTHORS", GpmlFormat.BIOPAX)) {
@@ -748,7 +754,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				}
 				System.out.println(lineElementId);
 				System.out.println(lineList.get(lineListIndex));
-				System.out.println(lineElement.getElementId());
 
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {

@@ -35,7 +35,7 @@ public class TestGpmls extends TestCase {
 //		File folder = new File(System.getProperty("sampleGPML2013a")+"/src/test/resources/");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
-		for (int i = 0; i < listOfFiles.length; i++) {
+		for (int i = 80; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File: " + file.getName());
