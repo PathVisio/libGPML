@@ -536,15 +536,18 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			String textLabel = getAttr("DataNode", "TextLabel", dn);
 			DataNodeType type = DataNodeType.register(getAttr("DataNode", "Type", dn));
-			Xref xref = readXref(dn);
 			DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
-					textLabel, type, xref);
+					textLabel, type);
 			/* reads comment group, evidenceRefs */
 			readShapedElement(dataNode, dn);
 			/* sets optional properties */
 			String groupRef = getAttr("DataNode", "GroupRef", dn);
+			Xref xref = readXref(dn);
 			if (groupRef != null && !groupRef.equals(""))
 				dataNode.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+			if (xref != null)
+				dataNode.setXref(xref);
+			/* add dataNode to pathwayModel */
 			if (dataNode != null)
 				pathwayModel.addDataNode(dataNode);
 		}
@@ -644,10 +647,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			lineList.add(elementId);
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
-			Xref xref = readXref(ia);
-			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
+			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
 			/* reads comment group, evidenceRefs */
 			readLineElement(interaction, ia);
+			/* set optional properties */
+			Xref xref = readXref(ia);
+			if (xref != null)
+				interaction.setXref(xref);
+			/* add interaction to pathwayModel */
 			if (interaction != null)
 				pathwayModel.addInteraction(interaction);
 		}

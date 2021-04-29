@@ -534,17 +534,20 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				String textLabel = dn.getAttributeValue("textLabel");
 				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type","Unknown")); //TODO default?
-				Xref xref = readXref(dn);
 				DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty,
-						shapeStyleProperty, textLabel, type, xref);
+						shapeStyleProperty, textLabel, type);
 				/* reads comment group, evidenceRefs */
 				readElementInfo(dataNode, dn);
 				/* reads states */
 				readStates(dataNode, dn);
 				/* sets optional properties */
 				String groupRef = dn.getAttributeValue("groupRef");
+				Xref xref = readXref(dn);
 				if (groupRef != null && !groupRef.equals(""))
 					dataNode.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+				if (xref != null)
+					dataNode.setXref(xref);
+				/* add dataNode to pathwayModel */
 				if (dataNode != null)
 					pathwayModel.addDataNode(dataNode);
 			}
@@ -603,10 +606,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String elementId = ia.getAttributeValue("elementId");
 				Element gfx = ia.getChild("Graphics", ia.getNamespace());
 				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
-				Xref xref = readXref(ia);
-				Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty, xref);
+				Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
 				/* reads comment group, evidenceRefs */
 				readLineElement(interaction, ia);
+				/* set optional properties */
+				Xref xref = readXref(ia);
+				if (xref != null)
+					interaction.setXref(xref);
+				/* add interaction to pathwayModel */
 				if (interaction != null)
 					pathwayModel.addInteraction(interaction);
 			}
@@ -630,6 +637,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 				GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
 				readLineElement(graphicalLine, gln);
+				/* add graphicalLine to pathwayModel */
 				if (graphicalLine != null)
 					pathwayModel.addGraphicalLine(graphicalLine);
 			}
@@ -674,7 +682,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
 					Double.parseDouble(pt.getAttributeValue("y")));
 			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
-			if (point != null) // set elementRef and optional properties later
+			/* add point to lineElement (elementRef, relX, and relY read later) */
+			if (point != null) 
 				lineElement.addPoint(point);
 		}
 	}
