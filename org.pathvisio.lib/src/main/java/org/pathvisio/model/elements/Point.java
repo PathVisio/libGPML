@@ -29,8 +29,8 @@ import org.pathvisio.model.type.ArrowHeadType;
  */
 public class Point extends PathwayElement {
 
-	private LineElement lineElement; // parent line element
-	private ArrowHeadType arrowHead; // line by default
+	private LineElement lineElement; 
+	private ArrowHeadType arrowHead; 
 	private Coordinate xy;
 	private PathwayElement elementRef; // optional, the pathway element to which the point refers.
 	private double relX; // optional
