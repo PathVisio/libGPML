@@ -32,6 +32,7 @@ public class AnchorType {
 
 	public static final AnchorType NONE = new AnchorType("None");
 	public static final AnchorType SQUARE = new AnchorType("Square");
+	public static final AnchorType CIRCLE = new AnchorType("Circle");
 
 	private String name;
 
