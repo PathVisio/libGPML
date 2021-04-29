@@ -699,10 +699,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element an : wyps.getChildren("Anchor", wyps.getNamespace())) {
 			String elementId = an.getAttributeValue("elementId");
 			double position = Double.parseDouble(an.getAttributeValue("position"));
-			Coordinate xy = new Coordinate(Double.parseDouble(an.getAttributeValue("x")), // TODO ANCHOR calculated...
-					Double.parseDouble(an.getAttributeValue("y")));
 			AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType","Square")); //TODO Anchor shape 
-			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, xy, shapeType);
+			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
 		}

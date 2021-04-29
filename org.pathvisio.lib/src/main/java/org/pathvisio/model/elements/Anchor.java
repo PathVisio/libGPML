@@ -18,7 +18,6 @@ package org.pathvisio.model.elements;
 
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.type.AnchorType;
 
 /**
@@ -31,22 +30,19 @@ public class Anchor extends PathwayElement {
 
 	private LineElement lineElement; // parent line element
 	private double position;
-	private Coordinate xy;
 	private AnchorType shapeType = AnchorType.NONE;
-
-	// TODO: Method to calculate xy from position!
 
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
-	 * @param elementId the unique pathway element identifier.
-	 * @param position  the proportional distance of an anchor along the line it
-	 *                  belongs to.
-	 * @param x         the x coordinate position of the anchor.
-	 * @param y         the y coordinate position of the anchor.
-	 * @param shapeType the visual representation of an anchor.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param lineElement  the parent line pathway element.
+	 * @param position     the proportional distance of an anchor along the line it
+	 *                     belongs to.
+	 * @param shapeType    the visual representation of an anchor.
 	 */
-	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position, Coordinate xy,
+	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position,
 			AnchorType shapeType) {
 		super(elementId, pathwayModel);
 		this.lineElement = lineElement;
@@ -54,15 +50,8 @@ public class Anchor extends PathwayElement {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
 		this.position = position; // must be valid
-		this.xy = xy;
 		if (shapeType != null)
 			this.shapeType = shapeType;
-	}
-
-	// TODO anchor without xy coordinates
-	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position,
-			AnchorType shapeType) {
-		this(elementId, pathwayModel, lineElement, position, null, shapeType);
 	}
 
 	/**
@@ -104,24 +93,6 @@ public class Anchor extends PathwayElement {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
 		this.position = position;
-	}
-
-	/**
-	 * Gets the x and y coordinate position of the anchor.
-	 * 
-	 * @return coordinate the coordinate position of the anchor.
-	 */
-	public Coordinate getXY() {
-		return xy;
-	}
-
-	/**
-	 * Gets the x and y coordinate position of the anchor.
-	 * 
-	 * @param coordinate the coordinate position of the anchor.
-	 */
-	public void setXY(Coordinate xy) {
-		this.xy = xy;
 	}
 
 	/**

@@ -571,10 +571,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					continue;
 				Element an = new Element("Anchor", wyps.getNamespace());
 				writeElementId(anchor.getElementId(), an);
-				if (anchor.getXY() != null) {
-					an.setAttribute("x", Double.toString(anchor.getXY().getX())); // TODO CALCULATE....
-					an.setAttribute("y", Double.toString(anchor.getXY().getY()));
-				}
 				an.setAttribute("position", Double.toString(anchor.getPosition()));
 				an.setAttribute("shapeType", anchor.getShapeType().getName());
 				if (an != null) {

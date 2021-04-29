@@ -720,7 +720,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (elementId == null)
 				elementId = lineElement.getPathwayModel().getUniqueElementId();
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an));
-//			Coordinate xy = new Coordinate(); // TODO calculate!!
 			AnchorType shapeType = AnchorType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
 			if (anchor != null)
