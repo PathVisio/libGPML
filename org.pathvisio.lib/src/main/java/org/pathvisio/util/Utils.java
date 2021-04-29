@@ -25,11 +25,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.pathvisio.core.model.GraphLink.GraphIdContainer;
-import org.pathvisio.core.model.GraphLink.GraphRefContainer;
-import org.pathvisio.core.model.PathwayElement;
-import org.pathvisio.core.model.MPoint;
-import org.pathvisio.core.model.StaticProperty;
 
 /**
  * Various utility functions
@@ -226,54 +221,6 @@ public class Utils {
 		return str == null || str.length() == 0;
 	}
 
-	/** append a property to the summary */
-	private static void summaryHelper(PathwayElement elt, StringBuilder result,
-			StaticProperty p, String shortHand)
-	{
-		if (!elt.getStaticPropertyKeys().contains(p)) return;
-		result.append(',');
-		result.append(shortHand);
-		result.append('=');
-		result.append(elt.getStaticProperty(p));
-	}
-
-	public static String summary(PathwayElement elt)
-	{
-		if (elt == null) return "null"; // TODO, why is this necessary?
-		StringBuilder result = new StringBuilder ("[" + elt.getObjectType().getTag());
-		summaryHelper(elt, result, StaticProperty.TEXTLABEL, "lbl");
-		summaryHelper(elt, result, StaticProperty.WIDTH, "w");
-		summaryHelper(elt, result, StaticProperty.HEIGHT, "h");
-		summaryHelper(elt, result, StaticProperty.CENTERX, "cx");
-		summaryHelper(elt, result, StaticProperty.CENTERY, "cy");
-		summaryHelper(elt, result, StaticProperty.STARTX, "x1");
-		summaryHelper(elt, result, StaticProperty.STARTY, "y1");
-		summaryHelper(elt, result, StaticProperty.ENDX, "x2");
-		summaryHelper(elt, result, StaticProperty.ENDY, "y2");
-		summaryHelper(elt, result, StaticProperty.GRAPHID, "id");
-		summaryHelper(elt, result, StaticProperty.STARTGRAPHREF, "startref");
-		summaryHelper(elt, result, StaticProperty.ENDGRAPHREF, "endref");
-		summaryHelper(elt, result, StaticProperty.MAPINFONAME, "title");
-		summaryHelper(elt, result, StaticProperty.AUTHOR, "author");
-		result.append("]");
-		return result.toString();
-	}
-
-	/**
-	 * Helper that returns all Lines that point to a given MAnchor or Shape
-	 */
-	public static Set<PathwayElement> getReferringLines(ElementIdContainer elt)
-	{
-		Set<PathwayElement> result = new HashSet<PathwayElement>();
-		for (ElementRefContainer grc : elt.getReferences())
-		{
-			if (grc instanceof MPoint)
-			{
-				result.add (((MPoint)grc).getParent());
-			}
-		}
-		return result;
-	}
 
 	/**
 	 * Join collection into a single string, with a separator between.
