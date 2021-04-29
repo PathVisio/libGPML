@@ -30,19 +30,22 @@ public class DataNodeType {
 
 	private static final Map<String, DataNodeType> nameToDataNodeType = new LinkedHashMap<String, DataNodeType>();
 
-	public static final DataNodeType UNKNOWN = new DataNodeType("Unknown");
+	// Default
+	public static final DataNodeType UNKNOWN = new DataNodeType("Undefined");
+	
+	// Molecules
+	public static final DataNodeType GENEPRODUCT = new DataNodeType("GeneProduct");
+	public static final DataNodeType DNA = new DataNodeType("Dna");
 	public static final DataNodeType RNA = new DataNodeType("Rna");
 	public static final DataNodeType PROTEIN = new DataNodeType("Protein");
 	public static final DataNodeType COMPLEX = new DataNodeType("Complex");
-	public static final DataNodeType GENEPRODUCT = new DataNodeType("GeneProduct");
 	public static final DataNodeType METABOLITE = new DataNodeType("Metabolite");
-	public static final DataNodeType PATHWAY = new DataNodeType("Pathway");
 	
-	// TODO Add?
+	// Concepts
+	public static final DataNodeType PATHWAY = new DataNodeType("Pathway");
 	public static final DataNodeType DISEASE = new DataNodeType("Disease");
 	public static final DataNodeType PHENOTYPE = new DataNodeType("Phenotype");
 	public static final DataNodeType ALIAS = new DataNodeType("Alias");
-	public static final DataNodeType DNA = new DataNodeType("DNA");
 	public static final DataNodeType EVENT = new DataNodeType("Event");
 
 	private String name;
