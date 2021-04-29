@@ -71,7 +71,7 @@ public abstract class GPML2021FormatAbstract {
 	 * Removes group from pathwayModel if empty. Check executed after reading and
 	 * before writing.
 	 * 
-	 * @param pathwayModel the pathway model. .
+	 * @param pathwayModel the pathway model. 
 	 * @throws ConverterException
 	 */
 	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {

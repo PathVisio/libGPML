@@ -45,7 +45,6 @@ import org.pathvisio.model.graphics.Coordinate;
 public class PathwayModel {
 
 	private Pathway pathway; // pathway information
-	private List<Author> authors; // move to Pathway?
 	private Map<String, PathwayElement> elementIdToPathwayElement;
 	private List<Annotation> annotations;
 	private List<Citation> citations;
@@ -65,7 +64,6 @@ public class PathwayModel {
 	 */
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
-		this.authors = new ArrayList<Author>();
 		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
 		this.annotations = new ArrayList<Annotation>();
 		this.citations = new ArrayList<Citation>();
@@ -104,32 +102,6 @@ public class PathwayModel {
 		this.pathway = pathway;
 	}
 
-	/**
-	 * Returns the list of authors for the pathway model.
-	 * 
-	 * @return authors the list of authors.
-	 */
-	public List<Author> getAuthors() {
-		return authors;
-	}
-
-	/**
-	 * Adds the given author to authors list.
-	 * 
-	 * @param author the author to add.
-	 */
-	public void addAuthor(Author author) {
-		authors.add(author);
-	}
-
-	/**
-	 * Removes the given author from authors list.
-	 * 
-	 * @param author the author to remove.
-	 */
-	public void removeAuthor(Author author) {
-		authors.remove(author);
-	}
 
 	/**
 	 * Returns a unique elementId.

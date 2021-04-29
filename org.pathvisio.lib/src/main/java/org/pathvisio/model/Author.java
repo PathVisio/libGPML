@@ -16,34 +16,38 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.bridgedb.DataSource;
+import org.bridgedb.Xref;
+
 /**
  * This class stores information for an Author. An Author must have name and
- * optionally fullName and/or email. Is Pathway.Author in GPML. 
+ * optionally fullName and/or email. Is Pathway.Author in GPML.
  * 
  * Because constructors cannot have the same signature, a builder pattern is
  * implemented for Author. Example of how an Author object can be created:
  * 
- * Author author = new Author.AuthorBuilder("Jan") 
- * 			.setfullName("Jan Doe")
- * 			.setEmail("jdoe@email.com").build();
+ * Author author = new Author.AuthorBuilder("Jan Doe") .setUsername("janD")
+ * .setOrder("1").setXref(new Xref...).build();
  * 
  * @author finterly
  */
 public class Author {
 
 	private String name;
-	private String fullName;
-	private String email;
-
+	private String username;
+	private int order; 
+	private Xref xref; 
+	
 	/**
 	 * This builder class builds an Author object step-by-step.
 	 * 
 	 * @author finterly
 	 */
 	public static class AuthorBuilder {
-		private String name; // required
-		private String fullName; // optional
-		private String email; // optional
+		private String name; //required
+		private String username; // optional
+		private int order; // optional
+		private Xref xref; // optional	
 
 		/**
 		 * Public constructor with required attribute name as parameter.
@@ -55,24 +59,35 @@ public class Author {
 		}
 
 		/**
-		 * Sets fullName and returns this builder object.
+		 * Sets username and returns this builder object.
 		 * 
-		 * @param fullName the full name of this author.
+		 * @param username the username of this author.
 		 * @return the AuthorBuilder object.
 		 */
-		public AuthorBuilder setFullName(String fullName) {
-			this.fullName = fullName;
+		public AuthorBuilder setUsername(String username) {
+			this.username = username;
 			return this;
 		}
 
 		/**
-		 * Sets email and returns this builder object.
+		 * Sets authorship order and returns this builder object.
 		 * 
-		 * @param email the email of this author.
+		 * @param order the authorship order of this author.
 		 * @return the AuthorBuilder object.
 		 */
-		public AuthorBuilder setEmail(String email) {
-			this.email = email;
+		public AuthorBuilder setOrder(int order) {
+			this.order = order;
+			return this;
+		}
+		
+		/**
+		 * Sets xref and returns this builder object.
+		 * 
+		 * @param xref the orcid number of this author.
+		 * @return the AuthorBuilder object.
+		 */
+		public AuthorBuilder setXref(Xref xref) {
+			this.xref = xref;
 			return this;
 		}
 
@@ -95,8 +110,9 @@ public class Author {
 	 */
 	private Author(AuthorBuilder builder) {
 		this.name = builder.name;
-		this.fullName = builder.fullName;
-		this.email = builder.email;
+		this.username = builder.username;
+		this.order = builder.order;
+		this.xref = builder.xref;
 	}
 
 	/**
@@ -118,38 +134,76 @@ public class Author {
 	}
 
 	/**
-	 * Gets the full name of this author.
+	 * Gets the username of this author.
 	 * 
-	 * @return fullName the full name of this author.
+	 * @return username the username of this author.
 	 */
-	public String getFullName() {
-		return fullName;
+	public String getUsername() {
+		return username;
 	}
 
 	/**
-	 * Sets the full name of this author.
+	 * Sets the username of this author.
 	 * 
-	 * @param fullName the full name of this author.
+	 * @param username the username of this author.
 	 */
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
-	 * Gets the email address of this author.
+	 * Gets the authorship order of this author.
 	 * 
-	 * @return email the email address of this author.
+	 * @return order the authorship order.
 	 */
-	public String getEmail() {
-		return email;
+	public int getOrder() {
+		return order;
 	}
 
 	/**
-	 * Sets the email address of this author.
+	 * Sets the authorship order of this author.
 	 *
-	 * @param email the email address of this author.
+	 * @param order the authorship order.
 	 */
-	public void setEmail(String email) {
-		this.email = email;
+	public void setOrder(int order) {
+		this.order = order;
+	}
+	
+	/**
+	 * Returns the Xref for the author.
+	 * 
+	 * @return xref the xref of the author.
+	 */
+	public Xref getXref() {
+		return xref;
+	}
+	
+	/**
+	 * Sets the Xref for the author.
+	 * 
+	 * @param xref the xref of the author.
+	 */
+	public void setXref(Xref xref) {
+		this.xref = xref;
+	}
+
+	/**
+	 * Instantiates author Xref given identifier and dataSource. Checks whether
+	 * dataSource string is fullName, systemCode, or invalid.
+	 * 
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
+	 * @throws IllegalArgumentException is given dataSource does not exist.
+	 */
+	public void createXref(String identifier, String dataSource) {
+		if (DataSource.fullNameExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		} else if (DataSource.systemCodeExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		} else {
+			DataSource.register(dataSource, dataSource);
+			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
+		}
 	}
 }

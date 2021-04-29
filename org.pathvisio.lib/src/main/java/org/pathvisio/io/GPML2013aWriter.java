@@ -207,7 +207,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		setAttr("Pathway.Graphics", "BoardWidth", gfx, String.valueOf(pathway.getBoardWidth()));
 		setAttr("Pathway.Graphics", "BoardHeight", gfx, String.valueOf(pathway.getBoardHeight()));
 		/* warnings conversion GPML2021 to GPML2013a */
-		if (!pathwayModel.getAuthors().isEmpty())
+		if (!pathway.getAuthors().isEmpty())
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway authors info lost.");
 		if (!pathwayModel.getEvidences().isEmpty())
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway evidences info lost.");

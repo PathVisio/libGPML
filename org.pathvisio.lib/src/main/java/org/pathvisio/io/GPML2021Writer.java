@@ -179,7 +179,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		if (pathway.getXref() != null)
 			writeXref(pathway.getXref(), root, false);
 
-		writeAuthors(pathwayModel.getAuthors(), root);
+		writeAuthors(pathway.getAuthors(), root);
 
 		writeComments(pathway.getComments(), root);
 		writeDynamicProperties(pathway.getDynamicProperties(), root);
@@ -239,8 +239,15 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					continue;
 				Element au = new Element("Author", root.getNamespace());
 				au.setAttribute("name", author.getName());
-				au.setAttribute("fullName", author.getFullName());
-				au.setAttribute("email", author.getEmail());
+				/* set optional properties */
+				String username = author.getUsername();
+				int order = author.getOrder();
+				writeXref(author.getXref(), au, false);
+				if (username != null)
+					au.setAttribute("username", username);
+				if (order != 0)
+					au.setAttribute("order", String.valueOf(order));
+
 				if (au != null) {
 					auList.add(au);
 				}
@@ -382,7 +389,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				if (dataNode == null)
 					continue;
 				Element dn = new Element("DataNode", root.getNamespace());
-				writeXref(dataNode.getXref(), dn, true);
+				writeXref(dataNode.getXref(), dn, false);
 				writeStates(dataNode.getStates(), dn);
 				writeShapedElement(dataNode, dn);
 				writeElementRef(dataNode.getElementRef(), dn);
@@ -457,7 +464,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				if (interaction == null)
 					continue;
 				Element ia = new Element("Interaction", root.getNamespace());
-				writeXref(interaction.getXref(), ia, true);
+				writeXref(interaction.getXref(), ia, false);
 				writeLineElement(interaction, ia);
 				if (ia != null) {
 					iaList.add(ia);

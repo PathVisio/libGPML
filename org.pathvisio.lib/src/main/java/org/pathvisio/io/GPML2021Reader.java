@@ -76,7 +76,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Pathway pathway = readPathway(root);
 		pathwayModel.setPathway(pathway);
-		readAuthors(pathwayModel, root);
 		/* reads before annotationRef, citationRef, evidenceRef */
 		readAnnotations(pathwayModel, root);
 		readCitations(pathwayModel, root);
@@ -115,6 +114,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		Color backgroundColor = ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor","ffffff")); // TODO optional?
 		Coordinate infoBox = readInfoBox(root);
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, backgroundColor, infoBox).build();
+		readAuthors(pathway, root);
 		/* sets optional properties */
 		Xref xref = readXref(root);
 		String organism = root.getAttributeValue("organism");
@@ -178,26 +178,30 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads author {@link Author} information for pathway model from root element.
+	 * Reads author {@link Author} information for pathway from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readAuthors(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readAuthors(Pathway pathway, Element root) throws ConverterException {
 		Element aus = root.getChild("Authors", root.getNamespace());
 		if (aus != null) {
 			for (Element au : aus.getChildren("Author", aus.getNamespace())) {
 				String name = au.getAttributeValue("name");
-				String fullName = au.getAttributeValue("fullName");
-				String email = au.getAttributeValue("email");
 				Author author = new Author.AuthorBuilder(name).build();
-				if (fullName != null)
-					author.setFullName(fullName);
-				if (email != null)
-					author.setEmail(email);
+				/* set optional properties */
+				String username = au.getAttributeValue("username");
+				String order = au.getAttributeValue("order");
+				Xref xref = readXref(au);
+				if (username != null)
+					author.setUsername(username);
+				if (order != null)
+					author.setOrder(Integer.parseInt(order));
+				if (xref != null)
+					author.setXref(xref);				
 				if (author != null)
-					pathwayModel.addAuthor(author);
+					pathway.addAuthor(author);
 			}
 		}
 	}

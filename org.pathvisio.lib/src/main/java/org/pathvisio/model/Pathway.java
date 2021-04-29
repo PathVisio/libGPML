@@ -44,18 +44,19 @@ public class Pathway {
 	private String title;
 	private double boardWidth;
 	private double boardHeight;
-	private Color backgroundColor; 
+	private Color backgroundColor;
 	private Coordinate infoBox; // the centerXY of gpml:InfoBox
-	private String organism;
-	private String source;
-	private String version;
-	private String license;
-	private Xref xref;
+	private List<Author> authors;
 	private List<Comment> comments;
 	private Map<String, String> dynamicProperties;
 	private List<AnnotationRef> annotationRefs;
 	private List<Citation> citationRefs;
 	private List<Evidence> evidenceRefs;
+	private String organism;
+	private String source;
+	private String version;
+	private String license;
+	private Xref xref;
 
 	/**
 	 * This builder class builds an Pathway object step-by-step.
@@ -64,11 +65,12 @@ public class Pathway {
 	 */
 	public static class PathwayBuilder {
 
-		private String title = "Click to add title"; //TODO  
+		private String title = "Click to add title"; // TODO
 		private double boardWidth = 0;
 		private double boardHeight = 0;
-		private Color backgroundColor = Color.decode("#ffffff"); 
+		private Color backgroundColor = Color.decode("#ffffff");
 		private Coordinate infoBox;
+		private List<Author> authors;
 		private List<Comment> comments;
 		private Map<String, String> dynamicProperties;
 		private List<AnnotationRef> annotationRefs;
@@ -98,6 +100,7 @@ public class Pathway {
 			this.boardHeight = boardHeight;
 			this.backgroundColor = backgroundColor;
 			this.infoBox = infoBox;
+			this.authors = new ArrayList<Author>();
 			this.comments = new ArrayList<Comment>(); // 0 to unbounded
 			this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 			this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
@@ -181,15 +184,16 @@ public class Pathway {
 	 */
 	private Pathway(PathwayBuilder builder) {
 		this.title = builder.title;
+		this.boardWidth = builder.boardWidth;
+		this.boardHeight = builder.boardHeight;
+		this.backgroundColor = builder.backgroundColor;
+		this.infoBox = builder.infoBox;
+		this.authors = builder.authors;
 		this.comments = builder.comments;
 		this.dynamicProperties = builder.dynamicProperties;
 		this.annotationRefs = builder.annotationRefs;
 		this.citationRefs = builder.citationRefs;
 		this.evidenceRefs = builder.evidenceRefs;
-		this.boardWidth = builder.boardWidth;
-		this.boardHeight = builder.boardHeight;
-		this.backgroundColor = builder.backgroundColor;
-		this.infoBox = builder.infoBox;
 		this.organism = builder.organism;
 		this.source = builder.source;
 		this.version = builder.version;
@@ -308,124 +312,30 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the organism of the pathway. Organism is the scientific name (e.g.,
-	 * Homo sapiens) of the species being described by the pathway.
+	 * Returns the list of authors for the pathway model.
 	 * 
-	 * @return organism the organism.
+	 * @return authors the list of authors.
 	 */
-	public String getOrganism() {
-		return organism;
+	public List<Author> getAuthors() {
+		return authors;
 	}
 
 	/**
-	 * Sets the organism of the pathway. Organism is the scientific name (e.g., Homo
-	 * sapiens) of the species being described by the pathway.
+	 * Adds the given author to authors list.
 	 * 
-	 * @param organism the organism.
+	 * @param author the author to add.
 	 */
-	public void setOrganism(String organism) {
-		if (organism == null) {
-			throw new IllegalArgumentException();
-		} else
-			this.organism = organism;
+	public void addAuthor(Author author) {
+		authors.add(author);
 	}
 
 	/**
-	 * Returns the source of the pathway, e.g. WikiPathways, KEGG, Cytoscape.
+	 * Removes the given author from authors list.
 	 * 
-	 * @return source the source.
+	 * @param author the author to remove.
 	 */
-	public String getSource() {
-		return source;
-	}
-
-	/**
-	 * Sets the source of the pathway, e.g. WikiPathways, KEGG, Cytoscape.
-	 * 
-	 * @param source the source.
-	 */
-	public void setSource(String source) {
-		if (source == null) {
-			throw new IllegalArgumentException();
-		} else
-			this.source = source;
-	}
-
-	/**
-	 * Returns the version of the pathway.
-	 * 
-	 * @return version the version
-	 */
-	public String getVersion() {
-		return version;
-	}
-
-	/**
-	 * Sets the version of the pathway.
-	 * 
-	 * @param version the version.
-	 */
-	public void setVersion(String version) {
-		if (version == null) {
-			throw new IllegalArgumentException();
-		} else
-			this.version = version;
-	}
-
-	/**
-	 * Returns the license of the pathway.
-	 * 
-	 * @return license the license.
-	 */
-	public String getLicense() {
-		return license;
-	}
-
-	/**
-	 * Sets the license of the pathway.
-	 * 
-	 * @param license the license.
-	 */
-	public void setLicense(String license) {
-		this.license = license;
-	}
-
-	/**
-	 * Returns the Xref for the pathway.
-	 * 
-	 * @return xref the xref of the pathway.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
-	
-	/**
-	 * Sets the Xref for the pathway.
-	 * 
-	 * @param xref the xref of the pathway.
-	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
-	}
-
-	/**
-	 * Creates Xref given identifier and dataSource. Checks whether
-	 * dataSource string is fullName, systemCode, or invalid.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 * @throws IllegalArgumentException is given dataSource does not exist.
-	 */
-	public void createXref(String identifier, String dataSource) {
-		if (DataSource.fullNameExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		} else if (DataSource.systemCodeExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-		} else {
-			DataSource.register(dataSource, dataSource);
-			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
-		}
+	public void removeAuthor(Author author) {
+		authors.remove(author);
 	}
 
 	/**
@@ -445,7 +355,7 @@ public class Pathway {
 	public void addComment(Comment comment) {
 		comments.add(comment);
 	}
-	
+
 	/**
 	 * Removes given comment from comments list.
 	 * 
@@ -536,7 +446,7 @@ public class Pathway {
 	 * @param annotationRef the annotationRef to be removed.
 	 */
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		
+
 		annotationRefs.remove(annotationRef);
 	}
 
@@ -592,6 +502,127 @@ public class Pathway {
 	 */
 	public void removeEvidenceRef(Evidence evidenceRef) {
 		evidenceRefs.remove(evidenceRef);
+	}
+
+	/**
+	 * Returns the organism of the pathway. Organism is the scientific name (e.g.,
+	 * Homo sapiens) of the species being described by the pathway.
+	 * 
+	 * @return organism the organism.
+	 */
+	public String getOrganism() {
+		return organism;
+	}
+
+	/**
+	 * Sets the organism of the pathway. Organism is the scientific name (e.g., Homo
+	 * sapiens) of the species being described by the pathway.
+	 * 
+	 * @param organism the organism.
+	 */
+	public void setOrganism(String organism) {
+		if (organism == null) {
+			throw new IllegalArgumentException();
+		} else
+			this.organism = organism;
+	}
+
+	/**
+	 * Returns the source of the pathway, e.g. WikiPathways, KEGG, Cytoscape.
+	 * 
+	 * @return source the source.
+	 */
+	public String getSource() {
+		return source;
+	}
+
+	/**
+	 * Sets the source of the pathway, e.g. WikiPathways, KEGG, Cytoscape.
+	 * 
+	 * @param source the source.
+	 */
+	public void setSource(String source) {
+		if (source == null) {
+			throw new IllegalArgumentException();
+		} else
+			this.source = source;
+	}
+
+	/**
+	 * Returns the version of the pathway.
+	 * 
+	 * @return version the version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * Sets the version of the pathway.
+	 * 
+	 * @param version the version.
+	 */
+	public void setVersion(String version) {
+		if (version == null) {
+			throw new IllegalArgumentException();
+		} else
+			this.version = version;
+	}
+
+	/**
+	 * Returns the license of the pathway.
+	 * 
+	 * @return license the license.
+	 */
+	public String getLicense() {
+		return license;
+	}
+
+	/**
+	 * Sets the license of the pathway.
+	 * 
+	 * @param license the license.
+	 */
+	public void setLicense(String license) {
+		this.license = license;
+	}
+
+	/**
+	 * Returns the Xref for the pathway.
+	 * 
+	 * @return xref the xref of the pathway.
+	 */
+	public Xref getXref() {
+		return xref;
+	}
+
+	/**
+	 * Sets the Xref for the pathway.
+	 * 
+	 * @param xref the xref of the pathway.
+	 */
+	public void setXref(Xref xref) {
+		this.xref = xref;
+	}
+
+	/**
+	 * Creates Xref given identifier and dataSource. Checks whether dataSource
+	 * string is fullName, systemCode, or invalid.
+	 * 
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
+	 * @throws IllegalArgumentException is given dataSource does not exist.
+	 */
+	public void createXref(String identifier, String dataSource) {
+		if (DataSource.fullNameExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
+		} else if (DataSource.systemCodeExists(dataSource)) {
+			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
+		} else {
+			DataSource.register(dataSource, dataSource);
+			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
+		}
 	}
 
 }
