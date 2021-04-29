@@ -35,13 +35,9 @@ import org.pathvisio.model.type.DataNodeType;
 public class DataNode extends ShapedElement {
 
 	private String textLabel;
-	private DataNodeType type = DataNodeType.UNKNOWN; // TODO: Getter/Setter weird
-	private Xref xref;
+	private DataNodeType type = DataNodeType.UNDEFINED;
 	private List<State> states;
-	/*
-	 * . In GPML, this is elementRef which refers to the elementId of a pathway
-	 * element (normally gpml:Group).
-	 */
+	private Xref xref; // optional
 	private PathwayElement elementRef; // optional, the pathway element to which the data node refers to as an alias.
 
 	/**
@@ -69,20 +65,9 @@ public class DataNode extends ShapedElement {
 		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
 		this.textLabel = textLabel;
 		this.type = type;
-		this.xref = xref;
 		this.states = new ArrayList<State>();
+		this.xref = xref;
 		this.elementRef = elementRef;
-	}
-
-	/**
-	 * Instantiates a DataNode given all possible parameters except elementRef,
-	 * because the data node does not refer to another pathway element.
-	 */
-	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type, Xref xref) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, type, xref,
-				null);
-
 	}
 
 	/**
@@ -97,6 +82,36 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
+	 * Instantiates a DataNode given all possible parameters except xref.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type,
+			PathwayElement elementRef) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, type, null,
+				elementRef);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except elementRef,
+	 * because the data node does not refer to another pathway element.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type, Xref xref) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, type, xref,
+				null);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except groupRef and
+	 * xref.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, PathwayElement elementRef) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, null,
+				elementRef);
+	}
+
+	/**
 	 * Instantiates a DataNode given all possible parameters except groupRef and
 	 * elementRef, because the data node neither belongs in a group nor refers to
 	 * another pathway element.
@@ -104,6 +119,26 @@ public class DataNode extends ShapedElement {
 	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref) {
 		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, xref,
+				null);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except xref and
+	 * elementRef.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, type, null,
+				null);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except groupRef, xref,
+	 * and elementRef.
+	 */
+	public DataNode(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type) {
+		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, null,
 				null);
 	}
 
@@ -154,7 +189,7 @@ public class DataNode extends ShapedElement {
 	public Xref getXref() {
 		return xref;
 	}
-	
+
 	/**
 	 * Sets the Xref for the data node.
 	 * 

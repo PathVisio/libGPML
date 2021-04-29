@@ -32,11 +32,7 @@ public class Point extends PathwayElement {
 	private LineElement lineElement; // parent line element
 	private ArrowHeadType arrowHead; // line by default
 	private Coordinate xy;
-	/*
-	 * The pathway element to which the point refers to. In GPML, this is elementRef
-	 * which refers to the elementId of a pathway element.
-	 */
-	private PathwayElement elementRef; // optional
+	private PathwayElement elementRef; // optional, the pathway element to which the point refers.
 	private double relX; // optional
 	private double relY; // optional
 
@@ -44,14 +40,15 @@ public class Point extends PathwayElement {
 	 * Instantiates a Point pathway element, with reference to another pathway
 	 * element.
 	 * 
-	 * @param elementId  the unique pathway element identifier.
-	 * @param elementRef the pathway element to which the point refers.
-	 * @param arrowHead  the glyph at the ends of lines, intermediate points have
-	 *                   arrowhead type "line" by default.
-	 * @param x          the x coordinate position of the point.
-	 * @param y          the y coordinate position of the point.
-	 * @param relX       the relative x coordinate.
-	 * @param relY       the relative x coordinate.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param lineElement  the parent line element to which the point belongs.
+	 * @param arrowHead    the glyph at the ends of lines, intermediate points have
+	 *                     arrowhead type "line" by default.
+	 * @param xy           the xy coordinate position of the point.
+	 * @param elementRef   the pathway element to which the point refers.
+	 * @param relX         the relative x coordinate.
+	 * @param relY         the relative x coordinate.
 	 */
 	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
@@ -214,7 +211,7 @@ public class Point extends PathwayElement {
 	 * @param relY the relative y coordinate.
 	 */
 	public void setRelY(double relY) {
-		if (Math.abs(relY) > 1.0){
+		if (Math.abs(relY) > 1.0) {
 			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
 		}
 		this.relY = relY;

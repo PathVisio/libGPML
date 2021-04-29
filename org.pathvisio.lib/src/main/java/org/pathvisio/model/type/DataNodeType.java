@@ -31,7 +31,7 @@ public class DataNodeType {
 	private static final Map<String, DataNodeType> nameToDataNodeType = new LinkedHashMap<String, DataNodeType>();
 
 	// Default
-	public static final DataNodeType UNKNOWN = new DataNodeType("Undefined");
+	public static final DataNodeType UNDEFINED = new DataNodeType("Undefined");
 	
 	// Molecules
 	public static final DataNodeType GENEPRODUCT = new DataNodeType("GeneProduct");

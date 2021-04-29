@@ -28,6 +28,8 @@ import org.pathvisio.model.graphics.LineStyleProperty;
  */
 public class Interaction extends LineElement {
 
+	private Xref xref; // optional
+
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters.
 	 * 
@@ -53,8 +55,23 @@ public class Interaction extends LineElement {
 	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Xref xref) {
 		this(elementId, pathwayModel, lineStyleProperty, null, xref);
 	}
+	
+	/**
+	 * Instantiates an Interaction pathway element given all possible parameters
+	 * except xref.
+	 */
+	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Group groupRef) {
+		this(elementId, pathwayModel, lineStyleProperty, groupRef, null);
+	}
+	
+	/**
+	 * Instantiates an Interaction pathway element given all possible parameters
+	 * except groupRef and xref.
+	 */
+	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty) {
+		this(elementId, pathwayModel, lineStyleProperty, null, null);
+	}
 
-	private Xref xref;
 
 	/**
 	 * Returns the Xref for the interaction.
