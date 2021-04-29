@@ -62,7 +62,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
 
 		Document doc = createJdom(pathwayModel);
-//		System.out.println(doc);
 
 		if (validate)
 			validateDocument(doc); // TODO Boolean validate not relevant to 2021...
@@ -109,8 +108,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
-		/* checks if pathway model interactions/graphicaLines and groups are valid */
-		checkLineAndGroupSize(pathwayModel); // TODO
+		/* removes empty groups */
+		removeEmptyGroups(pathwayModel);
+		/* checks if interactions/graphicaLines have at least 2 points */
+		validateLineElements(pathwayModel);
 
 		Document doc = new Document();
 		Element root = new Element("Pathway", getGpmlNamespace());
@@ -135,13 +136,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Checks whether interactions and graphicaLines have at least two points, and
-	 * groups have at least two pathway element members.
+	 * Checks whether interactions and graphicaLines have at least two points.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @throws ConverterException
 	 */
-	protected void checkLineAndGroupSize(PathwayModel pathwayModel) throws ConverterException {
+	protected void validateLineElements(PathwayModel pathwayModel) throws ConverterException {
 		for (Interaction interaction : pathwayModel.getInteractions()) {
 			if (interaction.getPoints().size() < 2) {
 				throw new ConverterException("Interaction " + interaction.getElementId() + " has "
@@ -152,12 +152,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			if (graphicalLine.getPoints().size() < 2) {
 				throw new ConverterException("GraphicalLine " + graphicalLine.getElementId() + " has "
 						+ graphicalLine.getPoints().size() + " point(s),  must have at least 2.");
-			}
-		}
-		for (Group group : pathwayModel.getGroups()) {
-			if (group.getPathwayElements().size() < 2) {
-				throw new ConverterException("Group " + group.getElementId() + " has "
-						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
 			}
 		}
 	}
@@ -219,9 +213,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		if (xref != null) {
 			String identifier = xref.getId();
 			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null) { 
+			if (dataSrc != null) {
 				Element xrf = new Element("Xref", e.getNamespace());
-				String dataSource = xref.getDataSource().getFullName(); 
+				String dataSource = xref.getDataSource().getFullName();
 				xrf.setAttribute("identifier", identifier == null ? "" : identifier);
 				xrf.setAttribute("dataSource", dataSource);
 				e.addContent(xrf);

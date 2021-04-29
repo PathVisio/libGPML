@@ -189,7 +189,6 @@ public class Point extends PathwayElement {
 	public void setRelX(double relX) {
 		if (Math.abs(relX) > 1.0) {
 			Logger.log.trace("Warning: relX absolute value of " + String.valueOf(relX) + " greater than 1");
-			System.out.println("Warning: relX absolute value of " + String.valueOf(relX) + " greater than 1");
 		}
 		this.relX = relX;
 	}
@@ -217,7 +216,6 @@ public class Point extends PathwayElement {
 	public void setRelY(double relY) {
 		if (Math.abs(relY) > 1.0){
 			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
-			System.out.println("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
 		}
 		this.relY = relY;
 	}

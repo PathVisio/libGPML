@@ -42,6 +42,7 @@ import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
+import org.pathvisio.model.elements.Group;
 import org.xml.sax.SAXException;
 
 /**
@@ -49,7 +50,7 @@ import org.xml.sax.SAXException;
  * versions. Code that is shared between multiple versions is located here.
  */
 public abstract class GPML2021FormatAbstract {
-	
+
 	private final String xsdFile;
 	private final Namespace nsGPML;
 
@@ -64,6 +65,23 @@ public abstract class GPML2021FormatAbstract {
 
 	public Namespace getGpmlNamespace() {
 		return nsGPML;
+	}
+
+	/**
+	 * Removes group from pathwayModel if empty. Check executed after reading and
+	 * before writing.
+	 * 
+	 * @param pathwayModel the pathway model. .
+	 * @throws ConverterException
+	 */
+	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
+		List<Group> groups = pathwayModel.getGroups();
+		for (Group group : groups) {
+			if (group.getPathwayElements().isEmpty()) {
+				pathwayModel.removeGroup(group);
+				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
+			}
+		}
 	}
 
 	/**

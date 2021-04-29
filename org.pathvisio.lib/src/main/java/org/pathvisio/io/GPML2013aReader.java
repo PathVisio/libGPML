@@ -64,11 +64,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
-
 		Pathway pathway = readPathway(root);
-		pathwayModel.setPathway(pathway); // TODO, should allow instantiate pathwayModel without Pathway???
-
-		readBiopax(pathwayModel, root);// TODO
+		pathwayModel.setPathway(pathway); 
+		readBiopax(pathwayModel, root);
 		readPathwayInfo(pathwayModel, root);
 		/* reads groups first */
 		readGroups(pathwayModel, root);
@@ -85,14 +83,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readPoints(pathwayModel, root, lineList);
 		/* removes empty groups */
 		removeEmptyGroups(pathwayModel);
-
-		Logger.log.trace("End reading gpml");
-
-		// TODO check groups have at least one pathwayElement inside?
-		// TODO check at least 2 points per line element?
-		// TODO handle relative and absolute coordinates
+		Logger.log.trace("Read pathway model successfully from gpml file");
 		return pathwayModel;
-
 	}
 
 	/**
@@ -1043,20 +1035,5 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		return lineStyleProperty;
 	}
 
-	/**
-	 * Removes group from pathwayModel if empty. 
-	 * 
-	 * @param pathwayModel the pathway model. .
-	 * @throws ConverterException
-	 */
-	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
-		List<Group> groups = pathwayModel.getGroups();
-		for (Group group : groups) {
-			if (group.getPathwayElements().isEmpty()) {
-				pathwayModel.removeGroup(group);
-				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
-			}
-		}
-	}
 
 }

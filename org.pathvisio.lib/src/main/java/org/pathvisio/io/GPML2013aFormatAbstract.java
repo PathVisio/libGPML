@@ -19,6 +19,7 @@ package org.pathvisio.io;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
@@ -36,6 +37,7 @@ import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.elements.Group;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;
 import org.xml.sax.SAXException;
@@ -72,7 +74,6 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 	public final static String OLD_ANCHOR_SHAPE = "ReceptorRound"; // TODO
-
 
 	/**
 	 * Deprecated map used to track deprecated shape types for conversion and
@@ -426,6 +427,23 @@ public abstract class GPML2013aFormatAbstract {
 		AttributeInfo aInfo = getAttributeInfo().get(key);
 		String result = ((el == null) ? aInfo.def : el.getAttributeValue(name, aInfo.def));
 		return result;
+	}
+
+	/**
+	 * Removes group from pathwayModel if empty. Check executed after reading and
+	 * before writing.
+	 * 
+	 * @param pathwayModel the pathway model. 
+	 * @throws ConverterException
+	 */
+	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
+		List<Group> groups = pathwayModel.getGroups();
+		for (Group group : groups) {
+			if (group.getPathwayElements().isEmpty()) {
+				pathwayModel.removeGroup(group);
+				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
+			}
+		}
 	}
 
 	/**

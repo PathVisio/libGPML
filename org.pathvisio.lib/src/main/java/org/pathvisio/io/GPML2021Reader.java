@@ -74,10 +74,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
-
 		Pathway pathway = readPathway(root);
-		pathwayModel.setPathway(pathway); // TODO, should allow instantiate pathwayModel without Pathway???
-
+		pathwayModel.setPathway(pathway);
 		readAuthors(pathwayModel, root);
 		/* reads before annotationRef, citationRef, evidenceRef */
 		readAnnotations(pathwayModel, root);
@@ -97,11 +95,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readPointElementRef(pathwayModel, root);
 		/* removes empty groups */
 		removeEmptyGroups(pathwayModel);
-		Logger.log.trace("Completed reading gpml. Success.");
-
-		// TODO handle relative and absolute coordinates
+		Logger.log.trace("Read pathway model successfully from gpml file");
 		return pathwayModel;
-
 	}
 
 	/**
@@ -955,21 +950,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		return lineStyleProperty;
 	}
 
-	/**
-	 * Removes group from pathwayModel if empty. 
-	 * 
-	 * @param pathwayModel the pathway model. .
-	 * @throws ConverterException
-	 */
-	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
-		List<Group> groups = pathwayModel.getGroups();
-		for (Group group : groups) {
-			if (group.getPathwayElements().isEmpty()) {
-				pathwayModel.removeGroup(group);
-				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
-			}
-		}
-	}
 
 	/*---------------------------------------------------------------------------*/
 
