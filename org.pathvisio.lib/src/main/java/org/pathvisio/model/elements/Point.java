@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model.elements;
 
+import org.pathvisio.debug.Logger;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.Coordinate;
@@ -72,7 +73,8 @@ public class Point extends PathwayElement {
 	 * @param x         the x coordinate position of the point.
 	 * @param y         the y coordinate position of the point.
 	 */
-	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead, Coordinate xy) {
+	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
+			Coordinate xy) {
 		super(elementId, pathwayModel);
 		this.lineElement = lineElement;
 		this.arrowHead = arrowHead;
@@ -185,11 +187,11 @@ public class Point extends PathwayElement {
 	 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 	 */
 	public void setRelX(double relX) {
-		if (Math.abs(relX) <= 1.0) {
-			this.relX = relX;
-		} else {
-			throw new IllegalArgumentException("relX " + relX + " should be between -1.0 and 1.0");
+		if (Math.abs(relX) > 1.0) {
+			Logger.log.trace("Warning: relX absolute value of " + String.valueOf(relX) + " greater than 1");
+			System.out.println("Warning: relX absolute value of " + String.valueOf(relX) + " greater than 1");
 		}
+		this.relX = relX;
 	}
 
 	/**
@@ -213,11 +215,11 @@ public class Point extends PathwayElement {
 	 * @param relY the relative y coordinate.
 	 */
 	public void setRelY(double relY) {
-		if (Math.abs(relY) <= 1.0) {
-			this.relY = relY;
-		} else {
-			throw new IllegalArgumentException("relY " + relY + " should be between -1.0 and 1.0");
+		if (Math.abs(relY) > 1.0){
+			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
+			System.out.println("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
 		}
+		this.relY = relY;
 	}
 
 }

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model.graphics;
 
+import org.pathvisio.debug.Logger;
 import org.pathvisio.model.elements.Anchor;
 import org.pathvisio.model.elements.Point;
 
@@ -41,9 +42,9 @@ public class Coordinate {
 	 */
 	public Coordinate(double x, double y) {
 		if (x < 0)
-			throw new IllegalArgumentException("x coordinate < 0");
+			System.out.println("Warning: negative x coordinate " + String.valueOf(x));
 		if (y < 0)
-			throw new IllegalArgumentException("y coordinate < 0");
+			System.out.println("Warning: negative y coordinate " + String.valueOf(y));
 		this.x = x;
 		this.y = y;
 	}
@@ -64,7 +65,7 @@ public class Coordinate {
 	 */
 	public void setX(double x) {
 		if (x < 0)
-			throw new IllegalArgumentException("x coordinate < 0");
+			Logger.log.trace("Warning: negative x coordinate " + String.valueOf(x));
 		this.x = x;
 	}
 
@@ -84,7 +85,7 @@ public class Coordinate {
 	 */
 	public void setY(double y) {
 		if (y < 0)
-			throw new IllegalArgumentException("y coordinate < 0");
+			Logger.log.trace("Warning: negative y coordinate " + String.valueOf(y));
 		this.y = y;
 	}
 

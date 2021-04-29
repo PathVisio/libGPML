@@ -32,6 +32,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
@@ -79,7 +80,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			// Send XML code to the outputstream
 			xmlOutput.output(doc, output); // new FileOutputStream(new File("fileName.gpml")
 			// Create a new file and write XML to it
-			System.out.println("Wrote pathway model successfully to gpml file");
+			Logger.log.trace("Wrote pathway model successfully to gpml file");
 		} catch (IOException e) {
 			throw new ConverterException(e);
 		}
@@ -179,9 +180,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		/* set optional properties, in the order written in gpml 2013a */
 		String source = pathway.getSource();
 		String version = pathway.getVersion();
-		String author = writeAuthorEmail(pathwayModel)[0];
+		String author = pathway.getDynamicProperty(PATHWAY_AUTHOR);
 		String maintainer = pathway.getDynamicProperty(PATHWAY_MAINTAINER);
-		String email = writeAuthorEmail(pathwayModel)[1];
+		String email = pathway.getDynamicProperty(PATHWAY_EMAIL);
 		String lastModified = pathway.getDynamicProperty(PATHWAY_LASTMODIFIED);
 		String organism = pathway.getOrganism();
 		String license = pathway.getLicense();
@@ -189,11 +190,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Pathway", "Data-Source", root, source);
 		if (version != null)
 			setAttr("Pathway", "Version", root, version);
-		if (author != null && !author.equals(""))
+		if (author != null)
 			setAttr("Pathway", "Author", root, author);
 		if (maintainer != null)
 			setAttr("Pathway", "Maintainer", root, maintainer);
-		if (email != null && !email.equals(""))
+		if (email != null)
 			setAttr("Pathway", "Email", root, email);
 		if (lastModified != null)
 			setAttr("Pathway", "Last-Modified", root, lastModified);
@@ -205,51 +206,21 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		writeComments(pathway.getComments(), root);
 		writeBiopaxRefs(pathway.getCitationRefs(), root);
 		writePathwayDynamicProperties(pathway, root);
-		if (!pathwayModel.getEvidences().isEmpty()) {
-			System.out.println("Warning: Conversion GPML2021 to older GPML2013a format: Pathway evidence info lost.");
-		}
 		/* set graphics */
 		Element gfx = new Element("Graphics", root.getNamespace());
 		root.addContent(gfx);
 		setAttr("Pathway.Graphics", "BoardWidth", gfx, String.valueOf(pathway.getBoardWidth()));
 		setAttr("Pathway.Graphics", "BoardHeight", gfx, String.valueOf(pathway.getBoardHeight()));
-	}
+		/* warnings conversion GPML2021 to GPML2013a */
+		if (!pathwayModel.getAuthors().isEmpty())
+			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway authors info lost.");
+		if (!pathwayModel.getEvidences().isEmpty())
+			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway evidences info lost.");
+		if (pathway.getXref() != null)
+			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway xref info lost.");
+		if (pathway.getBackgroundColor() != null)
+			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway backgroundColor info lost.");
 
-	/**
-	 * Combines information...
-	 * 
-	 * @param pathwayModel
-	 * @return
-	 * @throws ConverterException
-	 */
-	protected String[] writeAuthorEmail(PathwayModel pathwayModel) throws ConverterException {
-		List<String> authorList = new ArrayList<String>();
-		List<String> emailList = new ArrayList<String>();
-		String authorStr = pathwayModel.getPathway().getDynamicProperty(PATHWAY_AUTHOR);
-		String emailStr = pathwayModel.getPathway().getDynamicProperty(PATHWAY_EMAIL);
-		if (authorStr != null)
-			authorList.add(authorStr);
-		if (emailStr != null)
-			emailList.add(emailStr);
-		List<Author> authors = pathwayModel.getAuthors();
-		if (!authors.isEmpty()) {
-			for (Author author : authors) {
-				if (author == null)
-					continue;
-				String name = author.getName();
-				String fullName = author.getFullName();
-				if (fullName != null)
-					name = name + "(" + fullName + ")";
-				if (name != null)
-					authorList.add(name);
-				String email = author.getEmail();
-				if (email != null)
-					emailList.add(email);
-			}
-		}
-		String authorListStr = StringUtils.join(authorList, ", ");
-		String emailListStr = StringUtils.join(emailList, ", ");
-		return new String[] { authorListStr, emailListStr };
 	}
 
 	/**
@@ -388,47 +359,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("DataNode", "Type", dn, dataNode.getType().getName());
 			writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
 			writeXref(dataNode.getXref(), dn, true);
-			PathwayElement elementRef = dataNode.getElementRef();
-			if (elementRef != null) {
-				String elementRefStr = elementRef.getElementId();
-				Element dp = new Element("Attribute", dn.getNamespace());
-				setAttr("Attribute", "Key", dp, DATANODE_ELEMENTREF);
-				setAttr("Attribute", "Value", dp, elementRefStr);
-				if (dp != null)
-					dn.addContent(dp);
-			}
 			if (dn != null)
 				root.addContent(dn);
-		}
-	}
-
-	protected void writeGPML2013a2021(PathwayModel pathwayModel, Element e) throws ConverterException {
-		Pathway pathway = pathwayModel.getPathway();
-		String backgroundColor = ColorUtils.colorToHex(pathway.getBackgroundColor(), false);
-		if (backgroundColor != null && !backgroundColor.equals("") && !backgroundColor.equals("ffffff")) {
-			Element dp = new Element("Attribute", e.getNamespace());
-			setAttr("Attribute", "Key", dp, PATHWAY_BACKGROUNDCOLOR);
-			setAttr("Attribute", "Value", dp, backgroundColor);
-			if (dp != null)
-				e.addContent(dp);
-		}
-		Xref xref = pathway.getXref();
-		if (xref != null) {
-			String pwyXrefId = xref.getId();
-			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null) {
-				Element dpId = new Element("Attribute", e.getNamespace());
-				Element dpDb = new Element("Attribute", e.getNamespace());
-				String pwyXrefDb = xref.getDataSource().getFullName();
-				setAttr("Attribute", "Key", dpId, PATHWAY_XREF_ID);
-				setAttr("Attribute", "Value", dpId, pwyXrefId == null ? "" : pwyXrefId);
-				setAttr("Attribute", "Key", dpDb, PATHWAY_XREF_DB);
-				setAttr("Attribute", "Value", dpDb, pwyXrefDb == null ? "" : pwyXrefDb);
-				if (dpId != null && dpDb != null) {
-					e.addContent(dpId);
-					e.addContent(dpDb);
-				}
-			}
+			/* warnings conversion GPML2021 to GPML2013a */
+			if (dataNode.getElementRef() != null)
+				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: DataNode " + dataNode.getElementId()
+						+ " elementRef info lost.");
 		}
 	}
 
@@ -699,7 +635,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				bp.addContent(ocv);
 			}
 			if (annotation.getUrl() != null) {
-				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Annotation "
+				Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a: Annotation "
 						+ annotation.getElementId() + " url info lost.");
 			}
 		}
@@ -731,8 +667,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (pubxf != null)
 				bp.addContent(pubxf);
 			if (citation.getUrl() != null) {
-				System.out.println("Warning: Conversion GPML2021 to older GPML2013a: Citation "
-						+ citation.getElementId() + " url info lost.");
+				Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a: Citation " + citation.getElementId()
+						+ " url info lost.");
 			}
 		}
 	}
@@ -846,10 +782,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		writeComments(elementInfo.getComments(), e);
 		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
 		if (!elementInfo.getAnnotationRefs().isEmpty()) {
-			System.out.println("Warning: Conversion GPML2021 to older GPML2013a format: AnnotationRef info lost.");
+			Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a format: AnnotationRef info lost.");
 		}
 		if (!elementInfo.getEvidenceRefs().isEmpty()) {
-			System.out.println("Warning: Conversion GPML2021 to older GPML2013a format: EvidenceRef info lost.");
+			Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a format: EvidenceRef info lost.");
 		}
 	}
 

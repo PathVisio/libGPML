@@ -92,11 +92,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readDataNodes(pathwayModel, root);
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
-		/* checks groups have at least two pathway elements */
-		checkGroupSize(pathwayModel.getGroups());
 		/* reads elementRefs last */
 		readDataNodeElementRef(pathwayModel, root);
 		readPointElementRef(pathwayModel, root);
+		/* removes empty groups */
+		removeEmptyGroups(pathwayModel);
 		Logger.log.trace("Completed reading gpml. Success.");
 
 		// TODO handle relative and absolute coordinates
@@ -160,7 +160,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					return new Xref(identifier, DataSource.getByAlias(dataSource));
 				} else {
 					DataSource.register(dataSource, dataSource);
-					System.out.println("Registered xref dataSource: " + dataSource); 
+					Logger.log.trace("Registered xref dataSource: " + dataSource); 
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
 				}
 			}
@@ -956,16 +956,17 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Checks whether groups have at least two pathway element members.
+	 * Removes group from pathwayModel if empty. 
 	 * 
-	 * @param groups the list of groups.
+	 * @param pathwayModel the pathway model. .
 	 * @throws ConverterException
 	 */
-	protected void checkGroupSize(List<Group> groups) throws ConverterException {
+	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
+		List<Group> groups = pathwayModel.getGroups();
 		for (Group group : groups) {
-			if (group.getPathwayElements().size() < 2) {
-				throw new ConverterException("Group " + group.getElementId() + " has "
-						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
+			if (group.getPathwayElements().isEmpty()) {
+				pathwayModel.removeGroup(group);
+				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
 			}
 		}
 	}

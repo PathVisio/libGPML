@@ -83,8 +83,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		lineList = readGraphicalLines(pathwayModel, root, lineList);
 		/* reads points last */
 		readPoints(pathwayModel, root, lineList);
-		/* checks groups have at least two pathway elements */
-//		checkGroupSize(pathwayModel.getGroups());
+		/* removes empty groups */
+		removeEmptyGroups(pathwayModel);
 
 		Logger.log.trace("End reading gpml");
 
@@ -285,7 +285,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				return new Xref(identifier, DataSource.getByAlias(dataSource));
 			} else {
 				DataSource.register(dataSource, dataSource);
-				System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+				Logger.log.trace("DataSource: " + dataSource + " is registered."); // TODO warning
 				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 			}
 		}
@@ -752,9 +752,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				if (lineElementId == null && lineElement == null) {
 					lineElement = (LineElement) pathwayModel.getPathwayElement(lineList.get(lineListIndex));
 				}
-				System.out.println(lineElementId);
-				System.out.println(lineList.get(lineListIndex));
-
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
 					String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
@@ -1047,58 +1044,19 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Checks whether groups have at least two pathway element members.
+	 * Removes group from pathwayModel if empty. 
 	 * 
-	 * @param groups the list of groups.
+	 * @param pathwayModel the pathway model. .
 	 * @throws ConverterException
 	 */
-	protected void checkGroupSize(List<Group> groups) throws ConverterException {
+	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
+		List<Group> groups = pathwayModel.getGroups();
 		for (Group group : groups) {
-			if (group.getPathwayElements().size() < 2) {
-				throw new ConverterException("Group " + group.getElementId() + " has "
-						+ group.getPathwayElements().size() + " pathway element(s) members,  must have at least 2");
+			if (group.getPathwayElements().isEmpty()) {
+				pathwayModel.removeGroup(group);
+				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
 			}
 		}
 	}
 
-	/**
-	 * Reads DataNode elementRef from a GPML2013a which was converted from a
-	 * GPML2021 **** special case
-	 * 
-	 * @param pathwayModel
-	 * @param root
-	 * @throws ConverterException
-	 */
-	protected void readGPML2013a2021(PathwayModel pathwayModel, Element root) throws ConverterException {
-		for (DataNode dataNode : pathwayModel.getDataNodes()) {
-			Map<String, String> dynamicProperties = dataNode.getDynamicProperties();
-			if (dynamicProperties.containsKey(DATANODE_ELEMENTREF)) {
-				String elementRefStr = dynamicProperties.get(DATANODE_ELEMENTREF);
-				PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
-				if (elementRef != null) {
-					dynamicProperties.remove(DATANODE_ELEMENTREF);
-					dataNode.setElementRef(elementRef);
-				}
-			}
-		}
-		Pathway pathway = pathwayModel.getPathway();
-		String backgroundColor = pathway.getDynamicProperties().get(PATHWAY_XREF_ID);
-		if (backgroundColor != null) {
-			pathway.setBackgroundColor(ColorUtils.stringToColor(backgroundColor));
-			pathway.getDynamicProperties().remove(PATHWAY_XREF_ID);
-		}
-		String xrefId = pathway.getDynamicProperties().get(PATHWAY_XREF_ID);
-		String xrefDb = pathway.getDynamicProperties().get(PATHWAY_XREF_DB);
-		if (xrefDb != null && !xrefDb.equals("")) {
-			if (DataSource.fullNameExists(xrefDb)) {
-				pathwayModel.getPathway().setXref(new Xref(xrefId, DataSource.getExistingByFullName(xrefDb)));
-			} else if (DataSource.systemCodeExists(xrefDb)) {
-				pathwayModel.getPathway().setXref(new Xref(xrefId, DataSource.getByAlias(xrefDb)));
-			} else {
-				DataSource.register(xrefDb, xrefDb);
-				System.out.println("Registered xref datasource: " + xrefDb);
-				pathwayModel.getPathway().setXref(new Xref(xrefId, DataSource.getExistingByFullName(xrefDb)));
-			}
-		}
-	}
 }

@@ -73,16 +73,6 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 	public final static String OLD_ANCHOR_SHAPE = "ReceptorRound"; // TODO
 
-	/**
-	 * Static variables for writing new GPML2021 features as dynamic properties in
-	 * GPML2013a format.
-	 */
-	public final static String PATHWAY_XREF_ID = "pathway_xref_identifier_gpml2021";
-	public final static String PATHWAY_XREF_DB = "pathway_xref_datasource_gpml2021";
-	public final static String PATHWAY_BACKGROUNDCOLOR = "pathway_backgroundcolor_gpml2021";
-	public final static String DATANODE_ELEMENTREF = "datanode_elementref_gpml2021";
-
-	
 
 	/**
 	 * Deprecated map used to track deprecated shape types for conversion and
