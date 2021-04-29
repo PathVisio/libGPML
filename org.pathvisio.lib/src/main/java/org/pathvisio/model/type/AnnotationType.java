@@ -29,13 +29,9 @@ import java.util.Map;
 public class AnnotationType {
 	private static Map<String, AnnotationType> nameToAnnotationType = new LinkedHashMap<String, AnnotationType>();
 
-	// TODO Add more
 	public static final AnnotationType UNDEFINED = new AnnotationType("Undefined");
 	public static final AnnotationType ONTOLOGY = new AnnotationType("Ontology");
 	public static final AnnotationType TAXONOMY = new AnnotationType("Taxonomy");
-//	public static final AnnotationType PATHWAY = new AnnotationType("Pathway");
-//	public static final AnnotationType DISEASE = new AnnotationType("Disease");
-//	public static final AnnotationType CELL_TYPE = new AnnotationType("Cell type");
 
 	private String name;
 
