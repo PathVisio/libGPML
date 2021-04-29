@@ -36,22 +36,11 @@ public class ArrowHeadType {
 
 	private static Map<String, ArrowHeadType> nameToArrowHeadType = new LinkedHashMap<String, ArrowHeadType>();
 
-	// TODO to add more and changes!
+	// TODO update to new panel!! implement mapping from 2013a default to 2021
 	/** LineType LINE means the absence of an arrowhead */
 	public static final ArrowHeadType LINE = new ArrowHeadType("Line");
 	public static final ArrowHeadType ARROW = new ArrowHeadType("Arrow");
 	public static final ArrowHeadType TBAR = new ArrowHeadType("TBar");
-
-	@Deprecated
-	public static final ArrowHeadType RECEPTOR = new ArrowHeadType("Receptor");
-	@Deprecated
-	public static final ArrowHeadType LIGAND_SQUARE = new ArrowHeadType("LigandSquare");
-	@Deprecated
-	public static final ArrowHeadType RECEPTOR_SQUARE = new ArrowHeadType("ReceptorSquare");
-	@Deprecated
-	public static final ArrowHeadType LIGAND_ROUND = new ArrowHeadType("LigandRound");
-	@Deprecated
-	public static final ArrowHeadType RECEPTOR_ROUND = new ArrowHeadType("ReceptorRound");
 
 	private String name;
 
