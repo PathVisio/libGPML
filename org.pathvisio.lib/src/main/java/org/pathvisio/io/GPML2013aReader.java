@@ -276,7 +276,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				return new Xref(identifier, DataSource.getByAlias(dataSource));
 			} else {
 				DataSource.register(dataSource, dataSource);
-				Logger.log.trace("Registered xref dataSource " + dataSource); // TODO warning
+				Logger.log.trace("Registered xref datasource " + dataSource); // TODO warning
 				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 			}
 		}
@@ -801,7 +801,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					return new Xref(identifier, DataSource.getByAlias(dataSource));
 				} else {
 					DataSource.register(dataSource, dataSource);
-					System.out.println("Registered xref dataSource " + dataSource); // TODO warning
+					System.out.println("Registered xref datasource " + dataSource); // TODO warning
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
 				}
 			}

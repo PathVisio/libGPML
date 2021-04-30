@@ -80,7 +80,7 @@ public class DataNodeType {
 		if (nameToDataNodeType.containsKey(name)) {
 			return nameToDataNodeType.get(name);
 		} else {
-			Logger.log.trace("Registered data node type " + name); 
+			Logger.log.trace("Registered datanode type " + name); 
 			return new DataNodeType(name);
 		}
 	}
