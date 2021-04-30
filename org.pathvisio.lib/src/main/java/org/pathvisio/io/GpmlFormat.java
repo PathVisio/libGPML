@@ -168,21 +168,21 @@ public class GpmlFormat extends AbstractPathwayFormat {
 
 	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
-
-		String schemaFile = CURRENT.getSchemaFile();
-		URL url = Thread.currentThread().getContextClassLoader().getResource(schemaFile);
-		File xsdFile = new File(url.getPath());
+//
+//		String schemaFile = CURRENT.getSchemaFile();
+//		URL url = Thread.currentThread().getContextClassLoader().getResource(schemaFile);
+//		File xsdFile = new File(url.getPath());
 
 		try {
-			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
+//			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
 
 			SAXBuilder builder = new SAXBuilder();
 
-			/* if validate by schema */
-			if (validate) {
-				builder = new SAXBuilder(schemafactory);
-				System.out.println("Validated with schema: " + schemaFile);
-			}
+//			/* if validate by schema */
+//			if (validate) {
+//				builder = new SAXBuilder(schemafactory);
+//				System.out.println("Validated with schema: " + schemaFile);
+//			}
 			Document doc = builder.build(is);
 			Element root = doc.getRootElement();
 
@@ -193,13 +193,10 @@ public class GpmlFormat extends AbstractPathwayFormat {
 						+ " was not recognized. This application might be out of date.");
 			}
 			Logger.log.info("Recognized format " + ns);
-			Logger.log.trace("Start Validation");
-			
-			
-			if (validate)
+			if (validate) {
 				format.validateDocument(doc);
-			
-			
+				Logger.log.trace("Validated with schema: " + format.getSchemaFile());
+			}
 			Logger.log.trace("Copy map elements");
 			format.readFromRoot(pathwayModel, root);
 			System.out.println("Read pathway model successfully from gpml file");

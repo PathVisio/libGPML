@@ -19,13 +19,17 @@ package org.pathvisio.io;
 import org.jdom2.Document;
 import org.jdom2.Namespace;
 
-public interface GpmlFormatVersion 
-{
+public interface GpmlFormatVersion {
+	
 	Namespace getGpmlNamespace();
 
+	String getSchemaFile();
+
 	/**
-	 * validates a JDOM document against the xml-schema definition specified by 'xsdFile'
+	 * validates a JDOM document against the xml-schema definition specified by
+	 * 'xsdFile'
+	 * 
 	 * @param doc the document to validate
-	 */	
+	 */
 	void validateDocument(Document doc) throws ConverterException;
 }

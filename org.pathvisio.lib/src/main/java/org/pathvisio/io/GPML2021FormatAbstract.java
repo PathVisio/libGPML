@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -76,11 +77,15 @@ public abstract class GPML2021FormatAbstract {
 	 */
 	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
 		List<Group> groups = pathwayModel.getGroups();
+		List<Group> groupsToRemove = new ArrayList<Group>();
 		for (Group group : groups) {
 			if (group.getPathwayElements().isEmpty()) {
-				pathwayModel.removeGroup(group);
-				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
+				groupsToRemove.add(group);
 			}
+		}
+		for (Group groupToRemove : groupsToRemove) {
+			Logger.log.trace("Warning: Removed empty group " + groupToRemove.getElementId());
+			pathwayModel.removeGroup(groupToRemove);
 		}
 	}
 

@@ -35,60 +35,13 @@ public class TestGPMLRead extends TestCase {
 
 //	private static final File PATHVISIO_BASEDIR = new File("../..");
 
+	public static void testRead2021() throws ConverterException, IOException {
+		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2021.xml");
 
-	public static void testRead2021() throws ConverterException, IOException
-	{
-		URL url = Thread.currentThread().getContextClassLoader().getResource("readtest.xml");
 		File file = new File(url.getPath());
-//		File in = new File ("readtest.xml");
-		assertTrue (file.exists());
-	
+		assertTrue(file.exists());
+
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 	}
-	
-
-//	public static void testConvert08a13a() throws ConverterException, IOException
-//	{
-//		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2008a.gpml");
-//		assertTrue (in.exists());
-//		
-//		Pathway pwy = new Pathway();
-//		pwy.readFromXml(in, true);
-//		
-//		File tmp = File.createTempFile("test", "gpml");
-//		GpmlFormat2013a.GPML_2013A.writeToXml(pwy, tmp, true);		
-//	}
-//	
-//	/**
-//	 * Test reading 2008a & 2010a files, then writing them as 2013a
-//	 */
-//	public static void testConvert10a13a() throws ConverterException, IOException
-//	{
-//		File in = new File (PATHVISIO_BASEDIR, "testData/WP248_2010a.gpml");
-//		assertTrue (in.exists());
-//		
-//		Pathway pwy = new Pathway();
-//		pwy.readFromXml(in, true);
-//		
-//		File tmp = File.createTempFile("test", "gpml");
-//		GpmlFormat2013a.GPML_2013A.writeToXml(pwy, tmp, true);		
-//	}
-//	
-//	
-//	
-//	private static final File FILE1 = 
-//		new File (PATHVISIO_BASEDIR, "testData/2008a-deprecation-test.gpml");
-//	
-//	public void testDeprecatedFields() throws ConverterException
-//	{
-//		assertTrue (FILE1.exists());
-//		
-//		Pathway pwy = new Pathway();
-//		GpmlFormat.readFromXml(pwy, FILE1, true);
-//		
-//		PathwayElement dn = pwy.getElementById("e4fa1");
-//		assertEquals ("This is a backpage head", dn.getDynamicProperty("org.pathvisio.model.BackpageHead"));
-//	}
-//	
 }

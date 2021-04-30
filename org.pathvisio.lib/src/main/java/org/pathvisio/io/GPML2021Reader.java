@@ -108,8 +108,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected Pathway readPathway(Element root) throws ConverterException {
 		String title = root.getAttributeValue("title");
 		Element gfx = root.getChild("Graphics", root.getNamespace());
-		double boardWidth = Double.parseDouble(gfx.getAttributeValue("boardWidth"));
-		double boardHeight = Double.parseDouble(gfx.getAttributeValue("boardHeight"));
+		double boardWidth = Double.parseDouble(gfx.getAttributeValue("boardWidth").trim());
+		double boardHeight = Double.parseDouble(gfx.getAttributeValue("boardHeight").trim());
 		Color backgroundColor = ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor","ffffff")); // TODO optional?
 		Coordinate infoBox = readInfoBox(root);
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, backgroundColor, infoBox).build();
@@ -171,8 +171,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected Coordinate readInfoBox(Element root) {
 		Element ifbx = root.getChild("InfoBox", root.getNamespace());
-		double centerX = Double.parseDouble(ifbx.getAttributeValue("centerX"));
-		double centerY = Double.parseDouble(ifbx.getAttributeValue("centerY"));
+		double centerX = Double.parseDouble(ifbx.getAttributeValue("centerX").trim());
+		double centerY = Double.parseDouble(ifbx.getAttributeValue("centerY").trim());
 		return new Coordinate(centerX, centerY);
 	}
 
@@ -196,7 +196,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (username != null)
 					author.setUsername(username);
 				if (order != null)
-					author.setOrder(Integer.parseInt(order));
+					author.setOrder(Integer.parseInt(order.trim()));
 				if (xref != null)
 					author.setXref(xref);				
 				if (author != null)
@@ -496,7 +496,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				RectProperty rectProperty = readRectProperty(gfx);
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-				double rotation = Double.parseDouble(gfx.getAttributeValue("rotation"));
+				double rotation = Double.parseDouble(gfx.getAttributeValue("rotation").trim());
 				Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
 						rotation);
 				/* reads comment group, evidenceRefs */
@@ -570,10 +570,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String textLabel = st.getAttributeValue("textLabel");
 				StateType type = StateType.register(st.getAttributeValue("type","Undefined"));
 				Element gfx = st.getChild("Graphics", st.getNamespace());
-				double relX = Double.parseDouble(gfx.getAttributeValue("relX"));
-				double relY = Double.parseDouble(gfx.getAttributeValue("relY"));
-				double width = Double.parseDouble(gfx.getAttributeValue("width"));
-				double height = Double.parseDouble(gfx.getAttributeValue("height"));
+				double relX = Double.parseDouble(gfx.getAttributeValue("relX").trim());
+				double relY = Double.parseDouble(gfx.getAttributeValue("relY").trim());
+				double width = Double.parseDouble(gfx.getAttributeValue("width").trim());
+				double height = Double.parseDouble(gfx.getAttributeValue("height").trim());
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				State state = new State(elementId, dataNode.getPathwayModel(), dataNode, textLabel, type, relX, relY,
@@ -678,8 +678,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 			String elementId = pt.getAttributeValue("elementId");
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead", "Line"));
-			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x")),
-					Double.parseDouble(pt.getAttributeValue("y")));
+			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x").trim()),
+					Double.parseDouble(pt.getAttributeValue("y").trim()));
 			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 			/* add point to lineElement (elementRef, relX, and relY read later) */
 			if (point != null) 
@@ -751,8 +751,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 								String elementId = pt.getAttributeValue("elementId");
 								Point point = (Point) pathwayModel.getPathwayElement(elementId);
 								point.setElementRef(elementRef);
-								point.setRelX(Double.parseDouble(pt.getAttributeValue("relX")));
-								point.setRelY(Double.parseDouble(pt.getAttributeValue("relY")));
+								point.setRelX(Double.parseDouble(pt.getAttributeValue("relX").trim()));
+								point.setRelY(Double.parseDouble(pt.getAttributeValue("relY").trim()));
 							}
 						}
 					}
@@ -887,10 +887,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
-		double centerX = Double.parseDouble(gfx.getAttributeValue("centerX"));
-		double centerY = Double.parseDouble(gfx.getAttributeValue("centerY"));
-		double width = Double.parseDouble(gfx.getAttributeValue("width"));
-		double height = Double.parseDouble(gfx.getAttributeValue("height"));
+		double centerX = Double.parseDouble(gfx.getAttributeValue("centerX").trim());
+		double centerY = Double.parseDouble(gfx.getAttributeValue("centerY").trim());
+		double width = Double.parseDouble(gfx.getAttributeValue("width").trim());
+		double height = Double.parseDouble(gfx.getAttributeValue("height").trim());
 		return new RectProperty(new Coordinate(centerX, centerY), width, height);
 	}
 
@@ -909,7 +909,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		boolean fontStyle = gfx.getAttributeValue("fontStyle", "Normal").equals("Italic");
 		boolean fontDecoration = gfx.getAttributeValue("fontDecoration", "Normal").equalsIgnoreCase("Underline");
 		boolean fontStrikethru = gfx.getAttributeValue("fontStrikethru", "Normal").equalsIgnoreCase("Strikethru");
-		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize", "12"));
+		int fontSize = Integer.parseInt(gfx.getAttributeValue("fontSize", "12").trim());
 		HAlignType hAlignType = HAlignType.fromName(gfx.getAttributeValue("hAlign", "Center"));
 		VAlignType vAlignType = VAlignType.fromName(gfx.getAttributeValue("vAlign", "Middle"));
 		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
@@ -927,14 +927,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
 		Color borderColor = ColorUtils.stringToColor(gfx.getAttributeValue("borderColor", "000000"));
 		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("borderStyle", "Solid"));
-		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth", "1.0"));
+		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth", "1.0").trim());
 		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("fillColor", "ffffff"));
 		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType", "Rectangle"));
 		String zOrder = gfx.getAttributeValue("zOrder");
 		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
 				shapeType);
 		if (zOrder != null) {
-			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder));
+			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
 		}
 		return shapeStyleProperty;
 	}
@@ -950,12 +950,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
 		Color lineColor = ColorUtils.stringToColor(gfx.getAttributeValue("lineColor", "000000"));
 		LineStyleType lineStyle = LineStyleType.register(gfx.getAttributeValue("lineStyle", "Solid"));
-		double lineWidth = Double.parseDouble(gfx.getAttributeValue("lineWidth", "1.0"));
+		double lineWidth = Double.parseDouble(gfx.getAttributeValue("lineWidth", "1.0").trim());
 		ConnectorType connectorType = ConnectorType.register(gfx.getAttributeValue("connectorType", "Straight"));
 		String zOrder = gfx.getAttributeValue("zOrder");
 		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
 		if (zOrder != null) {
-			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
+			lineStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
 		}
 		return lineStyleProperty;
 	}

@@ -18,20 +18,25 @@ package org.pathvisio.io;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.junit.Test;
 import org.pathvisio.model.*;
+import org.w3c.dom.Document;
 
 import junit.framework.TestCase;
+
 
 public class TestGPML2013a extends TestCase {
 
 	/**
-	 * Read GPML2013a and Write GPML2013a format. Assert output equivalent to input. 
+	 * Read GPML2013a and Write GPML2013a format. Assert output equivalent to input.
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
 	 */
+	@Test
 	public static void testReadWrite() throws IOException, ConverterException {
 
 		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
@@ -42,21 +47,28 @@ public class TestGPML2013a extends TestCase {
 			if (file.isFile()) {
 				System.out.println("File: " + file.getName());
 				assertTrue(file.exists());
-				/* read xml to pathway model*/
+				/* read xml to pathway model */
 				PathwayModel pathwayModel = new PathwayModel();
 				pathwayModel.readFromXml(file, true);
 
-				/* write pathway model to xml */	
-				File tmp = File.createTempFile("testwrite", ".gpml"); 
+				/* write pathway model to xml */
+				File tmp = File.createTempFile("testwrite", ".gpml");
 				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
 				System.out.println(tmp);
-				
+
+				/**/
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document doc1 = db.parse(file);
+				DocumentBuilderFactory dbf2 = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db2 = dbf2.newDocumentBuilder();
+				Document doc2 = db2.parse(tmp);
+				assertXMLEqual(doc1, doc2); 
+
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());
 			}
 		}
-
-
 
 	}
 }

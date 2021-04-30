@@ -18,6 +18,7 @@ package org.pathvisio.io;
 
 import java.awt.Color;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -433,16 +434,20 @@ public abstract class GPML2013aFormatAbstract {
 	 * Removes group from pathwayModel if empty. Check executed after reading and
 	 * before writing.
 	 * 
-	 * @param pathwayModel the pathway model. 
+	 * @param pathwayModel the pathway model.
 	 * @throws ConverterException
 	 */
 	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
 		List<Group> groups = pathwayModel.getGroups();
+		List<Group> groupsToRemove = new ArrayList<Group>();
 		for (Group group : groups) {
 			if (group.getPathwayElements().isEmpty()) {
-				pathwayModel.removeGroup(group);
-				Logger.log.trace("Warning: Removed empty group " + group.getElementId());
+				groupsToRemove.add(group);
 			}
+		}
+		for (Group groupToRemove : groupsToRemove) {
+			Logger.log.trace("Warning: Removed empty group " + groupToRemove.getElementId());
+			pathwayModel.removeGroup(groupToRemove);
 		}
 	}
 
