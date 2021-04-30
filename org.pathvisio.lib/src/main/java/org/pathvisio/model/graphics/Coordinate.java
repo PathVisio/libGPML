@@ -50,7 +50,7 @@ public class Coordinate {
 	}
 
 	/**
-	 * Gets x coordinate value.
+	 * Returns x coordinate value.
 	 * 
 	 * @param x the coordinate value for x.
 	 */
@@ -70,7 +70,7 @@ public class Coordinate {
 	}
 
 	/**
-	 * Gets y coordinate value.
+	 * Returns y coordinate value.
 	 * 
 	 * @param y the coordinate value for y.
 	 */

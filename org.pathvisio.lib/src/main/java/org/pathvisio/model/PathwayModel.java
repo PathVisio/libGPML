@@ -500,7 +500,7 @@ public class PathwayModel {
 	private File sourceFile = null;
 
 	/**
-	 * Gets the xml file containing the Gpml/mapp pathway currently displayed
+	 * Returns the xml file containing the Gpml/mapp pathway currently displayed
 	 * 
 	 * @return current xml file
 	 */

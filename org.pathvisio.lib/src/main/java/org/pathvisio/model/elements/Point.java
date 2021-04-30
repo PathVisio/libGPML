@@ -163,7 +163,7 @@ public class Point extends PathwayElement {
 	}
 
 	/**
-	 * Gets the relative x coordinate. When the given point is linked to a pathway
+	 * Returns the relative x coordinate. When the given point is linked to a pathway
 	 * element, relX and relY are the relative coordinates on the element, where 0,0
 	 * is at the center of the object and 1,1 at the bottom right corner of the
 	 * object.
@@ -191,7 +191,7 @@ public class Point extends PathwayElement {
 	}
 
 	/**
-	 * Gets the relative y coordinate. When the given point is linked to a pathway
+	 * Returns the relative y coordinate. When the given point is linked to a pathway
 	 * element, relX and relY are the relative coordinates on the element, where 0,0
 	 * is at the center of the object and 1,1 at the bottom right corner of the
 	 * object.

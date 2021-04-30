@@ -78,7 +78,7 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Gets the text of of the shape.
+	 * Returns the text of of the shape.
 	 * 
 	 * @return textLabel the text of of the shape.
 	 * 
@@ -98,7 +98,7 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Gets the rotation of this shape.
+	 * Returns the rotation of this shape.
 	 * 
 	 * @return rotation the rotation of the shape.
 	 */

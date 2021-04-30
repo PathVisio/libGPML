@@ -73,7 +73,7 @@ public class Anchor extends PathwayElement {
 	}
 
 	/**
-	 * Gets the proportional distance of an anchor along the line it belongs to,
+	 * Returns the proportional distance of an anchor along the line it belongs to,
 	 * between 0 and 1.
 	 * 
 	 * @return position the position of the anchor.
@@ -96,7 +96,7 @@ public class Anchor extends PathwayElement {
 	}
 
 	/**
-	 * Gets the visual representation of an anchor, e.g., none, square.
+	 * Returns the visual representation of an anchor, e.g., none, square.
 	 * 
 	 * @return shapeType the shape type of the anchor. Return default square
 	 *         shapeType if null.

@@ -390,7 +390,7 @@ public class Pathway {
 	}
 
 	/**
-	 * Gets a set of all dynamic property keys.
+	 * Returns a set of all dynamic property keys.
 	 * 
 	 * @return a set of all dynamic property keys.
 	 */

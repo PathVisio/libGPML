@@ -79,7 +79,7 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Gets the text of of the label.
+	 * Returns the text of of the label.
 	 * 
 	 * @return textLabel the text of of the label.
 	 * 
@@ -99,7 +99,7 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Gets the hyperlink for a Label.
+	 * Returns the hyperlink for a Label.
 	 * 
 	 * @return href the hyperlink reference to a url.
 	 */

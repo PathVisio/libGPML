@@ -154,7 +154,7 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Gets GroupType. GroupType is GROUP by default.
+	 * Returns GroupType. GroupType is GROUP by default.
 	 * 
 	 * TODO: Default GroupType used to be NONE. NONE needs to be changed to GROUP.
 	 * 
@@ -177,7 +177,7 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Gets the text of of the group.
+	 * Returns the text of of the group.
 	 * 
 	 * @return textLabel the text of of the group.
 	 * 

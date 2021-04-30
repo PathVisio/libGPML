@@ -110,7 +110,7 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Gets the name, term, or text of the annotation.
+	 * Returns the name, term, or text of the annotation.
 	 * 
 	 * @return value the name, term, or text of the annotation.
 	 */
@@ -128,7 +128,7 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Gets the type of the annotation.
+	 * Returns the type of the annotation.
 	 * 
 	 * @return type the type of annotation, e.g. ontology term.
 	 */
@@ -146,7 +146,7 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Gets the url of the annotation.
+	 * Returns the url of the annotation.
 	 * 
 	 * @return url the url of the annotation.
 	 */
@@ -164,7 +164,7 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Gets the Annotation Xref.
+	 * Returns the Annotation Xref.
 	 * 
 	 * @return xref the annotation xref.
 	 */
