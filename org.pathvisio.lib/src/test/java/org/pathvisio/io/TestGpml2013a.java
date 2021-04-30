@@ -40,13 +40,12 @@ public class TestGPML2013a extends TestCase {
 	 * @throws ConverterException
 	 * @throws SAXException
 	 */
-	@Test
 	public static void testReadWrite() throws IOException, ConverterException, SAXException {
 
 		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
-		for (int i = 60; i < listOfFiles.length; i++) {
+		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File: " + file.getName());

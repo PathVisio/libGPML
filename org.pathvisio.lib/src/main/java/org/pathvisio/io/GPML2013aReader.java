@@ -66,6 +66,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Pathway pathway = readPathway(root);
 		pathwayModel.setPathway(pathway); 
+		readLegend(pathway, root);
 		readBiopax(pathwayModel, root);
 		readPathwayInfo(pathwayModel, root);
 		/* reads groups first */
@@ -579,9 +580,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			/* finds parent datanode from state elementRef */
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementRef);
-			/* finally instantiate state */
+			/* instantiates state */
 			State state = new State(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height,
 					fontProperty, shapeStyleProperty);
+			/* sets textColor to same color as borderColor */
+			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
 			/* reads comment group */
 			readElementInfo(state, st);
 			readStateDynamicProperties(state, st);
