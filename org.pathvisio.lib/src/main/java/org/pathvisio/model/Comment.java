@@ -50,7 +50,7 @@ public class Comment {
 	}
 
 	/**
-	 * Gets the source of the Comment.
+	 * Returns the source of the Comment.
 	 * 
 	 * @return source the source of the comment.
 	 */
@@ -71,7 +71,7 @@ public class Comment {
 	}
 
 	/**
-	 * Gets the text of the Comment.
+	 * Returns the text of the Comment.
 	 * 
 	 * @return comment the text of the comment.
 	 */

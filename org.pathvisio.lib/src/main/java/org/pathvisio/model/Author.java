@@ -116,7 +116,7 @@ public class Author {
 	}
 
 	/**
-	 * Gets the name of this author.
+	 * Returns the name of this author.
 	 * 
 	 * @return name the name of this author.
 	 */
@@ -134,7 +134,7 @@ public class Author {
 	}
 
 	/**
-	 * Gets the username of this author.
+	 * Returns the username of this author.
 	 * 
 	 * @return username the username of this author.
 	 */
@@ -152,7 +152,7 @@ public class Author {
 	}
 
 	/**
-	 * Gets the authorship order of this author.
+	 * Returns the authorship order of this author.
 	 * 
 	 * @return order the authorship order.
 	 */

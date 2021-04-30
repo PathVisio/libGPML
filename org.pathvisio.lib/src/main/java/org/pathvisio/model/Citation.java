@@ -96,7 +96,7 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Gets the Citation Xref.
+	 * Returns the Citation Xref.
 	 * 
 	 * @return xref the citation xref.
 	 */
@@ -134,7 +134,7 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Gets the url of the citation.
+	 * Returns the url of the citation.
 	 * 
 	 * @return url the url of the citation.
 	 */
