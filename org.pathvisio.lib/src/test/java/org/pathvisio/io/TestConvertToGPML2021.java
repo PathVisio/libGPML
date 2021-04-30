@@ -24,7 +24,7 @@ import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
-public class TestGpmls extends TestCase {
+public class TestConvertToGPML2021 extends TestCase {
 
 //	private static final File PATHVISIO_BASEDIR = new File("../..");
 

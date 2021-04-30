@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -208,13 +209,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		/* warnings conversion GPML2021 to GPML2013a */
 		if (!pathway.getAuthors().isEmpty())
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway authors info lost.");
+		if (!pathway.getAnnotationRefs().isEmpty())
+			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway annotationRef info lost.");
 		if (!pathwayModel.getEvidences().isEmpty())
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway evidences info lost.");
 		if (pathway.getXref() != null)
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway xref info lost.");
-		if (pathway.getBackgroundColor() != null)
+		if (!pathway.getBackgroundColor().equals(Color.decode("#ffffff")))
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway backgroundColor info lost.");
-
 	}
 
 	/**
@@ -629,8 +631,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				bp.addContent(ocv);
 			}
 			if (annotation.getUrl() != null) {
-				Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a: Annotation "
-						+ annotation.getElementId() + " url info lost.");
+				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Annotation "
+						+ annotation.getElementId() + " url and elementId info lost.");
 			}
 		}
 	}
@@ -661,7 +663,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (pubxf != null)
 				bp.addContent(pubxf);
 			if (citation.getUrl() != null) {
-				Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a: Citation " + citation.getElementId()
+				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Citation " + citation.getElementId()
 						+ " url info lost.");
 			}
 		}
@@ -776,10 +778,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		writeComments(elementInfo.getComments(), e);
 		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
 		if (!elementInfo.getAnnotationRefs().isEmpty()) {
-			Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a format: AnnotationRef info lost.");
+			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a format: AnnotationRef info lost.");
 		}
 		if (!elementInfo.getEvidenceRefs().isEmpty()) {
-			Logger.log.trace("Warning: Conversion GPML2021 to older GPML2013a format: EvidenceRef info lost.");
+			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a format: EvidenceRef info lost.");
 		}
 	}
 

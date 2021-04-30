@@ -49,7 +49,7 @@ public class ColorUtils {
 	 */
 	public static Color hexToColor(String hex) {
 		if (hex.length() < 8) {
-			if (!hex.contains("+"))
+			if (!hex.contains("#"))
 				hex = "#" + hex;
 			return Color.decode(hex);
 		} else {

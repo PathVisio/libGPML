@@ -69,7 +69,7 @@ public class LineStyleType {
 		if (nameToLineStyleType.containsKey(name)) {
 			return nameToLineStyleType.get(name);
 		} else {
-			Logger.log.trace("Registered linestyletype " + name); 
+			Logger.log.trace("Registered linestyle type " + name); 
 			return new LineStyleType(name);
 		}
 	}

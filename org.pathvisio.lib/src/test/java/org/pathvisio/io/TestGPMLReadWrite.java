@@ -24,12 +24,9 @@ import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
-public class TestGpml extends TestCase {
-
-//	private static final File PATHVISIO_BASEDIR = new File("../..");
+public class TestGPMLReadWrite extends TestCase {
 
 	public static void testReadWrite() throws IOException, ConverterException {
-//		URL url = Thread.currentThread().getContextClassLoader().getResource("double-edge.gpml");
 		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2021.xml");
 
 		File file = new File(url.getPath());
@@ -40,8 +37,10 @@ public class TestGpml extends TestCase {
 		
 //		
 		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
 		System.out.println(tmp);
+		
+		
 	}
 }

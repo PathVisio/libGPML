@@ -24,39 +24,37 @@ import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
-public class TestGPML2013a extends TestCase {
+public class TestGPMLsReadWrite extends TestCase {
 
-	/**
-	 * Read GPML2013a and Write GPML2013a format. Assert output equivalent to input. 
-	 * 
-	 * @throws IOException
-	 * @throws ConverterException
-	 */
+//	private static final File PATHVISIO_BASEDIR = new File("../..");
+
 	public static void testReadWrite() throws IOException, ConverterException {
 
 		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+
+//		File folder = new File(System.getProperty("sampleGPML2013a")+"/src/test/resources/");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
 		for (int i = 60; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File: " + file.getName());
+//				URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
+//				System.out.println(url.getPath());
 				assertTrue(file.exists());
-				/* read xml to pathway model*/
 				PathwayModel pathwayModel = new PathwayModel();
 				pathwayModel.readFromXml(file, true);
 
-				/* write pathway model to xml */	
-				File tmp = File.createTempFile("testwrite", ".gpml"); 
-				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
-				System.out.println(tmp);
-				
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());
 			}
 		}
 
-
+////		
+//		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
+////		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+//		System.out.println(tmp);
 
 	}
 }
