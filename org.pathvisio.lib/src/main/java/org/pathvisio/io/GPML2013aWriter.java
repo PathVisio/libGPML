@@ -395,7 +395,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
 				writeColor(state.getFontProperty(), gfx);
 				/* optionally writes xref */
-				writeXref(state.getXref(), st, false);
+				writeXref(state.getXref(), st, true);
 				if (st != null) {
 					root.addContent(st);
 				}

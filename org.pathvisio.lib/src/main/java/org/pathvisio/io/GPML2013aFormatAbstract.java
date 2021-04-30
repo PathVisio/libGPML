@@ -62,8 +62,7 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * Static variables for reading and writing (deprecated) features of GPML2013a
-	 * format.
+	 * Namespaces and string used for writing GPML2013a
 	 */
 	public static final Namespace RDF = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 	public static final Namespace RDFS = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -71,7 +70,11 @@ public abstract class GPML2013aFormatAbstract {
 			"http://www.biopax.org/release/biopax-level3.owl#");
 	public static final Namespace OWL = Namespace.getNamespace("owl", "http://www.w3.org/2002/07/owl#");
 	public final static String RDF_STRING = "http://www.w3.org/2001/XMLSchema#string";
-	
+
+	/**
+	 * These dynamic properties store deprecated GPML2013a properties, but will not
+	 * be written to GPML
+	 */
 	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
 	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
 	public final static String PATHWAY_EMAIL = "pathway_email_gpml2013a";
@@ -79,11 +82,13 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
 	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
+
+	/** Strings used when writing GPML2013a */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
+
+	// TODO
 	public final static String OLD_ANCHOR_SHAPE = "ReceptorRound"; // TODO
-
-
 
 	/**
 	 * Deprecated map used to track deprecated shape types for conversion and
