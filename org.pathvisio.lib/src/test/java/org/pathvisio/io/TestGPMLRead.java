@@ -33,11 +33,9 @@ import junit.framework.TestCase;
 
 public class TestGPMLRead extends TestCase {
 
-//	private static final File PATHVISIO_BASEDIR = new File("../..");
-
-	public static void testRead2021() throws ConverterException, IOException {
-		URL url = Thread.currentThread().getContextClassLoader().getResource("WP2516_79964.gpml");
-
+	public static void testReadWrite() throws ConverterException, IOException {
+		
+		URL url = Thread.currentThread().getContextClassLoader().getResource("WP78_70014.gpml");
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
 

@@ -315,14 +315,15 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
 			String content = cmt.getText();
-			if (content != null && !content.equals("")) {
-				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
+			if (content != null || source != null) {
+				Comment comment = new Comment(content); 
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
 				pathwayModel.getPathway().addComment(new Comment(source, content));
 			}
 		}
 	}
+	
 
 	/**
 	 * Reads dynamic property {@link Pathway#setDynamicProperty()} information for
@@ -789,8 +790,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
 			String commentText = cmt.getText();
-			if (commentText != null && !commentText.equals("")) {
-				Comment comment = new Comment(commentText); // TODO needs parent pathwayModel?
+			if (commentText != null || source != null) {
+				Comment comment = new Comment(commentText);
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
 				elementInfo.addComment(new Comment(source, commentText));

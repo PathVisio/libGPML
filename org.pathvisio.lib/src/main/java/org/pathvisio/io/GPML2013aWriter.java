@@ -620,9 +620,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (annotation == null)
 				continue;
 			Element ocv = new Element("openControlledVocabulary", BIOPAX);
-			Element term = new Element("TERM", RDF);
-			Element id = new Element("ID", RDF);
-			Element onto = new Element("Ontology", RDF);
+			Element term = new Element("TERM", BIOPAX);
+			Element id = new Element("ID", BIOPAX);
+			Element onto = new Element("Ontology", BIOPAX);
 			term.setAttribute("datatype", RDF_STRING, RDF);
 			id.setAttribute("datatype", RDF_STRING, RDF);
 			onto.setAttribute("datatype", RDF_STRING, RDF);

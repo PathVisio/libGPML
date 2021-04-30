@@ -310,7 +310,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = getAttr("Comment", "Source", cmt);
 			String commentText = cmt.getText();
-			if (commentText != null && !commentText.equals("")) {
+			if (commentText != null || source != null ) {
 				Comment comment = new Comment(commentText);
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
@@ -840,9 +840,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
-			String source = cmt.getAttributeValue("source"); // TODO use getAttr?
+			String source = cmt.getAttributeValue("Source"); // TODO use getAttr?
 			String content = cmt.getText();
-			if (content != null && !content.equals("")) {
+			if (content != null || source != null) {
 				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
 				if (source != null && !source.equals(""))
 					comment.setSource(source);

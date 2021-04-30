@@ -27,10 +27,10 @@ package org.pathvisio.model;
 public class Comment {
 
 	private String source; // optional
-	private String commentText;
+	private String commentText; //optional 
 
 	/**
-	 * Instantiates a Comment.
+	 * Instantiates a Comment with source and commentText.
 	 * 
 	 * @param source the source of the comment.
 	 * @param text   the text of the comment, between Comment tags in GPML.
@@ -41,13 +41,14 @@ public class Comment {
 	}
 
 	/**
-	 * Instantiates a Comment with no source.
+	 * Instantiates a Comment with just commentText.
 	 * 
 	 * @param text the text of the comment, between Comment tags in GPML.
 	 */
 	public Comment(String commentText) {
 		this.commentText = commentText;
 	}
+	
 
 	/**
 	 * Returns the source of the Comment.

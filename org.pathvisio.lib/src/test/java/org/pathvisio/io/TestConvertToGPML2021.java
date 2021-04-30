@@ -26,35 +26,32 @@ import junit.framework.TestCase;
 
 public class TestConvertToGPML2021 extends TestCase {
 
-//	private static final File PATHVISIO_BASEDIR = new File("../..");
-
 	public static void testReadWrite() throws IOException, ConverterException {
-
-		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
-
-//		File folder = new File(System.getProperty("sampleGPML2013a")+"/src/test/resources/");
+		
+//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210410-gpml-Homo_sapiens");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
-		for (int i = 60; i < listOfFiles.length; i++) {
+		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
-				System.out.println("File: " + file.getName());
-//				URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
-//				System.out.println(url.getPath());
+				System.out.println("File " + i + " : "+ file.getName());
 				assertTrue(file.exists());
+				/* read xml to pathway model */
 				PathwayModel pathwayModel = new PathwayModel();
 				pathwayModel.readFromXml(file, true);
+
+				/* write pathway model to xml */
+				File tmp = File.createTempFile(file.getName() + "_convert2013a", ".gpml");
+				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+				System.out.println(tmp);
+
+				/* method to assert file is same? */
 
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());
 			}
 		}
-
-////		
-//		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
-////		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
-//		System.out.println(tmp);
 
 	}
 }
