@@ -30,7 +30,7 @@ public class TestGpml extends TestCase {
 
 	public static void testReadWrite() throws IOException, ConverterException {
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("double-edge.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("sampleGPML2013a/WP4_73615.gpml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2021.xml");
 
 		File file = new File(url.getPath());
 		assertTrue (file.exists());
@@ -40,8 +40,8 @@ public class TestGpml extends TestCase {
 		
 //		
 		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
 		System.out.println(tmp);
 	}
 }

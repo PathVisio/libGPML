@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This class contains extensible enum for Annotation type property.
  * 
@@ -63,6 +65,7 @@ public class AnnotationType {
 		if (nameToAnnotationType.containsKey(name)) {
 			return nameToAnnotationType.get(name);
 		} else {
+			Logger.log.trace("Registered annotation type " + name); 
 			return new AnnotationType(name);
 		}
 	}

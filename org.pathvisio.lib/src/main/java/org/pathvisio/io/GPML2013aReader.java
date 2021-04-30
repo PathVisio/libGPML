@@ -83,7 +83,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readPoints(pathwayModel, root, lineList);
 		/* removes empty groups */
 		removeEmptyGroups(pathwayModel);
-		Logger.log.trace("Read pathway model successfully from gpml file");
 		return pathwayModel;
 	}
 
@@ -98,8 +97,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected Pathway readPathway(Element root) throws ConverterException {
 		String title = getAttr("Pathway", "Name", root);
 		Element gfx = root.getChild("Graphics", root.getNamespace());
-		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx));
-		double boardHeight = Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx));
+		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx).trim());
+		double boardHeight = Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx).trim());
 		Coordinate infoBox = readInfoBox(root);
 		/* backgroundColor default is ffffff (white) */
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff"), infoBox)
@@ -146,8 +145,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected Coordinate readInfoBox(Element root) {
 		Element ifbx = root.getChild("InfoBox", root.getNamespace());
-		double centerX = Double.parseDouble(ifbx.getAttributeValue("CenterX"));
-		double centerY = Double.parseDouble(ifbx.getAttributeValue("CenterY"));
+		double centerX = Double.parseDouble(ifbx.getAttributeValue("CenterX").trim());
+		double centerY = Double.parseDouble(ifbx.getAttributeValue("CenterY").trim());
 		return new Coordinate(centerX, centerY);
 	}
 
@@ -277,7 +276,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				return new Xref(identifier, DataSource.getByAlias(dataSource));
 			} else {
 				DataSource.register(dataSource, dataSource);
-				Logger.log.trace("DataSource: " + dataSource + " is registered."); // TODO warning
+				Logger.log.trace("Registered xref dataSource " + dataSource); // TODO warning
 				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 			}
 		}
@@ -501,7 +500,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx));
+			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx).trim());
 			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
 			/* reads comment group, evidenceRefs */
 			readShapedElement(shape, shp); // TODO handle dynamic properties....
@@ -569,10 +568,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String textLabel = getAttr("State", "TextLabel", st);
 			StateType type = StateType.register(getAttr("State", "StateType", st));
 			Element gfx = st.getChild("Graphics", st.getNamespace());
-			double relX = Double.parseDouble(getAttr("State.Graphics", "RelX", gfx));
-			double relY = Double.parseDouble(getAttr("State.Graphics", "RelY", gfx));
-			double width = Double.parseDouble(getAttr("State.Graphics", "Width", gfx));
-			double height = Double.parseDouble(getAttr("State.Graphics", "Height", gfx));
+			double relX = Double.parseDouble(getAttr("State.Graphics", "RelX", gfx).trim());
+			double relY = Double.parseDouble(getAttr("State.Graphics", "RelY", gfx).trim());
+			double width = Double.parseDouble(getAttr("State.Graphics", "Width", gfx).trim());
+			double height = Double.parseDouble(getAttr("State.Graphics", "Height", gfx).trim());
 			/* state does not have font properties in GPML2013a, set default values */
 			FontProperty fontProperty = new FontProperty(Color.decode("#000000"), "Arial", false, false, false, false,
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
@@ -719,7 +718,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = getAttr(base + ".Graphics.Anchor", "GraphId", an);
 			if (elementId == null)
 				elementId = lineElement.getPathwayModel().getUniqueElementId();
-			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an));
+			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
 			AnchorType shapeType = AnchorType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
 			if (anchor != null)
@@ -757,8 +756,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						elementId = lineElement.getPathwayModel().getUniqueElementId();
 					ArrowHeadType arrowHead = ArrowHeadType
 							.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
-					Coordinate xy = new Coordinate(Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt)),
-							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt)));
+					Coordinate xy = new Coordinate(Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
+							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));
 					Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 					if (point != null)
 						lineElement.addPoint(point);
@@ -768,8 +767,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
 						if (elementRef != null) {
 							point.setElementRef(elementRef);
-							point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX")));
-							point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY")));
+							point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX").trim()));
+							point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY").trim()));
 						}
 					}
 				}
@@ -802,7 +801,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					return new Xref(identifier, DataSource.getByAlias(dataSource));
 				} else {
 					DataSource.register(dataSource, dataSource);
-					System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
+					System.out.println("Registered xref dataSource " + dataSource); // TODO warning
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
 				}
 			}
@@ -955,10 +954,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		double centerX = Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx));
-		double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx));
-		double width = Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx));
-		double height = Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx));
+		double centerX = Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx).trim());
+		double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx).trim());
+		double width = Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx).trim());
+		double height = Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx).trim());
 		return new RectProperty(new Coordinate(centerX, centerY), width, height);
 	}
 
@@ -984,7 +983,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		boolean fontStyle = fontStyleStr != null && fontStyleStr.equalsIgnoreCase("Italic");
 		boolean fontDecoration = fontDecorationStr != null && fontDecorationStr.equalsIgnoreCase("Underline");
 		boolean fontStrikethru = fontStrikethruStr != null && fontStrikethruStr.equalsIgnoreCase("Strikethru");
-		int fontSize = Integer.parseInt(getAttr(base + ".Graphics", "FontSize", gfx));
+		int fontSize = Integer.parseInt(getAttr(base + ".Graphics", "FontSize", gfx).trim());
 		HAlignType hAlignType = HAlignType.fromName(getAttr(base + ".Graphics", "Align", gfx));
 		VAlignType vAlignType = VAlignType.fromName(getAttr(base + ".Graphics", "Valign", gfx));
 		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
@@ -1005,14 +1004,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		String base = ((Element) gfx.getParent()).getName();
 		Color borderColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		LineStyleType borderStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
-		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx));
+		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		Color fillColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "FillColor", gfx));
 		ShapeType shapeType = ShapeType.register(getAttr(base + ".Graphics", "ShapeType", gfx));
 		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
 		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
 				shapeType);
 		if (zOrder != null) {
-			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder));
+			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
 		}
 		return shapeStyleProperty;
 	}
@@ -1031,12 +1030,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		String base = ((Element) gfx.getParent()).getName();
 		Color lineColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		LineStyleType lineStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
-		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx));
+		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		ConnectorType connectorType = ConnectorType.register(getAttr(base + ".Graphics", "ConnectorType", gfx));
 		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
 		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
 		if (zOrder != null) {
-			lineStyleProperty.setZOrder(Integer.parseInt(zOrder));
+			lineStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
 		}
 		return lineStyleProperty;
 	}

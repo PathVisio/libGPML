@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
 import org.pathvisio.model.elements.Point;
 
 /**
@@ -72,6 +73,7 @@ public class ArrowHeadType {
 		if (nameToArrowHeadType.containsKey(name)) {
 			return nameToArrowHeadType.get(name);
 		} else {
+			Logger.log.trace("Registered arrowhead type " + name); 
 			return new ArrowHeadType(name);
 		}
 	}

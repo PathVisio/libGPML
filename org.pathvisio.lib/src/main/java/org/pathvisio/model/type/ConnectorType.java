@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This class contains extensible enum for different connectorType property.
  *
@@ -65,6 +67,7 @@ public class ConnectorType {
 		if (nameToConnectorType.containsKey(name)) {
 			return nameToConnectorType.get(name);
 		} else
+			Logger.log.trace("Registered connector type " + name); 
 			return new ConnectorType(name);
 	}
 

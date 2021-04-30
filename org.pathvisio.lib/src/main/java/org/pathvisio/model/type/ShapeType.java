@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This enum class contains extensible enum for Shape type property.
  * 
@@ -101,6 +103,7 @@ public class ShapeType {
 		if (nameToShapeType.containsKey(name)) {
 			return nameToShapeType.get(name);
 		} else {
+			Logger.log.trace("Registered shape type " + name); 
 			return new ShapeType(name);
 		}
 	}

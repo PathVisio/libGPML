@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This class contains extensible enum for Group type property. Groups can have
  * different biological meanings (e.g. protein Complex), and can be rendered in
@@ -69,6 +71,7 @@ public class GroupType {
 		if (nameToGroupType.containsKey(name)) {
 			return nameToGroupType.get(name);
 		} else {
+			Logger.log.trace("Registered group type " + name); 
 			return new GroupType(name);
 		}
 	}

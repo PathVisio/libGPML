@@ -260,23 +260,10 @@
 	<xsd:simpleType name="RotationType">
 		<xsd:annotation>
 			<xsd:documentation>
-				 A float value (rotation in radians) or a string (Top, Right, Bottom, Left) 
-				 for each of the four right angles.
+				 A float value (rotation in radians). 
 			</xsd:documentation>
 		</xsd:annotation>	
-		<xsd:union>
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="Top"/> <!-- rotation of 0.0 !-->
-					<xsd:enumeration value="Right"/> <!-- rotation of 1/2 pi !-->
-					<xsd:enumeration value="Bottom"/> <!-- rotation of 1 pi !-->
-					<xsd:enumeration value="Left"/> <!-- rotation of 3/2 pi !-->
-				</xsd:restriction>
-			</xsd:simpleType>
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:float"/> <!-- rotation is always measured in radians !-->
-			</xsd:simpleType>
-		</xsd:union>
+		<xsd:restriction base="xsd:float"/>
 	</xsd:simpleType>
 
 	<xsd:simpleType name="ColorType">
@@ -420,9 +407,12 @@
 									</xsd:documentation>
 								</xsd:annotation>
 								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element ref="gpml:Xref" minOccurs="0" maxOccurs="1"/>
+									</xsd:sequence>	
 									<xsd:attribute name="name" type="xsd:string" use="required"/>
-									<xsd:attribute name="fullName" type="xsd:string" use="optional"/>
-									<xsd:attribute name="email" type="xsd:string" use="optional"/>
+									<xsd:attribute name="username" type="xsd:string" use="optional"/>
+									<xsd:attribute name="order" type="xsd:integer" use="optional" />	
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
@@ -561,7 +551,7 @@
 					</xsd:annotation>
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element ref="gpml:Xref" minOccurs="1" maxOccurs="1"/>
+							<xsd:element ref="gpml:Xref" minOccurs="0" maxOccurs="1"/>
 							<xsd:element ref="gpml:States" minOccurs="0" maxOccurs="1"/>
 							<!-- Graphics related attributes-->
 							<xsd:element name="Graphics" minOccurs="1" maxOccurs="1">
@@ -586,7 +576,7 @@
 							</xsd:annotation>
 						</xsd:attribute>
 						<xsd:attribute name="textLabel" type="xsd:string" use="required" />
-						<xsd:attribute name="type" type="xsd:string" default="Unknown">
+						<xsd:attribute name="type" type="xsd:string" default="Undefined">
 							<xsd:annotation>
 								<xsd:documentation>
 									Basic GPML types are:"Protein", "Rna", "Complex", "GeneProduct", 
@@ -710,7 +700,7 @@
 					</xsd:annotation>
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element ref="gpml:Xref" minOccurs="1" maxOccurs="1"/>
+							<xsd:element ref="gpml:Xref" minOccurs="0" maxOccurs="1"/>
 							<xsd:element name="Waypoints" minOccurs="1" maxOccurs="1">
 								<xsd:complexType>
 									<xsd:sequence>
@@ -911,7 +901,7 @@
 									<xsd:attributeGroup ref="gpml:RectAttributes"/>
 									<xsd:attributeGroup ref="gpml:FontAttributes" />
 									<xsd:attributeGroup ref="gpml:ShapeStyleAttributes" />
-									<xsd:attribute name="rotation" type="gpml:RotationType" default="Top" />
+									<xsd:attribute name="rotation" type="gpml:RotationType" default="0.0" />
 								</xsd:complexType>
 							</xsd:element>
 							<xsd:group ref="gpml:CommentGroup" />
@@ -1358,8 +1348,6 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="x" type="xsd:float" use="optional" />
-			<xsd:attribute name="y" type="xsd:float" use="optional" />
 	        <xsd:attribute name="shapeType" default="Square" type="xsd:string" >
 				<xsd:annotation>
 					<xsd:documentation>

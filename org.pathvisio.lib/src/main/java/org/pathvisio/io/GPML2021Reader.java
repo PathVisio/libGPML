@@ -94,7 +94,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readPointElementRef(pathwayModel, root);
 		/* removes empty groups */
 		removeEmptyGroups(pathwayModel);
-		Logger.log.trace("Read pathway model successfully from gpml file");
 		return pathwayModel;
 	}
 
@@ -155,7 +154,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					return new Xref(identifier, DataSource.getByAlias(dataSource));
 				} else {
 					DataSource.register(dataSource, dataSource);
-					Logger.log.trace("Registered xref dataSource: " + dataSource); 
+					Logger.log.trace("Registered xref dataSource " + dataSource); 
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
 				}
 			}

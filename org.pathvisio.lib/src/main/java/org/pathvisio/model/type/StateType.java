@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This class contains extensible enum for state types.
  * 
@@ -68,6 +70,7 @@ public class StateType {
 		if (nameToStateType.containsKey(name)) {
 			return nameToStateType.get(name);
 		} else {
+			Logger.log.trace("Registered state type " + name); 
 			return new StateType(name);
 		}
 	}

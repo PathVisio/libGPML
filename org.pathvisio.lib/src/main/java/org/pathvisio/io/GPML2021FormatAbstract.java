@@ -93,8 +93,6 @@ public abstract class GPML2021FormatAbstract {
 	public void validateDocument(Document doc) throws ConverterException {
 		ClassLoader cl = PathwayModel.class.getClassLoader();
 		InputStream is = cl.getResourceAsStream(xsdFile);
-
-		System.out.println(xsdFile);
 		if (is != null) {
 			Schema schema;
 			try {

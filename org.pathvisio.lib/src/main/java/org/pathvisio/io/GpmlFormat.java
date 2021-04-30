@@ -50,8 +50,6 @@ import org.xml.sax.InputSource;
 public class GpmlFormat extends AbstractPathwayFormat {
 	static private final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
 	static private final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
-
-//	static private final GpmlFormat2013a PREVIOUS = GpmlFormat2013a.GPML_2013A;
 	public static final Namespace RDF = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 	public static final Namespace RDFS = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 	public static final Namespace BIOPAX = Namespace.getNamespace("bp",
@@ -129,9 +127,9 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	}
 
 	/**
-	 * Read the JDOM document from the file specified
+	 * Read the JDOM document from the string specified
 	 * 
-	 * @param s      the string input.
+	 * @param str    the string input.
 	 * @param string the file from which the JDOM document should be read.
 	 * @throws ConverterException
 	 */
@@ -148,17 +146,6 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
-//	static public void readFromXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
-//		InputStream inf;
-//		try {
-//			inf = new FileInputStream(file);
-//		} catch (FileNotFoundException e) {
-//			throw new ConverterException(e);
-//		}
-//		readFromXmlImpl(pathwayModel, new InputSource(inf), validate);
-//	}
-//
-//	
 	static public void readFromXml(PathwayModel pathwayModel, InputStream in, boolean validate)
 			throws ConverterException {
 		readFromXmlImpl(pathwayModel, new InputSource(in), validate);
@@ -182,7 +169,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 
-		String schemaFile = PREVIOUS.getSchemaFile();
+		String schemaFile = CURRENT.getSchemaFile();
 		URL url = Thread.currentThread().getContextClassLoader().getResource(schemaFile);
 		File xsdFile = new File(url.getPath());
 
@@ -207,8 +194,12 @@ public class GpmlFormat extends AbstractPathwayFormat {
 			}
 			Logger.log.info("Recognized format " + ns);
 			Logger.log.trace("Start Validation");
+			
+			
 			if (validate)
 				format.validateDocument(doc);
+			
+			
 			Logger.log.trace("Copy map elements");
 			format.readFromRoot(pathwayModel, root);
 			System.out.println("Read pathway model successfully from gpml file");
@@ -221,53 +212,6 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		}
 		return pathwayModel;// TODO do we want to return pathway or not?
 	}
-
-//	private static void readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
-//			throws ConverterException {
-//		// Start XML processing
-//
-//		SAXBuilder builder = new SAXBuilder(false); // no validation when reading the xml file
-//		// try to read the file; if an error occurs, catch the exception and print
-//		// feedback
-//		try {
-//			Logger.log.trace("Build JDOM tree");
-//			// build JDOM tree
-//			Document doc = builder.build(is);
-//
-//			// Copy the pathwayModel information to a VPathway
-//			Element root = doc.getRootElement();
-//			if (!root.getName().equals("Pathway")) {
-//				throw new ConverterException("Not a PathwayModel file");
-//			}
-//
-//			Namespace ns = root.getNamespace();
-//			GpmlFormatReader format = getReaderForNamespace(ns);
-//			if (format == null) {
-//				throw new ConverterException("This file looks like a pathwayModel, " + "but the namespace " + ns
-//						+ " was not recognized. This application might be out of date.");
-//			}
-//			Logger.log.info("Recognized format " + ns);
-//
-//			Logger.log.trace("Start Validation");
-//			if (validate)
-//				format.validateDocument(doc);
-//			Logger.log.trace("Copy map elements");
-//
-//			format.readFromRoot(pathwayModel, root);
-//		} catch (JDOMParseException pe) {
-//			throw new ConverterException(pe);
-//		} catch (JDOMException e) {
-//			throw new ConverterException(e);
-//		} catch (IOException e) {
-//			throw new ConverterException(e);
-//		} catch (NullPointerException e) {
-//			throw new ConverterException(e);
-//		} catch (IllegalArgumentException e) {
-//			throw new ConverterException(e);
-//		} catch (Exception e) { // Make all types of exceptions a ConverterException
-//			throw new ConverterException(e);
-//		}
-//	}
 
 	@Override
 	public boolean isCorrectType(File f) {

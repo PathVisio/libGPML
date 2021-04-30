@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This class contains extensible enum for lineStyle or borderStyle property.
  * Line style can be either solid, dashed or double. Used for lineStyle
@@ -67,6 +69,7 @@ public class LineStyleType {
 		if (nameToLineStyleType.containsKey(name)) {
 			return nameToLineStyleType.get(name);
 		} else {
+			Logger.log.trace("Registered line style type " + name); 
 			return new LineStyleType(name);
 		}
 	}

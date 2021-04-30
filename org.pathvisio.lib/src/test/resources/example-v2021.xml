@@ -2,8 +2,10 @@
 <Pathway xmlns="http://pathvisio.org/GPML/2021" title="Test" organism="Homo sapiens" license="CC0">
 	<Xref identifier="WP1_r1" dataSource="wikipathways"/>
 	<Authors>
-		<Author name="Mkutmon" fullName="Martina Kutmon" email="xxx@xxx.com"/>
-		<Author name="Egonw" fullName="Egon Willighagen" email="xxx@xxx.com"/>
+		<Author name="Mkutmon" username="Martina Kutmon" order="1">
+			<Xref identifier="0000" dataSource="orcid"/>
+		</Author>
+		<Author name="Egonw" username="Egon Willighagen" order="2"/>
 	</Authors>
 	<Comment source="WikiPathways-description">Description of the pathway</Comment>
 	<AnnotationRef elementRef="a1"/>
@@ -24,7 +26,7 @@
 		</DataNode>
 		<DataNode elementId="dda33" textLabel="ACO2" groupRef="bcdd3" type="Protein">
 			<Xref identifier="Q99798" dataSource="uniprot"/>
-			<Graphics centerX="311.5540089086858" centerY="82.43374164810686" width="90.0" height="25.0" fontSize="12" vAlign="Middle" zOrder=" 32768"/>
+			<Graphics centerX="311.5540089086858" centerY="82.43374164810686" width="90.0" height="25.0" fontSize="12" vAlign="Middle" zOrder="32768"/>
 		</DataNode>
 		<DataNode elementId="f5660" textLabel="cis-aconitate" type="Metabolite">
 			<Xref identifier="32805" dataSource="CHEBI"/>
@@ -49,7 +51,7 @@
 			<Waypoints>
 				<Point elementId="p3" elementRef="f5660" x="266.0" y="176.0092973904516" relX="1.0" relY="0.0"/>
 				<Point elementId="p4" elementRef="fd2c5" arrowHead="mim-conversion" x="357.0" y="176.0092973904516" relX="-1.0" relY="0.0"/>
-				<Anchor elementId="e447e" position="0.5" x="311.5" y="176.0092973904516" shapeType="None"/>
+				<Anchor elementId="e447e" position="0.5" shapeType="None"/>
 			</Waypoints>
 			<Graphics zOrder="12288" lineWidth="1.0"/>
 			<CitationRef elementRef="cbc"/>

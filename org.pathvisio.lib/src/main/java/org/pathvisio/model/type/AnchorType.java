@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This class contains extensible enum for Anchor type property.
  * 
@@ -62,6 +64,7 @@ public class AnchorType {
 		if (nameToAnchorType.containsKey(name)) {
 			return nameToAnchorType.get(name);
 		} else {
+			Logger.log.trace("Registered anchor type " + name); 
 			return new AnchorType(name);
 		}
 	}

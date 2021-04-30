@@ -104,9 +104,9 @@ public class Logger
 
 	public void trace (String msg)
 	{
+		System.out.println(msg);
 		if (traceEnabled)
 		{
-			System.out.println(msg);
 			s.printf (FORMAT_STRING , logTimer.look() / 1000.0f);
 			s.println ("Trace: " + msg);
 		}

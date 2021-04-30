@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pathvisio.debug.Logger;
+
 /**
  * This class contains extensible enum for DataNode type property.
  * 
@@ -78,6 +80,7 @@ public class DataNodeType {
 		if (nameToDataNodeType.containsKey(name)) {
 			return nameToDataNodeType.get(name);
 		} else {
+			Logger.log.trace("Registered data node type " + name); 
 			return new DataNodeType(name);
 		}
 	}

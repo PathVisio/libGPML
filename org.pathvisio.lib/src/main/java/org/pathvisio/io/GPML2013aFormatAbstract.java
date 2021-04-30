@@ -455,8 +455,6 @@ public abstract class GPML2013aFormatAbstract {
 	public void validateDocument(Document doc) throws ConverterException {
 		ClassLoader cl = PathwayModel.class.getClassLoader();
 		InputStream is = cl.getResourceAsStream(xsdFile);
-
-		System.out.println("Validated with schema: " + xsdFile);
 		if (is != null) {
 			Schema schema;
 			try {
