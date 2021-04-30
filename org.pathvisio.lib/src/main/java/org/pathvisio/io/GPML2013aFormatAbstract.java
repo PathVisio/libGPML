@@ -65,6 +65,13 @@ public abstract class GPML2013aFormatAbstract {
 	 * Static variables for reading and writing (deprecated) features of GPML2013a
 	 * format.
 	 */
+	public static final Namespace RDF = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+	public static final Namespace RDFS = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+	public static final Namespace BIOPAX = Namespace.getNamespace("bp",
+			"http://www.biopax.org/release/biopax-level3.owl#");
+	public static final Namespace OWL = Namespace.getNamespace("owl", "http://www.w3.org/2002/07/owl#");
+	public final static String RDF_STRING = "http://www.w3.org/2001/XMLSchema#string";
+	
 	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
 	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
 	public final static String PATHWAY_EMAIL = "pathway_email_gpml2013a";
@@ -75,6 +82,8 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 	public final static String OLD_ANCHOR_SHAPE = "ReceptorRound"; // TODO
+
+
 
 	/**
 	 * Deprecated map used to track deprecated shape types for conversion and

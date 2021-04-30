@@ -20,13 +20,16 @@ import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
 import org.pathvisio.model.*;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.Diff;
 
 import junit.framework.TestCase;
-
 
 public class TestGPML2013a extends TestCase {
 
@@ -35,9 +38,10 @@ public class TestGPML2013a extends TestCase {
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
+	 * @throws SAXException
 	 */
 	@Test
-	public static void testReadWrite() throws IOException, ConverterException {
+	public static void testReadWrite() throws IOException, ConverterException, SAXException {
 
 		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 		File[] listOfFiles = folderGPML2013a.listFiles();
@@ -52,18 +56,11 @@ public class TestGPML2013a extends TestCase {
 				pathwayModel.readFromXml(file, true);
 
 				/* write pathway model to xml */
-				File tmp = File.createTempFile("testwrite", ".gpml");
+				File tmp = File.createTempFile(file.getName() + "_testwrite", ".gpml");
 				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
 				System.out.println(tmp);
 
-				/**/
-				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-				DocumentBuilder db = dbf.newDocumentBuilder();
-				Document doc1 = db.parse(file);
-				DocumentBuilderFactory dbf2 = DocumentBuilderFactory.newInstance();
-				DocumentBuilder db2 = dbf2.newDocumentBuilder();
-				Document doc2 = db2.parse(tmp);
-				assertXMLEqual(doc1, doc2); 
+				/* method to assert file is same? */
 
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());

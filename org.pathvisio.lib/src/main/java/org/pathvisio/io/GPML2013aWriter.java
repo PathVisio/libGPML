@@ -232,8 +232,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 																									// required
 		if (xref == null && required) {
 			Element xrf = new Element("Xref", e.getNamespace());
-			xrf.setAttribute("ID", "");
 			xrf.setAttribute("Database", "");
+			xrf.setAttribute("ID", "");
 			e.addContent(xrf);
 		}
 		if (xref != null) {
@@ -617,10 +617,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (Annotation annotation : annotations) {
 			if (annotation == null)
 				continue;
-			Element ocv = new Element("openControlledVocabulary", GpmlFormat.BIOPAX);
-			Element term = new Element("TERM", GpmlFormat.BIOPAX);
-			Element id = new Element("ID", GpmlFormat.BIOPAX);
-			Element onto = new Element("Ontology", GpmlFormat.BIOPAX);
+			Element ocv = new Element("openControlledVocabulary", BIOPAX);
+			Element term = new Element("TERM", RDF);
+			Element id = new Element("ID", RDF);
+			Element onto = new Element("Ontology", RDF);
+			term.setAttribute("datatype", RDF_STRING, RDF);
+			id.setAttribute("datatype", RDF_STRING, RDF);
+			onto.setAttribute("datatype", RDF_STRING, RDF);
 			term.setText(annotation.getValue());
 			id.setText(annotation.getXref().getDataSource().getFullName() + ":" + annotation.getXref().getId());
 			onto.setText(annotation.getType().getName());
@@ -648,8 +651,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (Citation citation : citations) {
 			if (citation == null)
 				continue;
-			Element pubxf = new Element("PublicationXref", GpmlFormat.BIOPAX);
-			pubxf.setAttribute("id", citation.getElementId(), GpmlFormat.RDF);
+			Element pubxf = new Element("PublicationXref", BIOPAX);
+			pubxf.setAttribute("id", citation.getElementId(), RDF);
 			List<String> authors = citation.getAuthors();
 			writePubxfInfo(citation.getXref().getId(), "ID", pubxf);
 			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf);
@@ -658,7 +661,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writePubxfInfo(citation.getYear(), "YEAR", pubxf);
 			if (authors != null && !authors.isEmpty()) {
 				for (String author : authors)
-					writePubxfInfo(author, "AUTHOR", pubxf);
+					writePubxfInfo(author, "AUTHORS", pubxf);
 			}
 			if (pubxf != null)
 				bp.addContent(pubxf);
@@ -681,7 +684,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writePubxfInfo(String propertyValue, String elementName, Element pubxf) throws ConverterException {
 		if (propertyValue != null && !propertyValue.equals("")) {
-			Element e = new Element(elementName, GpmlFormat.BIOPAX);
+			Element e = new Element(elementName, BIOPAX);
+			e.setAttribute("datatype", RDF_STRING, RDF);
 			e.setText(propertyValue);
 			if (e != null)
 				pubxf.addContent(e);
@@ -909,7 +913,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeNew.getName());
 		} else {
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeType.getName());
-
 		}
 		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapeProp.getZOrder()));
 	}

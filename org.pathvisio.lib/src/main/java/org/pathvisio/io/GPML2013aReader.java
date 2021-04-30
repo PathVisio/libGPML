@@ -193,13 +193,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp) throws ConverterException {
-		for (Element ocv : bp.getChildren("openControlledVocabulary", GpmlFormat.BIOPAX)) {
+		for (Element ocv : bp.getChildren("openControlledVocabulary", BIOPAX)) {
 			String elementId = pathwayModel.getUniqueElementId();
-			String value = ocv.getChild("TERM", GpmlFormat.BIOPAX).getText();
-			String biopaxOntology = ocv.getChild("Ontology", GpmlFormat.BIOPAX).getText();
+			String value = ocv.getChild("TERM", BIOPAX).getText();
+			String biopaxOntology = ocv.getChild("Ontology", BIOPAX).getText();
 			AnnotationType type = AnnotationType.register(biopaxOntology);
 			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
-			String biopaxIdDbStr = ocv.getChild("ID", GpmlFormat.BIOPAX).getText(); // e.g PW:0000650
+			String biopaxIdDbStr = ocv.getChild("ID", BIOPAX).getText(); // e.g PW:0000650
 			String[] biopaxIdDb = biopaxIdDbStr.split(":");
 			String biopaxDatabase = biopaxIdDb[0]; // e.g. PW
 			String biopaxId = biopaxIdDb[1]; // e.g 0000650
@@ -221,21 +221,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readBiopaxPublicationXref(PathwayModel pathwayModel, Element bp) throws ConverterException {
 
-		for (Element pubxf : bp.getChildren("PublicationXref", GpmlFormat.BIOPAX)) {
+		for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX)) {
 			// TODO Is there ever multiple title, source, year?
-			String elementId = pubxf.getAttributeValue("id", GpmlFormat.RDF);
-			String biopaxId = pubxf.getChild("ID", GpmlFormat.BIOPAX).getText();
-			String biopaxDatabase = pubxf.getChild("DB", GpmlFormat.BIOPAX).getText();
+			String elementId = pubxf.getAttributeValue("id", RDF);
+			String biopaxId = pubxf.getChild("ID", BIOPAX).getText();
+			String biopaxDatabase = pubxf.getChild("DB", BIOPAX).getText();
 			Xref xref = readBiopaxXref(biopaxId, biopaxDatabase);
 			Citation citation = new Citation(elementId, pathwayModel, xref);
 			/* sets optional properties */
-			Element tle = pubxf.getChild("DB", GpmlFormat.BIOPAX);
-			Element src = pubxf.getChild("SOURCE", GpmlFormat.BIOPAX);
-			Element yr = pubxf.getChild("YEAR", GpmlFormat.BIOPAX);
-			if (yr != null) {
-				String title = tle.getText();
-				if (title != null && !title.equals(""))
-					citation.setTitle(title);
+			Element tle = pubxf.getChild("TITLE", BIOPAX);
+			Element src = pubxf.getChild("SOURCE", BIOPAX);
+			Element yr = pubxf.getChild("YEAR", BIOPAX);
+			if (tle != null) {
+				String titleStr = tle.getText();
+				if (titleStr != null && !titleStr.equals(""))
+					citation.setTitle(titleStr);
 			}
 			if (src != null) {
 				String source = src.getText();
@@ -248,7 +248,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					citation.setYear(year);
 			}
 			List<String> authors = new ArrayList<String>();
-			for (Element au : pubxf.getChildren("AUTHORS", GpmlFormat.BIOPAX)) {
+			for (Element au : pubxf.getChildren("AUTHORS", BIOPAX)) {
 				String author = au.getText();
 				if (author != null)
 					authors.add(author);

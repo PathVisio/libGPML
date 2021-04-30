@@ -36,12 +36,17 @@ public class TestGPMLRead extends TestCase {
 //	private static final File PATHVISIO_BASEDIR = new File("../..");
 
 	public static void testRead2021() throws ConverterException, IOException {
-		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2021.xml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("WP2516_79964.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
 
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
+		
+		/* write pathway model to xml */
+		File tmp = File.createTempFile(file.getName() + "_testwrite", ".gpml");
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+		System.out.println(tmp);
 	}
 }
