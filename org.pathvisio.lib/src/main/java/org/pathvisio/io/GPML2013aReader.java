@@ -268,9 +268,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				biopaxIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
-			String biopaxId = pubxf.getChild("ID", BIOPAX).getText();
-			String biopaxDatabase = pubxf.getChild("DB", BIOPAX).getText();
-			Xref xref = readBiopaxXref(biopaxId, biopaxDatabase);
+			Element id = pubxf.getChild("ID", BIOPAX);
+			Element db = pubxf.getChild("DB", BIOPAX);
+			String biopaxId = null;
+			String biopaxDb = null;
+			if (id != null)
+				biopaxId = id.getText();
+			if (db != null)
+				biopaxDb = db.getText();
+			Xref xref = readBiopaxXref(biopaxId, biopaxDb);
 			Citation citation = new Citation(elementId, pathwayModel, xref);
 			/* sets optional properties */
 			Element tle = pubxf.getChild("TITLE", BIOPAX);
@@ -302,6 +308,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (citation != null)
 				pathwayModel.addCitation(citation);
 		}
+
 	}
 
 	/**
@@ -335,7 +342,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayInfo(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew) throws ConverterException {
+	protected void readPathwayInfo(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew)
+			throws ConverterException {
 		readPathwayComments(pathwayModel, root);
 		// TODO PublicationXref?????
 		readPathwayBiopaxRefs(pathwayModel, root, biopaxIdToNew);
@@ -876,6 +884,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		if (xref != null) {
 			String base = e.getName();
 			String identifier = getAttr(base + ".Xref", "ID", xref);
+			if (identifier == null) {
+				identifier = "";
+			}
 			String dataSource = getAttr(base + ".Xref", "Database", xref);
 			if (dataSource != null && !dataSource.equals("")) {
 				if (DataSource.fullNameExists(dataSource)) {

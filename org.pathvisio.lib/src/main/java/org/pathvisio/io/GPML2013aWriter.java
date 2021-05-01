@@ -241,7 +241,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			DataSource dataSrc = xref.getDataSource();
 			if (dataSrc != null) {
 				Element xrf = new Element("Xref", e.getNamespace());
-				String dataSource = xref.getDataSource().getFullName();
+				String dataSource = xref.getDataSource().getFullName(); //TODO
 				String base = e.getName();
 				setAttr(base + ".Xref", "Database", xrf, dataSource);
 				setAttr(base + ".Xref", "ID", xrf, identifier == null ? "" : identifier);
@@ -281,6 +281,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		Map<String, String> dynamicProperties = pathway.getDynamicProperties();
 		for (String key : dynamicProperties.keySet()) {
 			Element dp = new Element("Attribute", root.getNamespace());
+			// TODO do not write certain ones 
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
 			if (dp != null)
