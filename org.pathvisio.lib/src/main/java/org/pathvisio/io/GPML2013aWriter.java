@@ -582,12 +582,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (group == null)
 				continue;
 			Element grp = new Element("Group", root.getNamespace());
+			setAttr("Group", "GroupId", grp, group.getElementId());
+			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID)); // TODO check if ok
+			group.getDynamicProperties().remove(GROUP_GRAPHID); // TODO 
+			setAttr("Group", "Style", grp, group.getType().getName());
 			writeXref(group.getXref(), grp, false);
 			writeElementInfo(group, grp);
 			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group.getShapeStyleProperty(), grp);
-			setAttr("Group", "GroupId", grp, group.getElementId());
-			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID)); // TODO check if ok
-			setAttr("Group", "Style", grp, group.getType().getName());
+			/* set optional properties */
 			if (group.getTextLabel() != null)
 				setAttr("Group", "TextLabel", grp, group.getTextLabel());
 			writeGroupRef(group.getGroupRef(), grp); // TODO location

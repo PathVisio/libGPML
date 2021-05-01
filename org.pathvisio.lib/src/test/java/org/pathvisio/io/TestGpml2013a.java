@@ -43,10 +43,10 @@ public class TestGPML2013a extends TestCase {
 	public static void testReadWrite() throws IOException, ConverterException, SAXException {
 		
 //		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210410-gpml-Homo_sapiens");
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-problem-gpmls");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
-		for (int i = 588; i < listOfFiles.length; i++) {
+		for (int i = 1; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File " + i + " : "+ file.getName());
