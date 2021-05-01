@@ -241,7 +241,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			DataSource dataSrc = xref.getDataSource();
 			if (dataSrc != null) {
 				Element xrf = new Element("Xref", e.getNamespace());
-				String dataSource = xref.getDataSource().getFullName(); //TODO
+				String dataSource = xref.getDataSource().getFullName(); // TODO
 				String base = e.getName();
 				setAttr(base + ".Xref", "Database", xrf, dataSource);
 				setAttr(base + ".Xref", "ID", xrf, identifier == null ? "" : identifier);
@@ -281,7 +281,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		Map<String, String> dynamicProperties = pathway.getDynamicProperties();
 		for (String key : dynamicProperties.keySet()) {
 			Element dp = new Element("Attribute", root.getNamespace());
-			// TODO do not write certain ones 
+			// TODO do not write certain ones
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
 			if (dp != null)
@@ -585,7 +585,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element grp = new Element("Group", root.getNamespace());
 			setAttr("Group", "GroupId", grp, group.getElementId());
 			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID)); // TODO check if ok
-			group.getDynamicProperties().remove(GROUP_GRAPHID); // TODO 
+			group.getDynamicProperties().remove(GROUP_GRAPHID); // TODO
 			setAttr("Group", "Style", grp, group.getType().getName());
 			writeXref(group.getXref(), grp, false);
 			writeElementInfo(group, grp);
@@ -659,9 +659,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element pubxf = new Element("PublicationXref", BIOPAX);
 			pubxf.setAttribute("id", citation.getElementId(), RDF);
 			List<String> authors = citation.getAuthors();
-			writePubxfInfo(citation.getXref().getId(), "ID", pubxf);
-			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf);
-			writePubxfInfo(citation.getTitle(), "TITLE", pubxf);
+			String biopaxId = citation.getXref().getId();
+			writePubxfInfo(biopaxId == null ? "" : biopaxId, "ID", pubxf); //TODO is required? 
+			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf); //TODO is required? 
+			writePubxfInfo(citation.getTitle(), "TITLE", pubxf); //TODO is required? 
 			writePubxfInfo(citation.getSource(), "SOURCE", pubxf);
 			writePubxfInfo(citation.getYear(), "YEAR", pubxf);
 			if (authors != null && !authors.isEmpty()) {
