@@ -63,7 +63,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * ABT biopaxIdToNew: biopax id may conflict with an elementId. A new unique
 	 * elementId (value) can be assigned with reference back to the original id
-	 * (key) in biopaxIdToNew map. {@link #readBiopax}
+	 * (key) in biopaxIdToNew map. {@link #readBiopaxPublicationXref}
 	 * 
 	 * ABT groupIdToNew: GroupId (essentially the group's elementId) may conflict
 	 * with an elementId. A new unique elementId (value) can be assigned with
@@ -96,8 +96,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		// reads pathway meta data
 		Pathway pathway = readPathway(root);
 		pathwayModel.setPathway(pathway);
-		// reads legend
-		readLegend(pathway, root);
 		// reads biopax, equivalent to annotations and citations
 		readBiopax(pathwayModel, root, elementIdSet, biopaxIdToNew);
 		// reads pathway comments, biopaxRefs, dynamic properties, evidenceRefs
@@ -105,13 +103,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		// reads groups first and then groupRefs
 		readGroups(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew);
 		readGroupGroupRef(pathwayModel, root, groupIdToNew);
-		// reads labels, shapes, dataNodes
 		readLabels(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew);
 		readShapes(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew);
 		readDataNodes(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew);
 		// reads states after data nodes
 		readStates(pathwayModel, root, elementIdSet, biopaxIdToNew);
-		// reads interactions and graphicalLines
 		readInteractions(pathwayModel, root, elementIdSet, lineList, biopaxIdToNew, groupIdToNew);
 		readGraphicalLines(pathwayModel, root, elementIdSet, lineList, biopaxIdToNew, groupIdToNew);
 		// reads points last
@@ -123,7 +119,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads elementIds (GraphIds in GPML2013a) of root element and adds to
-	 * elementIdSet.
+	 * elementIdSet. In GPML2013a, elementId (previously named GraphId) is sometimes
+	 * missing. In order to assign unique new elementIds, we must first read all
+	 * elementIds from the Jdom document to store in elementIdSet.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -161,7 +159,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx).trim());
 		double boardHeight = Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx).trim());
 		Coordinate infoBox = readInfoBox(root);
-		// backgroundColor default is ffffff (white)
+		// instantiates pathway, default backgroundColor is ffffff (white)
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff"), infoBox)
 				.build();
 		// sets optional properties
@@ -177,23 +175,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			pathway.setVersion(version);
 		if (license != null)
 			pathway.setLicense(license);
-		/* sets optional dynamic properties */
+		// sets optional dynamic properties
 		String author = getAttr("Pathway", "Author", root);
 		String maintainer = getAttr("Pathway", "Maintainer", root);
 		String email = getAttr("Pathway", "Email", root);
 		String lastModified = getAttr("Pathway", "Last-Modified", root);
-		if (author != null) {
+		if (author != null)
 			pathway.setDynamicProperty(PATHWAY_AUTHOR, author);
-		}
-		if (maintainer != null) {
+		if (maintainer != null)
 			pathway.setDynamicProperty(PATHWAY_MAINTAINER, maintainer);
-		}
-		if (email != null) {
+		if (email != null)
 			pathway.setDynamicProperty(PATHWAY_EMAIL, email);
-		}
-		if (lastModified != null) {
+		if (lastModified != null)
 			pathway.setDynamicProperty(PATHWAY_LASTMODIFIED, lastModified);
-		}
+		// reads legend
+		readLegend(pathway, root);
 		return pathway;
 	}
 
@@ -231,17 +227,23 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Read gpml:Biopax information openControlledVocabulary and PublicationXref.
-	 * {@link #readBiopaxOpenControlledVocabulary(), #readBiopaxPublicationXref()}.
+	 * {@link #readBiopaxOpenControlledVocabulary()} to {@link Annotation}, and
+	 * {@link #readBiopaxPublicationXref()} to {@link Citation}.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
 	 * @throws ConverterException
 	 */
 	protected void readBiopax(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew) throws ConverterException {
 		Element bp = root.getChild("Biopax", root.getNamespace());
 		if (bp != null) {
+			// reads openControlledVocabulary, equivalent to annotation
 			readBiopaxOpenControlledVocabulary(pathwayModel, bp, elementIdSet);
+			// reads publicationXref, equivalent to citation
 			readBiopaxPublicationXref(pathwayModel, bp, elementIdSet, biopaxIdToNew);
 		}
 	}
@@ -251,26 +253,32 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * {@link Annotation} for pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
-	 * @param biopax       the biopax element.
+	 * @param bp           the biopax element.
+	 * @param elementIdSet the set of all elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp, Set<String> elementIdSet)
 			throws ConverterException {
 		for (Element ocv : bp.getChildren("openControlledVocabulary", BIOPAX)) {
+			// generates new unique elementId and adds to elementIdSet
 			String elementId = PathwayModel.getUniqueId(elementIdSet);
 			elementIdSet.add(elementId);
-			Logger.log.trace("Annotation missing elementId, new id is: " + elementId); // TODO warning
+			Logger.log.trace("Annotation missing elementId, new id is: " + elementId);
+			// reads OpenControlledVocabulary
 			String value = ocv.getChild("TERM", BIOPAX).getText();
 			String biopaxOntology = ocv.getChild("Ontology", BIOPAX).getText();
 			AnnotationType type = AnnotationType.register(biopaxOntology);
+			// instantiates annotation
 			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
+			// sets optional property xref
 			String biopaxIdDbStr = ocv.getChild("ID", BIOPAX).getText(); // e.g PW:0000650
-			String[] biopaxIdDb = biopaxIdDbStr.split(":");
-			String biopaxDatabase = biopaxIdDb[0]; // e.g. PW
+			String[] biopaxIdDb = biopaxIdDbStr.split(":"); // splits "ID" into Id and Database
+			String biopaxDb = biopaxIdDb[0]; // e.g. PW
 			String biopaxId = biopaxIdDb[1]; // e.g 0000650
-			Xref xref = readBiopaxXref(biopaxId, biopaxDatabase);
+			Xref xref = readBiopaxXref(biopaxId, biopaxDb);
 			if (xref != null)
 				annotation.setXref(xref);
+			// adds annotation to pathway model
 			if (annotation != null)
 				pathwayModel.addAnnotation(annotation);
 		}
@@ -280,23 +288,33 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads gpml:Biopax bp:PublicationXref information to {@link Citation} for
 	 * pathway model from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param biopax       the biopax element.
+	 * NB: Because biopax id may conflict with an elementId. A new unique elementId
+	 * (value) can be assigned with reference back to the original id (key) in
+	 * biopaxIdToNew map.
+	 * 
+	 * @param pathwayModel  the pathway model.
+	 * @param bp            the biopax element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxPublicationXref(PathwayModel pathwayModel, Element bp, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew) throws ConverterException {
 
 		for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX)) {
-			// TODO Is there ever multiple title, source, year?
+			// reads rdf:id of biopax
 			String elementId = pubxf.getAttributeValue("id", RDF);
+			// if not unique, generates new unique elementId
 			if (elementIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(newId);
 				Logger.log.trace("Biopax id " + elementId + " is not unique, new id is: " + newId); // TODO warning
 				biopaxIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
+			// biopax id is added to elementIdSet
+			elementIdSet.add(elementId);
+			// reads rest of PublicationXref
 			Element id = pubxf.getChild("ID", BIOPAX);
 			Element db = pubxf.getChild("DB", BIOPAX);
 			String biopaxId = null;
@@ -306,8 +324,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (db != null)
 				biopaxDb = db.getText();
 			Xref xref = readBiopaxXref(biopaxId, biopaxDb);
+			// instantiates citation
 			Citation citation = new Citation(elementId, pathwayModel, xref);
-			/* sets optional properties */
+			// sets optional properties
 			Element tle = pubxf.getChild("TITLE", BIOPAX);
 			Element src = pubxf.getChild("SOURCE", BIOPAX);
 			Element yr = pubxf.getChild("YEAR", BIOPAX);
@@ -334,14 +353,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			if (!authors.isEmpty())
 				citation.setAuthors(authors);
+			// adds citation to pathway model
 			if (citation != null)
 				pathwayModel.addCitation(citation);
 		}
-
 	}
 
 	/**
-	 * Reads biopax xref information.
+	 * Reads biopax xref information, used by read methods:
+	 * {@link #readBiopaxOpenControlledVocabulary}
+	 * {@link #readBiopaxPublicationXref}
 	 * 
 	 * @param identifier the xref identifier.
 	 * @param dataSource the xref data source.
@@ -356,7 +377,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				return new Xref(identifier, DataSource.getByAlias(dataSource));
 			} else {
 				DataSource.register(dataSource, dataSource);
-				Logger.log.trace("Registered xref datasource " + dataSource); // TODO warning
+				Logger.log.trace("Registered xref datasource " + dataSource);
 				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
 			}
 		}
@@ -365,11 +386,17 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads comment group (comment, biopaxref/citationRef, dynamic property) and
-	 * evidencRef information {@link PathwayModel} for pathway model from root
-	 * element.
+	 * evidencRef information {@link Pathway} for pathway model from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * NB: In GPML2013a, no equivalent of annotationRef was implemented, all
+	 * openControlledVocabulary belong to the parent pathway. Also,
+	 * CommentGroup:PublicationXref and BiopaxRef the attribute were not
+	 * implemented.
+	 * 
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
 	 * @throws ConverterException
 	 */
 	protected void readPathwayInfo(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew)
@@ -390,10 +417,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = getAttr("Comment", "Source", cmt);
 			String commentText = cmt.getText();
+			// if either comment or source exists
 			if (commentText != null || source != null) {
+				// instantiates comment
 				Comment comment = new Comment(commentText);
+				// sets source
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
+				// adds comment to pathway model
 				pathwayModel.getPathway().addComment(new Comment(source, commentText));
 			}
 		}
@@ -401,21 +432,26 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads biopax reference information {@link Pathway#addCitationRef()} for
-	 * pathway model from root element.
+	 * pathway model from root element. BiopaxRef is equivalent to citationRef.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
 	 * @throws ConverterException
 	 */
 	protected void readPathwayBiopaxRefs(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew)
 			throws ConverterException {
 		for (Element bpRef : root.getChildren("BiopaxRef", root.getNamespace())) {
-
+			// reads biopaxRef
 			String biopaxRefStr = bpRef.getText();
-			if (biopaxIdToNew.containsKey(biopaxRefStr)) {
+			// if biopaxIdToNew contains biopaxRefStr, sets biopaxRefStr (key) to its new
+			// unique elementId (value)
+			if (biopaxIdToNew.containsKey(biopaxRefStr)) 
 				biopaxRefStr = biopaxIdToNew.get(biopaxRefStr);
-			}
+			// given the correct biopaxRefStr/elementId, retrieves citation object
 			Citation biopaxRef = (Citation) pathwayModel.getPathwayElement(biopaxRefStr);
+			// add biopaxRef, equivalent to citationRef to pathwayModel
 			if (biopaxRef != null) {
 				pathwayModel.getPathway().addCitationRef(biopaxRef);
 			}
@@ -447,45 +483,57 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * optional. A group has GraphId if there is at least one {@link Point}
 	 * referring to this group by GraphRef.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * ABT groupIdToNew: Because GroupIds may conflict with an elementId, new unique
+	 * elementIds (value) can be assigned with reference back to the original
+	 * GroupIds (key) in groupIdToNew map.
+	 * 
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
 	 * @throws ConverterException
 	 */
 	protected void readGroups(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
+			// reads group GroupId, equivalent to elementId
 			String elementId = getAttr("Group", "GroupId", grp);
+			// if not unique, generates new unique elementId
 			if (elementIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(elementIdSet);
 				Logger.log.trace("GroupId " + elementId + " is not unique, new id is: " + newId); // TODO warning
 				groupIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
+			// group elementId is added to elementIdSet
 			elementIdSet.add(elementId);
 			GroupType type = GroupType.register(getAttr("Group", "Style", grp));
-			// TODO Group has no RectProperty...CenterX, CenterY, width, Height!!!!
+			// TODO CALCULATE CenterX, CenterY, width, Height!!!!
 			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 2, 2);
 			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
 			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
-			/* group of type "Pathway" has custom default font size and name */
+			// group of type "Pathway" has custom default font size and name
 			if (type.getName() == "Pathway") {
 				group.getFontProperty().setFontSize(32);
 				group.getFontProperty().setFontName("Times"); // TODO
 			}
-			/* reads comment group, evidenceRefs */
+			// reads comments, biopaxRefs/citationRefs, dynamic properties, evidenceRefs
 			readElementInfo(group, grp, biopaxIdToNew);
-			/* sets optional properties */
+			// sets optional properties
 			String textLabel = getAttr("Group", "TextLabel", grp);
 			String graphId = getAttr("Group", "GraphId", grp);
 			if (textLabel != null)
 				group.setTextLabel(textLabel);
 			if (graphId != null) {
-				group.setDynamicProperty(GROUP_GRAPHID, graphId); // TODO handle graphId, make sure unique?
-				pathwayModel.addElementId(graphId, group); // graphId key added for this group
+				group.setDynamicProperty(GROUP_GRAPHID, graphId);
+//				pathwayModel.addElementId(graphId, group); not necessary 
 			}
-			/* add group to pathway model */
+			// add group to pathway model
 			if (group != null)
 				pathwayModel.addGroup(group);
 		}
@@ -504,16 +552,23 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readGroupGroupRef(PathwayModel pathwayModel, Element root, Map<String, String> oldGroupIdtoNew)
+	protected void readGroupGroupRef(PathwayModel pathwayModel, Element root, Map<String, String> groupIdToNew)
 			throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
 			String groupRef = getAttr("Group", "GroupRef", grp);
+			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
+			if (groupIdToNew.containsKey(groupRef))
+				groupRef = groupIdToNew.get(groupRef);
+			// check if groupRef valid
 			if (groupRef != null && !groupRef.equals("")) {
+				// read parent group elementId to retrieve parent group
 				String elementId = getAttr("Group", "GroupId", grp);
-				if (oldGroupIdtoNew.containsKey(elementId)) {
-					elementId = oldGroupIdtoNew.get(elementId);
-				}
+				// if groupIdToNew contains elementId, sets elementId to its new elementId
+				if (groupIdToNew.containsKey(elementId))
+					elementId = groupIdToNew.get(elementId);
+				// given the correct elementId, retrieves parent group
 				Group group = (Group) pathwayModel.getPathwayElement(elementId);
+				// sets groupRef for parent group
 				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
 			}
 		}
@@ -663,13 +718,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readGroupRefShapedElement(PathwayModel pathwayModel, String groupRef, ShapedElement se,
 			Map<String, String> groupIdToNew) throws ConverterException {
 		if (groupRef != null && !groupRef.equals("")) {
+			// if groupIdToNew contains groupRef
 			if (groupIdToNew.containsKey(groupRef)) {
+				// sets groupRef (key) to its new unique elementId (value)
 				groupRef = groupIdToNew.get(groupRef);
 			}
 			se.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
 		}
-
 	}
+
+//	
+//	if (groupIdToNew.containsKey(groupRef)) {
+//		// sets groupRef (key) to its new unique elementId (value)
+//		groupRef = groupIdToNew.get(groupRef);
+//	}
+//	// read parent group elementId
 
 	/**
 	 * TODO should absolute x and y be calculated??? Reads state {@link State}
@@ -964,12 +1027,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads comment and biopaxref {@link ElementInfo} information, for pathway
-	 * element from element.
+	 * element from element. Dynamic properties read by
+	 * {@link #readLineDynamicProperties()} , {@link #readShapedDynamicProperties()}
+	 * , {@link #readStateDynamicProperties()}.
 	 * 
-	 * NB: dynamic properties read by {@link #readLineDynamicProperties()} ,
-	 * {@link #readShapedDynamicProperties()} ,
-	 * {@link #readStateDynamicProperties()}. PublicationXref (element in
-	 * CommentGroup) and BiopaxRef (an attribute) in the GPML2013a schema were never
+	 * NB: In GPML2013a, no equivalent of annotationRef was implemented, all
+	 * openControlledVocabulary belong to the parent pathway. Also,
+	 * CommentGroup:PublicationXref and BiopaxRef the attribute were not
 	 * implemented.
 	 * 
 	 * @param elementInfo the element info pathway element object.
