@@ -108,9 +108,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
-		/* removes empty groups */
+		// removes empty groups
 		removeEmptyGroups(pathwayModel);
-		/* checks if interactions/graphicaLines have at least 2 points */
+		// checks if interactions/graphicaLines have at least 2 points
 		validateLineElements(pathwayModel);
 
 		Document doc = new Document();
@@ -239,7 +239,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					continue;
 				Element au = new Element("Author", root.getNamespace());
 				au.setAttribute("name", author.getName());
-				/* set optional properties */
+				// sets optional properties
 				String username = author.getUsername();
 				int order = author.getOrder();
 				writeXref(author.getXref(), au, false);
@@ -396,7 +396,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				dn.setAttribute("textLabel", dataNode.getTextLabel());
 				dn.setAttribute("type", dataNode.getType().getName());
 				writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
-
 				if (dn != null) {
 					dnList.add(dn);
 				}
@@ -835,7 +834,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		writeFontProperty(shapedElement.getFontProperty(), gfx);
 		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx);
 		writeElementInfo(shapedElement, se);
-//		writeGroupRef(shapedElement.getGroupRef(), se); // TODO REMOVE
 	}
 
 	/**

@@ -42,12 +42,12 @@ public class TestConvertToGPML2021 extends TestCase {
 				PathwayModel pathwayModel = new PathwayModel();
 				pathwayModel.readFromXml(file, true);
 
-//				/* write pathway model to xml */
-//				File tmp = File.createTempFile(file.getName() + "_convert2013a", ".gpml");
-//				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
-//				System.out.println(tmp);
-//
-//				/* method to assert file is same? */
+				/* write pathway model to xml */
+				File tmp = File.createTempFile(file.getName() + "_convert2013a", ".gpml");
+				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+				System.out.println(tmp);
+
+				/* method to assert file is same? */
 
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());
