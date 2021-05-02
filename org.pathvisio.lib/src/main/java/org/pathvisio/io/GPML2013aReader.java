@@ -48,37 +48,24 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	public static final GPML2013aReader GPML2013aREADER = new GPML2013aReader("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
+	/**
+	 * {@link #readFromRoot}
+	 */
 	protected GPML2013aReader(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
 	/**
 	 * Reads information from root element of Jdom document {@link Document} to the
-	 * pathway model {@link PathwayModel}.
+	 * pathway model {@link PathwayModel}. Referenced objects or pathway elements
+	 * are read first. For example, Biopax are read before BiopaxRefs. Groups are
+	 * read before other pathway element. DataNodes are read before States. And
+	 * Points are read last.
 	 * 
-	 * ABT elementIdSet: In GPML2013a, elementId (previously named GraphId) is
-	 * sometimes missing. In order to assign unique new elementIds, we must first
-	 * read all elementIds from the Jdom document to store in elementIdSet.
-	 * {@link #readAllElementIds}
-	 * 
-	 * ABT biopaxIdToNew: biopax id may conflict with an elementId. A new unique
-	 * elementId (value) can be assigned with reference back to the original id
-	 * (key) in biopaxIdToNew map. {@link #readBiopaxPublicationXref}
-	 * 
-	 * ABT groupIdToNew: GroupId (essentially the group's elementId) may conflict
-	 * with an elementId. A new unique elementId (value) can be assigned with
-	 * reference back to the original GroupId (key) in groupIdToNew map.
-	 * {@link #readGroups}
-	 * 
-	 * ABT lineList: line pathway elements are sometimes missing elementIds. A new
-	 * unique elementId can be assigned. All line elementIds are stored in the
-	 * ordered lineList so that line pathway elements can be retrieved based on
-	 * previous read order. {@link #readGraphicalLines}, {@link #readInteractions},
-	 * {@link #readPoints}
-	 * 
-	 * NB Order of reading: Referenced elements are read first. Groups are read
-	 * first as other pathway elements reference groupRef. DataNodes are read before
-	 * States. Points are read last.
+	 * See the following links for more information on elementIdSet: {@link #readAllElementIds};
+	 * biopaxIdToNew: {@link #readBiopaxPublicationXref}; groupIdToNew:
+	 * {@link #readGroups}; lineList {@link #readGraphicalLines},
+	 * {@link #readInteractions}, {@link #readPoints}.
 	 * 
 	 * @param pathwayModel the given pathway model.
 	 * @param root         the root element of given Jdom document.
@@ -480,11 +467,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * NB: A group has identifier GroupId (essentially ElementId), while GraphId is
 	 * optional. A group has GraphId if there is at least one {@link Point}
-	 * referring to this group by GraphRef.
-	 * 
-	 * ABT groupIdToNew: Because GroupIds may conflict with an elementId, new unique
-	 * elementIds (value) can be assigned with reference back to the original
-	 * GroupIds (key) in groupIdToNew map.
+	 * referring to this group by GraphRef. Because GroupIds may conflict with an
+	 * elementId, new unique elementIds (value) can be assigned with reference back
+	 * to the original GroupIds (key) in groupIdToNew map.
 	 * 
 	 * @param pathwayModel  the pathway model.
 	 * @param root          the root element.
@@ -737,8 +722,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 *                      (values)
 	 * @throws ConverterException
 	 */
-	protected void readGroupRef(ShapedElement shapedElement, Element se,
-			Map<String, String> groupIdToNew) throws ConverterException {
+	protected void readGroupRef(ShapedElement shapedElement, Element se, Map<String, String> groupIdToNew)
+			throws ConverterException {
 		String groupRefStr = getAttr(se.getName(), "GroupRef", se);
 		if (groupRefStr != null && !groupRefStr.equals("")) {
 			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
@@ -833,7 +818,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads interaction {@link Interaction} information for pathway model from root
-	 * element.
+	 * element. New unique elementIds are assigned to line pathway elements are
+	 * stored in the ordered lineList so that line pathway elements can be retrieved
+	 * based on previous read order.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -863,7 +850,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads graphical line {@link GraphicalLine} information for pathway model from
-	 * root element.
+	 * root element. New unique elementIds are assigned to line pathway elements are
+	 * stored in the ordered lineList so that line pathway elements can be retrieved
+	 * based on previous read order.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -904,15 +893,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		String groupRefStr = getAttr(base, "GroupRef", ln);
 		if (groupRefStr != null && !groupRefStr.equals("")) {
 			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
-			if (groupIdToNew.containsKey(groupRefStr)) 
+			if (groupIdToNew.containsKey(groupRefStr))
 				groupRefStr = groupIdToNew.get(groupRefStr);
 			Group groupRef = (Group) lineElement.getPathwayModel().getPathwayElement(groupRefStr);
 			// sets groupRef for this line pathway element
 			lineElement.setGroupRef(groupRef);
 		}
 	}
-	
-	
+
 	/**
 	 * Reads anchor {@link Anchor} information for line element from element.
 	 * 
