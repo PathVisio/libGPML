@@ -444,16 +444,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			throws ConverterException {
 		for (Element bpRef : root.getChildren("BiopaxRef", root.getNamespace())) {
 			// reads biopaxRef
-			String biopaxRefStr = bpRef.getText();
-			// if biopaxIdToNew contains biopaxRefStr, sets biopaxRefStr (key) to its new
-			// unique elementId (value)
-			if (biopaxIdToNew.containsKey(biopaxRefStr)) 
-				biopaxRefStr = biopaxIdToNew.get(biopaxRefStr);
-			// given the correct biopaxRefStr/elementId, retrieves citation object
-			Citation biopaxRef = (Citation) pathwayModel.getPathwayElement(biopaxRefStr);
-			// add biopaxRef, equivalent to citationRef to pathwayModel
-			if (biopaxRef != null) {
-				pathwayModel.getPathway().addCitationRef(biopaxRef);
+			String biopaxRef = bpRef.getText();
+			// if biopaxIdToNew contains biopaxRef, sets biopaxRef to its new elementId
+			if (biopaxIdToNew.containsKey(biopaxRef))
+				biopaxRef = biopaxIdToNew.get(biopaxRef);
+			// given the correct biopaxRef/elementId, retrieves citation referenced
+			Citation citationRef = (Citation) pathwayModel.getPathwayElement(biopaxRef);
+			// add citationRef to pathwayModel
+			if (citationRef != null) {
+				pathwayModel.getPathway().addCitationRef(citationRef);
 			}
 		}
 	}
@@ -508,7 +507,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				groupIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
-			// group elementId is added to elementIdSet
+			// adds group elementId to elementIdSet
 			elementIdSet.add(elementId);
 			GroupType type = GroupType.register(getAttr("Group", "Style", grp));
 			// TODO CALCULATE CenterX, CenterY, width, Height!!!!
@@ -543,33 +542,35 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads groupRef property {@link Group#setGroupRef(Group)} information of group
 	 * pathway element. Because a group may refer to another group not yet
-	 * initialized. We read and set groupRef after reading all group elements.
-	 * 
-	 * NB: this method is separated out because {@link #readGroups()} method became
-	 * long.
+	 * initialized. We read and set groupRef after reading all group elements. The
+	 * groupRef is the "parent" group to which this group refers.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
+	 * @param groupIdToNew the map of groupId (keys) and new unique elementIds
+	 *                     (values)
 	 * @throws ConverterException
 	 */
 	protected void readGroupGroupRef(PathwayModel pathwayModel, Element root, Map<String, String> groupIdToNew)
 			throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
-			String groupRef = getAttr("Group", "GroupRef", grp);
-			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
-			if (groupIdToNew.containsKey(groupRef))
-				groupRef = groupIdToNew.get(groupRef);
-			// check if groupRef valid
-			if (groupRef != null && !groupRef.equals("")) {
-				// read parent group elementId to retrieve parent group
+			String groupRefStr = getAttr("Group", "GroupRef", grp);
+			if (groupRefStr != null && !groupRefStr.equals("")) {
+				// if groupIdToNew contains groupRefStr, sets groupRefStr to its new elementId
+				if (groupIdToNew.containsKey(groupRefStr))
+					groupRefStr = groupIdToNew.get(groupRefStr);
+				// given the correct groupRefStr/elementId, retrieves groupRef
+				Group groupRef = (Group) pathwayModel.getPathwayElement(groupRefStr);
+				// read this group elementId
 				String elementId = getAttr("Group", "GroupId", grp);
 				// if groupIdToNew contains elementId, sets elementId to its new elementId
 				if (groupIdToNew.containsKey(elementId))
 					elementId = groupIdToNew.get(elementId);
-				// given the correct elementId, retrieves parent group
+				// given the correct elementId, retrieves this group
 				Group group = (Group) pathwayModel.getPathwayElement(elementId);
-				// sets groupRef for parent group
-				group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
+				// sets groupRef for this group
+				if (group != null && groupRef != null)
+					group.setGroupRef(groupRef);
 			}
 		}
 	}
@@ -608,34 +609,34 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads label {@link Label} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
 	 * @throws ConverterException
+	 * 
 	 */
 	protected void readLabels(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element lb : root.getChildren("Label", root.getNamespace())) {
-			String elementId = getAttr("Label", "GraphId", lb);
-			if (elementId == null) {
-				elementId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(elementId);
-				Logger.log.trace("Label missing elementId, new id is: " + elementId); // TODO warning
-			}
+			String elementId = readElementId("Label", lb, elementIdSet);
 			String textLabel = getAttr("Label", "TextLabel", lb);
 			Element gfx = lb.getChild("Graphics", lb.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
-			/* reads comment group, evidenceRefs */
+			// reads comments, biopaxRefs/citationRefs, dynamic properties, evidenceRefs
 			readShapedElement(label, lb, biopaxIdToNew);
-			/* sets optional properties */
+			// sets optional properties
 			String href = getAttr("Label", "Href", lb);
-			String groupRef = getAttr("Label", "GroupRef", lb);
+			readGroupRef(label, lb, groupIdToNew);
 			if (href != null)
 				label.setHref(href);
-			readGroupRefShapedElement(pathwayModel, groupRef, label, groupIdToNew);
-			/* add label to pathway model */
+			// adds label to pathway model
 			if (label != null)
 				pathwayModel.addLabel(label);
 		}
@@ -651,12 +652,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readShapes(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element shp : root.getChildren("Shape", root.getNamespace())) {
-			String elementId = getAttr("Shape", "GraphId", shp);
-			if (elementId == null) {
-				elementId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(elementId);
-				Logger.log.trace("Shape missing elementId, new id is: " + elementId); // TODO warning
-			}
+			String elementId = readElementId("Shape", shp, elementIdSet);
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
@@ -667,10 +663,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			readShapedElement(shape, shp, biopaxIdToNew); // TODO handle dynamic properties....
 			/* sets optional properties */
 			String textLabel = getAttr("Shape", "TextLabel", shp);
-			String groupRef = getAttr("Shape", "GroupRef", shp);
+			readGroupRef(shape, shp, groupIdToNew);
 			if (textLabel != null)
 				shape.setTextLabel(textLabel);
-			readGroupRefShapedElement(pathwayModel, groupRef, shape, groupIdToNew);
 			if (shape != null)
 				pathwayModel.addShape(shape);
 		}
@@ -687,12 +682,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readDataNodes(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element dn : root.getChildren("DataNode", root.getNamespace())) {
-			String elementId = getAttr("DataNode", "GraphId", dn);
-			if (elementId == null) {
-				elementId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(elementId);
-				Logger.log.trace("DataNode missing elementId, new id is: " + elementId); // TODO warning
-			}
+			String elementId = readElementId("DataNode", dn, elementIdSet);
 			Element gfx = dn.getChild("Graphics", dn.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
@@ -704,8 +694,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			/* reads comment group, evidenceRefs */
 			readShapedElement(dataNode, dn, biopaxIdToNew);
 			/* sets optional properties */
-			String groupRef = getAttr("DataNode", "GroupRef", dn);
-			readGroupRefShapedElement(pathwayModel, groupRef, dataNode, groupIdToNew);
+			readGroupRef(dataNode, dn, groupIdToNew);
 			Xref xref = readXref(dn);
 			if (xref != null)
 				dataNode.setXref(xref);
@@ -715,24 +704,53 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 
-	protected void readGroupRefShapedElement(PathwayModel pathwayModel, String groupRef, ShapedElement se,
-			Map<String, String> groupIdToNew) throws ConverterException {
-		if (groupRef != null && !groupRef.equals("")) {
-			// if groupIdToNew contains groupRef
-			if (groupIdToNew.containsKey(groupRef)) {
-				// sets groupRef (key) to its new unique elementId (value)
-				groupRef = groupIdToNew.get(groupRef);
-			}
-			se.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+	/**
+	 * Returns elementId read for given Element. If elementId read is null,
+	 * generates and returns a new unique elementId. New unique elementIds are added
+	 * to elementIdSet.
+	 * 
+	 * @param tag          the string tag for
+	 *                     {@link GPML2013aFormatAbstract#getAttr}
+	 * @param e            the element.
+	 * @param elementIdSet the set of all elementIds.
+	 * @return elementId the elementId for given element.
+	 * @throws ConverterException
+	 */
+	protected String readElementId(String tag, Element e, Set<String> elementIdSet) throws ConverterException {
+		String elementId = getAttr(tag, "GraphId", e);
+		// if elementId null, generates new unique elementId and adds to elementIdSet
+		if (elementId == null) {
+			elementId = PathwayModel.getUniqueId(elementIdSet);
+			elementIdSet.add(elementId);
+			Logger.log.trace(e.getName() + " missing elementId, new id is: " + elementId);
 		}
+		return elementId;
 	}
 
-//	
-//	if (groupIdToNew.containsKey(groupRef)) {
-//		// sets groupRef (key) to its new unique elementId (value)
-//		groupRef = groupIdToNew.get(groupRef);
-//	}
-//	// read parent group elementId
+	/**
+	 * Reads and sets groupRef for given (shaped) pathway element and jdom Element.
+	 * 
+	 * @param pathwayModel  the pathwayModel.
+	 * @param shapedElement the (shaped) pathway element.
+	 * @param se            the jdom (shaped) pathway element element.
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
+	 * @throws ConverterException
+	 */
+	protected void readGroupRef(ShapedElement shapedElement, Element se,
+			Map<String, String> groupIdToNew) throws ConverterException {
+		String groupRefStr = getAttr(se.getName(), "GroupRef", se);
+		if (groupRefStr != null && !groupRefStr.equals("")) {
+			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
+			if (groupIdToNew.containsKey(groupRefStr))
+				groupRefStr = groupIdToNew.get(groupRefStr);
+			Group groupRef = (Group) shapedElement.getPathwayModel().getPathwayElement(groupRefStr);
+			// sets groupRef for this shaped pathway element
+			if (groupRef != null) {
+				shapedElement.setGroupRef(groupRef);
+			}
+		}
+	}
 
 	/**
 	 * TODO should absolute x and y be calculated??? Reads state {@link State}
@@ -745,12 +763,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readStates(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew) throws ConverterException {
 		for (Element st : root.getChildren("State", root.getNamespace())) {
-			String elementId = getAttr("State", "GraphId", st);
-			if (elementId == null) {
-				elementId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(elementId);
-				Logger.log.trace("State missing elementId, new id is: " + elementId); // TODO warning
-			}
+			String elementId = readElementId("State", st, elementIdSet);
 			String textLabel = getAttr("State", "TextLabel", st);
 			StateType type = StateType.register(getAttr("State", "StateType", st));
 			Element gfx = st.getChild("Graphics", st.getNamespace());
@@ -830,12 +843,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			List<String> lineList, Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew)
 			throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
-			String elementId = getAttr("Interaction", "GraphId", ia);
-			if (elementId == null) {
-				elementId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(elementId);
-				Logger.log.trace("Interaction missing elementId, new id is: " + elementId); // TODO warning
-			}
+			String elementId = readElementId("Interaction", ia, elementIdSet);
 			lineList.add(elementId);
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
@@ -865,12 +873,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			List<String> lineList, Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew)
 			throws ConverterException {
 		for (Element gln : root.getChildren("GraphicalLine", root.getNamespace())) {
-			String elementId = getAttr("GraphicalLine", "GraphId", gln);
-			if (elementId == null) {
-				elementId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(elementId);
-				Logger.log.trace("GraphicalLine missing elementId, new id is: " + elementId); // TODO warning
-			}
+			String elementId = readElementId("GraphicalLine", gln, elementIdSet);
 			lineList.add(elementId);
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
@@ -897,16 +900,19 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
 		readAnchors(lineElement, gfx, elementIdSet);
-		/* sets optional properties */
-		String groupRef = getAttr(base, "GroupRef", ln);
-		if (groupRef != null && !groupRef.equals("")) {
-			if (groupIdToNew.containsKey(groupRef)) {
-				groupRef = groupIdToNew.get(groupRef);
-			}
-			lineElement.setGroupRef((Group) lineElement.getPathwayModel().getPathwayElement(groupRef));
+		// sets optional properties
+		String groupRefStr = getAttr(base, "GroupRef", ln);
+		if (groupRefStr != null && !groupRefStr.equals("")) {
+			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
+			if (groupIdToNew.containsKey(groupRefStr)) 
+				groupRefStr = groupIdToNew.get(groupRefStr);
+			Group groupRef = (Group) lineElement.getPathwayModel().getPathwayElement(groupRefStr);
+			// sets groupRef for this line pathway element
+			lineElement.setGroupRef(groupRef);
 		}
 	}
-
+	
+	
 	/**
 	 * Reads anchor {@link Anchor} information for line element from element.
 	 * 
@@ -918,12 +924,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
-			String elementId = getAttr(base + ".Graphics.Anchor", "GraphId", an);
-			if (elementId == null) {
-				elementId = PathwayModel.getUniqueId(elementIdSet);
-				elementIdSet.add(elementId);
-				Logger.log.trace("Anchor missing elementId, new id is: " + elementId); // TODO warning
-			}
+			String elementId = readElementId(base + ".Graphics.Anchor", an, elementIdSet);
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
 			AnchorType shapeType = AnchorType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
@@ -957,12 +958,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				}
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-					String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
-					if (elementId == null) {
-						elementId = PathwayModel.getUniqueId(elementIdSet);
-						elementIdSet.add(elementId);
-						Logger.log.trace("Point missing elementId, new id is: " + elementId); // TODO warning
-					}
+					String elementId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
 					ArrowHeadType arrowHead = ArrowHeadType
 							.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
 					Coordinate xy = new Coordinate(
