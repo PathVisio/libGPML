@@ -146,6 +146,7 @@ public class PathwayModel {
 			throw new IllegalArgumentException("unique elementId can't be null");
 		}
 		if (elementIdToPathwayElement.containsKey(elementId)) {
+			System.out.println(elementIdToPathwayElement);
 			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
 		}
 		elementIdToPathwayElement.put(elementId, pathwayElement);

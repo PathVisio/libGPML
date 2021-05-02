@@ -40,10 +40,12 @@ public class TestGPML2013a extends TestCase {
 	 * @throws ConverterException
 	 * @throws SAXException
 	 */
-	public static void testReadWrite() throws IOException, ConverterException, SAXException {
+	public static void testReadWrite2013a() throws IOException, ConverterException, SAXException {
 		
-		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 //		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-problem-gpmls");
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210410-gpml-Homo_sapiens");
+
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
 		for (int i = 1; i < listOfFiles.length; i++) {

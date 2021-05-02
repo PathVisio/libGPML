@@ -85,16 +85,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Map<String, String> groupIdToNew = new HashMap<String, String>();
 		readGroups(pathwayModel, root, graphIdSet, biopaxIdToNew, groupIdToNew);
 		readGroupGroupRef(pathwayModel, root, groupIdToNew);
-		readLabels(pathwayModel, root, biopaxIdToNew, groupIdToNew);
-		readShapes(pathwayModel, root, biopaxIdToNew, groupIdToNew);
-		readDataNodes(pathwayModel, root, biopaxIdToNew, groupIdToNew);
+		readLabels(pathwayModel, root, graphIdSet, biopaxIdToNew, groupIdToNew);
+		readShapes(pathwayModel, root, graphIdSet, biopaxIdToNew, groupIdToNew);
+		readDataNodes(pathwayModel, root, graphIdSet, biopaxIdToNew, groupIdToNew);
 		/* states read after data nodes */
-		readStates(pathwayModel, root, biopaxIdToNew);
+		readStates(pathwayModel, root, graphIdSet, biopaxIdToNew);
 		List<String> lineList = new ArrayList<String>();
-		readInteractions(pathwayModel, root, lineList, biopaxIdToNew, groupIdToNew);
-		readGraphicalLines(pathwayModel, root, lineList, biopaxIdToNew, groupIdToNew);
+		readInteractions(pathwayModel, root, graphIdSet, lineList, biopaxIdToNew, groupIdToNew);
+		readGraphicalLines(pathwayModel, root, graphIdSet, lineList, biopaxIdToNew, groupIdToNew);
 		/* reads points last */
-		readPoints(pathwayModel, root, lineList);
+		readPoints(pathwayModel, root, graphIdSet, lineList, groupIdToNew);
 		/* removes empty groups */
 		removeEmptyGroups(pathwayModel);
 		return pathwayModel;
@@ -215,7 +215,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Map<String, String> biopaxIdToNew) throws ConverterException {
 		Element bp = root.getChild("Biopax", root.getNamespace());
 		if (bp != null) {
-			readBiopaxOpenControlledVocabulary(pathwayModel, bp);
+			readBiopaxOpenControlledVocabulary(pathwayModel, bp, graphIdSet);
 			readBiopaxPublicationXref(pathwayModel, bp, graphIdSet, biopaxIdToNew);
 		}
 	}
@@ -228,10 +228,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param biopax       the biopax element.
 	 * @throws ConverterException
 	 */
-	protected void readBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp) throws ConverterException {
+	protected void readBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp, Set<String> graphIdSet) throws ConverterException {
 		for (Element ocv : bp.getChildren("openControlledVocabulary", BIOPAX)) {
-			String elementId = pathwayModel.getUniqueElementId();
-			String value = ocv.getChild("TERM", BIOPAX).getText();
+			String elementId = PathwayModel.getUniqueId(graphIdSet);
+			graphIdSet.add(elementId);
+			Logger.log.trace("Annotation missing elementId, new id is: " + elementId); // TODO warning
+				String value = ocv.getChild("TERM", BIOPAX).getText();
 			String biopaxOntology = ocv.getChild("Ontology", BIOPAX).getText();
 			AnnotationType type = AnnotationType.register(biopaxOntology);
 			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
@@ -428,11 +430,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = getAttr("Group", "GroupId", grp);
 			if (graphIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(graphIdSet);
-				graphIdSet.add(newId);
 				Logger.log.trace("GroupId " + elementId + " is not unique, new id is: " + newId); // TODO warning
 				groupIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
+			graphIdSet.add(elementId);
 			GroupType type = GroupType.register(getAttr("Group", "Style", grp));
 			// TODO Group has no RectProperty...CenterX, CenterY, width, Height!!!!
 			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 2, 2);
@@ -528,12 +530,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readLabels(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew,
-			Map<String, String> groupIdToNew) throws ConverterException {
+	protected void readLabels(PathwayModel pathwayModel, Element root, Set<String> graphIdSet,
+			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element lb : root.getChildren("Label", root.getNamespace())) {
 			String elementId = getAttr("Label", "GraphId", lb);
-			if (elementId == null)
-				elementId = pathwayModel.getUniqueElementId();
+			if (elementId == null) {
+				elementId = PathwayModel.getUniqueId(graphIdSet);
+				graphIdSet.add(elementId);
+				Logger.log.trace("Label missing elementId, new id is: " + elementId); // TODO warning
+			}
 			String textLabel = getAttr("Label", "TextLabel", lb);
 			Element gfx = lb.getChild("Graphics", lb.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
@@ -561,12 +566,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readShapes(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew,
-			Map<String, String> groupIdToNew) throws ConverterException {
+	protected void readShapes(PathwayModel pathwayModel, Element root, Set<String> graphIdSet,
+			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element shp : root.getChildren("Shape", root.getNamespace())) {
 			String elementId = getAttr("Shape", "GraphId", shp);
-			if (elementId == null)
-				elementId = pathwayModel.getUniqueElementId();
+			if (elementId == null) {
+				elementId = PathwayModel.getUniqueId(graphIdSet);
+				graphIdSet.add(elementId);
+				Logger.log.trace("Shape missing elementId, new id is: " + elementId); // TODO warning
+			}
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
@@ -594,12 +602,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readDataNodes(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew,
-			Map<String, String> groupIdToNew) throws ConverterException {
+	protected void readDataNodes(PathwayModel pathwayModel, Element root, Set<String> graphIdSet,
+			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element dn : root.getChildren("DataNode", root.getNamespace())) {
 			String elementId = getAttr("DataNode", "GraphId", dn);
-			if (elementId == null)
-				elementId = pathwayModel.getUniqueElementId();
+			if (elementId == null) {
+				elementId = PathwayModel.getUniqueId(graphIdSet);
+				graphIdSet.add(elementId);
+				Logger.log.trace("DataNode missing elementId, new id is: " + elementId); // TODO warning
+			}
 			Element gfx = dn.getChild("Graphics", dn.getNamespace());
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
@@ -641,12 +652,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param dn       the data node element.
 	 * @throws ConverterException
 	 */
-	protected void readStates(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew)
-			throws ConverterException {
+	protected void readStates(PathwayModel pathwayModel, Element root, Set<String> graphIdSet,
+			Map<String, String> biopaxIdToNew) throws ConverterException {
 		for (Element st : root.getChildren("State", root.getNamespace())) {
 			String elementId = getAttr("State", "GraphId", st);
-			if (elementId == null)
-				elementId = pathwayModel.getUniqueElementId();
+			if (elementId == null) {
+				elementId = PathwayModel.getUniqueId(graphIdSet);
+				graphIdSet.add(elementId);
+				Logger.log.trace("State missing elementId, new id is: " + elementId); // TODO warning
+			}
 			String textLabel = getAttr("State", "TextLabel", st);
 			StateType type = StateType.register(getAttr("State", "StateType", st));
 			Element gfx = st.getChild("Graphics", st.getNamespace());
@@ -722,18 +736,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected List<String> readInteractions(PathwayModel pathwayModel, Element root, List<String> lineList,
+	protected List<String> readInteractions(PathwayModel pathwayModel, Element root, Set<String> graphIdSet, List<String> lineList,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
 			String elementId = getAttr("Interaction", "GraphId", ia);
-			if (elementId == null)
-				elementId = pathwayModel.getUniqueElementId();
+			if (elementId == null) {
+				elementId = PathwayModel.getUniqueId(graphIdSet);
+				graphIdSet.add(elementId);
+				Logger.log.trace("Interaction missing elementId, new id is: " + elementId); // TODO warning
+			}
 			lineList.add(elementId);
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
 			/* reads comment group, evidenceRefs */
-			readLineElement(interaction, ia, biopaxIdToNew, groupIdToNew);
+			readLineElement(interaction, ia, graphIdSet, biopaxIdToNew, groupIdToNew);
 			/* set optional properties */
 			Xref xref = readXref(ia);
 			if (xref != null)
@@ -753,17 +770,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected List<String> readGraphicalLines(PathwayModel pathwayModel, Element root, List<String> lineList,
+	protected List<String> readGraphicalLines(PathwayModel pathwayModel, Element root, Set<String> graphIdSet, List<String> lineList,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element gln : root.getChildren("GraphicalLine", root.getNamespace())) {
 			String elementId = getAttr("GraphicalLine", "GraphId", gln);
-			if (elementId == null)
-				elementId = pathwayModel.getUniqueElementId();
+			if (elementId == null) {
+				elementId = PathwayModel.getUniqueId(graphIdSet);
+				graphIdSet.add(elementId);
+				Logger.log.trace("GraphicalLine missing elementId, new id is: " + elementId); // TODO warning
+			}
 			lineList.add(elementId);
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
-			readLineElement(graphicalLine, gln, biopaxIdToNew, groupIdToNew);
+			readLineElement(graphicalLine, gln, graphIdSet, biopaxIdToNew, groupIdToNew);
 			if (graphicalLine != null)
 				pathwayModel.addGraphicalLine(graphicalLine);
 		}
@@ -778,13 +798,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param ln          the line element.
 	 * @throws ConverterException
 	 */
-	protected void readLineElement(LineElement lineElement, Element ln, Map<String, String> biopaxIdToNew,
+	protected void readLineElement(LineElement lineElement, Element ln, Set<String> graphIdSet, Map<String, String> biopaxIdToNew,
 			Map<String, String> groupIdToNew) throws ConverterException {
 		String base = ln.getName();
 		readElementInfo(lineElement, ln, biopaxIdToNew); // comment group and evidenceRef
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
-		readAnchors(lineElement, gfx);
+		readAnchors(lineElement, gfx, graphIdSet);
 		/* sets optional properties */
 		String groupRef = getAttr(base, "GroupRef", ln);
 		if (groupRef != null && !groupRef.equals("")) {
@@ -802,12 +822,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param gfx         the graphics element.
 	 * @throws ConverterException
 	 */
-	protected void readAnchors(LineElement lineElement, Element gfx) throws ConverterException {
+	protected void readAnchors(LineElement lineElement, Element gfx, Set<String> graphIdSet) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
 			String elementId = getAttr(base + ".Graphics.Anchor", "GraphId", an);
-			if (elementId == null)
-				elementId = lineElement.getPathwayModel().getUniqueElementId();
+			if (elementId == null) {
+				elementId = PathwayModel.getUniqueId(graphIdSet);
+				graphIdSet.add(elementId);
+				Logger.log.trace("Anchor missing elementId, new id is: " + elementId); // TODO warning
+			}
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
 			AnchorType shapeType = AnchorType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
@@ -825,7 +848,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readPoints(PathwayModel pathwayModel, Element root, List<String> lineList)
+	protected void readPoints(PathwayModel pathwayModel, Element root, Set<String> graphIdSet, List<String> lineList, Map<String, String> groupIdToNew)
 			throws ConverterException {
 
 		List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
@@ -842,8 +865,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
 					String elementId = getAttr(base + ".Graphics.Point", "GraphId", pt);
-					if (elementId == null)
-						elementId = lineElement.getPathwayModel().getUniqueElementId();
+					if (elementId == null) {
+						elementId = PathwayModel.getUniqueId(graphIdSet);
+						graphIdSet.add(elementId);
+						Logger.log.trace("Point missing elementId, new id is: " + elementId); // TODO warning
+					}
 					ArrowHeadType arrowHead = ArrowHeadType
 							.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
 					Coordinate xy = new Coordinate(
@@ -855,6 +881,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					/* set optional parameters including elementRef, named GraphRef in GPML 2013a */
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
+						if (groupIdToNew.containsKey(elementRefStr)) {
+							elementRefStr = groupIdToNew.get(elementRefStr);
+						}
 						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
 						if (elementRef != null) {
 							point.setElementRef(elementRef);
