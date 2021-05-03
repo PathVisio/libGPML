@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2019 BiGCaT Bioinformatics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -14,33 +14,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import org.pathvisio.model.*;
+import java.awt.Color;
 
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.elements.*;
+import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.type.*;
 
 import junit.framework.TestCase;
 
-public class TestGPMLReadWrite extends TestCase {
+public class TestGroupRectPropertyUtils extends TestCase {
 
-	public static void testReadWrite() throws IOException, ConverterException {
-		URL url = Thread.currentThread().getContextClassLoader().getResource("grouptest_again.gpml");
+	public void testGroupRectPropertyCalculation() {
 
-		File file = new File(url.getPath());
-		assertTrue (file.exists());
+		Group group = new Group();
+				
+		DataNode dataNode = new DataNode("d1", null, new RectProperty(new Coordinate(1, 1), 1, 1),
+				new FontProperty(null, "Arial", false, false, false, false, 0, null, null),
+				new ShapeStyleProperty(Color.decode("#ffffff"), LineStyleType.SOLID, 1.0, Color.decode("#ffffff"),
+						ShapeType.RECTANGLE),
+				"d1", DataNodeType.ALIAS);
 
-		PathwayModel pathwayModel = new PathwayModel();
-		pathwayModel.readFromXml(file, true);
-		
-//		
-		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
-		System.out.println(tmp);
-		
-		
 	}
 }

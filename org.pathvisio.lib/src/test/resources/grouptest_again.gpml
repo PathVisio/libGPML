@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Pathway xmlns="http://pathvisio.org/GPML/2013a" Name="groupTestShapes" Version="20210503" Organism="Anopheles gambiae">
+  <Graphics BoardWidth="1128.0" BoardHeight="671.0" />
+  <DataNode TextLabel="Metabolite" GraphId="afcdc" Type="Metabolite" GroupRef="feef6">
+    <Graphics CenterX="952.0" CenterY="299.0" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" Color="0000ff" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="GeneProduct" GraphId="b5353" Type="GeneProduct" GroupRef="c8a1b">
+    <Graphics CenterX="540.0" CenterY="333.0" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="Metabolite" GraphId="cde14" Type="Metabolite" GroupRef="c8a1b">
+    <Graphics CenterX="544.0" CenterY="291.0" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" Color="0000ff" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="Rna" GraphId="df280" Type="Rna" GroupRef="fb4fe">
+    <Graphics CenterX="21.0" CenterY="175.0" Width="90.0" Height="25.0" ZOrder="32769" FontSize="12" Valign="Middle" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="Protein" GraphId="f026a" Type="Protein" GroupRef="fb4fe">
+    <Graphics CenterX="41.0" CenterY="149.0" Width="90.0" Height="25.0" ZOrder="32770" FontSize="12" Valign="Middle" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="GeneProduct" GraphId="d1f32" Type="GeneProduct" GroupRef="bcd45">
+    <Graphics CenterX="614.0" CenterY="586.0" Width="90.0" Height="25.0" ZOrder="32773" FontSize="12" Valign="Middle" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="Metabolite" GraphId="c7579" Type="Metabolite" GroupRef="bcd45">
+    <Graphics CenterX="618.0" CenterY="544.0" Width="90.0" Height="25.0" ZOrder="32774" FontSize="12" Valign="Middle" Color="0000ff" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <GraphicalLine GroupRef="feef6">
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="842.0" Y="225.0" />
+      <Point X="1052.0" Y="371.0" />
+    </Graphics>
+  </GraphicalLine>
+  <GraphicalLine GroupRef="c8a1b">
+    <Graphics ConnectorType="Elbow" ZOrder="12288" LineThickness="1.0">
+      <Point X="519.0" Y="235.0" />
+      <Point X="674.0" Y="361.0" />
+    </Graphics>
+  </GraphicalLine>
+  <GraphicalLine GroupRef="bcd45">
+    <Graphics ConnectorType="Segmented" ZOrder="12288" LineThickness="1.0">
+      <Point X="602.0" Y="449.0" />
+      <Point X="717.0" Y="554.0" />
+      <Point X="600.0" Y="641.0" />
+    </Graphics>
+  </GraphicalLine>
+  <Shape GraphId="c2411" GroupRef="feef6">
+    <Attribute Key="org.pathvisio.CellularComponentProperty" Value="Endoplasmic Reticulum" />
+    <Graphics CenterX="1048.0" CenterY="307.0" Width="100.0" Height="200.0" ZOrder="16384" FontSize="12" Valign="Middle" ShapeType="Endoplasmic Reticulum" LineThickness="3.0" Color="c0c0c0" Rotation="0.8488051153642804" />
+  </Shape>
+  <Group GroupId="fb4fe" Style="Complex" />
+  <Group GroupId="feef6" Style="Complex" />
+  <Group GroupId="c8a1b" Style="Complex" />
+  <Group GroupId="bcd45" Style="Complex" />
+  <Group GroupId="eccd1" Style="Complex" />
+  <InfoBox CenterX="0.0" CenterY="0.0" />
+  <Biopax />
+</Pathway>
+

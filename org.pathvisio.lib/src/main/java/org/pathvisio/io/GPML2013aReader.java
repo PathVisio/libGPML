@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.awt.Color;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
+import org.pathvisio.util.GroupRectPropertyUtils;
 
 /**
  * This class reads a PathwayModel from an input source (GPML 2013a).
@@ -111,7 +113,27 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readPoints(pathwayModel, root, elementIdSet, groupIdToNew, lineList);
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
+		calculateGroupRectProperty(pathwayModel.getGroups());
 		return pathwayModel;
+	}
+
+	/**
+	 * Calculates and sets rect properties (centerX, centerY, width, height) for
+	 * groups after pathwayElements {@link List} is filled.
+	 * {@link #GroupRectProperty#calculateGroupBounds} Iterates over all group
+	 * pathway element members to find the total rectangular bounds, taking into
+	 * account rotation of the nested elements.
+	 * 
+	 * @param groups the list of groups in pathway model.
+	 */
+	protected void calculateGroupRectProperty(List<Group> groups) {
+		for (Group group : groups) {
+			Rectangle2D bounds = GroupRectPropertyUtils.calculateGroupBounds(group);
+			group.getRectProperty().getCenterXY().setX(bounds.getCenterX());
+			group.getRectProperty().getCenterXY().setY(bounds.getCenterY());
+			group.getRectProperty().setWidth(bounds.getWidth());
+			group.getRectProperty().setHeight(bounds.getHeight());
+		}
 	}
 
 	/**
@@ -304,7 +326,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// if not unique, generates new unique elementId
 			if (elementIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(elementIdSet);
-				Logger.log.trace("Biopax id " + elementId + " is not unique, new id is: " + newId); 
+				Logger.log.trace("Biopax id " + elementId + " is not unique, new id is: " + newId);
 				biopaxIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
@@ -473,6 +495,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads group {@link Group} information for pathway model from root element.
+	 * Rect properties (centerX, centerY, width, height) are calculated by
+	 * {@link calculateGroupRectProperty} after group {@link List} is filled with
+	 * pathway elements.
 	 * 
 	 * NB: A group has identifier GroupId (essentially ElementId), while GraphId is
 	 * optional. A group has GraphId if there is at least one {@link Point}
@@ -497,15 +522,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// if not unique, generates new unique elementId
 			if (elementIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(elementIdSet);
-				Logger.log.trace("GroupId " + elementId + " is not unique, new id is: " + newId); 
+				Logger.log.trace("GroupId " + elementId + " is not unique, new id is: " + newId);
 				groupIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
 			// adds group elementId to elementIdSet
 			elementIdSet.add(elementId);
 			GroupType type = GroupType.register(getAttr("Group", "Style", grp));
-			// TODO CALCULATE CenterX, CenterY, width, Height!!!!
-			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 2, 2);
+			// temp rect properties (calculate rect properties after pathway elements added)
+			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 1, 1);
 			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
