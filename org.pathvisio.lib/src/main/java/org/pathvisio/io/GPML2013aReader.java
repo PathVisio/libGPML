@@ -41,6 +41,15 @@ import org.pathvisio.util.ColorUtils;
 /**
  * This class reads a PathwayModel from an input source (GPML 2013a).
  * 
+ * In GPML2013a, GraphIds (elementIds) are missing for some pathway elements, or
+ * may conflict with Biopax rdf:id (Biopax elementIds) or GroupId (equivalent to
+ * elementIds for Groups).
+ * 
+ * To ensure unique elementIds for a reading session, all ids are stored in
+ * {@link Set} elementIdSet. Biopax id or GroupId and corresponding newly
+ * assigned elementIds are stored in {@link Map} biopaxIdToNew or groupIdToNew.
+ * Line elementIds are stored in {@link List} lineList.
+ * 
  * @author finterly
  */
 public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlFormatReader {
@@ -62,10 +71,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * read before other pathway element. DataNodes are read before States. And
 	 * Points are read last.
 	 * 
-	 * See the following links for more information on elementIdSet: {@link #readAllElementIds};
-	 * biopaxIdToNew: {@link #readBiopaxPublicationXref}; groupIdToNew:
-	 * {@link #readGroups}; lineList {@link #readGraphicalLines},
-	 * {@link #readInteractions}, {@link #readPoints}.
+	 * See the following links for more information on elementIdSet:
+	 * {@link #readAllElementIds}; biopaxIdToNew:
+	 * {@link #readBiopaxPublicationXref}; groupIdToNew: {@link #readGroups};
+	 * lineList {@link #readGraphicalLines}, {@link #readInteractions},
+	 * {@link #readPoints}.
 	 * 
 	 * @param pathwayModel the given pathway model.
 	 * @param root         the root element of given Jdom document.
@@ -85,7 +95,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		pathwayModel.setPathway(pathway);
 		// reads biopax, equivalent to annotations and citations
 		readBiopax(pathwayModel, root, elementIdSet, biopaxIdToNew);
-		// reads pathway comments, biopaxRefs, dynamic properties, evidenceRefs
+		// reads pathway comments, biopaxRefs, dynamic properties
 		readPathwayInfo(pathwayModel, root, biopaxIdToNew);
 		// reads groups first and then groupRefs
 		readGroups(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew);
@@ -500,13 +510,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
+			// instantiates group
 			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
 			// group of type "Pathway" has custom default font size and name
 			if (type.getName() == "Pathway") {
 				group.getFontProperty().setFontSize(32);
 				group.getFontProperty().setFontName("Times"); // TODO
 			}
-			// reads comments, biopaxRefs/citationRefs, dynamic properties, evidenceRefs
+			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(group, grp, biopaxIdToNew);
 			// sets optional properties
 			String textLabel = getAttr("Group", "TextLabel", grp);
@@ -571,21 +582,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected ShapeStyleProperty readGroupShapeStyleProperty(GroupType type) throws ConverterException {
 		if (type.getName() == "Group") {
-			/* fillColor translucent blue, hovers to transparent */
+			// fillColor translucent blue, hovers to transparent
 			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0,
 					ColorUtils.hexToColor("#0000ff0c"), ShapeType.RECTANGLE);
 		} else if (type.getName() == "Complex") {
-			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
+			// fillColor translucent yellowish-gray, hovers to translucent red #ff00000c
 			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0,
 					ColorUtils.hexToColor("#b4b46419"), ShapeType.OCTAGON);
 		} else if (type.getName() == "Pathway") {
-			/* fontSize 32, fontName "Times" (was not implemented) */
-			/* fillColor translucent green, hovers to more opaque green #00ff0019 */
+			// fontSize 32, fontName "Times" (was not implemented)
+			// fillColor translucent green, hovers to more opaque green #00ff0019
 			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0,
 					ColorUtils.hexToColor("#00ff000c"), ShapeType.RECTANGLE);
 		} else {
-			/* GroupType "None", or default */
-			/* fillColor translucent yellowish-gray, hovers to translucent red #ff00000c */
+			// GroupType "None", or default
+			// fillColor translucent yellowish-gray, hovers to translucent red #ff00000c
 			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0,
 					ColorUtils.hexToColor("#b4b46419"), ShapeType.RECTANGLE);
 		}
@@ -602,7 +613,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
 	 *                      (values)
 	 * @throws ConverterException
-	 * 
 	 */
 	protected void readLabels(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
@@ -613,8 +623,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			RectProperty rectProperty = readRectProperty(gfx);
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+			// instantiates label
 			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
-			// reads comments, biopaxRefs/citationRefs, dynamic properties, evidenceRefs
+			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(label, lb, biopaxIdToNew);
 			// sets optional properties
 			String href = getAttr("Label", "Href", lb);
@@ -630,8 +641,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads shape {@link Shape} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
 	 * @throws ConverterException
 	 */
 	protected void readShapes(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
@@ -643,14 +659,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx).trim());
+			// instantiates shape
 			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
-			/* reads comment group, evidenceRefs */
-			readShapedElement(shape, shp, biopaxIdToNew); // TODO handle dynamic properties....
-			/* sets optional properties */
+			// reads comments, biopaxRefs/citationRefs, dynamic properties
+			readShapedElement(shape, shp, biopaxIdToNew);
+			// sets optional properties
 			String textLabel = getAttr("Shape", "TextLabel", shp);
 			readGroupRef(shape, shp, groupIdToNew);
 			if (textLabel != null)
 				shape.setTextLabel(textLabel);
+			// adds shape to pathway model
 			if (shape != null)
 				pathwayModel.addShape(shape);
 		}
@@ -660,8 +678,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads data node {@link DataNode} information for pathway model from root
 	 * element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
 	 * @throws ConverterException
 	 */
 	protected void readDataNodes(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
@@ -674,75 +697,30 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			String textLabel = getAttr("DataNode", "TextLabel", dn);
 			DataNodeType type = DataNodeType.register(getAttr("DataNode", "Type", dn));
+			// instantiates data node
 			DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
 					textLabel, type);
-			/* reads comment group, evidenceRefs */
+			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(dataNode, dn, biopaxIdToNew);
-			/* sets optional properties */
+			// sets optional properties
 			readGroupRef(dataNode, dn, groupIdToNew);
 			Xref xref = readXref(dn);
 			if (xref != null)
 				dataNode.setXref(xref);
-			/* add dataNode to pathwayModel */
+			// adds data node to pathway model
 			if (dataNode != null)
 				pathwayModel.addDataNode(dataNode);
 		}
 	}
 
 	/**
-	 * Returns elementId read for given Element. If elementId read is null,
-	 * generates and returns a new unique elementId. New unique elementIds are added
-	 * to elementIdSet.
+	 * Reads state {@link State} information for pathway model from root element.
 	 * 
-	 * @param tag          the string tag for
-	 *                     {@link GPML2013aFormatAbstract#getAttr}
-	 * @param e            the element.
-	 * @param elementIdSet the set of all elementIds.
-	 * @return elementId the elementId for given element.
-	 * @throws ConverterException
-	 */
-	protected String readElementId(String tag, Element e, Set<String> elementIdSet) throws ConverterException {
-		String elementId = getAttr(tag, "GraphId", e);
-		// if elementId null, generates new unique elementId and adds to elementIdSet
-		if (elementId == null) {
-			elementId = PathwayModel.getUniqueId(elementIdSet);
-			elementIdSet.add(elementId);
-			Logger.log.trace(e.getName() + " missing elementId, new id is: " + elementId);
-		}
-		return elementId;
-	}
-
-	/**
-	 * Reads and sets groupRef for given (shaped) pathway element and jdom Element.
-	 * 
-	 * @param pathwayModel  the pathwayModel.
-	 * @param shapedElement the (shaped) pathway element.
-	 * @param se            the jdom (shaped) pathway element element.
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
-	 * @throws ConverterException
-	 */
-	protected void readGroupRef(ShapedElement shapedElement, Element se, Map<String, String> groupIdToNew)
-			throws ConverterException {
-		String groupRefStr = getAttr(se.getName(), "GroupRef", se);
-		if (groupRefStr != null && !groupRefStr.equals("")) {
-			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
-			if (groupIdToNew.containsKey(groupRefStr))
-				groupRefStr = groupIdToNew.get(groupRefStr);
-			Group groupRef = (Group) shapedElement.getPathwayModel().getPathwayElement(groupRefStr);
-			// sets groupRef for this shaped pathway element
-			if (groupRef != null) {
-				shapedElement.setGroupRef(groupRef);
-			}
-		}
-	}
-
-	/**
-	 * TODO should absolute x and y be calculated??? Reads state {@link State}
-	 * information for pathway model from root element.
-	 * 
-	 * @param dataNode the data node object {@link DataNode}.
-	 * @param dn       the data node element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
 	 * @throws ConverterException
 	 */
 	protected void readStates(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
@@ -756,63 +734,32 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			double relY = Double.parseDouble(getAttr("State.Graphics", "RelY", gfx).trim());
 			double width = Double.parseDouble(getAttr("State.Graphics", "Width", gfx).trim());
 			double height = Double.parseDouble(getAttr("State.Graphics", "Height", gfx).trim());
-			/* state does not have font properties in GPML2013a, set default values */
+			// state does not have font properties in GPML2013a, set default values
 			FontProperty fontProperty = new FontProperty(Color.decode("#000000"), "Arial", false, false, false, false,
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			/* finds parent datanode from state elementRef */
+			// finds parent datanode from state elementRef
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementRef);
-			/* instantiates state */
+			// instantiates state
 			State state = new State(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height,
 					fontProperty, shapeStyleProperty);
-			/* sets textColor to same color as borderColor */
+			// sets textColor to same color as borderColor
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
-			/* reads comment group */
+			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(state, st, biopaxIdToNew);
 			readStateDynamicProperties(state, st);
-			// TODO looks okay for now?
+			// if has DoubleLineProperty key, sets border style as Double
 			if ("Double".equalsIgnoreCase(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
 				state.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			}
-			/* sets optional properties */
+			// sets optional properties
 			Xref xref = readXref(st);
 			if (xref != null)
 				state.setXref(xref);
+			// adds state to parent data node of pathway model
 			if (state != null)
 				dataNode.addState(state);
-		}
-	}
-
-	/**
-	 * Reads line element {@link LineElement} information for interaction or
-	 * graphical line from element.
-	 * 
-	 * @param lineElement the line element object.
-	 * @param ln          the line element.
-	 * @throws ConverterException
-	 */
-	protected void readShapedElement(ShapedElement shapedElement, Element se, Map<String, String> biopaxIdToNew)
-			throws ConverterException {
-		readElementInfo(shapedElement, se, biopaxIdToNew); // comment group and evidenceRef
-		readShapedDynamicProperties(shapedElement, se);
-	}
-
-	/**
-	 * @param shapedElement
-	 * @param e
-	 * @throws ConverterException
-	 */
-	protected void mapShapeType(ShapedElement shapedElement, Element e) throws ConverterException {
-		String base = e.getName();
-		Element gfx = e.getChild("Graphics", e.getNamespace());
-		ShapeType shapeType = ShapeType.fromName(getAttr(base + ".Graphics", "ShapeType", gfx));
-		/* check deprecated shape type map */
-		if (DEPRECATED_MAP.containsKey(shapeType)) {
-			ShapeType shapeTypeNew = DEPRECATED_MAP.get(shapeType);
-			shapedElement.getShapeStyleProperty().setShapeType(shapeTypeNew);
-		} else {
-			shapedElement.getShapeStyleProperty().setShapeType(shapeType);
 		}
 	}
 
@@ -835,9 +782,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
-			/* reads comment group, evidenceRefs */
-			readLineElement(interaction, ia, elementIdSet, biopaxIdToNew, groupIdToNew);
-			/* set optional properties */
+			/*
+			 * reads comment group readLineElement(interaction, ia, elementIdSet,
+			 * biopaxIdToNew, groupIdToNew); /* set optional properties
+			 */
 			Xref xref = readXref(ia);
 			if (xref != null)
 				interaction.setXref(xref);
@@ -885,7 +833,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readLineElement(LineElement lineElement, Element ln, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		String base = ln.getName();
-		readElementInfo(lineElement, ln, biopaxIdToNew); // comment group and evidenceRef
+		readElementInfo(lineElement, ln, biopaxIdToNew); // comment group
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
 		readAnchors(lineElement, gfx, elementIdSet);
@@ -1010,6 +958,69 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
+	 * Returns elementId read for given Element. If elementId is missing (null),
+	 * generates and returns a new unique elementId. New unique elementIds are added
+	 * to elementIdSet.
+	 * 
+	 * @param tag          the string tag for
+	 *                     {@link GPML2013aFormatAbstract#getAttr}
+	 * @param e            the jdom element.
+	 * @param elementIdSet the set of all elementIds.
+	 * @return elementId the elementId for given element.
+	 * @throws ConverterException
+	 */
+	protected String readElementId(String tag, Element e, Set<String> elementIdSet) throws ConverterException {
+		String elementId = getAttr(tag, "GraphId", e);
+		// if elementId null, generates new unique elementId and adds to elementIdSet
+		if (elementId == null) {
+			elementId = PathwayModel.getUniqueId(elementIdSet);
+			elementIdSet.add(elementId);
+			Logger.log.trace(e.getName() + " missing elementId, new id is: " + elementId);
+		}
+		return elementId;
+	}
+
+	/**
+	 * Reads and sets groupRef for given (shaped) pathway element and jdom Element.
+	 * 
+	 * @param pathwayModel  the pathwayModel.
+	 * @param shapedElement the (shaped) pathway element.
+	 * @param se            the jdom (shaped) pathway element element.
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
+	 * @throws ConverterException
+	 */
+	protected void readGroupRef(ShapedElement shapedElement, Element se, Map<String, String> groupIdToNew)
+			throws ConverterException {
+		String groupRefStr = getAttr(se.getName(), "GroupRef", se);
+		if (groupRefStr != null && !groupRefStr.equals("")) {
+			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
+			if (groupIdToNew.containsKey(groupRefStr))
+				groupRefStr = groupIdToNew.get(groupRefStr);
+			Group groupRef = (Group) shapedElement.getPathwayModel().getPathwayElement(groupRefStr);
+			// sets groupRef for this shaped pathway element
+			if (groupRef != null) {
+				shapedElement.setGroupRef(groupRef);
+			}
+		}
+	}
+
+	/**
+	 * Reads shaped pathway element {@link ShapedElement} information.
+	 * 
+	 * @param shapedElement the shaped pathway element.
+	 * @param se            the jdom (shaped) pathway element element.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @throws ConverterException
+	 */
+	protected void readShapedElement(ShapedElement shapedElement, Element se, Map<String, String> biopaxIdToNew)
+			throws ConverterException {
+		readElementInfo(shapedElement, se, biopaxIdToNew); // reads comments, biopaxRefs/citationRefs
+		readShapedDynamicProperties(shapedElement, se); // reads dynamic properties
+	}
+
+	/**
 	 * Reads comment and biopaxref {@link ElementInfo} information, for pathway
 	 * element from element. Dynamic properties read by
 	 * {@link #readLineDynamicProperties()} , {@link #readShapedDynamicProperties()}
@@ -1018,7 +1029,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * NB: In GPML2013a, no equivalent of annotationRef was implemented, all
 	 * openControlledVocabulary belong to the parent pathway. Also,
 	 * CommentGroup:PublicationXref and BiopaxRef the attribute were not
-	 * implemented.
+	 * implemented. In GPML2021, Evidence and EvidenceRef was added.
 	 * 
 	 * @param elementInfo the element info pathway element object.
 	 * @param e           the jdom pathway element element.
@@ -1064,37 +1075,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element bpRef : e.getChildren("BiopaxRef", e.getNamespace())) {
 
 			String biopaxRefStr = bpRef.getText();
-			if (biopaxIdToNew.containsKey(biopaxRefStr)) {
+			if (biopaxIdToNew.containsKey(biopaxRefStr))
 				biopaxRefStr = biopaxIdToNew.get(biopaxRefStr);
-			}
 			Citation biopaxRef = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRefStr);
-			if (biopaxRef != null) {
+			if (biopaxRef != null)
 				elementInfo.addCitationRef(biopaxRef);
-			}
-		}
-	}
-
-	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
-	 * for interaction or graphicalLine pathway element. If dynamic property codes
-	 * for DoubleLineProperty, updates lineStyle. Otherwise, sets dynamic property.
-	 * 
-	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
-	 * 
-	 * @param lineElement the line pathway element.
-	 * @param ln          the jdom line pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readLineDynamicProperties(LineElement lineElement, Element ln) throws ConverterException {
-		for (Element dp : ln.getChildren("Attribute", ln.getNamespace())) {
-			String key = getAttr("Attribute", "Key", dp);
-			String value = getAttr("Attribute", "Value", dp);
-			/* dynamic property DoubleLineProperty sets lineStyle */
-			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
-				lineElement.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
-			} else {
-				lineElement.setDynamicProperty(key, value);
-			}
 		}
 	}
 
@@ -1153,6 +1138,30 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
+	 * for interaction or graphicalLine pathway element. If dynamic property codes
+	 * for DoubleLineProperty, updates lineStyle. Otherwise, sets dynamic property.
+	 * 
+	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
+	 * 
+	 * @param lineElement the line pathway element.
+	 * @param ln          the jdom line pathway element element.
+	 * @throws ConverterException
+	 */
+	protected void readLineDynamicProperties(LineElement lineElement, Element ln) throws ConverterException {
+		for (Element dp : ln.getChildren("Attribute", ln.getNamespace())) {
+			String key = getAttr("Attribute", "Key", dp);
+			String value = getAttr("Attribute", "Value", dp);
+			/* dynamic property DoubleLineProperty sets lineStyle */
+			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
+				lineElement.getLineStyleProperty().setLineStyle(LineStyleType.DOUBLE);
+			} else {
+				lineElement.setDynamicProperty(key, value);
+			}
+		}
+	}
+
+	/**
 	 * Reads rect property {@link RectProperty} information. Jdom handles schema
 	 * default values.
 	 * 
@@ -1166,12 +1175,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx).trim());
 		double width = Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx).trim());
 		double height = Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx).trim());
+		// instantiates rect properties
 		return new RectProperty(new Coordinate(centerX, centerY), width, height);
 	}
 
 	/**
-	 * TODO fix...
-	 * 
 	 * Reads font property {@link FontProperty} information. Jdom handles schema
 	 * default values.
 	 * 
@@ -1194,15 +1202,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		int fontSize = Integer.parseInt(getAttr(base + ".Graphics", "FontSize", gfx).trim());
 		HAlignType hAlignType = HAlignType.fromName(getAttr(base + ".Graphics", "Align", gfx));
 		VAlignType vAlignType = VAlignType.fromName(getAttr(base + ".Graphics", "Valign", gfx));
+		// instantiates font properties and returns
 		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
 				hAlignType, vAlignType);
 	}
 
 	/**
-	 * TODO fix...
-	 * 
 	 * Reads shape style property {@link ShapeStyleProperty} information. Jdom
-	 * handles schema default values.
+	 * handles schema default values. If shape type is a key in
+	 * {@link GPML2013aFormatAbstract#DEPRECATED_MAP}, replaces deprecated shape
+	 * type with newer value.
+	 * 
+	 * NB: If pathway element has dynamic property key CellularComponentProperty,
+	 * shape type is again replaced, this time with the dynamic property value in
+	 * {@link #readShapedDynamicProperties} or {@link #readStateDynamicProperties}.
 	 * 
 	 * @param gfx the parent graphics element.
 	 * @returns the shapeStyleProperty object.
@@ -1215,18 +1228,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		Color fillColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "FillColor", gfx));
 		ShapeType shapeType = ShapeType.register(getAttr(base + ".Graphics", "ShapeType", gfx));
-		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
+		// checks deprecated shape type map for newer shape
+		if (DEPRECATED_MAP.containsKey(shapeType))
+			shapeType = DEPRECATED_MAP.get(shapeType);
+		// instantiates shape style properties
 		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
 				shapeType);
-		if (zOrder != null) {
+		// sets optional property z-order
+		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
+		if (zOrder != null)
 			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
-		}
+		// returns shape style property
 		return shapeStyleProperty;
 	}
 
 	/**
-	 * TODO fix...DOUBLE....
-	 * 
 	 * Reads line style property {@link LineStyleProperty} information. Jdom handles
 	 * schema default values.
 	 * 
@@ -1240,11 +1256,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		LineStyleType lineStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
 		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		ConnectorType connectorType = ConnectorType.register(getAttr(base + ".Graphics", "ConnectorType", gfx));
-		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
+		// instantiates line style property
 		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
-		if (zOrder != null) {
+		// sets optional property z-order
+		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
+		if (zOrder != null)
 			lineStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
-		}
+		// returns line style property
 		return lineStyleProperty;
 	}
 
