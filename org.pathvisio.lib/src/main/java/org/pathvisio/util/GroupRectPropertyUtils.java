@@ -43,7 +43,7 @@ public class GroupRectPropertyUtils {
 	 * bounds.
 	 * 
 	 * @param group the group.
-	 * @return the rectangle for group specified in double coordinates.
+	 * @return the rectangular bound for group specified in double coordinates.
 	 */
 	public static Rectangle2D calculateGroupBounds(Group group) {
 		double margin = getMargin(group.getType());
@@ -71,7 +71,7 @@ public class GroupRectPropertyUtils {
 
 	/**
 	 * @param shapedElement the shaped pathway element.
-	 * @return the rectangle for shaped pathway element specified in double
+	 * @return the rectangular bound for shaped pathway element specified in double
 	 *         coordinates.
 	 */
 	public static Rectangle2D getShapedElementBounds(ShapedElement shapedElement) {
@@ -94,7 +94,7 @@ public class GroupRectPropertyUtils {
 	 * Only end points
 	 * 
 	 * @param lineElement the line pathway element.
-	 * @return the rectangle for line pathway element specified in double
+	 * @return the rectangular bound for line pathway element specified in double
 	 *         coordinates.
 	 */
 	public static Rectangle2D getLineElementBound(LineElement lineElement) {

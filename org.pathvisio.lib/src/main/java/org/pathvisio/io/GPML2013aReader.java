@@ -124,7 +124,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * pathway element members to find the total rectangular bounds, taking into
 	 * account rotation of the nested elements.
 	 * 
-	 * @param groups the list of groups in pathway model.
+	 * @param groups the list of groups.
 	 */
 	protected void calculateGroupRectProperty(List<Group> groups) {
 		for (Group group : groups) {
