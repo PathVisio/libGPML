@@ -105,10 +105,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readDataNodes(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew);
 		// reads states after data nodes
 		readStates(pathwayModel, root, elementIdSet, biopaxIdToNew);
-		readInteractions(pathwayModel, root, elementIdSet, lineList, biopaxIdToNew, groupIdToNew);
-		readGraphicalLines(pathwayModel, root, elementIdSet, lineList, biopaxIdToNew, groupIdToNew);
+		readInteractions(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew, lineList);
+		readGraphicalLines(pathwayModel, root, elementIdSet, biopaxIdToNew, groupIdToNew, lineList);
 		// reads points last
-		readPoints(pathwayModel, root, elementIdSet, lineList, groupIdToNew);
+		readPoints(pathwayModel, root, elementIdSet, groupIdToNew, lineList);
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
 		return pathwayModel;
@@ -191,8 +191,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox()}
-	 * information.
+	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox} information.
 	 * 
 	 * @param root the root element.
 	 * @return the infoBox as coordinates.
@@ -206,7 +205,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads the Legend CenterX and CenterY to pathway dynamic properties
-	 * {@link Pathway#setDynamicProperty()} .
+	 * {@link Pathway#setDynamicProperty} .
 	 * 
 	 * @param pathway the pathway.
 	 * @param root    the root element.
@@ -224,8 +223,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Read gpml:Biopax information openControlledVocabulary and PublicationXref.
-	 * {@link #readBiopaxOpenControlledVocabulary()} to {@link Annotation}, and
-	 * {@link #readBiopaxPublicationXref()} to {@link Citation}.
+	 * {@link #readBiopaxOpenControlledVocabulary} to {@link Annotation}, and
+	 * {@link #readBiopaxPublicationXref} to {@link Citation}.
 	 * 
 	 * @param pathwayModel  the pathway model.
 	 * @param root          the root element.
@@ -305,7 +304,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// if not unique, generates new unique elementId
 			if (elementIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(elementIdSet);
-				Logger.log.trace("Biopax id " + elementId + " is not unique, new id is: " + newId); // TODO warning
+				Logger.log.trace("Biopax id " + elementId + " is not unique, new id is: " + newId); 
 				biopaxIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
@@ -428,8 +427,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads biopax reference information {@link Pathway#addCitationRef()} for
-	 * pathway model from root element. BiopaxRef is equivalent to citationRef.
+	 * Reads biopax reference information {@link Pathway#addCitationRef} for pathway
+	 * model from root element. BiopaxRef is equivalent to citationRef.
 	 * 
 	 * @param pathwayModel  the pathway model.
 	 * @param root          the root element.
@@ -447,7 +446,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				biopaxRef = biopaxIdToNew.get(biopaxRef);
 			// given the correct biopaxRef/elementId, retrieves citation referenced
 			Citation citationRef = (Citation) pathwayModel.getPathwayElement(biopaxRef);
-			// add citationRef to pathwayModel
+			// adds citationRef to pathway model
 			if (citationRef != null) {
 				pathwayModel.getPathway().addCitationRef(citationRef);
 			}
@@ -455,7 +454,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads gpml:Attribute or dynamic property {@link Pathway#setDynamicProperty()}
+	 * Reads gpml:Attribute or dynamic property {@link Pathway#setDynamicProperty}
 	 * information for pathway from root element.
 	 * 
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
@@ -498,7 +497,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// if not unique, generates new unique elementId
 			if (elementIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(elementIdSet);
-				Logger.log.trace("GroupId " + elementId + " is not unique, new id is: " + newId); // TODO warning
+				Logger.log.trace("GroupId " + elementId + " is not unique, new id is: " + newId); 
 				groupIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
@@ -536,7 +535,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads groupRef property {@link Group#setGroupRef(Group)} information of group
+	 * Reads groupRef property {@link Group#setGroupRef} information of group
 	 * pathway element. Because a group may refer to another group not yet
 	 * initialized. We read and set groupRef after reading all group elements. The
 	 * groupRef is the "parent" group to which this group refers.
@@ -574,7 +573,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads default shape style property for type of group. In 2013a, group
 	 * graphics was hard coded for each group type in GroupPainterRegistry.java.
-	 * {@link Group#setShapeStyleProperty()}. Hover fillColor implemented in view.
+	 * {@link Group#setShapeStyleProperty}. Hover fillColor implemented in view.
 	 * 
 	 * @param type the group type.
 	 * @returns the shapeStyleProperty object.
@@ -769,31 +768,38 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
+	 * @param lineList      the ordered list of line elementIds.
 	 * @throws ConverterException
 	 */
-	protected List<String> readInteractions(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			List<String> lineList, Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew)
+	protected void readInteractions(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
+			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew, List<String> lineList)
 			throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
 			String elementId = readElementId("Interaction", ia, elementIdSet);
+			// adds elementId to lineList
 			lineList.add(elementId);
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
+			// instantiates interaction
 			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
-			/*
-			 * reads comment group readLineElement(interaction, ia, elementIdSet,
-			 * biopaxIdToNew, groupIdToNew); /* set optional properties
-			 */
+			// reads comments, biopaxRefs/citationRefs, dynamic properties
+			// graphics, anchors, groupRef
+			readLineElement(interaction, ia, elementIdSet, biopaxIdToNew, groupIdToNew);
+			// sets optional properties
 			Xref xref = readXref(ia);
 			if (xref != null)
 				interaction.setXref(xref);
-			/* add interaction to pathwayModel */
+			// adds interaction to pathway model
 			if (interaction != null)
 				pathwayModel.addInteraction(interaction);
 		}
-		return lineList;
 	}
 
 	/**
@@ -802,42 +808,61 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel  the pathway model.
+	 * @param root          the root element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
+	 * @param lineList      the ordered list of line elementIds.
 	 * @throws ConverterException
 	 */
-	protected List<String> readGraphicalLines(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			List<String> lineList, Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew)
+	protected void readGraphicalLines(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
+			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew, List<String> lineList)
 			throws ConverterException {
 		for (Element gln : root.getChildren("GraphicalLine", root.getNamespace())) {
 			String elementId = readElementId("GraphicalLine", gln, elementIdSet);
+			// adds elementId to lineList
 			lineList.add(elementId);
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
+			// instantiates graphical line
 			GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
+			// reads comments, biopaxRefs/citationRefs, dynamic properties
+			// graphics, anchors, groupRef
 			readLineElement(graphicalLine, gln, elementIdSet, biopaxIdToNew, groupIdToNew);
+			// adds graphical line to pathway model
 			if (graphicalLine != null)
 				pathwayModel.addGraphicalLine(graphicalLine);
 		}
-		return lineList;
 	}
 
 	/**
 	 * Reads line element {@link LineElement} information for interaction or
-	 * graphical line from element.
+	 * graphical line from jdom element.
 	 * 
-	 * @param lineElement the line element object.
-	 * @param ln          the line element.
+	 * NB: points are read in {@link #readPoints}
+	 * 
+	 * @param lineElement   the line pathway element.
+	 * @param ln            the jdom line pathway element element.
+	 * @param elementIdSet  the set of all elementIds.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
+	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
+	 *                      (values)
 	 * @throws ConverterException
 	 */
 	protected void readLineElement(LineElement lineElement, Element ln, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew, Map<String, String> groupIdToNew) throws ConverterException {
 		String base = ln.getName();
-		readElementInfo(lineElement, ln, biopaxIdToNew); // comment group
+		// reads comments, biopaxRefs/citationRefs, dynamic properties
+		readElementInfo(lineElement, ln, biopaxIdToNew);
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
+		// reads anchors
 		readAnchors(lineElement, gfx, elementIdSet);
-		// sets optional properties
+		// sets optional property groupRef
 		String groupRefStr = getAttr(base, "GroupRef", ln);
 		if (groupRefStr != null && !groupRefStr.equals("")) {
 			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
@@ -852,8 +877,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads anchor {@link Anchor} information for line element from element.
 	 * 
-	 * @param lineElement the line element object.
-	 * @param gfx         the graphics element.
+	 * @param lineElement  the line element object.
+	 * @param gfx          the jdom graphics element.
+	 * @param elementIdSet the set of all elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readAnchors(LineElement lineElement, Element gfx, Set<String> elementIdSet)
@@ -864,6 +890,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
 			AnchorType shapeType = AnchorType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
+			// adds anchor to line pathway element of pathway model
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
 		}
@@ -872,26 +899,31 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads points {@link Point} for pathway model line pathway elements. Points
 	 * must be read after the pathway elements they refer to. Therefore points are
-	 * read last in {@link #readFromRoot()}.
+	 * read last in {@link #readFromRoot}.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
+	 * @param elementIdSet the set of all elementIds.
+	 * @param groupIdToNew the map of groupId (keys) and new unique elementIds
+	 *                     (values)
+	 * @param lineList     the ordered list of line elementIds.
 	 * @throws ConverterException
 	 */
-	protected void readPoints(PathwayModel pathwayModel, Element root, Set<String> elementIdSet, List<String> lineList,
-			Map<String, String> groupIdToNew) throws ConverterException {
-
+	protected void readPoints(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
+			Map<String, String> groupIdToNew, List<String> lineList) throws ConverterException {
+		// reads points for interactions, and then graphical lines
 		List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
+		// initiates lineList index
 		int lineListIndex = 0;
 		for (int i = 0; i < lnElementName.size(); i++) {
 			for (Element ln : root.getChildren(lnElementName.get(i), root.getNamespace())) {
 				String base = ln.getName();
+				// retrieve line pathway element by its graphId
 				String lineElementId = getAttr(lnElementName.get(i), "GraphId", ln);
 				LineElement lineElement = (LineElement) pathwayModel.getPathwayElement(lineElementId);
-				/* some lines do not have a graphId, extrapolate line identity by read order */
-				if (lineElementId == null && lineElement == null) {
+				// if line graphId null, retrieve line object by its order stored to lineList
+				if (lineElementId == null && lineElement == null)
 					lineElement = (LineElement) pathwayModel.getPathwayElement(lineList.get(lineListIndex));
-				}
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
 					String elementId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
@@ -900,16 +932,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					Coordinate xy = new Coordinate(
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));
+					// instantiates point
 					Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
+					// adds point to line pathway element
 					if (point != null)
 						lineElement.addPoint(point);
-					/* set optional parameters including elementRef, named GraphRef in GPML 2013a */
+					// sets optional parameters including elementRef (GraphRef in GPML2013a)
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
-						if (groupIdToNew.containsKey(elementRefStr)) {
+						// if groupIdToNew contains elementRefStr, replaces with its newer id
+						if (groupIdToNew.containsKey(elementRefStr))
 							elementRefStr = groupIdToNew.get(elementRefStr);
-						}
+						// given the correct elementRefStr, retrieves this pathway element
 						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+						// sets elementRef, relX, and relY for this point
 						if (elementRef != null) {
 							point.setElementRef(elementRef);
 							point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX").trim()));
@@ -917,8 +953,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						}
 					}
 				}
-				if (lineElement.getPoints().size() < 2) // checks line has at least 2 points
-					throw new ConverterException("Line " + lineElement.getElementId() + " has "
+				// checks line pathway element has at least 2 points
+				if (lineElement.getPoints().size() < 2)
+					throw new ConverterException(lnElementName.get(i) + lineElement.getElementId() + " has "
 							+ lineElement.getPoints().size() + " point(s),  must have at least 2.");
 				lineListIndex += 1;
 			}
@@ -926,8 +963,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads xref {@link Xref} information from element. Xref is required for
-	 * DataNodes, Interactions. Xref is optional for States.
+	 * Reads xref {@link Xref} information from element. In GPML2013a, Xref is
+	 * required for DataNodes, Interactions, and optional for States.
 	 * 
 	 * @param e the element.
 	 * @return xref the new xref or null if no or invalid xref information.
@@ -1006,7 +1043,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads shaped pathway element {@link ShapedElement} information.
+	 * Reads shaped pathway element {@link ShapedElement} information: comments,
+	 * biopaxRefs (equivalent to citationRefs), and dynamic properties.
 	 * 
 	 * @param shapedElement the shaped pathway element.
 	 * @param se            the jdom (shaped) pathway element element.
@@ -1023,19 +1061,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads comment and biopaxref {@link ElementInfo} information, for pathway
 	 * element from element. Dynamic properties read by
-	 * {@link #readLineDynamicProperties()} , {@link #readShapedDynamicProperties()}
-	 * , {@link #readStateDynamicProperties()}.
+	 * {@link #readLineDynamicProperties} , {@link #readShapedDynamicProperties} ,
+	 * {@link #readStateDynamicProperties}.
 	 * 
 	 * NB: In GPML2013a, no equivalent of annotationRef was implemented, all
 	 * openControlledVocabulary belong to the parent pathway. Also,
 	 * CommentGroup:PublicationXref and BiopaxRef the attribute were not
 	 * implemented. In GPML2021, Evidence and EvidenceRef was added.
 	 * 
-	 * @param elementInfo the element info pathway element object.
-	 * @param e           the jdom pathway element element.
+	 * @param elementInfo   the element info pathway element object.
+	 * @param e             the jdom pathway element element.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
 	 * @throws ConverterException
 	 */
-	private void readElementInfo(ElementInfo elementInfo, Element e, Map<String, String> biopaxIdToNew)
+	protected void readElementInfo(ElementInfo elementInfo, Element e, Map<String, String> biopaxIdToNew)
 			throws ConverterException {
 		readComments(elementInfo, e);
 		readBiopaxRefs(elementInfo, e, biopaxIdToNew);
@@ -1053,7 +1093,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String source = cmt.getAttributeValue("Source"); // TODO use getAttr?
 			String content = cmt.getText();
 			if (content != null || source != null) {
-				Comment comment = new Comment(content); // TODO needs parent pathwayModel?
+				Comment comment = new Comment(content);
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
 				elementInfo.addComment(new Comment(source, content));
@@ -1062,32 +1102,36 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads BiopaxRef information to {@link ElementInfo#addCitationRef()}
-	 * information for pathway element from element. NB: BiopaxRef is also an
-	 * attribute in the GPML2013a schema but was never implemented.
+	 * Reads BiopaxRef information to {@link ElementInfo#addCitationRef} information
+	 * for pathway element from element. NB: BiopaxRef is also an attribute in the
+	 * GPML2013a schema but was never implemented.
 	 * 
-	 * @param elementInfo the element info pathway element object.
-	 * @param e           the jdom pathway element element.
+	 * @param elementInfo   the element info pathway element object.
+	 * @param e             the jdom pathway element element.
+	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
+	 *                      (values).
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxRefs(ElementInfo elementInfo, Element e, Map<String, String> biopaxIdToNew)
 			throws ConverterException {
 		for (Element bpRef : e.getChildren("BiopaxRef", e.getNamespace())) {
-
-			String biopaxRefStr = bpRef.getText();
-			if (biopaxIdToNew.containsKey(biopaxRefStr))
-				biopaxRefStr = biopaxIdToNew.get(biopaxRefStr);
-			Citation biopaxRef = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRefStr);
-			if (biopaxRef != null)
-				elementInfo.addCitationRef(biopaxRef);
+			String biopaxRef = bpRef.getText();
+			// if biopaxIdToNew contains biopaxRef, sets biopaxRef to its new elementId
+			if (biopaxIdToNew.containsKey(biopaxRef))
+				biopaxRef = biopaxIdToNew.get(biopaxRef);
+			// given the correct biopaxRef/elementId, retrieves citation referenced
+			Citation citationRef = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRef);
+			// adds citationRef to pathway element of pathway model
+			if (citationRef != null)
+				elementInfo.addCitationRef(citationRef);
 		}
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
-	 * for shaped pathway elements. If dynamic property codes for DoubleLineProperty
-	 * or CellularComponentProperty, updates borderStyle or shapeType. Otherwise,
-	 * sets dynamic property.
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * shaped pathway elements. If dynamic property codes for DoubleLineProperty or
+	 * CellularComponentProperty, updates borderStyle or shapeType. Otherwise, sets
+	 * dynamic property.
 	 * 
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
@@ -1111,10 +1155,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
-	 * for state pathway element. If dynamic property codes for DoubleLineProperty
-	 * or CellularComponentProperty, updates borderStyle or shapeType. Otherwise,
-	 * sets dynamic property.
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * state pathway element. If dynamic property codes for DoubleLineProperty or
+	 * CellularComponentProperty, updates borderStyle or shapeType. Otherwise, sets
+	 * dynamic property.
 	 * 
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
@@ -1138,9 +1182,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
-	 * for interaction or graphicalLine pathway element. If dynamic property codes
-	 * for DoubleLineProperty, updates lineStyle. Otherwise, sets dynamic property.
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * interaction or graphicalLine pathway element. If dynamic property codes for
+	 * DoubleLineProperty, updates lineStyle. Otherwise, sets dynamic property.
 	 * 
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 

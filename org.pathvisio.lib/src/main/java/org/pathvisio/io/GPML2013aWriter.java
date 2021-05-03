@@ -757,7 +757,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e             the shape element.
 	 * @throws ConverterException
 	 */
-	private void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
+	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
 		writeElementInfo(shapedElement, se);
 		writeShapedOrStateDynamicProperties(shapedElement.getDynamicProperties(), shapedElement.getShapeStyleProperty(),
 				se);
@@ -784,7 +784,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e           the parent element.
 	 * @throws ConverterException
 	 */
-	private void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		if (elementInfo.getClass() != Group.class)
 			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);

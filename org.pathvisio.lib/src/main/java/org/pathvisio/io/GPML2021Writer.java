@@ -230,7 +230,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root    the root element.
 	 * @throws ConverterException
 	 */
-	private void writeAuthors(List<Author> authors, Element root) throws ConverterException {
+	protected void writeAuthors(List<Author> authors, Element root) throws ConverterException {
 		if (!authors.isEmpty()) {
 			Element aus = new Element("Authors", root.getNamespace());
 			List<Element> auList = new ArrayList<Element>();
@@ -298,7 +298,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes annotation reference information for pathway or pathway element.
-	 * {@link Pathway#getAnnotationRefs() , ElementInfo#getAnnotationRefs()}.
+	 * {@link Pathway#getAnnotationRefs , ElementInfo#getAnnotationRefs}.
 	 * 
 	 * @param annotationRefs the list of annotation references.
 	 * @param e              the parent element.
@@ -323,7 +323,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes citation reference information for pathway or pathway element.
-	 * {@link Pathway#getCitationRefs() , ElementInfo#getCitationRefs()}.
+	 * {@link Pathway#getCitationRefs , ElementInfo#getCitationRefs}.
 	 * 
 	 * @param citationRefs the list of citation references.
 	 * @param e            the parent element.
@@ -342,7 +342,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes evidence reference information for pathway or pathway element
-	 * {@link Pathway#getEvidenceRefs() , ElementInfo#getEvidenceRefs()}.
+	 * {@link Pathway#getEvidenceRefs , ElementInfo#getEvidenceRefs}.
 	 * 
 	 * 
 	 * @param evidenceRefs the list of evidence references.
@@ -361,7 +361,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox()} n
+	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox} n
 	 * information.
 	 * 
 	 * @param infoBox the infobox xy coordinates.
@@ -827,7 +827,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e             the shape element.
 	 * @throws ConverterException
 	 */
-	private void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
+	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
 		Element gfx = new Element("Graphics", se.getNamespace());
 		se.addContent(gfx);
 		writeRectProperty(shapedElement.getRectProperty(), gfx);
@@ -845,7 +845,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e           the parent element.
 	 * @throws ConverterException
 	 */
-	private void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
 		writeDynamicProperties(elementInfo.getDynamicProperties(), e);

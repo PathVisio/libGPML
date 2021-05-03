@@ -163,7 +163,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox()}
+	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox}
 	 * information.
 	 * 
 	 * @param root the root element.
@@ -326,7 +326,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	
 
 	/**
-	 * Reads dynamic property {@link Pathway#setDynamicProperty()} information for
+	 * Reads dynamic property {@link Pathway#setDynamicProperty} information for
 	 * pathway from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -342,7 +342,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads annotation reference {@link Pathway#addAnnotationRef()} information for
+	 * Reads annotation reference {@link Pathway#addAnnotationRef} information for
 	 * pathway from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -371,7 +371,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads citation reference {@link Pathway#addCitationRef()} information for
+	 * Reads citation reference {@link Pathway#addCitationRef} information for
 	 * pathway model from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -387,7 +387,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads evidence reference {@link Pathway#addEvidenceRef()} information for
+	 * Reads evidence reference {@link Pathway#addEvidenceRef} information for
 	 * pathway from root element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -707,7 +707,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads elementRef {@link DataNode#setElementRef()} for pathway model
+	 * Reads elementRef {@link DataNode#setElementRef} for pathway model
 	 * datanodes.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -730,7 +730,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads elementRef {@link Point#setElementRef()} for pathway model points.
+	 * Reads elementRef {@link Point#setElementRef} for pathway model points.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -771,7 +771,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
-	private void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		readComments(elementInfo, e);
 		readDynamicProperties(elementInfo, e);
 		readAnnotationRefs(elementInfo, e);
@@ -800,7 +800,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty()} information
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information
 	 * for pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object .
@@ -816,7 +816,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads annotationRef {@link ElementInfo#addAnnotationRef()} information for
+	 * Reads annotationRef {@link ElementInfo#addAnnotationRef} information for
 	 * pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
@@ -845,7 +845,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads citationRef {@link ElementInfo#addCitationRef()} information for
+	 * Reads citationRef {@link ElementInfo#addCitationRef} information for
 	 * pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
@@ -863,7 +863,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef()} information for
+	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef} information for
 	 * pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
