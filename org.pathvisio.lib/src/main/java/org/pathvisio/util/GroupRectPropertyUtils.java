@@ -112,28 +112,4 @@ public class GroupRectPropertyUtils {
 		return new Rectangle2D.Double(leftX, topY, width, height);
 	}
 
-//	/**
-//	 * Only end points 
-//	 * @param lineElement the line pathway element.
-//	 * @return the rectangle for line pathway element specified in double
-//	 *         coordinates.
-//	 */
-//	public static Rectangle2D getLineElementBound(LineElement lineElement) {
-//		List<Double> xlist = new ArrayList<Double>();
-//		List<Double> ylist = new ArrayList<Double>();
-//		for (Point point : lineElement.getPoints()) {
-//			double x = point.getXY().getX();
-//			double y = point.getXY().getY();
-//			xlist.add(x);
-//			ylist.add(y);
-//		}
-//		double topY = Collections.min(ylist);
-//		double rightX = Collections.max(xlist);
-//		double bottomY = Collections.max(ylist);
-//		double leftX = Collections.min(xlist);
-//		double width = rightX - leftX;
-//		double height = bottomY - topY;
-//		return new Rectangle2D.Double(leftX, topY, width, height);
-//	}
-
 }
