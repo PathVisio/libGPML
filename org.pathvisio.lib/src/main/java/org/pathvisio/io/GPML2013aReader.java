@@ -244,7 +244,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Read gpml:Biopax information openControlledVocabulary and PublicationXref.
+	 * Reads gpml:Biopax information openControlledVocabulary and PublicationXref.
 	 * {@link #readBiopaxOpenControlledVocabulary} to {@link Annotation}, and
 	 * {@link #readBiopaxPublicationXref} to {@link Citation}.
 	 * 
@@ -536,10 +536,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
 			// instantiates group
 			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
-			// group of type "Pathway" has custom default font size and name
-			if (type.getName() == "Pathway") {
+			// type "Pathway" has font size (custom font name "Times" never implemented)
+			if (type == GroupType.PATHWAY) {
 				group.getFontProperty().setFontSize(32);
-				group.getFontProperty().setFontName("Times"); // TODO
 			}
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(group, grp, biopaxIdToNew);
@@ -1115,7 +1114,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
-			String source = cmt.getAttributeValue("Source"); // TODO use getAttr?
+			String source = getAttr("Comment", "Source", cmt);
 			String content = cmt.getText();
 			if (content != null || source != null) {
 				Comment comment = new Comment(content);

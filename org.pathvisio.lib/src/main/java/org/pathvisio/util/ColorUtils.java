@@ -7,7 +7,8 @@ import java.util.Map;
 import org.pathvisio.debug.Logger;
 
 /**
- * This utils class for converting color.
+ * This utils class contains methods for converting {@link Color} to hexBinary
+ * or color name {@link String}, and vice versa.
  * 
  * @author finterly
  */

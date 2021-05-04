@@ -19,9 +19,12 @@ package org.pathvisio.io;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
@@ -72,8 +75,8 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String RDF_STRING = "http://www.w3.org/2001/XMLSchema#string";
 
 	/**
-	 * These dynamic properties store deprecated GPML2013a properties, but will not
-	 * be written to GPML
+	 * These dynamic properties are used to store deprecated GPML2013a properties,
+	 * but will not be written to GPML2013a/GPML2021
 	 */
 	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
 	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
@@ -83,12 +86,17 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
 
+	/**
+	 * Dynamic properties key set for deprecated GPML2013a pathway properties. Used
+	 * in {@link GPML2013aWriter#writePathwayDynamicProperties}. Dynamic properties
+	 * with these keys are ignored when writing GPML2013a and GPML2021.
+	 */
+	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(Arrays.asList(PATHWAY_AUTHOR,
+			PATHWAY_MAINTAINER, PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, LEGEND_CENTER_X, LEGEND_CENTER_Y));
+
 	/** Strings used when writing GPML2013a */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
-
-	// TODO
-	public final static String OLD_ANCHOR_SHAPE = "ReceptorRound"; // TODO
 
 	/**
 	 * Deprecated map used to track deprecated shape types for conversion and

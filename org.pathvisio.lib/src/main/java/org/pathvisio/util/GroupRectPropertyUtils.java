@@ -2,8 +2,6 @@ package org.pathvisio.util;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.pathvisio.model.*;
@@ -11,6 +9,8 @@ import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 
 /**
+ * This utils class contains methods for calculating rectangular bounds
+ * {@link Rectangle2D}.
  * 
  * @author finterly
  */
@@ -70,6 +70,9 @@ public class GroupRectPropertyUtils {
 	}
 
 	/**
+	 * Calculates and returns the rectangular bounds for given shaped pathway
+	 * element.
+	 * 
 	 * @param shapedElement the shaped pathway element.
 	 * @return the rectangular bound for shaped pathway element specified in double
 	 *         coordinates.
@@ -91,7 +94,8 @@ public class GroupRectPropertyUtils {
 	}
 
 	/**
-	 * Only end points
+	 * Calculates and returns the rectangular bounds for given line pathway element.
+	 * Only ends points (first and last) are taken into account.
 	 * 
 	 * @param lineElement the line pathway element.
 	 * @return the rectangular bound for line pathway element specified in double

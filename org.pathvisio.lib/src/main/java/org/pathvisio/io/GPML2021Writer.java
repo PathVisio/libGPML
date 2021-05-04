@@ -196,8 +196,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes xref {@link Xref} information to new element. Xref is required for
-	 * DataNodes, Interactions, Citations and Evidences. Xref is optional for the
-	 * Pathway, States, Groups, and Annotations.
+	 * Citations and Evidences. Xref is optional for the Pathway, DataNodes, States,
+	 * Interactions, Groups, and Annotations.
 	 * 
 	 * @param xref     the xref of the pathway or pathway element.
 	 * @param e        the parent element.
@@ -288,6 +288,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void writeDynamicProperties(Map<String, String> dynamicProperties, Element e) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
+			//TODO what to avoid writing? 
+			// if key is for group graphId, do not write to GPML2013a
+			if (key == GPML2013aFormatAbstract.GROUP_GRAPHID)
+				continue;
 			Element dp = new Element("Property", e.getNamespace());
 			dp.setAttribute("key", key);
 			dp.setAttribute("value", dynamicProperties.get(key));

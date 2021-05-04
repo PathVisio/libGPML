@@ -40,7 +40,8 @@ import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 
 /**
- * This class writes a PathwayModel to an output (GPML 2013a).
+ * This class writes a PathwayModel to an output (GPML 2013a). If writing
+ * (converting) GPML2021 to GPML2013a, warning messages are thrown.
  * 
  * @author finterly
  */
@@ -67,7 +68,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		Document doc = createJdom(pathwayModel);
 
 		if (validate)
-			validateDocument(doc); // TODO Boolean validate not relevant to 2021...
+			validateDocument(doc);
 
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
@@ -113,9 +114,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
 
-		/* removes empty groups */
+		// removes empty groups
 		removeEmptyGroups(pathwayModel);
-		/* checks if interactions/graphicaLines have at least 2 points */
+		// checks if interactions/graphicaLines have at least 2 points
 		validateLineElements(pathwayModel);
 
 		Document doc = new Document();
@@ -172,7 +173,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writePathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Pathway pathway = pathwayModel.getPathway();
 		setAttr("Pathway", "Name", root, pathway.getTitle());
-		/* set optional properties, in the order written in gpml 2013a */
+		// sets optional properties, in the order written in GPML2013a
 		String source = pathway.getSource();
 		String version = pathway.getVersion();
 		String author = pathway.getDynamicProperty(PATHWAY_AUTHOR);
@@ -197,16 +198,16 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Pathway", "Organism", root, organism);
 		if (license != null)
 			setAttr("Pathway", "License", root, license);
-		/* set comment group */
+		// writes comments, biopaxRefs/citationRefs, dynamic properties
 		writeComments(pathway.getComments(), root);
 		writeBiopaxRefs(pathway.getCitationRefs(), root);
 		writePathwayDynamicProperties(pathway, root);
-		/* set graphics */
+		// sets graphics properties
 		Element gfx = new Element("Graphics", root.getNamespace());
 		root.addContent(gfx);
 		setAttr("Pathway.Graphics", "BoardWidth", gfx, String.valueOf(pathway.getBoardWidth()));
 		setAttr("Pathway.Graphics", "BoardHeight", gfx, String.valueOf(pathway.getBoardHeight()));
-		/* warnings conversion GPML2021 to GPML2013a */
+		// warnings for conversion GPML2021 to GPML2013a
 		if (!pathway.getAuthors().isEmpty())
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Pathway authors info lost.");
 		if (!pathway.getAnnotationRefs().isEmpty())
@@ -220,16 +221,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes xref {@link Xref} information to new element. Xref is required for
-	 * DataNodes, Interactions, Citations and Evidences. Xref is optional for the
-	 * Pathway, States, Groups, and Annotations.
+	 * Writes xref {@link Xref} information to new element. In GPML2013a, Xref is
+	 * required for DataNodes, Interactions, and optional for States.
 	 * 
 	 * @param xref     the xref of the pathway or pathway element.
 	 * @param e        the parent element.
 	 * @param required if true, xref is a required property.
 	 */
-	protected void writeXref(Xref xref, Element e, boolean required) throws ConverterException { // TODO boolean
-																									// required
+	protected void writeXref(Xref xref, Element e, boolean required) throws ConverterException {
+		// if xref null and required, writes out ""
 		if (xref == null && required) {
 			Element xrf = new Element("Xref", e.getNamespace());
 			xrf.setAttribute("Database", "");
@@ -270,31 +270,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes dynamic property information for pathway or pathway element.
-	 * {@link Pathway#getDynamicProperty() , ElementInfo#getDynamicProperty()}
-	 * 
-	 * @param dynamicProperties the list of dynamic properties.
-	 * @param e                 the parent element.
-	 * @throws ConverterException
-	 */
-	protected void writePathwayDynamicProperties(Pathway pathway, Element root) throws ConverterException {
-		Map<String, String> dynamicProperties = pathway.getDynamicProperties();
-		for (String key : dynamicProperties.keySet()) {
-			Element dp = new Element("Attribute", root.getNamespace());
-			// TODO do not write certain ones
-			setAttr("Attribute", "Key", dp, key);
-			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
-			if (dp != null)
-				root.addContent(dp);
-		}
-	}
-
-	/**
 	 * Writes BiopaxRef information from {@link ElementInfo#getCitationRef()} for
-	 * pathway or pathway element.
+	 * pathway or pathway element. BiopaxRefs are equivalent to citationRefs in
+	 * GPML2013a.
 	 * 
-	 * @param citationRefs
-	 * @param e
+	 * @param citationRefs the list of citation references.
+	 * @param e            the parent element.
 	 * @throws ConverterException
 	 */
 	protected void writeBiopaxRefs(List<Citation> citationRefs, Element e) throws ConverterException {
@@ -309,33 +290,24 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox()}
-	 * information.
+	 * Writes dynamic property information for pathway or pathway element.
+	 * {@link Pathway#getDynamicProperty() , ElementInfo#getDynamicProperty()}
 	 * 
-	 * @param infoBox the infobox xy coordinates.
-	 * @param root    the root element.
+	 * @param dynamicProperties the list of dynamic properties.
+	 * @param e                 the parent element.
+	 * @throws ConverterException
 	 */
-	protected void writeInfoBox(Coordinate infoBox, Element root) {
-		Element ifb = new Element("InfoBox", root.getNamespace());
-		ifb.setAttribute("CenterX", Double.toString(infoBox.getX()));
-		ifb.setAttribute("CenterY", Double.toString(infoBox.getY()));
-		root.addContent(ifb);
-	}
-
-	/**
-	 * Writes the legend x and y coordinate information.
-	 * 
-	 * @param pathway the pathway.
-	 * @param root    the root element.
-	 */
-	protected void writeLegend(Pathway pathway, Element root) {
-		String centerX = pathway.getDynamicProperty(LEGEND_CENTER_X);
-		String centerY = pathway.getDynamicProperty(LEGEND_CENTER_Y);
-		if (centerX != null && centerY != null) {
-			Element lgd = new Element("Legend", root.getNamespace());
-			lgd.setAttribute("CenterX", centerX);
-			lgd.setAttribute("CenterY", centerY);
-			root.addContent(lgd);
+	protected void writePathwayDynamicProperties(Pathway pathway, Element root) throws ConverterException {
+		Map<String, String> dynamicProperties = pathway.getDynamicProperties();
+		for (String key : dynamicProperties.keySet()) {
+			// if key is in static key set, do not write to GPML2013a
+			if (GPML2013A_KEY_SET.contains(key))
+				continue;
+			Element dp = new Element("Attribute", root.getNamespace());
+			setAttr("Attribute", "Key", dp, key);
+			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
+			if (dp != null)
+				root.addContent(dp);
 		}
 	}
 
@@ -354,11 +326,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("DataNode", "TextLabel", dn, dataNode.getTextLabel());
 			writeShapedElement(dataNode, dn);
 			setAttr("DataNode", "Type", dn, dataNode.getType().getName());
-			writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
+			writeGroupRef(dataNode.getGroupRef(), dn);
+			// writes xref (required)
 			writeXref(dataNode.getXref(), dn, true);
 			if (dn != null)
 				root.addContent(dn);
-			/* warnings conversion GPML2021 to GPML2013a */
+			// warnings for conversion GPML2021 to GPML2013a
 			if (dataNode.getElementRef() != null)
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: DataNode " + dataNode.getElementId()
 						+ " elementRef info lost.");
@@ -379,24 +352,25 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				if (state == null)
 					continue;
 				Element st = new Element("State", root.getNamespace());
-				setAttr("State", "StateType", st, state.getType().getName()); // TODO wasn't actually used
+				// NB: StateType was not fully implemented in GPML2013a
+				setAttr("State", "StateType", st, state.getType().getName());
 				setAttr("State", "GraphRef", st, dataNode.getElementId());
 				setAttr("State", "TextLabel", st, state.getTextLabel() == null ? "" : state.getTextLabel());
 				writeElementInfo(state, st);
 				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProperty(), st);
-				/* sets graphics properties */
+				// sets graphics properties
 				Element gfx = new Element("Graphics", st.getNamespace());
 				st.addContent(gfx);
 				setAttr("State.Graphics", "RelX", gfx, Double.toString(state.getRelX()));
 				setAttr("State.Graphics", "RelY", gfx, Double.toString(state.getRelY()));
 				setAttr("State.Graphics", "Width", gfx, Double.toString(state.getWidth()));
 				setAttr("State.Graphics", "Height", gfx, Double.toString(state.getHeight()));
-				/* state does not have font properties in GPML2013a */
+				// state does not have custom font properties in GPML2013a
 				writeZOrderFillColor(state.getShapeStyleProperty(), gfx);
 				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
 				writeColor(state.getFontProperty(), gfx);
-				/* optionally writes xref */
-				writeXref(state.getXref(), st, true);
+				// writes xref (optional)
+				writeXref(state.getXref(), st, false);
 				if (st != null) {
 					root.addContent(st);
 				}
@@ -452,12 +426,16 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeLineElement(LineElement lineElement, Element ln) throws ConverterException {
+		// writes comments, biopaxRefs/citationRefs, dynamic properties
 		writeElementInfo(lineElement, ln);
 		writeLineDynamicProperties(lineElement.getDynamicProperties(), lineElement.getLineStyleProperty(), ln);
+		// sets graphics properties
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
+		// writes points
 		writePoints(lineElement.getPoints(), gfx);
+		// writes anchors
 		writeAnchors(lineElement.getAnchors(), gfx);
 		writeGroupRef(lineElement.getGroupRef(), ln); // TODO location
 	}
@@ -465,11 +443,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes point {@link Point} information.
 	 * 
-	 * 
-	 * TODO elementId, elementRef, arrowHead, x, y, relX, relY (Order)
-	 * 
 	 * @param points the list of points.
-	 * @param wyps   the parent element.
+	 * @param gfx    the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writePoints(List<Point> points, Element gfx) throws ConverterException {
@@ -478,10 +453,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (point == null)
 				continue;
 			Element pt = new Element("Point", gfx.getNamespace());
-			writeElementId(point.getElementId(), pt); // TODO optional....
+			writeElementId(point.getElementId(), pt); // TODO not normally in GPML2013a
 			String base = ((Element) gfx.getParent()).getName();
 			setAttr(base + ".Graphics.Point", "X", pt, Double.toString(point.getXY().getX()));
 			setAttr(base + ".Graphics.Point", "Y", pt, Double.toString(point.getXY().getY()));
+			// sets optional properties elementRef, relX, and relY
 			if (writePointElementRef(point.getElementRef(), pt)) {
 				setAttr(base + ".Graphics.Point", "RelX", pt, Double.toString(point.getRelX()));
 				setAttr(base + ".Graphics.Point", "RelY", pt, Double.toString(point.getRelY()));
@@ -495,8 +471,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes anchor {@link Anchor} information. TODO elementId, x, y, position,
-	 * shapeType (Order)
+	 * Writes anchor {@link Anchor} information.
 	 * 
 	 * @param anchors the list of anchors.
 	 * @param wyps    the parent element.
@@ -561,7 +536,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (shape.getTextLabel() != null)
 				setAttr("Shape", "TextLabel", shp, shape.getTextLabel());
 			writeShapedElement(shape, shp);
-			writeGroupRef(shape.getGroupRef(), shp); // TODO location
+			writeGroupRef(shape.getGroupRef(), shp);
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			setAttr("Shape.Graphics", "Rotation", gfx, Double.toString(shape.getRotation()));
 			if (shp != null) {
@@ -584,25 +559,66 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				continue;
 			Element grp = new Element("Group", root.getNamespace());
 			setAttr("Group", "GroupId", grp, group.getElementId());
-			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID)); // TODO check if ok
-			group.getDynamicProperties().remove(GROUP_GRAPHID); // TODO
+			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID));
 			setAttr("Group", "Style", grp, group.getType().getName());
 			writeXref(group.getXref(), grp, false);
 			writeElementInfo(group, grp);
 			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group.getShapeStyleProperty(), grp);
-			/* set optional properties */
+			// sets optional properties
 			if (group.getTextLabel() != null)
 				setAttr("Group", "TextLabel", grp, group.getTextLabel());
-			writeGroupRef(group.getGroupRef(), grp); // TODO location
+			writeGroupRef(group.getGroupRef(), grp);
 			if (grp != null) {
 				root.addContent(grp);
 			}
 		}
 	}
 
+	/**
+	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox()}
+	 * information.
+	 * 
+	 * @param infoBox the infobox xy coordinates.
+	 * @param root    the root element.
+	 */
+	protected void writeInfoBox(Coordinate infoBox, Element root) {
+		Element ifb = new Element("InfoBox", root.getNamespace());
+		ifb.setAttribute("CenterX", Double.toString(infoBox.getX()));
+		ifb.setAttribute("CenterY", Double.toString(infoBox.getY()));
+		root.addContent(ifb);
+	}
+
+	/**
+	 * Writes the legend x and y coordinate information.
+	 * 
+	 * @param pathway the pathway.
+	 * @param root    the root element.
+	 */
+	protected void writeLegend(Pathway pathway, Element root) {
+		String centerX = pathway.getDynamicProperty(LEGEND_CENTER_X);
+		String centerY = pathway.getDynamicProperty(LEGEND_CENTER_Y);
+		if (centerX != null && centerY != null) {
+			Element lgd = new Element("Legend", root.getNamespace());
+			lgd.setAttribute("CenterX", centerX);
+			lgd.setAttribute("CenterY", centerY);
+			root.addContent(lgd);
+		}
+	}
+
+	/**
+	 * Writes gpml:Biopax information openControlledVocabulary and PublicationXref.
+	 * {@link #writeBiopaxOpenControlledVocabulary} from {@link Annotation}, and
+	 * {@link #writeBiopaxPublicationXref} from {@link Citation}.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param root         the root element.
+	 * @throws ConverterException
+	 */
 	protected void writeBiopax(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element bp = new Element("Biopax", root.getNamespace());
+		// writes openControlledVocabulary, equivalent to annotation
 		writeBiopaxOpenControlledVocabulary(pathwayModel.getAnnotations(), bp);
+		// writes publicationXref, equivalent to citation
 		writeBiopaxPublicationXref(pathwayModel.getCitations(), bp);
 		if (!bp.getChildren().isEmpty()) {
 			root.addContent(bp);
@@ -638,6 +654,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (ocv != null) {
 				bp.addContent(ocv);
 			}
+			// warnings for conversion GPML2021 to GPML2013a
 			if (annotation.getUrl() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Annotation " + annotation.getElementId()
 						+ " url and elementId info lost.");
@@ -660,9 +677,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			pubxf.setAttribute("id", citation.getElementId(), RDF);
 			List<String> authors = citation.getAuthors();
 			String biopaxId = citation.getXref().getId();
-			writePubxfInfo(biopaxId == null ? "" : biopaxId, "ID", pubxf); //TODO is required? 
-			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf); //TODO is required? 
-			writePubxfInfo(citation.getTitle(), "TITLE", pubxf); //TODO is required? 
+			writePubxfInfo(biopaxId == null ? "" : biopaxId, "ID", pubxf); // TODO is required?
+			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf); // TODO is required?
+			writePubxfInfo(citation.getTitle(), "TITLE", pubxf); // TODO is required?
 			writePubxfInfo(citation.getSource(), "SOURCE", pubxf);
 			writePubxfInfo(citation.getYear(), "YEAR", pubxf);
 			if (authors != null && !authors.isEmpty()) {
@@ -671,6 +688,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			if (pubxf != null)
 				bp.addContent(pubxf);
+			// warnings for conversion GPML2021 to GPML2013a
 			if (citation.getUrl() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Citation " + citation.getElementId()
 						+ " url info lost.");
@@ -754,7 +772,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * shapes, or groups.
 	 * 
 	 * @param shapedElement the datanode, label, shape, or group.
-	 * @param e             the shape element.
+	 * @param se            the shape element.
 	 * @throws ConverterException
 	 */
 	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
@@ -789,6 +807,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
 		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
+		// warnings for conversion GPML2021 to GPML2013a
 		if (!elementInfo.getAnnotationRefs().isEmpty()) {
 			Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a format: AnnotationRef info lost.");
 		}
@@ -798,33 +817,40 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * @param dynamicProperties
-	 * @param shapeProp
-	 * @param se
+	 * Writes dynamic property information for {@link ShapedElement} or
+	 * {@link State} pathway element. In GPML2013a, cellular component shapeTypes
+	 * and double lineStyle information are written to dynamic properties because
+	 * they were not yet defined in the GPML2013a schema/enum classes.
+	 * 
+	 * @param dynamicProperties the list of dynamic properties.
+	 * @param shapeProp         the shape style properties.
+	 * @param se                the jdom shaped pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void writeShapedOrStateDynamicProperties(Map<String, String> dynamicProperties,
 			ShapeStyleProperty shapeProp, Element se) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
+			// if key is for group graphId, do not write to GPML2013a
+			if (key == GROUP_GRAPHID)
+				continue;
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
-			// TODO may need to handle BiopaxRef attribute
 			if (dp != null)
 				se.addContent(dp);
 		}
+		// if shape in cellular component map, write info to dynamic property
 		ShapeType shapeType = shapeProp.getShapeType();
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
-			/* if shape in cellular component map, store info in dynamic property */
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, CELL_CMPNT_KEY);
 			setAttr("Attribute", "Value", dp, shapeType.getName());
 			if (dp != null)
 				se.addContent(dp);
 		}
+		// if double lineStyle, write info to dynamic property
 		LineStyleType borderStyle = shapeProp.getBorderStyle();
 		if (borderStyle.getName().equalsIgnoreCase("Double")) {
-			/* double lineStyle is stored in dynamic property in GPML2013a */
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
 			setAttr("Attribute", "Value", dp, "Double");
@@ -834,9 +860,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * @param dynamicProperties
-	 * @param lineProp
-	 * @param ln
+	 * Writes dynamic property information for {@link LineElement}. In GPML2013a,
+	 * double lineStyle information is written to dynamic properties because it was
+	 * not yet defined in the GPML2013a schema/enum classes.
+	 * 
+	 * @param dynamicProperties the list of dynamic properties.
+	 * @param lineProp          line style properties.
+	 * @param ln                the jdom line pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void writeLineDynamicProperties(Map<String, String> dynamicProperties, LineStyleProperty lineProp,
@@ -848,9 +878,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (dp != null)
 				ln.addContent(dp);
 		}
+		// if double lineStyle, write info to dynamic property
 		LineStyleType lineStyle = lineProp.getLineStyle();
 		if (lineStyle.getName().equalsIgnoreCase("Double")) {
-			/* double lineStyle is stored in dynamic property in GPML2013a */
 			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
 			setAttr("Attribute", "Value", dp, "Double");
@@ -881,7 +911,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * NB: In GPML2013a, there is only color (textColor and borderColor are the same
 	 * color unless shapeType is "None" in which case there is no border). Color is
-	 * written separately to preserve the order of properties in GPML2013a.
+	 * written separately to preserve the original order of properties in GPML2013a.
 	 * 
 	 * @param fontProp the font properties.
 	 * @param gfx      the parent graphics element.
@@ -914,9 +944,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes zOrder and fillColor property information {@link ShapeStyleProperty}.
+	 * These properties are written separately to preserve the original order of
+	 * properties in GPML2013a.
 	 * 
-	 * @param shapeProp
-	 * @param gfx
+	 * @param shapeProp the shape style properties.
+	 * @param gfx       the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeZOrderFillColor(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {

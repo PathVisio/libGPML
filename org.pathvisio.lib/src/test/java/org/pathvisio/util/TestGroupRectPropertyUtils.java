@@ -29,13 +29,13 @@ public class TestGroupRectPropertyUtils extends TestCase {
 
 	public void testGroupRectPropertyCalculation() {
 
-		Group group = new Group();
-				
-		DataNode dataNode = new DataNode("d1", null, new RectProperty(new Coordinate(1, 1), 1, 1),
-				new FontProperty(null, "Arial", false, false, false, false, 0, null, null),
-				new ShapeStyleProperty(Color.decode("#ffffff"), LineStyleType.SOLID, 1.0, Color.decode("#ffffff"),
-						ShapeType.RECTANGLE),
-				"d1", DataNodeType.ALIAS);
+//		Group group = new Group();
+//				
+//		DataNode dataNode = new DataNode("d1", null, new RectProperty(new Coordinate(1, 1), 1, 1),
+//				new FontProperty(null, "Arial", false, false, false, false, 0, null, null),
+//				new ShapeStyleProperty(Color.decode("#ffffff"), LineStyleType.SOLID, 1.0, Color.decode("#ffffff"),
+//						ShapeType.RECTANGLE),
+//				"d1", DataNodeType.ALIAS);
 
 	}
 }
