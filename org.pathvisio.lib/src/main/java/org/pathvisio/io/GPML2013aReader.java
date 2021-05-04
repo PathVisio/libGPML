@@ -528,7 +528,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			// adds group elementId to elementIdSet
 			elementIdSet.add(elementId);
-			GroupType type = GroupType.register(getAttr("Group", "Style", grp));
+			String typeStr = getAttr("Group", "Style", grp);
+			// in GPML2021, "None" group type is replaced with "Group" TODO write back to
+			// "NONE" or keep as Group?
+			if (typeStr.equals("None"))
+				typeStr = "Group";
+			GroupType type = GroupType.register(typeStr);
 			// temp rect properties (calculate rect properties after pathway elements added)
 			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 1, 1);
 			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
@@ -925,6 +930,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * must be read after the pathway elements they refer to. Therefore points are
 	 * read last in {@link #readFromRoot}.
 	 * 
+	 * NB: points refer to a group by its GraphId not GroupId(essentially
+	 * elementId). If the pathway element referenced by a point is a group, we must
+	 * search for the group by its GraphId {@link Group#getDynamicProperty}, instead
+	 * of using {@link PathwayModel#getPathwayElement()} which retrieves groups by
+	 * their elementId.
+	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @param elementIdSet the set of all elementIds.
@@ -964,11 +975,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					// sets optional parameters including elementRef (GraphRef in GPML2013a)
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
-						// if groupIdToNew contains elementRefStr, replaces with its newer id
-						if (groupIdToNew.containsKey(elementRefStr))
-							elementRefStr = groupIdToNew.get(elementRefStr);
-						// given the correct elementRefStr, retrieves this pathway element
+						// retrieves referenced pathway element (aside from group) by elementId
 						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+						// if elementRef refers to a group, it cannot be found by elementId
+						if (elementRef == null) {
+							// finds group by its graphId stored in dynamic properties
+							for (Group group : pathwayModel.getGroups()) {
+								if (elementRefStr.equals(group.getDynamicProperty(GROUP_GRAPHID)))
+									elementRef = group;
+							}
+						}
 						// sets elementRef, relX, and relY for this point
 						if (elementRef != null) {
 							point.setElementRef(elementRef);
@@ -1292,7 +1308,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		Color borderColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
-		LineStyleType borderStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
+		String borderStyleStr = getAttr(base + ".Graphics", "LineStyle", gfx);
+		// in GPML2021, "Broken" line style was renamed to "Dashed"
+		if (borderStyleStr.equals("Broken"))
+			borderStyleStr = "Dashed";
+		LineStyleType borderStyle = LineStyleType.register(borderStyleStr);
 		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		Color fillColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "FillColor", gfx));
 		ShapeType shapeType = ShapeType.register(getAttr(base + ".Graphics", "ShapeType", gfx));
@@ -1321,7 +1341,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		Color lineColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
-		LineStyleType lineStyle = LineStyleType.register(getAttr(base + ".Graphics", "LineStyle", gfx));
+		String lineStyleStr = getAttr(base + ".Graphics", "LineStyle", gfx);
+		// in GPML2021, "Broken" line style was renamed to "Dashed"
+		if (lineStyleStr.equals("Broken"))
+			lineStyleStr = "Dashed";
+		LineStyleType lineStyle = LineStyleType.register(lineStyleStr);
 		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		ConnectorType connectorType = ConnectorType.register(getAttr(base + ".Graphics", "ConnectorType", gfx));
 		// instantiates line style property

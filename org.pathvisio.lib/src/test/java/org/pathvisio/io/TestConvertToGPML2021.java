@@ -43,7 +43,7 @@ public class TestConvertToGPML2021 extends TestCase {
 				pathwayModel.readFromXml(file, true);
 
 				/* write pathway model to xml */
-				File tmp = File.createTempFile(file.getName() + "_convert2013a", ".gpml");
+				File tmp = File.createTempFile(file.getName() + "_to2021", ".gpml");
 				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
 				System.out.println(tmp);
 

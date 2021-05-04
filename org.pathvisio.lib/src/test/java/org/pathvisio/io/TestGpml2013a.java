@@ -44,7 +44,8 @@ public class TestGPML2013a extends TestCase {
 		
 //		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 //		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-problem-gpmls");
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210410-gpml-Homo_sapiens");
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
 
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
@@ -58,9 +59,14 @@ public class TestGPML2013a extends TestCase {
 				pathwayModel.readFromXml(file, true);
 
 				/* write pathway model to xml */
-				File tmp = File.createTempFile(file.getName() + "_testwrite", ".gpml");
-				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
-				System.out.println(tmp);
+				File outputFile = new File(outputDir, file.getName());
+				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, outputFile, false);
+				System.out.println(outputFile);
+				
+				/* write pathway model to xml (temp) */
+//				File tmp = File.createTempFile(file.getName() + "_testwrite", ".gpml");
+//				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+//				System.out.println(tmp);
 
 				/* method to assert file is same? */
 

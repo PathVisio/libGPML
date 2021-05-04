@@ -37,7 +37,7 @@ public class Citation extends PathwayElement {
 	private String title;
 	private String source;
 	private String year;
-	private List<String> authors; // TODO discuss
+	private List<String> authors; 
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters:

@@ -752,6 +752,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @return true if elementRef exists and is successfully written.
 	 */
 	protected boolean writePointElementRef(PathwayElement elementRef, Element pt) {
+		// if elementRef refers to a group, write group's graphId (not elementId)
 		if (elementRef != null && elementRef.getClass() == Group.class) {
 			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);
 			if (elementRefStr != null && !elementRefStr.equals(""))
@@ -979,9 +980,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		} else {
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeType.getName());
 		}
-		LineStyleType borderStyle = shapeProp.getBorderStyle();
-		if (borderStyle != null && !borderStyle.getName().equalsIgnoreCase("Double"))
-			setAttr(base + ".Graphics", "LineStyle", gfx, borderStyle.getName());
+		String borderStyleStr = shapeProp.getBorderStyle().getName();
+		// in GPML2013a, "Dashed" line style was named "Broken"
+		if (borderStyleStr.equals("Dashed"))
+			borderStyleStr = "Broken";
+		if (!borderStyleStr.equalsIgnoreCase("Double"))
+			setAttr(base + ".Graphics", "LineStyle", gfx, borderStyleStr);
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapeProp.getBorderWidth()));
 	}
 
@@ -996,9 +1000,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		String base = ((Element) gfx.getParent()).getName();
 		setAttr(base + ".Graphics", "ConnectorType", gfx, lineProp.getConnectorType().getName());
 		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(lineProp.getZOrder()));
-		LineStyleType lineStyle = lineProp.getLineStyle();
-		if (lineStyle != null && !lineStyle.getName().equalsIgnoreCase("Double"))
-			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyle.getName());
+		String lineStyleStr = lineProp.getLineStyle().getName();
+		// in GPML2013a, "Dashed" line style was named "Broken"
+		if (lineStyleStr.equals("Dashed"))
+			lineStyleStr = "Broken";
+		if (!lineStyleStr.equalsIgnoreCase("Double"))
+			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyleStr);
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineProp.getLineWidth()));
 		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(lineProp.getLineColor(), false));
 	}
