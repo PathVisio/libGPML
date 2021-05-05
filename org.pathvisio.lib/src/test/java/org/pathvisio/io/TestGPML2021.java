@@ -21,40 +21,51 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import org.pathvisio.model.*;
+import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
 public class TestGPML2021 extends TestCase {
 
-//	private static final File PATHVISIO_BASEDIR = new File("../..");
+	/**
+	 * Read GPML2013a and Write GPML2013a format. Assert output equivalent to input.
+	 * 
+	 * @throws IOException
+	 * @throws ConverterException
+	 * @throws SAXException
+	 */
+	public static void testReadWrite2013a() throws IOException, ConverterException, SAXException {
 
-	public static void testReadWrite() throws IOException, ConverterException {
+		File folderGPML2021 = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");
+		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2021";
 
-		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+		File[] listOfFiles = folderGPML2021.listFiles();
 
-//		File folder = new File(System.getProperty("sampleGPML2013a")+"/src/test/resources/");
-		File[] listOfFiles = folderGPML2013a.listFiles();
-
-		for (int i = 60; i < listOfFiles.length; i++) {
+		for (int i = 1; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
-				System.out.println("File: " + file.getName());
-//				URL url = Thread.currentThread().getContextClassLoader().getResource(fileName);
-//				System.out.println(url.getPath());
+				System.out.println("File " + i + " : " + file.getName());
 				assertTrue(file.exists());
+				/* read xml to pathway model */
 				PathwayModel pathwayModel = new PathwayModel();
 				pathwayModel.readFromXml(file, true);
+
+				/* write pathway model to xml */
+				File outputFile = new File(outputDir, file.getName());
+				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, false);
+				System.out.println(outputFile);
+
+				/* write pathway model to xml (temp) */
+//				File tmp = File.createTempFile(file.getName() + "_testwrite", ".gpml");
+//				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+//				System.out.println(tmp);
+
+				/* method to assert file is same? */
 
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());
 			}
 		}
-
-////		
-//		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
-////		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
-//		System.out.println(tmp);
 
 	}
 }

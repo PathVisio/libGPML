@@ -34,47 +34,47 @@ public class ColorUtils {
 			}
 		} else {
 			if (appendHash) {
-				return String.format("#%02x%02x%02x%02x", a, r, g, b);
+				return String.format("#%02x%02x%02x%02x", r, g, b, a);
 			} else {
-				return String.format("%02x%02x%02x%02x", a, r, g, b);
+				return String.format("%02x%02x%02x%02x", r, g, b, a);
 			}
 		}
 	}
 
 	/**
-	 * Converts a hexBinary string to {@link Color}. If color is opaque,
-	 * {@link Color#decode(String))} method used. For transparent to translucent *
-	 * colors (alpha != 255), a custom conversion is used.
+	 * Converts a hexBinary string to {@link Color} (r,g,b) or (r,g,b,a). If it
+	 * can't be converted null is returned.
 	 * 
-	 * @param color
+	 * @param hex
 	 */
 	public static Color hexToColor(String hex) {
-		if (hex.length() < 8) {
+		hex = hex.replace("#", "");
+		long i = Long.parseLong(hex, 16);
+		int r = (int) ((i >> 24) & 0xff);
+		int g = (int) ((i >> 16) & 0xff);
+		int b = (int) ((i >> 8) & 0xff);
+		switch (hex.length()) {
+		case 6:
 			if (!hex.contains("#"))
 				hex = "#" + hex;
 			return Color.decode(hex);
-		} else {
-			/* removes # character if necessary */
-			if (hex.contains("#"))
-				hex = hex.replace("#", "");
-			long i = Long.parseLong(hex, 16);
-			int r = (int) (i & 0xff);
-			int g = (int) ((i >> 8) & 0xff);
-			int b = (int) ((i >> 16) & 0xff);
-			int a = (int) ((i >> 24) & 0xff);
+		case 8:
+
+			int a = (int) (i & 0xff);
 			return new Color(r, g, b, a);
 		}
+		return null;
 	}
 
 	/**
-	 * Converts a string containing either a named color, e.g. "White", or a
+	 * Converts a (gpml) string containing either a named color, e.g. "White", or a
 	 * hexBinary number to a {@link Color} object.
 	 * 
 	 * @param stringColor
 	 */
 	public static Color stringToColor(String stringColor) {
 		if (colorMap.containsKey(stringColor)) {
-			return colorMap.get(stringColor);
+			return hexToColor(colorMap.get(stringColor));
 		} else {
 			try {
 				return hexToColor(stringColor);
@@ -83,33 +83,34 @@ public class ColorUtils {
 						+ " is not valid, element color is set to black", e);
 			}
 		}
-		return Color.decode("#000000");
+		return Color.decode("#000000"); // default black (as implemented in GPML 2013a)
 	}
 
 	/**
-	 * Mapping of string gpml:ColorType to a {@link Color} object. gpml:ColorType
-	 * uses string color in older versions of gpml.
+	 * Mapping of string gpml:ColorType (older versions of gpml) to a hexBinary
+	 * {@link String}. In {@link #stringToColor}, {@link #hexToColor}converts
+	 * hexBinary String to {@link Color} object.
 	 */
-	private static final Map<String, Color> colorMap;
+	private static final Map<String, String> colorMap;
 	static {
-		Map<String, Color> cMap = new HashMap<String, Color>();
-		cMap.put("Aqua", Color.decode("#00ffff"));
-		cMap.put("Black", Color.decode("#000000"));
-		cMap.put("Blue", Color.decode("#0000ff"));
-		cMap.put("Fuchsia", Color.decode("#ff00ff"));
-		cMap.put("Gray", Color.decode("#808080"));
-		cMap.put("Green", Color.decode("#008000"));
-		cMap.put("Lime", Color.decode("#00ff00"));
-		cMap.put("Maroon", Color.decode("#800000"));
-		cMap.put("Navy", Color.decode("#000080"));
-		cMap.put("Olive", Color.decode("#808000"));
-		cMap.put("Purple", Color.decode("#800080"));
-		cMap.put("Red", Color.decode("#ff0000"));
-		cMap.put("Silver", Color.decode("#c0c0c0"));
-		cMap.put("Teal", Color.decode("#008080"));
-		cMap.put("White", Color.decode("#ffffff"));
-		cMap.put("Yellow", Color.decode("#ffff00"));
-		cMap.put("Transparent", hexToColor("#00000000")); // TODO
+		Map<String, String> cMap = new HashMap<String, String>();
+		cMap.put("Aqua", "#00ffff");
+		cMap.put("Black", "#000000");
+		cMap.put("Blue", "#0000ff");
+		cMap.put("Fuchsia", "#ff00ff");
+		cMap.put("Gray", "#808080");
+		cMap.put("Green", "#008000");
+		cMap.put("Lime", "#00ff00");
+		cMap.put("Maroon", "#800000");
+		cMap.put("Navy", "#000080");
+		cMap.put("Olive", "#808000");
+		cMap.put("Purple", "#800080");
+		cMap.put("Red", "#ff0000");
+		cMap.put("Silver", "#c0c0c0");
+		cMap.put("Teal", "#008080");
+		cMap.put("White", "#ffffff");
+		cMap.put("Yellow", "#ffff00");
+		cMap.put("Transparent", "#00000000");
 		colorMap = Collections.unmodifiableMap(cMap);
 	}
 
