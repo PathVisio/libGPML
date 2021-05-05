@@ -21,26 +21,30 @@ import java.io.IOException;
 import java.net.URL;
 import org.pathvisio.model.*;
 
-
 import junit.framework.TestCase;
 
-public class TestGPMLReadWrite extends TestCase {
+public class TestSingleGPMLReadWrite extends TestCase {
 
-	public static void testReadWrite() throws IOException, ConverterException {
+	/**
+	 * For testing reading and writing of a specific GPML2013a or GPML2021 file.
+	 * Useful for debugging and looking in detail at one particular example.
+	 * 
+	 * @throws ConverterException
+	 * @throws IOException
+	 */
+	public static void testReadWriteGPML() throws IOException, ConverterException {
 		URL url = Thread.currentThread().getContextClassLoader().getResource("grouptest_again.gpml");
 
 		File file = new File(url.getPath());
-		assertTrue (file.exists());
+		assertTrue(file.exists());
 
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
-		
-//		
-		File tmp = File.createTempFile("testwrite", ".gpml"); //extension
+
+		File tmp = File.createTempFile("testwrite", ".gpml"); 
 		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
-		
-		
+
 	}
 }

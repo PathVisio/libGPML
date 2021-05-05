@@ -21,15 +21,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import org.pathvisio.model.*;
+import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
 public class TestConvertToGPML2021 extends TestCase {
 
-	public static void testReadWrite() throws IOException, ConverterException {
-
-//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
-//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-problem-gpmls");
+	/**
+	 * For testing conversion GPML2013a to newer GPML2021. Reading a directory of
+	 * GPML2013a files and writing to GPML2021 format. Assert output equivalent to
+	 * input.
+	 * 
+	 * @throws IOException
+	 * @throws ConverterException
+	 * @throws SAXException
+	 */
+	public static void testConvertToGPML2021() throws IOException, ConverterException {
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
 		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021";
 

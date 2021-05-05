@@ -18,28 +18,36 @@ package org.pathvisio.io;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.junit.Test;
 import org.pathvisio.model.*;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.Diff;
 
 import junit.framework.TestCase;
 
-public class TestGPML2021 extends TestCase {
+public class TestReadWriteGPML2013a extends TestCase {
 
 	/**
-	 * Read GPML2013a and Write GPML2013a format. Assert output equivalent to input.
+	 * For testing reading a directory of GPML2013a files and writing again to GPML2013a
+	 * format. Assert output equivalent to input.
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
 	 * @throws SAXException
 	 */
-	public static void testReadWrite2013a() throws IOException, ConverterException, SAXException {
+	public static void testReadWriteGPML2013a() throws IOException, ConverterException, SAXException {
 
-		File folderGPML2021 = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");
-		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2021";
+//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
 
-		File[] listOfFiles = folderGPML2021.listFiles();
+		File[] listOfFiles = folderGPML2013a.listFiles();
 
 		for (int i = 1; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
@@ -52,7 +60,7 @@ public class TestGPML2021 extends TestCase {
 
 				/* write pathway model to xml */
 				File outputFile = new File(outputDir, file.getName());
-				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, false);
+				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, outputFile, false);
 				System.out.println(outputFile);
 
 				/* write pathway model to xml (temp) */
