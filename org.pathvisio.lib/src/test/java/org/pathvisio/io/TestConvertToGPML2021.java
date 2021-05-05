@@ -53,7 +53,7 @@ public class TestConvertToGPML2021 extends TestCase {
 
 				/* write pathway model to xml */
 				File outputFile = new File(outputDir, file.getName());
-				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, false);
+				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, true);
 				System.out.println(outputFile);
 
 				/* write pathway model to xml */

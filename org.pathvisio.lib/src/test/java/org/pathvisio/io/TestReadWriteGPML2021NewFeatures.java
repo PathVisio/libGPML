@@ -57,7 +57,7 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 
 		DataNode dataNode = new DataNode("d1", pathwayModel, new RectProperty(new Coordinate(1, 1), 1, 1),
 				new FontProperty(null, "Arial", false, false, false, false, 0, null, null), new ShapeStyleProperty(),
-				"TextLabel", DataNodeType.ALIAS, null);
+				"TextLabel", DataNodeType.ALIAS);
 		
 //		State state = new State("s1", pathwayModel, dataNode, null, StateType.EPIGENETIC_MODIFICATION, 0, 0, 1, 1,
 //				new FontProperty(null, "Arial", false, false, false, false, 0, null, null), new ShapeStyleProperty());
