@@ -375,8 +375,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected String readPubxfInfo(List<Element> pubxfElements) throws ConverterException {
 		String elementText = null;
 		for (Element pubxfElement : pubxfElements) {
-			if (elementText == null) {
-				if (pubxfElement != null)
+			if (elementText == null || elementText.equals("")) {
+				if (pubxfElement != null) 
 					elementText = pubxfElement.getText();
 			} else {
 				continue;
