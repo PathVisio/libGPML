@@ -453,7 +453,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (point == null)
 				continue;
 			Element pt = new Element("Point", gfx.getNamespace());
-			writeElementId(point.getElementId(), pt); // TODO not normally in GPML2013a
+			writeElementId(point.getElementId(), pt);
 			String base = ((Element) gfx.getParent()).getName();
 			setAttr(base + ".Graphics.Point", "X", pt, Double.toString(point.getXY().getX()));
 			setAttr(base + ".Graphics.Point", "Y", pt, Double.toString(point.getXY().getY()));
@@ -676,15 +676,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element pubxf = new Element("PublicationXref", BIOPAX_NAMESPACE);
 			pubxf.setAttribute("id", citation.getElementId(), RDF_NAMESPACE);
 			List<String> authors = citation.getAuthors();
-			String biopaxId = citation.getXref().getId();
-			writePubxfInfo(biopaxId == null ? "" : biopaxId, "ID", pubxf); // TODO is required?
-			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf); // TODO is required?
-			writePubxfInfo(citation.getTitle(), "TITLE", pubxf); // TODO is required?
+			writePubxfInfo(citation.getXref().getId(), "ID", pubxf);
+			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf);
+			writePubxfInfo(citation.getTitle(), "TITLE", pubxf);
 			writePubxfInfo(citation.getSource(), "SOURCE", pubxf);
 			writePubxfInfo(citation.getYear(), "YEAR", pubxf);
 			if (authors != null && !authors.isEmpty()) {
 				for (String author : authors)
-					writePubxfInfo(author, "AUTHORS", pubxf);
+					if (author != null && !author.equals(""))
+						writePubxfInfo(author, "AUTHORS", pubxf);
 			}
 			if (pubxf != null)
 				bp.addContent(pubxf);
@@ -699,7 +699,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes Biopax PublicationXref information to PublicationXref element. NB: The
 	 * main purpose of this method is to make {@link #writeBiopaxPublicationXref}
-	 * more concise.
+	 * more concise. If property value is null, writes "". 
 	 * 
 	 * @param propertyValue the value of the property.
 	 * @param elementName   the name for new child element of pubxf element.
@@ -707,13 +707,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writePubxfInfo(String propertyValue, String elementName, Element pubxf) throws ConverterException {
-		if (propertyValue != null && !propertyValue.equals("")) {
-			Element e = new Element(elementName, BIOPAX_NAMESPACE);
-			e.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
-			e.setText(propertyValue);
-			if (e != null)
-				pubxf.addContent(e);
-		}
+		propertyValue = propertyValue == null ? "" : propertyValue;
+		Element e = new Element(elementName, BIOPAX_NAMESPACE);
+		e.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
+		e.setText(propertyValue);
+		if (e != null)
+			pubxf.addContent(e);
 	}
 
 	/**
