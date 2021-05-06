@@ -769,6 +769,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// finds parent datanode from state elementRef
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementRef);
+			// sets zOrder based on parent data node TODO 
+			shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
 			// instantiates state
 			State state = new State(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height,
 					fontProperty, shapeStyleProperty);
