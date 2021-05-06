@@ -333,36 +333,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// biopax id is added to elementIdSet
 			elementIdSet.add(elementId);
 			// reads rest of PublicationXref
-			Element id = pubxf.getChild("ID", BIOPAX_NAMESPACE);
-			Element db = pubxf.getChild("DB", BIOPAX_NAMESPACE);
-			String biopaxId = null;
-			String biopaxDb = null;
-			if (id != null)
-				biopaxId = id.getText();
-			if (db != null)
-				biopaxDb = db.getText();
+			String biopaxId = readPubxfInfo(pubxf.getChildren("ID", BIOPAX_NAMESPACE));
+			String biopaxDb = readPubxfInfo(pubxf.getChildren("DB", BIOPAX_NAMESPACE));
 			Xref xref = readBiopaxXref(biopaxId, biopaxDb);
 			// instantiates citation
 			Citation citation = new Citation(elementId, pathwayModel, xref);
 			// sets optional properties
-			Element tle = pubxf.getChild("TITLE", BIOPAX_NAMESPACE);
-			Element src = pubxf.getChild("SOURCE", BIOPAX_NAMESPACE);
-			Element yr = pubxf.getChild("YEAR", BIOPAX_NAMESPACE);
-			if (tle != null) {
-				String titleStr = tle.getText();
-				if (titleStr != null && !titleStr.equals(""))
-					citation.setTitle(titleStr);
-			}
-			if (src != null) {
-				String source = src.getText();
-				if (source != null && !source.equals(""))
-					citation.setSource(source);
-			}
-			if (yr != null) {
-				String year = yr.getText();
-				if (year != null && !year.equals(""))
-					citation.setYear(year);
-			}
+			String title = readPubxfInfo(pubxf.getChildren("TITLE", BIOPAX_NAMESPACE));
+			String source = readPubxfInfo(pubxf.getChildren("SOURCE", BIOPAX_NAMESPACE));
+			String year = readPubxfInfo(pubxf.getChildren("YEAR", BIOPAX_NAMESPACE));
+			if (title != null && !title.equals(""))
+				citation.setTitle(title);
+			if (source != null && !source.equals(""))
+				citation.setSource(source);
+			if (year != null && !year.equals(""))
+				citation.setYear(year);
 			List<String> authors = new ArrayList<String>();
 			for (Element au : pubxf.getChildren("AUTHORS", BIOPAX_NAMESPACE)) {
 				String author = au.getText();
@@ -375,6 +360,29 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (citation != null)
 				pathwayModel.addCitation(citation);
 		}
+	}
+
+	/**
+	 * Reads Biopax PublicationXref information from PublicationXref children
+	 * elements. In GPML2013a there are some duplicated and/or empty gpml:Biopax
+	 * PublicationXref information. If there is more than one child element (e.g.
+	 * ID), we read and store the first non-null text value.
+	 * 
+	 * @param pubxfElements the pubxf jdom element's children elements.
+	 * @return elementText the string text value for the element.
+	 * @throws ConverterException
+	 */
+	protected String readPubxfInfo(List<Element> pubxfElements) throws ConverterException {
+		String elementText = null;
+		for (Element pubxfElement : pubxfElements) {
+			if (elementText == null) {
+				if (pubxfElement != null)
+					elementText = pubxfElement.getText();
+			} else {
+				continue;
+			}
+		}
+		return elementText;
 	}
 
 	/**
@@ -769,7 +777,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// finds parent datanode from state elementRef
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementRef);
-			// sets zOrder based on parent data node TODO 
+			// sets zOrder based on parent data node TODO
 			shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
 			// instantiates state
 			State state = new State(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height,
