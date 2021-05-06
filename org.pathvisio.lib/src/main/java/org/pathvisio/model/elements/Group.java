@@ -16,8 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.model.elements;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayElement;
@@ -35,7 +36,7 @@ import org.pathvisio.model.type.GroupType;
 public class Group extends ShapedElement {
 
 	/* list of pathway elements which belong to the group. */
-	private List<PathwayElement> pathwayElements; // 0 to unbounded TODO should have at least one?
+	private Set<PathwayElement> pathwayElements; // 0 to unbounded TODO should have at least one?
 	private GroupType type = GroupType.GROUP;
 	private String textLabel; // optional
 	private Xref xref; // optional
@@ -58,7 +59,7 @@ public class Group extends ShapedElement {
 	public Group(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, String textLabel, Xref xref) {
 		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
-		this.pathwayElements = new ArrayList<PathwayElement>();
+		this.pathwayElements = new HashSet<PathwayElement>();
 		this.type = type;
 		this.textLabel = textLabel;
 		this.xref = xref;
@@ -131,7 +132,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @return pathwayElements the list of pathway elements belonging to the group.
 	 */
-	public List<PathwayElement> getPathwayElements() {
+	public Set<PathwayElement> getPathwayElements() {
 		return pathwayElements;
 	}
 
