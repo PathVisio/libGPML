@@ -27,7 +27,7 @@ package org.pathvisio.model;
 public class Comment {
 
 	private String source; // optional
-	private String commentText; //optional 
+	private String commentText; //required 
 
 	/**
 	 * Instantiates a Comment with source and commentText.

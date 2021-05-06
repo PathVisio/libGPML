@@ -268,13 +268,19 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void writeComments(List<Comment> comments, Element e) throws ConverterException {
 		for (Comment comment : comments) {
-			Element cmt = new Element("Comment", e.getNamespace());
-			if (comment.getCommentText() != null) // TODO may be excessive
-				cmt.setText(comment.getCommentText());
-			if (comment.getSource() != null)
-				cmt.setAttribute("source", comment.getSource());
-			if (cmt != null)
-				e.addContent(cmt);
+			if (comment != null) {
+				// write comment only if comment has text
+				String commentText = comment.getCommentText();
+				if (commentText != null && !commentText.equals("")) {
+					Element cmt = new Element("Comment", e.getNamespace());
+					cmt.setText(commentText);
+					String source = comment.getSource();
+					if (source != null && !source.equals(""))
+						cmt.setAttribute("Source", source);
+					if (cmt != null)
+						e.addContent(cmt);
+				}
+			}
 		}
 	}
 
@@ -288,7 +294,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void writeDynamicProperties(Map<String, String> dynamicProperties, Element e) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
-			//TODO what to avoid writing? 
+			// TODO what to avoid writing?
 			// if key is for group graphId, do not write to GPML2013a
 			if (key == GPML2013aFormatAbstract.GROUP_GRAPHID)
 				continue;

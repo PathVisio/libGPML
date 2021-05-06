@@ -110,7 +110,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		Element gfx = root.getChild("Graphics", root.getNamespace());
 		double boardWidth = Double.parseDouble(gfx.getAttributeValue("boardWidth").trim());
 		double boardHeight = Double.parseDouble(gfx.getAttributeValue("boardHeight").trim());
-		Color backgroundColor = ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor","ffffff")); // TODO optional?
+		Color backgroundColor = ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor", "ffffff")); // TODO
+																												// optional?
 		Coordinate infoBox = readInfoBox(root);
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, backgroundColor, infoBox).build();
 		readAuthors(pathway, root);
@@ -154,7 +155,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					return new Xref(identifier, DataSource.getByAlias(dataSource));
 				} else {
 					DataSource.register(dataSource, dataSource);
-					Logger.log.trace("Registered xref datasource " + dataSource); 
+					Logger.log.trace("Registered xref datasource " + dataSource);
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
 				}
 			}
@@ -163,8 +164,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox}
-	 * information.
+	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox} information.
 	 * 
 	 * @param root the root element.
 	 * @return the infoBox as coordinates.
@@ -189,7 +189,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element au : aus.getChildren("Author", aus.getNamespace())) {
 				String name = au.getAttributeValue("name");
 				Author author = new Author.AuthorBuilder(name).build();
-				// sets optional properties 
+				// sets optional properties
 				String username = au.getAttributeValue("username");
 				String order = au.getAttributeValue("order");
 				Xref xref = readXref(au);
@@ -198,7 +198,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (order != null)
 					author.setOrder(Integer.parseInt(order.trim()));
 				if (xref != null)
-					author.setXref(xref);				
+					author.setXref(xref);
 				if (author != null)
 					pathway.addAuthor(author);
 			}
@@ -314,16 +314,19 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected void readPathwayComments(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
-			String content = cmt.getText();
-			if (content != null || source != null) {
-				Comment comment = new Comment(content); 
+			String commentText = cmt.getText();
+			// comment must have text
+			if (commentText != null && !commentText.equals("")) {
+				// instantiates comment
+				Comment comment = new Comment(commentText);
+				// sets source
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
-				pathwayModel.getPathway().addComment(new Comment(source, content));
+				// adds comment to pathway model
+				pathwayModel.getPathway().addComment(new Comment(source, commentText));
 			}
 		}
 	}
-	
 
 	/**
 	 * Reads dynamic property {@link Pathway#setDynamicProperty} information for
@@ -500,7 +503,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				double rotation = Double.parseDouble(gfx.getAttributeValue("rotation").trim());
 				Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
 						rotation);
-				// reads comment group, evidenceRefs 
+				// reads comment group, evidenceRefs
 				readElementInfo(shape, shp);
 				// sets optional properties
 				String textLabel = shp.getAttributeValue("textLabel");
@@ -533,12 +536,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				String textLabel = dn.getAttributeValue("textLabel");
-				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type","Unknown")); //TODO default?
+				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", "Unknown")); // TODO default?
 				DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty,
 						shapeStyleProperty, textLabel, type);
-				// reads comment group, evidenceRefs 
+				// reads comment group, evidenceRefs
 				readElementInfo(dataNode, dn);
-				// reads states 
+				// reads states
 				readStates(dataNode, dn);
 				// sets optional properties
 				String groupRef = dn.getAttributeValue("groupRef");
@@ -569,7 +572,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element st : sts.getChildren("State", sts.getNamespace())) {
 				String elementId = st.getAttributeValue("elementId");
 				String textLabel = st.getAttributeValue("textLabel");
-				StateType type = StateType.register(st.getAttributeValue("type","Undefined"));
+				StateType type = StateType.register(st.getAttributeValue("type", "Undefined"));
 				Element gfx = st.getChild("Graphics", st.getNamespace());
 				double relX = Double.parseDouble(gfx.getAttributeValue("relX").trim());
 				double relY = Double.parseDouble(gfx.getAttributeValue("relY").trim());
@@ -683,7 +686,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					Double.parseDouble(pt.getAttributeValue("y").trim()));
 			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 			// adds point to lineElement (elementRef, relX, and relY read later)
-			if (point != null) 
+			if (point != null)
 				lineElement.addPoint(point);
 		}
 	}
@@ -699,7 +702,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element an : wyps.getChildren("Anchor", wyps.getNamespace())) {
 			String elementId = an.getAttributeValue("elementId");
 			double position = Double.parseDouble(an.getAttributeValue("position"));
-			AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType","Square")); //TODO Anchor shape 
+			AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType", "Square")); // TODO Anchor
+																										// shape
 			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
@@ -707,8 +711,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads elementRef {@link DataNode#setElementRef} for pathway model
-	 * datanodes.
+	 * Reads elementRef {@link DataNode#setElementRef} for pathway model datanodes.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -790,18 +793,22 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
 			String commentText = cmt.getText();
-			if (commentText != null || source != null) {
+			// comment must have text
+			if (commentText != null && !commentText.equals("")) {
+				// instantiates comment
 				Comment comment = new Comment(commentText);
+				// sets source
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
+				// adds comment to pathway element
 				elementInfo.addComment(new Comment(source, commentText));
 			}
 		}
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information
-	 * for pathway element from element.
+	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object .
 	 * @param e           the pathway element element.
@@ -845,8 +852,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads citationRef {@link ElementInfo#addCitationRef} information for
-	 * pathway element from element.
+	 * Reads citationRef {@link ElementInfo#addCitationRef} information for pathway
+	 * element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
 	 * @param e           the pathway element element.
@@ -863,8 +870,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef} information for
-	 * pathway element from element.
+	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef} information for pathway
+	 * element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
 	 * @param e           the pathway element element.
@@ -960,7 +967,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		}
 		return lineStyleProperty;
 	}
-
 
 	/*---------------------------------------------------------------------------*/
 

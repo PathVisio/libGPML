@@ -367,7 +367,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * elements. In GPML2013a there are some duplicated and/or empty gpml:Biopax
 	 * PublicationXref information. This method reads the list of child elements
 	 * with the same name (e.g. "ID") as long as the elementText value is still null
-	 * or empty "".
+	 * or empty "". Used in {@link #readBiopaxPublicationXref}
 	 * 
 	 * @param pubxfElements the pubxf children elements with the same local name.
 	 * @return elementText the string text value for the element.
@@ -444,8 +444,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = getAttr("Comment", "Source", cmt);
 			String commentText = cmt.getText();
-			// if either comment or source exists
-			if (commentText != null || source != null) {
+			// comment must have text
+			if (commentText != null && !commentText.equals("")) {
 				// instantiates comment
 				Comment comment = new Comment(commentText);
 				// sets source
@@ -1142,12 +1142,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
 			String source = getAttr("Comment", "Source", cmt);
-			String content = cmt.getText();
-			if (content != null || source != null) {
-				Comment comment = new Comment(content);
+			String commentText = cmt.getText();
+			// comment must have text
+			if (commentText != null && !commentText.equals("")) {
+				// instantiates comment
+				Comment comment = new Comment(commentText);
+				// sets source
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
-				elementInfo.addComment(new Comment(source, content));
+				// adds comment to pathway element
+				elementInfo.addComment(new Comment(source, commentText));
 			}
 		}
 	}

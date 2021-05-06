@@ -74,7 +74,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
 		xmlformat.setEncoding("UTF-8");
-		xmlformat.setTextMode(Format.TextMode.NORMALIZE); //PRESERVE
+		xmlformat.setTextMode(Format.TextMode.NORMALIZE); // PRESERVE
 		xmlOutput.setFormat(xmlformat);
 
 		try {
@@ -259,13 +259,19 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeComments(List<Comment> comments, Element e) throws ConverterException {
 		for (Comment comment : comments) {
-			Element cmt = new Element("Comment", e.getNamespace());
-			if (comment.getCommentText() != null) // TODO may be excessive
-				cmt.setText(comment.getCommentText());
-			if (comment.getSource() != null)
-				cmt.setAttribute("Source", comment.getSource());
-			if (cmt != null)
-				e.addContent(cmt);
+			if (comment != null) {
+				// write comment only if comment has text
+				String commentText = comment.getCommentText();
+				if (commentText != null && !commentText.equals("")) {
+					Element cmt = new Element("Comment", e.getNamespace());
+					cmt.setText(commentText);
+					String source = comment.getSource();
+					if (source != null && !source.equals(""))
+						cmt.setAttribute("Source", source);
+					if (cmt != null)
+						e.addContent(cmt);
+				}
+			}
 		}
 	}
 
@@ -699,7 +705,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes Biopax PublicationXref information to PublicationXref element. NB: The
 	 * main purpose of this method is to make {@link #writeBiopaxPublicationXref}
-	 * more concise. If property value is null, writes "". 
+	 * more concise. If property value is null, writes "".
 	 * 
 	 * @param propertyValue the value of the property.
 	 * @param elementName   the name for new child element of pubxf element.
