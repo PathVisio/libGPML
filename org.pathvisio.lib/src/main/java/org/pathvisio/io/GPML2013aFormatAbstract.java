@@ -40,9 +40,9 @@ import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.elements.Group;
-import org.pathvisio.model.type.ShapeType;
+import org.pathvisio.model.*;
+import org.pathvisio.model.elements.*;
+import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.xml.sax.SAXException;
 
@@ -67,11 +67,11 @@ public abstract class GPML2013aFormatAbstract {
 	/**
 	 * Namespaces and string used for writing GPML2013a
 	 */
-	public static final Namespace RDF = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-	public static final Namespace RDFS = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-	public static final Namespace BIOPAX = Namespace.getNamespace("bp",
+	public static final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+	public static final Namespace RDFS_NAMESPACE = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+	public static final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 			"http://www.biopax.org/release/biopax-level3.owl#");
-	public static final Namespace OWL = Namespace.getNamespace("owl", "http://www.w3.org/2002/07/owl#");
+	public static final Namespace OWL_NAMESPACE = Namespace.getNamespace("owl", "http://www.w3.org/2002/07/owl#");
 	public final static String RDF_STRING = "http://www.w3.org/2001/XMLSchema#string";
 
 	/**
@@ -91,8 +91,8 @@ public abstract class GPML2013aFormatAbstract {
 	 * in {@link GPML2013aWriter#writePathwayDynamicProperties}. Dynamic properties
 	 * with these keys are ignored when writing GPML2013a and GPML2021.
 	 */
-	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(Arrays.asList(PATHWAY_AUTHOR,
-			PATHWAY_MAINTAINER, PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, LEGEND_CENTER_X, LEGEND_CENTER_Y));
+	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(Arrays.asList(PATHWAY_AUTHOR, PATHWAY_MAINTAINER,
+			PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, LEGEND_CENTER_X, LEGEND_CENTER_Y));
 
 	/** Strings used when writing GPML2013a */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
@@ -139,6 +139,61 @@ public abstract class GPML2013aFormatAbstract {
 		CELL_CMPNT_MAP.put(ShapeType.MEMBRANE, ShapeType.ROUNDED_RECTANGLE);
 	}
 
+	/**
+	 * Default order of pathway elements gene product, label, shape and line
+	 * determined by GenMAPP legacy
+	 */
+	private static final int Z_ORDER_GROUP = 0x1000; // groups behind other graphics
+	private static final int Z_ORDER_GENEPRODUCT = 0x8000;
+	private static final int Z_ORDER_LABEL = 0x7000;
+	private static final int Z_ORDER_SHAPE = 0x4000;
+	private static final int Z_ORDER_LINE = 0x3000;
+	// default order of uninteresting elements.
+	private static final int Z_ORDER_DEFAULT = 0x0000;
+
+	/**
+	 * Pathway element types as used in GPML2013a
+	 */
+	public final static String SHAPE = "Shape";
+	public final static String GRAPHLINE = "GraphicalLine";
+	public final static String DATANODE = "DataNode";
+	public final static String LABEL = "Label";
+	public final static String LINE = "Line";
+	public final static String LEGEND = "Legend";
+	public final static String INFOBOX = "InfoBox";
+	public final static String MAPPINFO = "Pathway";
+	public final static String GROUP = "Group";
+	public final static String BIOPAX = "Biopax";
+	public final static String STATE = "State";
+
+	/**
+	 * default z order for newly created objects
+	 */
+	private static int getDefaultZOrder(String pathwayElementType) {
+		switch (pathwayElementType) {
+		case SHAPE:
+			return Z_ORDER_SHAPE;
+		case STATE:
+			return Z_ORDER_GENEPRODUCT + 10;
+		case DATANODE:
+			return Z_ORDER_GENEPRODUCT;
+		case LABEL:
+			return Z_ORDER_LABEL;
+		case LINE:
+			return Z_ORDER_LINE;
+		case GRAPHLINE:
+			return Z_ORDER_LINE;
+		case LEGEND:
+		case INFOBOX:
+		case MAPPINFO:
+		case BIOPAX:
+			return Z_ORDER_DEFAULT;
+		case GROUP:
+			return Z_ORDER_GROUP;
+		default:
+			throw new IllegalArgumentException("Invalid object type " + pathwayElementType);
+		}
+	}
 //	protected abstract Map<String, AttributeInfo> getAttributeInfo();
 
 	/**

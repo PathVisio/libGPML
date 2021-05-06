@@ -277,19 +277,19 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void readBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp, Set<String> elementIdSet)
 			throws ConverterException {
-		for (Element ocv : bp.getChildren("openControlledVocabulary", BIOPAX)) {
+		for (Element ocv : bp.getChildren("openControlledVocabulary", BIOPAX_NAMESPACE)) {
 			// generates new unique elementId and adds to elementIdSet
 			String elementId = PathwayModel.getUniqueId(elementIdSet);
 			elementIdSet.add(elementId);
 			Logger.log.trace("Annotation missing elementId, new id is: " + elementId);
 			// reads OpenControlledVocabulary
-			String value = ocv.getChild("TERM", BIOPAX).getText();
-			String biopaxOntology = ocv.getChild("Ontology", BIOPAX).getText();
+			String value = ocv.getChild("TERM", BIOPAX_NAMESPACE).getText();
+			String biopaxOntology = ocv.getChild("Ontology", BIOPAX_NAMESPACE).getText();
 			AnnotationType type = AnnotationType.register(biopaxOntology);
 			// instantiates annotation
 			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
 			// sets optional property xref
-			String biopaxIdDbStr = ocv.getChild("ID", BIOPAX).getText(); // e.g PW:0000650
+			String biopaxIdDbStr = ocv.getChild("ID", BIOPAX_NAMESPACE).getText(); // e.g PW:0000650
 			String[] biopaxIdDb = biopaxIdDbStr.split(":"); // splits "ID" into Id and Database
 			String biopaxDb = biopaxIdDb[0]; // e.g. PW
 			String biopaxId = biopaxIdDb[1]; // e.g 0000650
@@ -320,9 +320,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readBiopaxPublicationXref(PathwayModel pathwayModel, Element bp, Set<String> elementIdSet,
 			Map<String, String> biopaxIdToNew) throws ConverterException {
 
-		for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX)) {
+		for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
 			// reads rdf:id of biopax
-			String elementId = pubxf.getAttributeValue("id", RDF);
+			String elementId = pubxf.getAttributeValue("id", RDF_NAMESPACE);
 			// if not unique, generates new unique elementId
 			if (elementIdSet.contains(elementId)) {
 				String newId = PathwayModel.getUniqueId(elementIdSet);
@@ -333,8 +333,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// biopax id is added to elementIdSet
 			elementIdSet.add(elementId);
 			// reads rest of PublicationXref
-			Element id = pubxf.getChild("ID", BIOPAX);
-			Element db = pubxf.getChild("DB", BIOPAX);
+			Element id = pubxf.getChild("ID", BIOPAX_NAMESPACE);
+			Element db = pubxf.getChild("DB", BIOPAX_NAMESPACE);
 			String biopaxId = null;
 			String biopaxDb = null;
 			if (id != null)
@@ -345,9 +345,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// instantiates citation
 			Citation citation = new Citation(elementId, pathwayModel, xref);
 			// sets optional properties
-			Element tle = pubxf.getChild("TITLE", BIOPAX);
-			Element src = pubxf.getChild("SOURCE", BIOPAX);
-			Element yr = pubxf.getChild("YEAR", BIOPAX);
+			Element tle = pubxf.getChild("TITLE", BIOPAX_NAMESPACE);
+			Element src = pubxf.getChild("SOURCE", BIOPAX_NAMESPACE);
+			Element yr = pubxf.getChild("YEAR", BIOPAX_NAMESPACE);
 			if (tle != null) {
 				String titleStr = tle.getText();
 				if (titleStr != null && !titleStr.equals(""))
@@ -364,7 +364,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					citation.setYear(year);
 			}
 			List<String> authors = new ArrayList<String>();
-			for (Element au : pubxf.getChildren("AUTHORS", BIOPAX)) {
+			for (Element au : pubxf.getChildren("AUTHORS", BIOPAX_NAMESPACE)) {
 				String author = au.getText();
 				if (author != null)
 					authors.add(author);

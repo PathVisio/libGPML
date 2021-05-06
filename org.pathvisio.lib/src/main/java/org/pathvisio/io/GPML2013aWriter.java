@@ -638,13 +638,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (Annotation annotation : annotations) {
 			if (annotation == null)
 				continue;
-			Element ocv = new Element("openControlledVocabulary", BIOPAX);
-			Element term = new Element("TERM", BIOPAX);
-			Element id = new Element("ID", BIOPAX);
-			Element onto = new Element("Ontology", BIOPAX);
-			term.setAttribute("datatype", RDF_STRING, RDF);
-			id.setAttribute("datatype", RDF_STRING, RDF);
-			onto.setAttribute("datatype", RDF_STRING, RDF);
+			Element ocv = new Element("openControlledVocabulary", BIOPAX_NAMESPACE);
+			Element term = new Element("TERM", BIOPAX_NAMESPACE);
+			Element id = new Element("ID", BIOPAX_NAMESPACE);
+			Element onto = new Element("Ontology", BIOPAX_NAMESPACE);
+			term.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
+			id.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
+			onto.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			term.setText(annotation.getValue());
 			id.setText(annotation.getXref().getDataSource().getFullName() + ":" + annotation.getXref().getId());
 			onto.setText(annotation.getType().getName());
@@ -673,8 +673,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (Citation citation : citations) {
 			if (citation == null)
 				continue;
-			Element pubxf = new Element("PublicationXref", BIOPAX);
-			pubxf.setAttribute("id", citation.getElementId(), RDF);
+			Element pubxf = new Element("PublicationXref", BIOPAX_NAMESPACE);
+			pubxf.setAttribute("id", citation.getElementId(), RDF_NAMESPACE);
 			List<String> authors = citation.getAuthors();
 			String biopaxId = citation.getXref().getId();
 			writePubxfInfo(biopaxId == null ? "" : biopaxId, "ID", pubxf); // TODO is required?
@@ -708,8 +708,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writePubxfInfo(String propertyValue, String elementName, Element pubxf) throws ConverterException {
 		if (propertyValue != null && !propertyValue.equals("")) {
-			Element e = new Element(elementName, BIOPAX);
-			e.setAttribute("datatype", RDF_STRING, RDF);
+			Element e = new Element(elementName, BIOPAX_NAMESPACE);
+			e.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			e.setText(propertyValue);
 			if (e != null)
 				pubxf.addContent(e);
