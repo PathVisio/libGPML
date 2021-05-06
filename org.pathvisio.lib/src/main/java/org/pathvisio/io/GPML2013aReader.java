@@ -365,10 +365,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads Biopax PublicationXref information from PublicationXref children
 	 * elements. In GPML2013a there are some duplicated and/or empty gpml:Biopax
-	 * PublicationXref information. If there is more than one child element (e.g.
-	 * ID), we read and store the first non-null text value.
+	 * PublicationXref information. This method reads the list of child elements
+	 * with the same name (e.g. "ID") as long as the elementText value is still null
+	 * or empty "".
 	 * 
-	 * @param pubxfElements the pubxf jdom element's children elements.
+	 * @param pubxfElements the pubxf children elements with the same local name.
 	 * @return elementText the string text value for the element.
 	 * @throws ConverterException
 	 */
@@ -376,7 +377,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		String elementText = null;
 		for (Element pubxfElement : pubxfElements) {
 			if (elementText == null || elementText.equals("")) {
-				if (pubxfElement != null) 
+				if (pubxfElement != null)
 					elementText = pubxfElement.getText();
 			} else {
 				continue;
