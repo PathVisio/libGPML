@@ -33,7 +33,8 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	 * @throws IOException
 	 */
 	public static void testReadWriteGPML() throws IOException, ConverterException {
-		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
+//		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("example-v2013a.xml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
@@ -42,8 +43,8 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		pathwayModel.readFromXml(file, true);
 
 		File tmp = File.createTempFile("testwrite", ".gpml"); 
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}

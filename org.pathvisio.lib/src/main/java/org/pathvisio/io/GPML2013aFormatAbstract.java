@@ -92,7 +92,7 @@ public abstract class GPML2013aFormatAbstract {
 	 * with these keys are ignored when writing GPML2013a and GPML2021.
 	 */
 	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(Arrays.asList(PATHWAY_AUTHOR, PATHWAY_MAINTAINER,
-			PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, LEGEND_CENTER_X, LEGEND_CENTER_Y));
+			PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, LEGEND_CENTER_X, LEGEND_CENTER_Y, GROUP_GRAPHID));
 
 	/** Strings used when writing GPML2013a */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";

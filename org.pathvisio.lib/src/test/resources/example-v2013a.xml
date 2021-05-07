@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Pathway xmlns="http://pathvisio.org/GPML/2013a" Name="Test" Version="20210303" Organism="Homo sapiens">
+<Pathway xmlns="http://pathvisio.org/GPML/2013a" Name="Test" Version="20210303" Author = "Jim" Email ="email.com" Organism="Homo sapiens">
   <Comment Source="WikiPathways-description">Description of the pathway</Comment>
   <Graphics BoardWidth="543.0" BoardHeight="278.1695906432749" />
   <DataNode TextLabel="ACO2" GraphId="dbf54" Type="Protein" GroupRef="ab7e0">

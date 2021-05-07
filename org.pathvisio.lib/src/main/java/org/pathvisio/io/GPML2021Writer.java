@@ -31,6 +31,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
@@ -276,7 +277,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					cmt.setText(commentText);
 					String source = comment.getSource();
 					if (source != null && !source.equals(""))
-						cmt.setAttribute("Source", source);
+						cmt.setAttribute("source", source);
 					if (cmt != null)
 						e.addContent(cmt);
 				}
@@ -294,13 +295,16 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void writeDynamicProperties(Map<String, String> dynamicProperties, Element e) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
-			// TODO what to avoid writing?
-			// if key is for group graphId, do not write to GPML2013a
-			if (key == GPML2013aFormatAbstract.GROUP_GRAPHID)
+			String value = dynamicProperties.get(key);
+			// warnings for conversion GPML2021 to GPML2013a
+			if (GPML2013aFormatAbstract.GPML2013A_KEY_SET.contains(key)) {
+				Logger.log.trace("Warning: Conversion GPML2013a to GPML2021: " + e.getName() + " dynamic property \"" + key
+						+ "\" (key) and \"" + value + "\" (value) info lost.");
 				continue;
+			}
 			Element dp = new Element("Property", e.getNamespace());
 			dp.setAttribute("key", key);
-			dp.setAttribute("value", dynamicProperties.get(key));
+			dp.setAttribute("value", value);
 			if (dp != null)
 				e.addContent(dp);
 		}
