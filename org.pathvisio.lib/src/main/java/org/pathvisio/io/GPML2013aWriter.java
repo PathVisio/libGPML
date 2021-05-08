@@ -331,7 +331,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dn = new Element("DataNode", root.getNamespace());
 			setAttr("DataNode", "TextLabel", dn, dataNode.getTextLabel());
 			writeShapedElement(dataNode, dn);
-			setAttr("DataNode", "Type", dn, dataNode.getType().getName());
+			String typeStr = dataNode.getType().getName();
+			// in GPML2013a, "Undefined" type is written as "Unknown"
+			if (typeStr.equalsIgnoreCase("Undefined"))
+				typeStr = "Unknown";
+			setAttr("DataNode", "Type", dn, typeStr);
 			writeGroupRef(dataNode.getGroupRef(), dn);
 			// writes xref (required)
 			writeXref(dataNode.getXref(), dn, true);
@@ -359,7 +363,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 					continue;
 				Element st = new Element("State", root.getNamespace());
 				// NB: StateType was not fully implemented in GPML2013a
-				setAttr("State", "StateType", st, state.getType().getName());
+				String typeStr = state.getType().getName();
+				// in GPML2013a, "Undefined" type is written as "Unknown"
+				if (typeStr.equalsIgnoreCase("Undefined"))
+					typeStr = "Unknown";
+				setAttr("State", "StateType", st, typeStr);
 				setAttr("State", "GraphRef", st, dataNode.getElementId());
 				setAttr("State", "TextLabel", st, state.getTextLabel() == null ? "" : state.getTextLabel());
 				writeElementInfo(state, st);
@@ -554,6 +562,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes group {@link Group} information. In GPML2013a, group has default font
 	 * properties and shape style properties which are not written to the gpml.
+	 * 
+	 * NB: Group type "None" is deprecated in GPML2021. Group type "None" is
+	 * replaced with "Group".
 	 * 
 	 * @param groups the list of groups.
 	 * @param root   the root element.
@@ -986,9 +997,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeType.getName());
 		}
 		String borderStyleStr = shapeProp.getBorderStyle().getName();
-		// in GPML2013a, "Dashed" line style was named "Broken"
-		if (borderStyleStr.equals("Dashed"))
+		// in GPML2013a, "Dashed" line style is "Broken" and must be written so
+		if (borderStyleStr.equalsIgnoreCase("Dashed"))
 			borderStyleStr = "Broken";
+		// if "Double", line style information is written to dynamic property instead
 		if (!borderStyleStr.equalsIgnoreCase("Double"))
 			setAttr(base + ".Graphics", "LineStyle", gfx, borderStyleStr);
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapeProp.getBorderWidth()));
@@ -1006,9 +1018,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		setAttr(base + ".Graphics", "ConnectorType", gfx, lineProp.getConnectorType().getName());
 		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(lineProp.getZOrder()));
 		String lineStyleStr = lineProp.getLineStyle().getName();
-		// in GPML2013a, "Dashed" line style was named "Broken"
-		if (lineStyleStr.equals("Dashed"))
+		// in GPML2013a, "Dashed" line style is "Broken" and must be written so
+		if (lineStyleStr.equalsIgnoreCase("Dashed"))
 			lineStyleStr = "Broken";
+		// if "Double", line style information is written to dynamic property instead
 		if (!lineStyleStr.equalsIgnoreCase("Double"))
 			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyleStr);
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineProp.getLineWidth()));

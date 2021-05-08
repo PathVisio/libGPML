@@ -506,13 +506,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads group {@link Group} information for pathway model from root element.
 	 * Rect properties (centerX, centerY, width, height) are calculated by
 	 * {@link calculateGroupRectProperty} after group {@link List} is filled with
-	 * pathway elements.
+	 * pathway elements. 
 	 * 
 	 * NB: A group has identifier GroupId (essentially ElementId), while GraphId is
 	 * optional. A group has GraphId if there is at least one {@link Point}
 	 * referring to this group by GraphRef. Because GroupIds may conflict with an
 	 * elementId, new unique elementIds (value) can be assigned with reference back
 	 * to the original GroupIds (key) in groupIdToNew map.
+	 * 
+	 * NB: Group type "None" is deprecated in GPML2021. Group type "None" is
+	 * replaced with "Group".
 	 * 
 	 * @param pathwayModel  the pathway model.
 	 * @param root          the root element.
@@ -538,8 +541,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// adds group elementId to elementIdSet
 			elementIdSet.add(elementId);
 			String typeStr = getAttr("Group", "Style", grp);
-			// in GPML2021, "None" group type is replaced with "Group" TODO write back to
-			// "NONE" or keep as Group?
+			// in GPML2021, "None" group type is replaced with "Group" 
 			if (typeStr.equals("None"))
 				typeStr = "Group";
 			GroupType type = GroupType.register(typeStr);
@@ -733,7 +735,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			String textLabel = getAttr("DataNode", "TextLabel", dn);
-			DataNodeType type = DataNodeType.register(getAttr("DataNode", "Type", dn));
+			String typeStr = getAttr("DataNode", "Type", dn);
+			// in GPML2021, "Unknown" data node type is named "Undefined" 
+			if (typeStr.equals("Unknown"))
+				typeStr = "Undefined";
+			DataNodeType type = DataNodeType.register(typeStr);
 			// instantiates data node
 			DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
 					textLabel, type);
@@ -765,7 +771,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element st : root.getChildren("State", root.getNamespace())) {
 			String elementId = readElementId("State", st, elementIdSet);
 			String textLabel = getAttr("State", "TextLabel", st);
-			StateType type = StateType.register(getAttr("State", "StateType", st));
+			String typeStr = getAttr("State", "StateType", st);
+			// in GPML2021, "Unknown" state type is named "Undefined" 
+			if (typeStr.equalsIgnoreCase("Unknown"))
+				typeStr = "Undefined";
+			StateType type = StateType.register(typeStr);
 			Element gfx = st.getChild("Graphics", st.getNamespace());
 			double relX = Double.parseDouble(getAttr("State.Graphics", "RelX", gfx).trim());
 			double relY = Double.parseDouble(getAttr("State.Graphics", "RelY", gfx).trim());
@@ -1225,7 +1235,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element dp : st.getChildren("Attribute", st.getNamespace())) {
 			String key = getAttr("Attribute", "Key", dp);
 			String value = getAttr("Attribute", "Value", dp);
-			if (key.equals(DOUBLE_LINE_KEY) && value.equals("Double")) {
+			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
 				state.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
 				ShapeType type = ShapeType.register(value);
@@ -1325,7 +1335,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Color borderColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		String borderStyleStr = getAttr(base + ".Graphics", "LineStyle", gfx);
 		// in GPML2021, "Broken" line style was renamed to "Dashed"
-		if (borderStyleStr.equals("Broken"))
+		if (borderStyleStr.equalsIgnoreCase("Broken"))
 			borderStyleStr = "Dashed";
 		LineStyleType borderStyle = LineStyleType.register(borderStyleStr);
 		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
@@ -1358,7 +1368,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Color lineColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		String lineStyleStr = getAttr(base + ".Graphics", "LineStyle", gfx);
 		// in GPML2021, "Broken" line style was renamed to "Dashed"
-		if (lineStyleStr.equals("Broken"))
+		if (lineStyleStr.equalsIgnoreCase("Broken"))
 			lineStyleStr = "Dashed";
 		LineStyleType lineStyle = LineStyleType.register(lineStyleStr);
 		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
