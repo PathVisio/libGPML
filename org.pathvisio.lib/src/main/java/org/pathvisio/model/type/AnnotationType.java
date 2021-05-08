@@ -17,9 +17,9 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
 
@@ -29,7 +29,7 @@ import org.pathvisio.debug.Logger;
  * @author finterly
  */
 public class AnnotationType {
-	private static Map<String, AnnotationType> nameToAnnotationType = new LinkedHashMap<String, AnnotationType>();
+	private static Map<String, AnnotationType> nameToAnnotationType = new TreeMap<String, AnnotationType>(String.CASE_INSENSITIVE_ORDER);
 
 	public static final AnnotationType UNDEFINED = new AnnotationType("Undefined");
 	public static final AnnotationType ONTOLOGY = new AnnotationType("Ontology");

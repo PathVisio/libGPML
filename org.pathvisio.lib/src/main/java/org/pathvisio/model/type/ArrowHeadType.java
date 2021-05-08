@@ -17,9 +17,9 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.elements.Point;
@@ -35,7 +35,7 @@ import org.pathvisio.model.elements.Point;
  */
 public class ArrowHeadType {
 
-	private static Map<String, ArrowHeadType> nameToArrowHeadType = new LinkedHashMap<String, ArrowHeadType>();
+	private static Map<String, ArrowHeadType> nameToArrowHeadType = new TreeMap<String, ArrowHeadType>(String.CASE_INSENSITIVE_ORDER);
 
 	// TODO update to new panel!! implement mapping from 2013a default to 2021
 	/** LineType LINE means the absence of an arrowhead */

@@ -17,9 +17,9 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
 
@@ -34,7 +34,7 @@ import org.pathvisio.debug.Logger;
  */
 public class GroupType {
 
-	private static Map<String, GroupType> nameToGroupType = new LinkedHashMap<String, GroupType>();
+	private static Map<String, GroupType> nameToGroupType = new TreeMap<String, GroupType>(String.CASE_INSENSITIVE_ORDER);
 
 	public static final GroupType GROUP = new GroupType("Group"); // default: replaces "NONE"
 	public static final GroupType COMPLEX = new GroupType("Complex"); 

@@ -17,9 +17,9 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
 
@@ -29,7 +29,7 @@ import org.pathvisio.debug.Logger;
  * @author finterly
  */
 public class StateType {
-	private static Map<String, StateType> nameToStateType = new LinkedHashMap<String, StateType>();
+	private static Map<String, StateType> nameToStateType = new TreeMap<String, StateType>(String.CASE_INSENSITIVE_ORDER);
 
 	// TODO Add more and changes
 	public static final StateType UNDEFINED = new StateType("Undefined");

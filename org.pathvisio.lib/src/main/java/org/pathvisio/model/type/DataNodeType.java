@@ -17,9 +17,9 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
 
@@ -30,7 +30,7 @@ import org.pathvisio.debug.Logger;
  */
 public class DataNodeType {
 
-	private static final Map<String, DataNodeType> nameToDataNodeType = new LinkedHashMap<String, DataNodeType>();
+	private static final Map<String, DataNodeType> nameToDataNodeType = new TreeMap<String, DataNodeType>(String.CASE_INSENSITIVE_ORDER);
 
 	// Default
 	public static final DataNodeType UNDEFINED = new DataNodeType("Undefined");

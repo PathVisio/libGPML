@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
 
@@ -32,7 +33,7 @@ import org.pathvisio.debug.Logger;
  */
 public class LineStyleType {
 
-	private static Map<String, LineStyleType> nameToLineStyleType = new LinkedHashMap<String, LineStyleType>();
+	private static Map<String, LineStyleType> nameToLineStyleType = new TreeMap<String, LineStyleType>(String.CASE_INSENSITIVE_ORDER);
 
 	// TODO Add dotted?
 	public static final LineStyleType SOLID = new LineStyleType("Solid"); // DEFAULT

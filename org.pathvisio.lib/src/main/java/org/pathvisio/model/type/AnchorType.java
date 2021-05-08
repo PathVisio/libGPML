@@ -17,9 +17,9 @@
 package org.pathvisio.model.type;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
 
@@ -30,7 +30,7 @@ import org.pathvisio.debug.Logger;
  */
 public class AnchorType {
 
-	private static Map<String, AnchorType> nameToAnchorType = new LinkedHashMap<String, AnchorType>();
+	private static Map<String, AnchorType> nameToAnchorType = new TreeMap<String, AnchorType>(String.CASE_INSENSITIVE_ORDER);
 
 	public static final AnchorType NONE = new AnchorType("None");
 	public static final AnchorType SQUARE = new AnchorType("Square");
