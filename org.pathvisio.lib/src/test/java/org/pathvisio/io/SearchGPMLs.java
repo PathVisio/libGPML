@@ -40,14 +40,12 @@ import junit.framework.TestCase;
 public class SearchGPMLs extends TestCase {
 
 	/**
-	 * Searches for GPML2013a files to find common state types.  
+	 * Searches for GPML2013a files to find common state types.
 	 */
-	public static void testStateTypes() throws IOException, ConverterException {
-		Set<String> stateTypes = new HashSet<String>();
+	public static void testArrowHeadTypes() throws IOException, ConverterException {
+		Set<String> arrowHeadTypes = new HashSet<String>();
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
 		File[] listOfFiles = folderGPML2013a.listFiles();
-		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
-				"http://www.biopax.org/release/biopax-level3.owl#");
 		for (int i = 1; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
@@ -56,10 +54,14 @@ public class SearchGPMLs extends TestCase {
 					SAXBuilder builder = new SAXBuilder();
 					Document readDoc = builder.build(file);
 					Element root = readDoc.getRootElement();
-					List<Element> sts = root.getChildren("State", root.getNamespace());
-					for (Element st : sts) {
-						String type = st.getAttributeValue("StateType");
-						stateTypes.add(type);
+					List<Element> ias = root.getChildren("Interaction", root.getNamespace());
+					for (Element ia : ias) {
+						Element gfx = ia.getChild("Graphics", ia.getNamespace());
+						List<Element> pts = gfx.getChildren("Point", gfx.getNamespace());
+						for (Element pt : pts) {
+							String arrowHeadType = pt.getAttributeValue("ArrowHead");
+							arrowHeadTypes.add(arrowHeadType);
+						}
 					}
 				} catch (JDOMException e) {
 					e.printStackTrace();
@@ -68,9 +70,40 @@ public class SearchGPMLs extends TestCase {
 				}
 			}
 		}
-		System.out.println(stateTypes);
+		for (String arrowHead : arrowHeadTypes) {
+			System.out.println(arrowHead);
+		}
 	}
-	
+//	/**
+//	 * Searches for GPML2013a files to find common state types.  
+//	 */
+//	public static void testStateTypes() throws IOException, ConverterException {
+//		Set<String> stateTypes = new HashSet<String>();
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+//		File[] listOfFiles = folderGPML2013a.listFiles();
+//		for (int i = 1; i < listOfFiles.length; i++) {
+//			File file = listOfFiles[i];
+//			if (file.isFile()) {
+//				assertTrue(file.exists());
+//				try {
+//					SAXBuilder builder = new SAXBuilder();
+//					Document readDoc = builder.build(file);
+//					Element root = readDoc.getRootElement();
+//					List<Element> sts = root.getChildren("State", root.getNamespace());
+//					for (Element st : sts) {
+//						String type = st.getAttributeValue("StateType");
+//						stateTypes.add(type);
+//					}
+//				} catch (JDOMException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		System.out.println(stateTypes);
+//	}
+
 //	/**
 //	 * Searches for GPML2013a files to find common data node types.  
 //	 */
@@ -102,7 +135,7 @@ public class SearchGPMLs extends TestCase {
 //		}
 //		System.out.println(dataNodeTypes);
 //	}
-	
+
 //	/**
 //	 * Searches for GPML2013a files which have Biopax with duplicated values. There are 112 files 
 //	 */
@@ -139,7 +172,7 @@ public class SearchGPMLs extends TestCase {
 //			System.out.println(foundFile);
 //		}
 //	}
-	
+
 //	/**
 //	 * Searches for GPML2013a files which Comments with only Source and no Text. 
 //	 */
@@ -175,7 +208,5 @@ public class SearchGPMLs extends TestCase {
 //			}
 //		}
 //	}
-
-
 
 }
