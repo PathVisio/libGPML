@@ -5,15 +5,6 @@ Java library for reading / writing GPML files
 
 libPathVisio is an open-source library for working with GPML (Graphical Pathway Markup Language).  It is written in Java.
 
-[![License](https://img.shields.io/badge/License-LGPL-blue.svg?style=flat-square)](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)
-[![Stable release](https://img.shields.io/badge/Stable_release-5.19.0-brightgreen.svg?style=flat-square)](https://sourceforge.net/projects/sbml/files/libsbml/5.19.0/stable/)
-[![Experimental release](https://img.shields.io/badge/Experimental_release-5.19.0-b44e88.svg?style=flat-square)](https://sourceforge.net/projects/sbml/files/libsbml/5.19.0/experimental/)
-[![Pivotal Tracker](https://img.shields.io/badge/Project_management-Pivotal-d07a3e.svg?style=flat-square)](https://www.pivotaltracker.com/n/projects/248655)
-[![Discussion](https://img.shields.io/badge/Discussion-libsbml--development-lightgray.svg?style=flat-square)]()
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/sbmlteam/libsbml/Nightly%20build%20(binaries)?label=Nightly%20build&style=flat-square)
-
-
-
 Table of contents
 -----------------
 
@@ -31,7 +22,7 @@ Table of contents
 Introduction
 ------------
 
-LibPathVisio is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](http://sbml.org) format.  
+LibPathVisio is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)]() format.  
 
 Why not simply use a generic XML parsing library?  A specialized library such as libSBML or [JSBML](https://github.com/sbmlteam/jsbml) offers many advantages over using a generic XML library directly.  Here are some:
 
@@ -96,16 +87,16 @@ The development of libPathVisio was supported in largely by funding from ...
 <br>
 <div align="center">
   <a href="https://www.nigms.nih.gov">
-    <img valign="middle"  height="100" src=".graphics/US-NIH-NIGMS-Logo.svg">
+    <img valign="middle"  height="100" src=".graphics/bigcat.gif">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://www.caltech.edu">
-    <img valign="middle" height="130" src=".graphics/caltech-round.png">
+    <img valign="middle" height="130" src=".graphics/bigcateye.svg">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://www.caltech.edu">
-    <img valign="middle" height="100" src=".graphics/sbml-logo-only.png">
+    <img valign="middle" height="100" src=".graphics/maastricht_university_logo2017.svg">
   </a>
 </div>
