@@ -1,8 +1,6 @@
 libPathVisio<img width="22%" align="right" src=".graphics/bigcateye.svg">
 =============================================================================
 
-Java library for reading / writing GPML files
-
 libPathVisio is an open-source library for working with GPML (Graphical Pathway Markup Language).  It is written in Java.
 
 Table of contents
