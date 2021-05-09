@@ -24,17 +24,25 @@ LibPathVisio is a programming library that helps you read, write, validate, mani
 
 Why not simply use a generic XML parsing library?  A specialized library such as libPathVisio offers many advantages over using a generic XML library directly.  Here are some:
 
-* **Domain-specific object model**.  libPathVisio's object model and API are designed around GPML and the operations that are commonly needed when working with GPML.
+* **Java object model**.  libPathVisio's object model and API are designed around GPML and the operations that are commonly needed when working with GPML.
 
-* **Validation facilities**. libPathVisio implements all the validation rules defined in the GPML specifications.
+* **Validation**. libPathVisio implements all the validation rules defined in the GPML specifications.
 
-* **Conversion facilities**: libPathVisio can convert between GPML2013a and GPML2021. 
+* **Conversion**: libPathVisio can convert between GPML2013a and GPML2021. 
 
 LibPathVisio works on Linux, Windows, and  MacOS X, and other operating systems. 
 
+Requirements
+------------
+You need the following tools:
+
+* Computer with Windows, Mac, or Linux
+* [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+* [Maven 3](https://maven.apache.org/) (Tested with 3.3.x)
 
 Installation
 ------------
+
 
 
 
