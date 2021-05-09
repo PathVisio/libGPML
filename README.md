@@ -1,6 +1,4 @@
-# libPathVisio
-
-libSBML<img width="22%" align="right" src=".graphics/libsbml-logo-and-name.svg">
+libPathVisio<img width="22%" align="right" src=".graphics/bigcateye.svg">
 =============================================================================
 
 Java library for reading / writing GPML files
