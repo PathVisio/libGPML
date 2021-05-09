@@ -39,11 +39,13 @@ import junit.framework.TestCase;
 
 public class SearchGPMLs extends TestCase {
 
+
 	/**
-	 * Searches for GPML2013a files to find common state types.
+	 * Searches for GPML2013a files to find common anchor shape types. 
+	 * Result: [Circle , None ]
 	 */
-	public static void testArrowHeadTypes() throws IOException, ConverterException {
-		Set<String> arrowHeadTypes = new HashSet<String>();
+	public static void testAnchorShapeTypes() throws IOException, ConverterException {
+		Set<String> shapeTypes = new HashSet<String>();
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 		for (int i = 1; i < listOfFiles.length; i++) {
@@ -54,13 +56,13 @@ public class SearchGPMLs extends TestCase {
 					SAXBuilder builder = new SAXBuilder();
 					Document readDoc = builder.build(file);
 					Element root = readDoc.getRootElement();
-					List<Element> ias = root.getChildren("Interaction", root.getNamespace());
-					for (Element ia : ias) {
-						Element gfx = ia.getChild("Graphics", ia.getNamespace());
-						List<Element> pts = gfx.getChildren("Point", gfx.getNamespace());
-						for (Element pt : pts) {
-							String arrowHeadType = pt.getAttributeValue("ArrowHead");
-							arrowHeadTypes.add(arrowHeadType);
+					List<Element> es = root.getChildren("GraphicalLine", root.getNamespace());
+					for (Element e : es) {
+						Element gfx = e.getChild("Graphics", e.getNamespace());
+						List<Element> ans = gfx.getChildren("Anchor", gfx.getNamespace());
+						for (Element an: ans) {
+							String shapeType = an.getAttributeValue("Shape");
+							shapeTypes.add(shapeType);
 						}
 					}
 				} catch (JDOMException e) {
@@ -70,10 +72,140 @@ public class SearchGPMLs extends TestCase {
 				}
 			}
 		}
-		for (String arrowHead : arrowHeadTypes) {
-			System.out.println(arrowHead);
-		}
+		System.out.println(shapeTypes);
 	}
+
+	
+	
+//	/**
+//	 * Searches for GPML2013a files to find common shape types.
+//	 */
+//	public static void testShapeTypes() throws IOException, ConverterException {
+//		Set<String> shapeTypes = new HashSet<String>();
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+//		File[] listOfFiles = folderGPML2013a.listFiles();
+//
+//		Set<String> mimphos = new HashSet<String>();
+//		Set<String> mimint = new HashSet<String>();
+//		Set<String> mimdeg = new HashSet<String>();
+//
+//		for (int i = 1; i < listOfFiles.length; i++) {
+//			File file = listOfFiles[i];
+//			if (file.isFile()) {
+//				assertTrue(file.exists());
+//				try {
+//					SAXBuilder builder = new SAXBuilder();
+//					Document readDoc = builder.build(file);
+//					Element root = readDoc.getRootElement();
+//					List<Element> es = root.getChildren();
+//					for (Element e : es) {
+//						Element gfx = e.getChild("Graphics", e.getNamespace());
+//						if (gfx != null) {
+//							String shapeType = gfx.getAttributeValue("ShapeType");
+//							if (shapeType != null) {
+//								if (shapeType.equals("mim-phosphorylated"))
+//									mimphos.add(file.getName());
+//								if (shapeType.equals("mim-interaction"))
+//									mimint.add(file.getName());
+//								if (shapeType.equals("mim-degradation"))
+//									mimdeg.add(file.getName());
+//							}
+//							shapeTypes.add(shapeType);
+//						}
+//					}
+//				} catch (JDOMException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		System.out.println("Contains mim-phosphorylated");
+//		for (String shapeType : mimphos) {
+//			System.out.println(shapeType);
+//		}
+//		System.out.println("Contains mim-interaction");
+//		for (String shapeType : mimint) {
+//			System.out.println(shapeType);
+//		}
+//		System.out.println("Contains mim-degradation");
+//		for (String shapeType : mimdeg) {
+//			System.out.println(shapeType);
+//		}
+////		for (String shapeType : shapeTypes) {
+////			System.out.println(shapeType);
+////		}
+//	}
+
+//	/**
+//	 * Searches for GPML2013a files to find common group types.
+//	 */
+//	public static void testGroupTypes() throws IOException, ConverterException {
+//		Set<String> groupTypes = new HashSet<String>();
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+//		File[] listOfFiles = folderGPML2013a.listFiles();
+//		for (int i = 1; i < listOfFiles.length; i++) {
+//			File file = listOfFiles[i];
+//			if (file.isFile()) {
+//				assertTrue(file.exists());
+//				try {
+//					SAXBuilder builder = new SAXBuilder();
+//					Document readDoc = builder.build(file);
+//					Element root = readDoc.getRootElement();
+//					List<Element> grps = root.getChildren("Group", root.getNamespace());
+//					for (Element grp : grps) {
+//						String groupType = grp.getAttributeValue("Style");
+//						groupTypes.add(groupType);
+//					}
+//				} catch (JDOMException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		System.out.println(groupTypes);
+//	}
+
+	
+//	/**
+//	 * Searches for GPML2013a files to find common arrowHead types.
+//	 */
+//	public static void testArrowHeadTypes() throws IOException, ConverterException {
+//		Set<String> arrowHeadTypes = new HashSet<String>();
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+//		File[] listOfFiles = folderGPML2013a.listFiles();
+//		for (int i = 1; i < listOfFiles.length; i++) {
+//			File file = listOfFiles[i];
+//			if (file.isFile()) {
+//				assertTrue(file.exists());
+//				try {
+//					SAXBuilder builder = new SAXBuilder();
+//					Document readDoc = builder.build(file);
+//					Element root = readDoc.getRootElement();
+//					List<Element> ias = root.getChildren("GraphicalLine", root.getNamespace());
+//					for (Element ia : ias) {
+//						Element gfx = ia.getChild("Graphics", ia.getNamespace());
+//						List<Element> pts = gfx.getChildren("Point", gfx.getNamespace());
+//						for (Element pt : pts) {
+//							String arrowHeadType = pt.getAttributeValue("ArrowHead");
+//							arrowHeadTypes.add(arrowHeadType);
+//						}
+//					}
+//				} catch (JDOMException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		for (String arrowHead : arrowHeadTypes) {
+//			System.out.println(arrowHead);
+//		}
+//	}
+	
+	
+	
 //	/**
 //	 * Searches for GPML2013a files to find common state types.  
 //	 */
