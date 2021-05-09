@@ -22,7 +22,7 @@ Introduction
 
 LibPathVisio is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)]() format.  
 
-Why not simply use a generic XML parsing library?  A specialized library such as libSBML or [JSBML](https://github.com/sbmlteam/jsbml) offers many advantages over using a generic XML library directly.  Here are some:
+Why not simply use a generic XML parsing library?  A specialized library such as libPathVisio offers many advantages over using a generic XML library directly.  Here are some:
 
 * **Domain-specific object model**.  libPathVisio's object model and API are designed around GPML and the operations that are commonly needed when working with GPML.
 
@@ -41,7 +41,7 @@ Installation
 Usage
 -----
 
-Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libSBML and important information.
+Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libPathVisio and important information.
 
 Documentation is available online at ....
 
