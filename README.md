@@ -35,7 +35,7 @@ LibPathVisio works on Linux, Windows, and  MacOS X, and other operating systems.
 
 Getting Started
 ------------
-* [Documenation site](https://pathvisio.github.io/libpathvisio) 
+* [Documentation site](https://pathvisio.github.io/libpathvisio) 
 
 Dependencies
 ------------
