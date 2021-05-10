@@ -121,7 +121,7 @@ public class FileUtils {
 
 	/**
 	 * @param fileName file as a String
-	 * @returns ext the filename extension. Returns null if there was no '.'.
+	 * @return ext the filename extension. Returns null if there was no '.'.
 	 */
 	public static String getExtension(String fileName) {
 		int dot = fileName.lastIndexOf('.');

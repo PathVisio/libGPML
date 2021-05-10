@@ -66,14 +66,25 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		writeToXml(pathwayModel, file, true); // TODO validate always true here?
 	}
 
+	/**
+	 *
+	 */
 	public String[] getExtensions() {
 		return new String[] { "gpml", "xml" };
 	}
 
+	/**
+	 *
+	 */
 	public String getName() {
 		return "GPML file";
 	}
 
+	/**
+	 * @param data
+	 * @return
+	 * @throws ConverterException
+	 */
 	public static Document createJdom(PathwayModel data) throws ConverterException {
 		return PREVIOUS.createJdom(data);
 	}
@@ -91,17 +102,27 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	/**
 	 * Writes the JDOM document to the file specified
 	 * 
-	 * @param file     the file to which the JDOM document should be saved
-	 * @param validate if true, validate the dom structure before writing to file.
-	 *                 If there is a validation error, or the xsd is not in the
-	 *                 classpath, an exception will be thrown.
+	 * @param pathwayModel the pathway model.
+	 * @param file         the file to which the JDOM document should be saved
+	 * @param validate     if true, validate the dom structure before writing to
+	 *                     file. If there is a validation error, or the xsd is not
+	 *                     in the classpath, an exception will be thrown.
 	 */
-	static public void writeToXml(PathwayModel pwy, File file, boolean validate) throws ConverterException {
-		PREVIOUS.writeToXml(pwy, file, validate);
+	static public void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
+		PREVIOUS.writeToXml(pathwayModel, file, validate);
 	}
 
-	static public void writeToXml(PathwayModel pwy, OutputStream out, boolean validate) throws ConverterException {
-		PREVIOUS.writeToXml(pwy, out, validate);
+	/**
+	 * @param pathwayModel the pathway model.
+	 * @param out          the file to which the JDOM document should be saved
+	 * @param validate     if true, validate the dom structure before writing to
+	 *                     file. If there is a validation error, or the xsd is not
+	 *                     in the classpath, an exception will be thrown.
+	 * @throws ConverterException
+	 */
+	static public void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate)
+			throws ConverterException {
+		PREVIOUS.writeToXml(pathwayModel, out, validate);
 	}
 
 	/**
@@ -240,7 +261,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	}
 
 	/**
-	 *@param f the file. 
+	 * @param f the file.
 	 */
 	@Override
 	public boolean isCorrectType(File f) {

@@ -96,7 +96,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * TODO Finds the first comment with a specific source.
 	 * 
 	 * @param source the source of the comment to be found.
-	 * @returns the comment content with a given source.
+	 * @return the comment content with a given source.
 	 */
 	public String findComment(String source) {
 		for (Comment comment : comments) {
@@ -110,8 +110,7 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * Returns the map of dynamic properties.
 	 * 
-	 * @param key the key of a key value pair.
-	 * @return the value or dynamic property.
+	 * @return dynamicProperties the map of dynamic properties.
 	 */
 	public Map<String, String> getDynamicProperties() {
 		return dynamicProperties;

@@ -21,15 +21,15 @@ import java.awt.Color;
 import org.jdom2.Element;
 
 /**
- * Methods for writing and parsing colors in different ways.
- * There are two methods for exchanging RGB triplets in a 255,255,255 string format,
- * and two methods for exchanging RGB triplets as
- * a &ltcolor red="255" green="255" blue="255"&gt JDom element
+ * Methods for writing and parsing colors in different ways. There are two
+ * methods for exchanging RGB triplets in a 255,255,255 string format, and two
+ * methods for exchanging RGB triplets as a &lt;color red="255" green="255"
+ * blue="255"&gt; JDom element
  */
-public abstract class ColorConverter
-{
+public abstract class ColorConverter {
 	/**
 	 * Returns a string representing a {@link Color} object.
+	 * 
 	 * @param c The {@link Color} to be converted to a string
 	 * @return a string representing the {@link Color} c
 	 */
@@ -38,27 +38,22 @@ public abstract class ColorConverter
 	}
 
 	/**
-	 * Parses a string representing a {@link Color} object created with {@link #getRgbString(Color)}
+	 * Parses a string representing a {@link Color} object created with
+	 * {@link #getRgbString(Color)}
+	 * 
 	 * @param colorString the string to be parsed
 	 * @return the {@link Color} object this string represented
 	 */
-	public static java.awt.Color parseColorString(String colorString)
-	{
+	public static java.awt.Color parseColorString(String colorString) {
 		String[] s = colorString.split(",");
-		try
-		{
-			return new java.awt.Color(
-					Integer.parseInt(s[0]),
-					Integer.parseInt(s[1]),
-					Integer.parseInt(s[2]));
-		}
-		catch(Exception e)
-		{
+		try {
+			return new java.awt.Color(Integer.parseInt(s[0]), Integer.parseInt(s[1]), Integer.parseInt(s[2]));
+		} catch (Exception e) {
 			throw new IllegalArgumentException("Unable to parse color from '" + colorString + "'", e);
 		}
 	}
 
-    final static String XML_ELEMENT_COLOR = "color";
+	final static String XML_ELEMENT_COLOR = "color";
 	final static String XML_COLOR_R = "red";
 	final static String XML_COLOR_G = "green";
 	final static String XML_COLOR_B = "blue";
@@ -67,22 +62,22 @@ public abstract class ColorConverter
 	 * Create a JDom Element to store this RGB triplet
 	 */
 	public static Element createColorElement(String name, Color rgb) {
-    	Element elm = new Element(XML_ELEMENT_COLOR);
-    	elm.setName(name);
-    	elm.setAttribute(XML_COLOR_R, Integer.toString(rgb.getRed()));
-    	elm.setAttribute(XML_COLOR_G, Integer.toString(rgb.getGreen()));
-    	elm.setAttribute(XML_COLOR_B, Integer.toString(rgb.getBlue()));
+		Element elm = new Element(XML_ELEMENT_COLOR);
+		elm.setName(name);
+		elm.setAttribute(XML_COLOR_R, Integer.toString(rgb.getRed()));
+		elm.setAttribute(XML_COLOR_G, Integer.toString(rgb.getGreen()));
+		elm.setAttribute(XML_COLOR_B, Integer.toString(rgb.getBlue()));
 
-    	return elm;
-    }
+		return elm;
+	}
 
 	/**
 	 * obtain the RGB triplet from a JDom element.
 	 */
-    public static Color parseColorElement(Element xml) {
-    	int r = Integer.parseInt(xml.getAttributeValue(XML_COLOR_R));
-    	int g = Integer.parseInt(xml.getAttributeValue(XML_COLOR_G));
-    	int b = Integer.parseInt(xml.getAttributeValue(XML_COLOR_B));
-    	return new Color(r,g,b);
-    }
+	public static Color parseColorElement(Element xml) {
+		int r = Integer.parseInt(xml.getAttributeValue(XML_COLOR_R));
+		int g = Integer.parseInt(xml.getAttributeValue(XML_COLOR_G));
+		int b = Integer.parseInt(xml.getAttributeValue(XML_COLOR_B));
+		return new Color(r, g, b);
+	}
 }

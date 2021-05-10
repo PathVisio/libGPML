@@ -23,7 +23,7 @@ import org.pathvisio.model.elements.Point;
 /**
  * This class holds coordinates x and y.
  * 
- * Used in {@link Pathway#setInfoBox()}, {@link RectProperty}, {@link Point}
+ * See use in {@link RectProperty}, {@link Point}
  * 
  * @author finterly
  */
