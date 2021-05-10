@@ -31,6 +31,11 @@ import org.xmlunit.diff.Diff;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for reading and writing of GPML2013a.
+ * 
+ * @author finterly
+ */
 public class TestReadWriteGPML2013a extends TestCase {
 
 	/**

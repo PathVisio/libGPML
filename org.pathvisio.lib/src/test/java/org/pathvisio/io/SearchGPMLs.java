@@ -37,6 +37,11 @@ import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests searching GPML2013a files for properties and values. 
+ * 
+ * @author finterly
+ */
 public class SearchGPMLs extends TestCase {
 
 

@@ -25,6 +25,11 @@ import org.pathvisio.model.type.*;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests for GroupRectPropertyUtils class, the utility class for finding group bounds. 
+ * 
+ * @author finterly
+ */
 public class TestGroupRectPropertyUtils extends TestCase {
 
 	public void testGroupRectPropertyCalculation() {

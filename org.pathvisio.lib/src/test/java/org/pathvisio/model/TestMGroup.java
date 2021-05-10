@@ -18,6 +18,11 @@ package org.pathvisio.model;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for Group class. 
+ * 
+ * @author p70073399
+ */
 public class TestMGroup extends TestCase
 {
 	/**

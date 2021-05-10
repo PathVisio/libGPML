@@ -23,6 +23,11 @@ import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for reading and writing of a single GPML2013a or GPML2021, for troubleshooting and resolving specific issues.
+ * 
+ * @author finterly
+ */
 public class TestSingleGPMLReadWrite extends TestCase {
 
 	/**

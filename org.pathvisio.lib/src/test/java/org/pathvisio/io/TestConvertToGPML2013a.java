@@ -25,6 +25,11 @@ import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for conversion of GPML2021 to GPML2013a.
+ * 
+ * @author finterly
+ */
 public class TestConvertToGPML2013a extends TestCase {
 
 	/**

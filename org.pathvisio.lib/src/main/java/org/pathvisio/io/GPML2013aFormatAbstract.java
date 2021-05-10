@@ -46,6 +46,12 @@ import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.xml.sax.SAXException;
 
+/**
+ * Abstract class for GPML2013a format. Contains static properties and maps used
+ * in reading or writing GPML2013a.
+ * 
+ * @author finterly
+ */
 public abstract class GPML2013aFormatAbstract {
 
 	private final Namespace nsGPML;
@@ -67,8 +73,10 @@ public abstract class GPML2013aFormatAbstract {
 	/**
 	 * Namespaces and string used for writing GPML2013a
 	 */
-	public static final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-	public static final Namespace RDFS_NAMESPACE = Namespace.getNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+	public static final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf",
+			"http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+	public static final Namespace RDFS_NAMESPACE = Namespace.getNamespace("rdfs",
+			"http://www.w3.org/2000/01/rdf-schema#");
 	public static final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 			"http://www.biopax.org/release/biopax-level3.owl#");
 	public static final Namespace OWL_NAMESPACE = Namespace.getNamespace("owl", "http://www.w3.org/2002/07/owl#");

@@ -19,6 +19,11 @@ package org.pathvisio.io;
 import org.jdom2.Document;
 import org.jdom2.Namespace;
 
+/**
+ * Interface for GPML format versions.
+ * 
+ * @author unknown
+ */
 public interface GpmlFormatVersion {
 	
 	Namespace getGpmlNamespace();

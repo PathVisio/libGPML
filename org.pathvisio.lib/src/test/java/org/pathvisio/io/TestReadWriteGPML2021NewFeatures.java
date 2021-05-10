@@ -31,6 +31,11 @@ import org.pathvisio.model.type.*;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for reading and writing of GPML2021, especially new features that are not in GPML2013a.
+ * 
+ * @author finterly
+ */
 public class TestReadWriteGPML2021NewFeatures extends TestCase {
 
 	

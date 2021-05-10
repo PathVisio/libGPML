@@ -7,6 +7,11 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests for ColorUtils class. 
+ * 
+ * @author finterly
+ */
 public class TestColorUtils extends TestCase {
 	
 	public void testHexToColorToHex() {

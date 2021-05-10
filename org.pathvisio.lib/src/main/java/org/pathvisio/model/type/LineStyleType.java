@@ -27,13 +27,15 @@ import org.pathvisio.debug.Logger;
 /**
  * This class contains extensible enum for lineStyle or borderStyle property.
  * Line style can be either solid, dashed or double. Used for lineStyle
- * {@link LineStyleProperty} and borderStyle {@link ShapeStyleProperty}.
+ * {@link org.pathvisio.model.graphics.LineStyleProperty} and borderStyle
+ * {@link org.pathvisio.model.graphics.ShapeStyleProperty}.
  * 
  * @author unknown, finterly
  */
 public class LineStyleType {
 
-	private static Map<String, LineStyleType> nameToLineStyleType = new TreeMap<String, LineStyleType>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String, LineStyleType> nameToLineStyleType = new TreeMap<String, LineStyleType>(
+			String.CASE_INSENSITIVE_ORDER);
 
 	// TODO Add dotted?
 	public static final LineStyleType SOLID = new LineStyleType("Solid"); // DEFAULT
@@ -70,7 +72,7 @@ public class LineStyleType {
 		if (nameToLineStyleType.containsKey(name)) {
 			return nameToLineStyleType.get(name);
 		} else {
-			Logger.log.trace("Registered linestyle type " + name); 
+			Logger.log.trace("Registered linestyle type " + name);
 			return new LineStyleType(name);
 		}
 	}

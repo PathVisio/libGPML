@@ -25,6 +25,11 @@ import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for reading and writing of GPML2021.
+ * 
+ * @author finterly
+ */
 public class TestReadWriteGPML2021 extends TestCase {
 
 	

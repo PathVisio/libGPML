@@ -22,6 +22,11 @@ import java.io.OutputStream;
 import org.jdom2.Document;
 import org.pathvisio.model.*;
 
+/**
+ * Interface for GPML writing.
+ * 
+ * @author unknown
+ */
 public interface GpmlFormatWriter extends GpmlFormatVersion 
 {
 	Document createJdom(PathwayModel pathwayModel) throws ConverterException;
