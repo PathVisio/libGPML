@@ -16,32 +16,45 @@
  ******************************************************************************/
 package org.pathvisio.debug;
 
-
 /**
-   A simple helper class for speed optimizations
-*/
-public class StopWatch
-{
+ * A simple helper class for speed optimizations
+ * 
+ * @author unknown
+ */
+public class StopWatch {
 	boolean running;
 	long start;
 	long last;
 
+	/**
+	 * 
+	 */
 	public void start() {
 		start = System.currentTimeMillis();
 		running = true;
 	}
 
+	/**
+	 * @return
+	 */
 	public long stop() {
 		last = System.currentTimeMillis() - start;
 		running = false;
 		return last;
 	}
 
+	/**
+	 * @return
+	 */
 	public long look() {
-		if(running) return System.currentTimeMillis() - start;
+		if (running)
+			return System.currentTimeMillis() - start;
 		return last;
 	}
 
+	/**
+	 * @param msg
+	 */
 	public void stopToLog(String msg) {
 		Logger.log.trace(msg + "\t" + stop());
 	}

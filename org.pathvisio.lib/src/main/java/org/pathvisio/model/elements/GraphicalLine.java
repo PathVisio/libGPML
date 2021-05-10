@@ -31,12 +31,9 @@ public class GraphicalLine extends LineElement {
 	 * 
 	 * @param elementId         the unique pathway element identifier.
 	 * @param pathwayModel      the parent pathway model.
-	 * @param points            the list of points.
-	 * @param anchors           the list of anchors.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
-	 * @param xref              the interaction Xref.
 	 */
 	public GraphicalLine(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
 			Group groupRef) {

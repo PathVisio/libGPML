@@ -154,7 +154,7 @@ public class Citation extends PathwayElement {
 	/**
 	 * Returns source for the citation (for GPML2013a Biopax).
 	 * 
-	 * @return source the source.
+	 * @return title the title.
 	 */
 	public String getTitle() {
 		return title;
@@ -163,7 +163,7 @@ public class Citation extends PathwayElement {
 	/**
 	 * Sets source for the citation (for GPML2013a Biopax).
 	 * 
-	 * @param source the source.
+	 * @param title the title.
 	 */
 	public void setTitle(String title) {
 		this.title = title;

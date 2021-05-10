@@ -39,7 +39,6 @@ public class TestConvertToGPML2013a extends TestCase {
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
-	 * @throws SAXException
 	 */
 	public static void testConvertToGPML2013a() throws IOException, ConverterException {
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");

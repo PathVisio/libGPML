@@ -47,6 +47,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
 
+	/**
+	 * Constructor for GPML writer.
+	 * 
+	 * @param xsdFile the schema file.
+	 * @param nsGPML  the GPML namespace.
+	 */
 	protected GPML2021Writer(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
@@ -54,10 +60,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Writes the JDOM {@link Document} document to the outputstream specified.
 	 * 
-	 * @param out      the outputstream to which the JDOM document should be written
-	 * @param validate if true, validate the dom structure before writing. If there
-	 *                 is a validation error, or the xsd is not in the classpath, an
-	 *                 exception will be thrown.
+	 * @param pathwayModel the pathway model.
+	 * @param output       the outputstream to which the JDOM document should be
+	 *                     written
+	 * @param validate     if true, validate the dom structure before writing. If
+	 *                     there is a validation error, or the xsd is not in the
+	 *                     classpath, an exception will be thrown.
 	 * @throws ConverterException
 	 */
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
@@ -87,6 +95,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Writes the JDOM document to the file specified.
 	 * 
+	 * @param pathwayModel the pathway model.
 	 * @param file     the file to which the JDOM document should be saved.
 	 * @param validate if true, validate the dom structure before writing to file.
 	 * @throws ConverterException
@@ -298,8 +307,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			String value = dynamicProperties.get(key);
 			// warnings for conversion GPML2021 to GPML2013a
 			if (GPML2013aFormatAbstract.GPML2013A_KEY_SET.contains(key)) {
-				Logger.log.trace("Warning: Conversion GPML2013a to GPML2021: " + e.getName() + " dynamic property \"" + key
-						+ "\" (key) and \"" + value + "\" (value) info lost.");
+				Logger.log.trace("Warning: Conversion GPML2013a to GPML2021: " + e.getName() + " dynamic property \""
+						+ key + "\" (key) and \"" + value + "\" (value) info lost.");
 				continue;
 			}
 			Element dp = new Element("Property", e.getNamespace());

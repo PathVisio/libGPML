@@ -17,8 +17,9 @@ public class ColorUtils {
 	/**
 	 * Converts a {@link Color} object to a hexBinary string.
 	 * 
-	 * @param color the color object.
-	 * @param hash  the boolean, if true appends "#" to beginning of hex string.
+	 * @param color      the color object.
+	 * @param appendHash the boolean, if true appends "#" to beginning of hex
+	 *                   string.
 	 * @return the resulting hex string.
 	 */
 	public static String colorToHex(Color color, boolean appendHash) {

@@ -17,14 +17,13 @@
 package org.pathvisio.model.graphics;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.elements.Anchor;
+import org.pathvisio.model.Pathway;
 import org.pathvisio.model.elements.Point;
 
 /**
  * This class holds coordinates x and y.
  * 
- * Used in {@link InfoBox}, {@link RectProperty}, {@link GenericPoint},
- * {@link Point}, and {@link Anchor}.
+ * Used in {@link Pathway#setInfoBox()}, {@link RectProperty}, {@link Point}
  * 
  * @author finterly
  */
@@ -52,7 +51,7 @@ public class Coordinate {
 	/**
 	 * Returns x coordinate value.
 	 * 
-	 * @param x the coordinate value for x.
+	 * @return x the coordinate value for x.
 	 */
 	public double getX() {
 		return x;
@@ -72,7 +71,7 @@ public class Coordinate {
 	/**
 	 * Returns y coordinate value.
 	 * 
-	 * @param y the coordinate value for y.
+	 * @return y the coordinate value for y.
 	 */
 	public double getY() {
 		return y;

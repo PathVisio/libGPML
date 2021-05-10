@@ -55,15 +55,31 @@ public abstract class GPML2021FormatAbstract {
 	private final String xsdFile;
 	private final Namespace nsGPML;
 
+	/**
+	 * Constructor for GPML2021Format Abstract.
+	 * 
+	 * @param xsdFile the schema file.
+	 * @param nsGPML  the GPML namespace.
+	 */
 	protected GPML2021FormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}
 
+	/**
+	 * Returns the GPML schema file.
+	 * 
+	 * @return xsdFile the schema file.
+	 */
 	public String getSchemaFile() {
 		return xsdFile;
 	}
 
+	/**
+	 * Returns the GPML namespace.
+	 * 
+	 * @return nsGPML the GPML namespace.
+	 */
 	public Namespace getGpmlNamespace() {
 		return nsGPML;
 	}
@@ -72,7 +88,7 @@ public abstract class GPML2021FormatAbstract {
 	 * Removes group from pathwayModel if empty. Check executed after reading and
 	 * before writing.
 	 * 
-	 * @param pathwayModel the pathway model. 
+	 * @param pathwayModel the pathway model.
 	 * @throws ConverterException
 	 */
 	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {

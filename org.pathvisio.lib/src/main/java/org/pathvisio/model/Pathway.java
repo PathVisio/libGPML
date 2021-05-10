@@ -135,7 +135,7 @@ public class Pathway {
 		/**
 		 * Sets version and returns this builder object.
 		 * 
-		 * @param source the source of the pathway.
+		 * @param version the version of the pathway.
 		 * @return the PathwayBuilder object.
 		 */
 		public PathwayBuilder setVersion(String version) {
@@ -146,7 +146,7 @@ public class Pathway {
 		/**
 		 * Sets license and returns this builder object.
 		 * 
-		 * @param source the source of the pathway.
+		 * @param license the license of the pathway.
 		 * @return the PathwayBuilder object.
 		 */
 		public PathwayBuilder setLicense(String license) {
@@ -258,7 +258,7 @@ public class Pathway {
 	/**
 	 * Sets the board height.
 	 * 
-	 * @param boardWidth the board width
+	 * @param boardHeight the board height
 	 */
 	public void setBoardHeight(double boardHeight) {
 		if (boardHeight < 0) {
@@ -368,7 +368,8 @@ public class Pathway {
 	/**
 	 * TODO Finds the first comment with a specific source.
 	 * 
-	 * @returns the comment content with a given source.
+	 * @param source the source of the comment to be found. 
+	 * @return the comment content with a given source.
 	 */
 	public String findComment(String source) {
 		for (Comment comment : comments) {
@@ -382,8 +383,7 @@ public class Pathway {
 	/**
 	 * Returns the map of dynamic properties.
 	 * 
-	 * @param key the key of a key value pair.
-	 * @return the value or dynamic property.
+	 * @return dynamicProperties the dynamic properties map
 	 */
 	public Map<String, String> getDynamicProperties() {
 		return dynamicProperties;

@@ -20,27 +20,35 @@ import java.io.File;
 
 import org.pathvisio.model.PathwayModel;
 
-/** implemented by classes that can import a pathway from various different types */
-public interface PathwayImporter extends PathwayIO 
-{
+/**
+ * implemented by classes that can import a pathway from various different types
+ */
+public interface PathwayImporter extends PathwayIO {
 	/**
-	 * Inspect the file and determine if the file is suitable for import using this importer.
-	 * For example, files ending in .xml could be examined for the local name and namespace of the root element.
-	 * This function is invoked when multiple importers apply to a given file.
+	 * Returns true if the file appears superficially to be of the correct file
+	 * type.
 	 * <p>
-	 * Implementations should check the file only superficially if at all. This function is merely a "tie-breaker" in case there are conflicting importers.  
-	 * A return value of true doesn't automatically mean that the file is guaranteed to be valid, so no complex validation is required. 
-	 * For naive implementations, it's always OK to simply return "true".
-	 * @param f: the file to check
-	 * @returns true if the file appears superficially to be of the correct file type. 
+	 * Inspect the file and determine if the file is suitable for import using this
+	 * importer. For example, files ending in .xml could be examined for the local
+	 * name and namespace of the root element. This function is invoked when
+	 * multiple importers apply to a given file.
+	 * <p>
+	 * Implementations should check the file only superficially if at all. This
+	 * function is merely a "tie-breaker" in case there are conflicting importers. A
+	 * return value of true doesn't automatically mean that the file is guaranteed
+	 * to be valid, so no complex validation is required. For naive implementations,
+	 * it's always OK to simply return "true".
+	 * 
+	 * @param file the file to check.
 	 */
-	public boolean isCorrectType (File f);
-	
+	public boolean isCorrectType(File file);
+
 	/**
-	 * @param File that contains pathway information
-	 * @returns the result of the import, a fresh Pathway instance
-	 * @throws ConverterException if the input file could not be read or parsed,
-	 * 		or doesn't contain correct pathway information.
+	 * Returns the result of the import, a fresh Pathway instance.
+	 * 
+	 * @param file the file that contains pathway information.
+	 * @throws ConverterException if the input file could not be read or parsed, or
+	 *                            doesn't contain correct pathway information.
 	 */
 	public PathwayModel doImport(File file) throws ConverterException;
 }

@@ -36,12 +36,21 @@ import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
+/**
+ * Class for catching GPML files which have conflicting non unique Biopax
+ * rdf:ids
+ * 
+ * @author finterly
+ */
 public class CatchBiopaxWithNonUniqueID extends TestCase {
 
 	/**
 	 * For catching GPMLs which have Biopax with non unique IDs. Although the ids
 	 * are automatically handled by the reader and writer, we also much manually
 	 * look into these particular GMPL files.
+	 * 
+	 * @throws IOException
+	 * @throws ConverterException
 	 */
 	public static void testCollectXrefs() throws IOException, ConverterException {
 		final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");

@@ -51,7 +51,6 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	static private final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
 	static private final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
 
-
 	static {
 		DataSourceTxt.init();
 	}
@@ -108,7 +107,9 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	/**
 	 * Read the JDOM document from the file specified
 	 * 
-	 * @param file the file from which the JDOM document should be read.
+	 * @param pathwayModel the pathway model.
+	 * @param file         the file from which the JDOM document should be read.
+	 * @param validate     if true, validate the dom structure during/after reading.
 	 * @throws ConverterException
 	 */
 	static public PathwayModel readFromXml(PathwayModel pathwayModel, File file, boolean validate)
@@ -125,8 +126,9 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	/**
 	 * Read the JDOM document from the string specified
 	 * 
-	 * @param str    the string input.
-	 * @param string the file from which the JDOM document should be read.
+	 * @param pathwayModel the pathway model.
+	 * @param str          the file from which the JDOM document should be read.
+	 * @param validate     if true, validate the dom structure during/after reading.
 	 * @throws ConverterException
 	 */
 	static public PathwayModel readFromXml(PathwayModel pathwayModel, String str, boolean validate)
@@ -142,15 +144,37 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
+	/**
+	 * Read the JDOM document from the string specified
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param in           the file from which the JDOM document should be read.
+	 * @param validate     if true, validate the dom structure during/after reading.
+	 * @throws ConverterException
+	 */
 	static public void readFromXml(PathwayModel pathwayModel, InputStream in, boolean validate)
 			throws ConverterException {
 		readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
+	/**
+	 * Read the JDOM document from the string specified
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param in           the file from which the JDOM document should be read.
+	 * @param validate     if true, validate the dom structure during/after reading.
+	 * @throws ConverterException
+	 */
 	static public void readFromXml(PathwayModel pathwayModel, Reader in, boolean validate) throws ConverterException {
 		readFromXmlImpl(pathwayModel, new InputSource(in), validate);
 	}
 
+	/**
+	 * Returns GPML reader given namespace.
+	 * 
+	 * @param ns the given namespace.
+	 * @return the correct GPML reader for the given namespace.
+	 */
 	public static GpmlFormatReader getReaderForNamespace(Namespace ns) {
 		GpmlFormatReader[] formats = new GpmlFormatReader[] { GPML2021Reader.GPML2021READER,
 				GPML2013aReader.GPML2013aREADER };
@@ -162,6 +186,15 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return null;
 	}
 
+	/**
+	 * Reads a pathway model from given input source.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param is           the file from which the JDOM document should be read.
+	 * @param validate     if true, validate the dom structure during/after reading.
+	 * @return the read pathway model.
+	 * @throws ConverterException
+	 */
 	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 //
@@ -206,6 +239,9 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return pathwayModel;// TODO do we want to return pathway or not?
 	}
 
+	/**
+	 *@param f the file. 
+	 */
 	@Override
 	public boolean isCorrectType(File f) {
 		String uri;

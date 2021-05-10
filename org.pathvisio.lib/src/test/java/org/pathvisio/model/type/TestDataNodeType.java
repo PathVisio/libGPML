@@ -21,6 +21,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for extensible enum class. Tests DataNodeType as an example. 
+ * 
+ * @author finterly
+ */
 public class TestDataNodeType extends TestCase {
 
 	/**

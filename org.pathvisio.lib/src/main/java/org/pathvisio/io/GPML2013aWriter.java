@@ -50,6 +50,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
+	/**
+	 * Constructor for GPML2013aWriter.
+	 * 
+	 * @param xsdFile the GPML schema file.
+	 * @param nsGPML  the GPML namespace.
+	 */
 	protected GPML2013aWriter(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
@@ -57,10 +63,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes the JDOM {@link Document} document to the outputstream specified.
 	 * 
-	 * @param out      the outputstream to which the JDOM document should be written
-	 * @param validate if true, validate the dom structure before writing. If there
-	 *                 is a validation error, or the xsd is not in the classpath, an
-	 *                 exception will be thrown.
+	 * @param pathwayModel the pathway model.
+	 * @param output       the outputstream to which the JDOM document should be
+	 *                     written
+	 * @param validate     if true, validate the dom structure before writing. If
+	 *                     there is a validation error, or the xsd is not in the
+	 *                     classpath, an exception will be thrown.
 	 * @throws ConverterException
 	 */
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
@@ -91,8 +99,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes the JDOM document to the file specified.
 	 * 
-	 * @param file     the file to which the JDOM document should be saved.
-	 * @param validate if true, validate the dom structure before writing to file.
+	 * @param pathwayModel the pathway model.
+	 * @param file         the file to which the JDOM document should be saved.
+	 * @param validate     if true, validate the dom structure before writing to
+	 *                     file.
 	 * @throws ConverterException
 	 */
 	public void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {

@@ -24,7 +24,7 @@ import org.jdom2.Element;
  * Methods for writing and parsing colors in different ways.
  * There are two methods for exchanging RGB triplets in a 255,255,255 string format,
  * and two methods for exchanging RGB triplets as
- * a color red="255" green="255" blue="255" JDom element
+ * a &ltcolor red="255" green="255" blue="255"&gt JDom element
  */
 public abstract class ColorConverter
 {

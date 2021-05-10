@@ -48,8 +48,6 @@ public abstract class LineElement extends ElementInfo {
 	 * 
 	 * @param elementId         the unique pathway element identifier.
 	 * @param pathwayModel      the parent pathway model.
-	 * @param points            the list of points.
-	 * @param anchors           the list of anchors.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
@@ -159,7 +157,7 @@ public abstract class LineElement extends ElementInfo {
 	/**
 	 * Sets the line style properties of the pathway element, e.g. lineColor...
 	 * 
-	 * @return lineStyleProperty the line style properties.
+	 * @param lineStyleProperty the line style properties.
 	 */
 	public void setLineStyleProperty(LineStyleProperty lineStyleProperty) {
 		this.lineStyleProperty = lineStyleProperty;

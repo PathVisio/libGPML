@@ -32,10 +32,9 @@ public class RectProperty {
 	/**
 	 * Constructor for centering and dimension properties.
 	 * 
-	 * @param centerX the x coordinate of the middle of an object.
-	 * @param centerY the y coordinate of the middle of an object.
-	 * @param width   the pixel value for the x dimensional length of an object.
-	 * @param height  the pixel value for the y dimensional length of an object.
+	 * @param centerXY the xy coordinate of the center of an object.
+	 * @param width    the pixel value for the x dimensional length of an object.
+	 * @param height   the pixel value for the y dimensional length of an object.
 	 */
 	public RectProperty(Coordinate centerXY, double width, double height) {
 		this.centerXY = centerXY;
@@ -70,7 +69,6 @@ public class RectProperty {
 		return width;
 	}
 
-	
 	/**
 	 * Sets the width of an object.
 	 * 

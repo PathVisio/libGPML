@@ -81,7 +81,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * @param pathwayModel the given pathway model.
 	 * @param root         the root element of given Jdom document.
-	 * @returns pathwayModel the pathway model after reading root element.
+	 * @return pathwayModel the pathway model after reading root element.
 	 * @throws ConverterException
 	 */
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
@@ -506,7 +506,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads group {@link Group} information for pathway model from root element.
 	 * Rect properties (centerX, centerY, width, height) are calculated by
 	 * {@link calculateGroupRectProperty} after group {@link List} is filled with
-	 * pathway elements. 
+	 * pathway elements.
 	 * 
 	 * NB: A group has identifier GroupId (essentially ElementId), while GraphId is
 	 * optional. A group has GraphId if there is at least one {@link Point}
@@ -541,7 +541,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// adds group elementId to elementIdSet
 			elementIdSet.add(elementId);
 			String typeStr = getAttr("Group", "Style", grp);
-			// in GPML2021, "None" group type is replaced with "Group" 
+			// in GPML2021, "None" group type is replaced with "Group"
 			if (typeStr.equals("None"))
 				typeStr = "Group";
 			GroupType type = GroupType.register(typeStr);
@@ -736,7 +736,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			String textLabel = getAttr("DataNode", "TextLabel", dn);
 			String typeStr = getAttr("DataNode", "Type", dn);
-			// in GPML2021, "Unknown" data node type is named "Undefined" 
+			// in GPML2021, "Unknown" data node type is named "Undefined"
 			if (typeStr.equals("Unknown"))
 				typeStr = "Undefined";
 			DataNodeType type = DataNodeType.register(typeStr);
@@ -772,7 +772,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId("State", st, elementIdSet);
 			String textLabel = getAttr("State", "TextLabel", st);
 			String typeStr = getAttr("State", "StateType", st);
-			// in GPML2021, "Unknown" state type is named "Undefined" 
+			// in GPML2021, "Unknown" state type is named "Undefined"
 			if (typeStr.equalsIgnoreCase("Unknown"))
 				typeStr = "Undefined";
 			StateType type = StateType.register(typeStr);

@@ -52,7 +52,6 @@ public class Group extends ShapedElement {
 	 * @param groupRef           the parent group in which the pathway element
 	 *                           belongs.
 	 * @param type               the type of the group.
-	 * @param pathwayElements    the list of pathway element members of the group.
 	 * @param textLabel          the text of the group.
 	 * @param xref               the group Xref.
 	 */

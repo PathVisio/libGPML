@@ -36,11 +36,19 @@ import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
+/**
+ * Test for collecting Xref values.
+ * 
+ * @author finterly
+ */
 public class CollectXrefDataSources extends TestCase {
 
 	/**
-	 * For collecting Xref data sources for BridgeDb from directory of GPML2013a files. Prints out name
-	 * of data sources and their frequency of use.
+	 * For collecting Xref data sources for BridgeDb from directory of GPML2013a
+	 * files. Prints out name of data sources and their frequency of use.
+	 * 
+	 * @throws IOException
+	 * @throws ConverterException
 	 */
 	public static void testCollectXrefs() throws IOException, ConverterException {
 		List<String> dataSources = new ArrayList<String>();

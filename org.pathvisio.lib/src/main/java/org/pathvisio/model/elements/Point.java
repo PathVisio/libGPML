@@ -29,8 +29,8 @@ import org.pathvisio.model.type.ArrowHeadType;
  */
 public class Point extends PathwayElement {
 
-	private LineElement lineElement; 
-	private ArrowHeadType arrowHead; 
+	private LineElement lineElement;
+	private ArrowHeadType arrowHead;
 	private Coordinate xy;
 	private PathwayElement elementRef; // optional, the pathway element to which the point refers.
 	private double relX; // optional
@@ -65,10 +65,11 @@ public class Point extends PathwayElement {
 	 * Instantiates a Point pathway element, with no reference to another pathway
 	 * element.
 	 * 
-	 * @param elementId the unique pathway element identifier.
-	 * @param arrowHead the arrowhead property of the point (line by default).
-	 * @param x         the x coordinate position of the point.
-	 * @param y         the y coordinate position of the point.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
+	 * @param lineElement  the parent line pathway element.
+	 * @param arrowHead    the arrowhead property of the point (line by default).
+	 * @param xy           the xy coordinate position of the point.
 	 */
 	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy) {
@@ -102,7 +103,6 @@ public class Point extends PathwayElement {
 	 * arrowhead type LINE (the absence of an arrowhead).
 	 * 
 	 * @return arrowhead the arrowhead property of the point.
-	 * 
 	 */
 	public ArrowHeadType getArrowHead() {
 		if (arrowHead == null) {
@@ -117,8 +117,7 @@ public class Point extends PathwayElement {
 	 * the ends of graphical lines and interactions. Intermediate points have
 	 * arrowhead type LINE (the absence of an arrowhead).
 	 * 
-	 * @param arrowhead the arrowhead property of the point.
-	 * 
+	 * @param arrowHead the arrowhead property of the point.
 	 */
 	public void setArrowHead(ArrowHeadType arrowHead) {
 		this.arrowHead = arrowHead;
@@ -127,7 +126,7 @@ public class Point extends PathwayElement {
 	/**
 	 * Returns the xy coordinate position of the point.
 	 * 
-	 * @param xy the xy coordinate position of the point.
+	 * @return xy the xy coordinate position of the point.
 	 */
 	public Coordinate getXY() {
 		return xy;
@@ -136,7 +135,7 @@ public class Point extends PathwayElement {
 	/**
 	 * Sets the xy coordinate position of the point.
 	 * 
-	 * @return xy the xy coordinate position of the point.
+	 * @param xy the xy coordinate position of the point.
 	 */
 	public void setXY(Coordinate xy) {
 		this.xy = xy;
@@ -163,12 +162,12 @@ public class Point extends PathwayElement {
 	}
 
 	/**
-	 * Returns the relative x coordinate. When the given point is linked to a pathway
-	 * element, relX and relY are the relative coordinates on the element, where 0,0
-	 * is at the center of the object and 1,1 at the bottom right corner of the
-	 * object.
+	 * Returns the relative x coordinate. When the given point is linked to a
+	 * pathway element, relX and relY are the relative coordinates on the element,
+	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
+	 * of the object.
 	 * 
-	 * @param relX the relative x coordinate.
+	 * @return relX the relative x coordinate.
 	 */
 	public double getRelX() {
 		return relX;
@@ -191,12 +190,12 @@ public class Point extends PathwayElement {
 	}
 
 	/**
-	 * Returns the relative y coordinate. When the given point is linked to a pathway
-	 * element, relX and relY are the relative coordinates on the element, where 0,0
-	 * is at the center of the object and 1,1 at the bottom right corner of the
-	 * object.
+	 * Returns the relative y coordinate. When the given point is linked to a
+	 * pathway element, relX and relY are the relative coordinates on the element,
+	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
+	 * of the object.
 	 * 
-	 * @param relY the relative y coordinate.
+	 * @return relY the relative y coordinate.
 	 */
 	public double getRelY() {
 		return relY;

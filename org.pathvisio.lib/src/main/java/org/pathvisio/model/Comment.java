@@ -33,7 +33,7 @@ public class Comment {
 	 * Instantiates a Comment with source and commentText.
 	 * 
 	 * @param source the source of the comment.
-	 * @param text   the text of the comment, between Comment tags in GPML.
+	 * @param commentText   the text of the comment, between Comment tags in GPML.
 	 */
 	public Comment(String source, String commentText) {
 		this.source = source;
@@ -43,7 +43,7 @@ public class Comment {
 	/**
 	 * Instantiates a Comment with just commentText.
 	 * 
-	 * @param text the text of the comment, between Comment tags in GPML.
+	 * @param commentText the text of the comment, between Comment tags in GPML.
 	 */
 	public Comment(String commentText) {
 		this.commentText = commentText;
@@ -74,7 +74,7 @@ public class Comment {
 	/**
 	 * Returns the text of the Comment.
 	 * 
-	 * @return comment the text of the comment.
+	 * @return commentText the text of the comment.
 	 */
 	public String getCommentText() {
 		return commentText;
@@ -83,7 +83,7 @@ public class Comment {
 	/**
 	 * Sets the text of the Comment.
 	 * 
-	 * @param comment the text of the comment.
+	 * @param commentText the text of the comment.
 	 */
 	public void setCommentText(String commentText) {
 		if (commentText != null) {

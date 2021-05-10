@@ -55,7 +55,6 @@ public class State extends ElementInfo {
 	 * @param relY               the relative y coordinates on the parent object,
 	 *                           where 0,0 is at the center of the object and 1,1 at
 	 *                           the bottom-right corner of the object.
-	 * @param centerXY           TODO
 	 * @param width              the pixel value for the x dimensional length.
 	 * @param height             the pixel value for the y dimensional length.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
@@ -157,7 +156,7 @@ public class State extends ElementInfo {
 	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
 	 * of the object.
 	 * 
-	 * @param relX the relative x coordinate.
+	 * @return relX the relative x coordinate.
 	 */
 	public double getRelX() {
 		return relX;
@@ -186,7 +185,7 @@ public class State extends ElementInfo {
 	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
 	 * of the object.
 	 * 
-	 * @param relY the relative y coordinate.
+	 * @return relY the relative y coordinate.
 	 */
 	public double getRelY() {
 		return relY;

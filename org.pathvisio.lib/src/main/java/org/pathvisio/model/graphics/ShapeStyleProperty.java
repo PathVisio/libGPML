@@ -47,7 +47,6 @@ public class ShapeStyleProperty {
 	 * @param shapeType   the shape type of an object, (Rectangle).
 	 * @param zOrder      the z order, an ordering of overlapping two-dimensional
 	 *                    objects.
-	 * @param parent      the parent pathway element of these properties.
 	 */
 	public ShapeStyleProperty(Color borderColor, LineStyleType borderStyle, double borderWidth, Color fillColor,
 			ShapeType shapeType, int zOrder) {
@@ -214,7 +213,7 @@ public class ShapeStyleProperty {
 	/**
 	 * Returns the z-order of an object.
 	 * 
-	 * @param zOrder the order of an object.
+	 * @return zOrder the order of an object.
 	 */
 	public int getZOrder() {
 		return zOrder;

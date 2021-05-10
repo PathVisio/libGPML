@@ -26,8 +26,14 @@ import org.jdom2.Namespace;
  */
 public interface GpmlFormatVersion {
 	
+	/**
+	 * Returns the GPML namespace. 
+	 */
 	Namespace getGpmlNamespace();
 
+	/**
+	 * Returns the GPML schema file. 
+	 */
 	String getSchemaFile();
 
 	/**

@@ -23,17 +23,19 @@ package org.pathvisio.io;
  */
 public class ConverterException extends Exception {
 
-
-	public ConverterException(String msg)
-	{
+	/**
+	 * @param msg the string message. 
+	 */
+	public ConverterException(String msg) {
 		super(msg);
 	}
 
-	public ConverterException(Exception e)
-	{
+	/**
+	 * @param e the exception
+	 */
+	public ConverterException(Exception e) {
 		super(e.getClass() + ": " + e.getMessage(), e);
 		setStackTrace(e.getStackTrace());
 	}
-
 
 }

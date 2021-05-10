@@ -21,13 +21,15 @@ import org.pathvisio.model.PathwayModel;
 
 /**
  * Interface for an exporter that writes a pathway to a file
+ * 
+ * @author unknown
  */
 public interface PathwayExporter extends PathwayIO {
 	/**
-	 * Export the given pathway to the file
+	 * Exports the given pathway to the file
 	 * 
-	 * @param file    The file to export to
-	 * @param pathway The pathway to export
+	 * @param file    the file to export to
+	 * @param pathwayModel The pathway to export
 	 * @throws ConverterException when there is a fatal conversion problem.
 	 *                            Implementations should only throw in case there is
 	 *                            a non-recoverable error. Otherwise, it should emit
@@ -38,8 +40,8 @@ public interface PathwayExporter extends PathwayIO {
 	/**
 	 * Export the given pathway to the file
 	 * 
-	 * @param file    The file to export to
-	 * @param pathway The pathway to export
+	 * @param file    the file to export to
+	 * @param pathwayModel The pathway to export
 	 * @param zoom
 	 * @throws ConverterException when there is a fatal conversion problem.
 	 *                            Implementations should only throw in case there is

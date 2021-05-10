@@ -53,13 +53,8 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * Instantiates a pathway element with meta data information.
 	 * 
-	 * @param elementId         the unique pathway element identifier.
-	 * @param pathwayModel      the parent pathway model.
-	 * @param comments          the list of comments.
-	 * @param dynamicProperties the list of dynamic properties, key value pairs.
-	 * @param annotationRefs    the list of annotations referenced.
-	 * @param citationRefs      the list of citations referenced.
-	 * @param evidenceRefs      the list of evidences referenced.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param pathwayModel the parent pathway model.
 	 */
 	public ElementInfo(String elementId, PathwayModel pathwayModel) {
 		super(elementId, pathwayModel);
@@ -89,15 +84,6 @@ public abstract class ElementInfo extends PathwayElement {
 	}
 
 	/**
-	 * Adds all comments from given list to comments list.
-	 * 
-	 * @param comments the comments to be added.
-	 */
-	public void addComments(List<Comment> commentList) {
-		comments.addAll(commentList);
-	}
-
-	/**
 	 * Removes given comment from comments list.
 	 * 
 	 * @param comment the comment to be removed.
@@ -109,6 +95,7 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * TODO Finds the first comment with a specific source.
 	 * 
+	 * @param source the source of the comment to be found.
 	 * @returns the comment content with a given source.
 	 */
 	public String findComment(String source) {

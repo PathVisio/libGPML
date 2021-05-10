@@ -57,15 +57,31 @@ public abstract class GPML2013aFormatAbstract {
 	private final Namespace nsGPML;
 	private final String xsdFile;
 
+	/**
+	 * Constructor for GPML2013aFormat Abstract.
+	 * 
+	 * @param xsdFile the schema file.
+	 * @param nsGPML  the GPML namespace.
+	 */
 	protected GPML2013aFormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}
 
+	/**
+	 * Returns the GPML schema file.
+	 * 
+	 * @return xsdFile the schema file.
+	 */
 	public String getSchemaFile() {
 		return xsdFile;
 	}
 
+	/**
+	 * Returns the GPML namespace.
+	 * 
+	 * @return nsGPML the GPML namespace.
+	 */
 	public Namespace getGpmlNamespace() {
 		return nsGPML;
 	}

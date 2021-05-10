@@ -55,6 +55,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	public static final GPML2021Reader GPML2021READER = new GPML2021Reader("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
 
+	/**
+	 * Constructor for GPML reader.
+	 * 
+	 * @param xsdFile the schema file.
+	 * @param nsGPML  the GPML namespace.
+	 */
 	protected GPML2021Reader(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
@@ -70,7 +76,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * 
 	 * @param pathwayModel the given pathway model.
 	 * @param root         the root element of given Jdom document.
-	 * @returns pathwayModel the pathway model after reading root element.
+	 * @return pathwayModel the pathway model after reading root element.
 	 * @throws ConverterException
 	 */
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {

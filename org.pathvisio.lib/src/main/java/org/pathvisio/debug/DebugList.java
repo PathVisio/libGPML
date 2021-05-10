@@ -42,7 +42,7 @@ import java.util.ListIterator;
  *
  * This class wraps around an ordinary ArrayList<E>
  *
- * @param <E> List element type
+ * @param &ltE&gt List element type
  */
 public class DebugList<E> implements List<E>
 {
