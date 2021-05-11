@@ -1046,7 +1046,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				} else if (DataSource.systemCodeExists(dataSource)) {
 					return new Xref(identifier, DataSource.getByAlias(dataSource));
 				} else {
-					DataSource.register(dataSource, dataSource);
+					DataSource.register(dataSource, dataSource).compactIdentifierPrefix(dataSource)
+					.asDataSource(); //TODO 
 					Logger.log.trace("Registered xref datasource " + dataSource); // TODO warning
 					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
 				}

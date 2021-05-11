@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bridgedb.DataSource;
+import org.bridgedb.bio.DataSourceTxt;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -51,6 +53,10 @@ public class CollectXrefDataSources extends TestCase {
 	 * @throws ConverterException
 	 */
 	public static void testCollectXrefs() throws IOException, ConverterException {
+		
+		DataSourceTxt.init();
+
+		
 		List<String> dataSources = new ArrayList<String>();
 		Set<String> dataSourceSet = new HashSet<String>();
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
@@ -81,9 +87,12 @@ public class CollectXrefDataSources extends TestCase {
 				}
 			}
 		}
-		for (String dataSource : dataSourceSet) {
+		for (String dataSource : dataSourceSet) {	
+			boolean exist = DataSource.fullNameExists(dataSource);
+			if (exist == false)  // of system code exists
+				exist = DataSource.systemCodeExists(dataSource);
 			int occurrences = Collections.frequency(dataSources, dataSource);
-			System.out.println(dataSource + ": " + occurrences);
+			System.out.println(dataSource + ": " + occurrences + ": " + exist);
 		}
 	}
 }

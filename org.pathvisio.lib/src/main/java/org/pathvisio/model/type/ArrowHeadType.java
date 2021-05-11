@@ -39,10 +39,20 @@ public class ArrowHeadType {
 
 	// TODO update to new panel!! implement mapping from 2013a default to 2021
 	/** LineType LINE means the absence of an arrowhead */
-	public static final ArrowHeadType LINE = new ArrowHeadType("Line");
+	public static final ArrowHeadType LINE = new ArrowHeadType("Line"); // TODO used to be Line
 	public static final ArrowHeadType ARROW = new ArrowHeadType("Arrow");
 	public static final ArrowHeadType TBAR = new ArrowHeadType("TBar");
-
+	
+	public static final ArrowHeadType UNDIRECTED_RELATIONSHIP = new ArrowHeadType("Undirected relationship"); // TODO used to be Line
+	public static final ArrowHeadType DIRECTED_RELATIONSHIP = new ArrowHeadType("Directed relationship");
+	public static final ArrowHeadType CONVERSION = new ArrowHeadType("Conversion");
+	public static final ArrowHeadType INHIBITION = new ArrowHeadType("Inhibition");
+	public static final ArrowHeadType CATALYSIS = new ArrowHeadType("Catalysis");
+	public static final ArrowHeadType STIMULATION = new ArrowHeadType("Stimulation");
+	public static final ArrowHeadType BINDING = new ArrowHeadType("Binding");
+	public static final ArrowHeadType TRANSLOCATION = new ArrowHeadType("Translocation");
+	public static final ArrowHeadType TRANSCRIPTION_TRANSLATION = new ArrowHeadType("Transcription-translation");
+	
 	private String name;
 
 	/**

@@ -390,11 +390,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				setAttr("State.Graphics", "Width", gfx, Double.toString(state.getWidth()));
 				setAttr("State.Graphics", "Height", gfx, Double.toString(state.getHeight()));
 				// state does not have custom font properties in GPML2013a
-				writeZOrderFillColor(state.getShapeStyleProperty(), gfx);
+				// z-order for state is not written to GPML2013a
+				setAttr("State.Graphics", "FillColor", gfx,
+						ColorUtils.colorToHex(state.getShapeStyleProperty().getFillColor(), false));
 				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
 				writeColor(state.getFontProperty(), gfx);
-				// writes xref (optional)
-				writeXref(state.getXref(), st, false);
+				// writes xref (write even if empty)
+				writeXref(state.getXref(), st, true);
 				if (st != null) {
 					root.addContent(st);
 				}
@@ -803,15 +805,24 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
+		String base = se.getName();
 		writeElementInfo(shapedElement, se);
 		writeShapedOrStateDynamicProperties(shapedElement.getDynamicProperties(), shapedElement.getShapeStyleProperty(),
 				se);
 		Element gfx = new Element("Graphics", se.getNamespace());
 		se.addContent(gfx);
+		// writes rect properties
 		writeRectProperty(shapedElement.getRectProperty(), gfx);
-		writeZOrderFillColor(shapedElement.getShapeStyleProperty(), gfx);
+		// retrieves shape style property
+		ShapeStyleProperty shapeProp = shapedElement.getShapeStyleProperty();
+		// writes z-order and fill color (separately to preserve GPML2013 order)
+		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapeProp.getZOrder()));
+		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapeProp.getFillColor(), false));
+		// writes font properties
 		writeFontProperty(shapedElement.getFontProperty(), gfx);
-		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx);
+		// writes rest of shape style properties
+		writeShapeStyleProperty(shapeProp, gfx);
+		// writes color
 		writeColor(shapedElement.getFontProperty(), gfx);
 	}
 
@@ -970,23 +981,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes zOrder and fillColor property information {@link ShapeStyleProperty}.
-	 * These properties are written separately to preserve the original order of
-	 * properties in GPML2013a.
-	 * 
-	 * @param shapeProp the shape style properties.
-	 * @param gfx       the parent graphics element.
-	 * @throws ConverterException
-	 */
-	protected void writeZOrderFillColor(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
-		String base = ((Element) gfx.getParent()).getName();
-		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapeProp.getZOrder()));
-		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapeProp.getFillColor(), false));
-	}
-
-	/**
 	 * Writes shape style property {@link ShapeStyleProperty} information, except
-	 * borderColor, zOrder, and fillColor.
+	 * borderColor, zOrder, and fillColor. These properties are written separately
+	 * to preserve the original order of properties in GPML2013a.
 	 * 
 	 * TODO NB: borderColor is not set, Color is set solely by textColor. zOrder and
 	 * fillColor are written separately to preserve the order of properties in

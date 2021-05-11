@@ -38,50 +38,47 @@ import org.pathvisio.model.*;
 import junit.framework.TestCase;
 
 /**
- * Tests searching GPML2013a files for properties and values. 
+ * Tests searching GPML2013a files for properties and values.
  * 
  * @author finterly
  */
 public class SearchGPMLs extends TestCase {
 
+//	/**
+//	 * Searches for GPML2013a files to find common anchor shape types. 
+//	 * Result: [Circle , None ]
+//	 */
+//	public static void testAnchorShapeTypes() throws IOException, ConverterException {
+//		Set<String> shapeTypes = new HashSet<String>();
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+//		File[] listOfFiles = folderGPML2013a.listFiles();
+//		for (int i = 1; i < listOfFiles.length; i++) {
+//			File file = listOfFiles[i];
+//			if (file.isFile()) {
+//				assertTrue(file.exists());
+//				try {
+//					SAXBuilder builder = new SAXBuilder();
+//					Document readDoc = builder.build(file);
+//					Element root = readDoc.getRootElement();
+//					List<Element> es = root.getChildren("GraphicalLine", root.getNamespace());
+//					for (Element e : es) {
+//						Element gfx = e.getChild("Graphics", e.getNamespace());
+//						List<Element> ans = gfx.getChildren("Anchor", gfx.getNamespace());
+//						for (Element an: ans) {
+//							String shapeType = an.getAttributeValue("Shape");
+//							shapeTypes.add(shapeType);
+//						}
+//					}
+//				} catch (JDOMException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		System.out.println(shapeTypes);
+//	}
 
-	/**
-	 * Searches for GPML2013a files to find common anchor shape types. 
-	 * Result: [Circle , None ]
-	 */
-	public static void testAnchorShapeTypes() throws IOException, ConverterException {
-		Set<String> shapeTypes = new HashSet<String>();
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-		File[] listOfFiles = folderGPML2013a.listFiles();
-		for (int i = 1; i < listOfFiles.length; i++) {
-			File file = listOfFiles[i];
-			if (file.isFile()) {
-				assertTrue(file.exists());
-				try {
-					SAXBuilder builder = new SAXBuilder();
-					Document readDoc = builder.build(file);
-					Element root = readDoc.getRootElement();
-					List<Element> es = root.getChildren("GraphicalLine", root.getNamespace());
-					for (Element e : es) {
-						Element gfx = e.getChild("Graphics", e.getNamespace());
-						List<Element> ans = gfx.getChildren("Anchor", gfx.getNamespace());
-						for (Element an: ans) {
-							String shapeType = an.getAttributeValue("Shape");
-							shapeTypes.add(shapeType);
-						}
-					}
-				} catch (JDOMException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		System.out.println(shapeTypes);
-	}
-
-	
-	
 //	/**
 //	 * Searches for GPML2013a files to find common shape types.
 //	 */
@@ -172,7 +169,6 @@ public class SearchGPMLs extends TestCase {
 //		System.out.println(groupTypes);
 //	}
 
-	
 //	/**
 //	 * Searches for GPML2013a files to find common arrowHead types.
 //	 */
@@ -208,9 +204,7 @@ public class SearchGPMLs extends TestCase {
 //			System.out.println(arrowHead);
 //		}
 //	}
-	
-	
-	
+
 //	/**
 //	 * Searches for GPML2013a files to find common state types.  
 //	 */
@@ -242,7 +236,7 @@ public class SearchGPMLs extends TestCase {
 //	}
 
 //	/**
-//	 * Searches for GPML2013a files to find common data node types.  
+//	 * Searches for GPML2013a files to find common data node types.
 //	 */
 //	public static void testDataNodeTypes() throws IOException, ConverterException {
 //		Set<String> dataNodeTypes = new HashSet<String>();
@@ -261,6 +255,11 @@ public class SearchGPMLs extends TestCase {
 //					List<Element> dns = root.getChildren("DataNode", root.getNamespace());
 //					for (Element dn : dns) {
 //						String type = dn.getAttributeValue("Type");
+//						if (type != null) {
+//							if (type.equals("Key Event")) {
+//								System.out.println(file.getName());
+//							}
+//						}
 //						dataNodeTypes.add(type);
 //					}
 //				} catch (JDOMException e) {
@@ -273,6 +272,53 @@ public class SearchGPMLs extends TestCase {
 //		System.out.println(dataNodeTypes);
 //	}
 
+	
+	/**
+	 * Searches for GPML2013a files which have Biopax with no ID. 
+	 */
+	public static void testBiopaxMultipleID() throws IOException, ConverterException {
+		Set<String> foundFiles = new HashSet<String>();
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		File[] listOfFiles = folderGPML2013a.listFiles();
+		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
+				"http://www.biopax.org/release/biopax-level3.owl#");
+		for (int i = 1; i < listOfFiles.length; i++) {
+			File file = listOfFiles[i];
+			if (file.isFile()) {
+				assertTrue(file.exists());
+				try {
+					SAXBuilder builder = new SAXBuilder();
+					Document readDoc = builder.build(file);
+					Element root = readDoc.getRootElement();
+					Element bp = root.getChild("Biopax", root.getNamespace());
+					for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
+						List<Element> ids = pubxf.getChildren("ID", BIOPAX_NAMESPACE);
+						String myText = null;
+						for (Element id : ids) {
+							if (myText == null || myText.equals("")) {
+								if (id != null)
+									myText = id.getText();
+							} else {
+								continue;
+							}
+						}
+						if (myText == null || myText.equals("")) {
+							foundFiles.add(file.getName());
+						}
+					}
+				} catch (JDOMException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		System.out.println("There are " + foundFiles.size() + " GPML2013a files with no ID");
+		for (String foundFile: foundFiles) {
+			System.out.println(foundFile);
+		}
+	}
+	
 //	/**
 //	 * Searches for GPML2013a files which have Biopax with duplicated values. There are 112 files 
 //	 */

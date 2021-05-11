@@ -29,11 +29,13 @@ import org.pathvisio.debug.Logger;
  * @author finterly
  */
 public class AnnotationType {
-	private static Map<String, AnnotationType> nameToAnnotationType = new TreeMap<String, AnnotationType>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String, AnnotationType> nameToAnnotationType = new TreeMap<String, AnnotationType>(
+			String.CASE_INSENSITIVE_ORDER);
 
-	public static final AnnotationType UNDEFINED = new AnnotationType("Undefined");
+	public static final AnnotationType UNDEFINED = new AnnotationType("Undefined"); // default
 	public static final AnnotationType ONTOLOGY = new AnnotationType("Ontology");
 	public static final AnnotationType TAXONOMY = new AnnotationType("Taxonomy");
+	public static final AnnotationType INTERACTION_TYPE = new AnnotationType("Interaction type"); // TODO
 
 	private String name;
 
@@ -65,7 +67,7 @@ public class AnnotationType {
 		if (nameToAnnotationType.containsKey(name)) {
 			return nameToAnnotationType.get(name);
 		} else {
-			Logger.log.trace("Registered annotation type " + name); 
+			Logger.log.trace("Registered annotation type " + name);
 			return new AnnotationType(name);
 		}
 	}

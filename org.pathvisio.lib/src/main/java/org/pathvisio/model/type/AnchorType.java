@@ -30,11 +30,12 @@ import org.pathvisio.debug.Logger;
  */
 public class AnchorType {
 
-	private static Map<String, AnchorType> nameToAnchorType = new TreeMap<String, AnchorType>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String, AnchorType> nameToAnchorType = new TreeMap<String, AnchorType>(
+			String.CASE_INSENSITIVE_ORDER);
 
-	public static final AnchorType NONE = new AnchorType("None");
-	public static final AnchorType SQUARE = new AnchorType("Square");
+	public static final AnchorType SQUARE = new AnchorType("Square"); // default
 	public static final AnchorType CIRCLE = new AnchorType("Circle");
+	public static final AnchorType NONE = new AnchorType("None");
 
 	private String name;
 
@@ -52,9 +53,9 @@ public class AnchorType {
 	}
 
 	/**
-	 * Returns an AnchorType from a given string identifier name. If the
-	 * AnchorType doesn't exist yet, it is created to extend the enum. The method
-	 * makes sure that the same object is not added twice.
+	 * Returns an AnchorType from a given string identifier name. If the AnchorType
+	 * doesn't exist yet, it is created to extend the enum. The method makes sure
+	 * that the same object is not added twice.
 	 * 
 	 * @param name the string key.
 	 * @return the AnchorType for given name. If name does not exist, creates and
@@ -64,7 +65,7 @@ public class AnchorType {
 		if (nameToAnchorType.containsKey(name)) {
 			return nameToAnchorType.get(name);
 		} else {
-			Logger.log.trace("Registered anchor type " + name); 
+			Logger.log.trace("Registered anchor type " + name);
 			return new AnchorType(name);
 		}
 	}

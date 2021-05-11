@@ -39,8 +39,8 @@ public class GroupType {
 	public static final GroupType GROUP = new GroupType("Group"); // default: replaces "NONE"
 	public static final GroupType COMPLEX = new GroupType("Complex"); 
 	public static final GroupType PATHWAY = new GroupType("Pathway");
-	public static final GroupType PARALOG = new GroupType("Paralog");
 	public static final GroupType ANALOG = new GroupType("Analog");
+	public static final GroupType PARALOG = new GroupType("Paralog");
 
 	private String name;
 
