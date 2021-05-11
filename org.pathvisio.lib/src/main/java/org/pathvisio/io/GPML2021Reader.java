@@ -586,6 +586,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				double height = Double.parseDouble(gfx.getAttributeValue("height").trim());
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
+				// sets zOrder based on parent data node TODO
+				shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
 				State state = new State(elementId, dataNode.getPathwayModel(), dataNode, textLabel, type, relX, relY,
 						width, height, fontProperty, shapeStyleProperty);
 				// reads comment group, evidenceRefs

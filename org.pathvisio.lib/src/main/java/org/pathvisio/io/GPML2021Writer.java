@@ -96,8 +96,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * Writes the JDOM document to the file specified.
 	 * 
 	 * @param pathwayModel the pathway model.
-	 * @param file     the file to which the JDOM document should be saved.
-	 * @param validate if true, validate the dom structure before writing to file.
+	 * @param file         the file to which the JDOM document should be saved.
+	 * @param validate     if true, validate the dom structure before writing to
+	 *                     file.
 	 * @throws ConverterException
 	 */
 	public void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
@@ -454,8 +455,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				gfx.setAttribute("width", Double.toString(state.getWidth()));
 				gfx.setAttribute("height", Double.toString(state.getHeight()));
 				writeFontProperty(state.getFontProperty(), gfx);
-				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
-
+				// writes all shape style properties except zOrder
+				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx, false);
 				writeElementInfo(state, st);
 				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
 				st.setAttribute("type", state.getType().getName());
@@ -855,7 +856,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		se.addContent(gfx);
 		writeRectProperty(shapedElement.getRectProperty(), gfx);
 		writeFontProperty(shapedElement.getFontProperty(), gfx);
-		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx);
+		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx, true);
 		writeElementInfo(shapedElement, se);
 	}
 
@@ -917,13 +918,15 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param gfx       the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
+	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx, boolean writeZOrder)
+			throws ConverterException {
 		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapeProp.getBorderColor(), false));
 		gfx.setAttribute("borderStyle", shapeProp.getBorderStyle().getName());
 		gfx.setAttribute("borderWidth", String.valueOf(shapeProp.getBorderWidth()));
 		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapeProp.getFillColor(), false));
 		gfx.setAttribute("shapeType", shapeProp.getShapeType().getName());
-		gfx.setAttribute("zOrder", String.valueOf(shapeProp.getZOrder()));
+		if (writeZOrder)
+			gfx.setAttribute("zOrder", String.valueOf(shapeProp.getZOrder()));
 	}
 
 	/**
