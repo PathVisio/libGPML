@@ -76,6 +76,9 @@ public class CollectXrefDataSources extends TestCase {
 						Element xref = e.getChild("Xref", e.getNamespace());
 						if (xref != null) {
 							String dataSource = xref.getAttributeValue("Database");
+							if (dataSource.equals("Uniprot-SwissProt")) {
+								System.out.println(file.getName());
+							}
 							dataSources.add(dataSource);
 							dataSourceSet.add(dataSource);
 						}

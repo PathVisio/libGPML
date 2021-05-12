@@ -273,51 +273,7 @@ public class SearchGPMLs extends TestCase {
 //	}
 
 	
-	/**
-	 * Searches for GPML2013a files which have Biopax with no ID. 
-	 */
-	public static void testBiopaxMultipleID() throws IOException, ConverterException {
-		Set<String> foundFiles = new HashSet<String>();
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-		File[] listOfFiles = folderGPML2013a.listFiles();
-		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
-				"http://www.biopax.org/release/biopax-level3.owl#");
-		for (int i = 1; i < listOfFiles.length; i++) {
-			File file = listOfFiles[i];
-			if (file.isFile()) {
-				assertTrue(file.exists());
-				try {
-					SAXBuilder builder = new SAXBuilder();
-					Document readDoc = builder.build(file);
-					Element root = readDoc.getRootElement();
-					Element bp = root.getChild("Biopax", root.getNamespace());
-					for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
-						List<Element> ids = pubxf.getChildren("ID", BIOPAX_NAMESPACE);
-						String myText = null;
-						for (Element id : ids) {
-							if (myText == null || myText.equals("")) {
-								if (id != null)
-									myText = id.getText();
-							} else {
-								continue;
-							}
-						}
-						if (myText == null || myText.equals("")) {
-							foundFiles.add(file.getName());
-						}
-					}
-				} catch (JDOMException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		System.out.println("There are " + foundFiles.size() + " GPML2013a files with no ID");
-		for (String foundFile: foundFiles) {
-			System.out.println(foundFile);
-		}
-	}
+
 	
 //	/**
 //	 * Searches for GPML2013a files which have Biopax with duplicated values. There are 112 files 

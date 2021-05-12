@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jdom2.Document;
@@ -57,7 +59,7 @@ public class CatchBiopaxWithNonUniqueID extends TestCase {
 		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 				"http://www.biopax.org/release/biopax-level3.owl#");
 
-		Set<String> fileNames = new HashSet<String>();
+		Map<String, String> fileNames = new HashMap<String, String>();
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
@@ -74,7 +76,7 @@ public class CatchBiopaxWithNonUniqueID extends TestCase {
 					for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
 						String biopaxId = pubxf.getAttributeValue("id", RDF_NAMESPACE);
 						if (biopaxIds.contains(biopaxId))
-							fileNames.add(file.getName());
+							fileNames.put(file.getName(),biopaxId);
 						biopaxIds.add(biopaxId);
 					}
 				} catch (JDOMException e) {
@@ -85,8 +87,12 @@ public class CatchBiopaxWithNonUniqueID extends TestCase {
 			}
 		}
 		System.out.println("There are " + fileNames.size() + " GPML2013a files with non unique biopax rdf:id");
-		for (String fileName : fileNames) {
-			System.out.println(fileName);
+		Set<String> keys = fileNames.keySet();
+		for (String key: keys) {
+			System.out.println(key);
+		}
+		for (String key: keys) {
+			System.out.println(fileNames.get(key));
 		}
 	}
 }
