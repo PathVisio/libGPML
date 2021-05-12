@@ -36,6 +36,7 @@ import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.util.ColorUtils;
+import org.pathvisio.util.XrefUtils;
 
 /**
  * This class writes a PathwayModel to an output (GPML 2021).
@@ -223,12 +224,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		}
 		if (xref != null) {
 			String identifier = xref.getId();
-			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null) {
+			DataSource dataSource = xref.getDataSource();
+			String dataSourceStr = XrefUtils.getXrefDataSourceStr(dataSource);
+			if (dataSourceStr != null && !dataSourceStr.equals("")) {
 				Element xrf = new Element("Xref", e.getNamespace());
-				String dataSource = xref.getDataSource().getFullName();
 				xrf.setAttribute("identifier", identifier == null ? "" : identifier);
-				xrf.setAttribute("dataSource", dataSource);
+				xrf.setAttribute("dataSource", dataSourceStr);
 				e.addContent(xrf);
 			}
 		}

@@ -53,15 +53,16 @@ public class Interaction extends LineElement {
 	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Xref xref) {
 		this(elementId, pathwayModel, lineStyleProperty, null, xref);
 	}
-	
+
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except xref.
 	 */
-	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Group groupRef) {
+	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
+			Group groupRef) {
 		this(elementId, pathwayModel, lineStyleProperty, groupRef, null);
 	}
-	
+
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except groupRef and xref.
@@ -69,7 +70,6 @@ public class Interaction extends LineElement {
 	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty) {
 		this(elementId, pathwayModel, lineStyleProperty, null, null);
 	}
-
 
 	/**
 	 * Returns the Xref for the interaction.
@@ -87,26 +87,6 @@ public class Interaction extends LineElement {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
-	}
-
-	/**
-	 * Instantiates data node Xref given identifier and dataSource. Checks whether
-	 * dataSource string is fullName, systemCode, or invalid.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 * @throws IllegalArgumentException is given dataSource does not exist.
-	 */
-	public void createXref(String identifier, String dataSource) {
-		if (DataSource.fullNameExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		} else if (DataSource.systemCodeExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-		} else {
-			DataSource.register(dataSource, dataSource);
-			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
-		}
 	}
 
 }

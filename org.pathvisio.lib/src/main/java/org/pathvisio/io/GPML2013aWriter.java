@@ -38,6 +38,7 @@ import org.pathvisio.model.elements.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
+import org.pathvisio.util.XrefUtils;
 
 /**
  * This class writes a PathwayModel to an output (GPML 2013a). If writing
@@ -248,12 +249,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		}
 		if (xref != null) {
 			String identifier = xref.getId();
-			DataSource dataSrc = xref.getDataSource();
-			if (dataSrc != null) {
+			DataSource dataSource = xref.getDataSource();
+			String dataSourceStr = XrefUtils.getXrefDataSourceStr(dataSource);
+			if (dataSourceStr != null && !dataSourceStr.equals("")) {
 				Element xrf = new Element("Xref", e.getNamespace());
-				String dataSource = xref.getDataSource().getFullName(); // TODO
 				String base = e.getName();
-				setAttr(base + ".Xref", "Database", xrf, dataSource);
+				setAttr(base + ".Xref", "Database", xrf, dataSourceStr);
 				setAttr(base + ".Xref", "ID", xrf, identifier == null ? "" : identifier);
 				e.addContent(xrf);
 			}

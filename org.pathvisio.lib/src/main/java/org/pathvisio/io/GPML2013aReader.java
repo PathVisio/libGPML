@@ -39,6 +39,7 @@ import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.GroupRectPropertyUtils;
+import org.pathvisio.util.XrefUtils;
 
 /**
  * This class reads a PathwayModel from an input source (GPML 2013a).
@@ -293,7 +294,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String[] biopaxIdDb = biopaxIdDbStr.split(":"); // splits "ID" into Id and Database
 			String biopaxDb = biopaxIdDb[0]; // e.g. PW
 			String biopaxId = biopaxIdDb[1]; // e.g 0000650
-			Xref xref = readBiopaxXref(biopaxId, biopaxDb);
+			Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 			if (xref != null)
 				annotation.setXref(xref);
 			// adds annotation to pathway model
@@ -335,7 +336,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// reads rest of PublicationXref
 			String biopaxId = readPubxfInfo(pubxf.getChildren("ID", BIOPAX_NAMESPACE));
 			String biopaxDb = readPubxfInfo(pubxf.getChildren("DB", BIOPAX_NAMESPACE));
-			Xref xref = readBiopaxXref(biopaxId, biopaxDb);
+			Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 			// instantiates citation
 			Citation citation = new Citation(elementId, pathwayModel, xref);
 			// sets optional properties
@@ -387,31 +388,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 		}
 		return elementText;
-	}
-
-	/**
-	 * Reads biopax xref information, used by read methods:
-	 * {@link #readBiopaxOpenControlledVocabulary}
-	 * {@link #readBiopaxPublicationXref}
-	 * 
-	 * @param identifier the xref identifier.
-	 * @param dataSource the xref data source.
-	 * @return the xref with given identifier and dataSource.
-	 * @throws ConverterException
-	 */
-	protected Xref readBiopaxXref(String identifier, String dataSource) throws ConverterException {
-		if (dataSource != null && !dataSource.equals("")) {
-			if (DataSource.fullNameExists(dataSource)) {
-				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-			} else if (DataSource.systemCodeExists(dataSource)) {
-				return new Xref(identifier, DataSource.getByAlias(dataSource));
-			} else {
-				DataSource.register(dataSource, dataSource);
-				Logger.log.trace("Registered xref datasource " + dataSource);
-				return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -1039,22 +1015,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		if (xref != null) {
 			String base = e.getName();
 			String identifier = getAttr(base + ".Xref", "ID", xref);
-			if (identifier == null) {
-				identifier = "";
-			}
 			String dataSource = getAttr(base + ".Xref", "Database", xref);
-			if (dataSource != null && !dataSource.equals("")) {
-				if (DataSource.fullNameExists(dataSource)) {
-					return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-				} else if (DataSource.systemCodeExists(dataSource)) {
-					return new Xref(identifier, DataSource.getByAlias(dataSource));
-				} else {
-					DataSource.register(dataSource, dataSource).compactIdentifierPrefix(dataSource)
-					.asDataSource(); //TODO 
-					Logger.log.trace("Registered xref datasource " + dataSource); // TODO warning
-					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
-				}
-			}
+			return XrefUtils.createXref(identifier, dataSource);
 		}
 		return null;
 	}

@@ -44,6 +44,7 @@ import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
+import org.pathvisio.util.XrefUtils;
 
 /**
  * This class reads a PathwayModel from an input source (GPML 2021).
@@ -154,17 +155,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (xref != null) {
 			String identifier = xref.getAttributeValue("identifier");
 			String dataSource = xref.getAttributeValue("dataSource");
-			if (dataSource != null && !dataSource.equals("")) {
-				if (DataSource.fullNameExists(dataSource)) {
-					return new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-				} else if (DataSource.systemCodeExists(dataSource)) {
-					return new Xref(identifier, DataSource.getByAlias(dataSource));
-				} else {
-					DataSource.register(dataSource, dataSource);
-					Logger.log.trace("Registered xref datasource " + dataSource);
-					return new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code
-				}
-			}
+			XrefUtils.createXref(identifier, dataSource);
+			return XrefUtils.createXref(identifier, dataSource);
 		}
 		return null;
 	}

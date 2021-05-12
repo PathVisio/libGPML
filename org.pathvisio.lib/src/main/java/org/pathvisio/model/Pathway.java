@@ -368,7 +368,7 @@ public class Pathway {
 	/**
 	 * TODO Finds the first comment with a specific source.
 	 * 
-	 * @param source the source of the comment to be found. 
+	 * @param source the source of the comment to be found.
 	 * @return the comment content with a given source.
 	 */
 	public String findComment(String source) {
@@ -603,26 +603,6 @@ public class Pathway {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
-	}
-
-	/**
-	 * Creates Xref given identifier and dataSource. Checks whether dataSource
-	 * string is fullName, systemCode, or invalid.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 * @throws IllegalArgumentException is given dataSource does not exist.
-	 */
-	public void createXref(String identifier, String dataSource) {
-		if (DataSource.fullNameExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		} else if (DataSource.systemCodeExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-		} else {
-			DataSource.register(dataSource, dataSource);
-			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
-		}
 	}
 
 }

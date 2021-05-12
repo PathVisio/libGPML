@@ -35,19 +35,19 @@ public class Author {
 
 	private String name;
 	private String username;
-	private int order; 
-	private Xref xref; 
-	
+	private int order;
+	private Xref xref;
+
 	/**
 	 * This builder class builds an Author object step-by-step.
 	 * 
 	 * @author finterly
 	 */
 	public static class AuthorBuilder {
-		private String name; //required
+		private String name; // required
 		private String username; // optional
 		private int order; // optional
-		private Xref xref; // optional	
+		private Xref xref; // optional
 
 		/**
 		 * Public constructor with required attribute name as parameter.
@@ -79,7 +79,7 @@ public class Author {
 			this.order = order;
 			return this;
 		}
-		
+
 		/**
 		 * Sets xref and returns this builder object.
 		 * 
@@ -168,7 +168,7 @@ public class Author {
 	public void setOrder(int order) {
 		this.order = order;
 	}
-	
+
 	/**
 	 * Returns the Xref for the author.
 	 * 
@@ -177,7 +177,7 @@ public class Author {
 	public Xref getXref() {
 		return xref;
 	}
-	
+
 	/**
 	 * Sets the Xref for the author.
 	 * 
@@ -187,23 +187,4 @@ public class Author {
 		this.xref = xref;
 	}
 
-	/**
-	 * Instantiates author Xref given identifier and dataSource. Checks whether
-	 * dataSource string is fullName, systemCode, or invalid.
-	 * 
-	 * @param identifier the identifier of the database entry.
-	 * @param dataSource the source of database entry.
-	 * @throws IllegalArgumentException is given dataSource does not exist.
-	 */
-	public void createXref(String identifier, String dataSource) {
-		if (DataSource.fullNameExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource));
-		} else if (DataSource.systemCodeExists(dataSource)) {
-			xref = new Xref(identifier, DataSource.getByAlias(dataSource));
-		} else {
-			DataSource.register(dataSource, dataSource);
-			System.out.println("DataSource: " + dataSource + " is registered."); // TODO warning
-			xref = new Xref(identifier, DataSource.getExistingByFullName(dataSource)); // TODO fullname/code both ok
-		}
-	}
 }
