@@ -79,7 +79,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
 		xmlformat.setEncoding("UTF-8");
-		xmlformat.setTextMode(Format.TextMode.NORMALIZE);
+//		xmlformat.setTextMode(Format.TextMode.NORMALIZE); TODO Default to preserve spaces? 
 		xmlOutput.setFormat(xmlformat);
 
 		try {

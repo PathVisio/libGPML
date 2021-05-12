@@ -83,7 +83,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
 		xmlformat.setEncoding("UTF-8");
-		xmlformat.setTextMode(Format.TextMode.NORMALIZE); // PRESERVE
+//		xmlformat.setTextMode(Format.TextMode.NORMALIZE); TODO Default to preserve spaces? 
 		xmlOutput.setFormat(xmlformat);
 
 		try {

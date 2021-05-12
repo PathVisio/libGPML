@@ -48,8 +48,8 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		pathwayModel.readFromXml(file, true);
 
 		File tmp = File.createTempFile("testwrite", ".gpml"); 
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}
