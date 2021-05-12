@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -44,6 +46,39 @@ import junit.framework.TestCase;
  */
 public class SearchGPMLs extends TestCase {
 
+	/**
+	 * Searches for GPML2013a files which have Biopax with no SOURCE, YEAR, or etc. 
+	 * 
+	 * Problem GPML2013a: Hs_Riboflavin_and_CoQ_disorders_WP5037_115140.gpml 
+	 */
+	public static void testBiopaxMissingSource() throws IOException, ConverterException {
+//		Map<String, String> foundFiles = new TreeMap<String, String>();
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		File[] listOfFiles = folderGPML2013a.listFiles();
+		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
+				"http://www.biopax.org/release/biopax-level3.owl#");
+		for (int i = 1; i < listOfFiles.length; i++) {
+			File file = listOfFiles[i];
+			if (file.isFile()) {
+				assertTrue(file.exists());
+				try {
+					SAXBuilder builder = new SAXBuilder();
+					Document readDoc = builder.build(file);
+					Element root = readDoc.getRootElement();
+					Element bp = root.getChild("Biopax", root.getNamespace());
+					for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
+						List<Element> sources = pubxf.getChildren("YEAR", BIOPAX_NAMESPACE);
+						if (sources.isEmpty())
+							System.out.println(file.getName());
+					}
+				} catch (JDOMException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 //	/**
 //	 * Searches for GPML2013a files to find common anchor shape types. 
 //	 * Result: [Circle , None ]
@@ -272,9 +307,6 @@ public class SearchGPMLs extends TestCase {
 //		System.out.println(dataNodeTypes);
 //	}
 
-	
-
-	
 //	/**
 //	 * Searches for GPML2013a files which have Biopax with duplicated values. There are 112 files 
 //	 */

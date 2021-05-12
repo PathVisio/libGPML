@@ -345,11 +345,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String year = readPubxfInfo(pubxf.getChildren("YEAR", BIOPAX_NAMESPACE));
 			if (title != null && !title.equals(""))
 				citation.setTitle(title);
-			// if source is an url, also set as citation url
-			if (source.startsWith("http") || source.startsWith("www"))
-				citation.setUrl(source);
-			if (source != null && !source.equals(""))
+			if (source != null && !source.equals("")) {
 				citation.setSource(source);
+				// if source is an url, also set as citation url
+				if (source.startsWith("http") || source.startsWith("www"))
+					citation.setUrl(source);
+			}
 			if (year != null && !year.equals(""))
 				citation.setYear(year);
 			List<String> authors = new ArrayList<String>();
