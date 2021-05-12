@@ -341,12 +341,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// sets optional properties
 			String title = readPubxfInfo(pubxf.getChildren("TITLE", BIOPAX_NAMESPACE));
 			String source = readPubxfInfo(pubxf.getChildren("SOURCE", BIOPAX_NAMESPACE));
-			// if source is a url, also set as url
-			if (source.startsWith("http") || source.startsWith("www"))
-				citation.setUrl(source);
 			String year = readPubxfInfo(pubxf.getChildren("YEAR", BIOPAX_NAMESPACE));
 			if (title != null && !title.equals(""))
 				citation.setTitle(title);
+			// if source is an url, also set as citation url
+			if (source.startsWith("http") || source.startsWith("www"))
+				citation.setUrl(source);
 			if (source != null && !source.equals(""))
 				citation.setSource(source);
 			if (year != null && !year.equals(""))
