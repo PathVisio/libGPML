@@ -44,6 +44,7 @@ import org.pathvisio.model.*;
 import org.pathvisio.model.elements.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
+import org.pathvisio.util.MiscUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -165,14 +166,15 @@ public abstract class GPML2013aFormatAbstract {
 
 	/**
 	 * List of GPML2013a arrow head types which correspond to a new Interaction
-	 * Panel arrow head type.
+	 * Panel arrow head type. The first arrow head type string in the list is
+	 * priority and is returned by {@link #getArrowHeadTypeStr(ArrowHeadType)}. 
 	 */
 	public static final List<String> UNDIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Line"));
 	public static final List<String> DIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Arrow"));
 	public static final List<String> CONVERSION_LIST = new ArrayList<>(Arrays.asList("mim-conversion", "mim-conversion",
 			"mim-modification", "mim-branching-left", "mim-branching-right", "SBGN-Production"));
 	public static final List<String> INHIBITION_LIST = new ArrayList<>(
-			Arrays.asList("mim-inhibition", "Tbar", "SBGN-Inhibition"));
+			Arrays.asList("mim-inhibition", "TBar", "SBGN-Inhibition"));
 	public static final List<String> CATALYSIS_LIST = new ArrayList<>(
 			Arrays.asList("mim-catalysis", "mim-cleavage", "SBGN-Catalysis"));
 	public static final List<String> STIMULATION_LIST = new ArrayList<>(
@@ -212,7 +214,8 @@ public abstract class GPML2013aFormatAbstract {
 		Set<ArrowHeadType> arrowHeads = IA_PANEL_MAP.keySet();
 		for (ArrowHeadType arrowHead : arrowHeads) {
 			List<String> arrowHeadStrs = IA_PANEL_MAP.get(arrowHead);
-			if (arrowHeadStrs.contains(arrowHeadStr)) {
+			// case insensitive method for matching in list
+			if (MiscUtils.containsCaseInsensitive(arrowHeadStr, arrowHeadStrs)) {
 				return arrowHead;
 			}
 		}
@@ -231,7 +234,8 @@ public abstract class GPML2013aFormatAbstract {
 	protected String getArrowHeadTypeStr(ArrowHeadType arrowHead) throws ConverterException {
 		List<String> arrowHeadStrs = IA_PANEL_MAP.get(arrowHead);
 		if (arrowHeadStrs != null && !arrowHeadStrs.isEmpty()) {
-			return arrowHeadStrs.get(0); // first arrow head string is priority.
+			// first arrow head string is priority.
+			return arrowHeadStrs.get(0);
 		} else {
 			return null;
 		}
@@ -406,6 +410,7 @@ public abstract class GPML2013aFormatAbstract {
 	protected Map<String, AttributeInfo> getAttributeInfo() {
 		return ATTRIBUTE_INFO;
 	}
+
 	/**
 	 * Name of resource containing the gpml schema definition.
 	 */
