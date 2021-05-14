@@ -164,78 +164,83 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * Default order of pathway elements gene product, label, shape and line
-	 * determined by GenMAPP legacy
+	 * List of GPML2013a arrow head types which correspond to a new Interaction
+	 * Panel arrow head type.
 	 */
-	private static final int Z_ORDER_GROUP = 0x1000; // groups behind other graphics
-	private static final int Z_ORDER_GENEPRODUCT = 0x8000;
-	private static final int Z_ORDER_LABEL = 0x7000;
-	private static final int Z_ORDER_SHAPE = 0x4000;
-	private static final int Z_ORDER_LINE = 0x3000;
-	// default order of uninteresting elements.
-	private static final int Z_ORDER_DEFAULT = 0x0000;
+	public static final List<String> UNDIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Line"));
+	public static final List<String> DIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Arrow"));
+	public static final List<String> CONVERSION_LIST = new ArrayList<>(Arrays.asList("mim-conversion", "mim-conversion",
+			"mim-modification", "mim-branching-left", "mim-branching-right", "SBGN-Production"));
+	public static final List<String> INHIBITION_LIST = new ArrayList<>(
+			Arrays.asList("mim-inhibition", "Tbar", "SBGN-Inhibition"));
+	public static final List<String> CATALYSIS_LIST = new ArrayList<>(
+			Arrays.asList("mim-catalysis", "mim-cleavage", "SBGN-Catalysis"));
+	public static final List<String> STIMULATION_LIST = new ArrayList<>(
+			Arrays.asList("mim-stimulation", "mim-necessary-stimulation"));
+	public static final List<String> BINDING_LIST = new ArrayList<>(Arrays.asList("mim-binding", "mim-covalent-bond"));
+	public static final List<String> TRANSLOCATION_LIST = new ArrayList<>(Arrays.asList("mim-translocation"));
+	public static final List<String> TRANSCRIPTION_TRANSLATION_LIST = new ArrayList<>(
+			Arrays.asList("mim-transcription-translation"));
 
 	/**
-	 * Pathway element types as used in GPML2013a
+	 * Map for GPML2021 Interaction Panel arrow head types to GPML2013a arrowHead
+	 * types.
 	 */
-	public final static String SHAPE = "Shape";
-	public final static String GRAPHLINE = "GraphicalLine";
-	public final static String DATANODE = "DataNode";
-	public final static String LABEL = "Label";
-	public final static String LINE = "Line";
-	public final static String LEGEND = "Legend";
-	public final static String INFOBOX = "InfoBox";
-	public final static String MAPPINFO = "Pathway";
-	public final static String GROUP = "Group";
-	public final static String BIOPAX = "Biopax";
-	public final static String STATE = "State";
-
-	/**
-	 * default z order for newly created objects
-	 */
-	private static int getDefaultZOrder(String pathwayElementType) {
-		switch (pathwayElementType) {
-		case SHAPE:
-			return Z_ORDER_SHAPE;
-		case STATE:
-			return Z_ORDER_GENEPRODUCT + 10;
-		case DATANODE:
-			return Z_ORDER_GENEPRODUCT;
-		case LABEL:
-			return Z_ORDER_LABEL;
-		case LINE:
-			return Z_ORDER_LINE;
-		case GRAPHLINE:
-			return Z_ORDER_LINE;
-		case LEGEND:
-		case INFOBOX:
-		case MAPPINFO:
-		case BIOPAX:
-			return Z_ORDER_DEFAULT;
-		case GROUP:
-			return Z_ORDER_GROUP;
-		default:
-			throw new IllegalArgumentException("Invalid object type " + pathwayElementType);
-		}
+	public static final Map<ArrowHeadType, List<String>> IA_PANEL_MAP = new HashMap<ArrowHeadType, List<String>>();
+	static {
+		IA_PANEL_MAP.put(ArrowHeadType.UNDIRECTED_RELATIONSHIP, UNDIRECTED_RELATIONSHIP_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.DIRECTED_RELATIONSHIP, DIRECTED_RELATIONSHIP_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.CONVERSION, CONVERSION_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.INHIBITION, INHIBITION_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.CATALYSIS, CATALYSIS_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.STIMULATION, STIMULATION_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.BINDING, BINDING_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.TRANSLOCATION, TRANSLOCATION_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.TRANSCRIPTION_TRANSLATION, TRANSCRIPTION_TRANSLATION_LIST);
 	}
-//	protected abstract Map<String, AttributeInfo> getAttributeInfo();
 
 	/**
-	 * A {@link Map} collection that contains {@link String} as key and
-	 * {@link AttributeInfo} as value.
+	 * Returns the GPML2021 Interaction Panel arrow head type for given GPML2013a
+	 * arrowHead type string.
+	 * 
+	 * @param arrowHeadStr the string for GPML2013a arrow head type.
+	 * @return arrowHead the interaction panel arrow head type which corresponds to
+	 *         arrowHeadStr, or null if no corresponding type exists.
+	 * @throws ConverterException
 	 */
-	protected Map<String, AttributeInfo> getAttributeInfo() {
-		return ATTRIBUTE_INFO;
+	protected ArrowHeadType getInteractionPanelType(String arrowHeadStr) throws ConverterException {
+		Set<ArrowHeadType> arrowHeads = IA_PANEL_MAP.keySet();
+		for (ArrowHeadType arrowHead : arrowHeads) {
+			List<String> arrowHeadStrs = IA_PANEL_MAP.get(arrowHead);
+			if (arrowHeadStrs.contains(arrowHeadStr)) {
+				return arrowHead;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the prioritized GPML2013a arrowHead type string for given GPML2021
+	 * Interaction Panel arrow head type.
+	 * 
+	 * @param arrowHead the interaction panel arrow head type for GPML2021e.
+	 * @return the first GPML2013a arrow head which corresponds to the interaction
+	 *         panel arrow head type, or null if no corresponding type exists.
+	 * @throws ConverterException
+	 */
+	protected String getArrowHeadTypeStr(ArrowHeadType arrowHead) throws ConverterException {
+		List<String> arrowHeadStrs = IA_PANEL_MAP.get(arrowHead);
+		if (arrowHeadStrs != null && !arrowHeadStrs.isEmpty()) {
+			return arrowHeadStrs.get(0); // first arrow head string is priority.
+		} else {
+			return null;
+		}
 	}
 
 	private static final Map<String, AttributeInfo> ATTRIBUTE_INFO = initAttributeInfo();
 
 	private static Map<String, AttributeInfo> initAttributeInfo() {
 		Map<String, AttributeInfo> result = new HashMap<String, AttributeInfo>();
-		// IMPORTANT: this array has been generated from the xsd with
-		// an automated perl script. Don't edit this directly, use the perl script
-		// instead.
-		/* START OF AUTO-GENERATED CONTENT */
 		result.put("Comment@Source", new AttributeInfo("xsd:string", null, "optional"));
 		result.put("PublicationXref@ID", new AttributeInfo("xsd:string", null, "required"));
 		result.put("PublicationXref@Database", new AttributeInfo("xsd:string", null, "required"));
@@ -391,11 +396,16 @@ public abstract class GPML2013aFormatAbstract {
 		result.put("InfoBox@CenterY", new AttributeInfo("xsd:float", null, "required"));
 		result.put("Legend@CenterX", new AttributeInfo("xsd:float", null, "required"));
 		result.put("Legend@CenterY", new AttributeInfo("xsd:float", null, "required"));
-		/* END OF AUTO-GENERATED CONTENT */
-
 		return result;
 	}
 
+	/**
+	 * A {@link Map} collection that contains {@link String} as key and
+	 * {@link AttributeInfo} as value.
+	 */
+	protected Map<String, AttributeInfo> getAttributeInfo() {
+		return ATTRIBUTE_INFO;
+	}
 	/**
 	 * Name of resource containing the gpml schema definition.
 	 */
@@ -591,4 +601,60 @@ public abstract class GPML2013aFormatAbstract {
 					+ "' could not be found in classpath");
 		}
 	}
+
+//	/**
+//	 * Default order of pathway elements gene product, label, shape and line
+//	 * determined by GenMAPP legacy
+//	 */
+//	private static final int Z_ORDER_GROUP = 0x1000; // groups behind other graphics
+//	private static final int Z_ORDER_GENEPRODUCT = 0x8000;
+//	private static final int Z_ORDER_LABEL = 0x7000;
+//	private static final int Z_ORDER_SHAPE = 0x4000;
+//	private static final int Z_ORDER_LINE = 0x3000;
+//	// default order of uninteresting elements.
+//	private static final int Z_ORDER_DEFAULT = 0x0000;
+//
+//	/**
+//	 * Pathway element types as used in GPML2013a
+//	 */
+//	public final static String SHAPE = "Shape";
+//	public final static String GRAPHLINE = "GraphicalLine";
+//	public final static String DATANODE = "DataNode";
+//	public final static String LABEL = "Label";
+//	public final static String LINE = "Line";
+//	public final static String LEGEND = "Legend";
+//	public final static String INFOBOX = "InfoBox";
+//	public final static String MAPPINFO = "Pathway";
+//	public final static String GROUP = "Group";
+//	public final static String BIOPAX = "Biopax";
+//	public final static String STATE = "State";
+//
+//	/**
+//	 * default z order for newly created objects
+//	 */
+//	private static int getDefaultZOrder(String pathwayElementType) {
+//		switch (pathwayElementType) {
+//		case SHAPE:
+//			return Z_ORDER_SHAPE;
+//		case STATE:
+//			return Z_ORDER_GENEPRODUCT + 10;
+//		case DATANODE:
+//			return Z_ORDER_GENEPRODUCT;
+//		case LABEL:
+//			return Z_ORDER_LABEL;
+//		case LINE:
+//			return Z_ORDER_LINE;
+//		case GRAPHLINE:
+//			return Z_ORDER_LINE;
+//		case LEGEND:
+//		case INFOBOX:
+//		case MAPPINFO:
+//		case BIOPAX:
+//			return Z_ORDER_DEFAULT;
+//		case GROUP:
+//			return Z_ORDER_GROUP;
+//		default:
+//			throw new IllegalArgumentException("Invalid object type " + pathwayElementType);
+//		}
+//	}
 }

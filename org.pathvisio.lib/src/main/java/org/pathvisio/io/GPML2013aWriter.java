@@ -489,7 +489,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				setAttr(base + ".Graphics.Point", "RelX", pt, Double.toString(point.getRelX()));
 				setAttr(base + ".Graphics.Point", "RelY", pt, Double.toString(point.getRelY()));
 			}
-			setAttr(base + ".Graphics.Point", "ArrowHead", pt, point.getArrowHead().getName());
+			ArrowHeadType arrowHead = point.getArrowHead();
+			String arrowHeadStr = getArrowHeadTypeStr(arrowHead);
+			if (arrowHeadStr == null)
+				arrowHeadStr = arrowHead.getName();
+			//TODO Sub type arrowhead Handling? 
+			setAttr(base + ".Graphics.Point", "ArrowHead", pt, arrowHeadStr);
 			if (pt != null)
 				ptList.add(pt);
 		}

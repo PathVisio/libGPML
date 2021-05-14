@@ -963,8 +963,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
 					String elementId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
-					ArrowHeadType arrowHead = ArrowHeadType
-							.register(getAttr(base + ".Graphics.Point", "ArrowHead", pt));
+					String arrowHeadStr = getAttr(base + ".Graphics.Point", "ArrowHead", pt);
+					ArrowHeadType arrowHead = getInteractionPanelType(arrowHeadStr);
+					if (arrowHead == null) 
+						arrowHead = ArrowHeadType.register(arrowHeadStr);
+					//TODO Sub types added to Annotations while converting...
 					Coordinate xy = new Coordinate(
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));

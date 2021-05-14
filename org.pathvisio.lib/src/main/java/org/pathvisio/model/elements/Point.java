@@ -106,7 +106,7 @@ public class Point extends PathwayElement {
 	 */
 	public ArrowHeadType getArrowHead() {
 		if (arrowHead == null) {
-			return ArrowHeadType.LINE;
+			return ArrowHeadType.UNDIRECTED_RELATIONSHIP;
 		} else {
 			return arrowHead;
 		}
