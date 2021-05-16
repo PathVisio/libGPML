@@ -9,7 +9,6 @@ Table of contents
 * [Introduction](#introduction)
 * [Installation](#installation)
 * [Usage](#usage)
-* [Relationships to other similar tools](#relationships-to-other-similar-tools)
 * [Getting help](#getting-help)
 * [Contributing](#contributing)
 * [License](#license)
@@ -32,6 +31,12 @@ Why not simply use a generic XML parsing library?  A specialized library such as
 
 LibPathVisio works on Linux, Windows, and  MacOS X, and other operating systems. 
 
+Library Architecture
+------------
+### Java Object Model  
+<img width="80%" align="center" src=".graphics/java_model_diagram.svg">
+
+
 
 Getting Started
 ------------
@@ -43,11 +48,10 @@ You need the following tools:
 
 * Computer with Windows, Mac, or Linux
 * [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
-* [Maven 3](https://maven.apache.org/) (Tested with 3.3.x)
+* [Maven 3](https://maven.apache.org/) (Tested with 3.8.1)
 
 Installation
 ------------
-
 
 
 

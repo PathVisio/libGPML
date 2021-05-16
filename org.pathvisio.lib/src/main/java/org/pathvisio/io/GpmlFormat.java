@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import org.bridgedb.bio.DataSourceTxt;
 import org.jdom2.Document;
@@ -41,6 +42,8 @@ import org.pathvisio.model.*;
 import org.pathvisio.util.RootElementFinder;
 import org.pathvisio.model.PathwayModel;
 import org.xml.sax.InputSource;
+
+import sun.security.util.IOUtils;
 
 /**
  * class responsible for interaction with Gpml format. Contains all
@@ -86,7 +89,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 * @throws ConverterException
 	 */
 	public static Document createJdom(PathwayModel data) throws ConverterException {
-		return PREVIOUS.createJdom(data);
+		return CURRENT.createJdom(data);
 	}
 
 //	static public Element createJdomElement(PathwayElement o) throws ConverterException
@@ -109,7 +112,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 *                     in the classpath, an exception will be thrown.
 	 */
 	static public void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
-		PREVIOUS.writeToXml(pathwayModel, file, validate);
+		CURRENT.writeToXml(pathwayModel, file, validate);
 	}
 
 	/**
@@ -122,7 +125,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 */
 	static public void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate)
 			throws ConverterException {
-		PREVIOUS.writeToXml(pathwayModel, out, validate);
+		CURRENT.writeToXml(pathwayModel, out, validate);
 	}
 
 	/**
@@ -216,7 +219,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 * @return the read pathway model.
 	 * @throws ConverterException
 	 */
-	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
+	private static PathwayModel readFromXmlImplOriginal(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 //
 //		String schemaFile = CURRENT.getSchemaFile();
@@ -234,6 +237,53 @@ public class GpmlFormat extends AbstractPathwayFormat {
 //				System.out.println("Validated with schema: " + schemaFile);
 //			}
 			Document doc = builder.build(is);
+			Element root = doc.getRootElement();
+
+			Namespace ns = root.getNamespace();
+			GpmlFormatReader format = getReaderForNamespace(ns);
+			if (format == null) {
+				throw new ConverterException("This file looks like a pathwayModel, " + "but the namespace " + ns
+						+ " was not recognized. This application might be out of date.");
+			}
+			Logger.log.info("Recognized format " + ns);
+			if (validate) {
+				format.validateDocument(doc);
+				Logger.log.trace("Validated with schema: " + format.getSchemaFile());
+			}
+			Logger.log.trace("Copy map elements");
+			format.readFromRoot(pathwayModel, root);
+			System.out.println("Read pathway model successfully from gpml file");
+		} catch (JDOMException e) {
+			throw new ConverterException(e);
+		} catch (IOException e) {
+			throw new ConverterException(e);
+		} catch (Exception e) {
+			throw new ConverterException(e); // TODO e.printStackTrace()?
+		}
+		return pathwayModel;// TODO do we want to return pathway or not?
+	}
+
+	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
+			throws ConverterException {
+//
+//		String schemaFile = CURRENT.getSchemaFile();
+//		URL url = Thread.currentThread().getContextClassLoader().getResource(schemaFile);
+//		File xsdFile = new File(url.getPath());
+
+		InputStream in = InputStream(is);
+		byte[] array = is.readAllBytes();
+		
+		try {
+//			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
+
+			SAXBuilder builder = new SAXBuilder();
+
+//			/* if validate by schema */
+//			if (validate) {
+//				builder = new SAXBuilder(schemafactory);
+//				System.out.println("Validated with schema: " + schemaFile);
+//			}
+			Document doc = builder.build(new ByteArrayInputStream(data));
 			Element root = doc.getRootElement();
 
 			Namespace ns = root.getNamespace();
