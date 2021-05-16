@@ -33,12 +33,11 @@ LibPathVisio works on Linux, Windows, and  MacOS X, and other operating systems.
 
 Library Architecture
 ------------
-### Java Object Model  
+
 <p align="center">
-  <img width="80%" src=".graphics/java_model_diagram.svg" caption="libPathVisio Java Object Model">
+  <img width="80%" src=".graphics/java_model_diagram.svg" title="libPathVisio Java Object Model">
 </p>
 
-<img width="80%" src=".graphics/java_model_diagram.svg">
 
 
 
