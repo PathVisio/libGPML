@@ -39,6 +39,7 @@ LibPathVisio consists of mainly the ....Documentation in progres...and java obje
 
 <p align="center">
   <img width="80%" src=".graphics/java_model_diagram.svg">
+  <br>
   <em>Figure 1: libPathVisio Java Object Model</em>
 </p>
 
