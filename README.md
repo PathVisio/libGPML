@@ -34,7 +34,10 @@ LibPathVisio works on Linux, Windows, and  MacOS X, and other operating systems.
 Library Architecture
 ------------
 ### Java Object Model  
-<img width="80%" align="center" src=".graphics/java_model_diagram.svg">
+![](".graphics/java_model_diagram.svg")
+*libPathVisio Java Object Model*
+
+<img width="80%" src=".graphics/java_model_diagram.svg">
 
 
 
