@@ -323,7 +323,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes annotation reference information for pathway or pathway element.
-	 * {@link Pathway#getAnnotationRefs , ElementInfo#getAnnotationRefs}.
+	 * {@link Pathway#getAnnotationRefs , ElementInfo#getAnnotationRefs}. In
+	 * GPML2021, annotationRef can have citationRefs and/or evidenceRefs nested
+	 * inside.
 	 * 
 	 * @param annotationRefs the list of annotation references.
 	 * @param e              the parent element.
@@ -336,10 +338,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			for (Citation citationRef : annotationRef.getCitationRefs()) {
 				Element citRef = new Element("CitationRef", e.getNamespace());
 				citRef.setAttribute("elementRef", citationRef.getElementId());
+				anntRef.addContent(citRef);
 			}
 			for (Evidence evidence : annotationRef.getEvidenceRefs()) {
 				Element evidRef = new Element("EvidenceRef", e.getNamespace());
 				evidRef.setAttribute("elementRef", evidence.getElementId());
+				anntRef.addContent(evidRef);
 			}
 			if (anntRef != null)
 				e.addContent(anntRef);

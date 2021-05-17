@@ -269,7 +269,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads gpml:Biopax bp:OpenControlledVocabulary information to
-	 * {@link Annotation} for pathway model from root element.
+	 * {@link Annotation} for pathway model from root element. In GPML2013a, all
+	 * annotations are by default linked to {@link Pathway} using
+	 * {@link AnnotationRef}.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param bp           the biopax element.
@@ -298,8 +300,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (xref != null)
 				annotation.setXref(xref);
 			// adds annotation to pathway model
-			if (annotation != null)
+			if (annotation != null) {
 				pathwayModel.addAnnotation(annotation);
+				// adds annotationRef to pathway of pathway model
+				pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation));
+				;
+			}
 		}
 	}
 
@@ -965,9 +971,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					String elementId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
 					String arrowHeadStr = getAttr(base + ".Graphics.Point", "ArrowHead", pt);
 					ArrowHeadType arrowHead = getInteractionPanelType(arrowHeadStr);
-					if (arrowHead == null) 
+					if (arrowHead == null)
 						arrowHead = ArrowHeadType.register(arrowHeadStr);
-					//TODO Sub types added to Annotations while converting...
+					// TODO Sub types added to Annotations while converting...
 					Coordinate xy = new Coordinate(
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));

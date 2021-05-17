@@ -38,7 +38,7 @@ public class TestColorUtils extends TestCase {
 	
 	public void testStringToColor() {
 		// strings tests
-		List<String> strTests = new ArrayList<String>(Arrays.asList("White", "Transparent", "Blue"));
+		List<String> strTests = new ArrayList<String>(Arrays.asList("white", "Transparent", "blue"));
 		// color object equivalent of hex string tests
 		List<Color> colorTests = new ArrayList<Color>(
 				Arrays.asList(new Color(255, 255, 255, 255), new Color(0, 0, 0, 0),new Color(0, 0, 255, 255)));

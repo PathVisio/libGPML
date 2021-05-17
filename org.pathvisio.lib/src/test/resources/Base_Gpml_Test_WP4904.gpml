@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Pathway xmlns="http://pathvisio.org/GPML/2013a" Name="LDLRAD4 and what we know about it" Version="20200420" Organism="Homo sapiens">
+  <Comment Source="WikiPathways-description">A recent GWAS study was tweeted (https://twitter.com/BrentRichards19/status/1251550109931888643) showing a intronic SNP in LDLRAD4 as relevant. This pathway will summarize what is known of the biological role of this gene and its proteins.</Comment>
+  <Graphics BoardWidth="814.9331713244223" BoardHeight="317.06379100850467" />
+  <DataNode TextLabel="blood&#xA;pressure" GraphId="e3ffd" Type="Pathway">
+    <Graphics CenterX="162.81895504252736" CenterY="145.8080194410693" Width="90.0" Height="25.0" ZOrder="28672" FontSize="12" Valign="Middle" ShapeType="None" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="PMEPA1" GraphId="b351b" Type="GeneProduct" GroupRef="grp001">
+    <Comment>Also known as TMEPAI</Comment>
+    <Graphics CenterX="346.6913730255162" CenterY="274.56379100850467" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" />
+    <Xref Database="Ensembl" ID="ENSG00000124225" />
+  </DataNode>
+  <DataNode TextLabel="Ebola Virus&#xA;Pathway on Host" GraphId="b8756" Type="Pathway">
+    <Graphics CenterX="725.981166464155" CenterY="130.79434993924653" Width="117.9040097205347" Height="30.726002430133686" ZOrder="32768" FontWeight="Bold" FontSize="12" Valign="Middle" ShapeType="RoundedRectangle" Color="14961e" />
+    <Xref Database="WikiPathways" ID="WP4217" />
+  </DataNode>
+  <DataNode TextLabel="NEDD4" GraphId="c276a" Type="GeneProduct">
+    <Graphics CenterX="546.7800729040098" CenterY="145.80801944106918" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" />
+    <Xref Database="Ensembl" ID="ENSG00000069869" />
+  </DataNode>
+  <DataNode TextLabel="Alias" GraphId="alias001" Type="Metabolite">
+    <Graphics CenterX="519.0" CenterY="206.0" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" ShapeType="Pentagon" Color="0000ff" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <DataNode TextLabel="LDLRAD4" GraphId="e9bfd" Type="GeneProduct">
+    <Comment>Also known as C18ORF1</Comment>
+    <Graphics CenterX="345.07897934386324" CenterY="145.80801944106918" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" />
+    <Xref Database="Ensembl" ID="ENSG00000168675" />
+  </DataNode>
+  <DataNode TextLabel="LDLRAD4" GraphId="ca96b" Type="GeneProduct" GroupRef="grp001">
+    <Comment>Also known as C18ORF1</Comment>
+    <Graphics CenterX="346.6913730255162" CenterY="249.56379100850472" Width="90.0" Height="25.0" ZOrder="32769" FontSize="12" Valign="Middle" />
+    <Xref Database="Ensembl" ID="ENSG00000168675" />
+  </DataNode>
+  <DataNode TextLabel="LDLRAD4" GraphId="d98b8" Type="GeneProduct" GroupRef="grp002">
+    <Comment>Also known as C18ORF1</Comment>
+    <Graphics CenterX="496.88570203293875" CenterY="33.9592799452708" Width="90.0" Height="25.0" ZOrder="32772" FontSize="12" Valign="Middle" />
+    <Xref Database="Ensembl" ID="ENSG00000168675" />
+  </DataNode>
+  <DataNode TextLabel="NEDD4" GraphId="c628c" Type="GeneProduct" GroupRef="grp002">
+    <Graphics CenterX="496.8857020329387" CenterY="58.959279945270794" Width="90.0" Height="25.0" ZOrder="32773" FontSize="12" Valign="Middle" />
+    <Xref Database="Ensembl" ID="ENSG00000069869" />
+  </DataNode>
+  <DataNode TextLabel="Alias_Nested;" GraphId="alias002" Type="Metabolite">
+    <Graphics CenterX="640.0" CenterY="206.0" Width="90.0" Height="25.0" ZOrder="32774" FontSize="12" Valign="Middle" ShapeType="Pentagon" Color="0000ff" />
+    <Xref Database="" ID="" />
+  </DataNode>
+  <Interaction GraphId="id4fe61d16">
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="546.7800729040098" Y="133.30801944106918" GraphRef="c276a" RelX="0.0" RelY="-1.0" />
+      <Point X="496.88570203293875" Y="71.4592799452708" GraphRef="c628c" RelX="0.0" RelY="1.0" ArrowHead="Arrow" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <Interaction GraphId="id6cc9fb0d">
+    <BiopaxRef>fea</BiopaxRef>
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="390.07897934386324" Y="145.80801944106918" GraphRef="e9bfd" RelX="1.0" RelY="0.0" />
+      <Point X="501.7800729040098" Y="145.80801944106918" GraphRef="c276a" RelX="-1.0" RelY="0.0" />
+      <Anchor Position="0.4" Shape="None" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <Interaction GraphId="id71ecd0f3">
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="591.7800729040098" Y="145.80801944106918" GraphRef="c276a" RelX="1.0" RelY="0.0" />
+      <Point X="667.0291616038876" Y="130.79434993924653" GraphRef="b8756" RelX="-1.0" RelY="0.0" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <Interaction GraphId="id7947a72f">
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="367.57897934386324" Y="133.30801944106918" GraphRef="e9bfd" RelX="0.5" RelY="-1.0" />
+      <Point X="451.88570203293875" Y="33.9592799452708" GraphRef="d98b8" RelX="-1.0" RelY="0.0" ArrowHead="Arrow" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <Interaction GraphId="idef60a322">
+    <Comment>Association based on rs8096897 being linked to systolic blood pressure</Comment>
+    <BiopaxRef>b9d</BiopaxRef>
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="207.81895504252736" Y="145.8080194410693" GraphRef="e3ffd" RelX="1.0" RelY="0.0" />
+      <Point X="300.07897934386324" Y="145.80801944106918" GraphRef="e9bfd" RelX="-1.0" RelY="0.0" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <Interaction GraphId="idf54d419">
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="345.07897934386324" Y="158.30801944106918" GraphRef="e9bfd" RelX="0.0" RelY="1.0" />
+      <Point X="346.6913730255162" Y="237.06379100850472" GraphRef="ca96b" RelX="0.0" RelY="-1.0" ArrowHead="Arrow" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <Shape TextLabel="virus" GraphId="f2086">
+    <Graphics CenterX="578.25" CenterY="240.25" Width="35.5" Height="31.5" ZOrder="16384" FontSize="12" Valign="Middle" ShapeType="Oval" Rotation="0.0" />
+  </Shape>
+  <Group GroupId="grp001" GraphId="b0004" Style="Complex" />
+  <Group GroupId="grp002" GraphId="ea922" Style="Complex">
+    <BiopaxRef>ae5</BiopaxRef>
+  </Group>
+  <InfoBox CenterX="0.0" CenterY="0.0" />
+  <Biopax>
+    <bp:openControlledVocabulary xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+      <bp:TERM xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:datatype="http://www.w3.org/2001/XMLSchema#string">disease pathway</bp:TERM>
+      <bp:ID xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PW:0000013</bp:ID>
+      <bp:Ontology xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pathway Ontology</bp:Ontology>
+    </bp:openControlledVocabulary>
+    <bp:PublicationXref xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:id="f47">
+      <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">24627487</bp:ID>
+      <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+      <bp:TITLE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C18 ORF1, a novel negative regulator of transforming growth factor-β signaling.</bp:TITLE>
+      <bp:SOURCE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">J Biol Chem</bp:SOURCE>
+      <bp:YEAR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2014</bp:YEAR>
+      <bp:AUTHORS rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Nakano N</bp:AUTHORS>
+    </bp:PublicationXref>
+    <bp:PublicationXref xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:id="f1b">
+      <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">24438557</bp:ID>
+      <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+      <bp:TITLE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TMEPAI/PMEPA1 enhances tumorigenic activities in lung cancer cells.</bp:TITLE>
+      <bp:SOURCE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cancer Sci</bp:SOURCE>
+      <bp:YEAR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2014</bp:YEAR>
+      <bp:AUTHORS rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vo Nguyen TT</bp:AUTHORS>
+    </bp:PublicationXref>
+    <bp:PublicationXref xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:id="b9d">
+      <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">19430479</bp:ID>
+      <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+      <bp:TITLE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Genome-wide association study of blood pressure and hypertension.</bp:TITLE>
+      <bp:SOURCE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Nat Genet</bp:SOURCE>
+      <bp:YEAR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2009</bp:YEAR>
+      <bp:AUTHORS rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Levy D</bp:AUTHORS>
+    </bp:PublicationXref>
+    <bp:PublicationXref xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:id="ae5">
+      <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">26186194</bp:ID>
+      <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+      <bp:TITLE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The BioPlex Network: A Systematic Exploration of the Human Interactome.</bp:TITLE>
+      <bp:SOURCE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cell</bp:SOURCE>
+      <bp:YEAR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2015</bp:YEAR>
+      <bp:AUTHORS rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Huttlin EL</bp:AUTHORS>
+    </bp:PublicationXref>
+    <bp:PublicationXref xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:id="f55">
+      <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">29945215</bp:ID>
+      <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+      <bp:TITLE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TMEPAI family: involvement in regulation of multiple signalling pathways.</bp:TITLE>
+      <bp:SOURCE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">J Biochem</bp:SOURCE>
+      <bp:YEAR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2018</bp:YEAR>
+      <bp:AUTHORS rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Itoh S</bp:AUTHORS>
+    </bp:PublicationXref>
+    <bp:openControlledVocabulary xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#">
+      <bp:TERM xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:datatype="http://www.w3.org/2001/XMLSchema#string">disease by infectious agent</bp:TERM>
+      <bp:ID xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOID:0050117</bp:ID>
+      <bp:Ontology xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Disease</bp:Ontology>
+    </bp:openControlledVocabulary>
+    <bp:PublicationXref xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:id="fea">
+      <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">28888937</bp:ID>
+      <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+      <bp:TITLE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Low density lipoprotein receptor class A domain containing 4 (LDLRAD4) promotes tumorigenesis of hepatic cancer cells.</bp:TITLE>
+      <bp:SOURCE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Exp Cell Res</bp:SOURCE>
+      <bp:YEAR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2017</bp:YEAR>
+      <bp:AUTHORS rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Liu Z</bp:AUTHORS>
+    </bp:PublicationXref>
+  </Biopax>
+</Pathway>

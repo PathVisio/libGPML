@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+
 import org.pathvisio.debug.Logger;
 
 /**
@@ -90,11 +92,12 @@ public class ColorUtils {
 	/**
 	 * Mapping of string gpml:ColorType (older versions of gpml) to a hexBinary
 	 * {@link String}. In {@link #stringToColor}, {@link #hexToColor}converts
-	 * hexBinary String to {@link Color} object.
+	 * hexBinary String to {@link Color} object. Color name string matching is case
+	 * insensitive.
 	 */
 	private static final Map<String, String> colorMap;
 	static {
-		Map<String, String> cMap = new HashMap<String, String>();
+		Map<String, String> cMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 		cMap.put("Aqua", "#00ffff");
 		cMap.put("Black", "#000000");
 		cMap.put("Blue", "#0000ff");
