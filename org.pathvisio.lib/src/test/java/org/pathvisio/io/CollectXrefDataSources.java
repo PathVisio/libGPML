@@ -76,7 +76,8 @@ public class CollectXrefDataSources extends TestCase {
 						Element xref = e.getChild("Xref", e.getNamespace());
 						if (xref != null) {
 							String dataSource = xref.getAttributeValue("Database");
-							if (dataSource.equals("Uniprot-SwissProt")) {
+							// Finds GPMLs with Specific DataSources
+							if (dataSource.equals("NanoParticle Ontology")) {
 								System.out.println(file.getName());
 							}
 							dataSources.add(dataSource);

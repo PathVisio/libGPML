@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,6 +53,9 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	static private final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
 	static private final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
 
+	/**
+	 * Initialize Xref data source text. 
+	 */
 	static {
 		DataSourceTxt.init();
 	}
@@ -217,7 +221,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 * @return the read pathway model.
 	 * @throws ConverterException
 	 */
-	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
+	private static PathwayModel readFromXmlImplOld(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 //
 //		String schemaFile = CURRENT.getSchemaFile();
@@ -261,47 +265,59 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return pathwayModel;// TODO do we want to return pathway or not?
 	}
 
-//	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
-//			throws ConverterException {
-//		InputStream in = InputStream(is);
-//		byte[] array = is.readAllBytes();
-//		
-//		try {
-////			XMLReaderJDOMFactory schemafactory = new XMLReaderXSDFactory(xsdFile); // schema
-//
-//			SAXBuilder builder = new SAXBuilder();
-//
-////			/* if validate by schema */
-////			if (validate) {
-////				builder = new SAXBuilder(schemafactory);
-////				System.out.println("Validated with schema: " + schemaFile);
-////			}
-//			Document doc = builder.build(new ByteArrayInputStream(data));
-//			Element root = doc.getRootElement();
-//
-//			Namespace ns = root.getNamespace();
-//			GpmlFormatReader format = getReaderForNamespace(ns);
-//			if (format == null) {
-//				throw new ConverterException("This file looks like a pathwayModel, " + "but the namespace " + ns
-//						+ " was not recognized. This application might be out of date.");
-//			}
-//			Logger.log.info("Recognized format " + ns);
+	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
+			throws ConverterException {
+
+		try {
+			InputStream in = is.getByteStream();
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+			int nRead;
+			byte[] data = new byte[1024];
+			while ((nRead = in.read(data, 0, data.length)) != -1) {
+				System.out.println(in.toString());
+
+				buffer.write(data, 0, nRead);
+				System.out.println(data);
+			}
+			buffer.flush();
+			byte[] byteArray = buffer.toByteArray();
+
+//			byte[] data = in.readAllBytes();
+
+			SAXBuilder builder = new SAXBuilder();
+
+//			/* if validate by schema */
 //			if (validate) {
-//				format.validateDocument(doc);
-//				Logger.log.trace("Validated with schema: " + format.getSchemaFile());
+//				builder = new SAXBuilder(schemafactory);
+//				System.out.println("Validated with schema: " + schemaFile);
 //			}
-//			Logger.log.trace("Copy map elements");
-//			format.readFromRoot(pathwayModel, root);
-//			System.out.println("Read pathway model successfully from gpml file");
-//		} catch (JDOMException e) {
-//			throw new ConverterException(e);
-//		} catch (IOException e) {
-//			throw new ConverterException(e);
-//		} catch (Exception e) {
-//			throw new ConverterException(e); // TODO e.printStackTrace()?
-//		}
-//		return pathwayModel;// TODO do we want to return pathway or not?
-//	}
+			Document doc = builder.build(new ByteArrayInputStream(byteArray));
+			Element root = doc.getRootElement();
+
+			Namespace ns = root.getNamespace();
+			GpmlFormatReader format = getReaderForNamespace(ns);
+			if (format == null) {
+				throw new ConverterException("This file looks like a pathwayModel, " + "but the namespace " + ns
+						+ " was not recognized. This application might be out of date.");
+			}
+			Logger.log.info("Recognized format " + ns);
+			if (validate) {
+				format.validateDocument(doc);
+				Logger.log.trace("Validated with schema: " + format.getSchemaFile());
+			}
+			Logger.log.trace("Copy map elements");
+			format.readFromRoot(pathwayModel, root);
+			System.out.println("Read pathway model successfully from gpml file");
+		} catch (JDOMException e) {
+			throw new ConverterException(e);
+		} catch (IOException e) {
+			throw new ConverterException(e);
+		} catch (Exception e) {
+			throw new ConverterException(e); // TODO e.printStackTrace()?
+		}
+		return pathwayModel;// TODO do we want to return pathway or not?
+	}
 
 	/**
 	 * @param f the file.

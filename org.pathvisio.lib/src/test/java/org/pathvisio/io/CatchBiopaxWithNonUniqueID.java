@@ -54,13 +54,13 @@ public class CatchBiopaxWithNonUniqueID extends TestCase {
 	 * @throws IOException
 	 * @throws ConverterException
 	 */
-	public static void testCollectXrefs() throws IOException, ConverterException {
+	public static void testNonUniqueIDs() throws IOException, ConverterException {
 		final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 				"http://www.biopax.org/release/biopax-level3.owl#");
 
 		Map<String, String> fileNames = new HashMap<String, String>();
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210510-gpml-Mus_musculus");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
 		for (int i = 1; i < listOfFiles.length; i++) {

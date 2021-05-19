@@ -18,9 +18,9 @@ public class TestXrefUtils extends TestCase {
 		
 		DataSourceTxt.init();
 
-		Xref xref1 = XrefUtils.createXref("123", "ChEBI");
+		Xref xref1 = XrefUtils.createXref("123", "doid");
 		
-		assertEquals(XrefUtils.getXrefDataSourceStr(xref1.getDataSource()), "chebi");
+		assertEquals(XrefUtils.getXrefDataSourceStr(xref1.getDataSource()), "doid");
 
 		
 

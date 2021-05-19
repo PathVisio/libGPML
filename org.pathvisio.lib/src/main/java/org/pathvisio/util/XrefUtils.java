@@ -55,7 +55,7 @@ public class XrefUtils {
 				// if all else fails, register string as new data source
 			} else {
 				DataSource.register(dataSourceStr, dataSourceStr).compactIdentifierPrefix(dataSourceStr).asDataSource();
-				Logger.log.trace("Registered xref datasource " + dataSource);
+				Logger.log.trace("Registered xref datasource " + dataSourceStr);
 				return DataSource.getByCompactIdentifierPrefix(dataSourceStr);
 			}
 		}

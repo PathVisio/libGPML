@@ -28,7 +28,7 @@ public class CatchBiopaxMissingID extends TestCase {
 	 */
 	public static void testBiopaxMultipleID() throws IOException, ConverterException {
 		Map<String, String> foundFiles = new TreeMap<String, String>();
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210510-gpml-Bos_taurus");
 		File[] listOfFiles = folderGPML2013a.listFiles();
 		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 				"http://www.biopax.org/release/biopax-level3.owl#");

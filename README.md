@@ -27,7 +27,7 @@ Why not simply use a generic XML parsing library?  A specialized library such as
 
 * **Validation**. libPathVisio implements all the validation rules defined in the GPML specifications.
 
-* **Conversion**: libPathVisio can convert between GPML2013a and GPML2021. 
+* **Conversion**: libPathVisio can convert between GPML2013a and GPML2021. Conversions between GPML2013a and older 
 
 LibPathVisio works on Linux, Windows, and  MacOS X, and other operating systems. 
 
