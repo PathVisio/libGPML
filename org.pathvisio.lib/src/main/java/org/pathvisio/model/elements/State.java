@@ -151,10 +151,10 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Returns the relative x coordinate. When the given point is linked to a
-	 * pathway element, relX and relY are the relative coordinates on the element,
-	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
-	 * of the object.
+	 * Returns the relative x coordinate. When the given state is linked to a data
+	 * node, relX and relY are the relative coordinates on the data node, where 0,0
+	 * is at the center of the data node and 1,1 at the bottom right corner of the
+	 * data node.
 	 * 
 	 * @return relX the relative x coordinate.
 	 */
@@ -163,10 +163,10 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Sets the relative x coordinate. When the given point is linked to a pathway
-	 * element, relX and relY are the relative coordinates on the element, where 0,0
-	 * is at the center of the object and 1,1 at the bottom right corner of the
-	 * object.
+	 * Sets the relative x coordinate. When the given state is linked to a data
+	 * node, relX and relY are the relative coordinates on the data node, where 0,0
+	 * is at the center of the data node and 1,1 at the bottom right corner of the
+	 * data node.
 	 * 
 	 * @param relX the relative x coordinate.
 	 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
@@ -180,10 +180,10 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Returns the relative y coordinate. When the given point is linked to a
-	 * pathway element, relX and relY are the relative coordinates on the element,
-	 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
-	 * of the object.
+	 * Returns the relative y coordinate. When the given state is linked to a data
+	 * node, relX and relY are the relative coordinates on the data node, where 0,0
+	 * is at the center of the data node and 1,1 at the bottom right corner of the
+	 * data node.
 	 * 
 	 * @return relY the relative y coordinate.
 	 */
@@ -192,10 +192,10 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Sets the relative y coordinate. When the given point is linked to a pathway
-	 * element, relX and relY are the relative coordinates on the element, where 0,0
-	 * is at the center of the object and 1,1 at the bottom right corner of the
-	 * object.
+	 * Sets the relative y coordinate. When the given state is linked to a data
+	 * node, relX and relY are the relative coordinates on the data node, where 0,0 is
+	 * at the center of the data node and 1,1 at the bottom right corner of the data
+	 * node.
 	 * 
 	 * @param relY the relative y coordinate.
 	 */
