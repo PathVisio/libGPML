@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URL;
@@ -43,6 +46,7 @@ import org.pathvisio.model.*;
 import org.pathvisio.util.RootElementFinder;
 import org.pathvisio.model.PathwayModel;
 import org.xml.sax.InputSource;
+
 
 /**
  * class responsible for interaction with Gpml format. Contains all
@@ -221,7 +225,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 	 * @return the read pathway model.
 	 * @throws ConverterException
 	 */
-	private static PathwayModel readFromXmlImplOld(PathwayModel pathwayModel, InputSource is, boolean validate)
+	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 //
 //		String schemaFile = CURRENT.getSchemaFile();
@@ -265,25 +269,16 @@ public class GpmlFormat extends AbstractPathwayFormat {
 		return pathwayModel;// TODO do we want to return pathway or not?
 	}
 
-	private static PathwayModel readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
+	private static PathwayModel readFromXmlImplNew(PathwayModel pathwayModel, InputSource is, boolean validate)
 			throws ConverterException {
 
 		try {
-			InputStream in = is.getByteStream();
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-			int nRead;
-			byte[] data = new byte[1024];
-			while ((nRead = in.read(data, 0, data.length)) != -1) {
-				System.out.println(in.toString());
-
-				buffer.write(data, 0, nRead);
-				System.out.println(data);
-			}
-			buffer.flush();
-			byte[] byteArray = buffer.toByteArray();
-
-//			byte[] data = in.readAllBytes();
+			InputStream in = new BufferedInputStream(is.getByteStream());
+			in.mark(0);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			reader.readLine();
+			String schema = reader.readLine();
+			in.reset();
 
 			SAXBuilder builder = new SAXBuilder();
 
@@ -292,7 +287,7 @@ public class GpmlFormat extends AbstractPathwayFormat {
 //				builder = new SAXBuilder(schemafactory);
 //				System.out.println("Validated with schema: " + schemaFile);
 //			}
-			Document doc = builder.build(new ByteArrayInputStream(byteArray));
+			Document doc = builder.build(in);//new ByteArrayInputStream(byteArray)
 			Element root = doc.getRootElement();
 
 			Namespace ns = root.getNamespace();

@@ -37,13 +37,8 @@ public class ArrowHeadType {
 
 	private static Map<String, ArrowHeadType> nameToArrowHeadType = new TreeMap<String, ArrowHeadType>(String.CASE_INSENSITIVE_ORDER);
 
-	// TODO update to new panel!! implement mapping from 2013a default to 2021
-	/** LineType LINE means the absence of an arrowhead */
-//	public static final ArrowHeadType LINE = new ArrowHeadType("Line"); // TODO used to be Line
-//	public static final ArrowHeadType ARROW = new ArrowHeadType("Arrow");
-//	public static final ArrowHeadType TBAR = new ArrowHeadType("TBar");
-	
-	public static final ArrowHeadType UNDIRECTED_RELATIONSHIP = new ArrowHeadType("Undirected relationship"); // TODO used to be Line
+	// undirected relationship used to be "Line"
+	public static final ArrowHeadType UNDIRECTED_RELATIONSHIP = new ArrowHeadType("Undirected relationship"); 
 	public static final ArrowHeadType DIRECTED_RELATIONSHIP = new ArrowHeadType("Directed relationship");
 	public static final ArrowHeadType CONVERSION = new ArrowHeadType("Conversion");
 	public static final ArrowHeadType INHIBITION = new ArrowHeadType("Inhibition");

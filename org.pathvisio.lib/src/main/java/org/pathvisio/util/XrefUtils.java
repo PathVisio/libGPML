@@ -83,7 +83,7 @@ public class XrefUtils {
 			return dataSourceStr;
 		}
 		// returns null if no valid data source
-		return null;
+		return dataSource.getSystemCode();
 	}
 
 }

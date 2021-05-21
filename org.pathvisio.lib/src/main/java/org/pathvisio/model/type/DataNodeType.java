@@ -37,8 +37,8 @@ public class DataNodeType {
 	
 	// Molecules
 	public static final DataNodeType GENEPRODUCT = new DataNodeType("GeneProduct");
-	public static final DataNodeType DNA = new DataNodeType("Dna");
-	public static final DataNodeType RNA = new DataNodeType("Rna");
+	public static final DataNodeType DNA = new DataNodeType("DNA");
+	public static final DataNodeType RNA = new DataNodeType("RNA");
 	public static final DataNodeType PROTEIN = new DataNodeType("Protein");
 	public static final DataNodeType COMPLEX = new DataNodeType("Complex");
 	public static final DataNodeType METABOLITE = new DataNodeType("Metabolite");

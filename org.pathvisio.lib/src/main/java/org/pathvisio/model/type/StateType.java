@@ -34,7 +34,7 @@ public class StateType {
 	// TODO Add more and changes
 	public static final StateType UNDEFINED = new StateType("Undefined");
 	public static final StateType PROTEIN_MODIFICATION = new StateType("Protein modification");
-	public static final StateType MUTATION = new StateType("Mutation");
+	public static final StateType GENETIC_VARIANT = new StateType("Genetic variant");
 	public static final StateType EPIGENETIC_MODIFICATION = new StateType("Epigenetic modification");
 
 	// (something for metabolites?)

@@ -534,7 +534,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				String textLabel = dn.getAttributeValue("textLabel");
-				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", "Unknown")); // TODO default?
+				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", "Undefined")); // TODO default?
 				DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty,
 						shapeStyleProperty, textLabel, type);
 				// reads comment group, evidenceRefs

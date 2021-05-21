@@ -52,7 +52,7 @@ public class TestConvertToGPML2021WithXrefAndAuthors extends TestCase {
 		File authorsDir = new File("C:/Users/p70073399/Documents/wikipathways-20210410-rdf-authors/authors");
 		File[] authorFiles = authorsDir.listFiles();
 
-		for (int i = 653; i < listOfFiles.length; i++) {
+		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File " + i + " : " + file.getName());
@@ -62,32 +62,32 @@ public class TestConvertToGPML2021WithXrefAndAuthors extends TestCase {
 				pathwayModel.readFromXml(file, true);
 
 				/*
-				 * read xref information
+				 * read xref information from file name, e.g.
+				 * Hs_ACE_Inhibitor_Pathway_WP554_107642.gpml
 				 */
 				String[] parts = file.getName().split("_");
 				int length = parts.length;
-				String wpid = parts[length - 2];
+				String wpid1 = parts[length - 2]; // e.g. WP554
+				String wpid2 = parts[length - 1]; // e.g. 107642.gpml
+				String wpid = wpid1 + "_" + wpid2.substring(0, wpid2.lastIndexOf('.')); // e.g. WP554_107642
 				pathwayModel.getPathway().setXref(XrefUtils.createXref(wpid, "wikipathways"));
-				String version_part = parts[length - 1]; // TODO?
-				String version = version_part.substring(0, version_part.lastIndexOf('.')); // TODO?
-				pathwayModel.getPathway().setVersion(version);
 
 				/*
 				 * read author information TODO how to parse....
 				 */
-				for (File authorFile : authorFiles) {
-					String authorFileName = authorFile.getName();
-					String authorFileWPID = authorFileName.substring(0, authorFileName.lastIndexOf('.'));
-					if (authorFileWPID.equals(wpid)) {
-						System.out.println("FOUND");
-						try (BufferedReader br = new BufferedReader(new FileReader(authorFile))) {
-							String line;
-							while ((line = br.readLine()) != null) {
-								System.out.println("LINE "+ line);
-							}
-						}
-					}
-				}
+//				for (File authorFile : authorFiles) {
+//					String authorFileName = authorFile.getName();
+//					String authorFileWPID = authorFileName.substring(0, authorFileName.lastIndexOf('.'));
+//					if (authorFileWPID.equals(wpid)) {
+//						System.out.println("FOUND");
+//						try (BufferedReader br = new BufferedReader(new FileReader(authorFile))) {
+//							String line;
+//							while ((line = br.readLine()) != null) {
+//								System.out.println("LINE "+ line);
+//							}
+//						}
+//					}
+//				}
 
 				/* write pathway model to xml */
 				File outputFile = new File(outputDir, file.getName());
