@@ -1,7 +1,7 @@
 libPathVisio<img width="22%" align="right" src=".graphics/bigcateye.svg">
 =============================================================================
 
-libPathVisio is an open-source Java library for working with GPML (Graphical Pathway Markup Language). 
+libPathVisio is an open-source Java library for working with [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML). 
 
 Table of contents
 -----------------
@@ -19,7 +19,7 @@ Table of contents
 Introduction
 ------------
 
-LibPathVisio is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)]() format.  
+LibPathVisio is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML) format.  
 
 Why not simply use a generic XML parsing library?  A specialized library such as libPathVisio offers many advantages over using a generic XML library directly.  Here are some:
 
