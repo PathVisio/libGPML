@@ -64,8 +64,9 @@ public class XrefUtils {
 
 	/**
 	 * Returns string for data source given {@link DataSource}. Priority is compact
-	 * identifier prefix string. If no compact identifier prefix exists, returns
-	 * data source full name. If no valid data source string, returns null.
+	 * identifier prefix string. If compact identifier prefix null, returns full
+	 * name. If full name null, returns system code. If no data source exists,
+	 * return null.
 	 * 
 	 * @param dataSource the data source.
 	 * @return dataSourceStr the string for given data source, or null if no valid
@@ -78,12 +79,41 @@ public class XrefUtils {
 			if (dataSourceStr == null) {
 				// retrieve data source full name if compact identifier prefix is null
 				dataSourceStr = dataSource.getFullName();
-				// TODO try system code if still null?
+				// retrieve system code if full name is null
+				if (dataSourceStr == null)
+					dataSourceStr = dataSource.getSystemCode();
 			}
 			return dataSourceStr;
 		}
 		// returns null if no valid data source
-		return dataSource.getSystemCode();
+		return null;
+	}
+
+	/**
+	 * Returns string for data source given {@link DataSource} for GPML2013a format.
+	 * Priority is data source full name. If full name null, returns system code. If
+	 * system code null, returns compact prefix identifier. If no data source
+	 * exists, return null.
+	 * 
+	 * @param dataSource the data source.
+	 * @return dataSourceStr the string for given data source, or null if no valid
+	 *         data source string.
+	 */
+	public static String getXrefDataSourceStrGPML2013a(DataSource dataSource) {
+		// data source cannot be null
+		if (dataSource != null) {
+			String dataSourceStr = dataSource.getFullName();
+//			if (dataSourceStr == null) {
+//				// retrieve data source system code if full name is null
+//				dataSourceStr = dataSource.getSystemCode();
+//				// retrieve compact identifier prefix if system code is null
+//				if (dataSourceStr == null)
+//					dataSourceStr = dataSource.getCompactIdentifierPrefix();
+//			}
+			return dataSourceStr;
+		}
+		// returns null if no valid data source
+		return null;
 	}
 
 }

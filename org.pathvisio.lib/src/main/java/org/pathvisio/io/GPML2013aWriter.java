@@ -250,7 +250,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (xref != null) {
 			String identifier = xref.getId();
 			DataSource dataSource = xref.getDataSource();
-			String dataSourceStr = XrefUtils.getXrefDataSourceStr(dataSource);
+			String dataSourceStr = XrefUtils.getXrefDataSourceStrGPML2013a(dataSource);
 			if (dataSourceStr != null && !dataSourceStr.equals("")) {
 				Element xrf = new Element("Xref", e.getNamespace());
 				String base = e.getName();

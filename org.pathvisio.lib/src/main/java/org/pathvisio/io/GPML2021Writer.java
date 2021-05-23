@@ -421,10 +421,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeXref(dataNode.getXref(), dn, false);
 				writeStates(dataNode.getStates(), dn);
 				writeShapedElement(dataNode, dn);
-				writeElementRef(dataNode.getElementRef(), dn);
 				dn.setAttribute("textLabel", dataNode.getTextLabel());
 				dn.setAttribute("type", dataNode.getType().getName());
-				writeGroupRef(dataNode.getGroupRef(), dn); // TODO location
+				writeGroupRef(dataNode.getGroupRef(), dn);
+				writeElementRef(dataNode.getElementRef(), dn);
 				if (dn != null) {
 					dnList.add(dn);
 				}
@@ -549,14 +549,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
 		writeElementInfo(lineElement, ln);
-		writeGroupRef(lineElement.getGroupRef(), ln); // TODO location
+		writeGroupRef(lineElement.getGroupRef(), ln);
 	}
 
 	/**
 	 * Writes point {@link Point} information.
-	 * 
-	 * 
-	 * TODO elementId, elementRef, arrowHead, x, y, relX, relY (Order)
 	 * 
 	 * @param points the list of points.
 	 * @param wyps   the parent element.
@@ -569,13 +566,13 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				continue;
 			Element pt = new Element("Point", wyps.getNamespace());
 			writeElementId(point.getElementId(), pt);
+			pt.setAttribute("arrowHead", point.getArrowHead().getName());
 			pt.setAttribute("x", Double.toString(point.getXY().getX()));
 			pt.setAttribute("y", Double.toString(point.getXY().getY()));
 			if (writeElementRef(point.getElementRef(), pt)) {
 				pt.setAttribute("relX", Double.toString(point.getRelX()));
 				pt.setAttribute("relY", Double.toString(point.getRelY()));
 			}
-			pt.setAttribute("arrowHead", point.getArrowHead().getName());
 			if (pt != null)
 				ptList.add(pt);
 		}
@@ -584,8 +581,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes anchor {@link Anchor} information. TODO elementId, x, y, position,
-	 * shapeType (Order)
+	 * Writes anchor {@link Anchor} information.
 	 * 
 	 * @param anchors the list of anchors.
 	 * @param wyps    the parent element.
@@ -630,7 +626,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				lb.setAttribute("textLabel", label.getTextLabel());
 				if (label.getHref() != null)
 					lb.setAttribute("href", label.getHref());
-				writeGroupRef(label.getGroupRef(), lb); // TODO location
+				writeGroupRef(label.getGroupRef(), lb);
 				if (lb != null) {
 					lbList.add(lb);
 				}
@@ -660,7 +656,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeShapedElement(shape, shp);
 				if (shape.getTextLabel() != null)
 					shp.setAttribute("textLabel", shape.getTextLabel());
-				writeGroupRef(shape.getGroupRef(), shp); // TODO location
+				writeGroupRef(shape.getGroupRef(), shp);
 				Element gfx = shp.getChild("Graphics", shp.getNamespace());
 				gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
 				if (shp != null) {
@@ -694,7 +690,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				if (group.getTextLabel() != null)
 					grp.setAttribute("textLabel", group.getTextLabel());
 				grp.setAttribute("type", group.getType().getName());
-				writeGroupRef(group.getGroupRef(), grp); // TODO location
+				writeGroupRef(group.getGroupRef(), grp);
 				if (grp != null) {
 					grpList.add(grp);
 				}
@@ -818,7 +814,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes elementRef property information.
+	 * Writes elementRef property information. Returns boolean if elementRef is
+	 * written. Used in {@link #writeDataNodes} and {@link #writePoints}. 
 	 * 
 	 * @param elementRef the elementRef.
 	 * @param e          the parent element.
