@@ -55,7 +55,7 @@ public abstract class LineElement extends ElementInfo {
 	public LineElement(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
 			Group groupRef) {
 		super(elementId, pathwayModel);
-		this.points = new ArrayList<Point>(); // TODO minimum 2!?
+		this.points = new ArrayList<Point>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
 		if (groupRef != null) {

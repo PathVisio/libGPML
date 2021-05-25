@@ -464,7 +464,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		writePoints(lineElement.getPoints(), gfx);
 		// writes anchors
 		writeAnchors(lineElement.getAnchors(), gfx);
-		writeGroupRef(lineElement.getGroupRef(), ln); // TODO location
+		writeGroupRef(lineElement.getGroupRef(), ln); 
 	}
 
 	/**
@@ -546,7 +546,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeShapedElement(label, lb);
 			if (label.getHref() != null)
 				setAttr("Label", "Href", lb, label.getHref());
-			writeGroupRef(label.getGroupRef(), lb); // TODO location
+			writeGroupRef(label.getGroupRef(), lb); 
 			if (lb != null) {
 				root.addContent(lb);
 			}
@@ -991,7 +991,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * borderColor, zOrder, and fillColor. These properties are written separately
 	 * to preserve the original order of properties in GPML2013a.
 	 * 
-	 * TODO NB: borderColor is not set, Color is set solely by textColor. zOrder and
+	 * NB: borderColor is not set, Color is set solely by textColor. zOrder and
 	 * fillColor are written separately to preserve the order of properties in
 	 * GPML2013a.
 	 * 

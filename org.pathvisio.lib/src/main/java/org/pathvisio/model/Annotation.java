@@ -19,7 +19,6 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.type.AnnotationType;
 

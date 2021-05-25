@@ -20,7 +20,6 @@ import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
-import org.pathvisio.util.Utils;
 
 /**
  * This class stores all information relevant to a Label pathway element.
@@ -108,18 +107,11 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Sets the hyperlink for a Label. TODO take a look....
+	 * Sets the hyperlink for a Label.
 	 * 
-	 * @param input the given string link. If input is null, href is set to
-	 *              ""(empty).
+	 * @param href the hyperlink reference to a url.
 	 */
-	public void setHref(String input) {
-		String link = (input == null) ? "" : input;
-		if (!Utils.stringEquals(href, link)) {
-			href = link;
-//			if (PreferenceManager.getCurrent() == null)
-//				PreferenceManager.init();
-//			setColor(PreferenceManager.getCurrent().getColor(GlobalPreference.COLOR_LINK));
-		}
+	public void setHref(String href) {
+		this.href = href;
 	}
 }

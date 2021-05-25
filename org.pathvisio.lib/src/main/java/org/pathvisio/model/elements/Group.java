@@ -19,7 +19,6 @@ package org.pathvisio.model.elements;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
@@ -36,7 +35,7 @@ import org.pathvisio.model.type.GroupType;
 public class Group extends ShapedElement {
 
 	/* list of pathway elements which belong to the group. */
-	private Set<PathwayElement> pathwayElements; // 0 to unbounded TODO should have at least one?
+	private Set<PathwayElement> pathwayElements; // should have at least one pathway element
 	private GroupType type = GroupType.GROUP;
 	private String textLabel; // optional
 	private Xref xref; // optional
@@ -156,14 +155,9 @@ public class Group extends ShapedElement {
 	/**
 	 * Returns GroupType. GroupType is GROUP by default.
 	 * 
-	 * TODO: Default GroupType used to be NONE. NONE needs to be changed to GROUP.
-	 * 
 	 * @return type the type of group, e.g. complex.
 	 */
 	public GroupType getType() {
-		if (type == null) {
-			type = GroupType.GROUP;
-		}
 		return type;
 	}
 

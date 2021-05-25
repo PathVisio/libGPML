@@ -99,7 +99,7 @@ public class LineStyleProperty {
 	 */
 	public LineStyleType getLineStyle() {
 		if (lineStyle == null) {
-			return LineStyleType.SOLID; // TODO:enum
+			return LineStyleType.SOLID; 
 		} else {
 			return lineStyle;
 		}

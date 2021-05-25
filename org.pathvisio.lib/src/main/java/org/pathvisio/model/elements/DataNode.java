@@ -18,7 +18,6 @@ package org.pathvisio.model.elements;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
@@ -177,7 +176,6 @@ public class DataNode extends ShapedElement {
 	 * @param type the type of datanode, e.g. complex.
 	 */
 	public void setType(DataNodeType type) {
-		this.type = type; // TODO: default type
 		this.type = type;
 	}
 
@@ -247,29 +245,4 @@ public class DataNode extends ShapedElement {
 	public void setElementRef(PathwayElement elementRef) {
 		this.elementRef = elementRef;
 	}
-
-//	/**
-//	 * Return a list of ElementRefContainers (i.e. points) referring to this pathway
-//	 * element.
-//	 */
-//	public Set<ElementRefContainer> getReferences() {
-//		return ElementLink.getReferences(this, pathwayModel);
-//	}
-//
-//	/** elementRef property, used by Modification */
-//	public String getElementRef() {
-//		return elementRef;
-//	}
-//
-//	/**
-//	 * Set graphRef property, used by State The new graphRef should exist and point
-//	 * to an existing DataNode
-//	 */
-//	public void setElementRef(String value) {
-//		// TODO: check that new elementRef exists and that it points to a DataNode
-//		if (!(elementRef == null ? value == null : elementRef.equals(value))) {
-//			elementRef = value;
-//		}
-//	}
-
 }

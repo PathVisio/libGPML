@@ -74,7 +74,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		Document doc = createJdom(pathwayModel);
 
 		if (validate)
-			validateDocument(doc); // TODO Boolean validate not relevant to 2021...
+			validateDocument(doc); 
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
@@ -215,11 +215,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e        the parent element.
 	 * @param required if true, xref is a required property.
 	 */
-	protected void writeXref(Xref xref, Element e, boolean required) { // TODO boolean required
+	protected void writeXref(Xref xref, Element e, boolean required) { 
 		if (xref == null && required) {
 			Element xrf = new Element("Xref", e.getNamespace());
 			xrf.setAttribute("identifier", "");
-			xrf.setAttribute("dataSource", ""); // TODO null handling
+			xrf.setAttribute("dataSource", ""); 
 			e.addContent(xrf);
 		}
 		if (xref != null) {

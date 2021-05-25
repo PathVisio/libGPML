@@ -18,7 +18,6 @@ package org.pathvisio.model.graphics;
 
 import java.awt.Color;
 
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
 

@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.graphics.Coordinate;
 

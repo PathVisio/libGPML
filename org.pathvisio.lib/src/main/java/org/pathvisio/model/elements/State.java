@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.elements;
 
-import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.*;

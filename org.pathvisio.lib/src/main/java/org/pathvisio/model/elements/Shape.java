@@ -109,7 +109,7 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Sets the rotation of this shape. TODO
+	 * Sets the rotation of this shape.
 	 * 
 	 * @param rotation the rotation of the shape.
 	 */

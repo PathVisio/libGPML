@@ -17,7 +17,6 @@
 package org.pathvisio.model.graphics;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.Pathway;
 import org.pathvisio.model.elements.Point;
 
 /**
