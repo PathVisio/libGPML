@@ -67,7 +67,7 @@ public class TestConvertToGPML2021 extends TestCase {
 			for (int j = 0; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
-					System.out.println("File " + i + " : " + file.getName());
+					System.out.println("File " + j + " : " + file.getName());
 					assertTrue(file.exists());
 					/* read xml to pathway model */
 					PathwayModel pathwayModel = new PathwayModel();

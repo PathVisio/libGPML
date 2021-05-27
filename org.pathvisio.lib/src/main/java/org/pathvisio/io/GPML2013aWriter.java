@@ -711,7 +711,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element pubxf = new Element("PublicationXref", BIOPAX_NAMESPACE);
 			pubxf.setAttribute("id", citation.getElementId(), RDF_NAMESPACE);
 			List<String> authors = citation.getAuthors();
-			System.out.println(citation.getElementId());
 			writePubxfInfo(citation.getXref().getId(), "ID", pubxf);
 			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf);
 			writePubxfInfo(citation.getTitle(), "TITLE", pubxf);

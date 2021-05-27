@@ -81,10 +81,10 @@ public class TestConvertToGPML2021WithXref extends TestCase {
 			});
 
 			// For all gpml of an organism:
-			for (int j = 0; j < listOfFiles.length; j++) {
+			for (int j = 800; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
-					System.out.println("File " + i + " : " + file.getName());
+					System.out.println("File " + j + " : " + file.getName());
 					assertTrue(file.exists());
 					/* read xml to pathway model */
 					PathwayModel pathwayModel = new PathwayModel();
@@ -96,7 +96,7 @@ public class TestConvertToGPML2021WithXref extends TestCase {
 					String version = null;
 					String wpidGpmlStr = file.getName().substring(0, file.getName().lastIndexOf('.'));
 					for (File info : fileInfos) {
-						String wpidInfoStr = info.getName().substring(0, info.getName().lastIndexOf('.'));
+						String wpidInfoStr = info.getName().substring(0, info.getName().indexOf('.'));
 						if (wpidInfoStr.equals(wpidGpmlStr)) {
 							try {
 				                FileReader reader = new FileReader(info);
