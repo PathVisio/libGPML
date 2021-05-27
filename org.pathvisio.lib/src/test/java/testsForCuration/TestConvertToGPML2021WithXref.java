@@ -53,7 +53,7 @@ public class TestConvertToGPML2021WithXref extends TestCase {
 	 */
 	public static void testConvertToGPML2021() throws IOException, ConverterException {
 		File authorsDir = new File("C:/Users/p70073399/Documents/wikipathways-20210410-rdf-authors/authors");
-		File[] authorFiles = authorsDir.listFiles();
+//		File[] authorFiles = authorsDir.listFiles();
 
 		// Gets all organism directories
 		File dirAllOrganisms = new File("C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache");
@@ -81,7 +81,7 @@ public class TestConvertToGPML2021WithXref extends TestCase {
 			});
 
 			// For all gpml of an organism:
-			for (int j = 800; j < listOfFiles.length; j++) {
+			for (int j = 0; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
 					System.out.println("File " + j + " : " + file.getName());
@@ -95,23 +95,24 @@ public class TestConvertToGPML2021WithXref extends TestCase {
 					 */
 					String version = null;
 					String wpidGpmlStr = file.getName().substring(0, file.getName().lastIndexOf('.'));
-					for (File info : fileInfos) {
-						String wpidInfoStr = info.getName().substring(0, info.getName().indexOf('.'));
-						if (wpidInfoStr.equals(wpidGpmlStr)) {
-							try {
-				                FileReader reader = new FileReader(info);
-				                BufferedReader bufferedReader = new BufferedReader(reader);
-				                String line =bufferedReader.readLine();
-				                while (line != null) {
-				                   if (line.startsWith("Revision=")) {
-				                	   version = line.substring(1, line.lastIndexOf('='));
-				                   }
-				                }
-				                reader.close();
-				            } catch (IOException e) {
-				                e.printStackTrace();
-				            }
+					// for (File info : fileInfos) {
+					// Assume corresponding index is the same! TODO
+					File info = fileInfos[j];
+					String wpidInfoStr = info.getName().substring(0, info.getName().indexOf('.'));
+					if (wpidInfoStr.equals(wpidGpmlStr)) {
+						try (BufferedReader br = new BufferedReader(new FileReader(info))) {
+							String line;
+							while ((line = br.readLine()) != null) {
+								if (line.startsWith("Revision=")) {
+									String[] parts = line.split("=");
+									version = parts[1];
+								}
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
+					} else {
+						new ConverterException("Info file for " + file.getName() + " index incorrect");
 					}
 					String wpid = wpidGpmlStr + "_r" + version; // e.g. WP554_107642
 					pathwayModel.getPathway().setXref(XrefUtils.createXref(wpid, "wikipathways"));
