@@ -342,6 +342,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// reads rest of PublicationXref
 			String biopaxId = readPubxfInfo(pubxf.getChildren("ID", BIOPAX_NAMESPACE));
 			String biopaxDb = readPubxfInfo(pubxf.getChildren("DB", BIOPAX_NAMESPACE));
+			// DB cannot be null, or else throws error...TODO
+//			if (biopaxId==null && biopaxDb== null) {
+//				biopaxDb = "PubMed";
+//			}
 			Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 			// instantiates citation
 			Citation citation = new Citation(elementId, pathwayModel, xref);

@@ -53,7 +53,7 @@ public class CatchArrowHeadType extends TestCase {
 				}
 			});
 			// For all gpml of an organism:
-			for (int j = 1; j < listOfFiles.length; j++) {
+			for (int j = 0; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
 					assertTrue(file.exists());

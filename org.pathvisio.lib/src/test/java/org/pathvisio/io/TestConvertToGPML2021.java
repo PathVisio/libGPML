@@ -46,7 +46,7 @@ public class TestConvertToGPML2021 extends TestCase {
 
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
-		for (int i = 1; i < listOfFiles.length; i++) {
+		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File " + i + " : " + file.getName());

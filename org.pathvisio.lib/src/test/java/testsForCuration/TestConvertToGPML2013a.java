@@ -17,12 +17,15 @@
 package testsForCuration;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GPML2013aWriter;
+import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
 import org.xml.sax.SAXException;
 
@@ -44,36 +47,49 @@ public class TestConvertToGPML2013a extends TestCase {
 	 * @throws ConverterException
 	 */
 	public static void testConvertToGPML2013a() throws IOException, ConverterException {
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");
-		String outputDir = "C:/Users/p70073399/Documents/NEW................";
+		// Gets all organism directories
+		File dirAllOrganisms = new File("C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache");
+		String[] dirOrganisms = dirAllOrganisms.list(new FilenameFilter() {
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+			}
+		});
+		System.out.println(Arrays.toString(dirOrganisms));
+		for (int i = 0; i < dirOrganisms.length; i++) {
+			File dirOrganism = new File(
+					"C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache/" + dirOrganisms[i]);
+			File[] listOfFiles = dirOrganism.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.toLowerCase().endsWith(".gpml");
+				}
+			});
+			// For all gpml of an organism:
+			for (int j = 0; j < listOfFiles.length; j++) {
+				File file = listOfFiles[j];
+				if (file.isFile()) {
+					System.out.println("File " + i + " : " + file.getName());
+					assertTrue(file.exists());
+					/* read xml to pathway model */
+					PathwayModel pathwayModel = new PathwayModel();
+					pathwayModel.readFromXml(file, true);
 
-		File[] listOfFiles = folderGPML2013a.listFiles();
+//					/* write pathway model to xml */
+//					File outputFile = new File(outputDir, file.getName());
+//					GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, outputFile, true);
+//					System.out.println(outputFile);
 
-		for (int i = 1; i < listOfFiles.length; i++) {
-			File file = listOfFiles[i];
-			if (file.isFile()) {
-				System.out.println("File " + i + " : " + file.getName());
-				assertTrue(file.exists());
-				/* read xml to pathway model */
-				PathwayModel pathwayModel = new PathwayModel();
-				pathwayModel.readFromXml(file, true);
+					/* write pathway model to xml */
+					File tmp = File.createTempFile(file.getName() + "_to2021", ".gpml");
+					GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+					System.out.println(tmp);
 
-				/* write pathway model to xml */
-				File outputFile = new File(outputDir, file.getName());
-				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, outputFile, true);
-				System.out.println(outputFile);
+					/* method to assert file is same? */
 
-				/* write pathway model to xml */
-//				File tmp = File.createTempFile(file.getName() + "_to2021", ".gpml");
-//				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
-//				System.out.println(tmp);
-
-				/* method to assert file is same? */
-
-			} else if (listOfFiles[i].isDirectory()) {
-				System.out.println("Directory " + listOfFiles[i].getName());
+				} else if (listOfFiles[i].isDirectory()) {
+					System.out.println("Directory " + listOfFiles[i].getName());
+				}
 			}
 		}
-
 	}
 }

@@ -16,36 +16,45 @@
  ******************************************************************************/
 package testsForCuration;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
+import org.pathvisio.util.XrefUtils;
 import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
 /**
- * Test for conversion of GPML2013a to GPML2021.
+ * Test for conversion of GPML2013a to GPML2021. Reads GPML2013a, reads Xref and
+ * author information, and writes to GPML2021 format.
  * 
  * @author finterly
  */
-public class TestConvertToGPML2021 extends TestCase {
+public class TestConvertToGPML2021WithXref extends TestCase {
 
 	/**
 	 * For testing conversion GPML2013a to newer GPML2021. Reading a directory of
-	 * GPML2013a files and writing to GPML2021 format. Assert output equivalent to
-	 * input.
+	 * GPML2013a files, reading file names/author information, and writing to
+	 * GPML2021 format.
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
 	 */
 	public static void testConvertToGPML2021() throws IOException, ConverterException {
+		File authorsDir = new File("C:/Users/p70073399/Documents/wikipathways-20210410-rdf-authors/authors");
+		File[] authorFiles = authorsDir.listFiles();
+
 		// Gets all organism directories
 		File dirAllOrganisms = new File("C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache");
 		String[] dirOrganisms = dirAllOrganisms.list(new FilenameFilter() {
@@ -58,11 +67,19 @@ public class TestConvertToGPML2021 extends TestCase {
 		for (int i = 0; i < dirOrganisms.length; i++) {
 			File dirOrganism = new File(
 					"C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache/" + dirOrganisms[i]);
+			// GPML files
 			File[] listOfFiles = dirOrganism.listFiles(new FilenameFilter() {
 				public boolean accept(File dir, String name) {
 					return name.toLowerCase().endsWith(".gpml");
 				}
 			});
+			// Info files
+			File[] fileInfos = dirOrganism.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.toLowerCase().endsWith(".info");
+				}
+			});
+
 			// For all gpml of an organism:
 			for (int j = 0; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
@@ -73,23 +90,63 @@ public class TestConvertToGPML2021 extends TestCase {
 					PathwayModel pathwayModel = new PathwayModel();
 					pathwayModel.readFromXml(file, true);
 
-//				/* write pathway model to xml */
-//				File outputFile = new File(outputDir, file.getName());
-//				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, true);
-//				System.out.println(outputFile);
+					/*
+					 * Find info file for this WPID to set Version information
+					 */
+					String version = null;
+					String wpidGpmlStr = file.getName().substring(0, file.getName().lastIndexOf('.'));
+					for (File info : fileInfos) {
+						String wpidInfoStr = info.getName().substring(0, info.getName().lastIndexOf('.'));
+						if (wpidInfoStr.equals(wpidGpmlStr)) {
+							try {
+				                FileReader reader = new FileReader(info);
+				                BufferedReader bufferedReader = new BufferedReader(reader);
+				                String line =bufferedReader.readLine();
+				                while (line != null) {
+				                   if (line.startsWith("Revision=")) {
+				                	   version = line.substring(1, line.lastIndexOf('='));
+				                   }
+				                }
+				                reader.close();
+				            } catch (IOException e) {
+				                e.printStackTrace();
+				            }
+						}
+					}
+					String wpid = wpidGpmlStr + "_r" + version; // e.g. WP554_107642
+					pathwayModel.getPathway().setXref(XrefUtils.createXref(wpid, "wikipathways"));
+
+					/*
+					 * read author information TODO how to parse....
+					 */
+//				for (File authorFile : authorFiles) {
+//					String authorFileName = authorFile.getName();
+//					String authorFileWPID = authorFileName.substring(0, authorFileName.lastIndexOf('.'));
+//					if (authorFileWPID.equals(wpid)) {
+//						System.out.println("FOUND");
+//						try (BufferedReader br = new BufferedReader(new FileReader(authorFile))) {
+//							String line;
+//							while ((line = br.readLine()) != null) {
+//								System.out.println("LINE "+ line);
+//							}
+//						}
+//					}
+//				}
+
+//					/* write pathway model to xml */
+//					File outputFile = new File(outputDir, file.getName());
+//					GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, true);
+//					System.out.println(outputFile);
 
 					/* write pathway model to xml */
 					File tmp = File.createTempFile(file.getName() + "_to2021", ".gpml");
 					GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
 					System.out.println(tmp);
 
-					/* method to assert file is same? */
-
 				} else if (listOfFiles[i].isDirectory()) {
 					System.out.println("Directory " + listOfFiles[i].getName());
 				}
 			}
-
 		}
 	}
 }

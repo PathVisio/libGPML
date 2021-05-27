@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package testsForCuration;
+package org.pathvisio.io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,9 +22,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
 import org.pathvisio.util.XrefUtils;
 import org.xml.sax.SAXException;
@@ -37,7 +34,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestConvertToGPML2021WithXrefAndAuthors extends TestCase {
+public class TestConvertToGPML2021WithXref extends TestCase {
 
 	/**
 	 * For testing conversion GPML2013a to newer GPML2021. Reading a directory of
@@ -72,7 +69,7 @@ public class TestConvertToGPML2021WithXrefAndAuthors extends TestCase {
 				int length = parts.length;
 				String wpid1 = parts[length - 2]; // e.g. WP554
 				String wpid2 = parts[length - 1]; // e.g. 107642.gpml
-				String wpid = wpid1 + "_" + wpid2.substring(0, wpid2.lastIndexOf('.')); // e.g. WP554_107642
+				String wpid = wpid1 + "_r" + wpid2.substring(0, wpid2.lastIndexOf('.')); // e.g. WP554_107642
 				pathwayModel.getPathway().setXref(XrefUtils.createXref(wpid, "wikipathways"));
 
 				/*
