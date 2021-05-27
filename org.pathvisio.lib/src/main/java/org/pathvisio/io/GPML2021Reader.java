@@ -63,7 +63,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	public final static String GROUPTYPE_DEFAULT = "Group";
 	public final static String DATANODETYPE_DEFAULT = "Undefined";
 	public final static String STATETYPE_DEFAULT = "Undefined";
-	public final static String ARROWHEAD_DEFAULT = "Undirected relationship";
+	public final static String ARROWHEAD_DEFAULT = "Undirected";
 	public final static String ANCHORSHAPETYPE_DEFAULT = "Square";
 	public final static String ANNOTATIONTYPE_DEFAULT = "Undefined";
 	// font properties

@@ -169,8 +169,8 @@ public abstract class GPML2013aFormatAbstract {
 	 * Panel arrow head type. The first arrow head type string in the list is
 	 * priority and is returned by {@link #getArrowHeadTypeStr(ArrowHeadType)}. 
 	 */
-	public static final List<String> UNDIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Line"));
-	public static final List<String> DIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Arrow"));
+	public static final List<String> UNDIRECTED_LIST = new ArrayList<>(Arrays.asList("Line"));
+	public static final List<String> DIRECTED_LIST = new ArrayList<>(Arrays.asList("Arrow"));
 	public static final List<String> CONVERSION_LIST = new ArrayList<>(Arrays.asList("mim-conversion", "mim-conversion",
 			"mim-modification"));
 	public static final List<String> INHIBITION_LIST = new ArrayList<>(
@@ -190,8 +190,8 @@ public abstract class GPML2013aFormatAbstract {
 	 */
 	public static final Map<ArrowHeadType, List<String>> IA_PANEL_MAP = new HashMap<ArrowHeadType, List<String>>();
 	static {
-		IA_PANEL_MAP.put(ArrowHeadType.UNDIRECTED_RELATIONSHIP, UNDIRECTED_RELATIONSHIP_LIST);
-		IA_PANEL_MAP.put(ArrowHeadType.DIRECTED_RELATIONSHIP, DIRECTED_RELATIONSHIP_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.UNDIRECTED, UNDIRECTED_LIST);
+		IA_PANEL_MAP.put(ArrowHeadType.DIRECTED, DIRECTED_LIST);
 		IA_PANEL_MAP.put(ArrowHeadType.CONVERSION, CONVERSION_LIST);
 		IA_PANEL_MAP.put(ArrowHeadType.INHIBITION, INHIBITION_LIST);
 		IA_PANEL_MAP.put(ArrowHeadType.CATALYSIS, CATALYSIS_LIST);

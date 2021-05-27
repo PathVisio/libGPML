@@ -37,9 +37,8 @@ public class ArrowHeadType {
 
 	private static Map<String, ArrowHeadType> nameToArrowHeadType = new TreeMap<String, ArrowHeadType>(String.CASE_INSENSITIVE_ORDER);
 
-	// undirected relationship used to be "Line"
-	public static final ArrowHeadType UNDIRECTED_RELATIONSHIP = new ArrowHeadType("Undirected relationship"); 
-	public static final ArrowHeadType DIRECTED_RELATIONSHIP = new ArrowHeadType("Directed relationship");
+	public static final ArrowHeadType UNDIRECTED = new ArrowHeadType("Undirected"); //previous "Line" 
+	public static final ArrowHeadType DIRECTED = new ArrowHeadType("Directed");
 	public static final ArrowHeadType CONVERSION = new ArrowHeadType("Conversion");
 	public static final ArrowHeadType INHIBITION = new ArrowHeadType("Inhibition");
 	public static final ArrowHeadType CATALYSIS = new ArrowHeadType("Catalysis");
