@@ -112,9 +112,8 @@ public class CatchBiopaxWithNonUniqueID extends TestCase {
 					}
 				}
 			}
-			if (foundFiles.size() > 0) {
-				System.out.println(dirOrganisms[i] + ": " + foundFiles.size());
-			}
+			System.out.println(dirOrganisms[i] + ": " + foundFiles.size());
+
 			Set<String> keys = foundFiles.keySet();
 			for (String key : keys) {
 				String keyPrint = key.substring(0, key.lastIndexOf('.'));

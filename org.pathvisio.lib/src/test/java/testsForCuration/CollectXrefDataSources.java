@@ -17,13 +17,17 @@
 package testsForCuration;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.bio.DataSourceTxt;
@@ -54,50 +58,71 @@ public class CollectXrefDataSources extends TestCase {
 	 * @throws ConverterException
 	 */
 	public static void testCollectXrefs() throws IOException, ConverterException {
-		
+
 		DataSourceTxt.init();
 
-		
 		List<String> dataSources = new ArrayList<String>();
 		Set<String> dataSourceSet = new HashSet<String>();
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-		File[] listOfFiles = folderGPML2013a.listFiles();
-		for (int i = 1; i < listOfFiles.length; i++) {
-			File file = listOfFiles[i];
-			if (file.isFile()) {
+		// Gets all organism directories
+		File dirAllOrganisms = new File("C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache");
+		String[] dirOrganisms = dirAllOrganisms.list(new FilenameFilter() {
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+			}
+		});
+		System.out.println(Arrays.toString(dirOrganisms));
+		// Gets all gpml for each organism directory
+		for (int i = 0; i < dirOrganisms.length; i++) {
+			File dirOrganism = new File(
+					"C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache/" + dirOrganisms[i]);
+			File[] listOfFiles = dirOrganism.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.toLowerCase().endsWith(".gpml");
+				}
+			});
+			// For all gpml of an organism:
+			for (int j = 1; j < listOfFiles.length; j++) {
+				File file = listOfFiles[j];
+				if (file.isFile()) {
 //				System.out.println("File " + i + " : " + file.getName());
-				assertTrue(file.exists());
-				try {
-					SAXBuilder builder = new SAXBuilder();
-					Document readDoc = builder.build(file);
+					assertTrue(file.exists());
+					try {
+						SAXBuilder builder = new SAXBuilder();
+						Document readDoc = builder.build(file);
 //					System.out.println("Root: " + readDoc.getRootElement());
-					Element root = readDoc.getRootElement();
-					List<Element> elements = root.getChildren();
-					for (Element e : elements) {
-						Element xref = e.getChild("Xref", e.getNamespace());
-						if (xref != null) {
-							String dataSource = xref.getAttributeValue("Database");
-							// Finds GPMLs with Specific DataSources
-							if (dataSource.equals("NanoParticle Ontology")) {
-								System.out.println(file.getName());
+						Element root = readDoc.getRootElement();
+						List<Element> elements = root.getChildren();
+						for (Element e : elements) {
+							Element xref = e.getChild("Xref", e.getNamespace());
+							if (xref != null) {
+								String dataSource = xref.getAttributeValue("Database");
+								// Finds GPMLs with Specific DataSources
+								if (dataSource.equals("Kegg Compound")) {
+									System.out.println(file.getName());
+								}
+								dataSources.add(dataSource);
+								dataSourceSet.add(dataSource);
 							}
-							dataSources.add(dataSource);
-							dataSourceSet.add(dataSource);
 						}
+					} catch (JDOMException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				} catch (JDOMException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
 			}
 		}
-		for (String dataSource : dataSourceSet) {	
-			boolean exist = DataSource.fullNameExists(dataSource);
-			if (exist == false)  // of system code exists
-				exist = DataSource.systemCodeExists(dataSource);
-			int occurrences = Collections.frequency(dataSources, dataSource);
-			System.out.println(dataSource + ": " + occurrences + ": " + exist);
-		}
+
+//		for (String dataSource : dataSourceSet) {
+//			boolean exist = DataSource.fullNameExists(dataSource);
+//			if (exist == false) // of system code exists
+//				exist = DataSource.systemCodeExists(dataSource);
+//			int occurrences = Collections.frequency(dataSources, dataSource);
+//			// print only datasources not in bridgedb
+//			if (exist == false) {
+//				System.out.println(dataSource + ": " + occurrences + ": " + exist);
+//			}
+//		}
 	}
 }

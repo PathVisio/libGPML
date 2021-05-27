@@ -30,7 +30,6 @@ public class CatchBiopaxMissingID extends TestCase {
 	 * Searches for GPML2013a files which have Biopax with no ID.
 	 */
 	public static void testBiopaxMultipleID() throws IOException, ConverterException {
-		Map<String, String> foundFiles = new TreeMap<String, String>();
 		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 				"http://www.biopax.org/release/biopax-level3.owl#");
 		final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -46,7 +45,6 @@ public class CatchBiopaxMissingID extends TestCase {
 		System.out.println(Arrays.toString(dirOrganisms));
 		// Gets all gpml for each organism directory
 		for (int i = 0; i < dirOrganisms.length; i++) {
-			System.out.println("ORGANISM: " + dirOrganisms[i]);
 			File dirOrganism = new File(
 					"C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache/" + dirOrganisms[i]);
 			File[] listOfFiles = dirOrganism.listFiles(new FilenameFilter() {
@@ -54,6 +52,8 @@ public class CatchBiopaxMissingID extends TestCase {
 					return name.toLowerCase().endsWith(".gpml");
 				}
 			});
+			// for all gpmls of an organism
+			Map<String, String> foundFiles = new TreeMap<String, String>();
 			for (int j = 0; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
@@ -93,9 +93,9 @@ public class CatchBiopaxMissingID extends TestCase {
 					}
 				}
 			}
-			if (foundFiles.size() > 0) {
-				System.out.println(dirOrganisms[i] + ": " + foundFiles.size());
-			}
+//			if (foundFiles.size() > 0) {
+//				System.out.println(dirOrganisms[i] + ": " + foundFiles.size());
+//			}
 			Set<String> keys = foundFiles.keySet();
 			for (String key : keys) {
 				String keyPrint= key.substring(0, key.lastIndexOf('.'));
