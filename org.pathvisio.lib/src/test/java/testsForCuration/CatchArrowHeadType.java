@@ -84,7 +84,7 @@ public class CatchArrowHeadType extends TestCase {
 								String arrowHeadType = pt.getAttributeValue("ArrowHead");
 								// finds files containing mim-gap
 								if (arrowHeadType != null) {
-									if (arrowHeadType.equalsIgnoreCase("mim-gap")) {
+									if (arrowHeadType.equalsIgnoreCase("LigandSquare")) {
 										specificList.put(file.getName(), dirOrganisms[i].toString());
 									}
 								}

@@ -53,8 +53,11 @@ public class CatchBiopaxMissingID extends TestCase {
 				}
 			});
 			// for all gpmls of an organism
-			Map<String, String> foundFiles = new TreeMap<String, String>();
+			Map<String, Set<String>> foundFiles = new TreeMap<String, Set<String>>();
 			for (int j = 0; j < listOfFiles.length; j++) {
+				
+				Set<String> rdfIds = new HashSet<String>();
+				
 				File file = listOfFiles[j];
 				if (file.isFile()) {
 					assertTrue(file.exists());
@@ -62,9 +65,6 @@ public class CatchBiopaxMissingID extends TestCase {
 						SAXBuilder builder = new SAXBuilder();
 						Document readDoc = builder.build(file);
 						Element root = readDoc.getRootElement();
-
-						String elementIdList = "";
-
 						Element bp = root.getChild("Biopax", root.getNamespace());
 						if (bp != null) {
 							for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
@@ -80,12 +80,12 @@ public class CatchBiopaxMissingID extends TestCase {
 									}
 								}
 								if (myText == null || myText.equals("")) {
-									elementIdList += elementId + "; ";
+									rdfIds.add(elementId);
 								}
 							}
 						}
-						if (!elementIdList.equals(""))
-							foundFiles.put(file.getName(), elementIdList);
+						if (!rdfIds.isEmpty())
+							foundFiles.put(file.getName(), rdfIds);
 					} catch (JDOMException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -99,7 +99,7 @@ public class CatchBiopaxMissingID extends TestCase {
 			Set<String> keys = foundFiles.keySet();
 			for (String key : keys) {
 				String keyPrint= key.substring(0, key.lastIndexOf('.'));
-				System.out.format("%s	%s	%s " + "\n", keyPrint, foundFiles.get(key), dirOrganisms[i]);
+				System.out.format("%s	%s	%s " + "\n", keyPrint, foundFiles.get(key).toString(), dirOrganisms[i]);
 			}
 		}
 	}

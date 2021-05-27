@@ -60,7 +60,7 @@ public class CollectXrefDataSources extends TestCase {
 	public static void testCollectXrefs() throws IOException, ConverterException {
 
 		DataSourceTxt.init();
-
+		Set<String> specificSet = new HashSet<String>();
 		List<String> dataSources = new ArrayList<String>();
 		Set<String> dataSourceSet = new HashSet<String>();
 		// Gets all organism directories
@@ -98,8 +98,9 @@ public class CollectXrefDataSources extends TestCase {
 							if (xref != null) {
 								String dataSource = xref.getAttributeValue("Database");
 								// Finds GPMLs with Specific DataSources
-								if (dataSource.equals("Kegg Compound")) {
-									System.out.println(file.getName());
+								if (dataSource.equals("Entrez")) {
+									specificSet.add(file.getName());
+//									System.out.println(file.getName());
 								}
 								dataSources.add(dataSource);
 								dataSourceSet.add(dataSource);
@@ -112,6 +113,10 @@ public class CollectXrefDataSources extends TestCase {
 					}
 				}
 			}
+		}
+		for (String str : specificSet) {
+			System.out.println(str.substring(0, str.lastIndexOf('.')));
+
 		}
 
 //		for (String dataSource : dataSourceSet) {
