@@ -172,11 +172,11 @@ public abstract class GPML2013aFormatAbstract {
 	public static final List<String> UNDIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Line"));
 	public static final List<String> DIRECTED_RELATIONSHIP_LIST = new ArrayList<>(Arrays.asList("Arrow"));
 	public static final List<String> CONVERSION_LIST = new ArrayList<>(Arrays.asList("mim-conversion", "mim-conversion",
-			"mim-modification", "mim-branching-left", "mim-branching-right"));
+			"mim-modification"));
 	public static final List<String> INHIBITION_LIST = new ArrayList<>(
 			Arrays.asList("mim-inhibition", "TBar"));
 	public static final List<String> CATALYSIS_LIST = new ArrayList<>(
-			Arrays.asList("mim-catalysis", "mim-cleavage"));
+			Arrays.asList("mim-catalysis"));
 	public static final List<String> STIMULATION_LIST = new ArrayList<>(
 			Arrays.asList("mim-stimulation", "mim-necessary-stimulation"));
 	public static final List<String> BINDING_LIST = new ArrayList<>(Arrays.asList("mim-binding", "mim-covalent-bond"));
