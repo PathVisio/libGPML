@@ -47,7 +47,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class CatchBiopaxWithNonUniqueID extends TestCase {
+public class FindBiopaxWithNonUniqueID extends TestCase {
 
 	/**
 	 * For catching GPMLs which have Biopax with non unique IDs. Although the ids

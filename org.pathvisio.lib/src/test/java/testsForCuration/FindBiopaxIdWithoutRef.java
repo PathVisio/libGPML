@@ -20,16 +20,18 @@ import org.pathvisio.io.ConverterException;
 import junit.framework.TestCase;
 
 /**
- * Test which searches for GPML2013a pathways with missing IDs
+ * Test which searches for GPML2013a pathways with Biopax PublicationXref
+ * rdf:ids which are not referenced by any BiopaxRef.
  * 
  * @author finterly
  */
-public class CatchBiopaxMissingID extends TestCase {
+public class FindBiopaxIdWithoutRef extends TestCase {
 
 	/**
-	 * Searches for GPML2013a files which have Biopax with no ID.
+	 * Searches for GPML2013a files which have Biopax PublicationXref with no
+	 * BiopaxRef referring it.
 	 */
-	public static void testBiopaxMultipleID() throws IOException, ConverterException {
+	public static void testBiopaxIDButNoRef() throws IOException, ConverterException {
 		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 				"http://www.biopax.org/release/biopax-level3.owl#");
 		final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -52,55 +54,65 @@ public class CatchBiopaxMissingID extends TestCase {
 					return name.toLowerCase().endsWith(".gpml");
 				}
 			});
-			// for all gpmls of an organism
 			Map<String, Set<String>> foundFiles = new TreeMap<String, Set<String>>();
+			// For all gpml of an organism:
 			for (int j = 0; j < listOfFiles.length; j++) {
-				
-				Set<String> rdfIds = new HashSet<String>();
-				
 				File file = listOfFiles[j];
 				if (file.isFile()) {
 					assertTrue(file.exists());
+//					System.out.println(file.getName());
 					try {
 						SAXBuilder builder = new SAXBuilder();
 						Document readDoc = builder.build(file);
 						Element root = readDoc.getRootElement();
+
+						Set<String> bprfMissingSet = new HashSet<String>();
+						Set<String> bprfSet = new HashSet<String>();
+						// Read all Pathway BiopaxRefs and add to Set
+						List<Element> bprfs = root.getChildren("BiopaxRef", root.getNamespace());
+						for (Element bprf : bprfs) {
+							String bprfid = bprf.getText();
+							bprfSet.add(bprfid);
+						}
+						// Read all Pathway Element BiopaxRefs and add to Set
+						List<Element> children = root.getChildren();
+						for (Element child : children) {
+							List<Element> bprfsChildren = child.getChildren("BiopaxRef", root.getNamespace());
+							for (Element bprfChild : bprfsChildren) {
+								String bprfid = bprfChild.getText();
+								bprfSet.add(bprfid);
+							}
+						}
+						// Read PublicationXref rdf:id
 						Element bp = root.getChild("Biopax", root.getNamespace());
 						if (bp != null) {
 							for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
-								String elementId = pubxf.getAttributeValue("id", RDF_NAMESPACE);
-								List<Element> ids = pubxf.getChildren("ID", BIOPAX_NAMESPACE);
-								String myText = null;
-								for (Element id : ids) {
-									if (myText == null || myText.equals("")) {
-										if (id != null)
-											myText = id.getText();
-									} else {
-										continue;
-									}
-								}
-								if (myText == null || myText.equals("")) {
-									rdfIds.add(elementId);
+								String rdfId = pubxf.getAttributeValue("id", RDF_NAMESPACE);
+								if (!bprfSet.contains(rdfId)) {
+									bprfMissingSet.add(rdfId);
 								}
 							}
 						}
-						if (!rdfIds.isEmpty())
-							foundFiles.put(file.getName(), rdfIds);
+						if (!bprfMissingSet.isEmpty()) {
+							foundFiles.put(file.getName(), bprfMissingSet);
+						}
 					} catch (JDOMException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
+
 			}
-//			if (foundFiles.size() > 0) {
-//				System.out.println(dirOrganisms[i] + ": " + foundFiles.size());
-//			}
+			if (foundFiles.size() > 0) {
+				System.out.println(dirOrganisms[i] + ": " + foundFiles.size());
+			}
 			Set<String> keys = foundFiles.keySet();
-			for (String key : keys) {
-				String keyPrint= key.substring(0, key.lastIndexOf('.'));
-				System.out.format("%s	%s	%s " + "\n", keyPrint, foundFiles.get(key).toString(), dirOrganisms[i]);
-			}
+//			for (String key : keys) {
+//				String keyPrint = key.substring(0, key.lastIndexOf('.'));
+//				System.out.format("%s	%s	%s " + "\n", keyPrint, foundFiles.get(key), dirOrganisms[i]);
+//			}
+
 		}
 	}
 }

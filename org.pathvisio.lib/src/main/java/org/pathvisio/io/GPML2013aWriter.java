@@ -381,6 +381,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				setAttr("State", "StateType", st, typeStr);
 				setAttr("State", "GraphRef", st, dataNode.getElementId());
 				setAttr("State", "TextLabel", st, state.getTextLabel() == null ? "" : state.getTextLabel());
+				//TODO Write special Comment for AnnotationRef
 				writeElementInfo(state, st);
 				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProperty(), st);
 				// sets graphics properties
@@ -405,6 +406,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 
+	protected void writeStateAnnotationRefsAsComment(State state, Element st) throws ConverterException {
+		
+	}
+	
 	/**
 	 * Writes interaction {@link Interaction} information.
 	 * 

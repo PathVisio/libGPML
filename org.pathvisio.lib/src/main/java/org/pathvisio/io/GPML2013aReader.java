@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
@@ -787,6 +788,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(state, st, biopaxIdToNew);
+			// TODO convert comment to AnnotationRef
+			//convertStateCommentToAnnotationRefs(state, elementIdSet);
 			readStateDynamicProperties(state, st);
 			// if has DoubleLineProperty key, sets border style as Double
 			if ("Double".equalsIgnoreCase(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
@@ -799,6 +802,53 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// adds state to parent data node of pathway model
 			if (state != null)
 				dataNode.addState(state);
+		}
+	}
+
+	protected void convertStateCommentToAnnotationRefs(State state, Set<String> elementIdSet)
+			throws ConverterException {
+		// for each comment
+		for (Comment comment : state.getComments()) {
+			// isAnnt true if at least one annotation type present after parsing
+			boolean isAnnotation = false;
+			String commentText = comment.getCommentText();
+			Map<String, String> annotationsMap = new TreeMap<String, String>();
+			// check if commentText contains "=" or ";"
+			if (commentText.contains("=") || commentText.contains(";")) {
+				String[] annotations = commentText.trim().split(";");
+				for (String annotation : annotations) {
+					String[] parts = annotation.trim().split("=");
+					if (STATE_ANNOTATIONTYPE_LIST.contains(parts[0])) // type
+						isAnnotation = true;
+					annotationsMap.put(parts[0], parts[1]); // type and value
+				}
+			}
+			// comment is determined to contain annotation information
+			if (isAnnotation) {
+				for (String key : annotationsMap.keySet()) {
+					// create new annotation and add to pathway model
+					String elementId = PathwayModel.getUniqueId(elementIdSet);
+					elementIdSet.add(elementId);
+					String value = annotationsMap.get(key);
+					if (key.equalsIgnoreCase("ptm")) {
+						key = "Ontology";
+						// e.g. replaces "p" with "phosphorylation"
+						if (STATE_PTM_MAP.containsKey(value)) {
+							value = STATE_PTM_MAP.get(value);
+						}
+					}
+					AnnotationType type = AnnotationType.register(key);
+					Annotation annotation = new Annotation(elementId, state.getPathwayModel(), value, type);					
+					state.getPathwayModel().addAnnotation(annotation);
+					// create new annotationRef
+					AnnotationRef annotationRef = new AnnotationRef(annotation, state);
+					state.addAnnotationRef(annotationRef);
+					// remove comment after creating annotation and annotationRef
+					state.removeComment(comment);
+					Logger.log.trace(
+							"State " + state.getElementId() + " comment converted to Annotations/AnnotationRefs");
+				}
+			}
 		}
 	}
 

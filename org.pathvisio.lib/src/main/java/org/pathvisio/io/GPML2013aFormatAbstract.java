@@ -165,18 +165,29 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
+	 * Known set of PTM related annotation types for {@link State} in GPML2013a
+	 */
+	List<String> STATE_ANNOTATIONTYPE_LIST = new ArrayList<>(
+			Arrays.asList("parent", "position", "ptm", "direction", "parentid", "parentsymbol", "site", "sitegrpid"));
+	/**
+	 * Map of PTM types for state annotations. 
+	 */
+	public static final Map<String,String> STATE_PTM_MAP = new HashMap<String, String>();
+	static {
+		STATE_PTM_MAP.put("p", "phoshorylation");
+	}
+
+	/**
 	 * List of GPML2013a arrow head types which correspond to a new Interaction
 	 * Panel arrow head type. The first arrow head type string in the list is
-	 * priority and is returned by {@link #getArrowHeadTypeStr(ArrowHeadType)}. 
+	 * priority and is returned by {@link #getArrowHeadTypeStr(ArrowHeadType)}.
 	 */
 	public static final List<String> UNDIRECTED_LIST = new ArrayList<>(Arrays.asList("Line"));
 	public static final List<String> DIRECTED_LIST = new ArrayList<>(Arrays.asList("Arrow"));
-	public static final List<String> CONVERSION_LIST = new ArrayList<>(Arrays.asList("mim-conversion", "mim-conversion",
-			"mim-modification"));
-	public static final List<String> INHIBITION_LIST = new ArrayList<>(
-			Arrays.asList("mim-inhibition", "TBar"));
-	public static final List<String> CATALYSIS_LIST = new ArrayList<>(
-			Arrays.asList("mim-catalysis"));
+	public static final List<String> CONVERSION_LIST = new ArrayList<>(
+			Arrays.asList("mim-conversion", "mim-conversion", "mim-modification"));
+	public static final List<String> INHIBITION_LIST = new ArrayList<>(Arrays.asList("mim-inhibition", "TBar"));
+	public static final List<String> CATALYSIS_LIST = new ArrayList<>(Arrays.asList("mim-catalysis"));
 	public static final List<String> STIMULATION_LIST = new ArrayList<>(
 			Arrays.asList("mim-stimulation", "mim-necessary-stimulation"));
 	public static final List<String> BINDING_LIST = new ArrayList<>(Arrays.asList("mim-binding", "mim-covalent-bond"));

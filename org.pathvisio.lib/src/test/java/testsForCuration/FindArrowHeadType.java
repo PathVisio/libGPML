@@ -26,7 +26,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class CatchArrowHeadType extends TestCase {
+public class FindArrowHeadType extends TestCase {
 
 	/**
 	 * Searches for GPML2013a files to find common arrowHead types.

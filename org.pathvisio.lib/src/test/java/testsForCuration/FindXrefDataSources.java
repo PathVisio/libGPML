@@ -48,7 +48,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class CollectXrefDataSources extends TestCase {
+public class FindXrefDataSources extends TestCase {
 
 	/**
 	 * For collecting Xref data sources for BridgeDb from directory of GPML2013a
@@ -98,7 +98,7 @@ public class CollectXrefDataSources extends TestCase {
 							if (xref != null) {
 								String dataSource = xref.getAttributeValue("Database");
 								// Finds GPMLs with Specific DataSources
-								if (dataSource.equals("Entrez")) {
+								if (dataSource.equals("NanoParticle Ontology")) {
 									specificSet.add(file.getName());
 //									System.out.println(file.getName());
 								}
