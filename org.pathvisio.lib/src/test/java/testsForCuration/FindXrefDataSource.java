@@ -48,7 +48,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class FindXrefDataSources extends TestCase {
+public class FindXrefDataSource extends TestCase {
 
 	/**
 	 * For collecting Xref data sources for BridgeDb from directory of GPML2013a
