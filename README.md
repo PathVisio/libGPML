@@ -40,7 +40,7 @@ libGPML consists of mainly the ....Documentation in progres...and java object mo
 <p align="center">
   <img width="80%" src=".graphics/java_model_diagram.svg">
   <br>
-  <em>Figure 1: libPathVisio Java Object Model</em>
+  <em>Figure 1: libGPML Java Object Model</em>
 </p>
 
 
@@ -83,7 +83,7 @@ You can email the main developers directly at [@googlegroups.com](mailto: google
 Contributing
 ------------
 
-We welcome contributions to libPathVisio!  Please read our [contribution guidelines](CONTRIBUTING.md), and also feel free to contact the developers at to coordinate your efforts.
+We welcome contributions to libGPML!  Please read our [contribution guidelines](CONTRIBUTING.md), and also feel free to contact the developers at to coordinate your efforts.
 
 
 License
