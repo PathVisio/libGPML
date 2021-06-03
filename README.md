@@ -1,7 +1,7 @@
-libPathVisio<img width="22%" align="right" src=".graphics/bigcateye.svg">
+libGPML<img width="22%" align="right" src=".graphics/bigcateye.svg">
 =============================================================================
 
-libPathVisio is an open-source Java library for working with [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML). 
+libGPML is an open-source Java library for working with [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML). 
 
 Table of contents
 -----------------
@@ -19,22 +19,22 @@ Table of contents
 Introduction
 ------------
 
-LibPathVisio is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML) format.  
+libGPML is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML) format.  
 
-Why not simply use a generic XML parsing library?  A specialized library such as libPathVisio offers many advantages over using a generic XML library directly.  Here are some:
+Why not simply use a generic XML parsing library?  A specialized library such as libGPML offers many advantages over using a generic XML library directly.  Here are some:
 
-* **Java object model**.  libPathVisio's object model and API are designed around GPML and the operations that are commonly needed when working with GPML.
+* **Java object model**.  libGPML's object model and API are designed around GPML and the operations that are commonly needed when working with GPML.
 
-* **Validation**. libPathVisio implements all the validation rules defined in the GPML specifications.
+* **Validation**. libGPML implements all the validation rules defined in the GPML specifications.
 
-* **Conversion**: libPathVisio can convert between GPML2013a and GPML2021. Conversions between GPML2013a and older 
+* **Conversion**: libGPML can convert between GPML2013a and GPML2021. Conversions between GPML2013a and older 
 
-LibPathVisio works on Linux, Windows, and  MacOS X, and other operating systems. 
+libGPML works on Linux, Windows, and  MacOS X, and other operating systems. 
 
 Library Architecture
 ------------
 
-LibPathVisio consists of mainly the ....Documentation in progres...and java object model classes.  
+libGPML consists of mainly the ....Documentation in progres...and java object model classes.  
 
 
 <p align="center">
@@ -47,7 +47,7 @@ LibPathVisio consists of mainly the ....Documentation in progres...and java obje
 
 Getting Started
 ------------
-* [Documentation site](https://pathvisio.github.io/libpathvisio) 
+* [Documentation site](https://pathvisio.github.io/libGPML) 
 
 Dependencies
 ------------
@@ -65,7 +65,7 @@ Installation
 Usage
 -----
 
-Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libPathVisio and important information.
+Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libGPML and important information.
 
 Documentation is available online at ....
 
@@ -73,9 +73,9 @@ Documentation is available online at ....
 Getting help
 ------------
 
-We encourage you to join the ..... google group, where other libPathVisio users can be found.  You can ask questions and discuss the development, use, and interoperability of all kinds of software that supports GPML.
+We encourage you to join the ..... google group, where other libGPML users can be found.  You can ask questions and discuss the development, use, and interoperability of all kinds of software that supports GPML.
 
-You can report issues, suggestions and requests using the [GitHub issue tracker](https://github.com/libPathVisio/issues).  
+You can report issues, suggestions and requests using the [GitHub issue tracker](https://github.com/libGPML/issues).  
 
 You can email the main developers directly at [@googlegroups.com](mailto: googlegroups.com).
 
@@ -89,13 +89,13 @@ We welcome contributions to libPathVisio!  Please read our [contribution guideli
 License
 -------
 
-libPathVisio is available for free under the terms of the 
+libGPML is available for free under the terms of the 
 
 
 Authors and history
 ---------------------------
 
-libPathVisio's main authors are [Finterly Hu](https://github.com/Finterly), [Martina Summer-Kutmon](https://github.com/mkutmon), with contributions from many others.  We especially thank the following (in alphabetical order):
+libGPML's main authors are [Finterly Hu](https://github.com/Finterly), [Martina Summer-Kutmon](https://github.com/mkutmon), with contributions from many others.  We especially thank the following (in alphabetical order):
 
 * ...
 * ....
@@ -104,7 +104,7 @@ libPathVisio's main authors are [Finterly Hu](https://github.com/Finterly), [Mar
 Acknowledgments
 ---------------
 
-The development of libPathVisio was supported in largely by funding from ...
+The development of libGPML was supported in largely by funding from ...
 
 <br>
 <div align="center">
