@@ -181,8 +181,11 @@ public abstract class GPML2013aFormatAbstract {
 	public static final Map<String, List<String>> STATE_PTM_MAP = new HashMap<String, List<String>>();
 	static {
 		STATE_PTM_MAP.put("p", new ArrayList<>(Arrays.asList("Phosphorylation", "21", "unimod")));
+		STATE_PTM_MAP.put("m", new ArrayList<>(Arrays.asList("Methylation", "34", "unimod")));
+		STATE_PTM_MAP.put("me", new ArrayList<>(Arrays.asList("Methylation", "34", "unimod")));
 		STATE_PTM_MAP.put("u", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
 		STATE_PTM_MAP.put("ub", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
+		
 	}
 	public static final Map<String, List<String>> STATE_DIRECTION_MAP = new HashMap<String, List<String>>();
 	static {
