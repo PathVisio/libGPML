@@ -410,6 +410,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 
+	/**
+	 * This method handles converting {@link State} {@link AnnotationRef}
+	 * information back to {@link Comment} for writing to GPML2013a. NB: "ptm" and
+	 * "direction" are specially handled.
+	 *
+	 * @param state
+	 * @param st
+	 * @throws ConverterException
+	 */
 	protected void writeStateAnnotationRefsAsComment(State state, Element st) throws ConverterException {
 		// linked hash map to maintain order of input
 		Map<String, String> annotationsMap = new LinkedHashMap<String, String>();
@@ -703,7 +712,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes gpml:Biopax bp:OpenControlledVocabulary {@link Annotation}
-	 * information.
+	 * information. Because it is not possible to write {@link AnnotationRef} for
+	 * {@link PathwayElement} in GPML2013a, the State annotationRef information is
+	 * written as {@link Comment} in {@link #writeStateAnnotationRefsAsComment()}.
+	 * We avoid writing annotation information if it is for a state
+	 * annotationRef/comment since it cannot be properly linked to a state pathway
+	 * element and is duplicate information.
 	 * 
 	 * @param annotations the list of annotations.
 	 * @param root        the root element.
@@ -714,9 +728,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (Annotation annotation : pathwayModel.getAnnotations()) {
 			if (annotation == null)
 				continue;
-			// if annotation is for state comment (e.g. parent, position...), do not write 
+			// if annotation is for state comment (e.g. parent), avoid writing again
 			String type = annotation.getType().getName();
-			if (STATE_ANNOTATIONTYPE_LIST.contains(type)) 
+			if (STATE_ANNOTATIONTYPE_LIST.contains(type))
 				continue;
 			Element ocv = new Element("openControlledVocabulary", BIOPAX_NAMESPACE);
 			Element term = new Element("TERM", BIOPAX_NAMESPACE);

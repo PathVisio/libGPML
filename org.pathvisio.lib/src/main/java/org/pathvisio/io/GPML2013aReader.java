@@ -806,6 +806,28 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		}
 	}
 
+	/**
+	 * This method is used to handle {@link State} {@link Comment} which were
+	 * manually added to encode phosphosite information. This method first checks
+	 * whether a comment for a state is indeed phosphosite information. The
+	 * phosphosite information is parsed and stored in a {@link LinkedHashMap}
+	 * annotationsMap.
+	 * 
+	 * For each key value pair in annotationsMap, a new {@link Annotation} is
+	 * created. The annotation is added to the pathway model after checking for
+	 * annotations with equivalent properties. A new {@link AnnotationRef} is
+	 * created for the annotation and added to the state.
+	 * 
+	 * Lastly the comment itself is removed from the state so that the annotation
+	 * and comment do not have duplicate information.
+	 * 
+	 * NB: there is special handling for "ptm" and "direction" which can have Xref
+	 * for Ontology.
+	 * 
+	 * @param state
+	 * @param elementIdSet
+	 * @throws ConverterException
+	 */
 	protected void convertStateCommentToAnnotationRefs(State state, Set<String> elementIdSet)
 			throws ConverterException {
 		// for each comment
