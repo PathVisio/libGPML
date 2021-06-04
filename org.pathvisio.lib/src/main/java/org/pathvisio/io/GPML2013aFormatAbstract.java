@@ -100,8 +100,8 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String RDF_STRING = "http://www.w3.org/2001/XMLSchema#string";
 
 	/**
-	 * These dynamic properties are used to store deprecated GPML2013a properties,
-	 * but will not be written to GPML2013a/GPML2021
+	 * These string keys for dynamic properties are used to store deprecated
+	 * GPML2013a properties, but will not be written to GPML2013a/GPML2021
 	 */
 	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
 	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
@@ -165,16 +165,31 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * Known set of PTM related annotation types for {@link State} in GPML2013a
+	 * Known set of PTM related annotation types for {@link State} {@link Comment}
+	 * in GPML2013a.
 	 */
 	List<String> STATE_ANNOTATIONTYPE_LIST = new ArrayList<>(
 			Arrays.asList("parent", "position", "ptm", "direction", "parentid", "parentsymbol", "site", "sitegrpid"));
+
 	/**
-	 * Map of PTM types for state annotations. 
+	 * String values for {@link State} {@link Comment} phosphorylation and
+	 * ubiquitylation site information in GPML2013a.
 	 */
-	public static final Map<String,String> STATE_PTM_MAP = new HashMap<String, String>();
+	public final static String STATE_COMMENT_PTM = "ptm";
+	public final static String STATE_COMMENT_DIRECTION = "direction";
+
+	public static final Map<String, List<String>> STATE_PTM_MAP = new HashMap<String, List<String>>();
 	static {
-		STATE_PTM_MAP.put("p", "phoshorylation");
+		STATE_PTM_MAP.put("p", new ArrayList<>(Arrays.asList("Phosphorylation", "21", "unimod")));
+		STATE_PTM_MAP.put("u", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
+		STATE_PTM_MAP.put("ub", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
+	}
+	public static final Map<String, List<String>> STATE_DIRECTION_MAP = new HashMap<String, List<String>>();
+	static {
+		STATE_DIRECTION_MAP.put("u",
+				new ArrayList<>(Arrays.asList("positive regulation of biological process", "0048518", "GO")));
+		STATE_DIRECTION_MAP.put("d",
+				new ArrayList<>(Arrays.asList("negative regulation of biological process", "0048519", "GO")));
 	}
 
 	/**

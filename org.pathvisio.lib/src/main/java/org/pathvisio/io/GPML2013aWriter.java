@@ -22,8 +22,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
@@ -381,7 +384,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				setAttr("State", "StateType", st, typeStr);
 				setAttr("State", "GraphRef", st, dataNode.getElementId());
 				setAttr("State", "TextLabel", st, state.getTextLabel() == null ? "" : state.getTextLabel());
-				//TODO Write special Comment for AnnotationRef
+				// if there are annotationRefs, writes this information to comment TODO
+				writeStateAnnotationRefsAsComment(state, st);
 				writeElementInfo(state, st);
 				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProperty(), st);
 				// sets graphics properties
@@ -407,9 +411,41 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	protected void writeStateAnnotationRefsAsComment(State state, Element st) throws ConverterException {
-		
+		// linked hash map to maintain order of input
+		Map<String, String> annotationsMap = new LinkedHashMap<String, String>();
+		for (AnnotationRef annotationRef : state.getAnnotationRefs()) {
+			String value = annotationRef.getAnnotation().getValue();
+			String type = annotationRef.getAnnotation().getType().getName();
+			// specially handle ptm type
+			for (String key : STATE_PTM_MAP.keySet()) {
+				if (value.equals(STATE_PTM_MAP.get(key).get(0))) {
+					value = key;
+					type = STATE_COMMENT_PTM;
+				}
+			}
+			// specially handle direction type
+			for (String key : STATE_DIRECTION_MAP.keySet()) {
+				if (value.equals(STATE_DIRECTION_MAP.get(key).get(0))) {
+					value = key;
+					type = STATE_COMMENT_DIRECTION;
+				}
+			}
+			annotationsMap.put(type, value);
+		}
+		// if there are annotations, create commentText string from annotations
+		if (!annotationsMap.isEmpty()) {
+			String commentText = annotationsMap.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue())
+					.collect(Collectors.joining("; "));
+			// initialize jdom comment element
+			Element cmt = new Element("Comment", st.getNamespace());
+			// add text to jdom comment element
+			cmt.setText(commentText);
+			if (cmt != null)
+				// add jdom comment element to jdom state element
+				st.addContent(cmt);
+		}
 	}
-	
+
 	/**
 	 * Writes interaction {@link Interaction} information.
 	 * 
@@ -469,7 +505,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		writePoints(lineElement.getPoints(), gfx);
 		// writes anchors
 		writeAnchors(lineElement.getAnchors(), gfx);
-		writeGroupRef(lineElement.getGroupRef(), ln); 
+		writeGroupRef(lineElement.getGroupRef(), ln);
 	}
 
 	/**
@@ -498,7 +534,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			String arrowHeadStr = getArrowHeadTypeStr(arrowHead);
 			if (arrowHeadStr == null)
 				arrowHeadStr = arrowHead.getName();
-			//TODO Sub type arrowhead Handling? 
+			// TODO Sub type arrowhead Handling?
 			setAttr(base + ".Graphics.Point", "ArrowHead", pt, arrowHeadStr);
 			if (pt != null)
 				ptList.add(pt);
@@ -551,7 +587,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeShapedElement(label, lb);
 			if (label.getHref() != null)
 				setAttr("Label", "Href", lb, label.getHref());
-			writeGroupRef(label.getGroupRef(), lb); 
+			writeGroupRef(label.getGroupRef(), lb);
 			if (lb != null) {
 				root.addContent(lb);
 			}
@@ -657,7 +693,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeBiopax(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element bp = new Element("Biopax", root.getNamespace());
 		// writes openControlledVocabulary, equivalent to annotation
-		writeBiopaxOpenControlledVocabulary(pathwayModel.getAnnotations(), bp);
+		writeBiopaxOpenControlledVocabulary(pathwayModel, bp);
 		// writes publicationXref, equivalent to citation
 		writeBiopaxPublicationXref(pathwayModel.getCitations(), bp);
 		if (!bp.getChildren().isEmpty()) {
@@ -673,10 +709,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root        the root element.
 	 * @throws ConverterException
 	 */
-	protected void writeBiopaxOpenControlledVocabulary(List<Annotation> annotations, Element bp)
+	protected void writeBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp)
 			throws ConverterException {
-		for (Annotation annotation : annotations) {
+		for (Annotation annotation : pathwayModel.getAnnotations()) {
 			if (annotation == null)
+				continue;
+			// if annotation is for state comment (e.g. parent, position...), do not write 
+			String type = annotation.getType().getName();
+			if (STATE_ANNOTATIONTYPE_LIST.contains(type)) 
 				continue;
 			Element ocv = new Element("openControlledVocabulary", BIOPAX_NAMESPACE);
 			Element term = new Element("TERM", BIOPAX_NAMESPACE);
@@ -686,8 +726,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			id.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			onto.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			term.setText(annotation.getValue());
+			onto.setText(type);
 			id.setText(annotation.getXref().getDataSource().getFullName() + ":" + annotation.getXref().getId());
-			onto.setText(annotation.getType().getName());
 			ocv.addContent(term);
 			ocv.addContent(id);
 			ocv.addContent(onto);

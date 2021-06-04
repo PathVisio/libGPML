@@ -115,65 +115,7 @@ public class SearchGPMLs extends TestCase {
 //		System.out.println(shapeTypes);
 //	}
 
-//	/**
-//	 * Searches for GPML2013a files to find common shape types.
-//	 */
-//	public static void testShapeTypes() throws IOException, ConverterException {
-//		Set<String> shapeTypes = new HashSet<String>();
-//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-//		File[] listOfFiles = folderGPML2013a.listFiles();
-//
-//		Set<String> mimphos = new HashSet<String>();
-//		Set<String> mimint = new HashSet<String>();
-//		Set<String> mimdeg = new HashSet<String>();
-//
-//		for (int i = 1; i < listOfFiles.length; i++) {
-//			File file = listOfFiles[i];
-//			if (file.isFile()) {
-//				assertTrue(file.exists());
-//				try {
-//					SAXBuilder builder = new SAXBuilder();
-//					Document readDoc = builder.build(file);
-//					Element root = readDoc.getRootElement();
-//					List<Element> es = root.getChildren();
-//					for (Element e : es) {
-//						Element gfx = e.getChild("Graphics", e.getNamespace());
-//						if (gfx != null) {
-//							String shapeType = gfx.getAttributeValue("ShapeType");
-//							if (shapeType != null) {
-//								if (shapeType.equals("mim-phosphorylated"))
-//									mimphos.add(file.getName());
-//								if (shapeType.equals("mim-interaction"))
-//									mimint.add(file.getName());
-//								if (shapeType.equals("mim-degradation"))
-//									mimdeg.add(file.getName());
-//							}
-//							shapeTypes.add(shapeType);
-//						}
-//					}
-//				} catch (JDOMException e) {
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		System.out.println("Contains mim-phosphorylated");
-//		for (String shapeType : mimphos) {
-//			System.out.println(shapeType);
-//		}
-//		System.out.println("Contains mim-interaction");
-//		for (String shapeType : mimint) {
-//			System.out.println(shapeType);
-//		}
-//		System.out.println("Contains mim-degradation");
-//		for (String shapeType : mimdeg) {
-//			System.out.println(shapeType);
-//		}
-////		for (String shapeType : shapeTypes) {
-////			System.out.println(shapeType);
-////		}
-//	}
+
 
 //	/**
 //	 * Searches for GPML2013a files to find common group types.

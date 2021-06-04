@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -302,7 +303,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				annotation.setXref(xref);
 			// adds annotation to pathway model
 			if (annotation != null) {
-				pathwayModel.addAnnotation(annotation);
+				annotation = pathwayModel.addAnnotation(annotation);
 				// adds annotationRef to pathway of pathway model
 				pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation));
 				;
@@ -789,7 +790,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(state, st, biopaxIdToNew);
 			// TODO convert comment to AnnotationRef
-			//convertStateCommentToAnnotationRefs(state, elementIdSet);
+			convertStateCommentToAnnotationRefs(state, elementIdSet);
 			readStateDynamicProperties(state, st);
 			// if has DoubleLineProperty key, sets border style as Double
 			if ("Double".equalsIgnoreCase(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
@@ -808,11 +809,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void convertStateCommentToAnnotationRefs(State state, Set<String> elementIdSet)
 			throws ConverterException {
 		// for each comment
+		List<Comment> commentsToRemove = new ArrayList<Comment>();
 		for (Comment comment : state.getComments()) {
 			// isAnnt true if at least one annotation type present after parsing
 			boolean isAnnotation = false;
 			String commentText = comment.getCommentText();
-			Map<String, String> annotationsMap = new TreeMap<String, String>();
+			// linked hash map to maintain order of input
+			Map<String, String> annotationsMap = new LinkedHashMap<String, String>();
 			// check if commentText contains "=" or ";"
 			if (commentText.contains("=") || commentText.contains(";")) {
 				String[] annotations = commentText.trim().split(";");
@@ -826,29 +829,49 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// comment is determined to contain annotation information
 			if (isAnnotation) {
 				for (String key : annotationsMap.keySet()) {
-					// create new annotation and add to pathway model
+					// create new annotation
+					// generate elementId for new annotation
 					String elementId = PathwayModel.getUniqueId(elementIdSet);
 					elementIdSet.add(elementId);
+					Xref xref = null;
 					String value = annotationsMap.get(key);
-					if (key.equalsIgnoreCase("ptm")) {
+					// special handling if annotation type is "ptm"
+					if (key.equalsIgnoreCase(STATE_COMMENT_PTM)) {
 						key = "Ontology";
-						// e.g. replaces "p" with "phosphorylation"
-						if (STATE_PTM_MAP.containsKey(value)) {
-							value = STATE_PTM_MAP.get(value);
+						if (STATE_PTM_MAP.containsKey(value)) { // e.g. "p"
+							List<String> ptmInfo = STATE_PTM_MAP.get(value);
+							value = ptmInfo.get(0); // e.g. "Phosphorylation"
+							xref = XrefUtils.createXref(ptmInfo.get(1), ptmInfo.get(2));
+						}
+					}
+					// special handling if annotation type is "direction"
+					if (key.equalsIgnoreCase(STATE_COMMENT_DIRECTION)) {
+						key = "Ontology";
+						if (STATE_DIRECTION_MAP.containsKey(value)) { // e.g. "u"
+							List<String> ptmInfo = STATE_DIRECTION_MAP.get(value);
+							value = ptmInfo.get(0); // e.g. "positive regulation..."
+							xref = XrefUtils.createXref(ptmInfo.get(1), ptmInfo.get(2));
 						}
 					}
 					AnnotationType type = AnnotationType.register(key);
-					Annotation annotation = new Annotation(elementId, state.getPathwayModel(), value, type);					
-					state.getPathwayModel().addAnnotation(annotation);
+					Annotation annotation = new Annotation(elementId, state.getPathwayModel(), value, type);
+					if (xref != null)
+						annotation.setXref(xref);
+					// if equivalent annotation is already existing in pathway model, annotation is
+					// replaced by the existing annotation
+					annotation = state.getPathwayModel().addAnnotation(annotation);
 					// create new annotationRef
 					AnnotationRef annotationRef = new AnnotationRef(annotation, state);
 					state.addAnnotationRef(annotationRef);
-					// remove comment after creating annotation and annotationRef
-					state.removeComment(comment);
+					// add comment to list to be removed after creating annotation and annotationRef
+					commentsToRemove.add(comment);
 					Logger.log.trace(
 							"State " + state.getElementId() + " comment converted to Annotations/AnnotationRefs");
 				}
 			}
+		}
+		for (Comment comment : commentsToRemove) {
+			state.removeComment(comment);
 		}
 	}
 

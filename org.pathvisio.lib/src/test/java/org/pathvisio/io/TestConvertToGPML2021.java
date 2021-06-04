@@ -41,9 +41,11 @@ public class TestConvertToGPML2021 extends TestCase {
 	 * @throws ConverterException
 	 */
 	public static void testConvertToGPML2021() throws IOException, ConverterException {
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210510-gpml-Bos_taurus");
-		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021-other";
-
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210510-gpml-Bos_taurus");
+//		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021-other";
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021";
+		
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
 		for (int i = 0; i < listOfFiles.length; i++) {

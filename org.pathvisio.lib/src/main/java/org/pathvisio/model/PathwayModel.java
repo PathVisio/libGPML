@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import org.bridgedb.Xref;
@@ -101,7 +102,6 @@ public class PathwayModel {
 	public void setPathway(Pathway pathway) {
 		this.pathway = pathway;
 	}
-
 
 	/**
 	 * Returns a unique elementId.
@@ -199,12 +199,35 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds given annotation to annotations list.
+	 * Adds given annotation to annotations list. If there is an annotation with
+	 * equivalent properties in the pathway model, the given annotation is not added
+	 * and the equivalent annotation is returned.
 	 * 
-	 * @param annotation the annotation to be added.
+	 * @param annotation the new annotation to be added.
+	 * @return annotation the new annotation or the existing equivalent annotation.
 	 */
-	public void addAnnotation(Annotation annotation) {
+	public Annotation addAnnotation(Annotation annotation) {
+		for (Annotation annotationExisting : annotations) {
+			if (!annotationExisting.getValue().equals(annotation.getValue()))
+				continue;
+			if (!annotationExisting.getType().equals(annotation.getType()))
+				continue;
+			if (annotationExisting.getXref() != null) {
+				if (!Objects.equals(annotationExisting.getXref().getId(), annotation.getXref().getId()))
+					continue;
+				if (!Objects.equals(annotationExisting.getXref().getDataSource(), annotation.getXref().getDataSource()))
+					continue;
+			}
+			if (!Objects.equals(annotationExisting.getUrl(), annotation.getUrl()))
+				continue;
+			Logger.log.trace("New annotation is equivalent to existing annotation" + annotationExisting.getElementId()
+					+ ", not added to pathway model.");
+			annotation = annotationExisting;
+			return annotation;
+		}
+		// new annotation is not equal to any existing annotation, add to pathway model
 		annotations.add(annotation);
+		return annotation;
 	}
 
 	/**
@@ -226,12 +249,37 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds given citation to citations list.
+	 * Adds given citation to citations list. If there is an citation with
+	 * equivalent properties in the pathway model, the given citation is not added
+	 * and the equivalent citation is returned.
 	 * 
-	 * @param citation the citation to be added.
+	 * @param citation the new citation to be added.
+	 * @return citation the new citation or the existing equivalent citation.
 	 */
-	public void addCitation(Citation citation) {
+	public Citation addCitation(Citation citation) {
+		for (Citation citationExisting : citations) {
+			if (!citationExisting.getXref().getId().equals(citation.getXref().getId()))
+				continue;
+			if (!citationExisting.getXref().getDataSource().equals(citation.getXref().getDataSource()))
+				continue;
+			if (!Objects.equals(citationExisting.getUrl(), citation.getUrl()))
+				continue;
+			if (!Objects.equals(citationExisting.getTitle(), citation.getTitle()))
+				continue;
+			if (!Objects.equals(citationExisting.getSource(), citation.getSource()))
+				continue;
+			if (!Objects.equals(citationExisting.getYear(), citation.getYear()))
+				continue;
+			if (!Objects.equals(citationExisting.getAuthors(), citation.getAuthors()))
+				continue;
+			Logger.log.trace("New citation is equivalent to existing citation" + citationExisting.getElementId()
+					+ ", not added to pathway model.");
+			citation = citationExisting;
+			return citation;
+		}
+		// new citation is not equal to any existing citation, add to pathway model
 		citations.add(citation);
+		return citation;
 	}
 
 	/**

@@ -22,6 +22,7 @@ import java.net.URL;
 
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GPML2013aWriter;
+import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
@@ -42,7 +43,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	 */
 	public static void testReadWriteGPML() throws IOException, ConverterException {
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("Biopax_Source_Missing_Test_WP5037_115140.gpml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("State_Comment_Test_WP4263_105482.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
