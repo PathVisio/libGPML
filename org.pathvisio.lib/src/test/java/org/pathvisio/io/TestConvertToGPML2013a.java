@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -42,10 +43,12 @@ public class TestConvertToGPML2013a extends TestCase {
 	 */
 	public static void testConvertToGPML2013a() throws IOException, ConverterException {
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");
-		String outputDir = "C:/Users/p70073399/Documents/NEW................";
-
-		File[] listOfFiles = folderGPML2013a.listFiles();
-
+		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-back-to-GPML2013a";
+		File[] listOfFiles = folderGPML2013a.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".gpml");
+			}
+		});
 		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
@@ -62,7 +65,7 @@ public class TestConvertToGPML2013a extends TestCase {
 
 				/* write pathway model to xml */
 //				File tmp = File.createTempFile(file.getName() + "_to2021", ".gpml");
-//				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+//				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, outputFile, true);
 //				System.out.println(tmp);
 
 				/* method to assert file is same? */
