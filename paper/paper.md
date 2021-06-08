@@ -30,6 +30,17 @@ describing the high-level functionality and purpose of the software for a divers
 GPML (Graphical Pathway Markup Language) was originally... It was later ....libGPML is a Java library....that is more easily updated, built, released, and used. A subset of the original functionality is available, and some managers have already been updated to
 use more recent versions of dependencies.
 
+# Figures
+
+Figures can be included like this:
+![Caption for example figure.\label{fig:example}](figure.png)
+and referenced from text using \autoref{fig:example}.
+
+Figure sizes can be customized by adding an optional second parameter:
+![Caption for example figure.](figure.png){ width=20% }
+
+
+
 # Statement of Need
 clearly illustrates the research purpose of the software.
 
@@ -37,19 +48,10 @@ Moving to GPML2021 format....While pathvisio core library has served our researc
 this increasingly hard. ...
 
 # Implementation
-
-
-
 ## Continuous integration and releases
 
 
-## Updated dependencies of managers
 
-
-# Ported Functionality
-
-
-## Grabbing Bacting from Groovy
 
 
 # Use cases
