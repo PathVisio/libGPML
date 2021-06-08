@@ -33,9 +33,9 @@ public class TestDataNodeType extends TestCase {
 	 */
 	public static void testDataNodeType() {
 		
-		DataNodeType.register("Rna");
-		// should not add "RNA" as it is same as "Rna" aside from case 
 		DataNodeType.register("RNA");
+		// should not add "Rna" as it is same as "RNA" aside from case 
+		DataNodeType.register("Rna");
 		// should not add "comPLEX" as it is same as "Complex" aside from case 
 		DataNodeType.register("comPLEX");
 		// should add "new data node type" 
@@ -53,7 +53,7 @@ public class TestDataNodeType extends TestCase {
 		for (DataNodeType i: values) {
 			System.out.println(i);
 		}
-		System.out.println(names.contains("Food"));
+		assertTrue(names.contains("new data node type"));
 
 		System.out.println(DataNodeType.getNames());
 		

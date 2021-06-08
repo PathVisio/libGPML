@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 /**
  * Test for Group class. 
  * 
- * @author p70073399
+ * @author unknown, finterly
  */
 public class TestMGroup extends TestCase
 {
