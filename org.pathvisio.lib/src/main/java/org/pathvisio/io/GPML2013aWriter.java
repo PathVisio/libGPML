@@ -37,7 +37,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
-import org.pathvisio.model.elements.*;
+import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;

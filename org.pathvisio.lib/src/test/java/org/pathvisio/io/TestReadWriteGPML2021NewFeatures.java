@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.pathvisio.model.*;
-import org.pathvisio.model.elements.*;
+import org.pathvisio.model.element.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;

@@ -23,7 +23,7 @@ import java.net.URL;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
-import org.pathvisio.model.elements.*;
+import org.pathvisio.model.element.*;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;

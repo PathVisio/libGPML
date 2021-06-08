@@ -43,7 +43,7 @@ import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
-import org.pathvisio.model.elements.Group;
+import org.pathvisio.model.element.Group;
 import org.xml.sax.SAXException;
 
 /**

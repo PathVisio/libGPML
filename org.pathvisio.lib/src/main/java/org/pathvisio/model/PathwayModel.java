@@ -31,7 +31,7 @@ import org.pathvisio.debug.*;
 import org.pathvisio.io.*;
 import java.io.Reader;
 
-import org.pathvisio.model.elements.*;
+import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.Coordinate;
 
 /**
