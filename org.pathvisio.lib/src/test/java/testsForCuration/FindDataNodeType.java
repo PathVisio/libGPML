@@ -21,8 +21,7 @@ import org.pathvisio.io.ConverterException;
 import junit.framework.TestCase;
 
 /**
- * Test which searches for GPML2013a pathways with Biopax PublicationXref
- * rdf:ids which are not referenced by any BiopaxRef.
+ * Test which searches for datanode types of GPML2013a pathways.
  * 
  * @author finterly
  */

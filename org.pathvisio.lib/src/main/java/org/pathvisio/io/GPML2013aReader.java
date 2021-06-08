@@ -843,9 +843,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				String[] annotations = commentText.trim().split(";");
 				for (String annotation : annotations) {
 					String[] parts = annotation.trim().split("=");
-					if (STATE_ANNOTATIONTYPE_LIST.contains(parts[0])) // type
+					String type = parts[0];
+					if (type.equals("parent"))
+						type = "parentid";
+					if (STATE_ANNOTATIONTYPE_LIST.contains(type))// type
 						isAnnotation = true;
-					annotationsMap.put(parts[0], parts[1]); // type and value
+					annotationsMap.put(type, parts[1]); // type and value
 				}
 			}
 			// comment is determined to contain annotation information

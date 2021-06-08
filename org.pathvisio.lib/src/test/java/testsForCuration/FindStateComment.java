@@ -22,8 +22,7 @@ import org.pathvisio.io.ConverterException;
 import junit.framework.TestCase;
 
 /**
- * Test which searches for GPML2013a pathways with Biopax PublicationXref
- * rdf:ids which are not referenced by any BiopaxRef.
+ * Test which searches for state comments of GPML2013a pathways. 
  * 
  * @author finterly
  */
@@ -33,9 +32,7 @@ public class FindStateComment extends TestCase {
 	 * Searches for State comments for phosphosites in all GPMLs.
 	 */
 	public static void testStateComment() throws IOException, ConverterException {
-		// store all arrowHeadTypes for all organisms and all gpml
-		Set<String> dataNodeTypes = new HashSet<String>();
-//				Map<String, String> specificList = new HashMap<String, String>();
+		Map<String, Set<String>> foundFiles = new TreeMap<String, Set<String>>();
 		// Gets all organism directories
 		File dirAllOrganisms = new File("C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache");
 		String[] dirOrganisms = dirAllOrganisms.list(new FilenameFilter() {
@@ -58,6 +55,7 @@ public class FindStateComment extends TestCase {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
 					assertTrue(file.exists());
+					Set<String> commentTexts = new HashSet<String>();
 					try {
 						SAXBuilder builder = new SAXBuilder();
 						Document readDoc = builder.build(file);
@@ -67,8 +65,12 @@ public class FindStateComment extends TestCase {
 							List<Element> cmmts = dn.getChildren("Comment", dn.getNamespace());
 							for (Element cmmt : cmmts) {
 								String commentText = cmmt.getText();
-								System.out.println(commentText);
+								if (commentText.contains(";") || commentText.contains("="))
+									commentTexts.add(commentText);
 							}
+						}
+						if (!commentTexts.isEmpty()) {
+							foundFiles.put(file.getName(), commentTexts);
 						}
 					} catch (JDOMException e) {
 						e.printStackTrace();
@@ -78,6 +80,17 @@ public class FindStateComment extends TestCase {
 				}
 			}
 		}
-		System.out.println(dataNodeTypes);
+		Set<String> keys = foundFiles.keySet();
+		for (String key : keys) {
+			String keyPrint = key.substring(0, key.lastIndexOf('.'));
+//			if (foundFiles.get(key).toString().contains("="))
+			System.out.format("%s	%s " + "\n", keyPrint, foundFiles.get(key).toString());
+		}
+//		Set<String> keys2 = foundFiles.keySet();
+//		for (String key : keys2) {
+//			String keyPrint = key.substring(0, key.lastIndexOf('.'));
+//			if (!foundFiles.get(key).toString().contains("="))
+//				System.out.format("%s	%s " + "\n", keyPrint, foundFiles.get(key).toString());
+//		}
 	}
 }
