@@ -17,12 +17,12 @@
 package org.pathvisio.model.graphics;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.element.Point;
+import org.pathvisio.model.element.LinePoint;
 
 /**
  * This class holds coordinates x and y.
  * 
- * See use in {@link RectProperty}, {@link Point}
+ * See use in {@link RectProperty}, {@link LinePoint}
  * 
  * @author finterly
  */

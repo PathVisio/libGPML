@@ -72,7 +72,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
 
 		Document doc = createJdom(pathwayModel);
-
+				
 		if (validate)
 			validateDocument(doc); 
 		// Get the XML code
@@ -553,15 +553,15 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes point {@link Point} information.
+	 * Writes point {@link LinePoint} information.
 	 * 
 	 * @param points the list of points.
 	 * @param wyps   the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writePoints(List<Point> points, Element wyps) throws ConverterException {
+	protected void writePoints(List<LinePoint> points, Element wyps) throws ConverterException {
 		List<Element> ptList = new ArrayList<Element>();
-		for (Point point : points) {
+		for (LinePoint point : points) {
 			if (point == null)
 				continue;
 			Element pt = new Element("Point", wyps.getNamespace());

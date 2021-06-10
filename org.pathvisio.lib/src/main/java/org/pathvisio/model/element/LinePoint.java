@@ -23,11 +23,12 @@ import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.type.ArrowHeadType;
 
 /**
- * This class stores information for a Point pathway element.
+ * This class stores information for a Point pathway element. This class is named
+ * Point to avoid name conflict with awt.Point in downstream applications. 
  * 
  * @author finterly
  */
-public class Point extends PathwayElement {
+public class LinePoint extends PathwayElement {
 
 	private LineElement lineElement;
 	private ArrowHeadType arrowHead;
@@ -50,7 +51,7 @@ public class Point extends PathwayElement {
 	 * @param relX         the relative x coordinate.
 	 * @param relY         the relative x coordinate.
 	 */
-	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
+	public LinePoint(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
 		super(elementId, pathwayModel);
 		this.lineElement = lineElement;
@@ -71,7 +72,7 @@ public class Point extends PathwayElement {
 	 * @param arrowHead    the arrowhead property of the point (line by default).
 	 * @param xy           the xy coordinate position of the point.
 	 */
-	public Point(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
+	public LinePoint(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy) {
 		super(elementId, pathwayModel);
 		this.lineElement = lineElement;

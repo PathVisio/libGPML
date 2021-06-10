@@ -501,7 +501,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * pathway elements.
 	 * 
 	 * NB: A group has identifier GroupId (essentially ElementId), while GraphId is
-	 * optional. A group has GraphId if there is at least one {@link Point}
+	 * optional. A group has GraphId if there is at least one {@link LinePoint}
 	 * referring to this group by GraphRef. Because GroupIds may conflict with an
 	 * elementId, new unique elementIds (value) can be assigned with reference back
 	 * to the original GroupIds (key) in groupIdToNew map.
@@ -1035,7 +1035,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads points {@link Point} for pathway model line pathway elements. Points
+	 * Reads points {@link LinePoint} for pathway model line pathway elements. Points
 	 * must be read after the pathway elements they refer to. Therefore points are
 	 * read last in {@link #readFromRoot}.
 	 * 
@@ -1080,7 +1080,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));
 					// instantiates point
-					Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
+					LinePoint point = new LinePoint(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 					// adds point to line pathway element
 					if (point != null)
 						lineElement.addPoint(point);

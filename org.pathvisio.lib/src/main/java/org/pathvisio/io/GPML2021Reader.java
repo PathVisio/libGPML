@@ -702,7 +702,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads point {@link Point} information for line element from element.
+	 * Reads point {@link LinePoint} information for line element from element.
 	 * 
 	 * @param lineElement the line element object.
 	 * @param wyps        the waypoints element.
@@ -714,7 +714,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x").trim()),
 					Double.parseDouble(pt.getAttributeValue("y").trim()));
-			Point point = new Point(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
+			LinePoint point = new LinePoint(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
 			// adds point to lineElement (elementRef, relX, and relY read later)
 			if (point != null)
 				lineElement.addPoint(point);
@@ -762,7 +762,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads elementRef {@link Point#setElementRef} for pathway model points.
+	 * Reads elementRef {@link LinePoint#setElementRef} for pathway model points.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -782,7 +782,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 							PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
 							if (elementRef != null) {
 								String elementId = pt.getAttributeValue("elementId");
-								Point point = (Point) pathwayModel.getPathwayElement(elementId);
+								LinePoint point = (LinePoint) pathwayModel.getPathwayElement(elementId);
 								point.setElementRef(elementRef);
 								point.setRelX(Double.parseDouble(pt.getAttributeValue("relX").trim()));
 								point.setRelY(Double.parseDouble(pt.getAttributeValue("relY").trim()));

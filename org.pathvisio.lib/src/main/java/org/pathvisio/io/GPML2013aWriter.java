@@ -518,15 +518,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes point {@link Point} information.
+	 * Writes point {@link LinePoint} information.
 	 * 
 	 * @param points the list of points.
 	 * @param gfx    the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writePoints(List<Point> points, Element gfx) throws ConverterException {
+	protected void writePoints(List<LinePoint> points, Element gfx) throws ConverterException {
 		List<Element> ptList = new ArrayList<Element>();
-		for (Point point : points) {
+		for (LinePoint point : points) {
 			if (point == null)
 				continue;
 			Element pt = new Element("Point", gfx.getNamespace());
@@ -836,7 +836,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes point elementRef property information as GraphRef. When {@link Point}
+	 * Writes point elementRef property information as GraphRef. When {@link LinePoint}
 	 * refers to {@link Group}, GraphRef refers to the group GraphId rather than
 	 * GroupId. This method is used only by {@link #writePoints}
 	 * 

@@ -50,9 +50,12 @@ public class TestReadWriteGPML2013a extends TestCase {
 
 //		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 //		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-back-to-GPML2013a");
-		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
-
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-back-to-GPML2013a");
+//		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
+		
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/gpmlsample_2013a_original");
+		String outputDir = "C:/Users/p70073399/Documents/gpmlsample_2013a_new";
+		
 		File[] listOfFiles = folderGPML2013a.listFiles();
 
 		for (int i = 0; i < listOfFiles.length; i++) {

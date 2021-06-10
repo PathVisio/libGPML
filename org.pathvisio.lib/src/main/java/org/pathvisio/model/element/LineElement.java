@@ -30,7 +30,7 @@ import org.pathvisio.model.graphics.LineStyleProperty;
  */
 public abstract class LineElement extends ElementInfo {
 
-	private List<Point> points; // minimum 2
+	private List<LinePoint> points; // minimum 2
 	private List<Anchor> anchors;
 	private LineStyleProperty lineStyleProperty;
 
@@ -55,7 +55,7 @@ public abstract class LineElement extends ElementInfo {
 	public LineElement(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
 			Group groupRef) {
 		super(elementId, pathwayModel);
-		this.points = new ArrayList<Point>(); // should have at least two points
+		this.points = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
 		if (groupRef != null) {
@@ -76,12 +76,12 @@ public abstract class LineElement extends ElementInfo {
 	 * 
 	 * @return points the list of points, an empty list if no anchors are defined.
 	 */
-	public List<Point> getPoints() {
+	public List<LinePoint> getPoints() {
 		return points;
 	}
 
 	// TODO needed?
-	public void setPoints(List<Point> points) {
+	public void setPoints(List<LinePoint> points) {
 		if (points != null) {
 			if (points.size() < 2) {
 				throw new IllegalArgumentException("Points array should at least have two elements");
@@ -95,7 +95,7 @@ public abstract class LineElement extends ElementInfo {
 	 * 
 	 * @param point the point to be added.
 	 */
-	public void addPoint(Point point) {
+	public void addPoint(LinePoint point) {
 		points.add(point);
 	}
 
@@ -104,17 +104,17 @@ public abstract class LineElement extends ElementInfo {
 	 * 
 	 * @param point the point to be removed.
 	 */
-	public void removePoint(Point point) {
+	public void removePoint(LinePoint point) {
 		points.remove(point);
 	}
 
 	// TODO necessary method?
-	public Point getStartPoint() {
+	public LinePoint getStartPoint() {
 		return points.get(0);
 	}
 
 	// TODO necessary method?
-	public Point getEndPoint() {
+	public LinePoint getEndPoint() {
 		return points.get(points.size() - 1);
 	}
 

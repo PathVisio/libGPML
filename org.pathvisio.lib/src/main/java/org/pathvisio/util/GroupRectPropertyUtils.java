@@ -102,9 +102,9 @@ public class GroupRectPropertyUtils {
 	 *         coordinates.
 	 */
 	public static Rectangle2D getLineElementBound(LineElement lineElement) {
-		List<Point> points = lineElement.getPoints();
-		Point point1 = points.get(0); // first point
-		Point point2 = points.get(points.size() - 1); // last point
+		List<LinePoint> points = lineElement.getPoints();
+		LinePoint point1 = points.get(0); // first point
+		LinePoint point2 = points.get(points.size() - 1); // last point
 		double x1 = point1.getXY().getX();
 		double x2 = point2.getXY().getX();
 		double y1 = point1.getXY().getY();
