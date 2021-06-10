@@ -439,6 +439,17 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				}
 			}
 			annotationsMap.put(type, value);
+			// specially handle sitegrpid
+			if (type.equalsIgnoreCase(STATE_COMMENT_SITE)) {
+				Xref xref = annotationRef.getAnnotation().getXref();
+				if (xref != null) {
+					String identifier = xref.getId();
+					String dataSource = XrefUtils.getXrefDataSourceStrGPML2013a(xref.getDataSource());
+					if (dataSource.equals(SITEGRPID_DATASOURCE) && identifier != null && !identifier.equals("")) {
+						annotationsMap.put(STATE_COMMENT_SITE, identifier);
+					}
+				}
+			}
 		}
 		// if there are annotations, create commentText string from annotations
 		if (!annotationsMap.isEmpty()) {
@@ -835,9 +846,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes point elementRef property information as GraphRef. When {@link LinePoint}
-	 * refers to {@link Group}, GraphRef refers to the group GraphId rather than
-	 * GroupId. This method is used only by {@link #writePoints}
+	 * Writes point elementRef property information as GraphRef. When
+	 * {@link LinePoint} refers to {@link Group}, GraphRef refers to the group
+	 * GraphId rather than GroupId. This method is used only by {@link #writePoints}
 	 * 
 	 * @param elementRef the pathway element point refers to. .
 	 * @param pt         the jdom point element.

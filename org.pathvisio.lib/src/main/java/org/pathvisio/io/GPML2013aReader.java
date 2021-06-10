@@ -876,9 +876,24 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					if (key.equalsIgnoreCase(STATE_COMMENT_DIRECTION)) {
 						key = "Ontology";
 						if (STATE_DIRECTION_MAP.containsKey(value)) { // e.g. "u"
-							List<String> ptmInfo = STATE_DIRECTION_MAP.get(value);
-							value = ptmInfo.get(0); // e.g. "positive regulation..."
-							xref = XrefUtils.createXref(ptmInfo.get(1), ptmInfo.get(2));
+							List<String> dirInfo = STATE_DIRECTION_MAP.get(value);
+							value = dirInfo.get(0); // e.g. "positive regulation..."
+							xref = XrefUtils.createXref(dirInfo.get(1), dirInfo.get(2));
+						}
+					}
+					// special handling if annotation type is "site"
+					if (key.equalsIgnoreCase(STATE_COMMENT_SITE)) {
+						if (annotationsMap.containsKey(STATE_COMMENT_SITEGRPID)) {
+							String identifier = annotationsMap.get(STATE_COMMENT_SITEGRPID);
+							xref = XrefUtils.createXref(identifier, SITEGRPID_DATASOURCE);
+						}
+					}
+					// skip annotation type "sitegrpid" if annotation type "site" exists TODO
+					if (key.equalsIgnoreCase(STATE_COMMENT_SITE)) {
+						if (annotationsMap.containsKey(STATE_COMMENT_SITE)) {
+							continue;
+						} else {
+							throw new ConverterException("State comment sitegrpid without site information");
 						}
 					}
 					AnnotationType type = AnnotationType.register(key);

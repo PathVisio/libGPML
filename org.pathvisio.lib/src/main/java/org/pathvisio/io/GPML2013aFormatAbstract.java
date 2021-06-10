@@ -177,6 +177,9 @@ public abstract class GPML2013aFormatAbstract {
 	 */
 	public final static String STATE_COMMENT_PTM = "ptm";
 	public final static String STATE_COMMENT_DIRECTION = "direction";
+	public final static String STATE_COMMENT_SITE = "site";
+	public final static String STATE_COMMENT_SITEGRPID = "sitegrpid";
+	public final static String SITEGRPID_DATASOURCE ="phosphositeplus";
 
 	public static final Map<String, List<String>> STATE_PTM_MAP = new HashMap<String, List<String>>();
 	static {
