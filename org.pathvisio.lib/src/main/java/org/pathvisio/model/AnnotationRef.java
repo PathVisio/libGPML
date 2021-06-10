@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class stores information for an AnnotationRef.
+ * This class stores information for an AnnotationRef which references a
+ * {@link Annotation} and can contain citationRefs {@link CitationRef} or
+ * evidenceRefs {@link Evidence}.
  * 
  * @author finterly
  */
@@ -36,7 +38,7 @@ public class AnnotationRef {
 	 * and initializes citation and evidence lists.
 	 * 
 	 * @param annotation     the Annotation this AnnotationRef refers to.
-	 * @param pathwayElement the pathway element to which the annotationRef belongs.
+	 * @param pathwayElement the pathway element to which the AnnotationRef belongs.
 	 */
 	public AnnotationRef(Annotation annotation, PathwayElement pathwayElement) {
 		this.annotation = annotation;
@@ -47,7 +49,7 @@ public class AnnotationRef {
 
 	/**
 	 * Instantiates an AnnotationRef given annotation and initializes citation and
-	 * evidence lists. No pathway element is given as this annotationRef belongs to
+	 * evidence lists. No pathway element is given as this AnnotationRef belongs to
 	 * the {@link Pathway}.
 	 * 
 	 * @param annotation the Annotation this AnnotationRef refers to.
@@ -57,16 +59,16 @@ public class AnnotationRef {
 	}
 
 	/**
-	 * Returns the parent pathway element to which the annotationRef belongs.
+	 * Returns the parent pathway element to which the AnnotationRef belongs.
 	 * 
-	 * @return pathwayElement the parent pathway element the annotationRef.
+	 * @return pathwayElement the parent pathway element the AnnotationRef.
 	 */
 	public PathwayElement getPathwayElement() {
 		return pathwayElement;
 	}
 
 	/**
-	 * Sets the parent pathway element to which the annotationRef belongs.
+	 * Sets the parent pathway element to which the AnnotationRef belongs.
 	 * 
 	 * @param pathwayElement the parent pathway element the annotationRef.
 	 */

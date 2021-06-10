@@ -49,7 +49,7 @@ public class Pathway {
 	private List<Comment> comments;
 	private Map<String, String> dynamicProperties;
 	private List<AnnotationRef> annotationRefs;
-	private List<Citation> citationRefs;
+	private List<CitationRef> citationRefs;
 	private List<Evidence> evidenceRefs;
 	private String organism;
 	private String source;
@@ -73,7 +73,7 @@ public class Pathway {
 		private List<Comment> comments;
 		private Map<String, String> dynamicProperties;
 		private List<AnnotationRef> annotationRefs;
-		private List<Citation> citationRefs;
+		private List<CitationRef> citationRefs;
 		private List<Evidence> evidenceRefs;
 		private String organism; // optional
 		private String source; // optional
@@ -103,7 +103,7 @@ public class Pathway {
 			this.comments = new ArrayList<Comment>(); // 0 to unbounded
 			this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 			this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
-			this.citationRefs = new ArrayList<Citation>(); // 0 to unbounded
+			this.citationRefs = new ArrayList<CitationRef>(); // 0 to unbounded
 			this.evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
 		}
 
@@ -450,11 +450,11 @@ public class Pathway {
 	}
 
 	/**
-	 * Returns the list of citations referenced.
+	 * Returns the list of citationRefs.
 	 * 
 	 * @return citationRefs the list of citations referenced.
 	 */
-	public List<Citation> getCitationRefs() {
+	public List<CitationRef> getCitationRefs() {
 		return citationRefs;
 	}
 
@@ -463,7 +463,7 @@ public class Pathway {
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
-	public void addCitationRef(Citation citationRef) {
+	public void addCitationRef(CitationRef citationRef) {
 		citationRefs.add(citationRef);
 	}
 
@@ -472,7 +472,7 @@ public class Pathway {
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
-	public void removeCitationRef(Citation citationRef) {
+	public void removeCitationRef(CitationRef citationRef) {
 		citationRefs.remove(citationRef);
 	}
 

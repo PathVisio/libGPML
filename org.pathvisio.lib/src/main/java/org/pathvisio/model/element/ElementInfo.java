@@ -24,6 +24,7 @@ import java.util.TreeMap;
 
 import org.pathvisio.model.AnnotationRef;
 import org.pathvisio.model.Citation;
+import org.pathvisio.model.CitationRef;
 import org.pathvisio.model.Comment;
 import org.pathvisio.model.Evidence;
 import org.pathvisio.model.PathwayElement;
@@ -47,7 +48,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 */
 	private Map<String, String> dynamicProperties;
 	private List<AnnotationRef> annotationRefs;
-	private List<Citation> citationRefs;
+	private List<CitationRef> citationRefs;
 	private List<Evidence> evidenceRefs;
 
 	/**
@@ -61,7 +62,7 @@ public abstract class ElementInfo extends PathwayElement {
 		this.comments = new ArrayList<Comment>(); // 0 to unbounded
 		this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
-		this.citationRefs = new ArrayList<Citation>(); // 0 to unbounded
+		this.citationRefs = new ArrayList<CitationRef>(); // 0 to unbounded
 		this.evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
 	}
 
@@ -183,7 +184,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * @return citationRefs the list of citations referenced, an empty list if no
 	 *         properties are defined.
 	 */
-	public List<Citation> getCitationRefs() {
+	public List<CitationRef> getCitationRefs() {
 		return citationRefs;
 	}
 
@@ -192,8 +193,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
-	public void addCitationRef(Citation citationRef) {
-		citationRef.addPathwayElement(this);
+	public void addCitationRef(CitationRef citationRef) {
 		citationRefs.add(citationRef);
 	}
 
@@ -202,8 +202,7 @@ public abstract class ElementInfo extends PathwayElement {
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
-	public void removeCitationRef(Citation citationRef) {
-		citationRef.removePathwayElement(this);
+	public void removeCitationRef(CitationRef citationRef) {
 		citationRefs.remove(citationRef);
 	}
 
