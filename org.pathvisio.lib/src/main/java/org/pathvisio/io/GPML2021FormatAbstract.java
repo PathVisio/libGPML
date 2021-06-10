@@ -85,6 +85,38 @@ public abstract class GPML2021FormatAbstract {
 	}
 
 	/**
+	 * Default values necessary for reading with validation off
+	 */
+	public final static String BACKGROUNDCOLOR_DEFAULT = "ffffff";
+	public final static String GROUPTYPE_DEFAULT = "Group";
+	public final static String DATANODETYPE_DEFAULT = "Undefined";
+	public final static String STATETYPE_DEFAULT = "Undefined";
+	public final static String ARROWHEAD_DEFAULT = "Undirected";
+	public final static String ANCHORSHAPETYPE_DEFAULT = "Square";
+	public final static String ANNOTATIONTYPE_DEFAULT = "Undefined";
+	// font properties
+	public final static String TEXTCOLOR_DEFAULT = "000000";
+	public final static String FONTNAME_DEFAULT = "Arial";
+	public final static String FONTWEIGHT_DEFAULT = "Normal";
+	public final static String FONTSTYLE_DEFAULT = "Normal";
+	public final static String FONTDECORATION_DEFAULT = "Normal";
+	public final static String FONTSTRIKETHRU_DEFAULT = "Normal";
+	public final static String FONTSIZE_DEFAULT = "12";
+	public final static String HALIGN_DEFAULT = "Center";
+	public final static String VALIGN_DEFAULT = "Middle";
+	// shape style properties
+	public final static String BORDERCOLOR_DEFAULT = "000000";
+	public final static String BORDERSTYLE_DEFAULT = "Solid";
+	public final static String BORDERWIDTH_DEFAULT = "1.0";
+	public final static String FILLCOLOR_DEFAULT = "ffffff";
+	public final static String SHAPETYPE_DEFAULT = "Rectangle";
+	// line style properties
+	public final static String LINECOLOR_DEFAULT = "000000";
+	public final static String LINESTYLE_DEFAULT = "Solid";
+	public final static String LINEWIDTH_DEFAULT = "1.0";
+	public final static String CONNECTORTYPE_DEFAULT = "Straight";
+	
+	/**
 	 * Removes group from pathwayModel if empty. Check executed after reading and
 	 * before writing.
 	 * 

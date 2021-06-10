@@ -358,11 +358,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e            the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writeCitationRefs(List<Citation> citationRefs, Element e) throws ConverterException {
+	protected void writeCitationRefs(List<CitationRef> citationRefs, Element e) throws ConverterException {
 		if (e != null) {
-			for (Citation citationRef : citationRefs) {
+			for (CitationRef citationRef : citationRefs) {
 				Element citRef = new Element("CitationRef", e.getNamespace());
-				citRef.setAttribute("elementRef", citationRef.getElementId());
+				citRef.setAttribute("elementRef", citationRef.getCitation().getElementId());
 				if (citRef != null)
 					e.addContent(citRef);
 			}

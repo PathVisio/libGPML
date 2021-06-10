@@ -468,10 +468,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (biopaxIdToNew.containsKey(biopaxRef))
 				biopaxRef = biopaxIdToNew.get(biopaxRef);
 			// given the correct biopaxRef/elementId, retrieves citation referenced
-			Citation citationRef = (Citation) pathwayModel.getPathwayElement(biopaxRef);
-			// adds citationRef to pathway model
-			if (citationRef != null) {
-				pathwayModel.getPathway().addCitationRef(citationRef);
+			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
+			if (citation != null) {
+				// create new citationRef for citation referenced
+				CitationRef citationRef = new CitationRef(citation);
+				// adds citationRef to pathway element of pathway model
+				if (citationRef != null)
+					pathwayModel.getPathway().addCitationRef(citationRef);
 			}
 		}
 	}
@@ -1035,9 +1038,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads points {@link LinePoint} for pathway model line pathway elements. Points
-	 * must be read after the pathway elements they refer to. Therefore points are
-	 * read last in {@link #readFromRoot}.
+	 * Reads points {@link LinePoint} for pathway model line pathway elements.
+	 * Points must be read after the pathway elements they refer to. Therefore
+	 * points are read last in {@link #readFromRoot}.
 	 * 
 	 * NB: points refer to a group by its GraphId not GroupId(essentially
 	 * elementId). If the pathway element referenced by a point is a group, we must
@@ -1080,7 +1083,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));
 					// instantiates point
-					LinePoint point = new LinePoint(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
+					LinePoint point = new LinePoint(elementId, lineElement.getPathwayModel(), lineElement, arrowHead,
+							xy);
 					// adds point to line pathway element
 					if (point != null)
 						lineElement.addPoint(point);
@@ -1263,10 +1267,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (biopaxIdToNew.containsKey(biopaxRef))
 				biopaxRef = biopaxIdToNew.get(biopaxRef);
 			// given the correct biopaxRef/elementId, retrieves citation referenced
-			Citation citationRef = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRef);
-			// adds citationRef to pathway element of pathway model
-			if (citationRef != null)
-				elementInfo.addCitationRef(citationRef);
+			Citation citation = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRef);
+			if (citation != null) {
+				// create new citationRef for citation referenced
+				CitationRef citationRef = new CitationRef(citation, elementInfo);
+				// adds citationRef to pathway element of pathway model
+				if (citationRef != null)
+					elementInfo.addCitationRef(citationRef);
+			}
+
 		}
 	}
 

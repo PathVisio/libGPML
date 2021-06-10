@@ -57,38 +57,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
 
 	/**
-	 * Default values necessary for reading with validation off
-	 */
-	public final static String BACKGROUNDCOLOR_DEFAULT = "ffffff";
-	public final static String GROUPTYPE_DEFAULT = "Group";
-	public final static String DATANODETYPE_DEFAULT = "Undefined";
-	public final static String STATETYPE_DEFAULT = "Undefined";
-	public final static String ARROWHEAD_DEFAULT = "Undirected";
-	public final static String ANCHORSHAPETYPE_DEFAULT = "Square";
-	public final static String ANNOTATIONTYPE_DEFAULT = "Undefined";
-	// font properties
-	public final static String TEXTCOLOR_DEFAULT = "000000";
-	public final static String FONTNAME_DEFAULT = "Arial";
-	public final static String FONTWEIGHT_DEFAULT = "Normal";
-	public final static String FONTSTYLE_DEFAULT = "Normal";
-	public final static String FONTDECORATION_DEFAULT = "Normal";
-	public final static String FONTSTRIKETHRU_DEFAULT = "Normal";
-	public final static String FONTSIZE_DEFAULT = "12";
-	public final static String HALIGN_DEFAULT = "Center";
-	public final static String VALIGN_DEFAULT = "Middle";
-	// shape style properties
-	public final static String BORDERCOLOR_DEFAULT = "000000";
-	public final static String BORDERSTYLE_DEFAULT = "Solid";
-	public final static String BORDERWIDTH_DEFAULT = "1.0";
-	public final static String FILLCOLOR_DEFAULT = "ffffff";
-	public final static String SHAPETYPE_DEFAULT = "Rectangle";
-	// line style properties
-	public final static String LINECOLOR_DEFAULT = "000000";
-	public final static String LINESTYLE_DEFAULT = "Solid";
-	public final static String LINEWIDTH_DEFAULT = "1.0";
-	public final static String CONNECTORTYPE_DEFAULT = "Straight";
-
-	/**
 	 * Constructor for GPML reader.
 	 * 
 	 * @param xsdFile the schema file.
@@ -413,9 +381,13 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void readPathwayCitationRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
 		for (Element citRef : root.getChildren("CitationRef", root.getNamespace())) {
-			Citation citationRef = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
-			if (citationRef != null)
-				pathwayModel.getPathway().addCitationRef(citationRef);
+			Citation citation = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
+			if (citation != null) {
+				// create new citationRef for citation referenced
+				CitationRef citationRef = new CitationRef(citation);
+				if (citationRef != null)
+					pathwayModel.getPathway().addCitationRef(citationRef);
+			}
 		}
 	}
 
@@ -566,7 +538,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				String textLabel = dn.getAttributeValue("textLabel");
-				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT)); 
+				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT));
 				DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty,
 						shapeStyleProperty, textLabel, type);
 				// reads comment group, evidenceRefs
@@ -890,10 +862,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void readCitationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
 		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
-			Citation citationRef = (Citation) elementInfo.getPathwayModel()
+			Citation citation = (Citation) elementInfo.getPathwayModel()
 					.getPathwayElement(citRef.getAttributeValue("elementRef"));
-			if (citationRef != null) {
-				elementInfo.addCitationRef(citationRef);
+			if (citation != null) {
+				// create new citationRef for citation referenced
+				CitationRef citationRef = new CitationRef(citation, elementInfo);
+				if (citationRef != null) {
+					elementInfo.addCitationRef(citationRef);
+				}
 			}
 		}
 	}
@@ -940,7 +916,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
-		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor", TEXTCOLOR_DEFAULT)); 
+		Color textColor = ColorUtils.stringToColor(gfx.getAttributeValue("textColor", TEXTCOLOR_DEFAULT));
 		String fontName = gfx.getAttributeValue("fontName", FONTNAME_DEFAULT);
 		boolean fontWeight = gfx.getAttributeValue("fontWeight", FONTWEIGHT_DEFAULT).equalsIgnoreCase("Bold");
 		boolean fontStyle = gfx.getAttributeValue("fontStyle", FONTSTYLE_DEFAULT).equals("Italic");

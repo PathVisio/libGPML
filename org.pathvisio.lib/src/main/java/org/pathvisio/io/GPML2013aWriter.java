@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.bridgedb.DataSource;
@@ -298,11 +297,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e            the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writeBiopaxRefs(List<Citation> citationRefs, Element e) throws ConverterException {
+	protected void writeBiopaxRefs(List<CitationRef> citationRefs, Element e) throws ConverterException {
 		if (e != null) {
-			for (Citation citationRef : citationRefs) {
+			for (CitationRef citationRef : citationRefs) {
 				Element bpRef = new Element("BiopaxRef", e.getNamespace());
-				bpRef.setText(citationRef.getElementId());
+				bpRef.setText(citationRef.getCitation().getElementId());
 				if (bpRef != null)
 					e.addContent(bpRef);
 			}
