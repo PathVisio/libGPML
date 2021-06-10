@@ -8,7 +8,11 @@
 		<Author name="Egonw" username="Egon Willighagen" order="2"/>
 	</Authors>
 	<Comment source="WikiPathways-description">Description of the pathway</Comment>
-	<AnnotationRef elementRef="a1"/>
+	<AnnotationRef elementRef="a1">
+		<CitationRef elementRef="cbc">
+			<AnnotationRef elementRef="a2"/>
+		</CitationRef>
+	</AnnotationRef>
 	<AnnotationRef elementRef="a2"/>
 	<AnnotationRef elementRef="a3"/>
 	<Graphics boardWidth="543.9626948775056" boardHeight="279.2271714922049"/>
