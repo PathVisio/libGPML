@@ -889,7 +889,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						}
 					}
 					// skip annotation type "sitegrpid" if annotation type "site" exists TODO
-					if (key.equalsIgnoreCase(STATE_COMMENT_SITE)) {
+					if (key.equalsIgnoreCase(STATE_COMMENT_SITEGRPID)) {
 						if (annotationsMap.containsKey(STATE_COMMENT_SITE)) {
 							continue;
 						} else {

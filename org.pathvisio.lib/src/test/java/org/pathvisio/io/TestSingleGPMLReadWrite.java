@@ -39,7 +39,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	 */
 	public static void testReadWriteGPML() throws IOException, ConverterException {
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("WP4206.gpml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("State_Comment_Test_WP1602.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());

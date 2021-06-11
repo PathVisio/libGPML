@@ -52,6 +52,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
+	private static final String STATE_COMMENT_SITE_GRPID = null;
 
 	/**
 	 * Constructor for GPML2013aWriter.
@@ -444,9 +445,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				Xref xref = annotationRef.getAnnotation().getXref();
 				if (xref != null) {
 					String identifier = xref.getId();
+					System.out.println(identifier);
 					String dataSource = XrefUtils.getXrefDataSourceStrGPML2013a(xref.getDataSource());
 					if (dataSource.equals(SITEGRPID_DATASOURCE) && identifier != null && !identifier.equals("")) {
-						annotationsMap.put(STATE_COMMENT_SITE, identifier);
+						annotationsMap.put(STATE_COMMENT_SITEGRPID, identifier);
 					}
 				}
 			}
