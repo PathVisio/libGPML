@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package testsForCuration;
+package org.pathvisio.io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestConvertToGPML2021WithXref extends TestCase {
+public class TestConvertAllToGPML2021WithXref extends TestCase {
 
 	/**
 	 * For testing conversion GPML2013a to newer GPML2021. Reading a directory of

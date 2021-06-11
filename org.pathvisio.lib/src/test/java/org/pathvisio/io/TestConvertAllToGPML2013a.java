@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package testsForCuration;
+package org.pathvisio.io;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GPML2013aWriter;
 import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
 import org.xml.sax.SAXException;
@@ -31,21 +32,21 @@ import org.xml.sax.SAXException;
 import junit.framework.TestCase;
 
 /**
- * Test for conversion of GPML2013a to GPML2021.
+ * Test for conversion of GPML2021 to GPML2013a.
  * 
  * @author finterly
  */
-public class TestConvertToGPML2021 extends TestCase {
+public class TestConvertAllToGPML2013a extends TestCase {
 
 	/**
-	 * For testing conversion GPML2013a to newer GPML2021. Reading a directory of
-	 * GPML2013a files and writing to GPML2021 format. Assert output equivalent to
-	 * input.
+	 * For testing conversion GPML2021 to older GPML2013a. Reading a directory of
+	 * GPML2021 files and writing newer to GPML2013a format. Assert output
+	 * equivalent to input.
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
 	 */
-	public static void testConvertToGPML2021() throws IOException, ConverterException {
+	public static void testConvertToGPML2013a() throws IOException, ConverterException {
 		// Gets all organism directories
 		File dirAllOrganisms = new File("C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache");
 		String[] dirOrganisms = dirAllOrganisms.list(new FilenameFilter() {
@@ -73,10 +74,10 @@ public class TestConvertToGPML2021 extends TestCase {
 					PathwayModel pathwayModel = new PathwayModel();
 					pathwayModel.readFromXml(file, true);
 
-//				/* write pathway model to xml */
-//				File outputFile = new File(outputDir, file.getName());
-//				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, true);
-//				System.out.println(outputFile);
+//					/* write pathway model to xml */
+//					File outputFile = new File(outputDir, file.getName());
+//					GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, outputFile, true);
+//					System.out.println(outputFile);
 
 					/* write pathway model to xml */
 					File tmp = File.createTempFile(file.getName() + "_to2021", ".gpml");
@@ -89,7 +90,6 @@ public class TestConvertToGPML2021 extends TestCase {
 					System.out.println("Directory " + listOfFiles[i].getName());
 				}
 			}
-
 		}
 	}
 }

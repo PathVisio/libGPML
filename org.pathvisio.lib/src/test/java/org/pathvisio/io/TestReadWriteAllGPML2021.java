@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package testsForCuration;
+package org.pathvisio.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestReadWriteGPML2021 extends TestCase {
+public class TestReadWriteAllGPML2021 extends TestCase {
 
 	
 	/**

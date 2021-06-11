@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package testsForCuration;
+package org.pathvisio.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestReadWriteGPML2021NewFeatures extends TestCase {
+public class TestReadWriteAllGPML2021NewFeatures extends TestCase {
 
 	/**
 	 * For testing GPML2021 new features. A base GPML2013a is read in and new
