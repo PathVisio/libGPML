@@ -24,7 +24,7 @@ import org.pathvisio.model.type.ArrowHeadType;
 
 /**
  * This class stores information for a Point pathway element. This class is named
- * Point to avoid name conflict with awt.Point in downstream applications. 
+ * LinePoint to avoid name conflict with awt.Point in downstream applications. 
  * 
  * @author finterly
  */

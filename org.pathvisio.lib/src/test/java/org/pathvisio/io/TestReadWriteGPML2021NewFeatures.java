@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.type.*;
@@ -72,7 +74,9 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		// adds evidenceRef to annotationRef
 		annotationRef1.addEvidenceRef(evidence2);
 		// adds citation b9d pathwayModel to annotationRef as citationRef
-		annotationRef1.addCitationRef(pathwayModel.getCitations().get(1));
+		Citation citation1 =  pathwayModel.getCitations().get(2);
+		CitationRef citationRef1 = new CitationRef(citation1); 
+		annotationRef1.addCitationRef(citationRef1);
 
 		/**
 		 * Customize graphics features, change shapeType of virus to customized shape
@@ -108,6 +112,9 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		alias2.setElementRef(group2);
 		alias2.setGroupRef(group1);
 
+		System.out.println(citation1.getElementId());
+		System.out.println(citation1.getParents());
+		
 		/*
 		 * Write to GPML2021
 		 */

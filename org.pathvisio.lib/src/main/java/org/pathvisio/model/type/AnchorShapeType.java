@@ -28,14 +28,14 @@ import org.pathvisio.debug.Logger;
  * 
  * @author unknown, finterly
  */
-public class AnchorType {
+public class AnchorShapeType {
 
-	private static Map<String, AnchorType> nameToAnchorType = new TreeMap<String, AnchorType>(
+	private static Map<String, AnchorShapeType> nameToAnchorShapeType = new TreeMap<String, AnchorShapeType>(
 			String.CASE_INSENSITIVE_ORDER);
 
-	public static final AnchorType SQUARE = new AnchorType("Square"); // default
-	public static final AnchorType CIRCLE = new AnchorType("Circle");
-	public static final AnchorType NONE = new AnchorType("None");
+	public static final AnchorShapeType SQUARE = new AnchorShapeType("Square"); // default
+	public static final AnchorShapeType CIRCLE = new AnchorShapeType("Circle");
+	public static final AnchorShapeType NONE = new AnchorShapeType("None");
 
 	private String name;
 
@@ -44,12 +44,12 @@ public class AnchorType {
 	 * 
 	 * @param name the string key.
 	 */
-	private AnchorType(String name) {
+	private AnchorShapeType(String name) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
 		this.name = name;
-		nameToAnchorType.put(name, this); // adds this name and ShapeType to map.
+		nameToAnchorShapeType.put(name, this); // adds this name and ShapeType to map.
 	}
 
 	/**
@@ -61,12 +61,12 @@ public class AnchorType {
 	 * @return the AnchorType for given name. If name does not exist, creates and
 	 *         returns a new AnchorType.
 	 */
-	public static AnchorType register(String name) {
-		if (nameToAnchorType.containsKey(name)) {
-			return nameToAnchorType.get(name);
+	public static AnchorShapeType register(String name) {
+		if (nameToAnchorShapeType.containsKey(name)) {
+			return nameToAnchorShapeType.get(name);
 		} else {
 			Logger.log.trace("Registered anchor type " + name);
-			return new AnchorType(name);
+			return new AnchorShapeType(name);
 		}
 	}
 
@@ -85,8 +85,8 @@ public class AnchorType {
 	 * @param name the string key.
 	 * @return the AnchorType with given string name.
 	 */
-	public static AnchorType fromName(String name) {
-		return nameToAnchorType.get(name);
+	public static AnchorShapeType fromName(String name) {
+		return nameToAnchorShapeType.get(name);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class AnchorType {
 	 * @return names the names of all registered AnchorTypes in order of insertion.
 	 */
 	static public List<String> getNames() {
-		List<String> names = new ArrayList<>(nameToAnchorType.keySet());
+		List<String> names = new ArrayList<>(nameToAnchorShapeType.keySet());
 		return names;
 	}
 
@@ -104,8 +104,8 @@ public class AnchorType {
 	 * 
 	 * @return anchorTypes the list of all registered AnchorType.
 	 */
-	static public List<AnchorType> getValues() {
-		List<AnchorType> anchorTypes = new ArrayList<>(nameToAnchorType.values());
+	static public List<AnchorShapeType> getValues() {
+		List<AnchorShapeType> anchorTypes = new ArrayList<>(nameToAnchorShapeType.values());
 		return anchorTypes;
 	}
 
@@ -126,7 +126,7 @@ public class AnchorType {
 	 *         number if first string is less than second string lexicographically,
 	 *         and 0 if first string is lexicographically equal to second string.
 	 */
-	public int compareTo(AnchorType o) {
+	public int compareTo(AnchorShapeType o) {
 		return toString().compareTo(o.toString());
 	}
 }

@@ -33,6 +33,7 @@ import java.io.Reader;
 
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.Coordinate;
+import org.pathvisio.model.type.ArrowHeadType;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
@@ -113,16 +114,6 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Returns a set view of String elementId keys from the
-	 * elementIdToPathwayElements hash map.
-	 * 
-	 * @return a set of elementId keys.
-	 */
-	public Set<String> getElementIds() {
-		return elementIdToPathwayElement.keySet();
-	}
-
-	/**
 	 * Returns PathwayElement for the given String elementId key.
 	 * 
 	 * @param elementId the given elementId key.
@@ -130,6 +121,28 @@ public class PathwayModel {
 	 */
 	public PathwayElement getPathwayElement(String elementId) {
 		return elementIdToPathwayElement.get(elementId);
+	}
+
+	/**
+	 * Returns a list view of String elementId keys from the
+	 * elementIdToPathwayElements hash map.
+	 * 
+	 * @return a list of elementId keys.
+	 */
+	public List<String> getElementIds() {
+		List<String> elementIds = new ArrayList<>(elementIdToPathwayElement.keySet());
+		return elementIds;
+	}
+
+	/**
+	 * Returns all PathwayElement for the pathway model.
+	 * 
+	 * @param elementId the given elementId key.
+	 * @return the PathwayElement for the given elementId key.
+	 */
+	public List<PathwayElement> getPathwayElements() {
+		List<PathwayElement> pathwayElements = new ArrayList<>(elementIdToPathwayElement.values());
+		return pathwayElements;
 	}
 
 	/**

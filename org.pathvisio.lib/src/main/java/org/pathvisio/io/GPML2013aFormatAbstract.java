@@ -206,7 +206,7 @@ public abstract class GPML2013aFormatAbstract {
 	public static final List<String> UNDIRECTED_LIST = new ArrayList<>(Arrays.asList("Line"));
 	public static final List<String> DIRECTED_LIST = new ArrayList<>(Arrays.asList("Arrow"));
 	public static final List<String> CONVERSION_LIST = new ArrayList<>(
-			Arrays.asList("mim-conversion", "mim-conversion", "mim-modification"));
+			Arrays.asList("mim-conversion", "mim-modification"));
 	public static final List<String> INHIBITION_LIST = new ArrayList<>(Arrays.asList("mim-inhibition", "TBar"));
 	public static final List<String> CATALYSIS_LIST = new ArrayList<>(Arrays.asList("mim-catalysis"));
 	public static final List<String> STIMULATION_LIST = new ArrayList<>(

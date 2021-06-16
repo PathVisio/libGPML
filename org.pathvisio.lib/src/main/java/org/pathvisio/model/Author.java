@@ -20,10 +20,11 @@ import org.bridgedb.Xref;
 
 /**
  * This class stores information for an Author. An Author must have name and
- * optionally fullName and/or email. Is Pathway.Author in GPML.
+ * optionally username, order, and Xref.
  * 
- * Because constructors cannot have the same signature, a builder pattern is
- * implemented for Author. Example of how an Author object can be created:
+ * A builder pattern is used because it was already written this way, and
+ * somewhat preferable to constructor overloading. Example of how an Author
+ * object can be created:
  * 
  * Author author = new Author.AuthorBuilder("Jan Doe") .setUsername("janD")
  * .setOrder("1").setXref(new Xref...).build();

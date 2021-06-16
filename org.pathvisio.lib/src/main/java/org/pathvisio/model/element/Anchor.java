@@ -18,7 +18,7 @@ package org.pathvisio.model.element;
 
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.type.AnchorType;
+import org.pathvisio.model.type.AnchorShapeType;
 
 /**
  * This class stores information for an Anchor pathway element. Anchor element
@@ -30,7 +30,7 @@ public class Anchor extends PathwayElement {
 
 	private LineElement lineElement; // parent line element
 	private double position;
-	private AnchorType shapeType = AnchorType.NONE;
+	private AnchorShapeType shapeType = AnchorShapeType.NONE;
 
 	/**
 	 * Instantiates an Anchor pathway element.
@@ -43,7 +43,7 @@ public class Anchor extends PathwayElement {
 	 * @param shapeType    the visual representation of an anchor.
 	 */
 	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position,
-			AnchorType shapeType) {
+			AnchorShapeType shapeType) {
 		super(elementId, pathwayModel);
 		this.lineElement = lineElement;
 		if (position < 0 || position > 1) {
@@ -101,9 +101,9 @@ public class Anchor extends PathwayElement {
 	 * @return shapeType the shape type of the anchor. Return default square
 	 *         shapeType if null.
 	 */
-	public AnchorType getShapeType() {
+	public AnchorShapeType getShapeType() {
 		if (shapeType == null) {
-			return AnchorType.SQUARE;
+			return AnchorShapeType.SQUARE;
 		} else {
 			return shapeType;
 		}
@@ -115,7 +115,7 @@ public class Anchor extends PathwayElement {
 	 * @param shapeType the shape type of the anchor.
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
-	public void setShape(AnchorType shapeType) {
+	public void setShape(AnchorShapeType shapeType) {
 		if (shapeType == null) {
 			throw new IllegalArgumentException();
 		} else {

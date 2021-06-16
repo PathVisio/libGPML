@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
+import org.pathvisio.model.element.*;
 
 /**
  * This class stores information for a Citation.
@@ -32,7 +33,8 @@ public class Citation extends PathwayElement {
 	private List<PathwayElement> pathwayElements;
 	private Xref xref;
 	private String url; // optional
-	/* for GPML2013a Biopax */
+
+	/** Optional attributes for GPML2013a Biopax */
 	private String title;
 	private String source;
 	private String year;
@@ -201,4 +203,180 @@ public class Citation extends PathwayElement {
 	public void setAuthors(List<String> authors) {
 		this.authors = authors;
 	}
+
+//	/**
+//	 * Returns list of nested parent objects holding/referencing the citation. Depth
+//	 * first search of the pathway model for citation. Returns pathway element if it
+//	 * is direct or indirect holder of the citation.
+//	 * 
+//	 * @param parentsOfParents the list of authors.
+//	 */
+//	public ArrayList<ArrayList<Object>> getParents() {
+//		ArrayList<ArrayList<Object>> parentsOfParents = new ArrayList<ArrayList<Object>>();
+//		searchPathway(this.getPathwayModel().getPathway(), parentsOfParents);
+//		for (DataNode dataNode : this.getPathwayModel().getDataNodes()) {
+//			searchElementInfo(dataNode, parentsOfParents);
+//			for (State state : dataNode.getStates())
+//				searchElementInfo(state, parentsOfParents);
+//		}
+//		for (GraphicalLine graphicalLines : this.getPathwayModel().getGraphicalLines())
+//			searchElementInfo(graphicalLines, parentsOfParents);
+//		for (Interaction interaction : this.getPathwayModel().getInteractions())
+//			searchElementInfo(interaction, parentsOfParents);
+//		for (Label label : this.getPathwayModel().getLabels())
+//			searchElementInfo(label, parentsOfParents);
+//		for (Shape shape : this.getPathwayModel().getShapes())
+//			searchElementInfo(shape, parentsOfParents);
+//		for (Group group : this.getPathwayModel().getGroups())
+//			searchElementInfo(group, parentsOfParents);
+//		return parentsOfParents;
+//	}
+//
+//	// TODO
+//	public void searchPathway(Pathway pathway, ArrayList<ArrayList<Object>> parentsOfParents) {
+//		boolean isParent = false;
+//		List<Object> parents = new ArrayList<Object>();
+//		isParent = searchCitationRefs(pathway.getCitationRefs(), parents, isParent);
+//		isParent = false;
+//		isParent = searchAnnotationRefs(pathway.getAnnotationRefs(), parents, isParent);
+//		if (isParent)
+//			parents.add(pathway);
+//		if (!parents.isEmpty())
+//			parentsOfParents.add((ArrayList<Object>) parents);
+//	}
+
+	// TODO
+	
+	public ArrayList<ArrayList<Object>> getParents() {
+		ArrayList<ArrayList<Object>> parentsOfParents = new ArrayList<ArrayList<Object>>();
+		PathwayModel pathwayModel = this.getPathwayModel();
+		searchPathway(this.getPathwayModel().getPathway(), parentsOfParents);
+		for (DataNode dataNode : pathwayModel.getDataNodes()) {
+			searchElementInfo(dataNode, parentsOfParents);
+			for (State state : dataNode.getStates())
+				searchElementInfo(state, parentsOfParents);
+		}
+		for (GraphicalLine graphicalLines : pathwayModel.getGraphicalLines())
+			searchElementInfo(graphicalLines, parentsOfParents);
+		for (Interaction interaction : pathwayModel.getInteractions())
+			searchElementInfo(interaction, parentsOfParents);
+		for (Label label : pathwayModel.getLabels())
+			searchElementInfo(label, parentsOfParents);
+		for (Shape shape : pathwayModel.getShapes())
+			searchElementInfo(shape, parentsOfParents);
+		for (Group group : pathwayModel.getGroups())
+			searchElementInfo(group, parentsOfParents);
+		return parentsOfParents;
+	}
+	
+	public void searchPathway(Pathway pathway, ArrayList<ArrayList<Object>> parentsOfParents) {
+		loopCitationRefs(null, pathway.getCitationRefs(), parentsOfParents, 0);
+		loopAnnotationRefs(null, pathway.getAnnotationRefs(), parentsOfParents, 0);
+//		loopAnnotationRefs(this.getPathwayModel().getPathway().getAnnotationRefs(), parentsOfParents1, parents, 0);
+//		loopCitationRefs(this.getPathwayModel().getPathway().getCitationRefs(), parentsOfParents2, parents, 0);
+	}
+	
+	public void searchElementInfo(ElementInfo elementInfo, ArrayList<ArrayList<Object>> parentsOfParents) {
+		loopCitationRefs(elementInfo, elementInfo.getCitationRefs(), parentsOfParents, 0);
+		loopAnnotationRefs(elementInfo, elementInfo.getAnnotationRefs(), parentsOfParents, 0);
+	}
+	
+	public void loopAnnotationRefs(ElementInfo elementInfo, List<AnnotationRef> annotationRefs, ArrayList<ArrayList<Object>> parentsOfParents,
+			int level) {
+		for (AnnotationRef annotationRef : annotationRefs) {
+			ArrayList<Object> parents = new ArrayList<Object>();
+			if (level == 0 && elementInfo != null)
+				parents.add(elementInfo);
+			parents.add(annotationRef);
+			for (CitationRef citationRef : annotationRef.getCitationRefs()) {
+				parents.add(citationRef);
+				int next = level + 1;
+				loopAnnotationRefs(null, citationRef.getAnnotationRefs(), parentsOfParents, next);
+			}
+			if (level == 0)
+				parentsOfParents.add(parents);
+		}
+	}
+
+	public void loopCitationRefs(ElementInfo elementInfo, List<CitationRef> citationRefs, ArrayList<ArrayList<Object>> parentsOfParents,
+			int level) {
+		for (CitationRef citationRef : citationRefs) {
+			ArrayList<Object> parents = new ArrayList<Object>();
+			if (level == 0 && elementInfo != null)
+				parents.add(elementInfo);
+			parents.add(citationRef);
+			for (AnnotationRef annotationRef : citationRef.getAnnotationRefs()) {
+				parents.add(annotationRef);
+				int next = level + 1;
+				loopCitationRefs(null, annotationRef.getCitationRefs(), parentsOfParents, next);
+			}
+			if (level == 0)
+				parentsOfParents.add(parents);
+		}
+	}
+
+	
+//	// TODO Less desirable because necessitates passing in a null or empty list...
+//	public void loopAnnotationRefs(List<AnnotationRef> annotationRefs, ArrayList<ArrayList<Object>> parentsOfParents,
+//			ArrayList<Object> parents, int level) {
+//		for (AnnotationRef annotationRef : annotationRefs) {
+//			if (level == 0)
+//				parents = new ArrayList<Object>();
+//			parents.add(annotationRef);
+//			int next = level + 1;
+//			loopCitationRefs(annotationRef.getCitationRefs(), parentsOfParents, parents, next);
+//			if (level == 0)
+//				parentsOfParents.add(parents);
+//		}
+//	}
+//
+//	public void loopCitationRefs(List<CitationRef> citationRefs, ArrayList<ArrayList<Object>> parentsOfParents,
+//			ArrayList<Object> parents, int level) {
+//		for (CitationRef citationRef : citationRefs) {
+//			if (level == 0)
+//				parents = new ArrayList<Object>();
+//			parents.add(citationRef);
+//			int next = level + 1;
+//			loopAnnotationRefs(citationRef.getAnnotationRefs(), parentsOfParents, parents, next);
+//			if (level == 0)
+//				parentsOfParents.add(parents);
+//		}
+//	}
+
+//	// TODO
+//	public void searchElementInfo(ElementInfo elementInfo, ArrayList<ArrayList<Object>> parentsOfParents) {
+//		boolean isParent = false;
+//		List<Object> parents = new ArrayList<Object>();
+//		isParent = searchCitationRefs(elementInfo.getCitationRefs(), parents, isParent);
+//		isParent = searchAnnotationRefs(elementInfo.getAnnotationRefs(), parents, isParent);
+//		if (isParent)
+//			parents.add(elementInfo);
+//		if (!parents.isEmpty())
+//			parentsOfParents.add((ArrayList<Object>) parents);
+//	}
+//
+//	// TODO
+//	public boolean searchCitationRefs(List<CitationRef> citationRefs, List<Object> parents, boolean isParent) {
+//		for (CitationRef citationRef : citationRefs) {
+//			if (this == citationRef.getCitation()) {
+//				parents.add(citationRef);
+//				isParent = true;
+//			}
+//			isParent = searchAnnotationRefs(citationRef.getAnnotationRefs(), parents, isParent);
+//		}
+//		return isParent;
+//	}
+//
+//	// TODO
+//	public boolean searchAnnotationRefs(List<AnnotationRef> annotationRefs, List<Object> parents, boolean isParent) {
+//		for (AnnotationRef annotationRef : annotationRefs) {
+//			System.out.println(annotationRef);
+//			isParent = searchCitationRefs(annotationRef.getCitationRefs(), parents, isParent);
+//			if (isParent) {
+//				parents.add(annotationRef);
+//			}
+//		}
+//		return isParent;
+//	}
+
 }
