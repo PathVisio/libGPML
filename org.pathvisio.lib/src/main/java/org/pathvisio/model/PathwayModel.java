@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import org.bridgedb.Xref;
@@ -35,6 +34,7 @@ import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
+import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
 
 /**
@@ -126,17 +126,6 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Returns a list view of String elementId keys from the
-	 * elementIdToPathwayElements hash map.
-	 * 
-	 * @return a list of elementId keys.
-	 */
-	public List<String> getElementIds() {
-		List<String> elementIds = new ArrayList<>(elementIdToPathwayElement.keySet());
-		return elementIds;
-	}
-
-	/**
 	 * Returns all PathwayElement for the pathway model.
 	 * 
 	 * @param elementId the given elementId key.
@@ -145,6 +134,27 @@ public class PathwayModel {
 	public List<PathwayElement> getPathwayElements() {
 		List<PathwayElement> pathwayElements = new ArrayList<>(elementIdToPathwayElement.values());
 		return pathwayElements;
+	}
+
+	/**
+	 * Checks if the pathway model has the given pathway element.
+	 * 
+	 * @param pathwayElement the pathway element to check for.
+	 * @return true if pathway model has given pathway element, false otherwise.
+	 */
+	public boolean hasPathwayElement(PathwayElement pathwayElement) {
+		return this.getPathwayElements().contains(pathwayElement);
+	}
+
+	/**
+	 * Returns a list view of String elementId keys from the
+	 * elementIdToPathwayElements hash map.
+	 * 
+	 * @return a list of elementId keys.
+	 */
+	public List<String> getElementIds() {
+		List<String> elementIds = new ArrayList<>(elementIdToPathwayElement.keySet());
+		return elementIds;
 	}
 
 	/**
@@ -219,11 +229,13 @@ public class PathwayModel {
 	 * and the equivalent annotation is returned.
 	 * 
 	 * @param annotation the new annotation to be added.
-	 * @return annotation the new annotation or annotationExisting the existing equivalent annotation.
+	 * @return annotation the new annotation or annotationExisting the existing
+	 *         equivalent annotation.
 	 */
 	public Annotation addAnnotation(Annotation annotation) {
 		Annotation annotationExisting = annotationExists(annotation);
-		if (annotationExists(annotation) != null) {
+		if (annotationExisting != null) {
+			Logger.log.trace("New annotation not added to pathway model.");
 			return annotationExisting;
 		} else {
 			annotations.add(annotation);
@@ -241,14 +253,13 @@ public class PathwayModel {
 	public Annotation annotationExists(Annotation annotation) {
 		for (Annotation annotationExisting : annotations) {
 			if (annotation.equalsAnnotation(annotationExisting)) {
-				Logger.log.trace("This annotation is equivalent to existing citation" + annotationExisting.getElementId()
-						+ ", not added to pathway model.");
+				Logger.log.trace("This annotation is equivalent to existing pathway model annotation "
+						+ annotationExisting.getElementId() + ".");
 				return annotationExisting;
 			}
 		}
 		return null;
 	}
-
 
 	/**
 	 * Removes given annotation from annotations list.
@@ -278,10 +289,12 @@ public class PathwayModel {
 	 *         citation.
 	 */
 	public Citation addCitation(Citation citation) {
-		Citation citationExisting = citationExists(citation);
-		if (citationExists(citation) != null) {
+		Citation citationExisting = hasEqualCitation(citation);
+		if (citationExisting != null) {
+			Logger.log.trace("New citation not added to pathway model.");
 			return citationExisting;
 		} else {
+			assert (citation.getPathwayModel() == this); // TODO
 			citations.add(citation);
 			return citation;
 		}
@@ -294,17 +307,16 @@ public class PathwayModel {
 	 * @return citationExisting the existing equivalent citation, or null if no
 	 *         equivalent citation exists for given citation.
 	 */
-	public Citation citationExists(Citation citation) {
+	public Citation hasEqualCitation(Citation citation) {
 		for (Citation citationExisting : citations) {
 			if (citation.equalsCitation(citationExisting)) {
-				Logger.log.trace("This citation is equivalent to existing citation" + citationExisting.getElementId()
-						+ ", not added to pathway model.");
+				Logger.log.trace("This citation is equivalent to existing pathway model citation "
+						+ citationExisting.getElementId() + ".");
 				return citationExisting;
 			}
 		}
 		return null;
 	}
-
 
 	/**
 	 * Removes given citation from citation=s list.
@@ -312,6 +324,8 @@ public class PathwayModel {
 	 * @param citation the citation to be removed.
 	 */
 	public void removeCitation(Citation citation) {
+		removePathwayElement(citation); // TODO?
+		citation.removeCitationRefs();
 		citations.remove(citation);
 	}
 
@@ -511,6 +525,40 @@ public class PathwayModel {
 	}
 
 	/**
+	 * Adds pathway element to the pathway model. TODO
+	 * 
+	 * @param pathwayElement the pathway element to add.
+	 */
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		PathwayModel pathwayModel = pathwayElement.getPathwayModel();
+		if (pathwayModel != null && pathwayModel != this) {
+			pathwayModel.removePathwayElement(pathwayElement); //TODO
+			pathwayElement.setPathwayModel(this);
+		}
+		if(pathwayElement.getClass() == DataNode.class) {
+			dataNodes.add((DataNode) pathwayElement);
+		}
+		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this); //TODO
+		assert (hasPathwayElement(pathwayElement)); //TODO
+	}
+
+	/**
+	 * Removes pathway element from the pathway model. TODO
+	 * 
+	 * @param pathwayElement the pathway element to remove.
+	 */
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this);
+		assert (hasPathwayElement(pathwayElement));
+		pathwayElement.setPathwayModel(null);
+		
+		if(pathwayElement.getClass() == DataNode.class) {
+			dataNodes.remove(pathwayElement);
+		}
+
+	}
+
+	/**
 	 * Removes references to {@link AnnotationRef}, {@link CitationRef}, and
 	 * {@link EvidenceRef} of a given pathway element {@link ElementInfo}.
 	 * References to annotationRefs, citatationRefs, and evidenceRefs are also
@@ -521,6 +569,13 @@ public class PathwayModel {
 	 *                    removed.
 	 */
 	public void removeElementInfoRefs(ElementInfo elementInfo) {
+		removePathwayElement(elementInfo);
+		elementInfo.getAnnotationRefs();
+		elementInfo.getCitationRefs();
+		
+		
+//		elementInfo.getEvidenceRefs(); TODO
+
 
 	}
 

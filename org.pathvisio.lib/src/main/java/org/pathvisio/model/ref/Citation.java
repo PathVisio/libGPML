@@ -90,6 +90,7 @@ public class Citation extends PathwayElement {
 	 * @param citationRef the given citationRef to add.
 	 */
 	public void addCitationRef(CitationRef citationRef) {
+		assert(citationRef.getCitable() == this); //TODO 
 		citationRefs.add(citationRef);
 	}
 
@@ -99,7 +100,30 @@ public class Citation extends PathwayElement {
 	 * @param citationRef the given citationRef to remove.
 	 */
 	public void removeCitationRef(CitationRef citationRef) {
+		// remove all annotationRefs of citationRef
+		citationRef.removeAnnotationRefs();
+		
+		// remove links between citationRef and its citable
+		citationRef.getCitable().removeCitationRef(citationRef);
+		citationRef.setCitable(null);
+		
+		// remove citationRef from this citation
 		citationRefs.remove(citationRef);
+		citationRef.setCitation(null);
+		
+		// remove this citation from pathway model if empty
+		if (citationRefs.isEmpty()) {
+			this.getPathwayModel().removeCitation(this);
+		}
+	}
+	
+	/**
+	 * Removes all citationRefs from citationRefs list of the citation.
+	 */
+	public void removeCitationRefs() {
+		for (CitationRef citationRef : citationRefs) {
+			this.removeCitationRef(citationRef);
+		}
 	}
 
 	/**

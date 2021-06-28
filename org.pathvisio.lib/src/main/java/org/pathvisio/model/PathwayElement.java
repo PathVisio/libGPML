@@ -58,6 +58,9 @@ public abstract class PathwayElement {
 	 * @param pathwayModel the parent pathway model.
 	 */
 	public void setPathwayModel(PathwayModel pathwayModel) {
+		if (pathwayModel != null) {
+			pathwayModel.removePathwayElement(this);// TODO
+		}
 		this.pathwayModel = pathwayModel;
 	}
 

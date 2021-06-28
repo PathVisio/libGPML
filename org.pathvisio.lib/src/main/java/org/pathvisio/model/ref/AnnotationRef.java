@@ -66,7 +66,8 @@ public class AnnotationRef implements Citable {
 	}
 
 	/**
-	 * Returns the parent pathway element to which the AnnotationRef belongs.
+	 * Returns the target pathway, pathway element, or citationRef
+	 * {@link Annotatable} to which the AnnotationRef belongs.
 	 * 
 	 * @return pathwayElement the parent pathway element the AnnotationRef.
 	 */
@@ -75,7 +76,8 @@ public class AnnotationRef implements Citable {
 	}
 
 	/**
-	 * Sets the parent pathway element to which the AnnotationRef belongs.
+	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
+	 * to which the AnnotationRef belongs.
 	 * 
 	 * @param pathwayElement the parent pathway element the annotationRef.
 	 */
@@ -133,11 +135,19 @@ public class AnnotationRef implements Citable {
 		citationRefs.remove(citationRef);
 	}
 
+	/**
+	 * Removes all citationRef from citationRefs list.
+	 */
+	public void removeCitationRefs() {
+		for (CitationRef citationRef : citationRefs) {
+			this.removeCitationRef(citationRef);
+		}
+	}
+
 	/*
 	 * -----------------------------------------------------------------------------
 	 */
-	
-	
+
 	/**
 	 * Returns the list of evidence references.
 	 * 

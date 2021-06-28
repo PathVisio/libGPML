@@ -180,6 +180,15 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	}
 
 	/**
+	 * Removes all annotationRefs from annotationRefs list.
+	 */
+	public void removeAnnotationRefs() {
+		for (AnnotationRef annotationRef : annotationRefs) {
+			removeAnnotationRef(annotationRef);
+		}
+	}
+
+	/**
 	 * Returns the list of citation references.
 	 * 
 	 * @return citationRefs the list of citations referenced, an empty list if no
@@ -204,7 +213,26 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * @param citationRef the citationRef to be removed.
 	 */
 	public void removeCitationRef(CitationRef citationRef) {
-		citationRefs.remove(citationRef);
+		// remove all annotationRefs of citationRef
+		citationRef.removeAnnotationRefs();
+
+		// remove links between citationRef and its citation
+		citationRef.getCitation().removeCitationRef(citationRef); // TODO
+		citationRef.setCitation(null); // TODO
+
+		// remove links between citationRef and this citable
+		citationRefs.remove(citationRef); // TODO
+		citationRef.setCitable(null); // TODO
+
+	}
+
+	/**
+	 * Removes all citationRefs from citationRefs list.
+	 */
+	public void removeCitationRefs() {
+		for (CitationRef citationRef : citationRefs) {
+			this.removeCitationRef(citationRef);
+		}
 	}
 
 	/**
@@ -236,4 +264,6 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 		evidenceRef.removePathwayElement(this);
 		evidenceRefs.remove(evidenceRef);
 	}
+
+	// TODO
 }

@@ -3,7 +3,9 @@ package org.pathvisio.model.ref;
 import java.util.List;
 
 /**
- * Interface for classes which can be annotated. {@link Pathway} 
+ * Interface for classes which can hold a {@link List} of {@link AnnotationRef}.
+ * These classes include {@link Pathway}, {@link ElementInfo}, and
+ * {@link CitationRef}.
  * 
  * @author finterly
  */
@@ -31,4 +33,8 @@ public interface Annotatable {
 	 */
 	public void removeAnnotationRef(AnnotationRef annotationRef);
 
+	/**
+	 * Removes all annotationRefs from annotationRefs list.
+	 */
+	public void removeAnnotationRefs();
 }

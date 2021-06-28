@@ -42,8 +42,8 @@ public class CitationRef implements Annotatable {
 	 * {@link Citable}, and initializes annotationRefs lists.
 	 * 
 	 * @param citation the source citation this CitationRef refers to.
-	 * @param citable  the target pathway, pathway element, or annotationRef to which the
-	 *                 CitationRef belongs.
+	 * @param citable  the target pathway, pathway element, or annotationRef to
+	 *                 which the CitationRef belongs.
 	 */
 	public CitationRef(Citation citation, Citable citable) {
 		this.citation = citation;
@@ -63,8 +63,8 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Returns the pathway, pathway element, or annotationRef to which the
-	 * citationRef belongs.
+	 * Returns the pathway, pathway element, or annotationRef {@link Citable} to
+	 * which the citationRef belongs.
 	 * 
 	 * @return citable the target of the citationRef.
 	 */
@@ -73,14 +73,15 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Sets the parent pathway element to which the annotationRef belongs.
+	 * Sets the the pathway, pathway element, or annotationRef {@link Citable} to
+	 * which the annotationRef belongs.
 	 * 
 	 * @param pathwayElement the parent pathway element the annotationRef.
 	 */
 	public void setCitable(Citable citable) {
 		if (citable != null) {
 			citation.removeCitationRef(this);
-			//TODO 
+			// TODO
 		}
 		this.setCitable(citable);
 		this.citable = citable;
@@ -129,7 +130,25 @@ public class CitationRef implements Annotatable {
 	 * @param annotationRef the annotationRef to be removed.
 	 */
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		// remove all citationRefs of annotationRef
+		annotationRef.removeCitationRefs();
+		// annotationRef.removeAllEvidenceRefs(); //TODO
+
+		// remove links between annotationRef and its annotatable
+		annotationRef.getAnnotatable().removeAnnotationRef(annotationRef);
+		annotationRef.setAnnotatable(null);
+		// remove annotationRef from this citationRef
 		annotationRefs.remove(annotationRef);
+	}
+
+	/**
+	 * Removes all annotationRefs from annotationRefs list.
+	 * 
+	 */
+	public void removeAnnotationRefs() {
+		for (AnnotationRef annotationRef : annotationRefs) {
+			this.removeAnnotationRef(annotationRef);
+		}
 	}
 
 }
