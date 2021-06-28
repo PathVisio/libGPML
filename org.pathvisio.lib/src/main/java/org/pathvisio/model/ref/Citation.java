@@ -34,11 +34,9 @@ public class Citation extends PathwayElement {
 
 	/** citationRefs with this citation as source */
 	private List<CitationRef> citationRefs;
-
 	/** One or both xref and/or Url link is required */
 	private Xref xref;
 	private UrlRef url;
-
 	/** Optional attributes for GPML2013a Biopax */
 	private String title;
 	private String source;
@@ -96,7 +94,7 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Removes the given citationRef to citationRefs list of the citation.
+	 * Removes the given citationRef from citationRefs list of the citation.
 	 * 
 	 * @param citationRef the given citationRef to remove.
 	 */
@@ -221,20 +219,32 @@ public class Citation extends PathwayElement {
 	 * @return true if citations have equal properties, false otherwise.
 	 */
 	public boolean equalsCitation(Citation citation) {
+		// checks if xref is equivalent 
 		if (xref != null && citation.getXref() == null)
 			return false;
 		if (xref == null && citation.getXref() != null)
 			return false;
 		if (xref != null && citation.getXref() != null) {
-			if (!xref.getId().equals(citation.getXref().getId()))
+			if (!Objects.equals(xref.getId(), citation.getXref().getId()))
 				return false;
-			if (!xref.getDataSource().equals(citation.getXref().getDataSource()))
+			if (!Objects.equals(xref.getDataSource(), citation.getXref().getDataSource()))
 				return false;
 		}
-		if (!Objects.equals(url.getLink(), citation.getUrlRef().getLink()))
+		// checks if url link and description are equivalent
+		if (url != null && citation.getUrlRef() == null)
 			return false;
-		if (!Objects.equals(url.getDescription(), citation.getUrlRef().getDescription()))
+		if (url == null && citation.getUrlRef() != null)
 			return false;
+		if (url != null && citation.getUrlRef() != null) {
+			if (!Objects.equals(url.getLink(), citation.getUrlRef().getLink()))
+				return false;
+			if (!Objects.equals(url.getDescription(), citation.getUrlRef().getDescription()))
+				return false;
+		}
+		// checks if citation has the same citationRefs
+		if (!Objects.equals(citationRefs, citation.getCitationRefs()))
+			return false;
+		// checks if optional GPML2013a properties are equivalent
 		if (!Objects.equals(title, citation.getTitle()))
 			return false;
 		if (!Objects.equals(source, citation.getSource()))

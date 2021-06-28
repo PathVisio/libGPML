@@ -32,8 +32,8 @@ import org.pathvisio.model.type.AnnotationType;
  */
 public class Annotation extends PathwayElement {
 
-	/* list of parent pathway elements with annotationRef for this annotation. */
-	private List<PathwayElement> pathwayElements;
+	/** annotationRefs with this annotation as source */
+	private List<AnnotationRef> annotationRefs;
 	private String value;
 	private AnnotationType type;
 	private Xref xref; // optional
@@ -53,7 +53,7 @@ public class Annotation extends PathwayElement {
 	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, Xref xref,
 			UrlRef url) {
 		super(pathwayModel, elementId);
-		this.pathwayElements = new ArrayList<PathwayElement>();
+		this.annotationRefs = new ArrayList<AnnotationRef>();
 		this.value = value;
 		this.type = type;
 		this.xref = xref;
@@ -82,32 +82,31 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Returns the list of pathway elements with annotationRef for the annotation.
+	 * Returns the list of annotationRefs which reference the annotation.
 	 * 
-	 * @return pathwayElements the list of pathway elements which reference the
+	 * @return annotationRefs the list of pathway elements which reference the
 	 *         annotation.
 	 */
-	public List<PathwayElement> getPathwayElements() {
-		return pathwayElements;
+	public List<AnnotationRef> getAnnotationRefs() {
+		return annotationRefs;
 	}
 
 	/**
-	 * Adds the given pathway element to pathwayElements list of the annotation.
+	 * Adds the given annotationRef to annotationRefs list of the annotation.
 	 * 
-	 * @param pathwayElement the given pathwayElement to add.
+	 * @param annotationRef the given annotationRef to add.
 	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.add(pathwayElement);
+	public void addAnnotationRef(AnnotationRef annotationRef) {
+		annotationRefs.add(annotationRef);
 	}
 
 	/**
-	 * Removes the given pathway element from pathwayElements list of the
-	 * annotation.
+	 * Removes the given annotationRef from annotationRefs list of the annotation.
 	 * 
-	 * @param pathwayElement the given pathwayElement to remove.
+	 * @param annotationRef the given annotationRef to remove.
 	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.remove(pathwayElement);
+	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		annotationRefs.remove(annotationRef);
 	}
 
 	/**
@@ -192,6 +191,12 @@ public class Annotation extends PathwayElement {
 	 * @return true if annotations have equal properties, false otherwise.
 	 */
 	public boolean equalsAnnotation(Annotation annotation) {
+		// checks if value and type property equivalent
+		if (value.equals(annotation.getValue()))
+			return false;
+		if (type.equals(annotation.getType()))
+			return false;
+		// checks if xref is equivalent
 		if (xref != null && annotation.getXref() == null)
 			return false;
 		if (xref == null && annotation.getXref() != null)
@@ -202,13 +207,19 @@ public class Annotation extends PathwayElement {
 			if (xref.getDataSource().equals(annotation.getXref().getDataSource()))
 				return false;
 		}
-		if (value.equals(annotation.getValue()))
+		// checks if url link and description are equivalent
+		if (url != null && annotation.getUrlRef() == null)
 			return false;
-		if (type.equals(annotation.getType()))
+		if (url == null && annotation.getUrlRef() != null)
 			return false;
-		if (!Objects.equals(url.getLink(), annotation.getUrlRef().getLink()))
-			return false;
-		if (!Objects.equals(url.getDescription(), annotation.getUrlRef().getDescription()))
+		if (url != null && annotation.getUrlRef() != null) {
+			if (!Objects.equals(url.getLink(), annotation.getUrlRef().getLink()))
+				return false;
+			if (!Objects.equals(url.getDescription(), annotation.getUrlRef().getDescription()))
+				return false;
+		}
+		// checks if annotation has the same annotationRefs
+		if (!Objects.equals(annotationRefs, annotation.getAnnotationRefs()))
 			return false;
 		return true;
 	}

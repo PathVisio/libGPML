@@ -61,9 +61,9 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		 * Create and add evidences. Creates evidenceRef1 and adds to pathwayModel.
 		 * Creates evidenceRef2 and adds to first annotationRef of pathway.
 		 */
-		Evidence evidence1 = new Evidence("evi001", pathwayModel, "evidence 1",
+		Evidence evidence1 = new Evidence(pathwayModel, "evi001", "evidence 1",
 				XrefUtils.createXref("0000001", "pubmed"));
-		Evidence evidence2 = new Evidence("evi002", pathwayModel, "evidence 1",
+		Evidence evidence2 = new Evidence(pathwayModel, "evi002", "evidence 1",
 				XrefUtils.createXref("0000002", "pubmed"));
 		// adds evidence to pathway model
 		pathwayModel.addEvidence(evidence1);
