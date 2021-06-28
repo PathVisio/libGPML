@@ -18,6 +18,7 @@ package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayElement;
@@ -45,15 +46,15 @@ public class Citation extends PathwayElement {
 	private List<String> authors;
 
 	/**
-	 * Instantiates a Citation pathway element given all possible parameters:
-	 * elementId, parent pathway model, xref, link, and description.
+	 * Instantiates a Citation pathway element given all possible parameters.
 	 * 
-	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
+	 * @param elementId    the unique pathway element identifier.
 	 * @param xref         the citation xref.
-	 * @param url          the url link and description (optional) for a web address.
+	 * @param url          the url link and description (optional) for a web
+	 *                     address.
 	 */
-	public Citation(String elementId, PathwayModel pathwayModel, Xref xref, UrlRef url) {
+	public Citation(PathwayModel pathwayModel, String elementId, Xref xref, UrlRef url) {
 		super(pathwayModel, elementId);
 		this.citationRefs = new ArrayList<CitationRef>();
 		this.xref = xref;
@@ -61,15 +62,19 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Instantiates a Citation pathway element given all possible parameters:
-	 * elementId, parent pathway model, xref, link, and description.
-	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
-	 * @param xref         the citation xref.
+	 * Instantiates a Citation pathway element given all possible parameters except
+	 * xref. A citation much have either xref or url, or both.
 	 */
-	public Citation(String elementId, PathwayModel pathwayModel, Xref xref) {
-		this(elementId, pathwayModel, xref, null);
+	public Citation(PathwayModel pathwayModel, String elementId, UrlRef url) {
+		this(pathwayModel, elementId, null, url);
+	}
+
+	/**
+	 * Instantiates a Citation pathway element given all possible parameters except
+	 * url. A citation much have either xref or url, or both.
+	 */
+	public Citation(PathwayModel pathwayModel, String elementId, Xref xref) {
+		this(pathwayModel, elementId, xref, null);
 	}
 
 	/**
@@ -207,4 +212,37 @@ public class Citation extends PathwayElement {
 		this.authors = authors;
 	}
 
+	/**
+	 * Checks all properties of given citations to determine whether they are equal.
+	 * 
+	 * TODO
+	 * 
+	 * @param citation the citation to compare to.
+	 * @return true if citations have equal properties, false otherwise.
+	 */
+	public boolean equalsCitation(Citation citation) {
+		if (xref != null && citation.getXref() == null)
+			return false;
+		if (xref == null && citation.getXref() != null)
+			return false;
+		if (xref != null && citation.getXref() != null) {
+			if (!xref.getId().equals(citation.getXref().getId()))
+				return false;
+			if (!xref.getDataSource().equals(citation.getXref().getDataSource()))
+				return false;
+		}
+		if (!Objects.equals(url.getLink(), citation.getUrlRef().getLink()))
+			return false;
+		if (!Objects.equals(url.getDescription(), citation.getUrlRef().getDescription()))
+			return false;
+		if (!Objects.equals(title, citation.getTitle()))
+			return false;
+		if (!Objects.equals(source, citation.getSource()))
+			return false;
+		if (!Objects.equals(year, citation.getYear()))
+			return false;
+		if (!Objects.equals(authors, citation.getAuthors()))
+			return false;
+		return true;
+	}
 }

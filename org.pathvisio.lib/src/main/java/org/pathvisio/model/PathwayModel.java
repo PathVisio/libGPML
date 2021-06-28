@@ -219,31 +219,36 @@ public class PathwayModel {
 	 * and the equivalent annotation is returned.
 	 * 
 	 * @param annotation the new annotation to be added.
-	 * @return annotation the new annotation or the existing equivalent annotation.
+	 * @return annotation the new annotation or annotationExisting the existing equivalent annotation.
 	 */
 	public Annotation addAnnotation(Annotation annotation) {
-		for (Annotation annotationExisting : annotations) {
-			if (!annotationExisting.getValue().equals(annotation.getValue()))
-				continue;
-			if (!annotationExisting.getType().equals(annotation.getType()))
-				continue;
-			if (annotationExisting.getXref() != null) {
-				if (!Objects.equals(annotationExisting.getXref().getId(), annotation.getXref().getId()))
-					continue;
-				if (!Objects.equals(annotationExisting.getXref().getDataSource(), annotation.getXref().getDataSource()))
-					continue;
-			}
-			if (!Objects.equals(annotationExisting.getUrl(), annotation.getUrl()))
-				continue;
-			Logger.log.trace("New annotation is equivalent to existing annotation" + annotationExisting.getElementId()
-					+ ", not added to pathway model.");
-			annotation = annotationExisting;
+		Annotation annotationExisting = annotationExists(annotation);
+		if (annotationExists(annotation) != null) {
+			return annotationExisting;
+		} else {
+			annotations.add(annotation);
 			return annotation;
 		}
-		// new annotation is not equal to any existing annotation, add to pathway model
-		annotations.add(annotation);
-		return annotation;
 	}
+
+	/**
+	 * Checks if given annotation already exists for the pathway model.
+	 * 
+	 * @param annotation the given annotation to be checked.
+	 * @return annotationExisting the existing equivalent annotation, or null if no
+	 *         equivalent annotation exists for given citation.
+	 */
+	public Annotation annotationExists(Annotation annotation) {
+		for (Annotation annotationExisting : annotations) {
+			if (annotation.equalsAnnotation(annotationExisting)) {
+				Logger.log.trace("This annotation is equivalent to existing citation" + annotationExisting.getElementId()
+						+ ", not added to pathway model.");
+				return annotationExisting;
+			}
+		}
+		return null;
+	}
+
 
 	/**
 	 * Removes given annotation from annotations list.
@@ -269,47 +274,37 @@ public class PathwayModel {
 	 * and the equivalent citation is returned.
 	 * 
 	 * @param citation the new citation to be added.
-	 * @return citation the new citation or the existing equivalent citation.
+	 * @return citation the new citation or citationExisting the existing equivalent
+	 *         citation.
 	 */
 	public Citation addCitation(Citation citation) {
-
-		if (citationExists(citation) != null)
-			// new citation is not equal to any existing citation, add to pathway model
+		Citation citationExisting = citationExists(citation);
+		if (citationExists(citation) != null) {
+			return citationExisting;
+		} else {
 			citations.add(citation);
-		return citation;
+			return citation;
+		}
 	}
 
+	/**
+	 * Checks if given citation already exists for the pathway model.
+	 * 
+	 * @param citation the given citation to be checked.
+	 * @return citationExisting the existing equivalent citation, or null if no
+	 *         equivalent citation exists for given citation.
+	 */
 	public Citation citationExists(Citation citation) {
 		for (Citation citationExisting : citations) {
-			boolean isEqual = citationEqual(citationExisting, citation);
-			if (isEqual) {
-				Logger.log.trace("New citation is equivalent to existing citation" + citationExisting.getElementId()
+			if (citation.equalsCitation(citationExisting)) {
+				Logger.log.trace("This citation is equivalent to existing citation" + citationExisting.getElementId()
 						+ ", not added to pathway model.");
 				return citationExisting;
 			}
 		}
-		return citation;
+		return null;
 	}
 
-	public boolean citationEqual(Citation citation1, Citation citation2) {
-		if (!citation1.getXref().getId().equals(citation2.getXref().getId()))
-			return false;
-		if (!citation1.getXref().getDataSource().equals(citation2.getXref().getDataSource()))
-			return false;
-		if (!Objects.equals(citation1.getUrlRef().getLink(), citation2.getUrlRef().getLink()))
-			return false;
-		if (!Objects.equals(citation1.getUrlRef().getDescription(), citation2.getUrlRef().getDescription()))
-			return false;
-		if (!Objects.equals(citation1.getTitle(), citation2.getTitle()))
-			return false;
-		if (!Objects.equals(citation1.getSource(), citation2.getSource()))
-			return false;
-		if (!Objects.equals(citation1.getYear(), citation2.getYear()))
-			return false;
-		if (!Objects.equals(citation1.getAuthors(), citation2.getAuthors()))
-			return false;
-		return true;
-	}
 
 	/**
 	 * Removes given citation from citation=s list.

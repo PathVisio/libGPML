@@ -18,6 +18,7 @@ package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayElement;
@@ -42,14 +43,14 @@ public class Annotation extends PathwayElement {
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.
 	 * 
-	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
+	 * @param elementId    the unique pathway element identifier.
 	 * @param value        the name, term, or text of the annotation.
 	 * @param type         the type of the annotation, e.g. ontology.
 	 * @param xref         the annotation xref.
 	 * @param url          the url of the annotation.
 	 */
-	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref,
+	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, Xref xref,
 			UrlRef url) {
 		super(pathwayModel, elementId);
 		this.pathwayElements = new ArrayList<PathwayElement>();
@@ -62,23 +63,22 @@ public class Annotation extends PathwayElement {
 	/**
 	 * Instantiates an Annotation given all possible parameters except xref.
 	 */
-	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, UrlRef url) {
-		this(elementId, pathwayModel, value, type, null, url);
-
+	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, UrlRef url) {
+		this(pathwayModel, elementId, value, type, null, url);
 	}
 
 	/**
 	 * Instantiates an Annotation given all possible parameters except url.
 	 */
-	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref) {
-		this(elementId, pathwayModel, value, type, xref, null);
+	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, Xref xref) {
+		this(pathwayModel, elementId, value, type, xref, null);
 	}
 
 	/**
 	 * Instantiates an Annotation given all possible parameters except url and xref.
 	 */
-	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type) {
-		this(elementId, pathwayModel, value, type, null, null);
+	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type) {
+		this(pathwayModel, elementId, value, type, null, null);
 	}
 
 	/**
@@ -180,6 +180,37 @@ public class Annotation extends PathwayElement {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+	}
+
+	/**
+	 * Checks all properties of given annotations to determine whether they are
+	 * equal.
+	 * 
+	 * TODO
+	 * 
+	 * @param annotation the annotation to compare to.
+	 * @return true if annotations have equal properties, false otherwise.
+	 */
+	public boolean equalsAnnotation(Annotation annotation) {
+		if (xref != null && annotation.getXref() == null)
+			return false;
+		if (xref == null && annotation.getXref() != null)
+			return false;
+		if (xref != null && annotation.getXref() != null) {
+			if (xref.getId().equals(annotation.getXref().getId()))
+				return false;
+			if (xref.getDataSource().equals(annotation.getXref().getDataSource()))
+				return false;
+		}
+		if (value.equals(annotation.getValue()))
+			return false;
+		if (type.equals(annotation.getType()))
+			return false;
+		if (!Objects.equals(url.getLink(), annotation.getUrlRef().getLink()))
+			return false;
+		if (!Objects.equals(url.getDescription(), annotation.getUrlRef().getDescription()))
+			return false;
+		return true;
 	}
 
 }

@@ -728,8 +728,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				if (annotation.getXref() != null) { // TODO optional Xref handling
 					writeXref(annotation.getXref(), annt, false);
 				}
-				if (annotation.getUrl() != null) {
-					annt.setAttribute("url", annotation.getUrl());
+				if (annotation.getUrlRef().getLink() != null) {
+					annt.setAttribute("url", annotation.getUrlRef().getLink());
+					//TODO add description
 				}
 				if (annt != null) {
 					anntList.add(annt);
@@ -759,8 +760,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				Element cit = new Element("Citation", root.getNamespace());
 				writeElementId(citation.getElementId(), cit);
 				writeXref(citation.getXref(), cit, true);
-				if (citation.getUrl() != null) {
-					cit.setAttribute("url", citation.getUrl());
+				if (citation.getUrlRef() != null) {
+					cit.setAttribute("url", citation.getUrlRef().getLink()); //TODO description
 				}
 				if (cit != null) {
 					citList.add(cit);

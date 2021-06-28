@@ -296,7 +296,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String biopaxOntology = ocv.getChild("Ontology", BIOPAX_NAMESPACE).getText();
 			AnnotationType type = AnnotationType.register(biopaxOntology);
 			// instantiates annotation
-			Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
+			Annotation annotation = new Annotation(pathwayModel, elementId, value, type);
 			// sets optional property xref
 			String biopaxIdDbStr = ocv.getChild("ID", BIOPAX_NAMESPACE).getText(); // e.g PW:0000650
 			String[] biopaxIdDb = biopaxIdDbStr.split(":"); // splits "ID" into Id and Database
@@ -354,7 +354,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 //			}
 			Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 			// instantiates citation
-			Citation citation = new Citation(elementId, pathwayModel, xref);
+			Citation citation = new Citation(pathwayModel, elementId, xref);
 			// sets optional properties
 			String title = readPubxfInfo(pubxf.getChildren("TITLE", BIOPAX_NAMESPACE));
 			String source = readPubxfInfo(pubxf.getChildren("SOURCE", BIOPAX_NAMESPACE));
@@ -901,11 +901,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						}
 					}
 					AnnotationType type = AnnotationType.register(key);
-					Annotation annotation = new Annotation(elementId, state.getPathwayModel(), value, type);
+					Annotation annotation = new Annotation(state.getPathwayModel(), elementId, value, type);
 					if (xref != null)
 						annotation.setXref(xref);
 					// if equivalent annotation is already existing in pathway model, annotation is
-					// replaced by the existing annotation
+					// replaced by the existing annotation TODO
 					annotation = state.getPathwayModel().addAnnotation(annotation);
 					// create new annotationRef
 					AnnotationRef annotationRef = new AnnotationRef(annotation, state);
@@ -1102,7 +1102,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));
 					// instantiates point
-					LinePoint point = new LinePoint(elementId, lineElement.getPathwayModel(), lineElement, arrowHead,
+					LinePoint point = new LinePoint(lineElement.getPathwayModel(), elementId, lineElement, arrowHead,
 							xy);
 					// adds point to line pathway element
 					if (point != null)

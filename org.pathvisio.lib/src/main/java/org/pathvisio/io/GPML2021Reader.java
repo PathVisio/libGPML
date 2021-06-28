@@ -223,7 +223,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String elementId = annt.getAttributeValue("elementId");
 				String value = annt.getAttributeValue("value");
 				AnnotationType type = AnnotationType.register(annt.getAttributeValue("type", ANNOTATIONTYPE_DEFAULT));
-				Annotation annotation = new Annotation(elementId, pathwayModel, value, type);
+				Annotation annotation = new Annotation(pathwayModel, elementId, value, type);
 				// sets optional properties
 				Xref xref = readXref(annt);
 				String url = annt.getAttributeValue("url");
@@ -251,7 +251,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
 				String elementId = cit.getAttributeValue("elementId");
 				Xref xref = readXref(cit);
-				Citation citation = new Citation(elementId, pathwayModel, xref);
+				Citation citation = new Citation(pathwayModel, elementId, xref);
 				// sets optional properties
 				String url = cit.getAttributeValue("url");
 				if (url != null)
@@ -276,7 +276,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element evid : evids.getChildren("Evidence", evids.getNamespace())) {
 				String elementId = evid.getAttributeValue("elementId");
 				Xref xref = readXref(evid);
-				Evidence evidence = new Evidence(elementId, pathwayModel, xref);
+				Evidence evidence = new Evidence(pathwayModel, elementId, xref);
 				// sets optional properties
 				String value = evid.getAttributeValue("value");
 				String url = evid.getAttributeValue("url");
@@ -694,7 +694,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x").trim()),
 					Double.parseDouble(pt.getAttributeValue("y").trim()));
-			LinePoint point = new LinePoint(elementId, lineElement.getPathwayModel(), lineElement, arrowHead, xy);
+			LinePoint point = new LinePoint(lineElement.getPathwayModel(), elementId, lineElement, arrowHead, xy);
 			// adds point to lineElement (elementRef, relX, and relY read later)
 			if (point != null)
 				lineElement.addPoint(point);

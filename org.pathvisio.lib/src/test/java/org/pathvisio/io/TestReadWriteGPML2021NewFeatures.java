@@ -117,7 +117,6 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		alias2.setGroupRef(group1);
 
 		System.out.println(citation1.getElementId());
-		System.out.println(citation1.getParents());
 		
 		/*
 		 * Write to GPML2021

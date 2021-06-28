@@ -51,7 +51,7 @@ public class Evidence extends PathwayElement {
 	 * @param xref         the evidence xref.
 	 * @param url          the url of the evidence.
 	 */
-	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref, String url) {
+	public Evidence(PathwayModel pathwayModel, String elementId, String value, Xref xref, String url) {
 		super(pathwayModel, elementId);
 		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.value = value;
@@ -62,22 +62,22 @@ public class Evidence extends PathwayElement {
 	/**
 	 * Instantiates an Evidence given all possible parameters except value.
 	 */
-	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref, String url) {
-		this(elementId, pathwayModel, null, xref, url);
+	public Evidence(PathwayModel pathwayModel, String elementId, Xref xref, String url) {
+		this(pathwayModel, elementId, null, xref, url);
 	}
 
 	/**
 	 * Instantiates an Evidence given all possible parameters except url.
 	 */
-	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref) {
-		this(elementId, pathwayModel, value, xref, null);
+	public Evidence(PathwayModel pathwayModel, String elementId, String value, Xref xref) {
+		this(pathwayModel, elementId, value, xref, null);
 	}
 
 	/**
 	 * Instantiates an Evidence given all possible parameters except value and url.
 	 */
-	public Evidence(String elementId, PathwayModel pathwayModel, Xref xref) {
-		this(elementId, pathwayModel, null, xref, null);
+	public Evidence(PathwayModel pathwayModel, String elementId, Xref xref) {
+		this(pathwayModel, elementId, null, xref, null);
 	}
 
 	/**
