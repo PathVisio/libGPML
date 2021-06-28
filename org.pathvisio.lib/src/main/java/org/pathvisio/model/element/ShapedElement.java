@@ -40,17 +40,17 @@ public abstract class ShapedElement extends ElementInfo {
 	 * elementId (formerly groupId) of the parent gpml:Group. Note, a group can also
 	 * belong in another group.
 	 * 
-	 * @param elementId          the unique pathway element identifier.
 	 * @param pathwayModel       the parent pathway model.
+	 * @param elementId          the unique pathway element identifier.
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
 	 * @param groupRef           the parent group in which the pathway element
 	 *                           belongs.
 	 */
-	public ShapedElement(String elementId, PathwayModel pathwayModel, RectProperty rectProperty,
+	public ShapedElement(PathwayModel pathwayModel, String elementId, RectProperty rectProperty,
 			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Group groupRef) {
-		super(elementId, pathwayModel);
+		super(pathwayModel, elementId);
 		this.rectProperty = rectProperty;
 		this.fontProperty = fontProperty;
 		this.shapeStyleProperty = shapeStyleProperty;
@@ -63,9 +63,9 @@ public abstract class ShapedElement extends ElementInfo {
 	 * Instantiates a shaped pathway element given all possible parameters except
 	 * groupRef, because the pathway element is not a member of a group.
 	 */
-	public ShapedElement(String elementId, PathwayModel pathwayModel, RectProperty rectProperty,
+	public ShapedElement(PathwayModel pathwayModel, String elementId, RectProperty rectProperty,
 			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null);
+		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null);
 
 	}
 

@@ -25,10 +25,11 @@ import org.pathvisio.model.PathwayModel;
  * @author unknown
  */
 public interface PathwayExporter extends PathwayIO {
+	
 	/**
 	 * Exports the given pathway to the file
 	 * 
-	 * @param file    the file to export to
+	 * @param file         the file to export to
 	 * @param pathwayModel The pathway to export
 	 * @throws ConverterException when there is a fatal conversion problem.
 	 *                            Implementations should only throw in case there is
@@ -40,7 +41,7 @@ public interface PathwayExporter extends PathwayIO {
 	/**
 	 * Export the given pathway to the file
 	 * 
-	 * @param file    the file to export to
+	 * @param file         the file to export to
 	 * @param pathwayModel The pathway to export
 	 * @param zoom
 	 * @throws ConverterException when there is a fatal conversion problem.

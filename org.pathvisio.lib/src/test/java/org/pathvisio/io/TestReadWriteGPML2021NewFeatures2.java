@@ -24,6 +24,7 @@ import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
+import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
@@ -56,7 +57,6 @@ public class TestReadWriteGPML2021NewFeatures2 extends TestCase {
 		Citation citation1 =  pathwayModel.getCitations().get(0);
 
 		System.out.println(citation1.getElementId());
-		System.out.println(citation1.getParents());
 		
 		/*
 		 * Write to GPML2021

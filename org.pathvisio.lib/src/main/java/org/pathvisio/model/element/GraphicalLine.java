@@ -29,23 +29,23 @@ public class GraphicalLine extends LineElement {
 	/**
 	 * Instantiates a GraphicalLine pathway element given all possible parameters.
 	 * 
-	 * @param elementId         the unique pathway element identifier.
 	 * @param pathwayModel      the parent pathway model.
+	 * @param elementId         the unique pathway element identifier.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 */
-	public GraphicalLine(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
+	public GraphicalLine(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
 			Group groupRef) {
-		super(elementId, pathwayModel, lineStyleProperty, groupRef);
+		super(pathwayModel, elementId, lineStyleProperty, groupRef);
 	}
 
 	/**
 	 * Instantiates a GraphicalLine pathway element given all possible parameters
 	 * except groupRef, because the interaction does not belong in a group.
 	 */
-	public GraphicalLine(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty) {
-		this(elementId, pathwayModel, lineStyleProperty, null);
+	public GraphicalLine(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
+		this(pathwayModel, elementId, lineStyleProperty, null);
 	}
 
 }

@@ -14,33 +14,40 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pathvisio.model.Pathway;
+import org.pathvisio.model.element.ElementInfo;
+
 /**
- * This class stores information for a CitationRef which references a
- * {@link Citation} and can contain annotationRefs {@link AnnotationRef}.
+ * This class stores information for a CitationRef with source {@link Citation},
+ * target {@link Citable}, and a list of {@link AnnotationRef}. The Citable
+ * target can be a {@link Pathway}, pathway element {@link ElementInfo}, or
+ * annotationRef {@link AnnotationRef}. In gpml:CitationRef, the attribute
+ * elementRef refers to the elementId of the source gpml:Citation.
  * 
  * @author finterly
  */
-public class CitationRef {
+public class CitationRef implements Annotatable {
 
-	private Citation citation; // elementRef in GPML is this.citation.getElementId()
-	private PathwayElement pathwayElement;
+	private Citation citation; // source citation, elementRef in GPML
+	private Citable citable; // target pathway, pathway element, or annotationRef
 	private List<AnnotationRef> annotationRefs; // 0 to unbounded
 
 	/**
-	 * Instantiates an CitationRef given a citation and parent pathway element, and
-	 * initializes annotationRefs list.
+	 * Instantiates an CitationRef given source {@link Citation} and target
+	 * {@link Citable}, and initializes annotationRefs lists.
 	 * 
-	 * @param citation       the Citation this CitationRef refers to.
-	 * @param pathwayElement the pathway element to which the CitationRef belongs.
+	 * @param citation the source citation this CitationRef refers to.
+	 * @param citable  the target pathway, pathway element, or annotationRef to which the
+	 *                 CitationRef belongs.
 	 */
-	public CitationRef(Citation citation, PathwayElement pathwayElement) {
+	public CitationRef(Citation citation, Citable citable) {
 		this.citation = citation;
-		this.setPathwayElement(pathwayElement);
+		this.setCitable(citable);
 		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
@@ -56,12 +63,13 @@ public class CitationRef {
 	}
 
 	/**
-	 * Returns the parent pathway element to which the CitationRef belongs.
+	 * Returns the pathway, pathway element, or annotationRef to which the
+	 * citationRef belongs.
 	 * 
-	 * @return pathwayElement the parent pathway element of the CitationRef.
+	 * @return citable the target of the citationRef.
 	 */
-	public PathwayElement getPathwayElement() {
-		return pathwayElement;
+	public Citable getCitable() {
+		return citable;
 	}
 
 	/**
@@ -69,12 +77,13 @@ public class CitationRef {
 	 * 
 	 * @param pathwayElement the parent pathway element the annotationRef.
 	 */
-	public void setPathwayElement(PathwayElement pathwayElement) {
-		if (pathwayElement != null) {
-			citation.removePathwayElement(pathwayElement);
+	public void setCitable(Citable citable) {
+		if (citable != null) {
+			citation.removeCitationRef(this);
+			//TODO 
 		}
-		citation.addPathwayElement(pathwayElement);
-		this.pathwayElement = pathwayElement;
+		this.setCitable(citable);
+		this.citable = citable;
 	}
 
 	/**

@@ -51,9 +51,9 @@ public class LinePoint extends PathwayElement {
 	 * @param relX         the relative x coordinate.
 	 * @param relY         the relative x coordinate.
 	 */
-	public LinePoint(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
+	public LinePoint(PathwayModel pathwayModel, String elementId, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
-		super(elementId, pathwayModel);
+		super(pathwayModel, elementId);
 		this.lineElement = lineElement;
 		this.arrowHead = arrowHead;
 		this.xy = xy;
@@ -74,7 +74,7 @@ public class LinePoint extends PathwayElement {
 	 */
 	public LinePoint(String elementId, PathwayModel pathwayModel, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy) {
-		super(elementId, pathwayModel);
+		super(pathwayModel, elementId);
 		this.lineElement = lineElement;
 		this.arrowHead = arrowHead;
 		this.xy = xy;

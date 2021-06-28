@@ -27,20 +27,37 @@ package org.pathvisio.model;
  */
 public abstract class PathwayElement {
 
-	private String elementId;
 	/* parent pathway model: may be null (e.g. when object is in clipboard) */
 	private PathwayModel pathwayModel = null;
+	private String elementId;
 
 	/**
-	 * Instantiates this pathway element with generated elementId and given parent
-	 * pathway model.
+	 * Instantiates this pathway element given a parent pathway model and generates an elementId. 
 	 * 
+	 * @param pathwayModel the parent pathway model.
 	 * @param elementId    the unique pathway element identifier.
+	 */
+	public PathwayElement(PathwayModel pathwayModel, String elementId) {
+		this.pathwayModel = pathwayModel;
+		this.elementId = elementId;
+		pathwayModel.addElementId(elementId, this); // TODO Setter
+	}
+
+	/**
+	 * Returns the parent pathway model.
+	 * 
+	 * @return pathwayModel the parent pathway model.
+	 */
+	public PathwayModel getPathwayModel() {
+		return pathwayModel;
+	}
+
+	/**
+	 * Sets the parent pathway model.
+	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
-	public PathwayElement(String elementId, PathwayModel pathwayModel) {
-		this.elementId = elementId; 
-		pathwayModel.addElementId(elementId, this); // TODO Setter
+	public void setPathwayModel(PathwayModel pathwayModel) {
 		this.pathwayModel = pathwayModel;
 	}
 
@@ -80,24 +97,5 @@ public abstract class PathwayElement {
 		setElementId(pathwayModel.getUniqueElementId());
 		return elementId;
 	}
-
-	/**
-	 * Returns the parent pathway model.
-	 * 
-	 * @return pathwayModel the parent pathway model.
-	 */
-	public PathwayModel getPathwayModel() {
-		return pathwayModel;
-	}
-
-	/**
-	 * Sets the parent pathway model.
-	 * 
-	 * @param pathwayModel the parent pathway model.
-	 */
-	public void setPathwayModel(PathwayModel pathwayModel) {
-		this.pathwayModel = pathwayModel;
-	}
-
 
 }

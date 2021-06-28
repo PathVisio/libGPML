@@ -42,8 +42,8 @@ public class State extends ElementInfo {
 	/**
 	 * Instantiates a State pathway element given all possible parameters.
 	 * 
-	 * @param elementId          the unique pathway element identifier.
 	 * @param pathwayModel       the parent pathway model.
+	 * @param elementId          the unique pathway element identifier.
 	 * @param dataNode           the parent data node (NB: elementRef was formerly
 	 *                           elementId of parent data node).
 	 * @param textLabel          the text label of the state.
@@ -60,10 +60,10 @@ public class State extends ElementInfo {
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
 	 * @param xref               the state xref.
 	 */
-	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
+	public State(PathwayModel pathwayModel, String elementId, DataNode dataNode, String textLabel, StateType type,
 			double relX, double relY, double width, double height, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Xref xref) {
-		super(elementId, pathwayModel);
+		super(pathwayModel, elementId);
 		this.dataNode = dataNode;
 		this.textLabel = textLabel;
 		this.type = type;
@@ -80,10 +80,10 @@ public class State extends ElementInfo {
 	 * Instantiates a State pathway element given all possible parameters except
 	 * xref.
 	 */
-	public State(String elementId, PathwayModel pathwayModel, DataNode dataNode, String textLabel, StateType type,
+	public State(PathwayModel pathwayModel, String elementId, DataNode dataNode, String textLabel, StateType type,
 			double relX, double relY, double width, double height, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty) {
-		this(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height, fontProperty,
+		this(pathwayModel, elementId, dataNode, textLabel, type, relX, relY, width, height, fontProperty,
 				shapeStyleProperty, null);
 	}
 

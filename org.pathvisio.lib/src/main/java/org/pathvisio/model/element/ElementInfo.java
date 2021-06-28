@@ -22,13 +22,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.pathvisio.model.AnnotationRef;
-import org.pathvisio.model.Citation;
-import org.pathvisio.model.CitationRef;
 import org.pathvisio.model.Comment;
-import org.pathvisio.model.Evidence;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.ref.Annotatable;
+import org.pathvisio.model.ref.AnnotationRef;
+import org.pathvisio.model.ref.Citable;
+import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.Evidence;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an
@@ -38,7 +39,7 @@ import org.pathvisio.model.PathwayModel;
  * 
  * @author unknown, AP20070508, finterly
  */
-public abstract class ElementInfo extends PathwayElement {
+public abstract class ElementInfo extends PathwayElement implements Annotatable, Citable {
 
 	private List<Comment> comments;
 	/**
@@ -54,11 +55,11 @@ public abstract class ElementInfo extends PathwayElement {
 	/**
 	 * Instantiates a pathway element with meta data information.
 	 * 
-	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
+	 * @param elementId    the unique pathway element identifier.
 	 */
-	public ElementInfo(String elementId, PathwayModel pathwayModel) {
-		super(elementId, pathwayModel);
+	public ElementInfo(PathwayModel pathwayModel, String elementId) {
+		super(pathwayModel, elementId);
 		this.comments = new ArrayList<Comment>(); // 0 to unbounded
 		this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded

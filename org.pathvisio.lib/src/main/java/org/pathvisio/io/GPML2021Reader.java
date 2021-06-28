@@ -42,6 +42,11 @@ import org.pathvisio.io.*;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.ref.Annotation;
+import org.pathvisio.model.ref.AnnotationRef;
+import org.pathvisio.model.ref.Citation;
+import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
@@ -225,7 +230,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (xref != null)
 					annotation.setXref(xref);
 				if (url != null)
-					annotation.setUrl(url);
+					annotation.getUrlRef().setLink(url);
 				if (annotation != null)
 					pathwayModel.addAnnotation(annotation);
 			}
@@ -250,7 +255,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// sets optional properties
 				String url = cit.getAttributeValue("url");
 				if (url != null)
-					citation.setUrl(url);
+					citation.getUrlRef().setLink(url);
 				if (citation != null)
 					pathwayModel.addCitation(citation);
 			}
@@ -356,10 +361,13 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
 			AnnotationRef annotationRef = new AnnotationRef(annotation);
 			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
-				Citation citationRef = (Citation) pathwayModel
-						.getPathwayElement(citRef.getAttributeValue("elementRef"));
-				if (citationRef != null)
-					annotationRef.addCitationRef(citationRef);
+				Citation citation = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
+				if (citation != null) {
+					// create new citationRef for citation referenced
+					CitationRef citationRef = new CitationRef(citation);
+					if (citationRef != null)
+						annotationRef.addCitationRef(citationRef);
+				}
 			}
 			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
 				Evidence evidenceRef = (Evidence) pathwayModel
@@ -373,7 +381,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads citation reference {@link Pathway#addCitationRef} information for
-	 * pathway model from root element.
+	 * pathway model from root element. TODO
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -424,7 +432,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				RectProperty rectProperty = readRectProperty(gfx);
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-				Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
+				Group group = new Group(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, type);
 				// reads comment group, evidenceRefs
 				readElementInfo(group, grp);
 				// sets optional properties
@@ -469,7 +477,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				RectProperty rectProperty = readRectProperty(gfx);
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-				Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
+				Label label = new Label(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty,
 						textLabel);
 				// reads comment group, evidenceRefs
 				readElementInfo(label, lb);
@@ -503,7 +511,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				double rotation = Double.parseDouble(gfx.getAttributeValue("rotation").trim());
-				Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
+				Shape shape = new Shape(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty,
 						rotation);
 				// reads comment group, evidenceRefs
 				readElementInfo(shape, shp);
@@ -539,7 +547,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				String textLabel = dn.getAttributeValue("textLabel");
 				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT));
-				DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty,
+				DataNode dataNode = new DataNode(pathwayModel, elementId, rectProperty, fontProperty,
 						shapeStyleProperty, textLabel, type);
 				// reads comment group, evidenceRefs
 				readElementInfo(dataNode, dn);
@@ -582,7 +590,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				// sets zOrder based on parent data node TODO
 				shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
-				State state = new State(elementId, dataNode.getPathwayModel(), dataNode, textLabel, type, relX, relY,
+				State state = new State(dataNode.getPathwayModel(), elementId, dataNode, textLabel, type, relX, relY,
 						width, height, fontProperty, shapeStyleProperty);
 				// reads comment group, evidenceRefs
 				readElementInfo(state, st);
@@ -611,7 +619,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String elementId = ia.getAttributeValue("elementId");
 				Element gfx = ia.getChild("Graphics", ia.getNamespace());
 				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
-				Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
+				Interaction interaction = new Interaction(pathwayModel, elementId, lineStyleProperty);
 				// reads comment group, evidenceRefs
 				readLineElement(interaction, ia);
 				// sets optional properties
@@ -640,7 +648,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String elementId = gln.getAttributeValue("elementId");
 				Element gfx = gln.getChild("Graphics", gln.getNamespace());
 				LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
-				GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
+				GraphicalLine graphicalLine = new GraphicalLine(pathwayModel, elementId, lineStyleProperty);
 				readLineElement(graphicalLine, gln);
 				// add graphicalLine to pathwayModel
 				if (graphicalLine != null)
@@ -704,8 +712,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element an : wyps.getChildren("Anchor", wyps.getNamespace())) {
 			String elementId = an.getAttributeValue("elementId");
 			double position = Double.parseDouble(an.getAttributeValue("position"));
-			AnchorType shapeType = AnchorType.register(an.getAttributeValue("shapeType", ANCHORSHAPETYPE_DEFAULT));
-			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
+			AnchorShapeType shapeType = AnchorShapeType
+					.register(an.getAttributeValue("shapeType", ANCHORSHAPETYPE_DEFAULT));
+			Anchor anchor = new Anchor(lineElement.getPathwayModel(), elementId, lineElement, position, shapeType);
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
 		}
@@ -837,10 +846,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
 			AnnotationRef annotationRef = new AnnotationRef(annotation, elementInfo);
 			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
-				Citation citationRef = (Citation) elementInfo.getPathwayModel()
+				Citation citation = (Citation) elementInfo.getPathwayModel()
 						.getPathwayElement(citRef.getAttributeValue("elementRef"));
-				if (citationRef != null)
-					annotationRef.addCitationRef(citationRef);
+				if (citation != null) {
+					// create new citationRef for citation referenced
+					CitationRef citationRef = new CitationRef(citation);
+					if (citationRef != null)
+						annotationRef.addCitationRef(citationRef);
+				}
 			}
 			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
 				Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()

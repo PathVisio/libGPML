@@ -14,12 +14,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
+import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayModel;
 
 /**
  * This class stores information for an Evidence.
@@ -50,7 +52,7 @@ public class Evidence extends PathwayElement {
 	 * @param url          the url of the evidence.
 	 */
 	public Evidence(String elementId, PathwayModel pathwayModel, String value, Xref xref, String url) {
-		super(elementId, pathwayModel);
+		super(pathwayModel, elementId);
 		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.value = value;
 		this.xref = xref;

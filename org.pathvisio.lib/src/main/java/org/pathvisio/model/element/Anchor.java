@@ -35,16 +35,16 @@ public class Anchor extends PathwayElement {
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
-	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
+	 * @param elementId    the unique pathway element identifier.
 	 * @param lineElement  the parent line pathway element.
 	 * @param position     the proportional distance of an anchor along the line it
 	 *                     belongs to.
 	 * @param shapeType    the visual representation of an anchor.
 	 */
-	public Anchor(String elementId, PathwayModel pathwayModel, LineElement lineElement, double position,
+	public Anchor(PathwayModel pathwayModel, String elementId, LineElement lineElement, double position,
 			AnchorShapeType shapeType) {
-		super(elementId, pathwayModel);
+		super(pathwayModel, elementId);
 		this.lineElement = lineElement;
 		if (position < 0 || position > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");

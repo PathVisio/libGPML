@@ -14,36 +14,43 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pathvisio.model.Pathway;
+import org.pathvisio.model.element.ElementInfo;
+
 /**
- * This class stores information for an AnnotationRef which references a
- * {@link Annotation} and can contain citationRefs {@link CitationRef} or
- * evidenceRefs {@link Evidence}.
+ * This class stores information for an AnnotationRef with source
+ * {@link Annotation}, target {@link Annotatable}, and a list of
+ * {@link CitationRef} and/or {@link EvidencRef}. The Annotatable target can be
+ * a {@link Pathway}, pathway element {@link ElementInfo}, or annotationRef
+ * {@link CitationRef}. In gpml:AnnotationRef, the attribute elementRef refers
+ * to the elementId of the source gpml:Annotation.
  * 
  * @author finterly
  */
-public class AnnotationRef {
+public class AnnotationRef implements Citable {
 
-	private Annotation annotation; // elementRef in GPML is this.annotation.getElementId()
-	private PathwayElement pathwayElement;
-	private List<Citation> citationRefs; // 0 to unbounded
+	private Annotation annotation; // source annotation, elementRef in GPML
+	private Annotatable annotatable; // target pathway, pathway element, or citationRef
+	private List<CitationRef> citationRefs; // 0 to unbounded
 	private List<Evidence> evidenceRefs; // 0 to unbounded
 
 	/**
-	 * Instantiates an AnnotationRef given annotation and parent pathway element,
-	 * and initializes citation and evidence lists.
+	 * Instantiates an AnnotationRef given source {@link Annotation} and target
+	 * {@link Annotatable}, and initializes citationRefs and evidenceRefs lists.
 	 * 
-	 * @param annotation     the Annotation this AnnotationRef refers to.
-	 * @param pathwayElement the pathway element to which the AnnotationRef belongs.
+	 * @param annotation  the source annotation this AnnotationRef refers to.
+	 * @param annotatable the target pathway, pathway element, or citationRef to
+	 *                    which the AnnotationRef belongs.
 	 */
-	public AnnotationRef(Annotation annotation, PathwayElement pathwayElement) {
+	public AnnotationRef(Annotation annotation, Annotatable annotatable) {
 		this.annotation = annotation;
-		this.setPathwayElement(pathwayElement);
-		this.citationRefs = new ArrayList<Citation>();
+		this.setAnnotatable(annotatable);
+		this.citationRefs = new ArrayList<CitationRef>();
 		this.evidenceRefs = new ArrayList<Evidence>();
 	}
 
@@ -63,8 +70,8 @@ public class AnnotationRef {
 	 * 
 	 * @return pathwayElement the parent pathway element the AnnotationRef.
 	 */
-	public PathwayElement getPathwayElement() {
-		return pathwayElement;
+	public Annotatable getAnnotatable() {
+		return annotatable;
 	}
 
 	/**
@@ -72,12 +79,12 @@ public class AnnotationRef {
 	 * 
 	 * @param pathwayElement the parent pathway element the annotationRef.
 	 */
-	public void setPathwayElement(PathwayElement pathwayElement) {
-		if (pathwayElement != null) {
-			annotation.removePathwayElement(pathwayElement);
+	public void setAnnotatable(Annotatable annotatable) {
+		if (annotatable != null) {
+			annotation.removePathwayElement(annotatable);
 		}
-		annotation.addPathwayElement(pathwayElement);
-		this.pathwayElement = pathwayElement;
+		annotation.addPathwayElement(annotatable);
+		this.annotatable = annotatable;
 	}
 
 	/**
@@ -104,7 +111,7 @@ public class AnnotationRef {
 	 * @return citationRefs the list of citations referenced, an empty list if no
 	 *         properties are defined.
 	 */
-	public List<Citation> getCitationRefs() {
+	public List<CitationRef> getCitationRefs() {
 		return citationRefs;
 	}
 
@@ -113,7 +120,7 @@ public class AnnotationRef {
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
-	public void addCitationRef(Citation citationRef) {
+	public void addCitationRef(CitationRef citationRef) {
 		citationRefs.add(citationRef);
 	}
 
@@ -122,10 +129,15 @@ public class AnnotationRef {
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
-	public void removeCitationRef(Citation citationRef) {
+	public void removeCitationRef(CitationRef citationRef) {
 		citationRefs.remove(citationRef);
 	}
 
+	/*
+	 * -----------------------------------------------------------------------------
+	 */
+	
+	
 	/**
 	 * Returns the list of evidence references.
 	 * 

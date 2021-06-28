@@ -14,12 +14,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
+import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.type.AnnotationType;
 
 /**
@@ -34,7 +36,7 @@ public class Annotation extends PathwayElement {
 	private String value;
 	private AnnotationType type;
 	private Xref xref; // optional
-	private String url; // optional
+	private UrlRef url; // optional
 
 	/**
 	 * Instantiates an Annotation pathway element given all possible parameters:
@@ -48,8 +50,8 @@ public class Annotation extends PathwayElement {
 	 * @param url          the url of the annotation.
 	 */
 	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, Xref xref,
-			String url) {
-		super(elementId, pathwayModel);
+			UrlRef url) {
+		super(pathwayModel, elementId);
 		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.value = value;
 		this.type = type;
@@ -60,7 +62,7 @@ public class Annotation extends PathwayElement {
 	/**
 	 * Instantiates an Annotation given all possible parameters except xref.
 	 */
-	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, String url) {
+	public Annotation(String elementId, PathwayModel pathwayModel, String value, AnnotationType type, UrlRef url) {
 		this(elementId, pathwayModel, value, type, null, url);
 
 	}
@@ -149,7 +151,7 @@ public class Annotation extends PathwayElement {
 	 * 
 	 * @return url the url of the annotation.
 	 */
-	public String getUrl() {
+	public UrlRef getUrlRef() {
 		return url;
 	}
 
@@ -158,7 +160,7 @@ public class Annotation extends PathwayElement {
 	 * 
 	 * @param url the url of the annotation.
 	 */
-	public void setUrl(String url) {
+	public void setUrlRef(UrlRef url) {
 		this.url = url;
 	}
 

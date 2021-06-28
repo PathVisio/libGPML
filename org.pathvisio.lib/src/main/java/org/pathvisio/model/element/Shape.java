@@ -34,8 +34,8 @@ public class Shape extends ShapedElement {
 	/**
 	 * Instantiates a Label pathway element given all possible parameters.
 	 * 
-	 * @param elementId          the unique pathway element identifier.
 	 * @param pathwayModel       the parent pathway model.
+	 * @param elementId          the unique pathway element identifier.
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
@@ -44,9 +44,9 @@ public class Shape extends ShapedElement {
 	 * @param rotation           the rotation in radians? TODO
 	 * @param textLabel          the text of the shape.
 	 */
-	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+	public Shape(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, double rotation, String textLabel) {
-		super(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef);
+		super(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, groupRef);
 		this.rotation = rotation;
 		this.textLabel = textLabel;
 	}
@@ -54,27 +54,27 @@ public class Shape extends ShapedElement {
 	/**
 	 * Instantiates a Shape given all possible parameters except textLabel.
 	 */
-	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+	public Shape(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, double rotation) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, groupRef, rotation, null);
+		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, groupRef, rotation, null);
 	}
 
 	/**
 	 * Instantiates a Shape given all possible parameters except groupRef, because
 	 * the pathway element does not belong in a group.
 	 */
-	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+	public Shape(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, double rotation, String textLabel) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, rotation, textLabel);
+		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null, rotation, textLabel);
 	}
 
 	/**
 	 * Instantiates a Shape given all possible parameters except groupRef and
 	 * textLbel, because the shape neither belongs in a group nor has a textLabel .
 	 */
-	public Shape(String elementId, PathwayModel pathwayModel, RectProperty rectProperty, FontProperty fontProperty,
+	public Shape(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, double rotation) {
-		this(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, null, rotation, null);
+		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null, rotation, null);
 	}
 
 	/**

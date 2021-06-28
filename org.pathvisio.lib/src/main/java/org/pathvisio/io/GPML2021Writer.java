@@ -35,6 +35,11 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.ref.Annotation;
+import org.pathvisio.model.ref.AnnotationRef;
+import org.pathvisio.model.ref.Citation;
+import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -335,9 +340,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		for (AnnotationRef annotationRef : annotationRefs) {
 			Element anntRef = new Element("AnnotationRef", e.getNamespace());
 			anntRef.setAttribute("elementRef", annotationRef.getAnnotation().getElementId());
-			for (Citation citationRef : annotationRef.getCitationRefs()) {
+			for (CitationRef citationRef : annotationRef.getCitationRefs()) {
 				Element citRef = new Element("CitationRef", e.getNamespace());
-				citRef.setAttribute("elementRef", citationRef.getElementId());
+				citRef.setAttribute("elementRef", citationRef.getCitation().getElementId());
 				anntRef.addContent(citRef);
 			}
 			for (Evidence evidence : annotationRef.getEvidenceRefs()) {

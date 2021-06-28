@@ -25,6 +25,11 @@ import java.util.TreeMap;
 
 import org.bridgedb.Xref;
 import org.pathvisio.model.graphics.Coordinate;
+import org.pathvisio.model.ref.Annotatable;
+import org.pathvisio.model.ref.AnnotationRef;
+import org.pathvisio.model.ref.Citable;
+import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.Evidence;
 
 /**
  * This class stores metadata for a Pathway.
@@ -38,7 +43,7 @@ import org.pathvisio.model.graphics.Coordinate;
  * 
  * @author finterly
  */
-public class Pathway {
+public class Pathway implements Annotatable, Citable {
 
 	private String title;
 	private double boardWidth;

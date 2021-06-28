@@ -32,16 +32,16 @@ public class Interaction extends LineElement {
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters.
 	 * 
-	 * @param elementId         the unique pathway element identifier.
 	 * @param pathwayModel      the parent pathway model.
+	 * @param elementId         the unique pathway element identifier.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 * @param xref              the interaction Xref.
 	 */
-	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Group groupRef,
+	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty, Group groupRef,
 			Xref xref) {
-		super(elementId, pathwayModel, lineStyleProperty, groupRef);
+		super(pathwayModel, elementId, lineStyleProperty, groupRef);
 		this.xref = xref;
 	}
 
@@ -49,25 +49,25 @@ public class Interaction extends LineElement {
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except groupRef, because the interaction does not belong in a group.
 	 */
-	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty, Xref xref) {
-		this(elementId, pathwayModel, lineStyleProperty, null, xref);
+	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty, Xref xref) {
+		this(pathwayModel, elementId, lineStyleProperty, null, xref);
 	}
 
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except xref.
 	 */
-	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
+	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
 			Group groupRef) {
-		this(elementId, pathwayModel, lineStyleProperty, groupRef, null);
+		this(pathwayModel, elementId, lineStyleProperty, groupRef, null);
 	}
 
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except groupRef and xref.
 	 */
-	public Interaction(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty) {
-		this(elementId, pathwayModel, lineStyleProperty, null, null);
+	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
+		this(pathwayModel, elementId, lineStyleProperty, null, null);
 	}
 
 	/**

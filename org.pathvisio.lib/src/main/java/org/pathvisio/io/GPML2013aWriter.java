@@ -38,6 +38,10 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.ref.Annotation;
+import org.pathvisio.model.ref.AnnotationRef;
+import org.pathvisio.model.ref.Citation;
+import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
@@ -761,7 +765,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				bp.addContent(ocv);
 			}
 			// warnings for conversion GPML2021 to GPML2013a
-			if (annotation.getUrl() != null) {
+			if (annotation.getUrlRef() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Annotation " + annotation.getElementId()
 						+ " url and elementId info lost.");
 			}
@@ -795,7 +799,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (pubxf != null)
 				bp.addContent(pubxf);
 			// warnings for conversion GPML2021 to GPML2013a
-			if (citation.getUrl() != null) {
+			if (citation.getUrlRef().getLink() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Citation " + citation.getElementId()
 						+ " url info lost.");
 			}

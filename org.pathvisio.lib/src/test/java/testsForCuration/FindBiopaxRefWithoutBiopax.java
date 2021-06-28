@@ -17,8 +17,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.pathvisio.io.ConverterException;
-import org.pathvisio.model.Citation;
-import org.pathvisio.model.CitationRef;
+import org.pathvisio.model.ref.Citation;
+import org.pathvisio.model.ref.CitationRef;
 
 import junit.framework.TestCase;
 

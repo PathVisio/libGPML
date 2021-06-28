@@ -46,15 +46,15 @@ public abstract class LineElement extends ElementInfo {
 	 * (formerly groupId) of the parent gpml:Group. Note, a group can also belong in
 	 * another group.
 	 * 
-	 * @param elementId         the unique pathway element identifier.
 	 * @param pathwayModel      the parent pathway model.
+	 * @param elementId         the unique pathway element identifier.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 */
-	public LineElement(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty,
+	public LineElement( PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
 			Group groupRef) {
-		super(elementId, pathwayModel);
+		super(pathwayModel, elementId);
 		this.points = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
@@ -67,8 +67,8 @@ public abstract class LineElement extends ElementInfo {
 	 * Instantiates a line pathway element given all possible parameters except
 	 * groupRef, because the pathway element is not a member of a group.
 	 */
-	public LineElement(String elementId, PathwayModel pathwayModel, LineStyleProperty lineStyleProperty) {
-		this(elementId, pathwayModel, lineStyleProperty, null);
+	public LineElement( PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
+		this(pathwayModel, elementId, lineStyleProperty, null);
 	}
 
 	/**

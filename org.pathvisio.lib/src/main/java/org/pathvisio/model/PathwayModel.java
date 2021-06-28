@@ -33,7 +33,9 @@ import java.io.Reader;
 
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.Coordinate;
-import org.pathvisio.model.type.ArrowHeadType;
+import org.pathvisio.model.ref.Annotation;
+import org.pathvisio.model.ref.Citation;
+import org.pathvisio.model.ref.Evidence;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
@@ -270,29 +272,43 @@ public class PathwayModel {
 	 * @return citation the new citation or the existing equivalent citation.
 	 */
 	public Citation addCitation(Citation citation) {
-		for (Citation citationExisting : citations) {
-			if (!citationExisting.getXref().getId().equals(citation.getXref().getId()))
-				continue;
-			if (!citationExisting.getXref().getDataSource().equals(citation.getXref().getDataSource()))
-				continue;
-			if (!Objects.equals(citationExisting.getUrl(), citation.getUrl()))
-				continue;
-			if (!Objects.equals(citationExisting.getTitle(), citation.getTitle()))
-				continue;
-			if (!Objects.equals(citationExisting.getSource(), citation.getSource()))
-				continue;
-			if (!Objects.equals(citationExisting.getYear(), citation.getYear()))
-				continue;
-			if (!Objects.equals(citationExisting.getAuthors(), citation.getAuthors()))
-				continue;
-			Logger.log.trace("New citation is equivalent to existing citation" + citationExisting.getElementId()
-					+ ", not added to pathway model.");
-			citation = citationExisting;
-			return citation;
-		}
-		// new citation is not equal to any existing citation, add to pathway model
-		citations.add(citation);
+
+		if (citationExists(citation) != null)
+			// new citation is not equal to any existing citation, add to pathway model
+			citations.add(citation);
 		return citation;
+	}
+
+	public Citation citationExists(Citation citation) {
+		for (Citation citationExisting : citations) {
+			boolean isEqual = citationEqual(citationExisting, citation);
+			if (isEqual) {
+				Logger.log.trace("New citation is equivalent to existing citation" + citationExisting.getElementId()
+						+ ", not added to pathway model.");
+				return citationExisting;
+			}
+		}
+		return citation;
+	}
+
+	public boolean citationEqual(Citation citation1, Citation citation2) {
+		if (!citation1.getXref().getId().equals(citation2.getXref().getId()))
+			return false;
+		if (!citation1.getXref().getDataSource().equals(citation2.getXref().getDataSource()))
+			return false;
+		if (!Objects.equals(citation1.getUrlRef().getLink(), citation2.getUrlRef().getLink()))
+			return false;
+		if (!Objects.equals(citation1.getUrlRef().getDescription(), citation2.getUrlRef().getDescription()))
+			return false;
+		if (!Objects.equals(citation1.getTitle(), citation2.getTitle()))
+			return false;
+		if (!Objects.equals(citation1.getSource(), citation2.getSource()))
+			return false;
+		if (!Objects.equals(citation1.getYear(), citation2.getYear()))
+			return false;
+		if (!Objects.equals(citation1.getAuthors(), citation2.getAuthors()))
+			return false;
+		return true;
 	}
 
 	/**
@@ -355,6 +371,7 @@ public class PathwayModel {
 	 * @param dataNode the data node to be removed.
 	 */
 	public void removeDataNode(DataNode dataNode) {
+		removeElementInfoRefs(dataNode);
 		dataNodes.remove(dataNode);
 	}
 
@@ -382,6 +399,7 @@ public class PathwayModel {
 	 * @param interaction the interaction to be removed.
 	 */
 	public void removeInteraction(Interaction interaction) {
+		removeElementInfoRefs(interaction);
 		interactions.remove(interaction);
 	}
 
@@ -409,6 +427,7 @@ public class PathwayModel {
 	 * @param graphicalLine the graphicalLine to be removed.
 	 */
 	public void removeGraphicalLine(GraphicalLine graphicalLine) {
+		removeElementInfoRefs(graphicalLine);
 		graphicalLines.remove(graphicalLine);
 	}
 
@@ -436,6 +455,7 @@ public class PathwayModel {
 	 * @param label the label to be removed.
 	 */
 	public void removeLabel(Label label) {
+		removeElementInfoRefs(label);
 		labels.remove(label);
 	}
 
@@ -463,6 +483,7 @@ public class PathwayModel {
 	 * @param shape the shape to be removed.
 	 */
 	public void removeShape(Shape shape) {
+		removeElementInfoRefs(shape);
 		shapes.remove(shape);
 	}
 
@@ -490,7 +511,22 @@ public class PathwayModel {
 	 * @param group the group to be removed.
 	 */
 	public void removeGroup(Group group) {
+		removeElementInfoRefs(group);
 		groups.remove(group);
+	}
+
+	/**
+	 * Removes references to {@link AnnotationRef}, {@link CitationRef}, and
+	 * {@link EvidenceRef} of a given pathway element {@link ElementInfo}.
+	 * References to annotationRefs, citatationRefs, and evidenceRefs are also
+	 * removed from their sources {@link Annotation}, {@link Citation}, and
+	 * {@link Evidence}.
+	 * 
+	 * @param elementInfo the pathway element for which references are to be
+	 *                    removed.
+	 */
+	public void removeElementInfoRefs(ElementInfo elementInfo) {
+
 	}
 
 	/**

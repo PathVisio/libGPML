@@ -38,6 +38,10 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.ref.Annotation;
+import org.pathvisio.model.ref.AnnotationRef;
+import org.pathvisio.model.ref.Citation;
+import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.GroupRectPropertyUtils;
@@ -361,7 +365,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				citation.setSource(source);
 				// if source is an url, also set as citation url
 				if (source.startsWith("http") || source.startsWith("www"))
-					citation.setUrl(source);
+					citation.getUrlRef().setLink(source);
 			}
 			if (year != null && !year.equals(""))
 				citation.setYear(year);
@@ -546,7 +550,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					12, HAlignType.CENTER, VAlignType.MIDDLE);
 			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
 			// instantiates group
-			Group group = new Group(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, type);
+			Group group = new Group(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, type);
 			// type "Pathway" has font size (custom font name "Times" never implemented)
 			if (type == GroupType.PATHWAY) {
 				group.getFontProperty().setFontSize(32);
@@ -658,7 +662,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			FontProperty fontProperty = readFontProperty(gfx);
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			// instantiates label
-			Label label = new Label(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, textLabel);
+			Label label = new Label(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, textLabel);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(label, lb, biopaxIdToNew);
 			// sets optional properties
@@ -694,7 +698,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx).trim());
 			// instantiates shape
-			Shape shape = new Shape(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty, rotation);
+			Shape shape = new Shape(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, rotation);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(shape, shp, biopaxIdToNew);
 			// sets optional properties
@@ -736,7 +740,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				typeStr = "Undefined";
 			DataNodeType type = DataNodeType.register(typeStr);
 			// instantiates data node
-			DataNode dataNode = new DataNode(elementId, pathwayModel, rectProperty, fontProperty, shapeStyleProperty,
+			DataNode dataNode = new DataNode(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty,
 					textLabel, type);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(dataNode, dn, biopaxIdToNew);
@@ -786,7 +790,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// sets zOrder based on parent data node TODO
 			shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
 			// instantiates state
-			State state = new State(elementId, pathwayModel, dataNode, textLabel, type, relX, relY, width, height,
+			State state = new State(pathwayModel, elementId, dataNode, textLabel, type, relX, relY, width, height,
 					fontProperty, shapeStyleProperty);
 			// sets textColor to same color as borderColor
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
@@ -944,7 +948,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			// instantiates interaction
-			Interaction interaction = new Interaction(elementId, pathwayModel, lineStyleProperty);
+			Interaction interaction = new Interaction(pathwayModel, elementId, lineStyleProperty);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
 			readLineElement(interaction, ia, elementIdSet, biopaxIdToNew, groupIdToNew);
@@ -984,7 +988,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			// instantiates graphical line
-			GraphicalLine graphicalLine = new GraphicalLine(elementId, pathwayModel, lineStyleProperty);
+			GraphicalLine graphicalLine = new GraphicalLine(pathwayModel, elementId, lineStyleProperty);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
 			readLineElement(graphicalLine, gln, elementIdSet, biopaxIdToNew, groupIdToNew);
@@ -1044,8 +1048,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
 			String elementId = readElementId(base + ".Graphics.Anchor", an, elementIdSet);
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
-			AnchorType shapeType = AnchorType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
-			Anchor anchor = new Anchor(elementId, lineElement.getPathwayModel(), lineElement, position, shapeType);
+			AnchorShapeType shapeType = AnchorShapeType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
+			Anchor anchor = new Anchor(lineElement.getPathwayModel(), elementId, lineElement, position, shapeType);
 			// adds anchor to line pathway element of pathway model
 			if (anchor != null)
 				lineElement.addAnchor(anchor);
