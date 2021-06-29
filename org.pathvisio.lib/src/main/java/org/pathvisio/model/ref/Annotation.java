@@ -106,7 +106,23 @@ public class Annotation extends PathwayElement {
 	 * @param annotationRef the given annotationRef to remove.
 	 */
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		// remove all citationRefs of annotationRef
+		if (!annotationRef.getCitationRefs().isEmpty())
+			annotationRef.removeCitationRefs();
+		// remove all evidenceRefs of annotationRef
+		//TODO 
+		
+		// remove links between annotationRef and its annotatable
+		if (annotationRef.getAnnotatable() != null)
+			annotationRef.getAnnotatable().removeAnnotationRef(annotationRef); // annotationRef.setAnnotatable(null); TODO
+
+		// remove annotationRef from this annotation
+		annotationRef.setAnnotation(null);
 		annotationRefs.remove(annotationRef);
+		// remove this annotation from pathway model if empty
+		if (annotationRefs.isEmpty()) {
+			this.getPathwayModel().removeAnnotation(this);
+		}	
 	}
 
 	/**

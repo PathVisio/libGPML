@@ -46,7 +46,7 @@ public class CitationRef implements Annotatable {
 	 *                 which the CitationRef belongs.
 	 */
 	public CitationRef(Citation citation, Citable citable) {
-		this.citation = citation;
+		this.setCitation(citation);
 		this.setCitable(citable);
 		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
@@ -63,31 +63,6 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Returns the pathway, pathway element, or annotationRef {@link Citable} to
-	 * which the citationRef belongs.
-	 * 
-	 * @return citable the target of the citationRef.
-	 */
-	public Citable getCitable() {
-		return citable;
-	}
-
-	/**
-	 * Sets the the pathway, pathway element, or annotationRef {@link Citable} to
-	 * which the annotationRef belongs.
-	 * 
-	 * @param pathwayElement the parent pathway element the annotationRef.
-	 */
-	public void setCitable(Citable citable) {
-		if (citable != null) {
-			citation.removeCitationRef(this);
-			// TODO
-		}
-		this.setCitable(citable);
-		this.citable = citable;
-	}
-
-	/**
 	 * Returns the citation referenced.
 	 * 
 	 * @return citation the citation referenced.
@@ -97,12 +72,50 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Sets the citation to be referenced.
+	 * Sets the citation source to be referenced.
 	 * 
-	 * @param citation the citation referenced.
+	 * @param newCitation the given citation source to set.
 	 */
-	public void setCitation(Citation citation) {
-		this.citation = citation;
+	public void setCitation(Citation newCitation) {
+		if (citation == null || !citation.equals(newCitation)) {
+			// if necessary, removes link to existing citation source
+			if (citation != null) {
+				this.citation.removeCitationRef(this);
+			}
+			if (newCitation != null) {
+				newCitation.addCitationRef(this);
+			}
+			citation = newCitation;
+		}
+	}
+
+	/**
+	 * Returns the target pathway, pathway element, or annotationRef {@link Citable}
+	 * to which the citationRef belongs.
+	 * 
+	 * @return citable the target of the citationRef.
+	 */
+	public Citable getCitable() {
+		return citable;
+	}
+
+	/**
+	 * Sets the target pathway, pathway element, or annotationRef {@link Citable} to
+	 * which the annotationRef belongs.
+	 * 
+	 * @param newCitable the given target citable to set.
+	 */
+	public void setCitable(Citable newCitable) {
+		if (citable == null || !citable.equals(newCitable)) {
+			// if necessary, removes link to existing target citable
+			if (citable != null) {
+				this.citable.removeCitationRef(this);
+			}
+			if (newCitable != null) {
+				newCitable.addCitationRef(this);
+			}
+			citable = newCitable;
+		}
 	}
 
 	/**
@@ -111,6 +124,7 @@ public class CitationRef implements Annotatable {
 	 * @return annotationRefs the list of annotations referenced, an empty list if
 	 *         no properties are defined.
 	 */
+	@Override
 	public List<AnnotationRef> getAnnotationRefs() {
 		return annotationRefs;
 	}
@@ -120,6 +134,7 @@ public class CitationRef implements Annotatable {
 	 * 
 	 * @param annotationRef the annotationRef to be added.
 	 */
+	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
 		annotationRefs.add(annotationRef);
 	}
@@ -129,22 +144,27 @@ public class CitationRef implements Annotatable {
 	 * 
 	 * @param annotationRef the annotationRef to be removed.
 	 */
+	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
 		// remove all citationRefs of annotationRef
-		annotationRef.removeCitationRefs();
+		if (!annotationRef.getCitationRefs().isEmpty())
+			annotationRef.removeCitationRefs();
 		// annotationRef.removeAllEvidenceRefs(); //TODO
 
-		// remove links between annotationRef and its annotatable
-		annotationRef.getAnnotatable().removeAnnotationRef(annotationRef);
+		// remove links between annotationRef and its annotation
+		if (annotationRef.getAnnotation() != null)
+			annotationRef.getAnnotation().removeAnnotationRef(annotationRef); // TODO citationRef.setCitation(null);
+
+		// remove annotationRef from this annotatable
+		assert (annotationRef.getAnnotatable() == this);
 		annotationRef.setAnnotatable(null);
-		// remove annotationRef from this citationRef
 		annotationRefs.remove(annotationRef);
 	}
 
 	/**
 	 * Removes all annotationRefs from annotationRefs list.
-	 * 
 	 */
+	@Override
 	public void removeAnnotationRefs() {
 		for (AnnotationRef annotationRef : annotationRefs) {
 			this.removeAnnotationRef(annotationRef);

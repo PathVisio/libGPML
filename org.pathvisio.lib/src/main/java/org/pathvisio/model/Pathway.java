@@ -431,6 +431,7 @@ public class Pathway implements Annotatable, Citable {
 	 * 
 	 * @return annotationRefs the list of annotation references.
 	 */
+	@Override
 	public List<AnnotationRef> getAnnotationRefs() {
 		return annotationRefs;
 	}
@@ -440,6 +441,7 @@ public class Pathway implements Annotatable, Citable {
 	 * 
 	 * @param annotationRef the annotationRef to be added.
 	 */
+	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
 		annotationRefs.add(annotationRef);
 	}
@@ -449,16 +451,37 @@ public class Pathway implements Annotatable, Citable {
 	 * 
 	 * @param annotationRef the annotationRef to be removed.
 	 */
+	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		// remove all citationRefs of annotationRef
+		if (!annotationRef.getCitationRefs().isEmpty())
+			annotationRef.removeCitationRefs();
+		// annotationRef.removeAllEvidenceRefs(); //TODO
 
+		// remove links between annotationRef and its annotation
+		if (annotationRef.getAnnotation() != null)
+			annotationRef.getAnnotation().removeAnnotationRef(annotationRef); // TODO citationRef.setCitation(null);
+
+		// remove annotationRef from this annotatable
+		assert (annotationRef.getAnnotatable() == this);
+		annotationRef.setAnnotatable(null);
 		annotationRefs.remove(annotationRef);
 	}
 
+	@Override
+	public void removeAnnotationRefs() {
+		for (AnnotationRef annotationRef : annotationRefs) {
+			removeAnnotationRef(annotationRef);
+		}
+	}
+	
+	
 	/**
 	 * Returns the list of citationRefs.
 	 * 
 	 * @return citationRefs the list of citations referenced.
 	 */
+	@Override
 	public List<CitationRef> getCitationRefs() {
 		return citationRefs;
 	}
@@ -468,6 +491,7 @@ public class Pathway implements Annotatable, Citable {
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
+	@Override	
 	public void addCitationRef(CitationRef citationRef) {
 		citationRefs.add(citationRef);
 	}
@@ -477,8 +501,29 @@ public class Pathway implements Annotatable, Citable {
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
+	@Override
 	public void removeCitationRef(CitationRef citationRef) {
-		citationRefs.remove(citationRef);
+		// remove all annotationRefs of citationRef
+		if (!citationRef.getAnnotationRefs().isEmpty())
+			citationRef.removeAnnotationRefs();
+
+		// remove links between citationRef and its citation
+		if (citationRef.getCitation() != null)
+			citationRef.getCitation().removeCitationRef(citationRef); // TODO citationRef.setCitation(null);
+
+		// remove citationRef from this citable
+		citationRef.setCitable(null); 
+		citationRefs.remove(citationRef); 
+	}
+	
+	/**
+	 * Removes all citationRefs from citationRefs list.
+	 */
+	@Override
+	public void removeCitationRefs() {
+		for (CitationRef citationRef : citationRefs) {
+			this.removeCitationRef(citationRef);
+		}
 	}
 
 	/**
@@ -608,5 +653,7 @@ public class Pathway implements Annotatable, Citable {
 	public void setXref(Xref xref) {
 		this.xref = xref;
 	}
+
+
 
 }

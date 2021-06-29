@@ -48,7 +48,7 @@ public class AnnotationRef implements Citable {
 	 *                    which the AnnotationRef belongs.
 	 */
 	public AnnotationRef(Annotation annotation, Annotatable annotatable) {
-		this.annotation = annotation;
+		this.setAnnotation(annotation);
 		this.setAnnotatable(annotatable);
 		this.citationRefs = new ArrayList<CitationRef>();
 		this.evidenceRefs = new ArrayList<Evidence>();
@@ -66,6 +66,33 @@ public class AnnotationRef implements Citable {
 	}
 
 	/**
+	 * Returns the annotation referenced.
+	 * 
+	 * @return annotation the annotation referenced.
+	 */
+	public Annotation getAnnotation() {
+		return annotation;
+	}
+
+	/**
+	 * Sets the annotation source to be referenced.
+	 * 
+	 * @param newAnnotation the given annotation source to set.
+	 */
+	public void setAnnotation(Annotation newAnnotation) {
+		if (annotation == null || !annotation.equals(newAnnotation)) {
+			// if necessary, removes link to existing annotation source
+			if (annotation != null) {
+				this.annotation.removeAnnotationRef(this);
+			}
+			if (newAnnotation != null) {
+				newAnnotation.addAnnotationRef(this);
+			}
+			annotation = newAnnotation;
+		}
+	}
+
+	/**
 	 * Returns the target pathway, pathway element, or citationRef
 	 * {@link Annotatable} to which the AnnotationRef belongs.
 	 * 
@@ -79,32 +106,19 @@ public class AnnotationRef implements Citable {
 	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
 	 * to which the AnnotationRef belongs.
 	 * 
-	 * @param pathwayElement the parent pathway element the annotationRef.
+	 * @param newAnnotatable the given annotatable to set.
 	 */
-	public void setAnnotatable(Annotatable annotatable) {
-		if (annotatable != null) {
-			annotation.removePathwayElement(annotatable);
+	public void setAnnotatable(Annotatable newAnnotatable) {
+		if (annotatable == null || !annotatable.equals(newAnnotatable)) {
+			// if necessary, removes link to existing target annotatable
+			if (annotatable != null) {
+				this.annotatable.removeAnnotationRef(this);
+			}
+			if (newAnnotatable != null) {
+				newAnnotatable.addAnnotationRef(this);
+			}
+			annotatable = newAnnotatable;
 		}
-		annotation.addPathwayElement(annotatable);
-		this.annotatable = annotatable;
-	}
-
-	/**
-	 * Returns the annotation referenced.
-	 * 
-	 * @return annotation the annotation referenced.
-	 */
-	public Annotation getAnnotation() {
-		return annotation;
-	}
-
-	/**
-	 * Sets the annotation to be referenced.
-	 * 
-	 * @param annotation the annotation referenced.
-	 */
-	public void setAnnotation(Annotation annotation) {
-		this.annotation = annotation;
 	}
 
 	/**
@@ -113,6 +127,7 @@ public class AnnotationRef implements Citable {
 	 * @return citationRefs the list of citations referenced, an empty list if no
 	 *         properties are defined.
 	 */
+	@Override
 	public List<CitationRef> getCitationRefs() {
 		return citationRefs;
 	}
@@ -122,6 +137,7 @@ public class AnnotationRef implements Citable {
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
+	@Override
 	public void addCitationRef(CitationRef citationRef) {
 		citationRefs.add(citationRef);
 	}
@@ -131,13 +147,26 @@ public class AnnotationRef implements Citable {
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
+	@Override
 	public void removeCitationRef(CitationRef citationRef) {
+		// remove all annotationRefs of citationRef
+		if (!citationRef.getAnnotationRefs().isEmpty())
+			citationRef.removeAnnotationRefs();
+
+		// remove links between citationRef and its citation
+		if (citationRef.getCitation() != null)
+			citationRef.getCitation().removeCitationRef(citationRef); // TODO citationRef.setCitation(null);
+
+		// remove citationRef from this citable
+		assert (citationRef.getCitable() == this);
+		citationRef.setCitable(null);
 		citationRefs.remove(citationRef);
 	}
 
 	/**
 	 * Removes all citationRef from citationRefs list.
 	 */
+	@Override
 	public void removeCitationRefs() {
 		for (CitationRef citationRef : citationRefs) {
 			this.removeCitationRef(citationRef);

@@ -157,6 +157,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * @return annotationRefs the list of annotation references, an empty list if no
 	 *         properties are defined.
 	 */
+	@Override
 	public List<AnnotationRef> getAnnotationRefs() {
 		return annotationRefs;
 	}
@@ -166,6 +167,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param annotationRef the annotationRef to be added.
 	 */
+	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
 		annotationRefs.add(annotationRef);
 	}
@@ -175,13 +177,27 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param annotationRef the annotationRef to be removed.
 	 */
+	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		// remove all citationRefs of annotationRef
+		if (!annotationRef.getCitationRefs().isEmpty())
+			annotationRef.removeCitationRefs();
+		// annotationRef.removeAllEvidenceRefs(); //TODO
+
+		// remove links between annotationRef and its annotation
+		if (annotationRef.getAnnotation() != null)
+			annotationRef.getAnnotation().removeAnnotationRef(annotationRef); // TODO citationRef.setCitation(null);
+
+		// remove annotationRef from this annotatable
+		assert (annotationRef.getAnnotatable() == this);
+		annotationRef.setAnnotatable(null);
 		annotationRefs.remove(annotationRef);
 	}
 
 	/**
 	 * Removes all annotationRefs from annotationRefs list.
 	 */
+	@Override
 	public void removeAnnotationRefs() {
 		for (AnnotationRef annotationRef : annotationRefs) {
 			removeAnnotationRef(annotationRef);
@@ -194,6 +210,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * @return citationRefs the list of citations referenced, an empty list if no
 	 *         properties are defined.
 	 */
+	@Override
 	public List<CitationRef> getCitationRefs() {
 		return citationRefs;
 	}
@@ -203,8 +220,14 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
+	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		citationRefs.add(citationRef);
+		
+		citationRef.setCitable(this);
+		
+		assert (citationRef.getCitable() == this); // TODO
+		if (!citationRefs.contains(citationRef)) // TODO
+			citationRefs.add(citationRef);
 	}
 
 	/**
@@ -212,23 +235,26 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
+	@Override
 	public void removeCitationRef(CitationRef citationRef) {
 		// remove all annotationRefs of citationRef
-		citationRef.removeAnnotationRefs();
+		if (!citationRef.getAnnotationRefs().isEmpty())
+			citationRef.removeAnnotationRefs();
 
 		// remove links between citationRef and its citation
-		citationRef.getCitation().removeCitationRef(citationRef); // TODO
-		citationRef.setCitation(null); // TODO
+		if (citationRef.getCitation() != null)
+			citationRef.getCitation().removeCitationRef(citationRef); // TODO citationRef.setCitation(null);
 
-		// remove links between citationRef and this citable
-		citationRefs.remove(citationRef); // TODO
-		citationRef.setCitable(null); // TODO
-
+		// remove citationRef from this citable
+		assert (citationRef.getCitable() == this);
+		citationRef.setCitable(null);
+		citationRefs.remove(citationRef);
 	}
 
 	/**
 	 * Removes all citationRefs from citationRefs list.
 	 */
+	@Override
 	public void removeCitationRefs() {
 		for (CitationRef citationRef : citationRefs) {
 			this.removeCitationRef(citationRef);
