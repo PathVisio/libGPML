@@ -141,17 +141,18 @@ public abstract class ShapedElement extends ElementInfo {
 	 * the new parent group. If there is an old parent group, this pathway element
 	 * is removed from its pathwayElements list.
 	 * 
-	 * @param groupRefNew the new parent group to set.
+	 * @param newGroupRef the new parent group to set.
 	 */
-	public void setGroupRef(Group groupRefNew) {
-		if (this.getPathwayModel() != null) {
-			if (groupRefNew != null && groupRef != groupRefNew) {
-				if (groupRef != null) {
-					groupRef.removePathwayElement(this);
-				}
-				groupRefNew.addPathwayElement(this);
-				this.groupRef = groupRefNew;
+	public void setGroupRef(Group newGroupRef) {
+		if (groupRef == null || !groupRef.equals(newGroupRef)) {
+			if (this.getPathwayModel() != null) { // TODO?
+				// if necessary, removes link to existing parent group
+				if (groupRef != null)
+					this.groupRef.removePathwayElement(this);
+				if (newGroupRef != null)
+					newGroupRef.addPathwayElement(this);
 			}
+			groupRef = newGroupRef; // TODO
 		}
 	}
 

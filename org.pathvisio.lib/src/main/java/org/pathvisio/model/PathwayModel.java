@@ -50,15 +50,15 @@ public class PathwayModel {
 
 	private Pathway pathway; // pathway information
 	private Map<String, PathwayElement> elementIdToPathwayElement;
-	private List<Annotation> annotations;
-	private List<Citation> citations;
-	private List<Evidence> evidences;
 	private List<DataNode> dataNodes; // contains states
 	private List<Interaction> interactions; // contains waypoints
 	private List<GraphicalLine> graphicalLines; // contains waypoints
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;
+	private List<Annotation> annotations;
+	private List<Citation> citations;
+	private List<Evidence> evidences;
 
 	/**
 	 * Initializes a pathway model object with {@link Pathway} information.
@@ -69,15 +69,15 @@ public class PathwayModel {
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
 		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
-		this.annotations = new ArrayList<Annotation>();
-		this.citations = new ArrayList<Citation>();
-		this.evidences = new ArrayList<Evidence>();
 		this.dataNodes = new ArrayList<DataNode>();
 		this.interactions = new ArrayList<Interaction>();
 		this.graphicalLines = new ArrayList<GraphicalLine>();
 		this.labels = new ArrayList<Label>();
 		this.shapes = new ArrayList<Shape>();
 		this.groups = new ArrayList<Group>();
+		this.annotations = new ArrayList<Annotation>();
+		this.citations = new ArrayList<Citation>();
+		this.evidences = new ArrayList<Evidence>();
 	}
 
 	/**
@@ -212,148 +212,6 @@ public class PathwayModel {
 			result = Integer.toHexString(Math.abs(random.nextInt()) % mod + min);
 		} while (ids.contains(result));
 		return result;
-	}
-
-	/**
-	 * Returns the list of annotations.
-	 * 
-	 * @return annotations the list of annotations.
-	 */
-	public List<Annotation> getAnnotations() {
-		return annotations;
-	}
-
-	/**
-	 * Adds given annotation to annotations list. If there is an annotation with
-	 * equivalent properties in the pathway model, the given annotation is not added
-	 * and the equivalent annotation is returned.
-	 * 
-	 * @param annotation the new annotation to be added.
-	 * @return annotation the new annotation or annotationExisting the existing
-	 *         equivalent annotation.
-	 */
-	public Annotation addAnnotation(Annotation annotation) {
-		Annotation annotationExisting = annotationExists(annotation);
-		if (annotationExisting != null) {
-			Logger.log.trace("New annotation not added to pathway model.");
-			return annotationExisting;
-		} else {
-			annotations.add(annotation);
-			return annotation;
-		}
-	}
-
-	/**
-	 * Checks if given annotation already exists for the pathway model.
-	 * 
-	 * @param annotation the given annotation to be checked.
-	 * @return annotationExisting the existing equivalent annotation, or null if no
-	 *         equivalent annotation exists for given citation.
-	 */
-	public Annotation annotationExists(Annotation annotation) {
-		for (Annotation annotationExisting : annotations) {
-			if (annotation.equalsAnnotation(annotationExisting)) {
-				Logger.log.trace("This annotation is equivalent to existing pathway model annotation "
-						+ annotationExisting.getElementId() + ".");
-				return annotationExisting;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Removes given annotation from annotations list.
-	 * 
-	 * @param annotation the annotation to be removed.
-	 */
-	public void removeAnnotation(Annotation annotation) {
-		annotations.remove(annotation);
-	}
-
-	/**
-	 * Returns the list of citations.
-	 * 
-	 * @return citation the list of citations.
-	 */
-	public List<Citation> getCitations() {
-		return citations;
-	}
-
-	/**
-	 * Adds given citation to citations list. If there is an citation with
-	 * equivalent properties in the pathway model, the given citation is not added
-	 * and the equivalent citation is returned.
-	 * 
-	 * @param citation the new citation to be added.
-	 * @return citation the new citation or citationExisting the existing equivalent
-	 *         citation.
-	 */
-	public Citation addCitation(Citation citation) {
-		Citation citationExisting = hasEqualCitation(citation);
-		if (citationExisting != null) {
-			Logger.log.trace("New citation not added to pathway model.");
-			return citationExisting;
-		} else {
-			assert (citation.getPathwayModel() == this); // TODO
-			citations.add(citation);
-			return citation;
-		}
-	}
-
-	/**
-	 * Checks if given citation already exists for the pathway model.
-	 * 
-	 * @param citation the given citation to be checked.
-	 * @return citationExisting the existing equivalent citation, or null if no
-	 *         equivalent citation exists for given citation.
-	 */
-	public Citation hasEqualCitation(Citation citation) {
-		for (Citation citationExisting : citations) {
-			if (citation.equalsCitation(citationExisting)) {
-				Logger.log.trace("This citation is equivalent to existing pathway model citation "
-						+ citationExisting.getElementId() + ".");
-				return citationExisting;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Removes given citation from citation=s list.
-	 * 
-	 * @param citation the citation to be removed.
-	 */
-	public void removeCitation(Citation citation) {
-		removePathwayElement(citation); // TODO?
-		citation.removeCitationRefs();
-		citations.remove(citation);
-	}
-
-	/**
-	 * Returns the list of evidences.
-	 * 
-	 * @return evidences the list of evidences.
-	 */
-	public List<Evidence> getEvidences() {
-		return evidences;
-	}
-
-	/**
-	 * Adds given evidence to evidences.
-	 * 
-	 * @param evidence the evidence to be added.
-	 */
-	public void addEvidence(Evidence evidence) {
-		evidences.add(evidence);
-	}
-
-	/**
-	 * Removes given evidence from evidences list.
-	 * 
-	 * @param evidence the evidence to be removed.
-	 */
-	public void removeEvidence(Evidence evidence) {
-		evidences.remove(evidence);
 	}
 
 	/**
@@ -525,21 +383,196 @@ public class PathwayModel {
 	}
 
 	/**
+	 * Returns the list of annotations.
+	 * 
+	 * @return annotations the list of annotations.
+	 */
+	public List<Annotation> getAnnotations() {
+		return annotations;
+	}
+
+	/**
+	 * Adds given annotation to annotations list. If there is an annotation with
+	 * equivalent properties in the pathway model, the given annotation is not added
+	 * and the equivalent annotation is returned.
+	 * 
+	 * @param annotation the new annotation to be added.
+	 * @return annotation the new annotation or annotationExisting the existing
+	 *         equivalent annotation.
+	 */
+	public Annotation addAnnotation(Annotation annotation) {
+		Annotation annotationExisting = annotationExists(annotation);
+		if (annotationExisting != null) {
+			Logger.log.trace("New annotation not added to pathway model.");
+			return annotationExisting;
+		} else {
+			annotations.add(annotation);
+			return annotation;
+		}
+	}
+
+	/**
+	 * Checks if given annotation already exists for the pathway model.
+	 * 
+	 * @param annotation the given annotation to be checked.
+	 * @return annotationExisting the existing equivalent annotation, or null if no
+	 *         equivalent annotation exists for given citation.
+	 */
+	public Annotation annotationExists(Annotation annotation) {
+		for (Annotation annotationExisting : annotations) {
+			if (annotation.equalsAnnotation(annotationExisting)) {
+				Logger.log.trace("This annotation is equivalent to existing pathway model annotation "
+						+ annotationExisting.getElementId() + ".");
+				return annotationExisting;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Removes given annotation from annotations list.
+	 * 
+	 * @param annotation the annotation to be removed.
+	 */
+	public void removeAnnotation(Annotation annotation) {
+		annotations.remove(annotation);
+	}
+
+	/**
+	 * Returns the list of citations.
+	 * 
+	 * @return citation the list of citations.
+	 */
+	public List<Citation> getCitations() {
+		return citations;
+	}
+
+	/**
+	 * Adds given citation to citations list. If there is an citation with
+	 * equivalent properties in the pathway model, the given citation is not added
+	 * and the equivalent citation is returned.
+	 * 
+	 * @param citation the new citation to be added.
+	 * @return citation the new citation or citationExisting the existing equivalent
+	 *         citation.
+	 */
+	public Citation addCitation(Citation citation) {
+		Citation citationExisting = hasEqualCitation(citation);
+		if (citationExisting != null) {
+			Logger.log.trace("New citation not added to pathway model.");
+			return citationExisting;
+		} else {
+			assert (citation.getPathwayModel() == this); // TODO
+			citations.add(citation);
+			return citation;
+		}
+	}
+
+	/**
+	 * Checks if given citation already exists for the pathway model.
+	 * 
+	 * @param citation the given citation to be checked.
+	 * @return citationExisting the existing equivalent citation, or null if no
+	 *         equivalent citation exists for given citation.
+	 */
+	public Citation hasEqualCitation(Citation citation) {
+		for (Citation citationExisting : citations) {
+			if (citation.equalsCitation(citationExisting)) {
+				Logger.log.trace("This citation is equivalent to existing pathway model citation "
+						+ citationExisting.getElementId() + ".");
+				return citationExisting;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Removes given citation from citation=s list.
+	 * 
+	 * @param citation the citation to be removed.
+	 */
+	public void removeCitation(Citation citation) {
+		citation.removeCitationRefs();
+		citation.setPathwayModel(null); // TODO
+		removePathwayElement(citation); // TODO?
+		citations.remove(citation);
+	}
+
+	/**
+	 * Returns the list of evidences.
+	 * 
+	 * @return evidences the list of evidences.
+	 */
+	public List<Evidence> getEvidences() {
+		return evidences;
+	}
+
+	/**
+	 * Adds given evidence to evidences.
+	 * 
+	 * @param evidence the evidence to be added.
+	 */
+	public void addEvidence(Evidence evidence) {
+		evidences.add(evidence);
+	}
+
+	/**
+	 * Removes given evidence from evidences list.
+	 * 
+	 * @param evidence the evidence to be removed.
+	 */
+	public void removeEvidence(Evidence evidence) {
+		evidences.remove(evidence);
+	}
+
+	/**
 	 * Adds pathway element to the pathway model. TODO
 	 * 
 	 * @param pathwayElement the pathway element to add.
 	 */
 	public void addPathwayElement(PathwayElement pathwayElement) {
-		PathwayModel pathwayModel = pathwayElement.getPathwayModel();
-		if (pathwayModel != null && pathwayModel != this) {
-			pathwayModel.removePathwayElement(pathwayElement); //TODO
-			pathwayElement.setPathwayModel(this);
+		if (pathwayElement != null) {
+			PathwayModel pathwayModel = pathwayElement.getPathwayModel();
+			if (pathwayModel == null || !pathwayModel.equals(this)) {
+				// if necessary, removes link to existing parent pathway model
+				if (pathwayModel != null) {
+					pathwayModel.removePathwayElement(pathwayElement);
+				}
+				if (this != null) {
+					pathwayElement.setPathwayModel(this);
+				}
+				assert (pathwayElement.getPathwayModel() == this); // TODO
+				assert (hasPathwayElement(pathwayElement)); // TODO
+				if (pathwayElement.getClass() == DataNode.class) {
+					dataNodes.add((DataNode) pathwayElement);
+				}
+				if (pathwayElement.getClass() == Interaction.class) {
+					interactions.add((Interaction) pathwayElement);
+				}
+				if (pathwayElement.getClass() == GraphicalLine.class) {
+					graphicalLines.add((GraphicalLine) pathwayElement);
+				}
+				if (pathwayElement.getClass() == Label.class) {
+					labels.add((Label) pathwayElement);
+				}
+				if (pathwayElement.getClass() == Shape.class) {
+					shapes.add((Shape) pathwayElement);
+				}
+				if (pathwayElement.getClass() == Group.class) {
+					// ((Group) pathwayElement).removePathwayElements(); //TODO
+					groups.add((Group) pathwayElement);
+				}
+				if (pathwayElement.getClass() == Annotation.class) {
+					((Annotation) pathwayElement).removeAnnotationRefs();
+					citations.add((Citation) pathwayElement);
+				}
+				if (pathwayElement.getClass() == Citation.class) {
+					((Citation) pathwayElement).removeCitationRefs();
+					citations.add((Citation) pathwayElement);
+				}
+			}
 		}
-		if(pathwayElement.getClass() == DataNode.class) {
-			dataNodes.add((DataNode) pathwayElement);
-		}
-		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this); //TODO
-		assert (hasPathwayElement(pathwayElement)); //TODO
+
 	}
 
 	/**
@@ -551,9 +584,39 @@ public class PathwayModel {
 		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this);
 		assert (hasPathwayElement(pathwayElement));
 		pathwayElement.setPathwayModel(null);
-		
-		if(pathwayElement.getClass() == DataNode.class) {
+		// pathwayElements.remove(pathwayElement)
+
+		if (pathwayElement.getClass() == DataNode.class) {
+			((DataNode) pathwayElement).removeStates();
 			dataNodes.remove(pathwayElement);
+		}
+		if (pathwayElement.getClass() == Interaction.class) {
+			((Interaction) pathwayElement).removePoints();
+			((Interaction) pathwayElement).removeAnchors();
+			interactions.remove(pathwayElement);
+		}
+		if (pathwayElement.getClass() == GraphicalLine.class) {
+			((GraphicalLine) pathwayElement).removePoints();
+			((GraphicalLine) pathwayElement).removeAnchors();
+			graphicalLines.remove(pathwayElement);
+		}
+		if (pathwayElement.getClass() == Label.class) {
+			labels.remove(pathwayElement);
+		}
+		if (pathwayElement.getClass() == Shape.class) {
+			shapes.remove(pathwayElement);
+		}
+		if (pathwayElement.getClass() == Group.class) {
+			// ((Group) pathwayElement).removePathwayElements(); //TODO
+			groups.remove(pathwayElement);
+		}
+		if (pathwayElement.getClass() == Annotation.class) {
+			((Annotation) pathwayElement).removeAnnotationRefs();
+			citations.remove(pathwayElement);
+		}
+		if (pathwayElement.getClass() == Citation.class) {
+			((Citation) pathwayElement).removeCitationRefs();
+			citations.remove(pathwayElement);
 		}
 
 	}
@@ -572,10 +635,8 @@ public class PathwayModel {
 		removePathwayElement(elementInfo);
 		elementInfo.getAnnotationRefs();
 		elementInfo.getCitationRefs();
-		
-		
-//		elementInfo.getEvidenceRefs(); TODO
 
+//		elementInfo.getEvidenceRefs(); TODO
 
 	}
 

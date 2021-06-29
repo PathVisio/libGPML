@@ -24,6 +24,7 @@ import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
+import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.type.DataNodeType;
 
 /**
@@ -104,7 +105,7 @@ public class DataNode extends ShapedElement {
 	 * Instantiates a DataNode given all possible parameters except groupRef and
 	 * xref.
 	 */
-	public DataNode(PathwayModel pathwayModel, String elementId,  RectProperty rectProperty, FontProperty fontProperty,
+	public DataNode(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, PathwayElement elementRef) {
 		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, null,
 				elementRef);
@@ -115,7 +116,7 @@ public class DataNode extends ShapedElement {
 	 * elementRef, because the data node neither belongs in a group nor refers to
 	 * another pathway element.
 	 */
-	public DataNode(PathwayModel pathwayModel, String elementId,  RectProperty rectProperty, FontProperty fontProperty,
+	public DataNode(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, String textLabel, DataNodeType type, Xref xref) {
 		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, type, xref,
 				null);
@@ -125,7 +126,7 @@ public class DataNode extends ShapedElement {
 	 * Instantiates a DataNode given all possible parameters except xref and
 	 * elementRef.
 	 */
-	public DataNode(PathwayModel pathwayModel, String elementId,  RectProperty rectProperty, FontProperty fontProperty,
+	public DataNode(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, DataNodeType type) {
 		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, type, null,
 				null);
@@ -216,13 +217,23 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Removes given state to states list.
+	 * Removes given state from states list.
 	 * 
 	 * @param state the state to be removed.
 	 */
 	public void removeState(State state) {
-		getPathwayModel().removeElementInfoRefs(state); //TODO 
+		getPathwayModel().removeElementInfoRefs(state); // TODO need to remove reference to pathwayModel and also
+														// citationRefs and etc.
 		states.remove(state);
+	}
+
+	/**
+	 * Removes all states from states list.
+	 */
+	public void removeStates() {
+		for (State state : states) {
+			this.removeState(state);
+		}
 	}
 
 	/**

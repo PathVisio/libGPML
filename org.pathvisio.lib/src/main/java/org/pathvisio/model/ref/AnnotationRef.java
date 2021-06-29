@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.model.Pathway;
+import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.element.ElementInfo;
 
 /**
@@ -110,7 +111,8 @@ public class AnnotationRef implements Citable {
 	 */
 	public void setAnnotatable(Annotatable newAnnotatable) {
 		if (annotatable == null || !annotatable.equals(newAnnotatable)) {
-			// if necessary, removes link to existing target annotatable
+			// if necessary, removes link to existing target annotatable TODO check pathway
+			// model?
 			if (annotatable != null) {
 				this.annotatable.removeAnnotationRef(this);
 			}
@@ -139,7 +141,12 @@ public class AnnotationRef implements Citable {
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		citationRefs.add(citationRef);
+		if (citationRef.getCitable() != this)
+			citationRef.setCitable(this);
+		assert (citationRef.getCitable() == this); // TODO
+		// add to citationRefs if not already added
+		if (!citationRefs.contains(citationRef))
+			citationRefs.add(citationRef);
 	}
 
 	/**

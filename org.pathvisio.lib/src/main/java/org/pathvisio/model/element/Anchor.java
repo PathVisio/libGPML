@@ -66,10 +66,21 @@ public class Anchor extends PathwayElement {
 	/**
 	 * Sets the parent interaction or graphicalLine to which the anchor belongs.
 	 * 
-	 * @param lineElement the parent line element of the anchor.
+	 * @param newLineElement the parent line element of the anchor to set.
 	 */
-	public void setLineElement(LineElement lineElement) {
-		this.lineElement = lineElement;
+	public void setLineElement(LineElement newLineElement) {
+		if (lineElement == null || !lineElement.equals(newLineElement)) {
+			// if necessary, removes link to existing line element TODO pathwayModel?
+			if (lineElement != null) {
+				this.lineElement.removeAnchor(this);
+			}
+			if (newLineElement != null) {
+				if (!lineElement.getAnchors().contains(this)) {
+					newLineElement.addAnchor(this);
+				}
+			}
+			lineElement = newLineElement;
+		}
 	}
 
 	/**

@@ -443,7 +443,12 @@ public class Pathway implements Annotatable, Citable {
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		annotationRefs.add(annotationRef);
+		if (annotationRef.getAnnotatable() != this) 
+			annotationRef.setAnnotatable(this);
+		assert (annotationRef.getAnnotatable() == this); // TODO
+		// add to annotationRefs if not already added
+		if (!annotationRefs.contains(annotationRef))
+			annotationRefs.add(annotationRef);
 	}
 
 	/**
@@ -493,7 +498,12 @@ public class Pathway implements Annotatable, Citable {
 	 */
 	@Override	
 	public void addCitationRef(CitationRef citationRef) {
-		citationRefs.add(citationRef);
+		if (citationRef.getCitable() != this)
+			citationRef.setCitable(this);
+		assert (citationRef.getCitable() == this); // TODO
+		// add to citationRefs if not already added
+		if (!citationRefs.contains(citationRef))
+			citationRefs.add(citationRef);
 	}
 
 	/**

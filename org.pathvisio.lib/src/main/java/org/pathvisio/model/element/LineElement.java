@@ -33,12 +33,7 @@ public abstract class LineElement extends ElementInfo {
 	private List<LinePoint> points; // minimum 2
 	private List<Anchor> anchors;
 	private LineStyleProperty lineStyleProperty;
-
-	/*
-	 * The parent group to which the line belongs. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group.
-	 */
-	private Group groupRef; // optional
+	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 
 	/**
 	 * Instantiates a line pathway element which is also a member of a group pathway
@@ -52,7 +47,7 @@ public abstract class LineElement extends ElementInfo {
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 */
-	public LineElement( PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
+	public LineElement(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
 			Group groupRef) {
 		super(pathwayModel, elementId);
 		this.points = new ArrayList<LinePoint>(); // should have at least two points
@@ -67,7 +62,7 @@ public abstract class LineElement extends ElementInfo {
 	 * Instantiates a line pathway element given all possible parameters except
 	 * groupRef, because the pathway element is not a member of a group.
 	 */
-	public LineElement( PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
+	public LineElement(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
 		this(pathwayModel, elementId, lineStyleProperty, null);
 	}
 
@@ -80,23 +75,16 @@ public abstract class LineElement extends ElementInfo {
 		return points;
 	}
 
-	// TODO needed?
-	public void setPoints(List<LinePoint> points) {
-		if (points != null) {
-			if (points.size() < 2) {
-				throw new IllegalArgumentException("Points array should at least have two elements");
-			}
-			this.points = points;
-		}
-	}
-
 	/**
 	 * Adds given point to points list.
 	 * 
 	 * @param point the point to be added.
 	 */
 	public void addPoint(LinePoint point) {
-		points.add(point);
+		if (point.getLineElement() != this)
+			point.setLineElement(this); // TODO
+		if (point.getLineElement() == this && !points.contains(point))
+			points.add(point); // TODO
 	}
 
 	/**
@@ -105,15 +93,35 @@ public abstract class LineElement extends ElementInfo {
 	 * @param point the point to be removed.
 	 */
 	public void removePoint(LinePoint point) {
-		points.remove(point);
+		if (point.getLineElement() == this && points.contains(point)) {
+			point.setLineElement(null);
+			points.remove(point);
+		}
 	}
 
-	// TODO necessary method?
+	/**
+	 * Removes all points from the points list.
+	 */
+	public void removePoints() {
+		for (LinePoint point : points) {
+			this.removePoint(point);
+		}
+	}
+
+	/**
+	 * Returns the start (first) point of points list. TODO necessary method?
+	 * 
+	 * @return the first point of points list.
+	 */
 	public LinePoint getStartPoint() {
 		return points.get(0);
 	}
 
-	// TODO necessary method?
+	/**
+	 * Returns the end (last) point of points list. TODO necessary method?
+	 * 
+	 * @return the last point of points list.
+	 */
 	public LinePoint getEndPoint() {
 		return points.get(points.size() - 1);
 	}
@@ -133,7 +141,10 @@ public abstract class LineElement extends ElementInfo {
 	 * @param anchor the anchor to be added.
 	 */
 	public void addAnchor(Anchor anchor) {
-		anchors.add(anchor);
+		if (anchor.getLineElement() != this)
+			anchor.setLineElement(this); // TODO
+		if (anchor.getLineElement() == this && !anchors.contains(anchor))
+			anchors.add(anchor); // TODO
 	}
 
 	/**
@@ -142,7 +153,19 @@ public abstract class LineElement extends ElementInfo {
 	 * @param anchor the anchor to be removed.
 	 */
 	public void removeAnchor(Anchor anchor) {
-		anchors.remove(anchor);
+		if (anchor.getLineElement() == this && anchors.contains(anchor)) {
+			anchor.setLineElement(null);
+			anchors.remove(anchor);
+		}
+	}
+
+	/**
+	 * Removes all anchors from the anchors list.
+	 */
+	public void removeAnchors() {
+		for (Anchor anchor : anchors) {
+			this.removeAnchor(anchor);
+		}
 	}
 
 	/**
@@ -181,15 +204,16 @@ public abstract class LineElement extends ElementInfo {
 	 * 
 	 * @param groupRefNew the new parent group to set.
 	 */
-	public void setGroupRef(Group groupRefNew) {
-		if (this.getPathwayModel() != null) {
-			if (groupRefNew != null && groupRef != groupRefNew) {
-				if (groupRef != null) {
-					groupRef.removePathwayElement(this);
-				}
-				groupRefNew.addPathwayElement(this);
-				this.groupRef = groupRefNew;
+	public void setGroupRef(Group newGroupRef) {
+		if (groupRef == null || !groupRef.equals(newGroupRef)) {
+			if (this.getPathwayModel() != null) { // TODO?
+				// if necessary, removes link to existing parent group
+				if (groupRef != null)
+					this.groupRef.removePathwayElement(this);
+				if (newGroupRef != null)
+					newGroupRef.addPathwayElement(this);
 			}
+			groupRef = newGroupRef; // TODO
 		}
 	}
 }

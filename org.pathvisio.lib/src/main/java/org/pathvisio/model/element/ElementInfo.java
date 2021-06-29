@@ -169,7 +169,12 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		annotationRefs.add(annotationRef);
+		if (annotationRef.getAnnotatable() != this) 
+			annotationRef.setAnnotatable(this);
+		assert (annotationRef.getAnnotatable() == this); // TODO
+		// add to annotationRefs if not already added
+		if (!annotationRefs.contains(annotationRef))
+			annotationRefs.add(annotationRef);
 	}
 
 	/**
@@ -222,11 +227,11 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		
-		citationRef.setCitable(this);
-		
+		if (citationRef.getCitable() != this)
+			citationRef.setCitable(this);
 		assert (citationRef.getCitable() == this); // TODO
-		if (!citationRefs.contains(citationRef)) // TODO
+		// add to citationRefs if not already added
+		if (!citationRefs.contains(citationRef))
 			citationRefs.add(citationRef);
 	}
 

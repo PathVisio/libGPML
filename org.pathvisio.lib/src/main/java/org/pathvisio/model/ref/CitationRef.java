@@ -136,7 +136,12 @@ public class CitationRef implements Annotatable {
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		annotationRefs.add(annotationRef);
+		if (annotationRef.getAnnotatable() != this) 
+			annotationRef.setAnnotatable(this);
+		assert (annotationRef.getAnnotatable() == this); // TODO
+		// add to annotationRefs if not already added
+		if (!annotationRefs.contains(annotationRef))
+			annotationRefs.add(annotationRef);
 	}
 
 	/**

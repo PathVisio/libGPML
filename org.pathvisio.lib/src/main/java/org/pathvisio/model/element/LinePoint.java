@@ -43,14 +43,14 @@ public class LinePoint extends PathwayElement {
 	 * element.
 	 * 
 	 * @param pathwayModel the parent pathway model.
-	 * @param elementId   the unique pathway element identifier.
-	 * @param lineElement the parent line element to which the point belongs.
-	 * @param arrowHead   the glyph at the ends of lines, intermediate points have
-	 *                    arrowhead type "line" by default.
-	 * @param xy          the xy coordinate position of the point.
-	 * @param elementRef  the pathway element to which the point refers.
-	 * @param relX        the relative x coordinate.
-	 * @param relY        the relative x coordinate.
+	 * @param elementId    the unique pathway element identifier.
+	 * @param lineElement  the parent line element to which the point belongs.
+	 * @param arrowHead    the glyph at the ends of lines, intermediate points have
+	 *                     arrowhead type "line" by default.
+	 * @param xy           the xy coordinate position of the point.
+	 * @param elementRef   the pathway element to which the point refers.
+	 * @param relX         the relative x coordinate.
+	 * @param relY         the relative x coordinate.
 	 */
 	public LinePoint(PathwayModel pathwayModel, String elementId, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
@@ -93,10 +93,21 @@ public class LinePoint extends PathwayElement {
 	/**
 	 * Sets the parent interaction or graphicalLine to which the point belongs.
 	 * 
-	 * @param lineElement the parent line element of the point.
+	 * @param newLineElement the parent line element of the point to set.
 	 */
-	public void setLineElement(LineElement lineElement) {
-		this.lineElement = lineElement;
+	public void setLineElement(LineElement newLineElement) {
+		if (lineElement == null || !lineElement.equals(newLineElement)) {
+			// if necessary, removes link to existing line element TODO pathwayModel?
+			if (lineElement != null) {
+				this.lineElement.removePoint(this);
+			}
+			if (newLineElement != null) {
+				if (!lineElement.getPoints().contains(this)) {
+					newLineElement.addPoint(this);
+				}
+			}
+			lineElement = newLineElement;
+		}
 	}
 
 	/**

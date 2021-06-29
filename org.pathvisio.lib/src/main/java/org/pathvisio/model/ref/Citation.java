@@ -90,16 +90,18 @@ public class Citation extends PathwayElement {
 	 * @param citationRef the given citationRef to add.
 	 */
 	public void addCitationRef(CitationRef citationRef) {
-		
-		citationRef.setCitation(this); //TODO 
+		if (citationRef.getCitation() != this)
+			citationRef.setCitation(this);
 		assert (citationRef.getCitation() == this); // TODO
-		
-		if (!citationRefs.contains(citationRef)) // TODO 
+		// add to citationRefs if not already added
+		if (!citationRefs.contains(citationRef))
 			citationRefs.add(citationRef);
 	}
 
 	/**
-	 * Removes the given citationRef from citationRefs list of the citation.
+	 * Removes the given citationRef from citationRefs list of the citation. If
+	 * citationRefs becomes empty, this citation is removed from the pathway model
+	 * because it is no longer referenced/used.
 	 * 
 	 * @param citationRef the given citationRef to remove.
 	 */
