@@ -32,19 +32,20 @@ public abstract class PathwayElement {
 	private String elementId;
 
 	/**
-	 * Instantiates this pathway element given a parent pathway model and generates an elementId. 
+	 * Instantiates this pathway element given a parent pathway model and generates
+	 * an elementId.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 * @param elementId    the unique pathway element identifier.
 	 */
 	public PathwayElement(PathwayModel pathwayModel, String elementId) {
-		this.pathwayModel = pathwayModel;
+		setPathwayModelTo(pathwayModel);
 		this.elementId = elementId;
 		pathwayModel.addElementId(elementId, this); // TODO Setter
 	}
 
 	/**
-	 * Returns the parent pathway model.
+	 * Returns the pathway model for this pathway element.
 	 * 
 	 * @return pathwayModel the parent pathway model.
 	 */
@@ -53,15 +54,49 @@ public abstract class PathwayElement {
 	}
 
 	/**
-	 * Sets the parent pathway model.
+	 * Checks whether this pathway element belongs to a pathway model.
+	 *
+	 * @return true if and only if the pathwayNodel of this pathway element is
+	 *         effective.
+	 */
+	public boolean hasPathwayModel() {
+		return getPathwayModel() != null;
+	}
+
+	/**
+	 * Sets the pathway model for this pathway element.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
-	public void setPathwayModel(PathwayModel pathwayModel) {
-		if (pathwayModel != null) {
-			pathwayModel.removePathwayElement(this);// TODO
-		}
+	public void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
+		if (pathwayModel == null)
+			throw new IllegalArgumentException("Invalid pathway model.");
+		if (this.hasPathwayModel())
+			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
+		setPathwayModel(pathwayModel);
+		pathwayModel.addPathwayElement(this);
+	}
+
+	/**
+	 * Sets the pathway model of this pathway element to the given pathway model.
+	 * 
+	 * @param pathwayModel the new pathway model for this pathway element.
+	 */
+	private void setPathwayModel(PathwayModel pathwayModel) {
+		assert (pathwayModel != null);
 		this.pathwayModel = pathwayModel;
+	}
+
+	/**
+	 * Unsets the pathway model, if any, from this pathway element. The pathway
+	 * element no longer belongs to a pathway model.
+	 */
+	public void unsetPathwayModel() {
+		if (hasPathwayModel()) {
+			PathwayModel formerPathwayModel = this.getPathwayModel();
+			setPathwayModel(null);
+			formerPathwayModel.removePathwayElement(this); 
+		}
 	}
 
 	/**
@@ -101,4 +136,26 @@ public abstract class PathwayElement {
 		return elementId;
 	}
 
+	/**
+	 * Terminates this pathway element. The pathway model, if any, is unset from
+	 * this pathway element. The elementId of this pathway element is changed.
+	 */
+	public void terminate() {
+		unsetPathwayModel();
+		// At this point we cannot use the method setElementId,
+		// because it does not accept null as a legal value.
+		this.elementId = null;
+	}
+
+//	/**
+//	 * Checks whether this pathway element is terminated.
+//	 * 
+//	 * @return true if elementId is null, false otherwise.
+//	 */
+//	public boolean isTerminated() {
+//		// We do not want to introduce an extra instance variable reflecting whether or
+//		// not a pathway element is terminated. Instead, we use a value for the instance
+//		// variable 'elementId', that is illegal for non-terminated pathway elements.
+//		return getElementId() == null;
+//	}
 }

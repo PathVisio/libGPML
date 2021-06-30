@@ -20,6 +20,14 @@ public interface Citable {
 	public List<CitationRef> getCitationRefs();
 
 	/**
+	 * Check whether this citable has the given citationRef.
+	 * 
+	 * @param citationRef the citationRef to look for.
+	 * @return true if has citationRef, false otherwise.
+	 */
+	public boolean hasCitationRef(CitationRef citationRef);
+
+	/**
 	 * Adds given citationRef to citationRefs list.
 	 * 
 	 * @param citationRef the citationRef to be added.

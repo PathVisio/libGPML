@@ -296,5 +296,12 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 		evidenceRefs.remove(evidenceRef);
 	}
 
-	// TODO
+	/**
+	 * Terminates this pathway element. The pathway model, if any, is unset from
+	 * this pathway element. TODO The elementId of this pathway element is changed.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+	}
 }

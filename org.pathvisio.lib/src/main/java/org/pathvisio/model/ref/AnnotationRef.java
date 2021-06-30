@@ -76,50 +76,104 @@ public class AnnotationRef implements Citable {
 	}
 
 	/**
-	 * Sets the annotation source to be referenced.
-	 * 
-	 * @param newAnnotation the given annotation source to set.
+	 * Checks whether this annotationRef has a source annotation.
+	 *
+	 * @return true if and only if the annotation of this annotationRef is
+	 *         effective.
 	 */
-	public void setAnnotation(Annotation newAnnotation) {
-		if (annotation == null || !annotation.equals(newAnnotation)) {
-			// if necessary, removes link to existing annotation source
-			if (annotation != null) {
-				this.annotation.removeAnnotationRef(this);
-			}
-			if (newAnnotation != null) {
-				newAnnotation.addAnnotationRef(this);
-			}
-			annotation = newAnnotation;
+	public boolean hasAnnotation() {
+		return getAnnotation() != null;
+	}
+
+	/**
+	 * Sets the source annotation for this annotationRef.
+	 * 
+	 * @param annotation the given source annotation to set.
+	 */
+	public void setAnnotationTo(Annotation annotation) {
+		if (annotation == null)
+			throw new IllegalArgumentException("Invalid annotation.");
+		if (this.hasAnnotation())
+			throw new IllegalStateException("AnnotationRef already has a source annotation.");
+		setAnnotation(annotation);
+		annotation.addAnnotationRef(this);
+	}
+
+	/**
+	 * Sets the source annotation for this annotationRef.
+	 * 
+	 * @param annotation the given source annotation to set.
+	 */
+	private void setAnnotation(Annotation annotation) {
+		assert (annotation != null);
+		this.annotation = annotation;
+	}
+
+	/**
+	 * Unsets the annotation, if any, from this annotationRef.
+	 */
+	public void unsetAnnotation() {
+		if (hasAnnotation()) {
+			Annotation formerAnnotation = this.getAnnotation();
+			setAnnotation(null);
+			formerAnnotation.removeAnnotationRef(this);
 		}
 	}
 
 	/**
 	 * Returns the target pathway, pathway element, or citationRef
-	 * {@link Annotatable} to which the AnnotationRef belongs.
+	 * {@link Annotatable} for this annotationRef.
 	 * 
-	 * @return pathwayElement the parent pathway element the AnnotationRef.
+	 * @return annotatable the target of the annotationRef.
 	 */
 	public Annotatable getAnnotatable() {
 		return annotatable;
 	}
 
 	/**
-	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
-	 * to which the AnnotationRef belongs.
-	 * 
-	 * @param newAnnotatable the given annotatable to set.
+	 * Checks whether this annotationRef has a target annotatable.
+	 *
+	 * @return true if and only if the annotatable of this annotationRef is
+	 *         effective.
 	 */
-	public void setAnnotatable(Annotatable newAnnotatable) {
-		if (annotatable == null || !annotatable.equals(newAnnotatable)) {
-			// if necessary, removes link to existing target annotatable TODO check pathway
-			// model?
-			if (annotatable != null) {
-				this.annotatable.removeAnnotationRef(this);
-			}
-			if (newAnnotatable != null) {
-				newAnnotatable.addAnnotationRef(this);
-			}
-			annotatable = newAnnotatable;
+	public boolean hasAnnotatable() {
+		return getAnnotatable() != null;
+	}
+
+	/**
+	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
+	 * for this annotationRef.
+	 * 
+	 * @param citable the given target citable to set.
+	 */
+	public void setAnnotatableTo(Annotatable annotatable) {
+		if (annotatable == null)
+			throw new IllegalArgumentException("Invalid annotatable.");
+		if (this.hasAnnotatable())
+			throw new IllegalStateException("AnnotationRef already has a target annotatable.");
+		setAnnotatable(annotatable);
+		annotatable.addAnnotationRef(this);
+	}
+
+	/**
+	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
+	 * for this annotationRef.
+	 * 
+	 * @param annotatable the given target annotatable to set.
+	 */
+	private void setAnnotatable(Annotatable annotatable) {
+		assert (annotatable != null);
+		this.annotatable = annotatable;
+	}
+
+	/**
+	 * Unsets the annotatable, if any, from this annotationRef.
+	 */
+	public void unsetAnnotatable() {
+		if (hasAnnotatable()) {
+			Annotatable formerAnnotatable = this.getAnnotatable();
+			setAnnotatable(null);
+			formerAnnotatable.removeAnnotationRef(this);
 		}
 	}
 
@@ -135,18 +189,25 @@ public class AnnotationRef implements Citable {
 	}
 
 	/**
+	 * Check whether this annotationRef has the given citationRef in citationRefs.
+	 * 
+	 * @param citationRef the citationRef to look for.
+	 * @return true if has citationRef, false otherwise.
+	 */
+	public boolean hasCitationRef(CitationRef citationRef) {
+		return citationRefs.contains(citationRef);
+	}
+
+	/**
 	 * Adds given citationRef to citationRefs list.
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		if (citationRef.getCitable() != this)
-			citationRef.setCitable(this);
-		assert (citationRef.getCitable() == this); // TODO
-		// add to citationRefs if not already added
-		if (!citationRefs.contains(citationRef))
-			citationRefs.add(citationRef);
+		assert (citationRef != null) && (citationRef.getCitable() == this);
+		assert !hasCitationRef(citationRef);
+		citationRefs.add(citationRef);
 	}
 
 	/**
@@ -156,18 +217,7 @@ public class AnnotationRef implements Citable {
 	 */
 	@Override
 	public void removeCitationRef(CitationRef citationRef) {
-		// remove all annotationRefs of citationRef
-		if (!citationRef.getAnnotationRefs().isEmpty())
-			citationRef.removeAnnotationRefs();
-
-		// remove links between citationRef and its citation
-		if (citationRef.getCitation() != null)
-			citationRef.getCitation().removeCitationRef(citationRef); // TODO citationRef.setCitation(null);
-
-		// remove citationRef from this citable
-		assert (citationRef.getCitable() == this);
-		citationRef.setCitable(null);
-		citationRefs.remove(citationRef);
+		citationRef.terminate();
 	}
 
 	/**
@@ -180,6 +230,16 @@ public class AnnotationRef implements Citable {
 		}
 	}
 
+	/**
+	 * Terminates this annotationRef. The annotation and annotatable, if any, are
+	 * unset from this annotationRef.
+	 */
+	public void terminate() {
+		unsetAnnotation();
+		unsetAnnotatable();
+		removeCitationRefs();
+		// TODO remove EvidenceRefs();
+	}
 	/*
 	 * -----------------------------------------------------------------------------
 	 */

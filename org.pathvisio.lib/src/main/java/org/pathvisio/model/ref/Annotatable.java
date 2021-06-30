@@ -20,6 +20,13 @@ public interface Annotatable {
 	public List<AnnotationRef> getAnnotationRefs();
 
 	/**
+	 * Check whether this annotatable has the given annotationRef.
+	 * 
+	 * @param annotationRef the annotationRef to look for.
+	 */
+	public boolean hasAnnotationRef(AnnotationRef annotationRef);
+
+	/**
 	 * Adds given annotationRef to annotationRefs list.
 	 * 
 	 * @param annotationRef the annotationRef to be added.
