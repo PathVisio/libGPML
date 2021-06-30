@@ -92,7 +92,7 @@ public class AnnotationRef implements Citable {
 	public void setAnnotationTo(Annotation annotation) {
 		if (annotation == null)
 			throw new IllegalArgumentException("Invalid annotation.");
-		if (this.hasAnnotation())
+		if (hasAnnotation())
 			throw new IllegalStateException("AnnotationRef already has a source annotation.");
 		setAnnotation(annotation);
 		annotation.addAnnotationRef(this);
@@ -148,7 +148,7 @@ public class AnnotationRef implements Citable {
 	public void setAnnotatableTo(Annotatable annotatable) {
 		if (annotatable == null)
 			throw new IllegalArgumentException("Invalid annotatable.");
-		if (this.hasAnnotatable())
+		if (hasAnnotatable())
 			throw new IllegalStateException("AnnotationRef already has a target annotatable.");
 		setAnnotatable(annotatable);
 		annotatable.addAnnotationRef(this);

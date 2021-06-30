@@ -136,24 +136,64 @@ public abstract class ShapedElement extends ElementInfo {
 	}
 
 	/**
+	 * Checks whether this pathway element belongs to a group.
+	 *
+	 * @return true if and only if the group of this pathway element is effective.
+	 */
+	public boolean hasGroupRef() {
+		return getGroupRef() != null;
+	}
+
+	/**
 	 * Verifies if given parent group is new and valid. Sets the parent group of the
 	 * pathway element. Adds this pathway element to the the pathwayElements list of
 	 * the new parent group. If there is an old parent group, this pathway element
 	 * is removed from its pathwayElements list.
 	 * 
-	 * @param newGroupRef the new parent group to set.
+	 * @param groupRefNew the new parent group to set.
 	 */
-	public void setGroupRef(Group newGroupRef) {
-		if (groupRef == null || !groupRef.equals(newGroupRef)) {
-			if (this.getPathwayModel() != null) { // TODO?
-				// if necessary, removes link to existing parent group
-				if (groupRef != null)
-					this.groupRef.removePathwayElement(this);
-				if (newGroupRef != null)
-					newGroupRef.addPathwayElement(this);
-			}
-			groupRef = newGroupRef; // TODO
+	public void setGroupRefTo(Group groupRef) {
+		if (groupRef == null)
+			throw new IllegalArgumentException("Invalid datanode.");
+		if (hasGroupRef())
+			throw new IllegalStateException("Line element already belongs to a group.");
+		setGroupRef(groupRef);
+		groupRef.addPathwayElement(this);
+	}
+
+	/**
+	 * Sets the parent group for this pathway element.
+	 * 
+	 * @param groupRef the given group to set.
+	 */
+	private void setGroupRef(Group groupRef) {
+		assert (groupRef != null);
+		this.groupRef = groupRef;
+	}
+
+	/**
+	 * Unsets the parent group, if any, from this pathway element.
+	 */
+	public void unsetGroupRef() {
+		if (hasGroupRef()) {
+			Group formerGroupRef = this.getGroupRef();
+			setGroupRef(null);
+			formerGroupRef.removePathwayElement(this);
 		}
+	}
+
+	/**
+	 * Terminates this pathway element. The pathway model, if any, is unset from
+	 * this pathway element. Links to all annotationRefs, citationRefs, and
+	 * evidenceRefs are removed from this data node.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+		unsetGroupRef();
+		removeAnnotationRefs();
+		removeCitationRefs();
+		removeEvidenceRefs();// TODO
 	}
 
 }

@@ -71,7 +71,7 @@ public abstract class PathwayElement {
 	public void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		if (pathwayModel == null)
 			throw new IllegalArgumentException("Invalid pathway model.");
-		if (this.hasPathwayModel())
+		if (hasPathwayModel())
 			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
 		setPathwayModel(pathwayModel);
 		pathwayModel.addPathwayElement(this);

@@ -24,7 +24,6 @@ import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
-import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.type.DataNodeType;
 
 /**
@@ -276,6 +275,7 @@ public class DataNode extends ShapedElement {
 	@Override
 	public void terminate() {
 		unsetPathwayModel();
+		unsetGroupRef();
 		removeStates();
 		removeAnnotationRefs();
 		removeCitationRefs();

@@ -604,7 +604,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				Group group = (Group) pathwayModel.getPathwayElement(elementId);
 				// sets groupRef for this group
 				if (group != null && groupRef != null)
-					group.setGroupRef(groupRef);
+					group.setGroupRefTo(groupRef);
 			}
 		}
 	}
@@ -1030,7 +1030,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				groupRefStr = groupIdToNew.get(groupRefStr);
 			Group groupRef = (Group) lineElement.getPathwayModel().getPathwayElement(groupRefStr);
 			// sets groupRef for this line pathway element
-			lineElement.setGroupRef(groupRef);
+			lineElement.setGroupRefTo(groupRef);
 		}
 	}
 
@@ -1199,7 +1199,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Group groupRef = (Group) shapedElement.getPathwayModel().getPathwayElement(groupRefStr);
 			// sets groupRef for this shaped pathway element
 			if (groupRef != null) {
-				shapedElement.setGroupRef(groupRef);
+				shapedElement.setGroupRefTo(groupRef);
 			}
 		}
 	}

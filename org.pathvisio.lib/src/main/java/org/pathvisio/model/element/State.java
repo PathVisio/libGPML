@@ -120,7 +120,7 @@ public class State extends ElementInfo {
 	public void setDataNodeTo(DataNode dataNode) {
 		if (dataNode == null)
 			throw new IllegalArgumentException("Invalid datanode.");
-		if (this.hasDataNode())
+		if (hasDataNode())
 			throw new IllegalStateException("State already belongs to a data node.");
 		setDataNode(dataNode);
 		dataNode.addState(this);
@@ -346,7 +346,7 @@ public class State extends ElementInfo {
 
 	/**
 	 * Terminates this state. The pathway model and data node, if any, are unset
-	 * from this citationRef. Links to all annotationRefs, citationRefs, and
+	 * from this state. Links to all annotationRefs, citationRefs, and
 	 * evidenceRefs are removed from this data node.
 	 */
 	@Override

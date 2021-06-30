@@ -82,31 +82,55 @@ public class LinePoint extends PathwayElement {
 	}
 
 	/**
-	 * Returns the parent interaction or graphicalLine to which the point belongs.
+	 * Returns the parent interaction or graphicalLine for this point.
 	 * 
-	 * @return lineElement the parent line element of the point.
+	 * @return lineElement the parent line element of this point.
 	 */
 	public LineElement getLineElement() {
 		return lineElement;
 	}
 
 	/**
-	 * Sets the parent interaction or graphicalLine to which the point belongs.
-	 * 
-	 * @param newLineElement the parent line element of the point to set.
+	 * Checks whether this point has a parent line element.
+	 *
+	 * @return true if and only if the line element of this point is effective.
 	 */
-	public void setLineElement(LineElement newLineElement) {
-		if (lineElement == null || !lineElement.equals(newLineElement)) {
-			// if necessary, removes link to existing line element TODO pathwayModel?
-			if (lineElement != null) {
-				this.lineElement.removePoint(this);
-			}
-			if (newLineElement != null) {
-				if (!lineElement.getPoints().contains(this)) {
-					newLineElement.addPoint(this);
-				}
-			}
-			lineElement = newLineElement;
+	public boolean hasLineElement() {
+		return getLineElement() != null;
+	}
+
+	/**
+	 * Sets the parent interaction or graphicalLine for this point.
+	 * 
+	 * @param lineElement the line element to set.
+	 */
+	public void setLineElementTo(LineElement lineElement) {
+		if (lineElement == null)
+			throw new IllegalArgumentException("Invalid line pathway element.");
+		if (hasLineElement())
+			throw new IllegalStateException("Point already belongs to a line element.");
+		setLineElement(lineElement);
+		lineElement.addPoint(this);
+	}
+
+	/**
+	 * Sets the parent interaction or graphicalLine for this point.
+	 * 
+	 * @param lineElement the line element to set.
+	 */
+	private void setLineElement(LineElement lineElement) {
+		assert (lineElement != null);
+		this.lineElement = lineElement;
+	}
+
+	/**
+	 * Unsets the line element, if any, from this point.
+	 */
+	public void unsetLineElement() {
+		if (hasLineElement()) {
+			LineElement formerLineElement = this.getLineElement();
+			setLineElement(null);
+			formerLineElement.removePoint(this);
 		}
 	}
 
@@ -227,6 +251,16 @@ public class LinePoint extends PathwayElement {
 			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
 		}
 		this.relY = relY;
+	}
+	
+	/**
+	 * Terminates this point. The pathway model and line element, if any, are unset
+	 * from this point.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+		unsetLineElement();
 	}
 
 }

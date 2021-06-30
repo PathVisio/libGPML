@@ -34,11 +34,11 @@ import org.pathvisio.model.type.GroupType;
  */
 public class Group extends ShapedElement {
 
-	/* list of pathway elements which belong to the group. */
-	private Set<PathwayElement> pathwayElements; // should have at least one pathway element
 	private GroupType type = GroupType.GROUP;
 	private String textLabel; // optional
 	private Xref xref; // optional
+	/* list of pathway elements which belong to the group. */
+	private Set<PathwayElement> pathwayElements; // should have at least one pathway element
 
 	/**
 	 * Instantiates a Group given all possible parameters.
@@ -57,10 +57,10 @@ public class Group extends ShapedElement {
 	public Group(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Group groupRef, GroupType type, String textLabel, Xref xref) {
 		super(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, groupRef);
-		this.pathwayElements = new HashSet<PathwayElement>();
 		this.type = type;
 		this.textLabel = textLabel;
 		this.xref = xref;
+		this.pathwayElements = new HashSet<PathwayElement>();
 	}
 
 	/**
@@ -135,11 +135,23 @@ public class Group extends ShapedElement {
 	}
 
 	/**
+	 * Checks whether pathwayElements has the given pathwayElement.
+	 * 
+	 * @param pathwayElement the pathway element to look for.
+	 * @return true if has pathwayElement, false otherwise.
+	 */
+	public boolean hasPathwayElement(PathwayElement pathwayElement) {
+		return pathwayElements.contains(pathwayElement);
+	}
+
+	/**
 	 * Adds the given pathway element to pathwayElements list of the group.
 	 * 
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
 	public void addPathwayElement(PathwayElement pathwayElement) {
+		assert (pathwayElement != null) && (pathwayElement.getGroupRef() == this);
+		assert !hasPathwayElement(pathwayElement);
 		pathwayElements.add(pathwayElement);
 	}
 
@@ -149,7 +161,16 @@ public class Group extends ShapedElement {
 	 * @param pathwayElement the given pathwayElement to remove.
 	 */
 	public void removePathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.remove(pathwayElement);
+		pathwayElement.terminate();
+	}
+
+	/**
+	 * Removes all pathway elements from the pathwayElements list.
+	 */
+	public void removeAnchors() {
+		for (PathwayElement pathwayElement : pathwayElements) {
+			this.removePathwayElement(pathwayElement);
+		}
 	}
 
 	/**

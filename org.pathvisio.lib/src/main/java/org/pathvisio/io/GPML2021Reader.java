@@ -454,7 +454,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (groupRef != null && !groupRef.equals("")) {
 					String elementId = grp.getAttributeValue("elementId");
 					Group group = (Group) pathwayModel.getPathwayElement(elementId);
-					group.setGroupRef((Group) group.getPathwayModel().getPathwayElement(groupRef));
+					group.setGroupRefTo((Group) group.getPathwayModel().getPathwayElement(groupRef));
 				}
 			}
 		}
@@ -487,7 +487,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (href != null)
 					label.setHref(href);
 				if (groupRef != null && !groupRef.equals(""))
-					label.setGroupRef((Group) label.getPathwayModel().getPathwayElement(groupRef));
+					label.setGroupRefTo((Group) label.getPathwayModel().getPathwayElement(groupRef));
 				if (label != null)
 					pathwayModel.addLabel(label);
 			}
@@ -521,7 +521,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (textLabel != null)
 					shape.setTextLabel(textLabel);
 				if (groupRef != null && !groupRef.equals(""))
-					shape.setGroupRef((Group) shape.getPathwayModel().getPathwayElement(groupRef));
+					shape.setGroupRefTo((Group) shape.getPathwayModel().getPathwayElement(groupRef));
 				if (shape != null)
 					pathwayModel.addShape(shape);
 			}
@@ -557,7 +557,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String groupRef = dn.getAttributeValue("groupRef");
 				Xref xref = readXref(dn);
 				if (groupRef != null && !groupRef.equals(""))
-					dataNode.setGroupRef((Group) pathwayModel.getPathwayElement(groupRef));
+					dataNode.setGroupRefTo((Group) pathwayModel.getPathwayElement(groupRef));
 				if (xref != null)
 					dataNode.setXref(xref);
 				// adds dataNode to pathwayModel
@@ -678,7 +678,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		// sets optional properties
 		String groupRef = ln.getAttributeValue("groupRef");
 		if (groupRef != null && !groupRef.equals(""))
-			lineElement.setGroupRef((Group) lineElement.getPathwayModel().getPathwayElement(groupRef));
+			lineElement.setGroupRefTo((Group) lineElement.getPathwayModel().getPathwayElement(groupRef));
 	}
 
 	/**
