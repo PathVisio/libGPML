@@ -208,11 +208,23 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
+	 * Checks whether states has the given state.
+	 * 
+	 * @param state the state to look for.
+	 * @return true if has state, false otherwise.
+	 */
+	public boolean hasState(State state) {
+		return states.contains(state);
+	}
+
+	/**
 	 * Adds given state to states list.
 	 * 
 	 * @param state the state to be added.
 	 */
 	public void addState(State state) {
+		assert (state != null) && (state.getDataNode() == this);
+		assert !hasState(state);
 		states.add(state);
 	}
 
@@ -222,9 +234,7 @@ public class DataNode extends ShapedElement {
 	 * @param state the state to be removed.
 	 */
 	public void removeState(State state) {
-		getPathwayModel().removeElementInfoRefs(state); // TODO need to remove reference to pathwayModel and also
-														// citationRefs and etc.
-		states.remove(state);
+		state.terminate();
 	}
 
 	/**
@@ -257,4 +267,19 @@ public class DataNode extends ShapedElement {
 	public void setElementRef(PathwayElement elementRef) {
 		this.elementRef = elementRef;
 	}
+
+	/**
+	 * Terminates this data node. The pathway model, if any, is unset from this data
+	 * node. Links to all states, annotationRefs, citationRefs, and evidenceRefs are
+	 * removed from this data node.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+		removeStates();
+		removeAnnotationRefs();
+		removeCitationRefs();
+		removeEvidenceRefs();// TODO
+	}
+
 }

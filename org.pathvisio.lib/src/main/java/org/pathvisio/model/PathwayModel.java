@@ -492,10 +492,8 @@ public class PathwayModel {
 	 * @param citation the citation to be removed.
 	 */
 	public void removeCitation(Citation citation) {
-		citation.removeCitationRefs();
-		citation.setPathwayModel(null); // TODO
-		removePathwayElement(citation); // TODO?
-		citations.remove(citation);
+		citation.terminate(); 
+		citations.remove(citation);//TODO 
 	}
 
 	/**
@@ -531,6 +529,12 @@ public class PathwayModel {
 	 * @param pathwayElement the pathway element to add.
 	 */
 	public void addPathwayElement(PathwayElement pathwayElement) {
+		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this);
+		assert !hasPathwayElement(pathwayElement);
+		
+		
+		pathwayElements.add(pathwayElement);
+		
 		if (pathwayElement != null) {
 			PathwayModel pathwayModel = pathwayElement.getPathwayModel();
 			if (pathwayModel == null || !pathwayModel.equals(this)) {

@@ -23,7 +23,6 @@ import java.util.Objects;
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.element.*;
 
 /**
  * This class stores information for a Citation.
@@ -32,8 +31,6 @@ import org.pathvisio.model.element.*;
  */
 public class Citation extends PathwayElement {
 
-	/** citationRefs with this citation as source */
-	private List<CitationRef> citationRefs;
 	/** One or both xref and/or Url link is required */
 	private Xref xref;
 	private UrlRef url;
@@ -42,6 +39,8 @@ public class Citation extends PathwayElement {
 	private String source;
 	private String year;
 	private List<String> authors;
+	/** citationRefs with this citation as source */
+	private List<CitationRef> citationRefs;
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters.
@@ -54,9 +53,9 @@ public class Citation extends PathwayElement {
 	 */
 	public Citation(PathwayModel pathwayModel, String elementId, Xref xref, UrlRef url) {
 		super(pathwayModel, elementId);
-		this.citationRefs = new ArrayList<CitationRef>();
 		this.xref = xref;
 		this.url = url;
+		this.citationRefs = new ArrayList<CitationRef>();
 	}
 
 	/**
@@ -73,63 +72,6 @@ public class Citation extends PathwayElement {
 	 */
 	public Citation(PathwayModel pathwayModel, String elementId, Xref xref) {
 		this(pathwayModel, elementId, xref, null);
-	}
-
-	/**
-	 * Returns the list of citationRefs which reference the citation.
-	 * 
-	 * @return citationRefs the list of citationRefs which reference the citation.
-	 */
-	public List<CitationRef> getCitationRefs() {
-		return citationRefs;
-	}
-
-	/**
-	 * Adds the given citationRef to citationRefs list of the citation.
-	 * 
-	 * @param citationRef the given citationRef to add.
-	 */
-	public void addCitationRef(CitationRef citationRef) {
-		if (citationRef.getCitation() != this)
-			citationRef.setCitation(this);
-		assert (citationRef.getCitation() == this); // TODO
-		// add to citationRefs if not already added
-		if (!citationRefs.contains(citationRef))
-			citationRefs.add(citationRef);
-	}
-
-	/**
-	 * Removes the given citationRef from citationRefs list of the citation. If
-	 * citationRefs becomes empty, this citation is removed from the pathway model
-	 * because it is no longer referenced/used.
-	 * 
-	 * @param citationRef the given citationRef to remove.
-	 */
-	public void removeCitationRef(CitationRef citationRef) {
-		// remove all annotationRefs of citationRef
-		if (!citationRef.getAnnotationRefs().isEmpty())
-			citationRef.removeAnnotationRefs();
-
-		// remove links between citationRef and its citable
-		if (citationRef.getCitable() != null)
-			citationRef.getCitable().removeCitationRef(citationRef); // citationRef.setCitable(null); TODO
-
-		// remove citationRef from this citation
-		citationRef.setCitation(null);
-		citationRefs.remove(citationRef);
-		// remove this citation from pathway model if empty
-		if (citationRefs.isEmpty()) {
-			this.getPathwayModel().removeCitation(this);
-		}
-	}
-
-	/**
-	 * Removes all citationRefs from citationRefs list of the citation.
-	 */
-	public void removeCitationRefs() {
-		for (CitationRef citationRef : citationRefs) {
-			this.removeCitationRef(citationRef);
-		}
 	}
 
 	/**
@@ -238,6 +180,72 @@ public class Citation extends PathwayElement {
 	 */
 	public void setAuthors(List<String> authors) {
 		this.authors = authors;
+	}
+
+	/**
+	 * Returns the list of citationRefs which reference this citation.
+	 * 
+	 * @return citationRefs the list of citationRefs which reference this citation.
+	 */
+	public List<CitationRef> getCitationRefs() {
+		return citationRefs;
+	}
+
+	/**
+	 * Check whether citationRefs has the given citationRef.
+	 * 
+	 * @param citationRef the citationRef to look for.
+	 * @return true if has citationRef, false otherwise.
+	 */
+	public boolean hasCitationRef(CitationRef citationRef) {
+		return citationRefs.contains(citationRef);
+	}
+
+	/**
+	 * Adds the given citationRef to citationRefs list of the citation.
+	 * 
+	 * @param citationRef the given citationRef to add.
+	 */
+	public void addCitationRef(CitationRef citationRef) {
+		assert (citationRef != null) && (citationRef.getCitation() == this);
+		assert !hasCitationRef(citationRef);
+		citationRefs.add(citationRef);
+	}
+
+	/**
+	 * Removes the given citationRef from citationRefs list of the citation. If
+	 * citationRefs becomes empty, this citation is removed from the pathway model
+	 * because it is no longer referenced/used.
+	 * 
+	 * @param citationRef the given citationRef to remove.
+	 */
+	public void removeCitationRef(CitationRef citationRef) {
+		citationRef.terminate();
+		// remove this citation from pathway model if empty TODO
+		if (citationRefs.isEmpty()) {
+			terminate();
+		}
+	}
+
+	/**
+	 * Removes all citationRefs from citationRefs list of the citation.
+	 */
+	public void removeCitationRefs() {
+		for (CitationRef citationRef : citationRefs) {
+			removeCitationRef(citationRef);
+		}
+	}
+
+	/**
+	 * Terminates this citation. The citation and citable, if any, are unset from
+	 * this citationRef. Links to all annotationRefs are removed from this
+	 * citationRef.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+		removeCitationRefs();
+		// TODO
 	}
 
 	/**

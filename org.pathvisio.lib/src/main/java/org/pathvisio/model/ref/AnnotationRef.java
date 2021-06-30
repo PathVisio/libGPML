@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.model.Pathway;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.element.ElementInfo;
 
 /**
@@ -189,11 +188,12 @@ public class AnnotationRef implements Citable {
 	}
 
 	/**
-	 * Check whether this annotationRef has the given citationRef in citationRefs.
+	 * Checks whether citationRefs has the given citationRef.
 	 * 
 	 * @param citationRef the citationRef to look for.
 	 * @return true if has citationRef, false otherwise.
 	 */
+	@Override
 	public boolean hasCitationRef(CitationRef citationRef) {
 		return citationRefs.contains(citationRef);
 	}
@@ -226,7 +226,7 @@ public class AnnotationRef implements Citable {
 	@Override
 	public void removeCitationRefs() {
 		for (CitationRef citationRef : citationRefs) {
-			this.removeCitationRef(citationRef);
+			removeCitationRef(citationRef);
 		}
 	}
 

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.model.Pathway;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.element.ElementInfo;
 
 /**
@@ -184,7 +183,7 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Check whether this citationRef has the given annotationRef in annotationRefs.
+	 * Checks whether annotationRefs has the given annotationRef. 
 	 * 
 	 * @param annotationRef the annotationRef to look for.
 	 * @return true if has annotationRef, false otherwise.
@@ -222,7 +221,7 @@ public class CitationRef implements Annotatable {
 	@Override
 	public void removeAnnotationRefs() {
 		for (AnnotationRef annotationRef : annotationRefs) {
-			this.removeAnnotationRef(annotationRef);
+			removeAnnotationRef(annotationRef);
 		}
 	}
 

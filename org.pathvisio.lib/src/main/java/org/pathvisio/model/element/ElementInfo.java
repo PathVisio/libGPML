@@ -30,6 +30,7 @@ import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
+import org.pathvisio.model.ref.EvidenceRef;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an
@@ -50,7 +51,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	private Map<String, String> dynamicProperties;
 	private List<AnnotationRef> annotationRefs;
 	private List<CitationRef> citationRefs;
-	private List<Evidence> evidenceRefs;
+	private List<EvidenceRef> evidenceRefs;
 
 	/**
 	 * Instantiates a pathway element with meta data information.
@@ -64,7 +65,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 		this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
 		this.citationRefs = new ArrayList<CitationRef>(); // 0 to unbounded
-		this.evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
+		this.evidenceRefs = new ArrayList<EvidenceRef>(); // 0 to unbounded
 	}
 
 	/*
@@ -163,18 +164,26 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	}
 
 	/**
+	 * Checks whether annotationRefs has the given annotationRef. *
+	 * 
+	 * @param annotationRef the annotationRef to look for.
+	 * @return true if has annotationRef, false otherwise.
+	 */
+	@Override
+	public boolean hasAnnotationRef(AnnotationRef annotationRef) {
+		return annotationRefs.contains(annotationRef);
+	}
+
+	/**
 	 * Adds given annotationRef to annotationRefs list.
 	 * 
 	 * @param annotationRef the annotationRef to be added.
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		if (annotationRef.getAnnotatable() != this) 
-			annotationRef.setAnnotatable(this);
-		assert (annotationRef.getAnnotatable() == this); // TODO
-		// add to annotationRefs if not already added
-		if (!annotationRefs.contains(annotationRef))
-			annotationRefs.add(annotationRef);
+		assert (annotationRef != null) && (annotationRef.getAnnotatable() == this);
+		assert !hasAnnotationRef(annotationRef);
+		annotationRefs.add(annotationRef);
 	}
 
 	/**
@@ -184,19 +193,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		// remove all citationRefs of annotationRef
-		if (!annotationRef.getCitationRefs().isEmpty())
-			annotationRef.removeCitationRefs();
-		// annotationRef.removeAllEvidenceRefs(); //TODO
-
-		// remove links between annotationRef and its annotation
-		if (annotationRef.getAnnotation() != null)
-			annotationRef.getAnnotation().removeAnnotationRef(annotationRef); // TODO citationRef.setCitation(null);
-
-		// remove annotationRef from this annotatable
-		assert (annotationRef.getAnnotatable() == this);
-		annotationRef.setAnnotatable(null);
-		annotationRefs.remove(annotationRef);
+		annotationRef.terminate();
 	}
 
 	/**
@@ -221,18 +218,26 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	}
 
 	/**
+	 * Checks whether citationRefs has the given citationRef.
+	 * 
+	 * @param citationRef the citationRef to look for.
+	 * @return true if has citationRef, false otherwise.
+	 */
+	@Override
+	public boolean hasCitationRef(CitationRef citationRef) {
+		return citationRefs.contains(citationRef);
+	}
+
+	/**
 	 * Adds given citationRef to citationRefs list.
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		if (citationRef.getCitable() != this)
-			citationRef.setCitable(this);
-		assert (citationRef.getCitable() == this); // TODO
-		// add to citationRefs if not already added
-		if (!citationRefs.contains(citationRef))
-			citationRefs.add(citationRef);
+		assert (citationRef != null) && (citationRef.getCitable() == this);
+		assert !hasCitationRef(citationRef);
+		citationRefs.add(citationRef);
 	}
 
 	/**
@@ -242,27 +247,16 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeCitationRef(CitationRef citationRef) {
-		// remove all annotationRefs of citationRef
-		if (!citationRef.getAnnotationRefs().isEmpty())
-			citationRef.removeAnnotationRefs();
-
-		// remove links between citationRef and its citation
-		if (citationRef.getCitation() != null)
-			citationRef.getCitation().removeCitationRef(citationRef); // TODO citationRef.setCitation(null);
-
-		// remove citationRef from this citable
-		assert (citationRef.getCitable() == this);
-		citationRef.setCitable(null);
-		citationRefs.remove(citationRef);
+		citationRef.terminate();
 	}
 
 	/**
-	 * Removes all citationRefs from citationRefs list.
+	 * Removes all citationRef from citationRefs list.
 	 */
 	@Override
 	public void removeCitationRefs() {
 		for (CitationRef citationRef : citationRefs) {
-			this.removeCitationRef(citationRef);
+			removeCitationRef(citationRef);
 		}
 	}
 
@@ -272,7 +266,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * @return evidenceRefs the list of evidences referenced, an empty list if no
 	 *         properties are defined.
 	 */
-	public List<Evidence> getEvidenceRefs() {
+	public List<EvidenceRef> getEvidenceRefs() {
 		return evidenceRefs;
 	}
 
@@ -281,8 +275,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
-	public void addEvidenceRef(Evidence evidenceRef) {
-		evidenceRef.addPathwayElement(this);
+	public void addEvidenceRef(EvidenceRef evidenceRef) {
+//		evidenceRef.addPathwayElement(this);
 		evidenceRefs.add(evidenceRef);
 	}
 
@@ -291,17 +285,28 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */
-	public void removeEvidenceRef(Evidence evidenceRef) {
-		evidenceRef.removePathwayElement(this);
-		evidenceRefs.remove(evidenceRef);
+	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+	}
+
+	/**
+	 * Removes all evidenceRefs from evidenceRefs list.
+	 */
+	public void removeEvidenceRefs() {
+		for (EvidenceRef evidenceRef : evidenceRefs) {
+			removeEvidenceRef(evidenceRef);
+		}
 	}
 
 	/**
 	 * Terminates this pathway element. The pathway model, if any, is unset from
-	 * this pathway element. TODO The elementId of this pathway element is changed.
+	 * this pathway element. Links to all annotationRefs, citationRefs, and
+	 * evidenceRefs are removed from this data node.
 	 */
 	@Override
 	public void terminate() {
 		unsetPathwayModel();
+		removeAnnotationRefs();
+		removeCitationRefs();
+		removeEvidenceRefs();// TODO
 	}
 }

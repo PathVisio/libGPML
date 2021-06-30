@@ -32,12 +32,11 @@ import org.pathvisio.model.type.AnnotationType;
  */
 public class Annotation extends PathwayElement {
 
-	/** annotationRefs with this annotation as source */
-	private List<AnnotationRef> annotationRefs;
 	private String value;
 	private AnnotationType type;
 	private Xref xref; // optional
 	private UrlRef url; // optional
+	private List<AnnotationRef> annotationRefs; // annotationRefs with this annotation as source
 
 	/**
 	 * Instantiates an Annotation pathway element given all possible parameters:
@@ -53,11 +52,11 @@ public class Annotation extends PathwayElement {
 	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, Xref xref,
 			UrlRef url) {
 		super(pathwayModel, elementId);
-		this.annotationRefs = new ArrayList<AnnotationRef>();
 		this.value = value;
 		this.type = type;
 		this.xref = xref;
 		this.url = url;
+		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
 	/**
@@ -79,67 +78,6 @@ public class Annotation extends PathwayElement {
 	 */
 	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type) {
 		this(pathwayModel, elementId, value, type, null, null);
-	}
-
-	/**
-	 * Returns the list of annotationRefs which reference the annotation.
-	 * 
-	 * @return annotationRefs the list of pathway elements which reference the
-	 *         annotation.
-	 */
-	public List<AnnotationRef> getAnnotationRefs() {
-		return annotationRefs;
-	}
-
-	/**
-	 * Adds the given annotationRef to annotationRefs list of the annotation.
-	 * 
-	 * @param annotationRef the given annotationRef to add.
-	 */
-	public void addAnnotationRef(AnnotationRef annotationRef) {
-		if (annotationRef.getAnnotation() != this)
-			annotationRef.setAnnotation(this);
-		assert (annotationRef.getAnnotation() == this); // TODO
-		// add to annotationRefs if not already added
-		if (!annotationRefs.contains(annotationRef))
-			annotationRefs.add(annotationRef);
-	}
-
-	/**
-	 * Removes the given annotationRef from annotationRefs list of this annotation.
-	 * If annotationRefs becomes empty, this annotation is removed from the pathway
-	 * model because it is no longer referenced/used.
-	 * 
-	 * @param annotationRef the given annotationRef to remove.
-	 */
-	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		// remove all citationRefs of annotationRef
-		if (!annotationRef.getCitationRefs().isEmpty())
-			annotationRef.removeCitationRefs();
-		// remove all evidenceRefs of annotationRef
-		// TODO
-
-		// remove links between annotationRef and its annotatable
-		if (annotationRef.getAnnotatable() != null)
-			annotationRef.getAnnotatable().removeAnnotationRef(annotationRef); 
-		// annotationRef.setAnnotatable(null); // TODO
-
-		// remove annotationRef from this annotation
-		annotationRef.setAnnotation(null);
-		annotationRefs.remove(annotationRef);
-		// remove this annotation from pathway model if empty
-		if (annotationRefs.isEmpty()) {
-			this.getPathwayModel().removeAnnotation(this);
-		}
-	}
-	
-	/**
-	 * Removes all annotationRefs from annotationRefs list of the citation.
-	 */
-	public void removeAnnotationRefs() {
-		for (AnnotationRef annotationRef : annotationRefs) {
-			this.removeAnnotationRef(annotationRef);
-		}
 	}
 
 	/**
@@ -212,6 +150,73 @@ public class Annotation extends PathwayElement {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+	}
+
+	/**
+	 * Returns the list of annotationRefs which reference the annotation.
+	 * 
+	 * @return annotationRefs the list of pathway elements which reference the
+	 *         annotation.
+	 */
+	public List<AnnotationRef> getAnnotationRefs() {
+		return annotationRefs;
+	}
+
+	/**
+	 * Check whether annotationRefs has the given annotationRef.
+	 * 
+	 * @param annotationRef the annotationRef to look for.
+	 * @return true if has annotationRef, false otherwise.
+	 */
+	public boolean hasAnnotationRef(AnnotationRef annotationRef) {
+		return annotationRefs.contains(annotationRef);
+	}
+
+	/**
+	 * Adds the given annotationRef to annotationRefs list of the annotation.
+	 * 
+	 * @param annotationRef the given annotationRef to add.
+	 */
+	public void addAnnotationRef(AnnotationRef annotationRef) {
+		assert (annotationRef != null) && (annotationRef.getAnnotatable() == this);
+		assert !hasAnnotationRef(annotationRef);
+		annotationRefs.add(annotationRef);
+	}
+
+	/**
+	 * Removes the given annotationRef from annotationRefs list of this annotation.
+	 * If annotationRefs becomes empty, this annotation is removed from the pathway
+	 * model because it is no longer referenced/used.
+	 * 
+	 * @param annotationRef the given annotationRef to remove.
+	 */
+	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		annotationRef.terminate();
+		// remove this annotation from pathway model if empty TODO
+		if (annotationRefs.isEmpty()) {
+			getPathwayModel().removeAnnotation(this);
+		}
+	}
+
+	/**
+	 * Removes all annotationRefs from annotationRefs list of the citation.
+	 */
+	public void removeAnnotationRefs() {
+		for (AnnotationRef annotationRef : annotationRefs) {
+			removeAnnotationRef(annotationRef);
+		}
+	}
+
+	/**
+	 * Terminates this citation. The citation and citable, if any, are unset from
+	 * this citationRef. Links to all annotationRefs are removed from this
+	 * citationRef.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+		removeAnnotationRefs();
+		// TODO
 	}
 
 	/**

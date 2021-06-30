@@ -19,6 +19,7 @@ package org.pathvisio.model.element;
 import org.bridgedb.Xref;
 import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.type.StateType;
 
 /**
@@ -64,7 +65,7 @@ public class State extends ElementInfo {
 			double relX, double relY, double width, double height, FontProperty fontProperty,
 			ShapeStyleProperty shapeStyleProperty, Xref xref) {
 		super(pathwayModel, elementId);
-		this.dataNode = dataNode;
+		setDataNodeTo(dataNode);
 		this.textLabel = textLabel;
 		this.type = type;
 		this.relX = relX;
@@ -100,6 +101,15 @@ public class State extends ElementInfo {
 	}
 
 	/**
+	 * Checks whether this state has a parent datanode.
+	 *
+	 * @return true if and only if the datanode of this state is effective.
+	 */
+	public boolean hasDataNode() {
+		return getDataNode() != null;
+	}
+
+	/**
 	 * Sets the parent data node to which the state belongs.
 	 * 
 	 * NB: prior to GPML2021, elementRef was used to refer to the elementId of
@@ -107,8 +117,34 @@ public class State extends ElementInfo {
 	 * 
 	 * @param dataNode the parent data node of the state.
 	 */
-	public void setDataNode(DataNode dataNode) {
+	public void setDataNodeTo(DataNode dataNode) {
+		if (dataNode == null)
+			throw new IllegalArgumentException("Invalid datanode.");
+		if (this.hasDataNode())
+			throw new IllegalStateException("State already belongs to a data node.");
+		setDataNode(dataNode);
+		dataNode.addState(this);
+	}
+
+	/**
+	 * Sets the parent data node for this state.
+	 * 
+	 * @param dataNode the given dataNode to set.
+	 */
+	private void setDataNode(DataNode dataNode) {
+		assert (dataNode != null);
 		this.dataNode = dataNode;
+	}
+
+	/**
+	 * Unsets the data node, if any, from this state.
+	 */
+	public void unsetDataNode() {
+		if (hasDataNode()) {
+			DataNode formerDataNode = this.getDataNode();
+			setDataNode(null);
+			formerDataNode.removeState(this);
+		}
 	}
 
 	/**
@@ -192,9 +228,9 @@ public class State extends ElementInfo {
 
 	/**
 	 * Sets the relative y coordinate. When the given state is linked to a data
-	 * node, relX and relY are the relative coordinates on the data node, where 0,0 is
-	 * at the center of the data node and 1,1 at the bottom right corner of the data
-	 * node.
+	 * node, relX and relY are the relative coordinates on the data node, where 0,0
+	 * is at the center of the data node and 1,1 at the bottom right corner of the
+	 * data node.
 	 * 
 	 * @param relY the relative y coordinate.
 	 */
@@ -308,4 +344,17 @@ public class State extends ElementInfo {
 		this.xref = xref;
 	}
 
+	/**
+	 * Terminates this state. The pathway model and data node, if any, are unset
+	 * from this citationRef. Links to all annotationRefs, citationRefs, and
+	 * evidenceRefs are removed from this data node.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+		unsetDataNode();
+		removeAnnotationRefs();
+		removeCitationRefs();
+		removeEvidenceRefs();// TODO
+	}
 }

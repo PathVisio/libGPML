@@ -427,13 +427,25 @@ public class Pathway implements Annotatable, Citable {
 	}
 
 	/**
-	 * Returns the list of annotations referenced.
+	 * Returns the list of annotation references.
 	 * 
-	 * @return annotationRefs the list of annotation references.
+	 * @return annotationRefs the list of annotation references, an empty list if no
+	 *         properties are defined.
 	 */
 	@Override
 	public List<AnnotationRef> getAnnotationRefs() {
 		return annotationRefs;
+	}
+
+	/**
+	 * Checks whether annotationRefs has the given annotationRef. *
+	 * 
+	 * @param annotationRef the annotationRef to look for.
+	 * @return true if has annotationRef, false otherwise.
+	 */
+	@Override
+	public boolean hasAnnotationRef(AnnotationRef annotationRef) {
+		return annotationRefs.contains(annotationRef);
 	}
 
 	/**
@@ -443,12 +455,9 @@ public class Pathway implements Annotatable, Citable {
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		if (annotationRef.getAnnotatable() != this) 
-			annotationRef.setAnnotatable(this);
-		assert (annotationRef.getAnnotatable() == this); // TODO
-		// add to annotationRefs if not already added
-		if (!annotationRefs.contains(annotationRef))
-			annotationRefs.add(annotationRef);
+		assert (annotationRef != null) && (annotationRef.getAnnotatable() == this);
+		assert !hasAnnotationRef(annotationRef);
+		annotationRefs.add(annotationRef);
 	}
 
 	/**
@@ -458,33 +467,24 @@ public class Pathway implements Annotatable, Citable {
 	 */
 	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		// remove all citationRefs of annotationRef
-		if (!annotationRef.getCitationRefs().isEmpty())
-			annotationRef.removeCitationRefs();
-		// annotationRef.removeAllEvidenceRefs(); //TODO
-
-		// remove links between annotationRef and its annotation
-		if (annotationRef.getAnnotation() != null)
-			annotationRef.getAnnotation().removeAnnotationRef(annotationRef); // TODO citationRef.setCitation(null);
-
-		// remove annotationRef from this annotatable
-		assert (annotationRef.getAnnotatable() == this);
-		annotationRef.setAnnotatable(null);
-		annotationRefs.remove(annotationRef);
+		annotationRef.terminate();
 	}
 
+	/**
+	 * Removes all annotationRefs from annotationRefs list.
+	 */
 	@Override
 	public void removeAnnotationRefs() {
 		for (AnnotationRef annotationRef : annotationRefs) {
 			removeAnnotationRef(annotationRef);
 		}
 	}
-	
-	
+
 	/**
-	 * Returns the list of citationRefs.
+	 * Returns the list of citation references.
 	 * 
-	 * @return citationRefs the list of citations referenced.
+	 * @return citationRefs the list of citations referenced, an empty list if no
+	 *         properties are defined.
 	 */
 	@Override
 	public List<CitationRef> getCitationRefs() {
@@ -492,18 +492,26 @@ public class Pathway implements Annotatable, Citable {
 	}
 
 	/**
+	 * Checks whether citationRefs has the given citationRef.
+	 * 
+	 * @param citationRef the citationRef to look for.
+	 * @return true if has citationRef, false otherwise.
+	 */
+	@Override
+	public boolean hasCitationRef(CitationRef citationRef) {
+		return citationRefs.contains(citationRef);
+	}
+
+	/**
 	 * Adds given citationRef to citationRefs list.
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
-	@Override	
+	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		if (citationRef.getCitable() != this)
-			citationRef.setCitable(this);
-		assert (citationRef.getCitable() == this); // TODO
-		// add to citationRefs if not already added
-		if (!citationRefs.contains(citationRef))
-			citationRefs.add(citationRef);
+		assert (citationRef != null) && (citationRef.getCitable() == this);
+		assert !hasCitationRef(citationRef);
+		citationRefs.add(citationRef);
 	}
 
 	/**
@@ -513,26 +521,16 @@ public class Pathway implements Annotatable, Citable {
 	 */
 	@Override
 	public void removeCitationRef(CitationRef citationRef) {
-		// remove all annotationRefs of citationRef
-		if (!citationRef.getAnnotationRefs().isEmpty())
-			citationRef.removeAnnotationRefs();
-
-		// remove links between citationRef and its citation
-		if (citationRef.getCitation() != null)
-			citationRef.getCitation().removeCitationRef(citationRef); // TODO citationRef.setCitation(null);
-
-		// remove citationRef from this citable
-		citationRef.setCitable(null); 
-		citationRefs.remove(citationRef); 
+		citationRef.terminate();
 	}
-	
+
 	/**
-	 * Removes all citationRefs from citationRefs list.
+	 * Removes all citationRef from citationRefs list.
 	 */
 	@Override
 	public void removeCitationRefs() {
 		for (CitationRef citationRef : citationRefs) {
-			this.removeCitationRef(citationRef);
+			removeCitationRef(citationRef);
 		}
 	}
 
@@ -663,7 +661,5 @@ public class Pathway implements Annotatable, Citable {
 	public void setXref(Xref xref) {
 		this.xref = xref;
 	}
-
-
 
 }

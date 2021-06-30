@@ -23,6 +23,7 @@ public interface Annotatable {
 	 * Check whether this annotatable has the given annotationRef.
 	 * 
 	 * @param annotationRef the annotationRef to look for.
+	 * @return true if has annotationRef, false otherwise. 
 	 */
 	public boolean hasAnnotationRef(AnnotationRef annotationRef);
 
