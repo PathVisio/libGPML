@@ -41,7 +41,6 @@ public abstract class PathwayElement {
 	public PathwayElement(PathwayModel pathwayModel, String elementId) {
 		setPathwayModelTo(pathwayModel);
 		this.elementId = elementId;
-		pathwayModel.addElementId(elementId, this); // TODO Setter
 	}
 
 	/**
@@ -74,7 +73,6 @@ public abstract class PathwayElement {
 		if (hasPathwayModel())
 			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
 		setPathwayModel(pathwayModel);
-		pathwayModel.addPathwayElement(this);
 	}
 
 	/**
@@ -85,6 +83,8 @@ public abstract class PathwayElement {
 	private void setPathwayModel(PathwayModel pathwayModel) {
 		assert (pathwayModel != null);
 		this.pathwayModel = pathwayModel;
+		pathwayModel.addElementId(elementId, this); // TODO 
+		pathwayModel.addPathwayElement(this); //TODO 
 	}
 
 	/**
@@ -95,7 +95,8 @@ public abstract class PathwayElement {
 		if (hasPathwayModel()) {
 			PathwayModel formerPathwayModel = this.getPathwayModel();
 			setPathwayModel(null);
-			formerPathwayModel.removePathwayElement(this); 
+			formerPathwayModel.removeElementId(elementId); //TODO
+			formerPathwayModel.removePathwayElement(this); TODO
 		}
 	}
 
@@ -147,15 +148,4 @@ public abstract class PathwayElement {
 		this.elementId = null;
 	}
 
-//	/**
-//	 * Checks whether this pathway element is terminated.
-//	 * 
-//	 * @return true if elementId is null, false otherwise.
-//	 */
-//	public boolean isTerminated() {
-//		// We do not want to introduce an extra instance variable reflecting whether or
-//		// not a pathway element is terminated. Instead, we use a value for the instance
-//		// variable 'elementId', that is illegal for non-terminated pathway elements.
-//		return getElementId() == null;
-//	}
 }

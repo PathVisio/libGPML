@@ -238,8 +238,9 @@ public class PathwayModel {
 	 * @param dataNode the data node to be removed.
 	 */
 	public void removeDataNode(DataNode dataNode) {
-		removeElementInfoRefs(dataNode);
+		dataNode.terminate();
 		dataNodes.remove(dataNode);
+
 	}
 
 	/**
@@ -266,8 +267,9 @@ public class PathwayModel {
 	 * @param interaction the interaction to be removed.
 	 */
 	public void removeInteraction(Interaction interaction) {
-		removeElementInfoRefs(interaction);
+		interaction.terminate();
 		interactions.remove(interaction);
+
 	}
 
 	/**
@@ -294,7 +296,7 @@ public class PathwayModel {
 	 * @param graphicalLine the graphicalLine to be removed.
 	 */
 	public void removeGraphicalLine(GraphicalLine graphicalLine) {
-		removeElementInfoRefs(graphicalLine);
+		graphicalLine.terminate();
 		graphicalLines.remove(graphicalLine);
 	}
 
@@ -322,7 +324,7 @@ public class PathwayModel {
 	 * @param label the label to be removed.
 	 */
 	public void removeLabel(Label label) {
-		removeElementInfoRefs(label);
+		label.terminate();
 		labels.remove(label);
 	}
 
@@ -350,7 +352,7 @@ public class PathwayModel {
 	 * @param shape the shape to be removed.
 	 */
 	public void removeShape(Shape shape) {
-		removeElementInfoRefs(shape);
+		shape.terminate();
 		shapes.remove(shape);
 	}
 
@@ -378,7 +380,7 @@ public class PathwayModel {
 	 * @param group the group to be removed.
 	 */
 	public void removeGroup(Group group) {
-		removeElementInfoRefs(group);
+		group.terminate();
 		groups.remove(group);
 	}
 
@@ -435,6 +437,7 @@ public class PathwayModel {
 	 * @param annotation the annotation to be removed.
 	 */
 	public void removeAnnotation(Annotation annotation) {
+		annotation.terminate();
 		annotations.remove(annotation);
 	}
 
@@ -492,8 +495,8 @@ public class PathwayModel {
 	 * @param citation the citation to be removed.
 	 */
 	public void removeCitation(Citation citation) {
-		citation.terminate(); 
-		citations.remove(citation);//TODO 
+		citation.terminate();
+		citations.remove(citation);// TODO
 	}
 
 	/**
@@ -520,6 +523,7 @@ public class PathwayModel {
 	 * @param evidence the evidence to be removed.
 	 */
 	public void removeEvidence(Evidence evidence) {
+		evidence.terminate();
 		evidences.remove(evidence);
 	}
 
@@ -531,118 +535,17 @@ public class PathwayModel {
 	public void addPathwayElement(PathwayElement pathwayElement) {
 		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this);
 		assert !hasPathwayElement(pathwayElement);
-		
-		
 		pathwayElements.add(pathwayElement);
-		
-		if (pathwayElement != null) {
-			PathwayModel pathwayModel = pathwayElement.getPathwayModel();
-			if (pathwayModel == null || !pathwayModel.equals(this)) {
-				// if necessary, removes link to existing parent pathway model
-				if (pathwayModel != null) {
-					pathwayModel.removePathwayElement(pathwayElement);
-				}
-				if (this != null) {
-					pathwayElement.setPathwayModel(this);
-				}
-				assert (pathwayElement.getPathwayModel() == this); // TODO
-				assert (hasPathwayElement(pathwayElement)); // TODO
-				if (pathwayElement.getClass() == DataNode.class) {
-					dataNodes.add((DataNode) pathwayElement);
-				}
-				if (pathwayElement.getClass() == Interaction.class) {
-					interactions.add((Interaction) pathwayElement);
-				}
-				if (pathwayElement.getClass() == GraphicalLine.class) {
-					graphicalLines.add((GraphicalLine) pathwayElement);
-				}
-				if (pathwayElement.getClass() == Label.class) {
-					labels.add((Label) pathwayElement);
-				}
-				if (pathwayElement.getClass() == Shape.class) {
-					shapes.add((Shape) pathwayElement);
-				}
-				if (pathwayElement.getClass() == Group.class) {
-					// ((Group) pathwayElement).removePathwayElements(); //TODO
-					groups.add((Group) pathwayElement);
-				}
-				if (pathwayElement.getClass() == Annotation.class) {
-					((Annotation) pathwayElement).removeAnnotationRefs();
-					citations.add((Citation) pathwayElement);
-				}
-				if (pathwayElement.getClass() == Citation.class) {
-					((Citation) pathwayElement).removeCitationRefs();
-					citations.add((Citation) pathwayElement);
-				}
-			}
-		}
-
 	}
 
-	/**
-	 * Removes pathway element from the pathway model. TODO
-	 * 
-	 * @param pathwayElement the pathway element to remove.
-	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
-		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this);
-		assert (hasPathwayElement(pathwayElement));
-		pathwayElement.setPathwayModel(null);
-		// pathwayElements.remove(pathwayElement)
-
-		if (pathwayElement.getClass() == DataNode.class) {
-			((DataNode) pathwayElement).removeStates();
-			dataNodes.remove(pathwayElement);
-		}
-		if (pathwayElement.getClass() == Interaction.class) {
-			((Interaction) pathwayElement).removePoints();
-			((Interaction) pathwayElement).removeAnchors();
-			interactions.remove(pathwayElement);
-		}
-		if (pathwayElement.getClass() == GraphicalLine.class) {
-			((GraphicalLine) pathwayElement).removePoints();
-			((GraphicalLine) pathwayElement).removeAnchors();
-			graphicalLines.remove(pathwayElement);
-		}
-		if (pathwayElement.getClass() == Label.class) {
-			labels.remove(pathwayElement);
-		}
-		if (pathwayElement.getClass() == Shape.class) {
-			shapes.remove(pathwayElement);
-		}
-		if (pathwayElement.getClass() == Group.class) {
-			// ((Group) pathwayElement).removePathwayElements(); //TODO
-			groups.remove(pathwayElement);
-		}
-		if (pathwayElement.getClass() == Annotation.class) {
-			((Annotation) pathwayElement).removeAnnotationRefs();
-			citations.remove(pathwayElement);
-		}
-		if (pathwayElement.getClass() == Citation.class) {
-			((Citation) pathwayElement).removeCitationRefs();
-			citations.remove(pathwayElement);
-		}
-
-	}
-
-	/**
-	 * Removes references to {@link AnnotationRef}, {@link CitationRef}, and
-	 * {@link EvidenceRef} of a given pathway element {@link ElementInfo}.
-	 * References to annotationRefs, citatationRefs, and evidenceRefs are also
-	 * removed from their sources {@link Annotation}, {@link Citation}, and
-	 * {@link Evidence}.
-	 * 
-	 * @param elementInfo the pathway element for which references are to be
-	 *                    removed.
-	 */
-	public void removeElementInfoRefs(ElementInfo elementInfo) {
-		removePathwayElement(elementInfo);
-		elementInfo.getAnnotationRefs();
-		elementInfo.getCitationRefs();
-
-//		elementInfo.getEvidenceRefs(); TODO
-
-	}
+//	/**
+//	 * Removes pathway element from the pathway model. TODO
+//	 * 
+//	 * @param pathwayElement the pathway element to remove.
+//	 */
+//	public void removePathwayElement(PathwayElement pathwayElement) {
+//		pathwayElement.terminate();
+//	}
 
 	/**
 	 * Returns the Xref of all DataNodes in this pathway as a List.
