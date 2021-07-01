@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,14 +50,14 @@ public class TestReadWriteGPML2013a extends TestCase {
 	public static void testReadWriteGPML2013a() throws IOException, ConverterException, SAXException {
 
 //		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
-//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-back-to-GPML2013a");
-//		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
 		
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/gpmlsample_2013a_original");
-		String outputDir = "C:/Users/p70073399/Documents/gpmlsample_2013a_new";
-		
-		File[] listOfFiles = folderGPML2013a.listFiles();
+		File[] listOfFiles = folderGPML2013a.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".gpml");
+			}
+		});
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];

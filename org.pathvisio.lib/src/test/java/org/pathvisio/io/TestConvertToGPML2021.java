@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -41,14 +42,14 @@ public class TestConvertToGPML2021 extends TestCase {
 	 * @throws ConverterException
 	 */
 	public static void testConvertToGPML2021() throws IOException, ConverterException {
-//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-20210510-gpml-Bos_taurus");
-//		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021-other";
-//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-//		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021";
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/gpmlsample_2013a_original");
-		String outputDir = "C:/Users/p70073399/Documents/gpmlsample_2021_new";
+		File folderGPML2021 = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021";
 		
-		File[] listOfFiles = folderGPML2013a.listFiles();
+		File[] listOfFiles = folderGPML2021.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".gpml");
+			}
+		});
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];

@@ -44,6 +44,7 @@ public class TestConvertToGPML2013a extends TestCase {
 	public static void testConvertToGPML2013a() throws IOException, ConverterException {
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");
 		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-back-to-GPML2013a";
+		
 		File[] listOfFiles = folderGPML2013a.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(".gpml");
