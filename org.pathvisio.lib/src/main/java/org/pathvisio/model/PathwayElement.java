@@ -80,11 +80,10 @@ public abstract class PathwayElement {
 	 * 
 	 * @param pathwayModel the new pathway model for this pathway element.
 	 */
-	private void setPathwayModel(PathwayModel pathwayModel) {
+	protected void setPathwayModel(PathwayModel pathwayModel) {
 		assert (pathwayModel != null);
 		this.pathwayModel = pathwayModel;
 		pathwayModel.addElementId(elementId, this); // TODO 
-		pathwayModel.addPathwayElement(this); //TODO 
 	}
 
 	/**
@@ -96,7 +95,6 @@ public abstract class PathwayElement {
 			PathwayModel formerPathwayModel = this.getPathwayModel();
 			setPathwayModel(null);
 			formerPathwayModel.removeElementId(elementId); //TODO
-			formerPathwayModel.removePathwayElement(this); TODO
 		}
 	}
 

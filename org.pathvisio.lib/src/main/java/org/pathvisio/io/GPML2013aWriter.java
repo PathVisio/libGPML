@@ -765,7 +765,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				bp.addContent(ocv);
 			}
 			// warnings for conversion GPML2021 to GPML2013a
-			if (annotation.getUrlRef() != null) {
+			if (annotation.getUrl() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Annotation " + annotation.getElementId()
 						+ " url and elementId info lost.");
 			}
@@ -799,7 +799,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (pubxf != null)
 				bp.addContent(pubxf);
 			// warnings for conversion GPML2021 to GPML2013a
-			if (citation.getUrlRef().getLink() != null) {
+			if (citation.getUrl().getLink() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Citation " + citation.getElementId()
 						+ " url info lost.");
 			}

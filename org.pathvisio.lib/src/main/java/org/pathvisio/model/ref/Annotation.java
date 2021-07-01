@@ -121,7 +121,7 @@ public class Annotation extends PathwayElement {
 	 * 
 	 * @return url the url of the annotation.
 	 */
-	public UrlRef getUrlRef() {
+	public UrlRef getUrl() {
 		return url;
 	}
 
@@ -130,7 +130,7 @@ public class Annotation extends PathwayElement {
 	 * 
 	 * @param url the url of the annotation.
 	 */
-	public void setUrlRef(UrlRef url) {
+	public void setUrl(UrlRef url) {
 		this.url = url;
 	}
 
@@ -208,9 +208,9 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Terminates this citation. The citation and citable, if any, are unset from
-	 * this citationRef. Links to all annotationRefs are removed from this
-	 * citationRef.
+	 * Terminates this annotation. The pathway model, if any, is unset from
+	 * this annotation. Links to all annotationRefs are removed from this
+	 * annotation.
 	 */
 	@Override
 	public void terminate() {
@@ -246,14 +246,14 @@ public class Annotation extends PathwayElement {
 				return false;
 		}
 		// checks if url link and description are equivalent
-		if (url != null && annotation.getUrlRef() == null)
+		if (url != null && annotation.getUrl() == null)
 			return false;
-		if (url == null && annotation.getUrlRef() != null)
+		if (url == null && annotation.getUrl() != null)
 			return false;
-		if (url != null && annotation.getUrlRef() != null) {
-			if (!Objects.equals(url.getLink(), annotation.getUrlRef().getLink()))
+		if (url != null && annotation.getUrl() != null) {
+			if (!Objects.equals(url.getLink(), annotation.getUrl().getLink()))
 				return false;
-			if (!Objects.equals(url.getDescription(), annotation.getUrlRef().getDescription()))
+			if (!Objects.equals(url.getDescription(), annotation.getUrl().getDescription()))
 				return false;
 		}
 		// checks if annotation has the same annotationRefs

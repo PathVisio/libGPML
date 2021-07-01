@@ -24,11 +24,11 @@ import org.pathvisio.model.graphics.LineStyleProperty;
 
 /**
  * This abstract class stores information for a Line pathway element, e.g.
- * GraphicalLine or Interaction.
+ * {@link GraphicalLine} or {@link Interaction}.
  * 
  * @author finterly
  */
-public abstract class LineElement extends ElementInfo {
+public abstract class LineElement extends ElementInfo implements Groupable{
 
 	private List<LinePoint> points; // minimum 2
 	private List<Anchor> anchors;

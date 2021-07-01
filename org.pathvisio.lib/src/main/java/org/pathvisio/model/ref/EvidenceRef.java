@@ -16,29 +16,45 @@
  ******************************************************************************/
 package org.pathvisio.model.ref;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.pathvisio.model.Pathway;
 
 /**
- * This class stores information for a EvidenceRef which references a
+ * This class stores information for a EvidenceRef which references an
  * {@link Evidence}.
  * 
  * @author finterly
  */
 public class EvidenceRef {
 
-	private Evidence evidence; // elementRef in GPML is this.citation.getElementId()
+	private Evidence evidence; // source evidence, elementRef in GPML
+	private Evidenceable evidenceable; // target pathway, pathway element, or evidenceRef
 
-//	private Evidenceable evidenceable; 
-	
-	
 	/**
-	 * Instantiates an EvidenceRef given an evidence and...
+	 * Instantiates an EvidenceRef given source {@link Evidence} and target
+	 * {@link Evidenceable}, and initializes evidenceRefs lists.
 	 * 
-	 * @param evidence       the Evidence this EvidenceRef refers to.
+	 * @param evidence the source evidence this EvidenceRef refers to.
+	 * @param evidenceable  the target pathway, pathway element, or evidenceRef to
+	 *                 which the EvidenceRef belongs.
 	 */
-	public EvidenceRef(Evidence evidence) {
-		this.evidence = evidence;
+	public EvidenceRef(Evidence evidence, Evidenceable evidenceable) {
+		this.setEvidence(evidence);
+		this.setEvidenceable(evidenceable);
 	}
 
+	/**
+	 * Instantiates an EvidenceRef given evidence and initializes evidenceRefs
+	 * list. No pathway element is given as this EvidenceRef belongs to the
+	 * {@link Pathway}.
+	 * 
+	 * @param evidence the Evidence this EvidenceRef refers to.
+	 */
+	public EvidenceRef(Evidence evidence) {
+		this(evidence, null);
+	}
 
 	/**
 	 * Returns the evidence referenced.
@@ -50,14 +66,112 @@ public class EvidenceRef {
 	}
 
 	/**
-	 * Sets the evidence to be referenced.
-	 * 
-	 * @param evidence the evidence referenced.
+	 * Checks whether this evidenceRef has a source evidence.
+	 *
+	 * @return true if and only if the evidence of this evidenceRef is effective.
 	 */
-	public void setEvidence(Evidence evidence) {
+	public boolean hasEvidence() {
+		return getEvidence() != null;
+	}
+
+	/**
+	 * Sets the source evidence for this evidenceRef.
+	 * 
+	 * @param evidence the given source evidence to set.
+	 */
+	public void setEvidenceTo(Evidence evidence) {
+		if (evidence == null)
+			throw new IllegalArgumentException("Invalid evidence.");
+		if (hasEvidence())
+			throw new IllegalStateException("EvidenceRef already has a source evidence.");
+		setEvidence(evidence);
+		evidence.addEvidenceRef(this);
+	}
+
+	/**
+	 * Sets the source evidence for this evidenceRef.
+	 * 
+	 * @param evidence the given source evidence to set.
+	 */
+	private void setEvidence(Evidence evidence) {
+		assert (evidence != null);
 		this.evidence = evidence;
 	}
 
+	/**
+	 * Unsets the evidence, if any, from this evidenceRef.
+	 */
+	public void unsetEvidence() {
+		if (hasEvidence()) {
+			Evidence formerEvidence = this.getEvidence();
+			setEvidenceable(null);
+			formerEvidence.removeEvidenceRef(this);
+		}
+	}
 
+	/**
+	 * Returns the target pathway, pathway element, or evidenceRef {@link Evidenceable}
+	 * for this evidenceRef.
+	 * 
+	 * @return evidenceable the target of the evidenceRef.
+	 */
+	public Evidenceable getEvidenceable() {
+		return evidenceable;
+	}
 
+	/**
+	 * Checks whether this evidenceRef has a target evidenceable.
+	 *
+	 * @return true if and only if the evidenceable of this evidenceRef is effective.
+	 */
+	public boolean hasEvidenceable() {
+		return getEvidenceable() != null;
+	}
+
+	/**
+	 * Sets the target pathway, pathway element, or evidenceRef {@link Evidenceable}
+	 * for this evidenceRef.
+	 * 
+	 * @param evidenceable the given target evidenceable to set.
+	 */
+	public void setEvidenceableTo(Evidenceable evidenceable) {
+		if (evidenceable == null)
+			throw new IllegalArgumentException("Invalid evidenceable.");
+		if (hasEvidenceable())
+			throw new IllegalStateException("EvidenceRef already has a target evidenceable.");
+		setEvidenceable(evidenceable);
+		evidenceable.addEvidenceRef(this);
+	}
+
+	/**
+	 * Sets the target pathway, pathway element, or evidenceRef {@link Evidenceable} to
+	 * which the evidenceRef belongs.
+	 * 
+	 * @param evidenceable the given target evidenceable to set.
+	 */
+	private void setEvidenceable(Evidenceable evidenceable) {
+		assert (evidenceable != null);
+		this.evidenceable = evidenceable;
+	}
+
+	/**
+	 * Unsets the evidenceable, if any, from this evidenceRef.
+	 */
+	public void unsetEvidenceable() {
+		if (hasEvidenceable()) {
+			Evidenceable formerEvidenceable = this.getEvidenceable();
+			setEvidenceable(null);
+			formerEvidenceable.removeEvidenceRef(this);
+		}
+	}
+
+	/**
+	 * Terminates this evidenceRef. The evidence and evidenceable, if any, are unset from
+	 * this evidenceRef. Links to all evidenceRefs are removed from this
+	 * evidenceRef.
+	 */
+	public void terminate() {
+		unsetEvidence();
+		unsetEvidenceable();
+	}
 }

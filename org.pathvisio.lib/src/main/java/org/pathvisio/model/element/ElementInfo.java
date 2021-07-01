@@ -29,8 +29,8 @@ import org.pathvisio.model.ref.Annotatable;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
+import org.pathvisio.model.ref.Evidenceable;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an
@@ -40,7 +40,7 @@ import org.pathvisio.model.ref.EvidenceRef;
  * 
  * @author unknown, AP20070508, finterly
  */
-public abstract class ElementInfo extends PathwayElement implements Annotatable, Citable {
+public abstract class ElementInfo extends PathwayElement implements Annotatable, Citable, Evidenceable {
 
 	private List<Comment> comments;
 	/**
@@ -266,8 +266,20 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * @return evidenceRefs the list of evidences referenced, an empty list if no
 	 *         properties are defined.
 	 */
+	@Override
 	public List<EvidenceRef> getEvidenceRefs() {
 		return evidenceRefs;
+	}
+
+	/**
+	 * Checks whether evidenceRefs has the given evidenceRef.
+	 * 
+	 * @param evidenceRef the evidenceRef to look for.
+	 * @return true if has evidenceRef, false otherwise.
+	 */
+	@Override
+	public boolean hasEvidenceRef(EvidenceRef evidenceRef) {
+		return evidenceRefs.contains(evidenceRef);
 	}
 
 	/**
@@ -275,8 +287,10 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
+	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
-//		evidenceRef.addPathwayElement(this);
+		assert (evidenceRef != null) && (evidenceRef.getEvidenceable() == this);
+		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
 
@@ -285,12 +299,15 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */
+	@Override
 	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+		evidenceRef.terminate();
 	}
 
 	/**
 	 * Removes all evidenceRefs from evidenceRefs list.
 	 */
+	@Override
 	public void removeEvidenceRefs() {
 		for (EvidenceRef evidenceRef : evidenceRefs) {
 			removeEvidenceRef(evidenceRef);
@@ -307,6 +324,6 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 		unsetPathwayModel();
 		removeAnnotationRefs();
 		removeCitationRefs();
-		removeEvidenceRefs();// TODO
+		removeEvidenceRefs();
 	}
 }

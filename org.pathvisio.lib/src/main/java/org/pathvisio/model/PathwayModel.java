@@ -34,7 +34,6 @@ import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
 
 /**
@@ -528,24 +527,34 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds pathway element to the pathway model. TODO
+	 * Checks if pathway element can be added. The given pathway element cannot be
+	 * null, must reference this pathway model, and this pathway element cannot
+	 * already be added to the pathway model. TODO
 	 * 
 	 * @param pathwayElement the pathway element to add.
+	 * @return true if pathway element can be added, false otherwise.
 	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
-		assert (pathwayElement != null) && (pathwayElement.getPathwayModel() == this);
-		assert !hasPathwayElement(pathwayElement);
-		pathwayElements.add(pathwayElement);
+	private boolean canAddPathwayElement(PathwayElement pathwayElement) {
+		if (pathwayElement != null && pathwayElement.getPathwayModel() == this && !hasPathwayElement(pathwayElement)) {
+			return true;
+		}
+		return false;
 	}
 
-//	/**
-//	 * Removes pathway element from the pathway model. TODO
-//	 * 
-//	 * @param pathwayElement the pathway element to remove.
-//	 */
-//	public void removePathwayElement(PathwayElement pathwayElement) {
-//		pathwayElement.terminate();
-//	}
+	/**
+	 * Checks if pathway element can be removed. The given pathway element cannot be
+	 * null, must reference this pathway model, and this pathway model must have a
+	 * reference of it. TODO
+	 * 
+	 * @param pathwayElement the pathway element to remove.
+	 * @return true if pathway element can be removed, false otherwise.
+	 */
+	public boolean canRemovePathwayElement(PathwayElement pathwayElement) {
+		if (pathwayElement != null && pathwayElement.getPathwayModel() == this && hasPathwayElement(pathwayElement)) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Returns the Xref of all DataNodes in this pathway as a List.
@@ -575,7 +584,6 @@ public class PathwayModel {
 				Xref stateXref = state.getXref();
 				if (stateXref != null) {
 					result.add(stateXref);
-
 				}
 			}
 		}
@@ -627,27 +635,6 @@ public class PathwayModel {
 	public void setSourceFile(File file) {
 		sourceFile = file;
 	}
-
-//	/**
-//	 * Contructor for this class, creates a new gpml document
-//	 */
-//	public Pathway()
-//	{
-//		mappInfo = PathwayElement.createPathwayElement(ObjectType.MAPPINFO);
-//		this.add (mappInfo);
-//		infoBox = PathwayElement.createPathwayElement(ObjectType.INFOBOX);
-//		this.add (infoBox);
-//	}
-//
-//	/*
-//	 * Call when making a new mapp.
-//	 */
-//	public void initMappInfo()
-//	{
-//		String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
-//		mappInfo.setVersion(dateString);
-//		mappInfo.setMapInfoName("New Pathway");
-//	}
 
 	/**
 	 * Writes the JDOM document to the file specified

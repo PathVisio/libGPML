@@ -22,12 +22,12 @@ import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
 
 /**
- * This class stores information for shaped pathway element, e.g. DataNode,
- * TODO: STATE?, Label, Shape, and Group.
+ * This class stores information for shaped pathway element {@link DataNode},
+ * {@link Label}, {@link Shape}, and {@link Group}. 
  * 
  * @author finterly
  */
-public abstract class ShapedElement extends ElementInfo {
+public abstract class ShapedElement extends ElementInfo implements Groupable {
 
 	private RectProperty rectProperty;
 	private FontProperty fontProperty;

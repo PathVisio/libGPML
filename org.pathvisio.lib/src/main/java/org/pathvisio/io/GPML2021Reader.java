@@ -230,7 +230,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (xref != null)
 					annotation.setXref(xref);
 				if (url != null)
-					annotation.getUrlRef().setLink(url);
+					annotation.getUrl().setLink(url);
 				if (annotation != null)
 					pathwayModel.addAnnotation(annotation);
 			}
@@ -255,7 +255,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// sets optional properties
 				String url = cit.getAttributeValue("url");
 				if (url != null)
-					citation.getUrlRef().setLink(url);
+					citation.getUrl().setLink(url);
 				if (citation != null)
 					pathwayModel.addCitation(citation);
 			}

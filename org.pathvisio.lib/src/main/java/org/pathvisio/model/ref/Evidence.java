@@ -18,6 +18,7 @@ package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayElement;
@@ -30,20 +31,18 @@ import org.pathvisio.model.PathwayModel;
  */
 public class Evidence extends PathwayElement {
 
-	/* list of parent pathway elements which have evidenceRef for this evidence. */
-	private List<PathwayElement> pathwayElements;
 	private String value; // optional
 	private Xref xref;
-	private String url; // optional
-
-	/*
-	 * NB: Manipulated the order of variables to overload constructor. This is not
-	 * best practice, however variable inheritance complicates use of a builder.
-	 */
+	private UrlRef url; // optional
+	/** evidenceRefs with this evidence as source */
+	private List<EvidenceRef> evidenceRefs;
 
 	/**
 	 * Instantiates an Evidence pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, xref, and url.
+	 * 
+	 * NB: Manipulated the order of variables to overload constructor. This is not
+	 * best practice, however variable inheritance complicates use of a builder.
 	 * 
 	 * @param elementId    the unique pathway element identifier.
 	 * @param pathwayModel the parent pathway model.
@@ -51,18 +50,19 @@ public class Evidence extends PathwayElement {
 	 * @param xref         the evidence xref.
 	 * @param url          the url of the evidence.
 	 */
-	public Evidence(PathwayModel pathwayModel, String elementId, String value, Xref xref, String url) {
+	public Evidence(PathwayModel pathwayModel, String elementId, String value, Xref xref, UrlRef url) {
 		super(pathwayModel, elementId);
-		this.pathwayElements = new ArrayList<PathwayElement>();
 		this.value = value;
 		this.xref = xref;
 		this.url = url;
+		this.evidenceRefs = new ArrayList<EvidenceRef>();
+
 	}
 
 	/**
 	 * Instantiates an Evidence given all possible parameters except value.
 	 */
-	public Evidence(PathwayModel pathwayModel, String elementId, Xref xref, String url) {
+	public Evidence(PathwayModel pathwayModel, String elementId, Xref xref, UrlRef url) {
 		this(pathwayModel, elementId, null, xref, url);
 	}
 
@@ -81,37 +81,9 @@ public class Evidence extends PathwayElement {
 	}
 
 	/**
-	 * Returns the list of pathway elements with evidenceRef for the evidence.
+	 * Returns the Evidence Xref.
 	 * 
-	 * @return pathwayElements the list of pathway elements which reference the
-	 *         evidence.
-	 */
-	public List<PathwayElement> getPathwayElements() {
-		return pathwayElements;
-	}
-
-	/**
-	 * Adds the given pathway element to pathwayElements list of the evidence.
-	 * 
-	 * @param pathwayElement the given pathwayElement to add.
-	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.add(pathwayElement);
-	}
-
-	/**
-	 * Removes the given pathway element from pathwayElements list of the evidence.
-	 * 
-	 * @param pathwayElement the given pathwayElement to remove.
-	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
-		pathwayElements.remove(pathwayElement);
-	}
-
-	/**
-	 * Returns the Citation Xref.
-	 * 
-	 * @return xref the citation xref.
+	 * @return xref the evidence xref.
 	 */
 	public Xref getXref() {
 		return xref;
@@ -126,30 +98,144 @@ public class Evidence extends PathwayElement {
 		this.xref = xref;
 	}
 
+	/**
+	 * Returns the name, term, or text of the evidence.
+	 * 
+	 * @return value the name, term, or text of the evidence.
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the name, term, or text of the evidence.
+	 * 
+	 * @param value the name, term, or text of the evidence.
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
 	/**
-	 * Returns the url of the citation.
+	 * Returns the url of the evidence.
 	 * 
-	 * @return url the url of the citation.
+	 * @return url the url of the evidence.
 	 */
-	public String getUrl() {
+	public UrlRef getUrl() {
 		return url;
 	}
 
 	/**
-	 * Sets the url of the citation.
+	 * Sets the url of the evidence.
 	 * 
-	 * @param url the url of the citation.
+	 * @param url the url of the evidence.
 	 */
-	public void setUrl(String url) {
+	public void setUrl(UrlRef url) {
 		this.url = url;
+	}
+
+	/**
+	 * Returns the list of evidenceRefs which reference this evidence.
+	 * 
+	 * @return evidenceRefs the list of evidenceRefs which reference this evidence.
+	 */
+	public List<EvidenceRef> getEvidenceRefs() {
+		return evidenceRefs;
+	}
+
+	/**
+	 * Check whether evidenceRefs has the given evidenceRef.
+	 * 
+	 * @param evidenceRef the evidenceRef to look for.
+	 * @return true if has evidenceRef, false otherwise.
+	 */
+	public boolean hasEvidenceRef(EvidenceRef evidenceRef) {
+		return evidenceRefs.contains(evidenceRef);
+	}
+
+	/**
+	 * Adds the given evidenceRef to evidenceRefs list of the evidence.
+	 * 
+	 * @param evidenceRef the given evidenceRef to add.
+	 */
+	public void addEvidenceRef(EvidenceRef evidenceRef) {
+		assert (evidenceRef != null) && (evidenceRef.getEvidence() == this);
+		assert !hasEvidenceRef(evidenceRef);
+		evidenceRefs.add(evidenceRef);
+	}
+
+	/**
+	 * Removes the given evidenceRef from evidenceRefs list of the evidence. If
+	 * evidenceRefs becomes empty, this evidence is removed from the pathway model
+	 * because it is no longer referenced/used.
+	 * 
+	 * @param evidenceRef the given evidenceRef to remove.
+	 */
+	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+		evidenceRef.terminate();
+		// remove this evidence from pathway model if empty TODO
+		if (evidenceRefs.isEmpty()) {
+			terminate();
+		}
+	}
+
+	/**
+	 * Removes all evidenceRefs from evidenceRefs list of the evidence.
+	 */
+	public void removeEvidenceRefs() {
+		for (EvidenceRef evidenceRef : evidenceRefs) {
+			removeEvidenceRef(evidenceRef);
+		}
+	}
+
+	/**
+	 * Terminates this evidence. The pathway model, if any, is unset from this
+	 * evidence. Links to all evidenceRefs are removed from this evidence.
+	 */
+	@Override
+	public void terminate() {
+		unsetPathwayModel();
+		removeEvidenceRefs();
+	}
+
+	/**
+	 * Checks all properties of given evidences to determine whether they are equal.
+	 * 
+	 * TODO
+	 * 
+	 * @param evidence the evidence to compare to.
+	 * @return true if evidences have equal properties, false otherwise.
+	 */
+	public boolean equalsEvidence(Evidence evidence) {
+		// checks if xref is equivalent
+		if (xref != null && evidence.getXref() == null)
+			return false;
+		if (xref == null && evidence.getXref() != null)
+			return false;
+		if (xref != null && evidence.getXref() != null) {
+			if (!Objects.equals(xref.getId(), evidence.getXref().getId()))
+				return false;
+			if (!Objects.equals(xref.getDataSource(), evidence.getXref().getDataSource()))
+				return false;
+		}
+		// checks if url link and description are equivalent
+		if (url != null && evidence.getUrl() == null)
+			return false;
+		if (url == null && evidence.getUrl() != null)
+			return false;
+		if (url != null && evidence.getUrl() != null) {
+			if (!Objects.equals(url.getLink(), evidence.getUrl().getLink()))
+				return false;
+			if (!Objects.equals(url.getDescription(), evidence.getUrl().getDescription()))
+				return false;
+		}
+		// checks if value is equivalent
+		if (!Objects.equals(value, evidence.getValue()))
+			return false;
+		// checks if evidence has the same evidenceRefs
+		if (!Objects.equals(evidenceRefs, evidence.getEvidenceRefs()))
+			return false;
+		return true;
 	}
 
 }

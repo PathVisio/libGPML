@@ -48,7 +48,7 @@ public class GroupRectPropertyUtils {
 	public static Rectangle2D calculateGroupBounds(Group group) {
 		double margin = getMargin(group.getType());
 		Rectangle2D bounds = null;
-		for (PathwayElement pathwayElement : group.getPathwayElements()) {
+		for (Groupable pathwayElement : group.getPathwayElements()) {
 			if (bounds == null) {
 				if (pathwayElement instanceof ShapedElement)
 					bounds = getShapedElementBounds((ShapedElement) pathwayElement);

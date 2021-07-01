@@ -97,7 +97,7 @@ public class Citation extends PathwayElement {
 	 * 
 	 * @return url the url of the citation.
 	 */
-	public UrlRef getUrlRef() {
+	public UrlRef getUrl() {
 		return url;
 	}
 
@@ -106,7 +106,7 @@ public class Citation extends PathwayElement {
 	 * 
 	 * @param url the url of the citation.
 	 */
-	public void setUrlRef(UrlRef url) {
+	public void setUrl(UrlRef url) {
 		this.url = url;
 	}
 
@@ -237,8 +237,8 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Terminates this citation. The citation and citable, if any, are unset from
-	 * this citationRef. Links to all annotationRefs are removed from this
+	 * Terminates this citation. The pathway model, if any, are unset from
+	 * this citationRef. Links to all citationRefs are removed from this
 	 * citationRef.
 	 */
 	@Override
@@ -269,14 +269,14 @@ public class Citation extends PathwayElement {
 				return false;
 		}
 		// checks if url link and description are equivalent
-		if (url != null && citation.getUrlRef() == null)
+		if (url != null && citation.getUrl() == null)
 			return false;
-		if (url == null && citation.getUrlRef() != null)
+		if (url == null && citation.getUrl() != null)
 			return false;
-		if (url != null && citation.getUrlRef() != null) {
-			if (!Objects.equals(url.getLink(), citation.getUrlRef().getLink()))
+		if (url != null && citation.getUrl() != null) {
+			if (!Objects.equals(url.getLink(), citation.getUrl().getLink()))
 				return false;
-			if (!Objects.equals(url.getDescription(), citation.getUrlRef().getDescription()))
+			if (!Objects.equals(url.getDescription(), citation.getUrl().getDescription()))
 				return false;
 		}
 		// checks if citation has the same citationRefs
@@ -293,4 +293,5 @@ public class Citation extends PathwayElement {
 			return false;
 		return true;
 	}
+
 }

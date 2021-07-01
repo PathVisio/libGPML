@@ -38,7 +38,7 @@ public class Group extends ShapedElement {
 	private String textLabel; // optional
 	private Xref xref; // optional
 	/* list of pathway elements which belong to the group. */
-	private Set<PathwayElement> pathwayElements; // should have at least one pathway element
+	private Set<Groupable> pathwayElements; // should have at least one pathway element
 
 	/**
 	 * Instantiates a Group given all possible parameters.
@@ -60,7 +60,7 @@ public class Group extends ShapedElement {
 		this.type = type;
 		this.textLabel = textLabel;
 		this.xref = xref;
-		this.pathwayElements = new HashSet<PathwayElement>();
+		this.pathwayElements = new HashSet<Groupable>();
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @return pathwayElements the list of pathway elements belonging to the group.
 	 */
-	public Set<PathwayElement> getPathwayElements() {
+	public Set<Groupable> getPathwayElements() {
 		return pathwayElements;
 	}
 
@@ -140,7 +140,7 @@ public class Group extends ShapedElement {
 	 * @param pathwayElement the pathway element to look for.
 	 * @return true if has pathwayElement, false otherwise.
 	 */
-	public boolean hasPathwayElement(PathwayElement pathwayElement) {
+	public boolean hasPathwayElement(Groupable pathwayElement) {
 		return pathwayElements.contains(pathwayElement);
 	}
 
@@ -149,7 +149,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
+	public void addPathwayElement(Groupable pathwayElement) {
 		assert (pathwayElement != null) && (pathwayElement.getGroupRef() == this);
 		assert !hasPathwayElement(pathwayElement);
 		pathwayElements.add(pathwayElement);
@@ -160,7 +160,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @param pathwayElement the given pathwayElement to remove.
 	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
+	public void removePathwayElement(Groupable pathwayElement) {
 		pathwayElement.terminate();
 	}
 
@@ -168,8 +168,8 @@ public class Group extends ShapedElement {
 	 * Removes all pathway elements from the pathwayElements list.
 	 */
 	public void removeAnchors() {
-		for (PathwayElement pathwayElement : pathwayElements) {
-			this.removePathwayElement(pathwayElement);
+		for (Groupable pathwayElement : pathwayElements) {
+			removePathwayElement(pathwayElement);
 		}
 	}
 

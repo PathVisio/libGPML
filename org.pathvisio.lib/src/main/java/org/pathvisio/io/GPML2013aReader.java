@@ -365,7 +365,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				citation.setSource(source);
 				// if source is an url, also set as citation url
 				if (source.startsWith("http") || source.startsWith("www"))
-					citation.getUrlRef().setLink(source);
+					citation.getUrl().setLink(source);
 			}
 			if (year != null && !year.equals(""))
 				citation.setYear(year);

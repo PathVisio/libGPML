@@ -32,12 +32,12 @@ import org.pathvisio.model.element.ElementInfo;
  * 
  * @author finterly
  */
-public class AnnotationRef implements Citable {
+public class AnnotationRef implements Citable, Evidenceable {
 
 	private Annotation annotation; // source annotation, elementRef in GPML
 	private Annotatable annotatable; // target pathway, pathway element, or citationRef
 	private List<CitationRef> citationRefs; // 0 to unbounded
-	private List<Evidence> evidenceRefs; // 0 to unbounded
+	private List<EvidenceRef> evidenceRefs; // 0 to unbounded
 
 	/**
 	 * Instantiates an AnnotationRef given source {@link Annotation} and target
@@ -51,7 +51,7 @@ public class AnnotationRef implements Citable {
 		this.setAnnotation(annotation);
 		this.setAnnotatable(annotatable);
 		this.citationRefs = new ArrayList<CitationRef>();
-		this.evidenceRefs = new ArrayList<Evidence>();
+		this.evidenceRefs = new ArrayList<EvidenceRef>();
 	}
 
 	/**
@@ -230,16 +230,6 @@ public class AnnotationRef implements Citable {
 		}
 	}
 
-	/**
-	 * Terminates this annotationRef. The annotation and annotatable, if any, are
-	 * unset from this annotationRef.
-	 */
-	public void terminate() {
-		unsetAnnotation();
-		unsetAnnotatable();
-		removeCitationRefs();
-		// TODO remove EvidenceRefs();
-	}
 	/*
 	 * -----------------------------------------------------------------------------
 	 */
@@ -250,8 +240,20 @@ public class AnnotationRef implements Citable {
 	 * @return evidenceRefs the list of evidences referenced, an empty list if no
 	 *         properties are defined.
 	 */
-	public List<Evidence> getEvidenceRefs() {
+	@Override
+	public List<EvidenceRef> getEvidenceRefs() {
 		return evidenceRefs;
+	}
+
+	/**
+	 * Checks whether citationRefs has the given citationRef.
+	 * 
+	 * @param evidenceRef the evidenceRef to look for.
+	 * @return true if has evidenceRef, false otherwise.
+	 */
+	@Override
+	public boolean hasEvidenceRef(EvidenceRef evidenceRef) {
+		return evidenceRefs.contains(evidenceRef);
 	}
 
 	/**
@@ -259,7 +261,10 @@ public class AnnotationRef implements Citable {
 	 * 
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
-	public void addEvidenceRef(Evidence evidenceRef) {
+	@Override
+	public void addEvidenceRef(EvidenceRef evidenceRef) {
+		assert (evidenceRef != null) && (evidenceRef.getEvidenceable() == this);
+		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
 
@@ -268,8 +273,30 @@ public class AnnotationRef implements Citable {
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */
-	public void removeEvidenceRef(Evidence evidenceRef) {
-		evidenceRefs.remove(evidenceRef);
+	@Override
+	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+		evidenceRef.terminate();
+	}
+
+	/**
+	 * Removes all evidenceRef from citationRefs list.
+	 */
+	@Override
+	public void removeEvidenceRefs() {
+		for (EvidenceRef evidenceRef : evidenceRefs) {
+			removeEvidenceRef(evidenceRef);
+		}
+	}
+
+	/**
+	 * Terminates this annotationRef. The annotation and annotatable, if any, are
+	 * unset from this annotationRef.
+	 */
+	public void terminate() {
+		unsetAnnotation();
+		unsetAnnotatable();
+		removeCitationRefs();
+		removeEvidenceRefs();
 	}
 
 }

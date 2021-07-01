@@ -29,7 +29,8 @@ import org.pathvisio.model.ref.Annotatable;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.Evidence;
+import org.pathvisio.model.ref.EvidenceRef;
+import org.pathvisio.model.ref.Evidenceable;
 
 /**
  * This class stores metadata for a Pathway.
@@ -43,7 +44,7 @@ import org.pathvisio.model.ref.Evidence;
  * 
  * @author finterly
  */
-public class Pathway implements Annotatable, Citable {
+public class Pathway implements Annotatable, Citable, Evidenceable {
 
 	private String title;
 	private double boardWidth;
@@ -55,7 +56,7 @@ public class Pathway implements Annotatable, Citable {
 	private Map<String, String> dynamicProperties;
 	private List<AnnotationRef> annotationRefs;
 	private List<CitationRef> citationRefs;
-	private List<Evidence> evidenceRefs;
+	private List<EvidenceRef> evidenceRefs;
 	private String organism;
 	private String source;
 	private String version;
@@ -79,7 +80,7 @@ public class Pathway implements Annotatable, Citable {
 		private Map<String, String> dynamicProperties;
 		private List<AnnotationRef> annotationRefs;
 		private List<CitationRef> citationRefs;
-		private List<Evidence> evidenceRefs;
+		private List<EvidenceRef> evidenceRefs;
 		private String organism; // optional
 		private String source; // optional
 		private String version; // optional
@@ -109,7 +110,7 @@ public class Pathway implements Annotatable, Citable {
 			this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 			this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
 			this.citationRefs = new ArrayList<CitationRef>(); // 0 to unbounded
-			this.evidenceRefs = new ArrayList<Evidence>(); // 0 to unbounded
+			this.evidenceRefs = new ArrayList<EvidenceRef>(); // 0 to unbounded
 		}
 
 		/**
@@ -535,12 +536,25 @@ public class Pathway implements Annotatable, Citable {
 	}
 
 	/**
-	 * Returns the list of evidences referenced.
+	 * Returns the list of evidence references.
 	 * 
-	 * @return evidenceRefs the list of evidences referenced.
+	 * @return evidenceRefs the list of evidences referenced, an empty list if no
+	 *         properties are defined.
 	 */
-	public List<Evidence> getEvidenceRefs() {
+	@Override
+	public List<EvidenceRef> getEvidenceRefs() {
 		return evidenceRefs;
+	}
+
+	/**
+	 * Checks whether evidenceRefs has the given evidenceRef.
+	 * 
+	 * @param evidenceRef the evidenceRef to look for.
+	 * @return true if has evidenceRef, false otherwise.
+	 */
+	@Override
+	public boolean hasEvidenceRef(EvidenceRef evidenceRef) {
+		return evidenceRefs.contains(evidenceRef);
 	}
 
 	/**
@@ -548,7 +562,10 @@ public class Pathway implements Annotatable, Citable {
 	 * 
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
-	public void addEvidenceRef(Evidence evidenceRef) {
+	@Override
+	public void addEvidenceRef(EvidenceRef evidenceRef) {
+		assert (evidenceRef != null) && (evidenceRef.getEvidenceable() == this);
+		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
 
@@ -557,8 +574,19 @@ public class Pathway implements Annotatable, Citable {
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */
-	public void removeEvidenceRef(Evidence evidenceRef) {
-		evidenceRefs.remove(evidenceRef);
+	@Override
+	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+		evidenceRef.terminate();
+	}
+
+	/**
+	 * Removes all evidenceRefs from evidenceRefs list.
+	 */
+	@Override
+	public void removeEvidenceRefs() {
+		for (EvidenceRef evidenceRef : evidenceRefs) {
+			removeEvidenceRef(evidenceRef);
+		}
 	}
 
 	/**
