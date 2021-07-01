@@ -86,7 +86,7 @@ public class EvidenceRef {
 	public void unsetEvidence() {
 		if (hasEvidence()) {
 			Evidence formerEvidence = this.getEvidence();
-			setEvidenceable(null);
+			setEvidence(null);
 			formerEvidence.removeEvidenceRef(this);
 		}
 	}

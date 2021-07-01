@@ -97,7 +97,7 @@ public class CitationRef implements Annotatable {
 	public void unsetCitation() {
 		if (hasCitation()) {
 			Citation formerCitation = this.getCitation();
-			setCitable(null);
+			setCitation(null);
 			formerCitation.removeCitationRef(this);
 		}
 	}
