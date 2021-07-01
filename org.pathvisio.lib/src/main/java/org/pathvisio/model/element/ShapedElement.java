@@ -55,7 +55,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 		this.fontProperty = fontProperty;
 		this.shapeStyleProperty = shapeStyleProperty;
 		if (groupRef != null) {
-			setGroupRef(groupRef); // set group TODO
+			setGroupRefTo(groupRef); // set group TODO
 		}
 	}
 
@@ -167,7 +167,6 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * @param groupRef the given group to set.
 	 */
 	private void setGroupRef(Group groupRef) {
-		assert (groupRef != null);
 		this.groupRef = groupRef;
 	}
 

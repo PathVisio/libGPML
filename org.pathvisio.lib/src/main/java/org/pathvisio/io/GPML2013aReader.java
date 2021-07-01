@@ -307,7 +307,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (annotation != null) {
 				annotation = pathwayModel.addAnnotation(annotation);
 				// adds annotationRef to pathway of pathway model
-				pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation));
+				pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation, pathwayModel.getPathway()));
 				;
 			}
 		}
@@ -473,7 +473,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
 			if (citation != null) {
 				// create new citationRef for citation referenced
-				CitationRef citationRef = new CitationRef(citation);
+				CitationRef citationRef = new CitationRef(citation, pathwayModel.getPathway());
 				// adds citationRef to pathway element of pathway model
 				if (citationRef != null)
 					pathwayModel.getPathway().addCitationRef(citationRef);

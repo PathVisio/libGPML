@@ -798,7 +798,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (pubxf != null)
 				bp.addContent(pubxf);
 			// warnings for conversion GPML2021 to GPML2013a
-			if (citation.getUrl().getLink() != null) {
+			if (citation.getUrl() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Citation " + citation.getElementId()
 						+ " url info lost.");
 			}

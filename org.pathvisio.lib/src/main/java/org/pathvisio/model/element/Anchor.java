@@ -45,7 +45,7 @@ public class Anchor extends PathwayElement {
 	public Anchor(PathwayModel pathwayModel, String elementId, LineElement lineElement, double position,
 			AnchorShapeType shapeType) {
 		super(pathwayModel, elementId);
-		this.lineElement = lineElement;
+		setLineElementTo(lineElement);
 		if (position < 0 || position > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
@@ -83,7 +83,6 @@ public class Anchor extends PathwayElement {
 		if (hasLineElement())
 			throw new IllegalStateException("Anchor already belongs to a line element.");
 		setLineElement(lineElement);
-		lineElement.addAnchor(this);
 	}
 
 	/**
@@ -92,7 +91,6 @@ public class Anchor extends PathwayElement {
 	 * @param lineElement the line element to set.
 	 */
 	private void setLineElement(LineElement lineElement) {
-		assert (lineElement != null);
 		this.lineElement = lineElement;
 	}
 

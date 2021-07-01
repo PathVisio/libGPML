@@ -46,20 +46,9 @@ public class CitationRef implements Annotatable {
 	 *                 which the CitationRef belongs.
 	 */
 	public CitationRef(Citation citation, Citable citable) {
-		this.setCitation(citation);
-		this.setCitable(citable);
+		this.setCitationTo(citation);
+		this.setCitableTo(citable);
 		this.annotationRefs = new ArrayList<AnnotationRef>();
-	}
-
-	/**
-	 * Instantiates an CitationRef given citation and initializes annotationRefs
-	 * list. No pathway element is given as this CitationRef belongs to the
-	 * {@link Pathway}.
-	 * 
-	 * @param citation the Citation this CitationRef refers to.
-	 */
-	public CitationRef(Citation citation) {
-		this(citation, null);
 	}
 
 	/**
@@ -91,7 +80,6 @@ public class CitationRef implements Annotatable {
 		if (hasCitation())
 			throw new IllegalStateException("CitationRef already has a source citation.");
 		setCitation(citation);
-		citation.addCitationRef(this);
 	}
 
 	/**
@@ -100,7 +88,6 @@ public class CitationRef implements Annotatable {
 	 * @param citation the given source citation to set.
 	 */
 	private void setCitation(Citation citation) {
-		assert (citation != null);
 		this.citation = citation;
 	}
 
@@ -146,7 +133,6 @@ public class CitationRef implements Annotatable {
 		if (hasCitable())
 			throw new IllegalStateException("CitationRef already has a target citable.");
 		setCitable(citable);
-		citable.addCitationRef(this);
 	}
 
 	/**
@@ -156,7 +142,6 @@ public class CitationRef implements Annotatable {
 	 * @param citable the given target citable to set.
 	 */
 	private void setCitable(Citable citable) {
-		assert (citable != null);
 		this.citable = citable;
 	}
 
@@ -183,7 +168,7 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Checks whether annotationRefs has the given annotationRef. 
+	 * Checks whether annotationRefs has the given annotationRef.
 	 * 
 	 * @param annotationRef the annotationRef to look for.
 	 * @return true if has annotationRef, false otherwise.

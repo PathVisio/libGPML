@@ -48,21 +48,10 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 *                    which the AnnotationRef belongs.
 	 */
 	public AnnotationRef(Annotation annotation, Annotatable annotatable) {
-		this.setAnnotation(annotation);
-		this.setAnnotatable(annotatable);
+		this.setAnnotationTo(annotation);
+		this.setAnnotatableTo(annotatable);
 		this.citationRefs = new ArrayList<CitationRef>();
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
-	}
-
-	/**
-	 * Instantiates an AnnotationRef given annotation and initializes citation and
-	 * evidence lists. No pathway element is given as this AnnotationRef belongs to
-	 * the {@link Pathway}.
-	 * 
-	 * @param annotation the Annotation this AnnotationRef refers to.
-	 */
-	public AnnotationRef(Annotation annotation) {
-		this(annotation, null);
 	}
 
 	/**
@@ -95,7 +84,6 @@ public class AnnotationRef implements Citable, Evidenceable {
 		if (hasAnnotation())
 			throw new IllegalStateException("AnnotationRef already has a source annotation.");
 		setAnnotation(annotation);
-		annotation.addAnnotationRef(this);
 	}
 
 	/**
@@ -104,7 +92,6 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 * @param annotation the given source annotation to set.
 	 */
 	private void setAnnotation(Annotation annotation) {
-		assert (annotation != null);
 		this.annotation = annotation;
 	}
 
@@ -151,7 +138,6 @@ public class AnnotationRef implements Citable, Evidenceable {
 		if (hasAnnotatable())
 			throw new IllegalStateException("AnnotationRef already has a target annotatable.");
 		setAnnotatable(annotatable);
-		annotatable.addAnnotationRef(this);
 	}
 
 	/**
@@ -161,7 +147,6 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 * @param annotatable the given target annotatable to set.
 	 */
 	private void setAnnotatable(Annotatable annotatable) {
-		assert (annotatable != null);
 		this.annotatable = annotatable;
 	}
 

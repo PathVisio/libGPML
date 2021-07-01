@@ -123,7 +123,6 @@ public class State extends ElementInfo {
 		if (hasDataNode())
 			throw new IllegalStateException("State already belongs to a data node.");
 		setDataNode(dataNode);
-		dataNode.addState(this);
 	}
 
 	/**
@@ -132,7 +131,6 @@ public class State extends ElementInfo {
 	 * @param dataNode the given dataNode to set.
 	 */
 	private void setDataNode(DataNode dataNode) {
-		assert (dataNode != null);
 		this.dataNode = dataNode;
 	}
 

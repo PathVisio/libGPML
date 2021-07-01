@@ -55,7 +55,7 @@ public class LinePoint extends PathwayElement {
 	public LinePoint(PathwayModel pathwayModel, String elementId, LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
 		super(pathwayModel, elementId);
-		this.lineElement = lineElement;
+		setLineElementTo(lineElement);
 		this.arrowHead = arrowHead;
 		this.xy = xy;
 		this.elementRef = elementRef;
@@ -110,7 +110,6 @@ public class LinePoint extends PathwayElement {
 		if (hasLineElement())
 			throw new IllegalStateException("Point already belongs to a line element.");
 		setLineElement(lineElement);
-		lineElement.addPoint(this);
 	}
 
 	/**
@@ -119,7 +118,6 @@ public class LinePoint extends PathwayElement {
 	 * @param lineElement the line element to set.
 	 */
 	private void setLineElement(LineElement lineElement) {
-		assert (lineElement != null);
 		this.lineElement = lineElement;
 	}
 

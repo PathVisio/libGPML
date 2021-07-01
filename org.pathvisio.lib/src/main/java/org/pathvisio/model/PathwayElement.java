@@ -40,7 +40,7 @@ public abstract class PathwayElement {
 	 */
 	public PathwayElement(PathwayModel pathwayModel, String elementId) {
 		setPathwayModelTo(pathwayModel);
-		this.elementId = elementId;
+		setElementId(elementId);
 	}
 
 	/**
@@ -81,9 +81,7 @@ public abstract class PathwayElement {
 	 * @param pathwayModel the new pathway model for this pathway element.
 	 */
 	protected void setPathwayModel(PathwayModel pathwayModel) {
-		assert (pathwayModel != null);
 		this.pathwayModel = pathwayModel;
-		pathwayModel.addElementId(elementId, this); // TODO 
 	}
 
 	/**
@@ -94,7 +92,7 @@ public abstract class PathwayElement {
 		if (hasPathwayModel()) {
 			PathwayModel formerPathwayModel = this.getPathwayModel();
 			setPathwayModel(null);
-			formerPathwayModel.removeElementId(elementId); //TODO
+			formerPathwayModel.removeElementId(elementId); // TODO
 		}
 	}
 
@@ -121,6 +119,7 @@ public abstract class PathwayElement {
 			if (pathwayModel != null) {
 				if (elementId != null) {
 					pathwayModel.removeElementId(elementId);
+					new IllegalArgumentException("ElementId needs to be removed...");
 				}
 				if (newElementId != null) {
 					pathwayModel.addElementId(newElementId, this);

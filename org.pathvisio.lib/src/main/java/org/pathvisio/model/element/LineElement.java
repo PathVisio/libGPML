@@ -54,7 +54,7 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
 		if (groupRef != null) {
-			setGroupRef(groupRef); // set group TODO
+			setGroupRefTo(groupRef); // set group TODO
 		}
 	}
 
@@ -231,7 +231,6 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 		if (hasGroupRef())
 			throw new IllegalStateException("Line element already belongs to a group.");
 		setGroupRef(groupRef);
-		groupRef.addPathwayElement(this);
 	}
 
 	/**
@@ -240,7 +239,6 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 	 * @param groupRef the given group to set.
 	 */
 	private void setGroupRef(Group groupRef) {
-		assert (groupRef != null);
 		this.groupRef = groupRef;
 	}
 
