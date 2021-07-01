@@ -158,7 +158,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 		if (hasGroupRef())
 			throw new IllegalStateException("Line element already belongs to a group.");
 		setGroupRef(groupRef);
-		groupRef.addPathwayElement(this);
+		groupRef.addPathwayElement(this); //TODO
 	}
 
 	/**

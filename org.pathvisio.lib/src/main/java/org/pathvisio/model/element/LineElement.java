@@ -231,6 +231,7 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 		if (hasGroupRef())
 			throw new IllegalStateException("Line element already belongs to a group.");
 		setGroupRef(groupRef);
+		groupRef.addPathwayElement(this); //TODO
 	}
 
 	/**
@@ -266,6 +267,6 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 		removeAnchors();
 		removeAnnotationRefs();
 		removeCitationRefs();
-		removeEvidenceRefs();// TODO
+		removeEvidenceRefs();
 	}
 }

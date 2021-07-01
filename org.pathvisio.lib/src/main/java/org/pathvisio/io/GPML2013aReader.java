@@ -40,6 +40,7 @@ import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.GroupRectPropertyUtils;
@@ -363,7 +364,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				citation.setSource(source);
 				// if source is an url, also set as citation url
 				if (source.startsWith("http") || source.startsWith("www"))
-					citation.getUrl().setLink(source);
+					citation.setUrl(new UrlRef(source));
 			}
 			if (year != null && !year.equals(""))
 				citation.setYear(year);
