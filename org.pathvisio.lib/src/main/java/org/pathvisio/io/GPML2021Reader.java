@@ -17,36 +17,27 @@
 package org.pathvisio.io;
 
 import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.io.ByteArrayInputStream;
 
-import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.input.sax.XMLReaderJDOMFactory;
-import org.jdom2.input.sax.XMLReaderXSDFactory;
-import org.pathvisio.debug.Logger;
-import org.pathvisio.io.*;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.ref.Annotatable;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
+import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
+import org.pathvisio.model.ref.EvidenceRef;
+import org.pathvisio.model.ref.Evidenceable;
+import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
@@ -148,8 +139,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads xref {@link Xref} information from element. Xref is required for
-	 * DataNodes, Interactions, Citations and Evidences. Xref is optional for the
-	 * Pathway, States, Groups, and Annotations.
+	 * DataNodes, Interactions, and Evidences. Xref is optional for the Pathway,
+	 * States, Groups, and Annotations. Citations must have either Xref or Url, or
+	 * both.
 	 * 
 	 * @param e the element.
 	 * @return xref the new xref or null if no or invalid xref information.
@@ -162,6 +154,31 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			String dataSource = xref.getAttributeValue("dataSource");
 			XrefUtils.createXref(identifier, dataSource);
 			return XrefUtils.createXref(identifier, dataSource);
+		}
+		return null;
+	}
+
+	/**
+	 * Reads Url {@link UrlRef} information from element. Url is optional for
+	 * Annotations, Citations, and Evidences. Citations must have either Xref or
+	 * Url, or both.
+	 * 
+	 * @param e the element.
+	 * @return xref the new xref or null if no or invalid xref information.
+	 * @throws ConverterException
+	 */
+	protected UrlRef readUrl(Element e) throws ConverterException {
+		Element u = e.getChild("Url", e.getNamespace());
+		if (u != null) {
+			String link = u.getAttributeValue("link");
+			String description = u.getAttributeValue("description");
+			if (link != null && !link.equals("")) {
+				UrlRef url = new UrlRef(link);
+				// sets optional description
+				if (description != null && !description.equals(""))
+					url.setDescription(description);
+				return url;
+			}
 		}
 		return null;
 	}
@@ -226,11 +243,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Annotation annotation = new Annotation(pathwayModel, elementId, value, type);
 				// sets optional properties
 				Xref xref = readXref(annt);
-				String url = annt.getAttributeValue("url");
+				UrlRef url = readUrl(annt);
 				if (xref != null)
 					annotation.setXref(xref);
 				if (url != null)
-					annotation.getUrl().setLink(url);
+					annotation.setUrl(url);
 				if (annotation != null)
 					pathwayModel.addAnnotation(annotation);
 			}
@@ -239,7 +256,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads citation {@link Citation} information for pathway model from root
-	 * element.
+	 * element. A citation much have either xref or url, or both.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -251,13 +268,22 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
 				String elementId = cit.getAttributeValue("elementId");
 				Xref xref = readXref(cit);
-				Citation citation = new Citation(pathwayModel, elementId, xref);
-				// sets optional properties
-				String url = cit.getAttributeValue("url");
-				if (url != null)
-					citation.getUrl().setLink(url);
-				if (citation != null)
-					pathwayModel.addCitation(citation);
+				UrlRef url = readUrl(cit);
+				// citation has xref, and maybe also url
+				if (xref != null) {
+					Citation citation = new Citation(pathwayModel, elementId, xref);
+					if (url != null)
+						citation.setUrl(url);
+					if (citation != null)
+						pathwayModel.addCitation(citation);
+				} else {
+					// citation has url
+					if (url != null) {
+						Citation citation = new Citation(pathwayModel, elementId, url);
+						if (citation != null)
+							pathwayModel.addCitation(citation);
+					}
+				}
 			}
 		}
 	}
@@ -279,7 +305,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Evidence evidence = new Evidence(pathwayModel, elementId, xref);
 				// sets optional properties
 				String value = evid.getAttributeValue("value");
-				String url = evid.getAttributeValue("url");
+				UrlRef url = readUrl(evid);
 				if (value != null)
 					evidence.setValue(value);
 				if (url != null)
@@ -300,11 +326,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void readPathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
-		readPathwayComments(pathwayModel, root);
-		readPathwayDynamicProperties(pathwayModel, root);
-		readPathwayAnnotationRefs(pathwayModel, root);
-		readPathwayCitationRefs(pathwayModel, root);
-		readPathwayEvidenceRefs(pathwayModel, root);
+		Pathway pathway = pathwayModel.getPathway();
+		readPathwayComments(pathway, root);
+		readPathwayDynamicProperties(pathway, root);
+		readAnnotationRefs(pathwayModel, pathway, root);
+		readCitationRefs(pathwayModel, pathway, root);
+		readEvidenceRefs(pathwayModel, pathway, root);
 	}
 
 	/**
@@ -314,7 +341,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayComments(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readPathwayComments(Pathway pathway, Element root) throws ConverterException {
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
 			String commentText = cmt.getText();
@@ -326,7 +353,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
 				// adds comment to pathway model
-				pathwayModel.getPathway().addComment(new Comment(source, commentText));
+				pathway.addComment(new Comment(source, commentText));
 			}
 		}
 	}
@@ -339,79 +366,80 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayDynamicProperties(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readPathwayDynamicProperties(Pathway pathway, Element root) throws ConverterException {
 		for (Element dp : root.getChildren("Property", root.getNamespace())) {
 			String key = dp.getAttributeValue("key");
 			String value = dp.getAttributeValue("value");
-			pathwayModel.getPathway().setDynamicProperty(key, value);
+			pathway.setDynamicProperty(key, value);
 		}
 	}
 
 	/**
-	 * Reads annotation reference {@link Pathway#addAnnotationRef} information for
-	 * pathway from root element.
+	 * Reads annotationRefs {@link ElementInfo#addAnnotationRef} information for an
+	 * annotatable from jdom element.
 	 * 
 	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param annotatable  the target pathway, pathway element, or citationRef for
+	 *                     annotationRefs.
+	 * @param e            the jdom element.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayAnnotationRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
-		for (Element anntRef : root.getChildren("AnnotationRef", root.getNamespace())) {
+	protected void readAnnotationRefs(PathwayModel pathwayModel, Annotatable annotatable, Element e)
+			throws ConverterException {
+		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
 			Annotation annotation = (Annotation) pathwayModel
 					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = new AnnotationRef(annotation);
-			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
-				Citation citation = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
-				if (citation != null) {
-					// create new citationRef for citation referenced
-					CitationRef citationRef = new CitationRef(citation);
-					if (citationRef != null)
-						annotationRef.addCitationRef(citationRef);
-				}
-			}
-			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
-				Evidence evidenceRef = (Evidence) pathwayModel
-						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-				if (evidenceRef != null)
-					annotationRef.addEvidenceRef(evidenceRef);
-			}
-			pathwayModel.getPathway().addAnnotationRef(annotationRef);
+			AnnotationRef annotationRef = new AnnotationRef(annotation, annotatable);
+			readCitationRefs(pathwayModel, annotationRef, anntRef);
+			readEvidenceRefs(pathwayModel, annotationRef, anntRef);
+			if (annotationRef != null)
+				annotatable.addAnnotationRef(annotationRef);
 		}
 	}
 
 	/**
-	 * Reads citation reference {@link Pathway#addCitationRef} information for
-	 * pathway model from root element. TODO
+	 * Reads citationRefs {@link ElementInfo#addCitationRef} information for a
+	 * citable from jdom element.
 	 * 
 	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param citable      the target pathway, pathway element, or annotationRef for
+	 *                     citationRefs.
+	 * @param e            the jdom element.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayCitationRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
-		for (Element citRef : root.getChildren("CitationRef", root.getNamespace())) {
+	protected void readCitationRefs(PathwayModel pathwayModel, Citable citable, Element e) throws ConverterException {
+		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
 			Citation citation = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
 			if (citation != null) {
 				// create new citationRef for citation referenced
-				CitationRef citationRef = new CitationRef(citation);
+				CitationRef citationRef = new CitationRef(citation, citable);
+				readAnnotationRefs(pathwayModel, citationRef, citRef);
 				if (citationRef != null)
-					pathwayModel.getPathway().addCitationRef(citationRef);
+					citable.addCitationRef(citationRef);
 			}
 		}
 	}
 
 	/**
-	 * Reads evidence reference {@link Pathway#addEvidenceRef} information for
-	 * pathway from root element.
+	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef} information for an
+	 * evidenceable from jdom element.
 	 * 
 	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param evidenceable the target pathway, pathway element, or annotationRef for
+	 *                     evidenceRefs.
+	 * @param e            the jdom element.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayEvidenceRefs(PathwayModel pathwayModel, Element root) throws ConverterException {
-		for (Element evidRef : root.getChildren("EvidenceRef", root.getNamespace())) {
-			Evidence evidenceRef = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-			if (evidenceRef != null)
-				pathwayModel.getPathway().addEvidenceRef(evidenceRef);
+	protected void readEvidenceRefs(PathwayModel pathwayModel, Evidenceable evidenceable, Element e)
+			throws ConverterException {
+		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+			Evidence evidence = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
+			if (evidence != null) {
+				// create new evidenceRef for evidence referenced
+				EvidenceRef evidenceRef = new EvidenceRef(evidence, evidenceable);
+				if (evidenceRef != null)
+					evidenceable.addEvidenceRef(evidenceRef);
+			}
 		}
 	}
 
@@ -787,9 +815,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected void readElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
 		readComments(elementInfo, e);
 		readDynamicProperties(elementInfo, e);
-		readAnnotationRefs(elementInfo, e);
-		readCitationRefs(elementInfo, e);
-		readEvidenceRefs(elementInfo, e);
+		readAnnotationRefs(elementInfo.getPathwayModel(), elementInfo, e);
+		readCitationRefs(elementInfo.getPathwayModel(), elementInfo, e);
+		readEvidenceRefs(elementInfo.getPathwayModel(), elementInfo, e);
 	}
 
 	/**
@@ -829,78 +857,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			String key = dp.getAttributeValue("key");
 			String value = dp.getAttributeValue("value");
 			elementInfo.setDynamicProperty(key, value);
-		}
-	}
-
-	/**
-	 * Reads annotationRef {@link ElementInfo#addAnnotationRef} information for
-	 * pathway element from element.
-	 * 
-	 * @param elementInfo the element info pathway element object.
-	 * @param e           the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readAnnotationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
-			Annotation annotation = (Annotation) elementInfo.getPathwayModel()
-					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = new AnnotationRef(annotation, elementInfo);
-			for (Element citRef : anntRef.getChildren("CitationRef", anntRef.getNamespace())) {
-				Citation citation = (Citation) elementInfo.getPathwayModel()
-						.getPathwayElement(citRef.getAttributeValue("elementRef"));
-				if (citation != null) {
-					// create new citationRef for citation referenced
-					CitationRef citationRef = new CitationRef(citation);
-					if (citationRef != null)
-						annotationRef.addCitationRef(citationRef);
-				}
-			}
-			for (Element evidRef : anntRef.getChildren("EvidenceRef", anntRef.getNamespace())) {
-				Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
-						.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-				if (evidenceRef != null)
-					annotationRef.addEvidenceRef(evidenceRef);
-			}
-			elementInfo.addAnnotationRef(annotationRef);
-		}
-	}
-
-	/**
-	 * Reads citationRef {@link ElementInfo#addCitationRef} information for pathway
-	 * element from element.
-	 * 
-	 * @param elementInfo the element info pathway element object.
-	 * @param e           the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readCitationRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
-			Citation citation = (Citation) elementInfo.getPathwayModel()
-					.getPathwayElement(citRef.getAttributeValue("elementRef"));
-			if (citation != null) {
-				// create new citationRef for citation referenced
-				CitationRef citationRef = new CitationRef(citation, elementInfo);
-				if (citationRef != null) {
-					elementInfo.addCitationRef(citationRef);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef} information for pathway
-	 * element from element.
-	 * 
-	 * @param elementInfo the element info pathway element object.
-	 * @param e           the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readEvidenceRefs(ElementInfo elementInfo, Element e) throws ConverterException {
-		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
-			Evidence evidenceRef = (Evidence) elementInfo.getPathwayModel()
-					.getPathwayElement(evidRef.getAttributeValue("elementRef"));
-			if (evidenceRef != null)
-				elementInfo.addEvidenceRef(evidenceRef);
 		}
 	}
 

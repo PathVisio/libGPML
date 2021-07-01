@@ -38,10 +38,9 @@ import org.pathvisio.model.ref.Evidence;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
- * pathway elements and properties.
- * 
- * TODO: MOVE: It is responsible for storing all information necessary for
- * maintaining, loading and saving pathway data. Reading in, writing from.
+ * pathway elements and properties. The pathway model stores all information
+ * necessary for maintaining, loading and saving pathway data; reading in,
+ * writing from.
  * 
  * @author unknown, finterly
  */
@@ -50,8 +49,8 @@ public class PathwayModel {
 	private Pathway pathway; // pathway information
 	private Map<String, PathwayElement> elementIdToPathwayElement;
 	private List<DataNode> dataNodes; // contains states
-	private List<Interaction> interactions; // contains waypoints
-	private List<GraphicalLine> graphicalLines; // contains waypoints
+	private List<Interaction> interactions; // contains points and anchors
+	private List<GraphicalLine> graphicalLines; // contains points and anchors
 	private List<Label> labels;
 	private List<Shape> shapes;
 	private List<Group> groups;

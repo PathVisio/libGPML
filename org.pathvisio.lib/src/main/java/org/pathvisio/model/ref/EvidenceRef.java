@@ -16,9 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.ref;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.pathvisio.model.Pathway;
 
 /**
@@ -38,7 +35,7 @@ public class EvidenceRef {
 	 * 
 	 * @param evidence the source evidence this EvidenceRef refers to.
 	 * @param evidenceable  the target pathway, pathway element, or evidenceRef to
-	 *                 which the EvidenceRef belongs.
+	 *                 which this evidenceRef belongs.
 	 */
 	public EvidenceRef(Evidence evidence, Evidenceable evidenceable) {
 		this.setEvidence(evidence);
@@ -47,10 +44,10 @@ public class EvidenceRef {
 
 	/**
 	 * Instantiates an EvidenceRef given evidence and initializes evidenceRefs
-	 * list. No pathway element is given as this EvidenceRef belongs to the
+	 * list. No pathway element is given as this evidenceRef belongs to the
 	 * {@link Pathway}.
 	 * 
-	 * @param evidence the Evidence this EvidenceRef refers to.
+	 * @param evidence the evidence source. 
 	 */
 	public EvidenceRef(Evidence evidence) {
 		this(evidence, null);

@@ -28,6 +28,7 @@ import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
+import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
@@ -69,17 +70,17 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		pathwayModel.addEvidence(evidence1);
 		pathwayModel.addEvidence(evidence2);
 		// adds evidenceRef to pathway
-		pathwayModel.getPathway().addEvidenceRef(evidence1);
+		pathwayModel.getPathway().addEvidenceRef(new EvidenceRef(evidence1, pathwayModel.getPathway()));
 
 		/*
 		 * Add citation and evidence to Annotation
 		 */
 		AnnotationRef annotationRef1 = pathwayModel.getPathway().getAnnotationRefs().get(0);
 		// adds evidenceRef to annotationRef
-		annotationRef1.addEvidenceRef(evidence2);
+		annotationRef1.addEvidenceRef(new EvidenceRef(evidence2, annotationRef1));
 		// adds citation b9d pathwayModel to annotationRef as citationRef
-		Citation citation1 =  pathwayModel.getCitations().get(2);
-		CitationRef citationRef1 = new CitationRef(citation1); 
+		Citation citation1 = pathwayModel.getCitations().get(2);
+		CitationRef citationRef1 = new CitationRef(citation1);
 		annotationRef1.addCitationRef(citationRef1);
 
 		/**
@@ -114,10 +115,10 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		DataNode alias2 = (DataNode) pathwayModel.getPathwayElement("alias002");
 		alias2.setType(DataNodeType.ALIAS);
 		alias2.setElementRef(group2);
-		alias2.setGroupRef(group1);
+//		alias2.setGroupRef(group1);
 
 		System.out.println(citation1.getElementId());
-		
+
 		/*
 		 * Write to GPML2021
 		 */

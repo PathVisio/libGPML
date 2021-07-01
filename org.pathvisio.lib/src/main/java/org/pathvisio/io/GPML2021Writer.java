@@ -40,6 +40,8 @@ import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
+import org.pathvisio.model.ref.EvidenceRef;
+import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -77,9 +79,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
 
 		Document doc = createJdom(pathwayModel);
-				
+
 		if (validate)
-			validateDocument(doc); 
+			validateDocument(doc);
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
@@ -213,18 +215,18 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes xref {@link Xref} information to new element. Xref is required for
-	 * Citations and Evidences. Xref is optional for the Pathway, DataNodes, States,
-	 * Interactions, Groups, and Annotations.
+	 * Evidences. Xref is optional for the Pathway, DataNodes, States, Interactions,
+	 * Groups, and Annotations. For Citations, either Xref and/or Url are required.
 	 * 
 	 * @param xref     the xref of the pathway or pathway element.
 	 * @param e        the parent element.
 	 * @param required if true, xref is a required property.
 	 */
-	protected void writeXref(Xref xref, Element e, boolean required) { 
+	protected void writeXref(Xref xref, Element e, boolean required) {
 		if (xref == null && required) {
 			Element xrf = new Element("Xref", e.getNamespace());
 			xrf.setAttribute("identifier", "");
-			xrf.setAttribute("dataSource", ""); 
+			xrf.setAttribute("dataSource", "");
 			e.addContent(xrf);
 		}
 		if (xref != null) {
@@ -236,6 +238,29 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				xrf.setAttribute("identifier", identifier == null ? "" : identifier);
 				xrf.setAttribute("dataSource", dataSourceStr);
 				e.addContent(xrf);
+			}
+		}
+	}
+
+	/**
+	 * Writes url {@link UrlRef} information to new element. Url is optional for
+	 * Annotations and Evidences. For Citations, either Xref and/or Url are
+	 * required.
+	 * 
+	 * @param xref     the xref of the pathway or pathway element.
+	 * @param e        the parent element.
+	 * @param required if true, xref is a required property.
+	 */
+	protected void writeUrl(UrlRef url, Element e) {
+		if (url != null) {
+			String link = url.getLink();
+			String description = url.getDescription();
+			if (link != null && !link.equals("")) {
+				Element u = new Element("Url", e.getNamespace());
+				u.setAttribute("link", link);
+				if (description != null && !description.equals(""))
+					u.setAttribute("description", description);
+				e.addContent(u);
 			}
 		}
 	}
@@ -340,16 +365,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		for (AnnotationRef annotationRef : annotationRefs) {
 			Element anntRef = new Element("AnnotationRef", e.getNamespace());
 			anntRef.setAttribute("elementRef", annotationRef.getAnnotation().getElementId());
-			for (CitationRef citationRef : annotationRef.getCitationRefs()) {
-				Element citRef = new Element("CitationRef", e.getNamespace());
-				citRef.setAttribute("elementRef", citationRef.getCitation().getElementId());
-				anntRef.addContent(citRef);
-			}
-			for (Evidence evidence : annotationRef.getEvidenceRefs()) {
-				Element evidRef = new Element("EvidenceRef", e.getNamespace());
-				evidRef.setAttribute("elementRef", evidence.getElementId());
-				anntRef.addContent(evidRef);
-			}
+			writeCitationRefs(annotationRef.getCitationRefs(), anntRef);
+			writeEvidenceRefs(annotationRef.getEvidenceRefs(), anntRef);
 			if (anntRef != null)
 				e.addContent(anntRef);
 		}
@@ -368,6 +385,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			for (CitationRef citationRef : citationRefs) {
 				Element citRef = new Element("CitationRef", e.getNamespace());
 				citRef.setAttribute("elementRef", citationRef.getCitation().getElementId());
+				writeAnnotationRefs(citationRef.getAnnotationRefs(), citRef);
 				if (citRef != null)
 					e.addContent(citRef);
 			}
@@ -383,14 +401,14 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e            the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writeEvidenceRefs(List<Evidence> evidenceRefs, Element e) throws ConverterException {
+	protected void writeEvidenceRefs(List<EvidenceRef> evidenceRefs, Element e) throws ConverterException {
 		if (e != null) {
-		}
-		for (Evidence evidenceRef : evidenceRefs) {
-			Element evidRef = new Element("EvidenceRef", e.getNamespace());
-			evidRef.setAttribute("elementRef", evidenceRef.getElementId());
-			if (evidRef != null)
-				e.addContent(evidRef);
+			for (EvidenceRef evidenceRef : evidenceRefs) {
+				Element evidRef = new Element("EvidenceRef", e.getNamespace());
+				evidRef.setAttribute("elementRef", evidenceRef.getEvidence().getElementId());
+				if (evidRef != null)
+					e.addContent(evidRef);
+			}
 		}
 	}
 
@@ -725,16 +743,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeElementId(annotation.getElementId(), annt);
 				annt.setAttribute("value", annotation.getValue());
 				annt.setAttribute("type", annotation.getType().getName());
-				if (annotation.getXref() != null) { // TODO optional Xref handling
-					writeXref(annotation.getXref(), annt, false);
-				}
-				if (annotation.getUrlRef().getLink() != null) {
-					annt.setAttribute("url", annotation.getUrlRef().getLink());
-					//TODO add description
-				}
-				if (annt != null) {
+				writeXref(annotation.getXref(), annt, false);
+				writeUrl(annotation.getUrl(), annt);
+				if (annt != null)
 					anntList.add(annt);
-				}
 			}
 			if (anntList != null && anntList.isEmpty() == false) {
 				annts.addContent(anntList);
@@ -759,13 +771,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					continue;
 				Element cit = new Element("Citation", root.getNamespace());
 				writeElementId(citation.getElementId(), cit);
-				writeXref(citation.getXref(), cit, true);
-				if (citation.getUrlRef() != null) {
-					cit.setAttribute("url", citation.getUrlRef().getLink()); //TODO description
-				}
-				if (cit != null) {
+				writeXref(citation.getXref(), cit, false);
+				writeUrl(citation.getUrl(), cit);
+				if (cit != null)
 					citList.add(cit);
-				}
 			}
 			if (citList != null && citList.isEmpty() == false) {
 				cits.addContent(citList);
@@ -791,15 +800,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				Element evid = new Element("Evidence", root.getNamespace());
 				writeElementId(evidence.getElementId(), evid);
 				writeXref(evidence.getXref(), evid, true);
-				if (evidence.getValue() != null) {
+				writeUrl(evidence.getUrl(), evid);
+				if (evidence.getValue() != null)
 					evid.setAttribute("value", evidence.getValue());
-				}
-				if (evidence.getUrl() != null) {
-					evid.setAttribute("url", evidence.getUrl());
-				}
-				if (evid != null) {
+				if (evid != null)
 					evidList.add(evid);
-				}
 			}
 			if (evidList != null && evidList.isEmpty() == false) {
 				evids.addContent(evidList);
@@ -821,7 +826,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes elementRef property information. Returns boolean if elementRef is
-	 * written. Used in {@link #writeDataNodes} and {@link #writePoints}. 
+	 * written. Used in {@link #writeDataNodes} and {@link #writePoints}.
 	 * 
 	 * @param elementRef the elementRef.
 	 * @param e          the parent element.

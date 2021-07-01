@@ -56,7 +56,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
-	private static final String STATE_COMMENT_SITE_GRPID = null;
 
 	/**
 	 * Constructor for GPML2013aWriter.
