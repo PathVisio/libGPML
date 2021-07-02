@@ -484,24 +484,24 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readPathwayBiopaxRefs(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew,
 			Map<String, String> citationDuplicates) throws ConverterException {
 		for (Element bpRef : root.getChildren("BiopaxRef", root.getNamespace())) {
-			// reads biopaxRef
 			String biopaxRef = bpRef.getText();
 			// if biopaxIdToNew contains biopaxRef, sets biopaxRef to its new elementId
 			if (biopaxIdToNew.containsKey(biopaxRef))
 				biopaxRef = biopaxIdToNew.get(biopaxRef);
-			// given the correct biopaxRef/elementId, retrieves citation referenced
+			// if citationDuplicates contains biopaxRef, sets biopaxRef to elementId of
+			// existing biopax
+			if (citationDuplicates.containsKey(biopaxRef))
+				biopaxRef = citationDuplicates.get(biopaxRef);
+			// returns citation referenced by biopaxRef
 			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
-
-			if (citation == null && biopaxRef != null) {
-//				throw new ConverterException("BiopaxRef " + biopaxRef + " refers to invalid Biopax PublicationXref.");
-				System.out.println("BiopaxRef " + biopaxRef + " refers to invalid Biopax PublicationXref.");
-			}
+			// if citation is valid, create citationRef and add to pathway model
 			if (citation != null) {
-				// create new citationRef for citation referenced
 				CitationRef citationRef = new CitationRef(citation, pathwayModel.getPathway());
-				// adds citationRef to pathway element of pathway model
 				if (citationRef != null)
 					pathwayModel.getPathway().addCitationRef(citationRef);
+			} else {
+				Logger.log.trace("Warning: biopaxRef " + biopaxRef
+						+ " refers to invalid Biopax PublicationXref, biopaxRef is not created.");
 			}
 		}
 	}
@@ -1314,21 +1314,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// if biopaxIdToNew contains biopaxRef, sets biopaxRef to its new elementId
 			if (biopaxIdToNew.containsKey(biopaxRef))
 				biopaxRef = biopaxIdToNew.get(biopaxRef);
-			// if citationDuplicates contains biopaxRef, set biopaxRef to the elementId of
-			// the existing biopax so that it may reference the existing citation
+			// if citationDuplicates contains biopaxRef, set biopaxRef to elementId of
+			// existing biopax
 			if (citationDuplicates.containsKey(biopaxRef))
 				biopaxRef = citationDuplicates.get(biopaxRef);
 			// given the correct biopaxRef/elementId, retrieves citation referenced
 			Citation citation = (Citation) elementInfo.getPathwayModel().getPathwayElement(biopaxRef);
-			if (citation == null && biopaxRef != null)
-//				throw new ConverterException("BiopaxRef " + biopaxRef + " refers to invalid Biopax PublicationXref.");
-				System.out.println("BiopaxRef " + biopaxRef + " refers to invalid Biopax PublicationXref.");
+			// if citation valid, create citationRef and add to pathway model.
 			if (citation != null) {
-				// create new citationRef for citation referenced
 				CitationRef citationRef = new CitationRef(citation, elementInfo);
-				// adds citationRef to pathway element of pathway model
 				if (citationRef != null)
 					elementInfo.addCitationRef(citationRef);
+			} else {
+				Logger.log.trace("Warning: biopaxRef " + biopaxRef
+						+ " refers to invalid Biopax PublicationXref, biopaxRef is not created.");
 			}
 		}
 	}
