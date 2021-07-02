@@ -20,11 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import org.pathvisio.model.*;
+import org.pathvisio.model.ref.Citation;
 
 import junit.framework.TestCase;
 
 /**
- * Test for reading and writing of a single GPML2013a or GPML2021, for troubleshooting and resolving specific issues.
+ * Test for reading and writing of a single GPML2013a or GPML2021, for
+ * troubleshooting and resolving specific issues.
  * 
  * @author finterly
  */
@@ -39,7 +41,9 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	 */
 	public static void testReadWriteGPML() throws IOException, ConverterException {
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("State_Comment_Test_WP1602.gpml");
+//		URL url = Thread.currentThread().getContextClassLoader().getResource("State_Comment_Test_WP1602.gpml");
+		URL url = Thread.currentThread().getContextClassLoader()
+				.getResource("Hs_Angiopoietin_Like_Protein_8_Regulatory_Pathway_WP3915_112155.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
@@ -47,9 +51,20 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 
-		File tmp = File.createTempFile("testwrite", ".gpml"); 
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		
+		for (Citation citation: pathwayModel.getCitations()) {
+			if (citation.getElementId().equals("ec9")) {
+				System.out.println("true");
+			} else {
+				System.out.println("false");
+			}
+		}
+		System.out.println(pathwayModel.getElementIds().contains("ec9"));
+		
+		
+		File tmp = File.createTempFile("testwrite", ".gpml");
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}

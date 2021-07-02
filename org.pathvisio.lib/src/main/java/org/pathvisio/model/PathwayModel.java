@@ -403,7 +403,9 @@ public class PathwayModel {
 	public Annotation addAnnotation(Annotation annotation) {
 		Annotation annotationExisting = annotationExists(annotation);
 		if (annotationExisting != null) {
-			Logger.log.trace("New annotation not added to pathway model.");
+			annotation.terminate(); // TODO
+			Logger.log.trace(
+					"Annotation " + annotation.getElementId() + " is not added to pathway model and is terminated.");
 			return annotationExisting;
 		} else {
 			annotations.add(annotation);
@@ -421,8 +423,9 @@ public class PathwayModel {
 	public Annotation annotationExists(Annotation annotation) {
 		for (Annotation annotationExisting : annotations) {
 			if (annotation.equalsAnnotation(annotationExisting)) {
-				Logger.log.trace("This annotation is equivalent to existing pathway model annotation "
-						+ annotationExisting.getElementId() + ".");
+				Logger.log.trace("Annotation " + annotation.getElementId()
+						+ " is equivalent to existing pathway model annotation " + annotationExisting.getElementId()
+						+ ".");
 				return annotationExisting;
 			}
 		}
@@ -460,7 +463,9 @@ public class PathwayModel {
 	public Citation addCitation(Citation citation) {
 		Citation citationExisting = hasEqualCitation(citation);
 		if (citationExisting != null) {
-			Logger.log.trace("New citation not added to pathway model.");
+			citation.terminate(); // TODO
+			Logger.log
+					.trace("Citation " + citation.getElementId() + " is not added to pathway model and is terminated.");
 			return citationExisting;
 		} else {
 			assert (citation.getPathwayModel() == this); // TODO
@@ -479,8 +484,8 @@ public class PathwayModel {
 	public Citation hasEqualCitation(Citation citation) {
 		for (Citation citationExisting : citations) {
 			if (citation.equalsCitation(citationExisting)) {
-				Logger.log.trace("This citation is equivalent to existing pathway model citation "
-						+ citationExisting.getElementId() + ".");
+				Logger.log.trace("Citation " + citation.getElementId()
+						+ " is equivalent to existing pathway model citation " + citationExisting.getElementId() + ".");
 				return citationExisting;
 			}
 		}
@@ -511,8 +516,36 @@ public class PathwayModel {
 	 * 
 	 * @param evidence the evidence to be added.
 	 */
-	public void addEvidence(Evidence evidence) {
-		evidences.add(evidence);
+	public Evidence addEvidence(Evidence evidence) {
+		Evidence evidenceExisting = hasEqualEvidence(evidence);
+		if (evidenceExisting != null) {
+			evidence.terminate(); // TODO
+			Logger.log
+					.trace("Evidence " + evidence.getElementId() + " is not added to pathway model and is terminated.");
+			return evidenceExisting;
+		} else {
+			assert (evidence.getPathwayModel() == this); // TODO
+			evidences.add(evidence);
+			return evidence;
+		}
+	}
+
+	/**
+	 * Checks if given evidence already exists for the pathway model.
+	 * 
+	 * @param evidence the given evidence to be checked.
+	 * @return evidenceExisting the existing equivalent citation, or null if no
+	 *         equivalent citation exists for given citation.
+	 */
+	public Evidence hasEqualEvidence(Evidence evidence) {
+		for (Evidence evidenceExisting : evidences) {
+			if (evidence.equalsEvidence(evidenceExisting)) {
+				Logger.log.trace("Evidence " + evidence.getElementId()
+						+ " is equivalent to existing pathway model evidence " + evidenceExisting.getElementId() + ".");
+				return evidenceExisting;
+			}
+		}
+		return null;
 	}
 
 	/**
