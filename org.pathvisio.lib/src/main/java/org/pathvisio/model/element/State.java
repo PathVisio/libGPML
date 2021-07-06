@@ -17,9 +17,7 @@
 package org.pathvisio.model.element;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.*;
-import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.type.StateType;
 
 /**
@@ -43,8 +41,6 @@ public class State extends ElementInfo {
 	/**
 	 * Instantiates a State pathway element given all possible parameters.
 	 * 
-	 * @param pathwayModel       the parent pathway model.
-	 * @param elementId          the unique pathway element identifier.
 	 * @param dataNode           the parent data node (NB: elementRef was formerly
 	 *                           elementId of parent data node).
 	 * @param textLabel          the text label of the state.
@@ -61,10 +57,9 @@ public class State extends ElementInfo {
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
 	 * @param xref               the state xref.
 	 */
-	public State(PathwayModel pathwayModel, String elementId, DataNode dataNode, String textLabel, StateType type,
-			double relX, double relY, double width, double height, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Xref xref) {
-		super(pathwayModel, elementId);
+	public State(DataNode dataNode, String textLabel, StateType type, double relX, double relY, double width,
+			double height, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Xref xref) {
+		super();
 		setDataNodeTo(dataNode);
 		this.textLabel = textLabel;
 		this.type = type;
@@ -81,11 +76,9 @@ public class State extends ElementInfo {
 	 * Instantiates a State pathway element given all possible parameters except
 	 * xref.
 	 */
-	public State(PathwayModel pathwayModel, String elementId, DataNode dataNode, String textLabel, StateType type,
-			double relX, double relY, double width, double height, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty) {
-		this(pathwayModel, elementId, dataNode, textLabel, type, relX, relY, width, height, fontProperty,
-				shapeStyleProperty, null);
+	public State(DataNode dataNode, String textLabel, StateType type, double relX, double relY, double width,
+			double height, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
+		this(dataNode, textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, null);
 	}
 
 	/**
@@ -344,8 +337,8 @@ public class State extends ElementInfo {
 
 	/**
 	 * Terminates this state. The pathway model and data node, if any, are unset
-	 * from this state. Links to all annotationRefs, citationRefs, and
-	 * evidenceRefs are removed from this data node.
+	 * from this state. Links to all annotationRefs, citationRefs, and evidenceRefs
+	 * are removed from this data node.
 	 */
 	@Override
 	public void terminate() {

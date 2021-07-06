@@ -16,14 +16,13 @@
  ******************************************************************************/
 package org.pathvisio.model.element;
 
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
 
 /**
  * This class stores information for shaped pathway element {@link DataNode},
- * {@link Label}, {@link Shape}, and {@link Group}. 
+ * {@link Label}, {@link Shape}, and {@link Group}.
  * 
  * @author finterly
  */
@@ -40,17 +39,15 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * elementId (formerly groupId) of the parent gpml:Group. Note, a group can also
 	 * belong in another group.
 	 * 
-	 * @param pathwayModel       the parent pathway model.
-	 * @param elementId          the unique pathway element identifier.
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
 	 * @param groupRef           the parent group in which the pathway element
 	 *                           belongs.
 	 */
-	public ShapedElement(PathwayModel pathwayModel, String elementId, RectProperty rectProperty,
-			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Group groupRef) {
-		super(pathwayModel, elementId);
+	public ShapedElement(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			Group groupRef) {
+		super();
 		this.rectProperty = rectProperty;
 		this.fontProperty = fontProperty;
 		this.shapeStyleProperty = shapeStyleProperty;
@@ -63,9 +60,8 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * Instantiates a shaped pathway element given all possible parameters except
 	 * groupRef, because the pathway element is not a member of a group.
 	 */
-	public ShapedElement(PathwayModel pathwayModel, String elementId, RectProperty rectProperty,
-			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
-		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null);
+	public ShapedElement(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
+		this(rectProperty, fontProperty, shapeStyleProperty, null);
 
 	}
 
@@ -158,7 +154,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 		if (hasGroupRef())
 			throw new IllegalStateException("Line element already belongs to a group.");
 		setGroupRef(groupRef);
-		groupRef.addPathwayElement(this); //TODO
+		groupRef.addPathwayElement(this); // TODO
 	}
 
 	/**

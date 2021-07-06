@@ -42,16 +42,13 @@ public class Annotation extends PathwayElement {
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.
 	 * 
-	 * @param pathwayModel the parent pathway model.
-	 * @param elementId    the unique pathway element identifier.
-	 * @param value        the name, term, or text of the annotation.
-	 * @param type         the type of the annotation, e.g. ontology.
-	 * @param xref         the annotation xref.
-	 * @param url          the url of the annotation.
+	 * @param value the name, term, or text of the annotation.
+	 * @param type  the type of the annotation, e.g. ontology.
+	 * @param xref  the annotation xref.
+	 * @param url   the url of the annotation.
 	 */
-	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, Xref xref,
-			UrlRef url) {
-		super(pathwayModel, elementId);
+	public Annotation(String value, AnnotationType type, Xref xref, UrlRef url) {
+		super();
 		this.value = value;
 		this.type = type;
 		this.xref = xref;
@@ -62,22 +59,22 @@ public class Annotation extends PathwayElement {
 	/**
 	 * Instantiates an Annotation given all possible parameters except xref.
 	 */
-	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, UrlRef url) {
-		this(pathwayModel, elementId, value, type, null, url);
+	public Annotation(String value, AnnotationType type, UrlRef url) {
+		this(value, type, null, url);
 	}
 
 	/**
 	 * Instantiates an Annotation given all possible parameters except url.
 	 */
-	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type, Xref xref) {
-		this(pathwayModel, elementId, value, type, xref, null);
+	public Annotation(String value, AnnotationType type, Xref xref) {
+		this(value, type, xref, null);
 	}
 
 	/**
 	 * Instantiates an Annotation given all possible parameters except url and xref.
 	 */
-	public Annotation(PathwayModel pathwayModel, String elementId, String value, AnnotationType type) {
-		this(pathwayModel, elementId, value, type, null, null);
+	public Annotation(String value, AnnotationType type) {
+		this(value, type, null, null);
 	}
 
 	/**
@@ -208,9 +205,8 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Terminates this annotation. The pathway model, if any, is unset from
-	 * this annotation. Links to all annotationRefs are removed from this
-	 * annotation.
+	 * Terminates this annotation. The pathway model, if any, is unset from this
+	 * annotation. Links to all annotationRefs are removed from this annotation.
 	 */
 	@Override
 	public void terminate() {
@@ -230,9 +226,9 @@ public class Annotation extends PathwayElement {
 	 */
 	public boolean equalsAnnotation(Annotation annotation) {
 		// checks if value and type property equivalent
-		if (value.equals(annotation.getValue()))
+		if (!Objects.equals(value, annotation.getValue()))
 			return false;
-		if (type.equals(annotation.getType()))
+		if (!Objects.equals(type, annotation.getType()))
 			return false;
 		// checks if xref is equivalent
 		if (xref != null && annotation.getXref() == null)

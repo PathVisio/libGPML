@@ -21,7 +21,6 @@ import org.jdom2.input.SAXBuilder;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.util.XrefUtils;
 
 import junit.framework.TestCase;
@@ -67,6 +66,7 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 			for (int j = 0; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
+					System.out.println(file.getName());
 					assertTrue(file.exists());
 					try {
 						SAXBuilder builder = new SAXBuilder();
@@ -106,7 +106,8 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 								}
 								Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 								// instantiates citation
-								Citation citation = new Citation(pathwayModel, elementId, xref);
+								Citation citation = new Citation(xref);
+								pathwayModel.addCitation(citation);
 								// sets optional properties
 								String title = null;
 								for (Element pubxfElement : bp.getChildren("TITLE", BIOPAX_NAMESPACE)) {

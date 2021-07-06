@@ -17,7 +17,6 @@
 package org.pathvisio.model.element;
 
 import org.pathvisio.model.PathwayElement;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.type.AnchorShapeType;
 
 /**
@@ -35,16 +34,13 @@ public class Anchor extends PathwayElement {
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
-	 * @param pathwayModel the parent pathway model.
-	 * @param elementId    the unique pathway element identifier.
-	 * @param lineElement  the parent line pathway element.
-	 * @param position     the proportional distance of an anchor along the line it
-	 *                     belongs to.
-	 * @param shapeType    the visual representation of an anchor.
+	 * @param lineElement the parent line pathway element.
+	 * @param position    the proportional distance of an anchor along the line it
+	 *                    belongs to.
+	 * @param shapeType   the visual representation of an anchor.
 	 */
-	public Anchor(PathwayModel pathwayModel, String elementId, LineElement lineElement, double position,
-			AnchorShapeType shapeType) {
-		super(pathwayModel, elementId);
+	public Anchor(LineElement lineElement, double position, AnchorShapeType shapeType) {
+		super();
 		setLineElementTo(lineElement);
 		if (position < 0 || position > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
@@ -155,7 +151,7 @@ public class Anchor extends PathwayElement {
 			this.shapeType = shapeType;
 		}
 	}
-	
+
 	/**
 	 * Terminates this anchor. The pathway model and line element, if any, are unset
 	 * from this anchor.

@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.ref.AnnotationRef;
@@ -62,10 +60,8 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		 * Create and add evidences. Creates evidenceRef1 and adds to pathwayModel.
 		 * Creates evidenceRef2 and adds to first annotationRef of pathway.
 		 */
-		Evidence evidence1 = new Evidence(pathwayModel, "evi001", "evidence 1",
-				XrefUtils.createXref("0000001", "pubmed"));
-		Evidence evidence2 = new Evidence(pathwayModel, "evi002", "evidence 1",
-				XrefUtils.createXref("0000002", "pubmed"));
+		Evidence evidence1 = new Evidence("evidence 1", XrefUtils.createXref("0000001", "pubmed"));
+		Evidence evidence2 = new Evidence("evidence 1", XrefUtils.createXref("0000002", "pubmed"));
 		// adds evidence to pathway model
 		pathwayModel.addEvidence(evidence1);
 		pathwayModel.addEvidence(evidence2);

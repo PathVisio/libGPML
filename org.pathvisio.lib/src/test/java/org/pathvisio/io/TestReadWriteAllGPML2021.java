@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -49,8 +50,11 @@ public class TestReadWriteAllGPML2021 extends TestCase {
 		File folderGPML2021 = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");
 		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2021";
 
-		File[] listOfFiles = folderGPML2021.listFiles();
-
+		File[] listOfFiles = folderGPML2021.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".gpml");
+			}
+		});
 		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {

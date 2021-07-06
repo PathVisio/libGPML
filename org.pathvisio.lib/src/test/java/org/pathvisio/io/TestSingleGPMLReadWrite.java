@@ -43,7 +43,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("State_Comment_Test_WP1602.gpml");
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource("Hs_Angiopoietin_Like_Protein_8_Regulatory_Pathway_WP3915_112155.gpml");
+				.getResource("Hs_Bladder_Cancer_WP2828_115349.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());

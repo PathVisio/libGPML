@@ -42,8 +42,6 @@ public class LinePoint extends PathwayElement {
 	 * Instantiates a Point pathway element, with reference to another pathway
 	 * element.
 	 * 
-	 * @param pathwayModel the parent pathway model.
-	 * @param elementId    the unique pathway element identifier.
 	 * @param lineElement  the parent line element to which the point belongs.
 	 * @param arrowHead    the glyph at the ends of lines, intermediate points have
 	 *                     arrowhead type "line" by default.
@@ -52,9 +50,9 @@ public class LinePoint extends PathwayElement {
 	 * @param relX         the relative x coordinate.
 	 * @param relY         the relative x coordinate.
 	 */
-	public LinePoint(PathwayModel pathwayModel, String elementId, LineElement lineElement, ArrowHeadType arrowHead,
+	public LinePoint(LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
-		super(pathwayModel, elementId);
+		super();
 		setLineElementTo(lineElement);
 		this.arrowHead = arrowHead;
 		this.xy = xy;
@@ -67,15 +65,13 @@ public class LinePoint extends PathwayElement {
 	 * Instantiates a Point pathway element, with no reference to another pathway
 	 * element.
 	 * 
-	 * @param pathwayModel the parent pathway model.
-	 * @param elementId    the unique pathway element identifier.
 	 * @param lineElement  the parent line pathway element.
 	 * @param arrowHead    the arrowhead property of the point (line by default).
 	 * @param xy           the xy coordinate position of the point.
 	 */
-	public LinePoint(PathwayModel pathwayModel, String elementId, LineElement lineElement, ArrowHeadType arrowHead,
+	public LinePoint(LineElement lineElement, ArrowHeadType arrowHead,
 			Coordinate xy) {
-		super(pathwayModel, elementId);
+		super();
 		this.lineElement = lineElement;
 		this.arrowHead = arrowHead;
 		this.xy = xy;

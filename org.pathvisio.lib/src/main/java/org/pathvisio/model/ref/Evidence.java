@@ -44,14 +44,12 @@ public class Evidence extends PathwayElement {
 	 * NB: Manipulated the order of variables to overload constructor. This is not
 	 * best practice, however variable inheritance complicates use of a builder.
 	 * 
-	 * @param elementId    the unique pathway element identifier.
-	 * @param pathwayModel the parent pathway model.
 	 * @param value        the name, term, or text of the evidence.
 	 * @param xref         the evidence xref.
 	 * @param url          the url of the evidence.
 	 */
-	public Evidence(PathwayModel pathwayModel, String elementId, String value, Xref xref, UrlRef url) {
-		super(pathwayModel, elementId);
+	public Evidence(String value, Xref xref, UrlRef url) {
+		super();
 		this.value = value;
 		this.xref = xref;
 		this.url = url;
@@ -62,22 +60,22 @@ public class Evidence extends PathwayElement {
 	/**
 	 * Instantiates an Evidence given all possible parameters except value.
 	 */
-	public Evidence(PathwayModel pathwayModel, String elementId, Xref xref, UrlRef url) {
-		this(pathwayModel, elementId, null, xref, url);
+	public Evidence(Xref xref, UrlRef url) {
+		this(null, xref, url);
 	}
 
 	/**
 	 * Instantiates an Evidence given all possible parameters except url.
 	 */
-	public Evidence(PathwayModel pathwayModel, String elementId, String value, Xref xref) {
-		this(pathwayModel, elementId, value, xref, null);
+	public Evidence(String value, Xref xref) {
+		this(value, xref, null);
 	}
 
 	/**
 	 * Instantiates an Evidence given all possible parameters except value and url.
 	 */
-	public Evidence(PathwayModel pathwayModel, String elementId, Xref xref) {
-		this(pathwayModel, elementId, null, xref, null);
+	public Evidence(Xref xref) {
+		this(null, xref, null);
 	}
 
 	/**

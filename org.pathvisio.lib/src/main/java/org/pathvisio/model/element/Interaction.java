@@ -32,16 +32,13 @@ public class Interaction extends LineElement {
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters.
 	 * 
-	 * @param pathwayModel      the parent pathway model.
-	 * @param elementId         the unique pathway element identifier.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 * @param xref              the interaction Xref.
 	 */
-	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty, Group groupRef,
-			Xref xref) {
-		super(pathwayModel, elementId, lineStyleProperty, groupRef);
+	public Interaction(LineStyleProperty lineStyleProperty, Group groupRef, Xref xref) {
+		super(lineStyleProperty, groupRef);
 		this.xref = xref;
 	}
 
@@ -49,25 +46,24 @@ public class Interaction extends LineElement {
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except groupRef, because the interaction does not belong in a group.
 	 */
-	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty, Xref xref) {
-		this(pathwayModel, elementId, lineStyleProperty, null, xref);
+	public Interaction(LineStyleProperty lineStyleProperty, Xref xref) {
+		this(lineStyleProperty, null, xref);
 	}
 
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except xref.
 	 */
-	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
-			Group groupRef) {
-		this(pathwayModel, elementId, lineStyleProperty, groupRef, null);
+	public Interaction(LineStyleProperty lineStyleProperty, Group groupRef) {
+		this(lineStyleProperty, groupRef, null);
 	}
 
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except groupRef and xref.
 	 */
-	public Interaction(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
-		this(pathwayModel, elementId, lineStyleProperty, null, null);
+	public Interaction(LineStyleProperty lineStyleProperty) {
+		this(lineStyleProperty, null, null);
 	}
 
 	/**

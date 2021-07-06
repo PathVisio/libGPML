@@ -30,7 +30,13 @@ import org.pathvisio.debug.*;
 import org.pathvisio.io.*;
 import java.io.Reader;
 
-import org.pathvisio.model.element.*;
+import org.pathvisio.model.element.DataNode;
+import org.pathvisio.model.element.GraphicalLine;
+import org.pathvisio.model.element.Group;
+import org.pathvisio.model.element.Interaction;
+import org.pathvisio.model.element.Label;
+import org.pathvisio.model.element.Shape;
+import org.pathvisio.model.element.State;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
@@ -145,14 +151,13 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Returns a list view of String elementId keys from the
+	 * Returns a set view of String elementId keys from the
 	 * elementIdToPathwayElements hash map.
 	 * 
 	 * @return a list of elementId keys.
 	 */
-	public List<String> getElementIds() {
-		List<String> elementIds = new ArrayList<>(elementIdToPathwayElement.keySet());
-		return elementIds;
+	public Set<String> getElementIds() {
+		return elementIdToPathwayElement.keySet();
 	}
 
 	/**
@@ -177,11 +182,11 @@ public class PathwayModel {
 
 	/**
 	 * Removes the mapping of given elementId key from the elementIdToPathwayElement
-	 * hash map.
+	 * hash map. TODO public?
 	 * 
 	 * @param elementId the elementId key.
 	 */
-	void removeElementId(String elementId) {
+	public void removeElementId(String elementId) {
 		elementIdToPathwayElement.remove(elementId);
 	}
 
@@ -227,7 +232,9 @@ public class PathwayModel {
 	 * @param dataNode the data node to be added.
 	 */
 	public void addDataNode(DataNode dataNode) {
+		addPathwayElement(dataNode);
 		dataNodes.add(dataNode);
+
 	}
 
 	/**
@@ -236,8 +243,8 @@ public class PathwayModel {
 	 * @param dataNode the data node to be removed.
 	 */
 	public void removeDataNode(DataNode dataNode) {
-		dataNode.terminate();
 		dataNodes.remove(dataNode);
+		removePathwayElement(dataNode);
 
 	}
 
@@ -256,6 +263,7 @@ public class PathwayModel {
 	 * @param interaction the interaction to be added.
 	 */
 	public void addInteraction(Interaction interaction) {
+		addPathwayElement(interaction);
 		interactions.add(interaction);
 	}
 
@@ -265,8 +273,8 @@ public class PathwayModel {
 	 * @param interaction the interaction to be removed.
 	 */
 	public void removeInteraction(Interaction interaction) {
-		interaction.terminate();
 		interactions.remove(interaction);
+		removePathwayElement(interaction);
 
 	}
 
@@ -285,6 +293,7 @@ public class PathwayModel {
 	 * @param graphicalLine the graphicalLine to be added.
 	 */
 	public void addGraphicalLine(GraphicalLine graphicalLine) {
+		addPathwayElement(graphicalLine);
 		graphicalLines.add(graphicalLine);
 	}
 
@@ -294,8 +303,9 @@ public class PathwayModel {
 	 * @param graphicalLine the graphicalLine to be removed.
 	 */
 	public void removeGraphicalLine(GraphicalLine graphicalLine) {
-		graphicalLine.terminate();
 		graphicalLines.remove(graphicalLine);
+		removePathwayElement(graphicalLine);
+
 	}
 
 	/**
@@ -313,6 +323,7 @@ public class PathwayModel {
 	 * @param label the label to be added.
 	 */
 	public void addLabel(Label label) {
+		addPathwayElement(label);
 		labels.add(label);
 	}
 
@@ -322,8 +333,9 @@ public class PathwayModel {
 	 * @param label the label to be removed.
 	 */
 	public void removeLabel(Label label) {
-		label.terminate();
 		labels.remove(label);
+		removePathwayElement(label);
+
 	}
 
 	/**
@@ -341,6 +353,7 @@ public class PathwayModel {
 	 * @param shape the shape to be added.
 	 */
 	public void addShape(Shape shape) {
+		addPathwayElement(shape);
 		shapes.add(shape);
 	}
 
@@ -350,8 +363,9 @@ public class PathwayModel {
 	 * @param shape the shape to be removed.
 	 */
 	public void removeShape(Shape shape) {
-		shape.terminate();
 		shapes.remove(shape);
+		removePathwayElement(shape);
+
 	}
 
 	/**
@@ -369,6 +383,7 @@ public class PathwayModel {
 	 * @param group the group to be added.
 	 */
 	public void addGroup(Group group) {
+		addPathwayElement(group);
 		groups.add(group);
 	}
 
@@ -378,8 +393,8 @@ public class PathwayModel {
 	 * @param group the group to be removed.
 	 */
 	public void removeGroup(Group group) {
-		group.terminate();
 		groups.remove(group);
+		removePathwayElement(group);
 	}
 
 	/**
@@ -403,11 +418,9 @@ public class PathwayModel {
 	public Annotation addAnnotation(Annotation annotation) {
 		Annotation annotationExisting = annotationExists(annotation);
 		if (annotationExisting != null) {
-			annotation.terminate(); // TODO
-			Logger.log.trace(
-					"Annotation " + annotation.getElementId() + " is not added to pathway model and is terminated.");
 			return annotationExisting;
 		} else {
+			addPathwayElement(annotation);
 			annotations.add(annotation);
 			return annotation;
 		}
@@ -438,8 +451,8 @@ public class PathwayModel {
 	 * @param annotation the annotation to be removed.
 	 */
 	public void removeAnnotation(Annotation annotation) {
-		annotation.terminate();
 		annotations.remove(annotation);
+		removePathwayElement(annotation);
 	}
 
 	/**
@@ -463,12 +476,9 @@ public class PathwayModel {
 	public Citation addCitation(Citation citation) {
 		Citation citationExisting = hasEqualCitation(citation);
 		if (citationExisting != null) {
-			citation.terminate(); // TODO
-			Logger.log
-					.trace("Citation " + citation.getElementId() + " is not added to pathway model and is terminated.");
 			return citationExisting;
 		} else {
-			assert (citation.getPathwayModel() == this); // TODO
+			addPathwayElement(citation);
 			citations.add(citation);
 			return citation;
 		}
@@ -498,8 +508,8 @@ public class PathwayModel {
 	 * @param citation the citation to be removed.
 	 */
 	public void removeCitation(Citation citation) {
-		citation.terminate();
 		citations.remove(citation);// TODO
+		removePathwayElement(citation);
 	}
 
 	/**
@@ -519,12 +529,9 @@ public class PathwayModel {
 	public Evidence addEvidence(Evidence evidence) {
 		Evidence evidenceExisting = hasEqualEvidence(evidence);
 		if (evidenceExisting != null) {
-			evidence.terminate(); // TODO
-			Logger.log
-					.trace("Evidence " + evidence.getElementId() + " is not added to pathway model and is terminated.");
 			return evidenceExisting;
 		} else {
-			assert (evidence.getPathwayModel() == this); // TODO
+			addPathwayElement(evidence);
 			evidences.add(evidence);
 			return evidence;
 		}
@@ -554,38 +561,24 @@ public class PathwayModel {
 	 * @param evidence the evidence to be removed.
 	 */
 	public void removeEvidence(Evidence evidence) {
-		evidence.terminate();
 		evidences.remove(evidence);
+		removePathwayElement(evidence);
 	}
 
-	/**
-	 * Checks if pathway element can be added. The given pathway element cannot be
-	 * null, must reference this pathway model, and this pathway element cannot
-	 * already be added to the pathway model. TODO
-	 * 
-	 * @param pathwayElement the pathway element to add.
-	 * @return true if pathway element can be added, false otherwise.
-	 */
-	private boolean canAddPathwayElement(PathwayElement pathwayElement) {
-		if (pathwayElement != null && pathwayElement.getPathwayModel() == this && !hasPathwayElement(pathwayElement)) {
-			return true;
-		}
-		return false;
+	public void addPathwayElement(PathwayElement pathwayElement) {
+		assert (pathwayElement != null);
+		pathwayElement.setPathwayModelTo(this);
+		assert (pathwayElement.getPathwayModel() == this);
+		String elementId = pathwayElement.getElementId();
+		if (elementId == null) 
+			pathwayElement.setGeneratedElementId();
+		addElementId(pathwayElement.getElementId(), pathwayElement); // TODO
 	}
 
-	/**
-	 * Checks if pathway element can be removed. The given pathway element cannot be
-	 * null, must reference this pathway model, and this pathway model must have a
-	 * reference of it. TODO
-	 * 
-	 * @param pathwayElement the pathway element to remove.
-	 * @return true if pathway element can be removed, false otherwise.
-	 */
-	public boolean canRemovePathwayElement(PathwayElement pathwayElement) {
-		if (pathwayElement != null && pathwayElement.getPathwayModel() == this && hasPathwayElement(pathwayElement)) {
-			return true;
-		}
-		return false;
+	public void removePathwayElement(PathwayElement pathwayElement) {
+		assert (pathwayElement != null && hasPathwayElement(pathwayElement));
+		removeElementId(pathwayElement.getElementId());
+		pathwayElement.terminate(); // TODO
 	}
 
 	/**

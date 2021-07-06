@@ -34,8 +34,6 @@ public class Label extends ShapedElement {
 	/**
 	 * Instantiates a Label pathway element given all possible parameters.
 	 * 
-	 * @param pathwayModel       the parent pathway model.
-	 * @param elementId          the unique pathway element identifier.
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
@@ -44,9 +42,9 @@ public class Label extends ShapedElement {
 	 * @param textLabel          the text of the label.
 	 * @param href               the hyperlink of the label.
 	 */
-	public Label(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel, String href) {
-		super(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, groupRef);
+	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			Group groupRef, String textLabel, String href) {
+		super(rectProperty, fontProperty, shapeStyleProperty, groupRef);
 		this.textLabel = textLabel;
 		this.href = href;
 	}
@@ -54,27 +52,27 @@ public class Label extends ShapedElement {
 	/**
 	 * Instantiates a Label given all possible parameters except href.
 	 */
-	public Label(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, Group groupRef, String textLabel) {
-		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, null);
+	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			Group groupRef, String textLabel) {
+		this(rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, null);
 	}
 
 	/**
 	 * Instantiates a Label given all possible parameters except groupRef, because
 	 * the label does not belong in a group.
 	 */
-	public Label(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, String textLabel, String href) {
-		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, href);
+	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			String textLabel, String href) {
+		this(rectProperty, fontProperty, shapeStyleProperty, null, textLabel, href);
 	}
 
 	/**
 	 * Instantiates a Label given all possible parameters except groupRef and href,
 	 * because the label neither belongs in a group nor has a hyperlink.
 	 */
-	public Label(PathwayModel pathwayModel, String elementId, RectProperty rectProperty, FontProperty fontProperty,
-			ShapeStyleProperty shapeStyleProperty, String textLabel) {
-		this(pathwayModel, elementId, rectProperty, fontProperty, shapeStyleProperty, null, textLabel, null);
+	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			String textLabel) {
+		this(rectProperty, fontProperty, shapeStyleProperty, null, textLabel, null);
 	}
 
 	/**
@@ -114,4 +112,5 @@ public class Label extends ShapedElement {
 	public void setHref(String href) {
 		this.href = href;
 	}
+
 }

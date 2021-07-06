@@ -54,16 +54,16 @@ public class TestReadWriteGPML2021NewFeatures2 extends TestCase {
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 
-		Citation citation1 =  pathwayModel.getCitations().get(0);
-
-		System.out.println(citation1.getElementId());
+		System.out.println(pathwayModel.getPathwayElements());
+		System.out.println(pathwayModel.getAnnotations());
+		System.out.println(pathwayModel.getCitations());
 		
-		/*
-		 * Write to GPML2021
-		 */
-		File tmp = File.createTempFile("test_new_features_", ".gpml");
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-		System.out.println(tmp);
+//		/*
+//		 * Write to GPML2021
+//		 */
+//		File tmp = File.createTempFile("test_new_features_", ".gpml");
+//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		System.out.println(tmp);
 
 	}
 

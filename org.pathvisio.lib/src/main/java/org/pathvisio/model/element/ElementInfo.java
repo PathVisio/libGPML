@@ -55,12 +55,9 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 
 	/**
 	 * Instantiates a pathway element with meta data information.
-	 * 
-	 * @param pathwayModel the parent pathway model.
-	 * @param elementId    the unique pathway element identifier.
 	 */
-	public ElementInfo(PathwayModel pathwayModel, String elementId) {
-		super(pathwayModel, elementId);
+	public ElementInfo() {
+		super();
 		this.comments = new ArrayList<Comment>(); // 0 to unbounded
 		this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
 		this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded

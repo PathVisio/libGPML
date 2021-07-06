@@ -35,17 +35,16 @@ public class GraphicalLine extends LineElement {
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 */
-	public GraphicalLine(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
-			Group groupRef) {
-		super(pathwayModel, elementId, lineStyleProperty, groupRef);
+	public GraphicalLine(LineStyleProperty lineStyleProperty, Group groupRef) {
+		super(lineStyleProperty, groupRef);
 	}
 
 	/**
 	 * Instantiates a GraphicalLine pathway element given all possible parameters
 	 * except groupRef, because the interaction does not belong in a group.
 	 */
-	public GraphicalLine(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
-		this(pathwayModel, elementId, lineStyleProperty, null);
+	public GraphicalLine(LineStyleProperty lineStyleProperty) {
+		this(lineStyleProperty, null);
 	}
 
 }

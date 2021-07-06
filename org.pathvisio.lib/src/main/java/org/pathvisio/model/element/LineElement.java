@@ -28,7 +28,7 @@ import org.pathvisio.model.graphics.LineStyleProperty;
  * 
  * @author finterly
  */
-public abstract class LineElement extends ElementInfo implements Groupable{
+public abstract class LineElement extends ElementInfo implements Groupable {
 
 	private List<LinePoint> points; // minimum 2
 	private List<Anchor> anchors;
@@ -41,15 +41,12 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 	 * (formerly groupId) of the parent gpml:Group. Note, a group can also belong in
 	 * another group.
 	 * 
-	 * @param pathwayModel      the parent pathway model.
-	 * @param elementId         the unique pathway element identifier.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 * @param groupRef          the parent group in which the pathway element
 	 *                          belongs.
 	 */
-	public LineElement(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty,
-			Group groupRef) {
-		super(pathwayModel, elementId);
+	public LineElement(LineStyleProperty lineStyleProperty, Group groupRef) {
+		super();
 		this.points = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
@@ -62,8 +59,8 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 	 * Instantiates a line pathway element given all possible parameters except
 	 * groupRef, because the pathway element is not a member of a group.
 	 */
-	public LineElement(PathwayModel pathwayModel, String elementId, LineStyleProperty lineStyleProperty) {
-		this(pathwayModel, elementId, lineStyleProperty, null);
+	public LineElement(LineStyleProperty lineStyleProperty) {
+		this(lineStyleProperty, null);
 	}
 
 	/**
@@ -231,7 +228,7 @@ public abstract class LineElement extends ElementInfo implements Groupable{
 		if (hasGroupRef())
 			throw new IllegalStateException("Line element already belongs to a group.");
 		setGroupRef(groupRef);
-		groupRef.addPathwayElement(this); //TODO
+		groupRef.addPathwayElement(this); // TODO
 	}
 
 	/**

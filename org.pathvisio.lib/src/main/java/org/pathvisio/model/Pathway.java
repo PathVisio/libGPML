@@ -74,7 +74,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		private double boardWidth = 0;
 		private double boardHeight = 0;
 		private Color backgroundColor = Color.decode("#ffffff");
-		private Coordinate infoBox;
+		private Coordinate infoBox = new Coordinate(0, 0);
 		private List<Author> authors;
 		private List<Comment> comments;
 		private Map<String, String> dynamicProperties;
@@ -88,7 +88,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		private Xref xref; // optional
 
 		/**
-		 * Public constructor with required attribute name as parameter.
+		 * Public constructor with required attribute name as parameter. //TODO actually required? 
 		 * 
 		 * @param title           the title of the pathway.
 		 * @param boardWidth      together with...

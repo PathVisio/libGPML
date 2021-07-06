@@ -28,19 +28,14 @@ package org.pathvisio.model;
 public abstract class PathwayElement {
 
 	/* parent pathway model: may be null (e.g. when object is in clipboard) */
-	private PathwayModel pathwayModel = null;
+	private PathwayModel pathwayModel;
 	private String elementId;
 
 	/**
-	 * Instantiates this pathway element given a parent pathway model and generates
-	 * an elementId.
-	 * 
-	 * @param pathwayModel the parent pathway model.
-	 * @param elementId    the unique pathway element identifier.
+	 * Instantiates a pathway element. Parent pathway model and elementId are set
+	 * through {@link PathwayModel} add pathway element methods. elementId.
 	 */
-	public PathwayElement(PathwayModel pathwayModel, String elementId) {
-		setPathwayModelTo(pathwayModel);
-		setElementId(elementId);
+	public PathwayElement() {
 	}
 
 	/**
@@ -80,7 +75,7 @@ public abstract class PathwayElement {
 	 * 
 	 * @param pathwayModel the new pathway model for this pathway element.
 	 */
-	protected void setPathwayModel(PathwayModel pathwayModel) {
+	private void setPathwayModel(PathwayModel pathwayModel) {
 		this.pathwayModel = pathwayModel;
 	}
 
@@ -105,33 +100,20 @@ public abstract class PathwayElement {
 		return elementId;
 	}
 
-	// TODO CLEAN UP METHOD
-
 	/**
-	 * Sets the elementId of the pathway element. ElementId must be a unique within
-	 * the Pathway model. {@link PathwayModel#getUniqueId}
-	 * {@link PathwayModel#addElementId} {@link PathwayModel#removeElementId}
+	 * Sets the elementId of the pathway element.
 	 * 
-	 * @param newElementId the given elementId to set
+	 * @param elementId the unique pathway element identifier.
 	 */
-	public void setElementId(String newElementId) {
-		if (elementId == null || !elementId.equals(newElementId)) {
-			if (pathwayModel != null) {
-				if (elementId != null) {
-					pathwayModel.removeElementId(elementId);
-					new IllegalArgumentException("ElementId needs to be removed...");
-				}
-				if (newElementId != null) {
-					pathwayModel.addElementId(newElementId, this);
-				}
-				this.elementId = newElementId;
-			}
-		}
+	public void setElementId(String elementId) {
+		this.elementId = elementId;
 	}
 
-	public String setGeneratedElementId() {
+	/**
+	 * Sets the elementId to generated elementId from pathwayModel. 
+	 */
+	public void setGeneratedElementId() {
 		setElementId(pathwayModel.getUniqueElementId());
-		return elementId;
 	}
 
 	/**

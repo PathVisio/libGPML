@@ -45,14 +45,12 @@ public class Citation extends PathwayElement {
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters.
 	 * 
-	 * @param pathwayModel the parent pathway model.
-	 * @param elementId    the unique pathway element identifier.
 	 * @param xref         the citation xref.
 	 * @param url          the url link and description (optional) for a web
 	 *                     address.
 	 */
-	public Citation(PathwayModel pathwayModel, String elementId, Xref xref, UrlRef url) {
-		super(pathwayModel, elementId);
+	public Citation(Xref xref, UrlRef url) {
+		super();
 		this.xref = xref;
 		this.url = url;
 		this.citationRefs = new ArrayList<CitationRef>();
@@ -62,16 +60,16 @@ public class Citation extends PathwayElement {
 	 * Instantiates a Citation pathway element given all possible parameters except
 	 * xref. A citation much have either xref or url, or both.
 	 */
-	public Citation(PathwayModel pathwayModel, String elementId, UrlRef url) {
-		this(pathwayModel, elementId, null, url);
+	public Citation(UrlRef url) {
+		this(null, url);
 	}
 
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters except
 	 * url. A citation much have either xref or url, or both.
 	 */
-	public Citation(PathwayModel pathwayModel, String elementId, Xref xref) {
-		this(pathwayModel, elementId, xref, null);
+	public Citation(Xref xref) {
+		this(xref, null);
 	}
 
 	/**
