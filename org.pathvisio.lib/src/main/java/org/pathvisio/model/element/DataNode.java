@@ -19,7 +19,6 @@ package org.pathvisio.model.element;
 import java.util.ArrayList;
 import java.util.List;
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
@@ -212,6 +211,9 @@ public class DataNode extends ShapedElement {
 	public void addState(State state) {
 		assert (state != null) && (state.getDataNode() == this);
 		assert !hasState(state);
+		if (getPathwayModel() != null) {
+			state.setPathwayModel(getPathwayModel()); // TODO
+		}
 		states.add(state);
 	}
 
@@ -253,6 +255,33 @@ public class DataNode extends ShapedElement {
 	 */
 	public void setElementRef(PathwayElement elementRef) {
 		this.elementRef = elementRef;
+	}
+
+	/**
+	 * Sets the pathway model for this pathway element.
+	 * 
+	 * @param pathwayModel the parent pathway model.
+	 */
+	public void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
+		if (pathwayModel == null)
+			throw new IllegalArgumentException("Invalid pathway model.");
+		if (hasPathwayModel())
+			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
+		setPathwayModel(pathwayModel);
+		for (State state : states) // TODO
+			state.setPathwayModel(pathwayModel);
+	}
+
+	/**
+	 * Unsets the pathway model, if any, from this pathway element. The pathway
+	 * element no longer belongs to a pathway model.
+	 */
+	public void unsetPathwayModel() {
+		if (hasPathwayModel()) {
+			setPathwayModel(null);
+			for (State state : states) // TODO
+				state.setPathwayModel(null);
+		}
 	}
 
 	/**

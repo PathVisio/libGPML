@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.pathvisio.model.Comment;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.ref.Annotatable;
 import org.pathvisio.model.ref.AnnotationRef;

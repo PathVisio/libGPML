@@ -35,6 +35,7 @@ import org.pathvisio.model.element.GraphicalLine;
 import org.pathvisio.model.element.Group;
 import org.pathvisio.model.element.Interaction;
 import org.pathvisio.model.element.Label;
+import org.pathvisio.model.element.PathwayElement;
 import org.pathvisio.model.element.Shape;
 import org.pathvisio.model.element.State;
 import org.pathvisio.model.graphics.Coordinate;

@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.element;
 
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.type.AnchorShapeType;
 
 /**

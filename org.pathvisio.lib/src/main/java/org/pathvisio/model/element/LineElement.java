@@ -252,6 +252,37 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
+	 * Sets the pathway model for this pathway element.
+	 * 
+	 * @param pathwayModel the parent pathway model.
+	 */
+	public void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
+		if (pathwayModel == null)
+			throw new IllegalArgumentException("Invalid pathway model.");
+		if (hasPathwayModel())
+			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
+		setPathwayModel(pathwayModel);
+		for (LinePoint point : points) // TODO
+			point.setPathwayModel(pathwayModel);
+		for (Anchor anchor : anchors) // TODO
+			anchor.setPathwayModel(pathwayModel);
+	}
+
+	/**
+	 * Unsets the pathway model, if any, from this pathway element. The pathway
+	 * element no longer belongs to a pathway model.
+	 */
+	public void unsetPathwayModel() {
+		if (hasPathwayModel()) {
+			setPathwayModel(null);
+			for (LinePoint point : points) // TODO
+				point.setPathwayModel(null);
+			for (Anchor anchor : anchors) // TODO
+				anchor.setPathwayModel(null);
+		}
+	}
+
+	/**
 	 * Terminates this LineElement. The pathway model, if any, is unset from this
 	 * anchor.Links to all annotationRefs, citationRefs, and evidenceRefs are
 	 * removed from this data node.

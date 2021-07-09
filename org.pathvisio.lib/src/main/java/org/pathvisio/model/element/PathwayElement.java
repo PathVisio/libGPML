@@ -14,7 +14,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.model.element;
+
+import org.pathvisio.model.PathwayModel;
 
 /**
  * Abstract class of pathway elements which are part of a pathway and have an
@@ -75,7 +77,7 @@ public abstract class PathwayElement {
 	 * 
 	 * @param pathwayModel the new pathway model for this pathway element.
 	 */
-	private void setPathwayModel(PathwayModel pathwayModel) {
+	protected void setPathwayModel(PathwayModel pathwayModel) {
 		this.pathwayModel = pathwayModel;
 	}
 
@@ -85,10 +87,7 @@ public abstract class PathwayElement {
 	 */
 	public void unsetPathwayModel() {
 		if (hasPathwayModel()) {
-			PathwayModel formerPathwayModel = this.getPathwayModel();
 			setPathwayModel(null);
-			formerPathwayModel.removeElementId(elementId); // TODO
-			//TODO unset ElementId at some point...
 		}
 	}
 

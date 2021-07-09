@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.element.PathwayElement;
 
 /**
  * This class stores information for an Evidence.

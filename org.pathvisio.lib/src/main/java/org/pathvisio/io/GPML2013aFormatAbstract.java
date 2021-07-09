@@ -202,7 +202,6 @@ public abstract class GPML2013aFormatAbstract {
 		OCV_ONTOLOGY_MAP.put("Cell Type", "CL");
 	}
 	
-	
 	/**
 	 * String values for {@link State} {@link Comment} phosphorylation and
 	 * ubiquitylation site information in GPML2013a.
