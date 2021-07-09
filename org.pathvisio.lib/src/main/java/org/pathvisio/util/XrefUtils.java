@@ -75,7 +75,7 @@ public class XrefUtils {
 	public static String getXrefDataSourceStr(DataSource dataSource) {
 		// data source cannot be null
 		if (dataSource != null) {
-			String dataSourceStr = dataSource.getCompactIdentifierPrefix();
+			String dataSourceStr = dataSource.getCompactIdentifierPrefix(); //TODO
 			if (dataSourceStr == null) {
 				// retrieve data source full name if compact identifier prefix is null
 				dataSourceStr = dataSource.getFullName();

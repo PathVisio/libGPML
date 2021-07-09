@@ -42,14 +42,18 @@ public class TestConvertToGPML2021 extends TestCase {
 	 * @throws ConverterException
 	 */
 	public static void testConvertToGPML2021() throws IOException, ConverterException {
-		File folderGPML2021 = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
-		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021";
 		
-		File[] listOfFiles = folderGPML2021.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".gpml");
-			}
-		});
+		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		String outputDir = "C:/Users/p70073399/Documents/sampleGPML2021";
+		
+		File[] listOfFiles = folderGPML2013a.listFiles();
+
+//		File[] listOfFiles = folderGPML2013a.listFiles(new FilenameFilter() {
+//			public boolean accept(File dir, String name) {
+//				return name.toLowerCase().endsWith(".gpml");
+//			}
+//		});
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];

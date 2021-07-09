@@ -112,6 +112,11 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
 	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
+	
+	/**
+	 * String for Comment source for WikiPathways-description for GPML2013a. 
+	 */
+	public final static String WP_DESCRIPTION = "WikiPathways-description";
 
 	/**
 	 * Dynamic properties key set for deprecated GPML2013a pathway properties. Used
@@ -126,8 +131,8 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 
 	/**
-	 * {@link BidiMap} to convert known GPML2013a {@link ShapeType} Strings to their new
-	 * camelCase spelling for reading, and back for writing.
+	 * {@link BidiMap} to convert known GPML2013a {@link ShapeType} Strings to their
+	 * new camelCase spelling for reading, and back for writing.
 	 */
 	public static final BidiMap<String, String> SHAPETYPE_TO_CAMELCASE = new DualHashBidiMap<>();
 	static {
@@ -185,7 +190,19 @@ public abstract class GPML2013aFormatAbstract {
 	 */
 	List<String> STATE_ANNOTATIONTYPE_LIST = new ArrayList<>(
 			Arrays.asList("parent", "position", "ptm", "direction", "parentid", "parentsymbol", "site", "sitegrpid"));
-
+	
+	
+	/**
+	 * {@link BidiMap} of GPML2013a openControlledVocabulary Ontology types 
+	 */
+	public static final BidiMap<String, String> OCV_ONTOLOGY_MAP = new DualHashBidiMap<>();
+	static {
+		OCV_ONTOLOGY_MAP.put("Disease", "DOID");
+		OCV_ONTOLOGY_MAP.put("Pathway Ontology", "PW");
+		OCV_ONTOLOGY_MAP.put("Cell Type", "CL");
+	}
+	
+	
 	/**
 	 * String values for {@link State} {@link Comment} phosphorylation and
 	 * ubiquitylation site information in GPML2013a.
@@ -230,6 +247,8 @@ public abstract class GPML2013aFormatAbstract {
 	public static final List<String> TRANSLOCATION_LIST = new ArrayList<>(Arrays.asList("mim-translocation"));
 	public static final List<String> TRANSCRIPTION_TRANSLATION_LIST = new ArrayList<>(
 			Arrays.asList("mim-transcription-translation"));
+
+	
 
 	/**
 	 * Map for GPML2021 Interaction Panel arrow head types to GPML2013a arrowHead

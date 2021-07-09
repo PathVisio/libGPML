@@ -300,7 +300,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// reads OpenControlledVocabulary
 			String value = ocv.getChild("TERM", BIOPAX_NAMESPACE).getText();
 			String biopaxOntology = ocv.getChild("Ontology", BIOPAX_NAMESPACE).getText();
-			AnnotationType type = AnnotationType.register(biopaxOntology);
+			AnnotationType type = null;
+			if (OCV_ONTOLOGY_MAP.containsKey(biopaxOntology)) {
+				type = AnnotationType.ONTOLOGY;
+			} else {
+				type = AnnotationType.register(biopaxOntology);
+			}
 			// instantiates annotation
 			Annotation annotation = new Annotation(value, type);
 			annotation.setElementId(elementId);
@@ -313,12 +318,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (xref != null)
 				annotation.setXref(xref);
 			// adds annotation to pathway model
-			if (annotation != null) {
-				annotation = pathwayModel.addAnnotation(annotation);
-				// adds annotationRef to pathway of pathway model
-				pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation, pathwayModel.getPathway()));
-				;
-			}
+			annotation = pathwayModel.addAnnotation(annotation);
+			// adds annotationRef to pathway of pathway model for GPML2013a
+			pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation, pathwayModel.getPathway()));
 		}
 	}
 
@@ -462,9 +464,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
 			String source = getAttr("Comment", "Source", cmt);
 			String commentText = cmt.getText();
-			// if source is WikiPathways-description, set comment as pathway description
-			// instead!
-			if (source.equals("WikiPathways-description")) {
+			// if source is WikiPathways-description, set as pathway description
+			if (source.equals(WP_DESCRIPTION)) {
 				pathwayModel.getPathway().setDescription(commentText);
 				continue;
 			}
@@ -587,9 +588,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Group group = new Group(rectProperty, fontProperty, shapeStyleProperty, type);
 			group.setElementId(elementId);
 			// type "Pathway" has font size (custom font name "Times" never implemented)
-			if (type == GroupType.PATHWAY) {
+			if (type == GroupType.PATHWAY)
 				group.getFontProperty().setFontSize(32);
-			}
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(pathwayModel, group, grp, biopaxIdToNew, citationDuplicates);
 			// sets optional properties
@@ -597,13 +597,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String graphId = getAttr("Group", "GraphId", grp);
 			if (textLabel != null)
 				group.setTextLabel(textLabel);
-			if (graphId != null) {
+			if (graphId != null)
 				group.setDynamicProperty(GROUP_GRAPHID, graphId);
-//				pathwayModel.addElementId(graphId, group); not necessary 
-			}
 			// add group to pathway model
-			if (group != null)
-				pathwayModel.addGroup(group);
+			pathwayModel.addGroup(group);
 		}
 
 	}
@@ -708,8 +705,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (href != null)
 				label.setHref(href);
 			// adds label to pathway model
-			if (label != null)
-				pathwayModel.addLabel(label);
+			pathwayModel.addLabel(label);
 		}
 	}
 
@@ -746,8 +742,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (textLabel != null)
 				shape.setTextLabel(textLabel);
 			// adds shape to pathway model
-			if (shape != null)
-				pathwayModel.addShape(shape);
+			pathwayModel.addShape(shape);
 		}
 	}
 
@@ -848,11 +843,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (xref != null)
 				state.setXref(xref);
 			// adds state to parent data node of pathway model
-			if (state != null) {
-				dataNode.addState(state);
-				pathwayModel.addPathwayElement(state);
-
-			}
+			dataNode.addState(state);
+			pathwayModel.addPathwayElement(state);
 		}
 	}
 
@@ -1003,8 +995,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (xref != null)
 				interaction.setXref(xref);
 			// adds interaction to pathway model
-			if (interaction != null)
-				pathwayModel.addInteraction(interaction);
+			pathwayModel.addInteraction(interaction);
 		}
 	}
 
@@ -1041,8 +1032,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			readLineElement(pathwayModel, graphicalLine, gln, elementIdSet, biopaxIdToNew, citationDuplicates,
 					groupIdToNew);
 			// adds graphical line to pathway model
-			if (graphicalLine != null)
-				pathwayModel.addGraphicalLine(graphicalLine);
+			pathwayModel.addGraphicalLine(graphicalLine);
 		}
 	}
 
@@ -1101,10 +1091,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Anchor anchor = new Anchor(lineElement, position, shapeType);
 			anchor.setElementId(elementId);
 			// adds anchor to line pathway element of pathway model
-			if (anchor != null) {
-				lineElement.addAnchor(anchor);
-				pathwayModel.addPathwayElement(anchor);
-			}
+			lineElement.addAnchor(anchor);
+			pathwayModel.addPathwayElement(anchor);
 		}
 	}
 
@@ -1345,7 +1333,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (citationDuplicates.containsKey(biopaxRef))
 				biopaxRef = citationDuplicates.get(biopaxRef);
 			// given the correct biopaxRef/elementId, retrieves citation referenced
-			System.out.println(biopaxRef);
 			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
 			// if citation valid, create citationRef and add to pathway model.
 			if (citation != null) {

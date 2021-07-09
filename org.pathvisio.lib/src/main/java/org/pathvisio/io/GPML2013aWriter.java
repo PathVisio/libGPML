@@ -193,9 +193,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		// sets optional properties, in the order written in GPML2013a
 		String description = pathway.getDescription();
 		if (description != null) {
-			Element desc = new Element("Description", root.getNamespace());
-			desc.setText(description);
-			root.addContent(desc);
+			Element cmt = new Element("Comment", root.getNamespace());
+			cmt.setAttribute("Source", WP_DESCRIPTION);
+			cmt.setText(description);
+			root.addContent(cmt);
 		}
 		String source = pathway.getSource();
 		String version = pathway.getVersion();
@@ -761,8 +762,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			id.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			onto.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			term.setText(annotation.getValue());
+			String prefix = XrefUtils.getXrefDataSourceStr(annotation.getXref().getDataSource());
+			if (OCV_ONTOLOGY_MAP.containsValue(prefix)) 
+				type = OCV_ONTOLOGY_MAP.getKey(prefix);
 			onto.setText(type);
-			id.setText(annotation.getXref().getDataSource().getFullName() + ":" + annotation.getXref().getId());
+			id.setText(prefix + ":" + annotation.getXref().getId());
 			ocv.addContent(term);
 			ocv.addContent(id);
 			ocv.addContent(onto);

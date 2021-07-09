@@ -123,7 +123,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		Element desc = root.getChild("Description", root.getNamespace());
 		if (desc != null) {
 			String description = desc.getText();
-			if (description != null) 
+			if (description != null)
 				pathway.setDescription(description);
 		}
 		String organism = root.getAttributeValue("organism");
@@ -288,8 +288,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					// citation has url
 					if (url != null) {
 						Citation citation = new Citation(url);
-						if (citation != null)
-							pathwayModel.addCitation(citation);
+						pathwayModel.addCitation(citation);
 					}
 				}
 			}
@@ -319,8 +318,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					evidence.setValue(value);
 				if (url != null)
 					evidence.setUrl(url);
-				if (evidence != null)
-					pathwayModel.addEvidence(evidence);
+				pathwayModel.addEvidence(evidence);
 			}
 		}
 	}
@@ -402,8 +400,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			AnnotationRef annotationRef = new AnnotationRef(annotation, annotatable);
 			readCitationRefs(pathwayModel, annotationRef, anntRef);
 			readEvidenceRefs(pathwayModel, annotationRef, anntRef);
-			if (annotationRef != null)
-				annotatable.addAnnotationRef(annotationRef);
+			annotatable.addAnnotationRef(annotationRef);
 		}
 	}
 
@@ -424,8 +421,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// create new citationRef for citation referenced
 				CitationRef citationRef = new CitationRef(citation, citable);
 				readAnnotationRefs(pathwayModel, citationRef, citRef);
-				if (citationRef != null)
-					citable.addCitationRef(citationRef);
+				citable.addCitationRef(citationRef);
 			}
 		}
 	}
@@ -447,8 +443,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			if (evidence != null) {
 				// create new evidenceRef for evidence referenced
 				EvidenceRef evidenceRef = new EvidenceRef(evidence, evidenceable);
-				if (evidenceRef != null)
-					evidenceable.addEvidenceRef(evidenceRef);
+				evidenceable.addEvidenceRef(evidenceRef);
 			}
 		}
 	}
@@ -481,8 +476,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					group.setXref(xref);
 				if (textLabel != null)
 					group.setTextLabel(textLabel);
-				if (group != null)
-					pathwayModel.addGroup(group);
+				pathwayModel.addGroup(group);
 			}
 			/**
 			 * Because a group may refer to another group not yet initialized. We read all
@@ -527,8 +521,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					label.setHref(href);
 				if (groupRef != null && !groupRef.equals(""))
 					label.setGroupRefTo((Group) pathwayModel.getPathwayElement(groupRef));
-				if (label != null)
-					pathwayModel.addLabel(label);
+				pathwayModel.addLabel(label);
 			}
 		}
 	}
@@ -561,8 +554,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					shape.setTextLabel(textLabel);
 				if (groupRef != null && !groupRef.equals(""))
 					shape.setGroupRefTo((Group) pathwayModel.getPathwayElement(groupRef));
-				if (shape != null)
-					pathwayModel.addShape(shape);
+				pathwayModel.addShape(shape);
 			}
 		}
 	}
@@ -600,8 +592,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (xref != null)
 					dataNode.setXref(xref);
 				// adds dataNode to pathwayModel
-				if (dataNode != null)
-					pathwayModel.addDataNode(dataNode);
+				pathwayModel.addDataNode(dataNode);
 			}
 		}
 	}
@@ -638,10 +629,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Xref xref = readXref(st);
 				if (xref != null)
 					state.setXref(xref);
-				if (state != null) {
-					dataNode.addState(state);
-					pathwayModel.addPathwayElement(state);
-				}
+				dataNode.addState(state);
+				pathwayModel.addPathwayElement(state);
 			}
 		}
 	}
@@ -695,8 +684,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				GraphicalLine graphicalLine = new GraphicalLine(lineStyleProperty);
 				graphicalLine.setElementId(elementId);
 				// add graphicalLine to pathwayModel
-				if (graphicalLine != null)
-					pathwayModel.addGraphicalLine(graphicalLine);
+				pathwayModel.addGraphicalLine(graphicalLine);
 				readLineElement(pathwayModel, graphicalLine, gln);
 
 			}
@@ -745,10 +733,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			LinePoint point = new LinePoint(lineElement, arrowHead, xy);
 			point.setElementId(elementId);
 			// adds point to lineElement (elementRef, relX, and relY read later)
-			if (point != null) {
-				lineElement.addPoint(point);
-				pathwayModel.addPathwayElement(point);
-			}
+			lineElement.addPoint(point);
+			pathwayModel.addPathwayElement(point);
 		}
 	}
 
@@ -768,11 +754,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					.register(an.getAttributeValue("shapeType", ANCHORSHAPETYPE_DEFAULT));
 			Anchor anchor = new Anchor(lineElement, position, shapeType);
 			anchor.setElementId(elementId);
-			if (anchor != null) {
-				lineElement.addAnchor(anchor);
-				pathwayModel.addPathwayElement(anchor);
-
-			}
+			lineElement.addAnchor(anchor);
+			pathwayModel.addPathwayElement(anchor);
 		}
 	}
 
