@@ -47,16 +47,16 @@ public class ShapeType {
 	public static final ShapeType BRACE = new ShapeType("Brace");
 
 	public static final ShapeType MITOCHONDRIA = new ShapeType("Mitochondria");
-	public static final ShapeType SARCOPLASMIC_RETICULUM = new ShapeType("Sarcoplasmic Reticulum");
-	public static final ShapeType ENDOPLASMIC_RETICULUM = new ShapeType("Endoplasmic Reticulum");
-	public static final ShapeType GOLGI_APPARATUS = new ShapeType("Golgi Apparatus");
+	public static final ShapeType SARCOPLASMIC_RETICULUM = new ShapeType("SarcoplasmicReticulum");
+	public static final ShapeType ENDOPLASMIC_RETICULUM = new ShapeType("EndoplasmicReticulum");
+	public static final ShapeType GOLGI_APPARATUS = new ShapeType("GolgiApparatus");
 
 	// From CellularComponent.java
 	public static final ShapeType NUCLEOLUS = new ShapeType("Nucleolus");
 	public static final ShapeType VACUOLE = new ShapeType("Vacuole");
 	public static final ShapeType LYSOSOME = new ShapeType("Lysosome");
-	public static final ShapeType CYTOSOL = new ShapeType("Cytosol region");
-	public static final ShapeType EXTRACELLULAR = new ShapeType("Extracellular region");
+	public static final ShapeType CYTOSOL = new ShapeType("CytosolRegion");
+	public static final ShapeType EXTRACELLULAR = new ShapeType("ExtracellularRegion");
 
 	// Deprecated
 	public static final ShapeType CELL = new ShapeType("Cell"); // Rounded rectangle

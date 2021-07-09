@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -80,6 +81,15 @@ public class FindShapeType extends TestCase {
 //								}
 								shapeTypes.add(shapeType);
 							}
+							List<Element> dps = e.getChildren("Attribute", e.getNamespace());
+							for (Element dp: dps) {
+								String key = dp.getAttributeValue("Key");
+								String value = dp.getAttributeValue("Value");		
+								if (Objects.equals(key, "org.pathvisio.CellularComponentProperty")) {
+									shapeTypes.add(value);
+								}
+							}
+
 						}
 					} catch (JDOMException e) {
 						e.printStackTrace();

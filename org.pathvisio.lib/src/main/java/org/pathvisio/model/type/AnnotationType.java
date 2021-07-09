@@ -35,7 +35,6 @@ public class AnnotationType {
 	public static final AnnotationType UNDEFINED = new AnnotationType("Undefined"); // default
 	public static final AnnotationType ONTOLOGY = new AnnotationType("Ontology");
 	public static final AnnotationType TAXONOMY = new AnnotationType("Taxonomy");
-	public static final AnnotationType INTERACTION_TYPE = new AnnotationType("Interaction type"); // TODO
 
 	private String name;
 

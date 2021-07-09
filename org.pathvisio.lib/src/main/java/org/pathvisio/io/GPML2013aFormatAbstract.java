@@ -32,6 +32,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.ValidatorHandler;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -124,6 +126,19 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 
 	/**
+	 * {@link BidiMap} to convert known GPML2013a {@link ShapeType} Strings to their new
+	 * camelCase spelling for reading, and back for writing.
+	 */
+	public static final BidiMap<String, String> SHAPETYPE_TO_CAMELCASE = new DualHashBidiMap<>();
+	static {
+		SHAPETYPE_TO_CAMELCASE.put("Sarcoplasmic Reticulum", "SarcoplasmicReticulum");
+		SHAPETYPE_TO_CAMELCASE.put("Endoplasmic Reticulum", "EndoplasmicReticulum");
+		SHAPETYPE_TO_CAMELCASE.put("Golgi Apparatus", "GolgiApparatus");
+		SHAPETYPE_TO_CAMELCASE.put("Cytosol region", "CytosolRegion");
+		SHAPETYPE_TO_CAMELCASE.put("Extracellular region", "ExtracellularRegion"); // TODO
+	}
+
+	/**
 	 * Deprecated map used to track deprecated shape types for conversion and
 	 * exclusion.
 	 */
@@ -179,7 +194,7 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String STATE_COMMENT_DIRECTION = "direction";
 	public final static String STATE_COMMENT_SITE = "site";
 	public final static String STATE_COMMENT_SITEGRPID = "sitegrpid";
-	public final static String SITEGRPID_DATASOURCE ="phosphositeplus";
+	public final static String SITEGRPID_DATASOURCE = "phosphositeplus";
 
 	public static final Map<String, List<String>> STATE_PTM_MAP = new HashMap<String, List<String>>();
 	static {
@@ -188,7 +203,7 @@ public abstract class GPML2013aFormatAbstract {
 		STATE_PTM_MAP.put("me", new ArrayList<>(Arrays.asList("Methylation", "34", "unimod")));
 		STATE_PTM_MAP.put("u", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
 		STATE_PTM_MAP.put("ub", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
-		
+
 	}
 	public static final Map<String, List<String>> STATE_DIRECTION_MAP = new HashMap<String, List<String>>();
 	static {
@@ -638,60 +653,4 @@ public abstract class GPML2013aFormatAbstract {
 					+ "' could not be found in classpath");
 		}
 	}
-
-//	/**
-//	 * Default order of pathway elements gene product, label, shape and line
-//	 * determined by GenMAPP legacy
-//	 */
-//	private static final int Z_ORDER_GROUP = 0x1000; // groups behind other graphics
-//	private static final int Z_ORDER_GENEPRODUCT = 0x8000;
-//	private static final int Z_ORDER_LABEL = 0x7000;
-//	private static final int Z_ORDER_SHAPE = 0x4000;
-//	private static final int Z_ORDER_LINE = 0x3000;
-//	// default order of uninteresting elements.
-//	private static final int Z_ORDER_DEFAULT = 0x0000;
-//
-//	/**
-//	 * Pathway element types as used in GPML2013a
-//	 */
-//	public final static String SHAPE = "Shape";
-//	public final static String GRAPHLINE = "GraphicalLine";
-//	public final static String DATANODE = "DataNode";
-//	public final static String LABEL = "Label";
-//	public final static String LINE = "Line";
-//	public final static String LEGEND = "Legend";
-//	public final static String INFOBOX = "InfoBox";
-//	public final static String MAPPINFO = "Pathway";
-//	public final static String GROUP = "Group";
-//	public final static String BIOPAX = "Biopax";
-//	public final static String STATE = "State";
-//
-//	/**
-//	 * default z order for newly created objects
-//	 */
-//	private static int getDefaultZOrder(String pathwayElementType) {
-//		switch (pathwayElementType) {
-//		case SHAPE:
-//			return Z_ORDER_SHAPE;
-//		case STATE:
-//			return Z_ORDER_GENEPRODUCT + 10;
-//		case DATANODE:
-//			return Z_ORDER_GENEPRODUCT;
-//		case LABEL:
-//			return Z_ORDER_LABEL;
-//		case LINE:
-//			return Z_ORDER_LINE;
-//		case GRAPHLINE:
-//			return Z_ORDER_LINE;
-//		case LEGEND:
-//		case INFOBOX:
-//		case MAPPINFO:
-//		case BIOPAX:
-//			return Z_ORDER_DEFAULT;
-//		case GROUP:
-//			return Z_ORDER_GROUP;
-//		default:
-//			throw new IllegalArgumentException("Invalid object type " + pathwayElementType);
-//		}
-//	}
 }

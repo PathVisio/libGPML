@@ -26,16 +26,20 @@ import org.pathvisio.debug.Logger;
 /**
  * This class contains extensible enum for state types.
  * 
+ * NB: State type is in the GPML2013a schema, but was never implemented/written
+ * for GPML2013a files.
+ * 
  * @author finterly
  */
 public class StateType {
-	private static Map<String, StateType> nameToStateType = new TreeMap<String, StateType>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String, StateType> nameToStateType = new TreeMap<String, StateType>(
+			String.CASE_INSENSITIVE_ORDER);
 
 	// TODO Add more and changes
 	public static final StateType UNDEFINED = new StateType("Undefined");
-	public static final StateType PROTEIN_MODIFICATION = new StateType("Protein modification");
-	public static final StateType GENETIC_VARIANT = new StateType("Genetic variant");
-	public static final StateType EPIGENETIC_MODIFICATION = new StateType("Epigenetic modification");
+	public static final StateType PROTEIN_MODIFICATION = new StateType("ProteinModification");
+	public static final StateType GENETIC_VARIANT = new StateType("GeneticVariant");
+	public static final StateType EPIGENETIC_MODIFICATION = new StateType("EpigeneticModification");
 
 	// (something for metabolites?)
 	// gene modification?
@@ -70,7 +74,7 @@ public class StateType {
 		if (nameToStateType.containsKey(name)) {
 			return nameToStateType.get(name);
 		} else {
-			Logger.log.trace("Registered state type " + name); 
+			Logger.log.trace("Registered state type " + name);
 			return new StateType(name);
 		}
 	}

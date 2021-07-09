@@ -45,7 +45,7 @@ public class ArrowHeadType {
 	public static final ArrowHeadType STIMULATION = new ArrowHeadType("Stimulation");
 	public static final ArrowHeadType BINDING = new ArrowHeadType("Binding");
 	public static final ArrowHeadType TRANSLOCATION = new ArrowHeadType("Translocation");
-	public static final ArrowHeadType TRANSCRIPTION_TRANSLATION = new ArrowHeadType("Transcription-translation");
+	public static final ArrowHeadType TRANSCRIPTION_TRANSLATION = new ArrowHeadType("TranscriptionTranslation");
 	
 	private String name;
 

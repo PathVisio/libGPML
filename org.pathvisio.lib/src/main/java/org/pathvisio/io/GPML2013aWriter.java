@@ -191,6 +191,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		Pathway pathway = pathwayModel.getPathway();
 		setAttr("Pathway", "Name", root, pathway.getTitle());
 		// sets optional properties, in the order written in GPML2013a
+		String description = pathway.getDescription();
+		if (description != null) {
+			Element desc = new Element("Description", root.getNamespace());
+			desc.setText(description);
+			root.addContent(desc);
+		}
 		String source = pathway.getSource();
 		String version = pathway.getVersion();
 		String author = pathway.getDynamicProperty(PATHWAY_AUTHOR);
@@ -962,7 +968,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, CELL_CMPNT_KEY);
-			setAttr("Attribute", "Value", dp, shapeType.getName());
+			String shapeTypeStr = shapeType.getName();
+			if (SHAPETYPE_TO_CAMELCASE.containsValue(shapeTypeStr))
+				shapeTypeStr = SHAPETYPE_TO_CAMELCASE.getKey(shapeTypeStr);
+			setAttr("Attribute", "Value", dp, shapeTypeStr);
 			if (dp != null)
 				se.addContent(dp);
 		}
@@ -1078,10 +1087,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		/* do not set borderColor, Color is set by textColor */
 		ShapeType shapeType = shapeProp.getShapeType();
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
-			ShapeType shapeTypeNew = CELL_CMPNT_MAP.get(shapeType);
-			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeNew.getName());
+			String shapeTypeNewStr = CELL_CMPNT_MAP.get(shapeType).getName();
+			if (SHAPETYPE_TO_CAMELCASE.containsValue(shapeTypeNewStr))
+				shapeTypeNewStr = SHAPETYPE_TO_CAMELCASE.getKey(shapeTypeNewStr);
+			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeNewStr);
 		} else {
-			setAttr(base + ".Graphics", "ShapeType", gfx, shapeType.getName());
+			String shapeTypeStr = shapeType.getName();
+			if (SHAPETYPE_TO_CAMELCASE.containsValue(shapeTypeStr))
+				shapeTypeStr = SHAPETYPE_TO_CAMELCASE.getKey(shapeTypeStr);
+			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeStr);
 		}
 		String borderStyleStr = shapeProp.getBorderStyle().getName();
 		// in GPML2013a, "Dashed" line style is "Broken" and must be written so

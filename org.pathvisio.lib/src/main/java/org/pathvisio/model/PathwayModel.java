@@ -64,6 +64,7 @@ public class PathwayModel {
 	private List<Citation> citations;
 	private List<Evidence> evidences;
 
+
 	/**
 	 * Initializes a pathway model object with {@link Pathway} information.
 	 * 

@@ -194,12 +194,15 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			root.setAttribute("version", pathway.getVersion());
 		if (pathway.getLicense() != null)
 			root.setAttribute("license", pathway.getLicense());
-
 		if (pathway.getXref() != null)
 			writeXref(pathway.getXref(), root, false);
-
+		String description = pathway.getDescription();
+		if (description != null) {
+			Element desc = new Element("Description", root.getNamespace());
+			desc.setText(description);
+			root.addContent(desc);
+		}
 		writeAuthors(pathway.getAuthors(), root);
-
 		writeComments(pathway.getComments(), root);
 		writeDynamicProperties(pathway.getDynamicProperties(), root);
 		writeAnnotationRefs(pathway.getAnnotationRefs(), root);

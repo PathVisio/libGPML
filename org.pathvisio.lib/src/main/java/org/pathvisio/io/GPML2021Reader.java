@@ -120,6 +120,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readAuthors(pathway, root);
 		// sets optional properties
 		Xref xref = readXref(root);
+		Element desc = root.getChild("Description", root.getNamespace());
+		if (desc != null) {
+			String description = desc.getText();
+			if (description != null) 
+				pathway.setDescription(description);
+		}
 		String organism = root.getAttributeValue("organism");
 		String source = root.getAttributeValue("source");
 		String version = root.getAttributeValue("version");

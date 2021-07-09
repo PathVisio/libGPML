@@ -88,6 +88,7 @@ public abstract class PathwayElement {
 			PathwayModel formerPathwayModel = this.getPathwayModel();
 			setPathwayModel(null);
 			formerPathwayModel.removeElementId(elementId); // TODO
+			//TODO unset ElementId at some point...
 		}
 	}
 

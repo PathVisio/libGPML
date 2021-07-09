@@ -57,6 +57,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	private List<AnnotationRef> annotationRefs;
 	private List<CitationRef> citationRefs;
 	private List<EvidenceRef> evidenceRefs;
+	private String description;
 	private String organism;
 	private String source;
 	private String version;
@@ -81,6 +82,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		private List<AnnotationRef> annotationRefs;
 		private List<CitationRef> citationRefs;
 		private List<EvidenceRef> evidenceRefs;
+		private String description; // optional
 		private String organism; // optional
 		private String source; // optional
 		private String version; // optional
@@ -88,7 +90,8 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		private Xref xref; // optional
 
 		/**
-		 * Public constructor with required attribute name as parameter. //TODO actually required? 
+		 * Public constructor with required attribute name as parameter. //TODO actually
+		 * required?
 		 * 
 		 * @param title           the title of the pathway.
 		 * @param boardWidth      together with...
@@ -111,6 +114,18 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 			this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
 			this.citationRefs = new ArrayList<CitationRef>(); // 0 to unbounded
 			this.evidenceRefs = new ArrayList<EvidenceRef>(); // 0 to unbounded
+		}
+
+		/**
+		 * Sets description and returns this builder object. Description is the textual
+		 * description for this pathway.
+		 * 
+		 * @param description the description of the pathway.
+		 * @return the PathwayBuilder object.
+		 */
+		public PathwayBuilder setDescription(String description) {
+			this.description = description;
+			return this;
 		}
 
 		/**
@@ -199,6 +214,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		this.annotationRefs = builder.annotationRefs;
 		this.citationRefs = builder.citationRefs;
 		this.evidenceRefs = builder.evidenceRefs;
+		this.description = builder.description;
 		this.organism = builder.organism;
 		this.source = builder.source;
 		this.version = builder.version;
@@ -587,6 +603,27 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		for (EvidenceRef evidenceRef : evidenceRefs) {
 			removeEvidenceRef(evidenceRef);
 		}
+	}
+
+	/**
+	 * Returns the description of the pathway.
+	 * 
+	 * @return description the description.
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Sets the description of the pathway.
+	 * 
+	 * @param description the description.
+	 */
+	public void setDescription(String description) {
+		if (description == null) {
+			throw new IllegalArgumentException();
+		} else
+			this.description = description;
 	}
 
 	/**
