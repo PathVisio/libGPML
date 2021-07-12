@@ -622,7 +622,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
 				State state = new State(textLabel, type, relX, relY, width, height, fontProperty,
 						shapeStyleProperty);
-				state.setDataNodeTo(dataNode);
 				state.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, state, st);
@@ -631,7 +630,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (xref != null)
 					state.setXref(xref);
 				dataNode.addState(state);
-				pathwayModel.addPathwayElement(state);
 			}
 		}
 	}
@@ -731,11 +729,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT));
 			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x").trim()),
 					Double.parseDouble(pt.getAttributeValue("y").trim()));
-			LinePoint point = new LinePoint(lineElement, arrowHead, xy);
+			LinePoint point = new LinePoint(arrowHead, xy);
 			point.setElementId(elementId);
 			// adds point to lineElement (elementRef, relX, and relY read later)
 			lineElement.addPoint(point);
-			pathwayModel.addPathwayElement(point);
 		}
 	}
 
@@ -753,10 +750,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			double position = Double.parseDouble(an.getAttributeValue("position"));
 			AnchorShapeType shapeType = AnchorShapeType
 					.register(an.getAttributeValue("shapeType", ANCHORSHAPETYPE_DEFAULT));
-			Anchor anchor = new Anchor(lineElement, position, shapeType);
+			Anchor anchor = new Anchor(position, shapeType);
 			anchor.setElementId(elementId);
 			lineElement.addAnchor(anchor);
-			pathwayModel.addPathwayElement(anchor);
 		}
 	}
 

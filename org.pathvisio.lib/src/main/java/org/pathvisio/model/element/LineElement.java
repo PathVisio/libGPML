@@ -88,8 +88,13 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param point the point to be added.
 	 */
 	public void addPoint(LinePoint point) {
-		assert (point != null) && (point.getLineElement() == this);
+		assert (point != null);
+		point.setLineElementTo(this); // TODO
+		assert (point.getLineElement() == this);
 		assert !hasPoint(point);
+		// add point to same pathway model as line if applicable
+		if (getPathwayModel() != null)
+			getPathwayModel().addPathwayElement(point);
 		points.add(point);
 	}
 
@@ -99,6 +104,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param point the point to be removed.
 	 */
 	public void removePoint(LinePoint point) {
+		assert (point != null && hasPoint(point));
+		if (getPathwayModel() != null)
+			getPathwayModel().removePathwayElement(point);
+		points.remove(point);
 		point.terminate();
 	}
 
@@ -106,11 +115,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * Removes all points from the points list.
 	 */
 	public void removePoints() {
-		for (int i = 0; i < points.size(); i++) {		
+		for (int i = 0; i < points.size(); i++) {
 			removePoint(points.get(i));
 		}
 	}
-
 
 	/**
 	 * Returns the start (first) point of points list. TODO necessary method?
@@ -155,8 +163,13 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param anchor the anchor to be added.
 	 */
 	public void addAnchor(Anchor anchor) {
-		assert (anchor != null) && (anchor.getLineElement() == this);
+		assert (anchor != null);
+		anchor.setLineElementTo(this); // TODO
+		assert (anchor.getLineElement() == this);
 		assert !hasAnchor(anchor);
+		// add anchor to same pathway model as line if applicable
+		if (getPathwayModel() != null)
+			getPathwayModel().addPathwayElement(anchor);
 		anchors.add(anchor);
 	}
 
@@ -166,6 +179,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param anchor the anchor to be removed.
 	 */
 	public void removeAnchor(Anchor anchor) {
+		assert (anchor != null && hasAnchor(anchor));
+		if (getPathwayModel() != null)
+			getPathwayModel().removePathwayElement(anchor);
+		anchors.remove(anchor);
 		anchor.terminate();
 	}
 
@@ -173,7 +190,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * Removes all anchors from the anchors list.
 	 */
 	public void removeAnchors() {
-		for (int i = 0; i < anchors.size(); i++) {		
+		for (int i = 0; i < anchors.size(); i++) {
 			removeAnchor(anchors.get(i));
 		}
 	}
@@ -221,15 +238,16 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * the new parent group. If there is an old parent group, this pathway element
 	 * is removed from its pathwayElements list.
 	 * 
-	 * @param groupRefNew the new parent group to set.
+	 * @param groupRef the new parent group to set.
 	 */
 	public void setGroupRefTo(Group groupRef) {
 		if (groupRef == null)
-			throw new IllegalArgumentException("Invalid datanode.");
+			throw new IllegalArgumentException("Invalid group.");
 		if (hasGroupRef())
-			throw new IllegalStateException("Line element already belongs to a group.");
+			throw new IllegalStateException("This pathway element already belongs to a group.");
 		setGroupRef(groupRef);
-		groupRef.addPathwayElement(this); // TODO
+		if (!groupRef.hasPathwayElement(this))
+			groupRef.addPathwayElement(this);
 	}
 
 	/**
@@ -246,9 +264,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 */
 	public void unsetGroupRef() {
 		if (hasGroupRef()) {
-			Group formerGroupRef = this.getGroupRef();
+			Group groupRef = getGroupRef();
 			setGroupRef(null);
-			formerGroupRef.removePathwayElement(this);
+			if (groupRef.hasPathwayElement(this))
+				groupRef.removePathwayElement(this);
 		}
 	}
 
@@ -263,10 +282,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		if (hasPathwayModel())
 			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
 		setPathwayModel(pathwayModel);
+		// if line element has points and anchors, also add them to pathway model TODO
 		for (LinePoint point : points) // TODO
-			point.setPathwayModel(pathwayModel);
+			pathwayModel.addPathwayElement(point);
 		for (Anchor anchor : anchors) // TODO
-			anchor.setPathwayModel(pathwayModel);
+			pathwayModel.addPathwayElement(anchor);
 	}
 
 	/**
@@ -290,10 +310,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
-		unsetGroupRef();
 		removePoints();
 		removeAnchors();
+		unsetPathwayModel();
+		unsetGroupRef();
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();

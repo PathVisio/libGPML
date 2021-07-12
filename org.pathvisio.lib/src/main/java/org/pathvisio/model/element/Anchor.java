@@ -33,20 +33,17 @@ public class Anchor extends PathwayElement {
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
-	 * @param lineElement the parent line pathway element.
 	 * @param position    the proportional distance of an anchor along the line it
 	 *                    belongs to.
 	 * @param shapeType   the visual representation of an anchor.
 	 */
-	public Anchor(LineElement lineElement, double position, AnchorShapeType shapeType) {
+	public Anchor(double position, AnchorShapeType shapeType) {
 		super();
-		setLineElementTo(lineElement);
 		if (position < 0 || position > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
 		this.position = position; // must be valid
-		if (shapeType != null)
-			this.shapeType = shapeType;
+		setShapeType(shapeType); 
 	}
 
 	/**
@@ -93,11 +90,8 @@ public class Anchor extends PathwayElement {
 	 * Unsets the line element, if any, from this anchor.
 	 */
 	public void unsetLineElement() {
-		if (hasLineElement()) {
-			LineElement formerLineElement = this.getLineElement();
+		if (hasLineElement())
 			setLineElement(null);
-			formerLineElement.removeAnchor(this);
-		}
 	}
 
 	/**
@@ -143,7 +137,7 @@ public class Anchor extends PathwayElement {
 	 * @param shapeType the shape type of the anchor.
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
-	public void setShape(AnchorShapeType shapeType) {
+	public void setShapeType(AnchorShapeType shapeType) {
 		if (shapeType == null) {
 			throw new IllegalArgumentException();
 		} else {

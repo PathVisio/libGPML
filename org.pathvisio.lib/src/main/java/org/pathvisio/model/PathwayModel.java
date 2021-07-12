@@ -577,7 +577,8 @@ public class PathwayModel {
 	}
 
 	public void removePathwayElement(PathwayElement pathwayElement) {
-		assert (pathwayElement != null && hasPathwayElement(pathwayElement));
+		assert (pathwayElement != null);
+		assert (hasPathwayElement(pathwayElement));
 		removeElementId(pathwayElement.getElementId());
 		pathwayElement.terminate(); // TODO
 	}

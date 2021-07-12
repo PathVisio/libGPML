@@ -146,9 +146,20 @@ public class Group extends ShapedElement {
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
 	public void addPathwayElement(Groupable pathwayElement) {
-		assert (pathwayElement != null) && (pathwayElement.getGroupRef() == this);
-		assert !hasPathwayElement(pathwayElement);
-		pathwayElements.add(pathwayElement);
+		assert (pathwayElement != null);
+		Group groupRef = pathwayElement.getGroupRef();
+		// set groupRef for pathway element if applicable
+		if (groupRef == null)
+			pathwayElement.setGroupRefTo(this);
+		// add pathway element to this group
+		if (groupRef == this && !hasPathwayElement(pathwayElement))
+			pathwayElements.add(pathwayElement);
+		// otherwise cannot add pathway element
+		if (groupRef != this && groupRef != null)
+			throw new IllegalStateException("Pathway element belongs to another group.");
+		if (hasPathwayElement(pathwayElement))
+			throw new IllegalStateException("Pathway element already belongs to this group.");
+
 	}
 
 	/**
@@ -157,7 +168,16 @@ public class Group extends ShapedElement {
 	 * @param pathwayElement the given pathwayElement to remove.
 	 */
 	public void removePathwayElement(Groupable pathwayElement) {
-		pathwayElement.terminate();
+		assert (pathwayElement != null);
+		Group groupRef = pathwayElement.getGroupRef();
+		// unset groupRef for pathway element if applicable
+		if (groupRef == this)
+			pathwayElement.unsetGroupRef();
+		if (groupRef == null && hasPathwayElement(pathwayElement))
+			pathwayElements.remove(pathwayElement);
+		// otherwise cannot remove pathway element
+		if ((groupRef != this && groupRef != null) || !hasPathwayElement(pathwayElement))
+			throw new IllegalStateException("Pathway element does not belong to this group.");
 	}
 
 	/**

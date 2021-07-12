@@ -826,7 +826,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// instantiates state
 			State state = new State(textLabel, type, relX, relY, width, height, fontProperty,
 					shapeStyleProperty);
-			state.setDataNodeTo(dataNode);
 			state.setElementId(elementId);
 			// sets textColor to same color as borderColor
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
@@ -845,7 +844,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				state.setXref(xref);
 			// adds state to parent data node of pathway model
 			dataNode.addState(state);
-			pathwayModel.addPathwayElement(state);
 		}
 	}
 
@@ -1089,11 +1087,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId(base + ".Graphics.Anchor", an, elementIdSet);
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
 			AnchorShapeType shapeType = AnchorShapeType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
-			Anchor anchor = new Anchor(lineElement, position, shapeType);
+			Anchor anchor = new Anchor(position, shapeType);
 			anchor.setElementId(elementId);
-			// adds anchor to line pathway element of pathway model
+			// adds anchor to line pathway element and pathway model
 			lineElement.addAnchor(anchor);
-			pathwayModel.addPathwayElement(anchor);
 		}
 	}
 
@@ -1143,13 +1140,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim()),
 							Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim()));
 					// instantiates point
-					LinePoint point = new LinePoint(lineElement, arrowHead, xy);
+					LinePoint point = new LinePoint(arrowHead, xy);
 					point.setElementId(elementId);
 					// adds point to line pathway element
-					if (point != null) {
-						lineElement.addPoint(point);
-						pathwayModel.addPathwayElement(point);
-					}
+					lineElement.addPoint(point); //TODO 
 					// sets optional parameters including elementRef (GraphRef in GPML2013a)
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					if (elementRefStr != null && !elementRefStr.equals("")) {

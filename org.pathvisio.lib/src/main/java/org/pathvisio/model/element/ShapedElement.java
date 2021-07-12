@@ -146,15 +146,16 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * the new parent group. If there is an old parent group, this pathway element
 	 * is removed from its pathwayElements list.
 	 * 
-	 * @param groupRefNew the new parent group to set.
+	 * @param groupRef the new parent group to set.
 	 */
 	public void setGroupRefTo(Group groupRef) {
 		if (groupRef == null)
-			throw new IllegalArgumentException("Invalid datanode.");
+			throw new IllegalArgumentException("Invalid group.");
 		if (hasGroupRef())
-			throw new IllegalStateException("Line element already belongs to a group.");
+			throw new IllegalStateException("This pathway element already belongs to a group.");
 		setGroupRef(groupRef);
-		groupRef.addPathwayElement(this); // TODO
+		if (!groupRef.hasPathwayElement(this))
+			groupRef.addPathwayElement(this);
 	}
 
 	/**
@@ -171,9 +172,10 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 */
 	public void unsetGroupRef() {
 		if (hasGroupRef()) {
-			Group formerGroupRef = this.getGroupRef();
+			Group groupRef = getGroupRef();
 			setGroupRef(null);
-			formerGroupRef.removePathwayElement(this);
+			if (groupRef.hasPathwayElement(this))
+				groupRef.removePathwayElement(this);
 		}
 	}
 

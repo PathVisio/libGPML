@@ -41,18 +41,15 @@ public class LinePoint extends PathwayElement {
 	 * Instantiates a Point pathway element, with reference to another pathway
 	 * element.
 	 * 
-	 * @param lineElement  the parent line element to which the point belongs.
-	 * @param arrowHead    the glyph at the ends of lines, intermediate points have
-	 *                     arrowhead type "line" by default.
-	 * @param xy           the xy coordinate position of the point.
-	 * @param elementRef   the pathway element to which the point refers.
-	 * @param relX         the relative x coordinate.
-	 * @param relY         the relative x coordinate.
+	 * @param arrowHead  the glyph at the ends of lines, intermediate points have
+	 *                   arrowhead type "line" by default.
+	 * @param xy         the xy coordinate position of the point.
+	 * @param elementRef the pathway element to which the point refers.
+	 * @param relX       the relative x coordinate.
+	 * @param relY       the relative x coordinate.
 	 */
-	public LinePoint(LineElement lineElement, ArrowHeadType arrowHead,
-			Coordinate xy, PathwayElement elementRef, double relX, double relY) {
+	public LinePoint(ArrowHeadType arrowHead, Coordinate xy, PathwayElement elementRef, double relX, double relY) {
 		super();
-		setLineElementTo(lineElement);
 		this.arrowHead = arrowHead;
 		this.xy = xy;
 		this.elementRef = elementRef;
@@ -64,14 +61,11 @@ public class LinePoint extends PathwayElement {
 	 * Instantiates a Point pathway element, with no reference to another pathway
 	 * element.
 	 * 
-	 * @param lineElement  the parent line pathway element.
-	 * @param arrowHead    the arrowhead property of the point (line by default).
-	 * @param xy           the xy coordinate position of the point.
+	 * @param arrowHead the arrowhead property of the point (line by default).
+	 * @param xy        the xy coordinate position of the point.
 	 */
-	public LinePoint(LineElement lineElement, ArrowHeadType arrowHead,
-			Coordinate xy) {
+	public LinePoint(ArrowHeadType arrowHead, Coordinate xy) {
 		super();
-		this.lineElement = lineElement;
 		this.arrowHead = arrowHead;
 		this.xy = xy;
 	}
@@ -120,11 +114,8 @@ public class LinePoint extends PathwayElement {
 	 * Unsets the line element, if any, from this point.
 	 */
 	public void unsetLineElement() {
-		if (hasLineElement()) {
-			LineElement formerLineElement = this.getLineElement();
+		if (hasLineElement())
 			setLineElement(null);
-			formerLineElement.removePoint(this);
-		}
 	}
 
 	/**
@@ -245,7 +236,7 @@ public class LinePoint extends PathwayElement {
 		}
 		this.relY = relY;
 	}
-	
+
 	/**
 	 * Terminates this point. The pathway model and line element, if any, are unset
 	 * from this point.
