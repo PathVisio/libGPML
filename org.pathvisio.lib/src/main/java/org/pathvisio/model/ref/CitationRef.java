@@ -205,8 +205,8 @@ public class CitationRef implements Annotatable {
 	 */
 	@Override
 	public void removeAnnotationRefs() {
-		for (AnnotationRef annotationRef : annotationRefs) {
-			removeAnnotationRef(annotationRef);
+		for (int i = 0; i < annotationRefs.size(); i++) {		
+			removeAnnotationRef(annotationRefs.get(i));
 		}
 	}
 

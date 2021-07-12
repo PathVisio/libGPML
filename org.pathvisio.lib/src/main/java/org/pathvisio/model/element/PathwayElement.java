@@ -86,9 +86,8 @@ public abstract class PathwayElement {
 	 * element no longer belongs to a pathway model.
 	 */
 	public void unsetPathwayModel() {
-		if (hasPathwayModel()) {
+		if (hasPathwayModel()) 
 			setPathwayModel(null);
-		}
 	}
 
 	/**

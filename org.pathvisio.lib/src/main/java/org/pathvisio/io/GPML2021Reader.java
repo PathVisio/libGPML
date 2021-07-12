@@ -620,8 +620,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				// sets zOrder based on parent data node TODO
 				shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
-				State state = new State(dataNode, textLabel, type, relX, relY, width, height, fontProperty,
+				State state = new State(textLabel, type, relX, relY, width, height, fontProperty,
 						shapeStyleProperty);
+				state.setDataNodeTo(dataNode);
 				state.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, state, st);

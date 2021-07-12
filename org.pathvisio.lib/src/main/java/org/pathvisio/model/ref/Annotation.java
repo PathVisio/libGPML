@@ -199,8 +199,8 @@ public class Annotation extends PathwayElement {
 	 * Removes all annotationRefs from annotationRefs list of the citation.
 	 */
 	public void removeAnnotationRefs() {
-		for (AnnotationRef annotationRef : annotationRefs) {
-			removeAnnotationRef(annotationRef);
+		for (int i = 0; i < annotationRefs.size(); i++) {		
+			removeAnnotationRef(annotationRefs.get(i));
 		}
 	}
 

@@ -106,10 +106,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * Removes all points from the points list.
 	 */
 	public void removePoints() {
-		for (LinePoint point : points) {
-			this.removePoint(point);
+		for (int i = 0; i < points.size(); i++) {		
+			removePoint(points.get(i));
 		}
 	}
+
 
 	/**
 	 * Returns the start (first) point of points list. TODO necessary method?
@@ -172,8 +173,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * Removes all anchors from the anchors list.
 	 */
 	public void removeAnchors() {
-		for (Anchor anchor : anchors) {
-			this.removeAnchor(anchor);
+		for (int i = 0; i < anchors.size(); i++) {		
+			removeAnchor(anchors.get(i));
 		}
 	}
 

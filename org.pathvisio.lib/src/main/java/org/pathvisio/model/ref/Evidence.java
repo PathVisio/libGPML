@@ -181,8 +181,8 @@ public class Evidence extends PathwayElement {
 	 * Removes all evidenceRefs from evidenceRefs list of the evidence.
 	 */
 	public void removeEvidenceRefs() {
-		for (EvidenceRef evidenceRef : evidenceRefs) {
-			removeEvidenceRef(evidenceRef);
+		for (int i = 0; i < evidenceRefs.size(); i++) {		
+			removeEvidenceRef(evidenceRefs.get(i));
 		}
 	}
 

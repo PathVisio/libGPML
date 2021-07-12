@@ -229,8 +229,8 @@ public class Citation extends PathwayElement {
 	 * Removes all citationRefs from citationRefs list of the citation.
 	 */
 	public void removeCitationRefs() {
-		for (CitationRef citationRef : citationRefs) {
-			removeCitationRef(citationRef);
+		for (int i = 0; i < citationRefs.size(); i++) {		
+			removeCitationRef(citationRefs.get(i));
 		}
 	}
 

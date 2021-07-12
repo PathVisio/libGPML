@@ -41,8 +41,6 @@ public class State extends ElementInfo {
 	/**
 	 * Instantiates a State pathway element given all possible parameters.
 	 * 
-	 * @param dataNode           the parent data node (NB: elementRef was formerly
-	 *                           elementId of parent data node).
 	 * @param textLabel          the text label of the state.
 	 * @param type               the type of the state, e.g. protein modification.
 	 * @param relX               the relative x coordinates on the parent object,
@@ -57,10 +55,9 @@ public class State extends ElementInfo {
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
 	 * @param xref               the state xref.
 	 */
-	public State(DataNode dataNode, String textLabel, StateType type, double relX, double relY, double width,
-			double height, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Xref xref) {
+	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
+			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Xref xref) {
 		super();
-		setDataNodeTo(dataNode);
 		this.textLabel = textLabel;
 		this.type = type;
 		this.relX = relX;
@@ -76,9 +73,9 @@ public class State extends ElementInfo {
 	 * Instantiates a State pathway element given all possible parameters except
 	 * xref.
 	 */
-	public State(DataNode dataNode, String textLabel, StateType type, double relX, double relY, double width,
-			double height, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
-		this(dataNode, textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, null);
+	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
+			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
+		this(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, null);
 	}
 
 	/**
@@ -131,11 +128,8 @@ public class State extends ElementInfo {
 	 * Unsets the data node, if any, from this state.
 	 */
 	public void unsetDataNode() {
-		if (hasDataNode()) {
-			DataNode formerDataNode = this.getDataNode();
+		if (hasDataNode()) 
 			setDataNode(null);
-			formerDataNode.removeState(this);
-		}
 	}
 
 	/**

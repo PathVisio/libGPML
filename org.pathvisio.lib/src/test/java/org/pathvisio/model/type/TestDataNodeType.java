@@ -16,13 +16,12 @@
  ******************************************************************************/
 package org.pathvisio.model.type;
 
-
 import java.util.List;
 
 import junit.framework.TestCase;
 
 /**
- * Test for extensible enum class. Tests DataNodeType as an example. 
+ * Test for extensible enum class. Tests DataNodeType as an example.
  * 
  * @author finterly
  */
@@ -32,30 +31,41 @@ public class TestDataNodeType extends TestCase {
 	 * For testing data node type features.
 	 */
 	public static void testDataNodeType() {
-		
-		DataNodeType.register("RNA");
-		// should not add "Rna" as it is same as "RNA" aside from case 
-		DataNodeType.register("Rna");
-		// should not add "comPLEX" as it is same as "Complex" aside from case 
-		DataNodeType.register("comPLEX");
-		// should add "new data node type" 
-		DataNodeType.register("new data node type");
-		// should not add "NEW data NODE type" 
-		DataNodeType.register("NEW data NODE type");
-		
+
+		// returns "RNA"
+		DataNodeType rna1 = DataNodeType.register("RNA");
+		// should return "RNA" in place of "Rna"
+		DataNodeType rna2 = DataNodeType.register("Rna");
+		// should both equal "RNA"
+		assertEquals(rna1, rna2);
+
+		// should return "Complex" in place of "comPLEX"
+		DataNodeType complex1 = DataNodeType.register("comPLEX");
+		// should both equal "Complex"
+		assertEquals(complex1, DataNodeType.COMPLEX);
+
+		// should add "new data node type"
+		DataNodeType new1 = DataNodeType.register("new data node type");
+		// should not add "NEW data NODE type"
+		DataNodeType new2 = DataNodeType.register("NEW data NODE type");
+		// should both equal "new data node type"
+		assertEquals(new1, new2);
+
 		List<String> names = DataNodeType.getNames();
-		for (String i: names) {
+		for (String i : names) {
 			System.out.println(i);
 		}
-		
 		List<DataNodeType> values = DataNodeType.getValues();
 
-		for (DataNodeType i: values) {
+		for (DataNodeType i : values) {
 			System.out.println(i);
 		}
+		assertTrue(names.contains("RNA"));
+		assertFalse(names.contains("Rna"));
 		assertTrue(names.contains("new data node type"));
+		assertFalse(names.contains("NEW data NODE type"));
 
 		System.out.println(DataNodeType.getNames());
-		
+
 	}
 }

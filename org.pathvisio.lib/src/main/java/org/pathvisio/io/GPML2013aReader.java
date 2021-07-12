@@ -824,8 +824,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// sets zOrder based on parent data node TODO
 			shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
 			// instantiates state
-			State state = new State(dataNode, textLabel, type, relX, relY, width, height, fontProperty,
+			State state = new State(textLabel, type, relX, relY, width, height, fontProperty,
 					shapeStyleProperty);
+			state.setDataNodeTo(dataNode);
 			state.setElementId(elementId);
 			// sets textColor to same color as borderColor
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());

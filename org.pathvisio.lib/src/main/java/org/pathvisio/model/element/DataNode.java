@@ -17,6 +17,7 @@
 package org.pathvisio.model.element;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayModel;
@@ -209,11 +210,13 @@ public class DataNode extends ShapedElement {
 	 * @param state the state to be added.
 	 */
 	public void addState(State state) {
-		assert (state != null) && (state.getDataNode() == this);
+		assert (state != null);
+		state.setDataNodeTo(this); // TODO
+		assert (state.getDataNode() == this);
 		assert !hasState(state);
-		if (getPathwayModel() != null) {
-			state.setPathwayModel(getPathwayModel()); // TODO
-		}
+		// add state to same pathway model as data node if applicable
+		if (getPathwayModel() != null)
+			getPathwayModel().addPathwayElement(state);
 		states.add(state);
 	}
 
@@ -223,6 +226,10 @@ public class DataNode extends ShapedElement {
 	 * @param state the state to be removed.
 	 */
 	public void removeState(State state) {
+		assert (state != null && hasState(state));
+		if (getPathwayModel() != null)
+			getPathwayModel().removePathwayElement(state);
+		states.remove(state);
 		state.terminate();
 	}
 
@@ -230,11 +237,13 @@ public class DataNode extends ShapedElement {
 	 * Removes all states from states list.
 	 */
 	public void removeStates() {
-		for (State state : states) {
-			this.removeState(state);
+		for (int i = 0; i < states.size(); i++) {		
+			removeState(states.get(i));
 		}
 	}
 
+
+	
 	/**
 	 * Returns the pathway element to which the data node refers to as an alias. In
 	 * GPML, this is elementRef which refers to the elementId of a pathway element
@@ -291,9 +300,9 @@ public class DataNode extends ShapedElement {
 	 */
 	@Override
 	public void terminate() {
+		removeStates();
 		unsetPathwayModel();
 		unsetGroupRef();
-		removeStates();
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();// TODO

@@ -197,8 +197,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeAnnotationRefs() {
-		for (AnnotationRef annotationRef : annotationRefs) {
-			removeAnnotationRef(annotationRef);
+		for (int i = 0; i < annotationRefs.size(); i++) {		
+			removeAnnotationRef(annotationRefs.get(i));
 		}
 	}
 
@@ -251,8 +251,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeCitationRefs() {
-		for (CitationRef citationRef : citationRefs) {
-			removeCitationRef(citationRef);
+		for (int i = 0; i < citationRefs.size(); i++) {		
+			removeCitationRef(citationRefs.get(i));
 		}
 	}
 

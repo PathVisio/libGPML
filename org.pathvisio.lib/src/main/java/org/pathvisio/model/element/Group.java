@@ -16,11 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.model.element;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
@@ -37,7 +36,7 @@ public class Group extends ShapedElement {
 	private String textLabel; // optional
 	private Xref xref; // optional
 	/* list of pathway elements which belong to the group. */
-	private Set<Groupable> pathwayElements; // should have at least one pathway element
+	private List<Groupable> pathwayElements; // should have at least one pathway element
 
 	/**
 	 * Instantiates a Group given all possible parameters.
@@ -57,7 +56,7 @@ public class Group extends ShapedElement {
 		this.type = type;
 		this.textLabel = textLabel;
 		this.xref = xref;
-		this.pathwayElements = new HashSet<Groupable>();
+		this.pathwayElements = new ArrayList<Groupable>();
 	}
 
 	/**
@@ -127,7 +126,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @return pathwayElements the list of pathway elements belonging to the group.
 	 */
-	public Set<Groupable> getPathwayElements() {
+	public List<Groupable> getPathwayElements() {
 		return pathwayElements;
 	}
 
@@ -164,9 +163,9 @@ public class Group extends ShapedElement {
 	/**
 	 * Removes all pathway elements from the pathwayElements list.
 	 */
-	public void removeAnchors() {
-		for (Groupable pathwayElement : pathwayElements) {
-			removePathwayElement(pathwayElement);
+	public void removePathwayElement() {
+		for (int i = 0; i < pathwayElements.size(); i++) {
+			removePathwayElement(pathwayElements.get(i));
 		}
 	}
 
