@@ -16,6 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.pathvisio.model.element.DataNode;
+import org.pathvisio.model.element.Group;
+import org.pathvisio.model.element.Interaction;
+
 import junit.framework.TestCase;
 
 /**
@@ -31,52 +35,49 @@ public class TestMGroup extends TestCase
 	 */
 	public void testUngroup()
 	{
-//		Pathway pwy = new Pathway();
-//		MLine line = (MLine)PathwayElement.createPathwayElement(ObjectType.LINE);
-//		MGroup group = (MGroup)PathwayElement.createPathwayElement(ObjectType.GROUP);
-//		PathwayElement node = new DataNode( );
-//		pwy.add(line);
-//		pwy.add(node);
-//		pwy.add(group);
-//		
-//		node.setGeneratedGraphId();
-//		line.setGeneratedGraphId();
-//		
-//		group.createGroupId();
-//		assertNotNull (group.getGroupId());
-//		
-//		node.setMCenterX(120);
-//		node.setMCenterY(20);
-//		node.setMWidth(20);
-//		node.setMHeight(20);
-//		
-//		assertEquals (0, group.getGroupElements().size());
-//		
-//		// add node to group
-//		node.setGroupRef(group.getGroupId());
-//		
-//		// check that now it's really part of group
-//		assertEquals (1, group.getGroupElements().size());
-//		assertTrue (group.getGroupElements().contains(node));
-//		
-//		line.setMEndX(group.getMCenterX());
-//		line.setMEndY(group.getMTop());
-//		line.setEndGraphRef(group.getGraphId());
-//		assertEquals (line.getEndGraphRef(), group.getGraphId());
-//		
-//		assertEquals (8.0, group.getGroupStyle().getMMargin());
-//		
-//		assertEquals (120.0, line.getMEndX(), 0.01);
-//		assertEquals (2.0, line.getMEndY(), 0.01);
-//		
-//		// ungroup
-//		pwy.remove(group);
-//		
-//		// check that line points at same position
-//		assertEquals (120.0, line.getMEndX());
-//		assertEquals (2.0, line.getMEndY());
-//		assertNull (line.getEndGraphRef());
-//		assertNull (node.getGroupRef());
+		PathwayModel pwy = new PathwayModel();
+		Interaction line = new Interaction(null);
+		
+		Group group = new Group(null, null, null, null);
+		DataNode node = new DataNode(null, null, null, "d1", null );
+		pwy.addInteraction(line);
+		pwy.addDataNode(node);
+		pwy.addGroup(group);
+		
+		assertNotNull(group.getElementId());
+		
+		node.getRectProperty().getCenterXY().setX(120);
+		node.getRectProperty().getCenterXY().setY(20);
+		node.getRectProperty().setWidth(20);
+		node.getRectProperty().setHeight(20);
+		
+		assertEquals (0, group.getPathwayElements().size());
+		
+		// add node to group
+		node.setGroupRefTo(group);
+		
+		// check that now it's really part of group
+		assertEquals (1, group.getPathwayElements().size());
+		assertTrue (group.getPathwayElements().contains(node));
+		
+		line.setMEndX(group.getMCenterX());
+		line.setMEndY(group.getMTop());
+		line.setEndGraphRef(group.getElementId());
+		assertEquals (line.getEndGraphRef(), group.getElementId());
+		
+		assertEquals (8.0, group.getGroupType().getMMargin());
+		
+		assertEquals (120.0, line.getMEndX(), 0.01);
+		assertEquals (2.0, line.getMEndY(), 0.01);
+		
+		// ungroup
+		pwy.remove(group);
+		
+		// check that line points at same position
+		assertEquals (120.0, line.getMEndX());
+		assertEquals (2.0, line.getMEndY());
+		assertNull (line.getEndGraphRef());
+		assertNull (node.getGroupRef());
 	}
 	
 }
