@@ -17,7 +17,6 @@
 package org.pathvisio.model.element;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayModel;
@@ -237,13 +236,11 @@ public class DataNode extends ShapedElement {
 	 * Removes all states from states list.
 	 */
 	public void removeStates() {
-		for (int i = 0; i < states.size(); i++) {		
+		for (int i = 0; i < states.size(); i++) {
 			removeState(states.get(i));
 		}
 	}
 
-
-	
 	/**
 	 * Returns the pathway element to which the data node refers to as an alias. In
 	 * GPML, this is elementRef which refers to the elementId of a pathway element
@@ -277,8 +274,9 @@ public class DataNode extends ShapedElement {
 		if (hasPathwayModel())
 			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
 		setPathwayModel(pathwayModel);
-		for (State state : states) // TODO
-			state.setPathwayModel(pathwayModel);
+		// if data node has states, also add states to pathway model TODO
+		for (State state : states)
+			pathwayModel.addPathwayElement(state);
 	}
 
 	/**

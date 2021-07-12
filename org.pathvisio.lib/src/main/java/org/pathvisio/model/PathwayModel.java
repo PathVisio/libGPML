@@ -236,7 +236,6 @@ public class PathwayModel {
 	public void addDataNode(DataNode dataNode) {
 		addPathwayElement(dataNode);
 		dataNodes.add(dataNode);
-
 	}
 
 	/**
