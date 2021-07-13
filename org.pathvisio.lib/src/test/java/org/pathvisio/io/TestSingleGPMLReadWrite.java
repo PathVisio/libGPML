@@ -43,7 +43,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("State_Comment_Test_WP1602.gpml");
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource("WP554_77713_2.gpml");
+				.getResource("WP2279.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
@@ -63,8 +63,8 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		
 		
 		File tmp = File.createTempFile("testwrite", ".gpml");
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}

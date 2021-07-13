@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bridgedb.Xref;
@@ -466,7 +467,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String source = getAttr("Comment", "Source", cmt);
 			String commentText = cmt.getText();
 			// if source is WikiPathways-description, set as pathway description
-			if (source.equals(WP_DESCRIPTION)) {
+			System.out.println(source);
+			System.out.println(commentText);
+			if (Objects.equals(WP_DESCRIPTION, source)) {
 				pathwayModel.getPathway().setDescription(commentText);
 				continue;
 			}
