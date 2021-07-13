@@ -176,8 +176,9 @@ public class Group extends ShapedElement {
 		if (groupRef == null && hasPathwayElement(pathwayElement))
 			pathwayElements.remove(pathwayElement);
 		// otherwise cannot remove pathway element
-		if ((groupRef != this && groupRef != null) || !hasPathwayElement(pathwayElement))
+		if (groupRef != this && groupRef != null || !hasPathwayElement(pathwayElement)) {
 			throw new IllegalStateException("Pathway element does not belong to this group.");
+		}
 	}
 
 	/**
