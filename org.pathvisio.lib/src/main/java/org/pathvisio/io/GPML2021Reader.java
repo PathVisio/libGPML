@@ -34,6 +34,7 @@ import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Evidenceable;
@@ -397,7 +398,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			System.out.println(anntRef.getAttributeValue("elementRef"));
 			Annotation annotation = (Annotation) pathwayModel
 					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = new AnnotationRef(annotation, annotatable);
+			AnnotationRef annotationRef = new AnnotationRef(annotation);
 			readCitationRefs(pathwayModel, annotationRef, anntRef);
 			readEvidenceRefs(pathwayModel, annotationRef, anntRef);
 			annotatable.addAnnotationRef(annotationRef);
@@ -418,8 +419,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
 			Citation citation = (Citation) pathwayModel.getPathwayElement(citRef.getAttributeValue("elementRef"));
 			if (citation != null) {
-				// create new citationRef for citation referenced
-				CitationRef citationRef = new CitationRef(citation, citable);
+				// create new citationRef for citation reference
+				CitationRef citationRef = new CitationRef(citation);
 				readAnnotationRefs(pathwayModel, citationRef, citRef);
 				citable.addCitationRef(citationRef);
 			}

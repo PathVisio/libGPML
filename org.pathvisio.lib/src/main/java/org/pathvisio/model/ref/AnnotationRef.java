@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.model.Pathway;
-import org.pathvisio.model.element.ElementInfo;
 
 /**
  * This class stores information for an AnnotationRef with source
@@ -40,18 +39,23 @@ public class AnnotationRef implements Citable, Evidenceable {
 	private List<EvidenceRef> evidenceRefs; // 0 to unbounded
 
 	/**
-	 * Instantiates an AnnotationRef given source {@link Annotation} and target
-	 * {@link Annotatable}, and initializes citationRefs and evidenceRefs lists.
+	 * Instantiates an AnnotationRef given source {@link Annotation} and initializes
+	 * citationRefs and evidenceRefs lists.
 	 * 
-	 * @param annotation  the source annotation this AnnotationRef refers to.
-	 * @param annotatable the target pathway, pathway element, or citationRef to
-	 *                    which the AnnotationRef belongs.
+	 * @param annotation the source annotation this AnnotationRef refers to.
 	 */
-	public AnnotationRef(Annotation annotation, Annotatable annotatable) {
-		this.setAnnotationTo(annotation);
-		this.setAnnotatableTo(annotatable);
+	public AnnotationRef(Annotation annotation) {
+		setAnnotationTo(annotation);
 		this.citationRefs = new ArrayList<CitationRef>();
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
+	}
+
+	/**
+	 * Instantiates an AnnotationRef. Source annotation is to be set with
+	 * {@link #setAnnotationTo()}
+	 */
+	public AnnotationRef() {
+		this(null);
 	}
 
 	/**
@@ -84,6 +88,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 		if (hasAnnotation())
 			throw new IllegalStateException("AnnotationRef already has a source annotation.");
 		setAnnotation(annotation);
+		if (!annotation.hasAnnotationRef(this))
+			annotation.addAnnotationRef(this);
 	}
 
 	/**
@@ -100,9 +106,10 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	public void unsetAnnotation() {
 		if (hasAnnotation()) {
-			Annotation formerAnnotation = this.getAnnotation();
+			Annotation annotation = getAnnotation();
 			setAnnotation(null);
-			formerAnnotation.removeAnnotationRef(this);
+			if (annotation.hasAnnotationRef(this))
+				annotation.removeAnnotationRef(this);
 		}
 	}
 
@@ -155,9 +162,10 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	public void unsetAnnotatable() {
 		if (hasAnnotatable()) {
-			Annotatable formerAnnotatable = this.getAnnotatable();
+			Annotatable annotatable = getAnnotatable();
 			setAnnotatable(null);
-			formerAnnotatable.removeAnnotationRef(this);
+			if (annotatable.hasAnnotationRef(this))
+				annotatable.removeAnnotationRef(this);
 		}
 	}
 
@@ -190,7 +198,9 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		assert (citationRef != null) && (citationRef.getCitable() == this);
+		assert (citationRef != null);
+		citationRef.setCitableTo(this); // TODO
+		assert (citationRef.getCitable() == this);
 		assert !hasCitationRef(citationRef);
 		citationRefs.add(citationRef);
 	}
@@ -202,6 +212,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	@Override
 	public void removeCitationRef(CitationRef citationRef) {
+		assert (citationRef != null && hasCitationRef(citationRef));
+		citationRefs.remove(citationRef);
 		citationRef.terminate();
 	}
 
@@ -210,14 +222,10 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	@Override
 	public void removeCitationRefs() {
-		for (int i = 0; i < citationRefs.size(); i++) {		
+		for (int i = 0; i < citationRefs.size(); i++) {
 			removeCitationRef(citationRefs.get(i));
 		}
 	}
-
-	/*
-	 * -----------------------------------------------------------------------------
-	 */
 
 	/**
 	 * Returns the list of evidence references.
@@ -248,7 +256,9 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null) && (evidenceRef.getEvidenceable() == this);
+		assert (evidenceRef != null);
+		evidenceRef.setEvidenceableTo(this); // TODO
+		assert (evidenceRef.getEvidenceable() == this);
 		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
@@ -260,6 +270,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	@Override
 	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+		assert (evidenceRef != null && hasEvidenceRef(evidenceRef));
+		evidenceRefs.remove(evidenceRef);
 		evidenceRef.terminate();
 	}
 
@@ -268,7 +280,7 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 */
 	@Override
 	public void removeEvidenceRefs() {
-		for (int i = 0; i < evidenceRefs.size(); i++) {		
+		for (int i = 0; i < evidenceRefs.size(); i++) {
 			removeEvidenceRef(evidenceRefs.get(i));
 		}
 	}

@@ -175,9 +175,13 @@ public class Annotation extends PathwayElement {
 	 * @param annotationRef the given annotationRef to add.
 	 */
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null) && (annotationRef.getAnnotatable() == this);
-		assert !hasAnnotationRef(annotationRef);
-		annotationRefs.add(annotationRef);
+		assert (annotationRef != null);
+		// set citation for citationRef if necessary
+		if (annotationRef.getAnnotation() == null)
+			annotationRef.setAnnotationTo(this);
+		// add citationRef to citationRefs
+		if (annotationRef.getAnnotation() == this && !hasAnnotationRef(annotationRef))
+			annotationRefs.add(annotationRef);
 	}
 
 	/**
@@ -188,18 +192,21 @@ public class Annotation extends PathwayElement {
 	 * @param annotationRef the given annotationRef to remove.
 	 */
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		assert (annotationRef != null);
 		annotationRef.terminate();
-		// remove this annotation from pathway model if empty TODO
-		if (annotationRefs.isEmpty()) {
+		// remove annotationRef from this annotation
+		if (annotationRef.getAnnotation() == null && hasAnnotationRef(annotationRef))
+			annotationRefs.remove(annotationRef);
+		// remove this annotation from pathway model if empty! TODO
+		if (annotationRefs.isEmpty())
 			getPathwayModel().removeAnnotation(this);
-		}
 	}
 
 	/**
 	 * Removes all annotationRefs from annotationRefs list of the citation.
 	 */
 	public void removeAnnotationRefs() {
-		for (int i = 0; i < annotationRefs.size(); i++) {		
+		for (int i = 0; i < annotationRefs.size(); i++) {
 			removeAnnotationRef(annotationRefs.get(i));
 		}
 	}

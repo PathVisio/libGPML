@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.element.Group;
 import org.pathvisio.model.element.PathwayElement;
 
 /**
@@ -45,9 +46,8 @@ public class Citation extends PathwayElement {
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters.
 	 * 
-	 * @param xref         the citation xref.
-	 * @param url          the url link and description (optional) for a web
-	 *                     address.
+	 * @param xref the citation xref.
+	 * @param url  the url link and description (optional) for a web address.
 	 */
 	public Citation(Xref xref, UrlRef url) {
 		super();
@@ -205,9 +205,13 @@ public class Citation extends PathwayElement {
 	 * @param citationRef the given citationRef to add.
 	 */
 	public void addCitationRef(CitationRef citationRef) {
-		assert (citationRef != null) && (citationRef.getCitation() == this);
-		assert !hasCitationRef(citationRef);
-		citationRefs.add(citationRef);
+		assert (citationRef != null);
+		// set citation for citationRef if necessary
+		if (citationRef.getCitation() == null)
+			citationRef.setCitationTo(this);
+		// add citationRef to citationRefs
+		if (citationRef.getCitation() == this && !hasCitationRef(citationRef))
+			citationRefs.add(citationRef);
 	}
 
 	/**
@@ -218,26 +222,28 @@ public class Citation extends PathwayElement {
 	 * @param citationRef the given citationRef to remove.
 	 */
 	public void removeCitationRef(CitationRef citationRef) {
+		assert (citationRef != null);
 		citationRef.terminate();
-		// remove this citation from pathway model if empty TODO
-		if (citationRefs.isEmpty()) {
-			terminate();
-		}
+		// remove citationRef from this citation
+		if (citationRef.getCitation() == null && hasCitationRef(citationRef))
+			citationRefs.remove(citationRef);
+		// remove this citation from pathway model if empty! TODO
+		if (citationRefs.isEmpty())
+			getPathwayModel().removeCitation(this);
 	}
 
 	/**
 	 * Removes all citationRefs from citationRefs list of the citation.
 	 */
 	public void removeCitationRefs() {
-		for (int i = 0; i < citationRefs.size(); i++) {		
+		for (int i = 0; i < citationRefs.size(); i++) {
 			removeCitationRef(citationRefs.get(i));
 		}
 	}
 
 	/**
-	 * Terminates this citation. The pathway model, if any, are unset from
-	 * this citationRef. Links to all citationRefs are removed from this
-	 * citationRef.
+	 * Terminates this citation. The pathway model, if any, are unset from this
+	 * citationRef. Links to all citationRefs are removed from this citationRef.
 	 */
 	@Override
 	public void terminate() {

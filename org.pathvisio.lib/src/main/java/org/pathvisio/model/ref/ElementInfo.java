@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.element;
+package org.pathvisio.model.ref;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +23,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.pathvisio.model.Comment;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.ref.Annotatable;
-import org.pathvisio.model.ref.AnnotationRef;
-import org.pathvisio.model.ref.Citable;
-import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.EvidenceRef;
-import org.pathvisio.model.ref.Evidenceable;
+import org.pathvisio.model.element.PathwayElement;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an
@@ -176,8 +170,10 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 * @param annotationRef the annotationRef to be added.
 	 */
 	@Override
-	public void addAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null) && (annotationRef.getAnnotatable() == this);
+	public void addAnnotationRef(AnnotationRef annotationRef) {	
+		assert (annotationRef != null);
+		annotationRef.setAnnotatableTo(this); // TODO
+		assert (annotationRef.getAnnotatable() == this);
 		assert !hasAnnotationRef(annotationRef);
 		annotationRefs.add(annotationRef);
 	}
@@ -189,6 +185,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		assert (annotationRef != null && hasAnnotationRef(annotationRef));
+		annotationRefs.remove(annotationRef);
 		annotationRef.terminate();
 	}
 
@@ -231,7 +229,9 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		assert (citationRef != null) && (citationRef.getCitable() == this);
+		assert (citationRef != null);
+		citationRef.setCitableTo(this); // TODO
+		assert (citationRef.getCitable() == this);
 		assert !hasCitationRef(citationRef);
 		citationRefs.add(citationRef);
 	}
@@ -243,6 +243,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeCitationRef(CitationRef citationRef) {
+		assert (citationRef != null && hasCitationRef(citationRef));
+		citationRefs.remove(citationRef);
 		citationRef.terminate();
 	}
 
@@ -285,7 +287,9 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null) && (evidenceRef.getEvidenceable() == this);
+		assert (evidenceRef != null);
+		evidenceRef.setEvidenceableTo(this); // TODO
+		assert (evidenceRef.getEvidenceable() == this);
 		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
@@ -297,6 +301,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+		assert (evidenceRef != null && hasEvidenceRef(evidenceRef));
+		evidenceRefs.remove(evidenceRef);
 		evidenceRef.terminate();
 	}
 

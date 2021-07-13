@@ -76,7 +76,7 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		annotationRef1.addEvidenceRef(new EvidenceRef(evidence2, annotationRef1));
 		// adds citation b9d pathwayModel to annotationRef as citationRef
 		Citation citation1 = pathwayModel.getCitations().get(2);
-		CitationRef citationRef1 = new CitationRef(citation1, pathwayModel.getPathway());
+		CitationRef citationRef1 = new CitationRef();
 		annotationRef1.addCitationRef(citationRef1);
 
 		/**

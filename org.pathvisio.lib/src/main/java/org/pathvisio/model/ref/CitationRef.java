@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.model.Pathway;
-import org.pathvisio.model.element.ElementInfo;
+import org.pathvisio.model.element.Group;
 
 /**
  * This class stores information for a CitationRef with source {@link Citation},
@@ -38,17 +38,23 @@ public class CitationRef implements Annotatable {
 	private List<AnnotationRef> annotationRefs; // 0 to unbounded
 
 	/**
-	 * Instantiates an CitationRef given source {@link Citation} and target
-	 * {@link Citable}, and initializes annotationRefs lists.
+	 * Instantiates an CitationRef given source {@link Citation} and initializes
+	 * annotationRefs lists.
 	 * 
 	 * @param citation the source citation this CitationRef refers to.
-	 * @param citable  the target pathway, pathway element, or annotationRef to
-	 *                 which the CitationRef belongs.
 	 */
-	public CitationRef(Citation citation, Citable citable) {
-		this.setCitationTo(citation);
-		this.setCitableTo(citable);
+	public CitationRef(Citation citation) {
 		this.annotationRefs = new ArrayList<AnnotationRef>();
+	}
+
+	/**
+	 * Instantiates an CitationRef. Source annotation is to be set with
+	 * {@link #setCitationTo()}
+	 * 
+	 * @param citation the source citation this CitationRef refers to.
+	 */
+	public CitationRef() {
+		this(null);
 	}
 
 	/**
@@ -80,6 +86,8 @@ public class CitationRef implements Annotatable {
 		if (hasCitation())
 			throw new IllegalStateException("CitationRef already has a source citation.");
 		setCitation(citation);
+		if (!citation.hasCitationRef(this))
+			citation.addCitationRef(this);
 	}
 
 	/**
@@ -96,9 +104,10 @@ public class CitationRef implements Annotatable {
 	 */
 	public void unsetCitation() {
 		if (hasCitation()) {
-			Citation formerCitation = this.getCitation();
+			Citation citation = getCitation();
 			setCitation(null);
-			formerCitation.removeCitationRef(this);
+			if (citation.hasCitationRef(this))
+				citation.removeCitationRef(this);
 		}
 	}
 
@@ -150,9 +159,10 @@ public class CitationRef implements Annotatable {
 	 */
 	public void unsetCitable() {
 		if (hasCitable()) {
-			Citable formerCitable = this.getCitable();
+			Citable citable = getCitable();
 			setCitable(null);
-			formerCitable.removeCitationRef(this);
+			if (citable.hasCitationRef(this))
+				citable.removeCitationRef(this);
 		}
 	}
 
@@ -185,7 +195,9 @@ public class CitationRef implements Annotatable {
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null) && (annotationRef.getAnnotatable() == this);
+		assert (annotationRef != null);
+		annotationRef.setAnnotatableTo(this); // TODO
+		assert (annotationRef.getAnnotatable() == this);
 		assert !hasAnnotationRef(annotationRef);
 		annotationRefs.add(annotationRef);
 	}
@@ -197,6 +209,8 @@ public class CitationRef implements Annotatable {
 	 */
 	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
+		assert (annotationRef != null && hasAnnotationRef(annotationRef));
+		annotationRefs.remove(annotationRef);
 		annotationRef.terminate();
 	}
 
@@ -205,7 +219,7 @@ public class CitationRef implements Annotatable {
 	 */
 	@Override
 	public void removeAnnotationRefs() {
-		for (int i = 0; i < annotationRefs.size(); i++) {		
+		for (int i = 0; i < annotationRefs.size(); i++) {
 			removeAnnotationRef(annotationRefs.get(i));
 		}
 	}

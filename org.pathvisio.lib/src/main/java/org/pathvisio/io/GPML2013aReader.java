@@ -40,6 +40,7 @@ import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
@@ -320,7 +321,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// adds annotation to pathway model
 			annotation = pathwayModel.addAnnotation(annotation);
 			// adds annotationRef to pathway of pathway model for GPML2013a
-			pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation, pathwayModel.getPathway()));
+			pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation));
 		}
 	}
 
@@ -507,7 +508,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
 			// if citation is valid, create citationRef and add to pathway model
 			if (citation != null) {
-				CitationRef citationRef = new CitationRef(citation, pathwayModel.getPathway());
+				CitationRef citationRef = new CitationRef(citation);
 				if (citationRef != null)
 					pathwayModel.getPathway().addCitationRef(citationRef);
 			} else {
@@ -824,8 +825,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// sets zOrder based on parent data node TODO
 			shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
 			// instantiates state
-			State state = new State(textLabel, type, relX, relY, width, height, fontProperty,
-					shapeStyleProperty);
+			State state = new State(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty);
 			state.setElementId(elementId);
 			// sets textColor to same color as borderColor
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
@@ -943,7 +943,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					// replaced by the existing annotation TODO
 					annotation = pathwayModel.addAnnotation(annotation);
 					// create new annotationRef
-					AnnotationRef annotationRef = new AnnotationRef(annotation, state);
+					AnnotationRef annotationRef = new AnnotationRef(annotation);
 					state.addAnnotationRef(annotationRef);
 					// add comment to list to be removed after creating annotation and annotationRef
 					commentsToRemove.add(comment);
@@ -1143,7 +1143,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					LinePoint point = new LinePoint(arrowHead, xy);
 					point.setElementId(elementId);
 					// adds point to line pathway element
-					lineElement.addPoint(point); //TODO 
+					lineElement.addPoint(point); // TODO
 					// sets optional parameters including elementRef (GraphRef in GPML2013a)
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
@@ -1331,9 +1331,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
 			// if citation valid, create citationRef and add to pathway model.
 			if (citation != null) {
-				CitationRef citationRef = new CitationRef(citation, elementInfo);
-				if (citationRef != null)
-					elementInfo.addCitationRef(citationRef);
+				CitationRef citationRef = new CitationRef(citation);
+				elementInfo.addCitationRef(citationRef);
 			} else {
 				Logger.log.trace("Warning: biopaxRef " + biopaxRef
 						+ " refers to invalid Biopax PublicationXref, biopaxRef is not created.");
