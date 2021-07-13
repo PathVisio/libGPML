@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.model.Pathway;
-import org.pathvisio.model.element.Group;
 
 /**
  * This class stores information for a CitationRef with source {@link Citation},
@@ -44,6 +43,7 @@ public class CitationRef implements Annotatable {
 	 * @param citation the source citation this CitationRef refers to.
 	 */
 	public CitationRef(Citation citation) {
+		setCitationTo(citation);
 		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
@@ -54,7 +54,7 @@ public class CitationRef implements Annotatable {
 	 * @param citation the source citation this CitationRef refers to.
 	 */
 	public CitationRef() {
-		this(null);
+		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
 	/**
@@ -230,9 +230,9 @@ public class CitationRef implements Annotatable {
 	 * citationRef.
 	 */
 	public void terminate() {
+		removeAnnotationRefs();
 		unsetCitation();
 		unsetCitable();
-		removeAnnotationRefs();
 	}
 
 }

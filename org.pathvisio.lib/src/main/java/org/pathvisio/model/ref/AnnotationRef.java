@@ -55,7 +55,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 * {@link #setAnnotationTo()}
 	 */
 	public AnnotationRef() {
-		this(null);
+		this.citationRefs = new ArrayList<CitationRef>();
+		this.evidenceRefs = new ArrayList<EvidenceRef>();
 	}
 
 	/**
@@ -290,10 +291,10 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 * unset from this annotationRef.
 	 */
 	public void terminate() {
-		unsetAnnotation();
-		unsetAnnotatable();
 		removeCitationRefs();
 		removeEvidenceRefs();
+		unsetAnnotation();
+		unsetAnnotatable();
 	}
 
 }

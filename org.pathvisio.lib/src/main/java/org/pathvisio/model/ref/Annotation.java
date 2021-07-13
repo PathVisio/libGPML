@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.element.PathwayElement;
 import org.pathvisio.model.type.AnnotationType;
 
@@ -193,13 +192,17 @@ public class Annotation extends PathwayElement {
 	 */
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
 		assert (annotationRef != null);
-		annotationRef.terminate();
+		Annotation annotation = annotationRef.getAnnotation();
 		// remove annotationRef from this annotation
-		if (annotationRef.getAnnotation() == null && hasAnnotationRef(annotationRef))
+		if (annotation == this || annotation == null && hasAnnotationRef(annotationRef)) {
 			annotationRefs.remove(annotationRef);
+			annotationRef.terminate();
+		}
 		// remove this annotation from pathway model if empty! TODO
-		if (annotationRefs.isEmpty())
+		if (annotationRefs.isEmpty()) {
+			System.out.println("Here" + getPathwayModel());
 			getPathwayModel().removeAnnotation(this);
+		}
 	}
 
 	/**
@@ -217,8 +220,8 @@ public class Annotation extends PathwayElement {
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
 		removeAnnotationRefs();
+		unsetPathwayModel();
 		// TODO
 	}
 

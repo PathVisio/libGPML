@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.element.Group;
 import org.pathvisio.model.element.PathwayElement;
 
 /**
@@ -204,7 +202,7 @@ public class Citation extends PathwayElement {
 	 * 
 	 * @param citationRef the given citationRef to add.
 	 */
-	public void addCitationRef(CitationRef citationRef) {
+	protected void addCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
 		// set citation for citationRef if necessary
 		if (citationRef.getCitation() == null)
@@ -223,10 +221,13 @@ public class Citation extends PathwayElement {
 	 */
 	public void removeCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
-		citationRef.terminate();
+		Citation citation = citationRef.getCitation();
+
 		// remove citationRef from this citation
-		if (citationRef.getCitation() == null && hasCitationRef(citationRef))
+		if (citation == this || citation == null && hasCitationRef(citationRef)) {
 			citationRefs.remove(citationRef);
+			citationRef.terminate();
+		}
 		// remove this citation from pathway model if empty! TODO
 		if (citationRefs.isEmpty())
 			getPathwayModel().removeCitation(this);
