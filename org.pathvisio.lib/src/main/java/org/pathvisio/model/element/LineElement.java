@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.LineStyleProperty;
+import org.pathvisio.model.ref.ElementInfo;
 
 /**
  * This abstract class stores information for a Line pathway element, e.g.
@@ -36,31 +37,18 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 
 	/**
-	 * Instantiates a line pathway element which is also a member of a group pathway
-	 * element and thus has groupRef. In GPML, groupRef refers to the elementId
+	 * Instantiates a line pathway element. Property groupRef is to be set by
+	 * {@link #setGroupRefTo(Group)}. In GPML, groupRef refers to the elementId
 	 * (formerly groupId) of the parent gpml:Group. Note, a group can also belong in
 	 * another group.
 	 * 
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
-	 * @param groupRef          the parent group in which the pathway element
-	 *                          belongs.
 	 */
-	public LineElement(LineStyleProperty lineStyleProperty, Group groupRef) {
+	public LineElement(LineStyleProperty lineStyleProperty) {
 		super();
 		this.points = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
 		this.lineStyleProperty = lineStyleProperty;
-		if (groupRef != null) {
-			setGroupRefTo(groupRef); // set group TODO
-		}
-	}
-
-	/**
-	 * Instantiates a line pathway element given all possible parameters except
-	 * groupRef, because the pathway element is not a member of a group.
-	 */
-	public LineElement(LineStyleProperty lineStyleProperty) {
-		this(lineStyleProperty, null);
 	}
 
 	/**

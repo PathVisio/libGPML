@@ -18,6 +18,7 @@ package org.pathvisio.model.element;
 
 import org.bridgedb.Xref;
 import org.pathvisio.model.graphics.*;
+import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.type.StateType;
 
 /**

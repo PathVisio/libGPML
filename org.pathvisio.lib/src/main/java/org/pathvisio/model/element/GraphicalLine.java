@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.element;
 
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.LineStyleProperty;
 
 /**
@@ -32,19 +31,9 @@ public class GraphicalLine extends LineElement {
 	 * @param pathwayModel      the parent pathway model.
 	 * @param elementId         the unique pathway element identifier.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
-	 * @param groupRef          the parent group in which the pathway element
-	 *                          belongs.
-	 */
-	public GraphicalLine(LineStyleProperty lineStyleProperty, Group groupRef) {
-		super(lineStyleProperty, groupRef);
-	}
-
-	/**
-	 * Instantiates a GraphicalLine pathway element given all possible parameters
-	 * except groupRef, because the interaction does not belong in a group.
 	 */
 	public GraphicalLine(LineStyleProperty lineStyleProperty) {
-		this(lineStyleProperty, null);
+		super(lineStyleProperty);
 	}
 
 }

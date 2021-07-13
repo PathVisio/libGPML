@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.element;
 
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
@@ -37,14 +36,12 @@ public class Shape extends ShapedElement {
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
-	 * @param groupRef           the parent group in which the pathway element
-	 *                           belongs.
 	 * @param rotation           the rotation in radians? TODO
 	 * @param textLabel          the text of the shape.
 	 */
 	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			Group groupRef, double rotation, String textLabel) {
-		super(rectProperty, fontProperty, shapeStyleProperty, groupRef);
+			double rotation, String textLabel) {
+		super(rectProperty, fontProperty, shapeStyleProperty);
 		this.rotation = rotation;
 		this.textLabel = textLabel;
 	}
@@ -53,26 +50,8 @@ public class Shape extends ShapedElement {
 	 * Instantiates a Shape given all possible parameters except textLabel.
 	 */
 	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			Group groupRef, double rotation) {
-		this(rectProperty, fontProperty, shapeStyleProperty, groupRef, rotation, null);
-	}
-
-	/**
-	 * Instantiates a Shape given all possible parameters except groupRef, because
-	 * the pathway element does not belong in a group.
-	 */
-	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			double rotation, String textLabel) {
-		this(rectProperty, fontProperty, shapeStyleProperty, null, rotation, textLabel);
-	}
-
-	/**
-	 * Instantiates a Shape given all possible parameters except groupRef and
-	 * textLbel, because the shape neither belongs in a group nor has a textLabel .
-	 */
-	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
 			double rotation) {
-		this(rectProperty, fontProperty, shapeStyleProperty, null, rotation, null);
+		this(rectProperty, fontProperty, shapeStyleProperty, rotation, null);
 	}
 
 	/**

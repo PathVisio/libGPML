@@ -19,6 +19,7 @@ package org.pathvisio.model.element;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
+import org.pathvisio.model.ref.ElementInfo;
 
 /**
  * This class stores information for shaped pathway element {@link DataNode},
@@ -34,35 +35,20 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 
 	/**
-	 * Instantiates a shaped pathway element which is also a member of a group
-	 * pathway element and thus has groupRef. In GPML, groupRef refers to the
-	 * elementId (formerly groupId) of the parent gpml:Group. Note, a group can also
-	 * belong in another group.
+	 * Instantiates a shaped pathway element. Property groupRef is to be set by
+	 * {@link #setGroupRefTo(Group)}. In GPML, groupRef refers to the elementId
+	 * (formerly groupId) of the parent gpml:Group. Note, a group can also belong in
+	 * another group.
 	 * 
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
-	 * @param groupRef           the parent group in which the pathway element
-	 *                           belongs.
 	 */
-	public ShapedElement(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			Group groupRef) {
+	public ShapedElement(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
 		super();
 		this.rectProperty = rectProperty;
 		this.fontProperty = fontProperty;
 		this.shapeStyleProperty = shapeStyleProperty;
-		if (groupRef != null) {
-			setGroupRefTo(groupRef); // set group TODO
-		}
-	}
-
-	/**
-	 * Instantiates a shaped pathway element given all possible parameters except
-	 * groupRef, because the pathway element is not a member of a group.
-	 */
-	public ShapedElement(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
-		this(rectProperty, fontProperty, shapeStyleProperty, null);
-
 	}
 
 	/**

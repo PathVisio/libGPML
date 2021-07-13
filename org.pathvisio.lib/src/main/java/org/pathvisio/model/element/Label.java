@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.element;
 
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
@@ -37,14 +36,12 @@ public class Label extends ShapedElement {
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
-	 * @param groupRef           the parent group in which the pathway element
-	 *                           belongs.
 	 * @param textLabel          the text of the label.
 	 * @param href               the hyperlink of the label.
 	 */
 	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			Group groupRef, String textLabel, String href) {
-		super(rectProperty, fontProperty, shapeStyleProperty, groupRef);
+			String textLabel, String href) {
+		super(rectProperty, fontProperty, shapeStyleProperty);
 		this.textLabel = textLabel;
 		this.href = href;
 	}
@@ -53,26 +50,8 @@ public class Label extends ShapedElement {
 	 * Instantiates a Label given all possible parameters except href.
 	 */
 	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			Group groupRef, String textLabel) {
-		this(rectProperty, fontProperty, shapeStyleProperty, groupRef, textLabel, null);
-	}
-
-	/**
-	 * Instantiates a Label given all possible parameters except groupRef, because
-	 * the label does not belong in a group.
-	 */
-	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, String href) {
-		this(rectProperty, fontProperty, shapeStyleProperty, null, textLabel, href);
-	}
-
-	/**
-	 * Instantiates a Label given all possible parameters except groupRef and href,
-	 * because the label neither belongs in a group nor has a hyperlink.
-	 */
-	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
 			String textLabel) {
-		this(rectProperty, fontProperty, shapeStyleProperty, null, textLabel, null);
+		this(rectProperty, fontProperty, shapeStyleProperty, textLabel, null);
 	}
 
 	/**
