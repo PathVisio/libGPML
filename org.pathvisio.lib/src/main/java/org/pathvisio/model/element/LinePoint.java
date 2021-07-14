@@ -17,7 +17,6 @@
 package org.pathvisio.model.element;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.type.ArrowHeadType;
 

@@ -16,12 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.util;
 
-import java.awt.Color;
-
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.element.*;
-import org.pathvisio.model.graphics.*;
-import org.pathvisio.model.type.*;
 
 import junit.framework.TestCase;
 

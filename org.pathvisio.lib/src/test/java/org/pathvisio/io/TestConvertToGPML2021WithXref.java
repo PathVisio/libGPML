@@ -16,15 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.io;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import org.pathvisio.model.*;
+import org.pathvisio.model.PathwayModel;
 import org.pathvisio.util.XrefUtils;
-import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 

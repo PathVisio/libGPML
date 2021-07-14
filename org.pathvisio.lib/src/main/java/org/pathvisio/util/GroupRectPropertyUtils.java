@@ -4,7 +4,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-import org.pathvisio.model.*;
 import org.pathvisio.model.element.*;
 import org.pathvisio.model.type.*;
 

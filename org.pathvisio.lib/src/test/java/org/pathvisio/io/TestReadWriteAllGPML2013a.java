@@ -20,19 +20,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.junit.Test;
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GPML2013aWriter;
-import org.pathvisio.model.*;
-import org.w3c.dom.Document;
+import org.pathvisio.model.PathwayModel;
 import org.xml.sax.SAXException;
-import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.Diff;
+
 
 import junit.framework.TestCase;
 

@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GPML2013aWriter;
-import org.pathvisio.model.PathwayModel;
-
 import junit.framework.TestCase;
 
 /**

@@ -18,20 +18,13 @@ package org.pathvisio.io;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.Scanner;
 
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GPML2021Writer;
-import org.pathvisio.model.*;
+import org.pathvisio.model.PathwayModel;
 import org.pathvisio.util.XrefUtils;
-import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 

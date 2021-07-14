@@ -20,14 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GPML2021Writer;
-import org.pathvisio.model.*;
-import org.pathvisio.model.element.*;
-import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.type.*;
-import org.pathvisio.util.ColorUtils;
-import org.pathvisio.util.XrefUtils;
+import org.pathvisio.model.PathwayModel;
 
 import junit.framework.TestCase;
 
