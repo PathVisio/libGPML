@@ -134,7 +134,7 @@ public class Group extends ShapedElement {
 	/**
 	 * Removes all pathway elements from the pathwayElements list.
 	 */
-	public void removePathwayElement() {
+	public void removePathwayElements() {
 		for (int i = 0; i < pathwayElements.size(); i++) {
 			removePathwayElement(pathwayElements.get(i));
 		}

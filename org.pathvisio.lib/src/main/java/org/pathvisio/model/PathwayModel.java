@@ -246,7 +246,6 @@ public class PathwayModel {
 	public void removeDataNode(DataNode dataNode) {
 		dataNodes.remove(dataNode);
 		removePathwayElement(dataNode);
-
 	}
 
 	/**
