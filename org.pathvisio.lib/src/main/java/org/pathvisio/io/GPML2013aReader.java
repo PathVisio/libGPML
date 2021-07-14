@@ -467,8 +467,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String source = getAttr("Comment", "Source", cmt);
 			String commentText = cmt.getText();
 			// if source is WikiPathways-description, set as pathway description
-			System.out.println(source);
-			System.out.println(commentText);
 			if (Objects.equals(WP_DESCRIPTION, source)) {
 				pathwayModel.getPathway().setDescription(commentText);
 				continue;
@@ -834,8 +832,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(pathwayModel, state, st, biopaxIdToNew, citationDuplicates);
-			// TODO convert comment to AnnotationRef
-			convertStateCommentToAnnotationRefs(pathwayModel, state, elementIdSet);
+			// convert comments to Xref and AnnotationRef if applicable
+			convertStateCommentToRefs(pathwayModel, state, elementIdSet);
 			readStateDynamicProperties(state, st);
 			// if has DoubleLineProperty key, sets border style as Double
 			if ("Double".equalsIgnoreCase(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
@@ -857,22 +855,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * phosphosite information is parsed and stored in a {@link LinkedHashMap}
 	 * annotationsMap.
 	 * 
-	 * For each key value pair in annotationsMap, a new {@link Annotation} is
-	 * created. The annotation is added to the pathway model after checking for
-	 * annotations with equivalent properties. A new {@link AnnotationRef} is
-	 * created for the annotation and added to the state.
+	 * For each key value pair in annotationsMap, a new {@link Xref} or
+	 * {@link Annotation} is created. The annotation is added to the pathway model
+	 * after checking for annotations with equivalent properties. A new
+	 * {@link AnnotationRef} is created for the annotation and added to the state.
+	 * Lastly the comment itself is removed from the state so that information is
+	 * not duplicated.
 	 * 
-	 * Lastly the comment itself is removed from the state so that the annotation
-	 * and comment do not have duplicate information.
-	 * 
-	 * NB: there is special handling for "ptm" and "direction" which can have Xref
-	 * for Ontology.
+	 * NB: "sitegrpid", "ptm" and "direction" are specially handled.
 	 * 
 	 * @param state
 	 * @param elementIdSet
 	 * @throws ConverterException
 	 */
-	protected void convertStateCommentToAnnotationRefs(PathwayModel pathwayModel, State state, Set<String> elementIdSet)
+	protected void convertStateCommentToRefs(PathwayModel pathwayModel, State state, Set<String> elementIdSet)
 			throws ConverterException {
 		// for each comment
 		List<Comment> commentsToRemove = new ArrayList<Comment>();
@@ -880,14 +876,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// isAnnt true if at least one annotation type present after parsing
 			boolean isAnnotation = false;
 			String commentText = comment.getCommentText();
-			// linked hash map to maintain order of input
 			Map<String, String> annotationsMap = new LinkedHashMap<String, String>();
-			// check if commentText contains "=" or ";"
+			// parse information to map if state commentText contains "=" or ";"
 			if (commentText.contains("=") || commentText.contains(";")) {
 				String[] annotations = commentText.trim().split(";");
 				for (String annotation : annotations) {
 					String[] parts = annotation.trim().split("=");
 					String type = parts[0];
+					// replace parent with parentid for consistency
 					if (type.equals("parent"))
 						type = "parentid";
 					if (STATE_ANNOTATIONTYPE_LIST.contains(type))// type
@@ -895,17 +891,26 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					annotationsMap.put(type, parts[1]); // type and value
 				}
 			}
-			// comment is determined to contain annotation information
 			if (isAnnotation) {
 				for (String key : annotationsMap.keySet()) {
-					// create new annotation
-					// generate elementId for new annotation
-					String elementId = PathwayModel.getUniqueId(elementIdSet);
-					elementIdSet.add(elementId);
 					Xref xref = null;
 					String value = annotationsMap.get(key);
-					// special handling if annotation type is "ptm"
-					if (key.equalsIgnoreCase(STATE_COMMENT_PTM)) {
+					// if parentid, set xref
+					if (key.equalsIgnoreCase(PARENTID))
+						xref = XrefUtils.createXref(value, PARENTID_DB);
+					// if parentsymbol, set xref
+					if (key.equalsIgnoreCase(PARENTSYMBOL))
+						xref = XrefUtils.createXref(value, PARENTSYMBOL_DB);
+					// if sitegrpid, set xref and add to state
+					if (key.equalsIgnoreCase(SITEGRPID)) {
+						String identifier = annotationsMap.get(SITEGRPID);
+						xref = XrefUtils.createXref(identifier, SITEGRPID_DB);
+						if (xref != null)
+							state.setXref(xref);
+						continue;
+					}
+					// if ptm, add as SBO annotation
+					if (key.equalsIgnoreCase(PTM)) {
 						key = "Ontology";
 						if (STATE_PTM_MAP.containsKey(value)) { // e.g. "p"
 							List<String> ptmInfo = STATE_PTM_MAP.get(value);
@@ -913,8 +918,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 							xref = XrefUtils.createXref(ptmInfo.get(1), ptmInfo.get(2));
 						}
 					}
-					// special handling if annotation type is "direction"
-					if (key.equalsIgnoreCase(STATE_COMMENT_DIRECTION)) {
+					// if direction, add as GO term annotation
+					if (key.equalsIgnoreCase(DIRECTION)) {
 						key = "Ontology";
 						if (STATE_DIRECTION_MAP.containsKey(value)) { // e.g. "u"
 							List<String> dirInfo = STATE_DIRECTION_MAP.get(value);
@@ -922,39 +927,25 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 							xref = XrefUtils.createXref(dirInfo.get(1), dirInfo.get(2));
 						}
 					}
-					// special handling if annotation type is "site"
-					if (key.equalsIgnoreCase(STATE_COMMENT_SITE)) {
-						if (annotationsMap.containsKey(STATE_COMMENT_SITEGRPID)) {
-							String identifier = annotationsMap.get(STATE_COMMENT_SITEGRPID);
-							xref = XrefUtils.createXref(identifier, SITEGRPID_DATASOURCE);
-						}
-					}
-					// skip annotation type "sitegrpid" if annotation type "site" exists TODO
-					if (key.equalsIgnoreCase(STATE_COMMENT_SITEGRPID)) {
-						if (annotationsMap.containsKey(STATE_COMMENT_SITE)) {
-							continue;
-						} else {
-							throw new ConverterException("State comment sitegrpid without site information");
-						}
-					}
+					// generate elementId for new annotation
+					String elementId = PathwayModel.getUniqueId(elementIdSet);
+					elementIdSet.add(elementId);
 					AnnotationType type = AnnotationType.register(key);
 					Annotation annotation = new Annotation(value, type);
 					annotation.setElementId(elementId);
 					if (xref != null)
 						annotation.setXref(xref);
-					// if equivalent annotation is already existing in pathway model, annotation is
-					// replaced by the existing annotation TODO
+					// returns existing annotation in pathway model if applicable
 					annotation = pathwayModel.addAnnotation(annotation);
-					// create new annotationRef
 					AnnotationRef annotationRef = new AnnotationRef(annotation);
 					state.addAnnotationRef(annotationRef);
-					// add comment to list to be removed after creating annotation and annotationRef
-					commentsToRemove.add(comment);
-					Logger.log.trace(
-							"State " + state.getElementId() + " comment converted to Annotations/AnnotationRefs");
 				}
+				// add comment to list to be removed after creating annotation and annotationRef
+				commentsToRemove.add(comment);
+				Logger.log.trace("State " + state.getElementId() + " comment converted to Annotations/AnnotationRefs");
 			}
 		}
+		// remove state comments which were converted into xref or annotationRefs
 		for (Comment comment : commentsToRemove) {
 			state.removeComment(comment);
 		}

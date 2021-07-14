@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Pathway xmlns="http://pathvisio.org/GPML/2021" title="FGFR3 signaling in chondrocyte proliferation and terminal differentiation" organism="Homo sapiens" version="20191218">
+  <Description>Taken from Achondroplasia: Development, Pathenogenesis, and Therapy by Ornitz DM, Legeai-Mallet L [https://www.ncbi.nlm.nih.gov/pubmed/27987249].
+
+Signaling pathways in the postnatal growth plate.
+During endochondral bone development, FGF9 and FGF18, derived from the perichondrium and surrounding tissue, signal to FGFR3 in chondrocytes. The balance of chondrocyte proliferation and differentiation is controlled by crosstalk of several signaling pathways. Expression of FGFR3 is enhanced by thyroid hormone (T3/3,3',5'-Triiodothyronine) and suppressed by PTHLH (member of the parathyroid hormone family). FGFR3 signaling results in increased expression of Snail1 (encoded by SNAI1), which is required for activation of STAT1 and MAPK signaling (ERK1/2 and p38 branches). Signaling from PTHLH, IHH and BMPs antagonizes the suppression of chondrocyte proliferation by FGFR3. Both FGFR3 and PTHLH function to suppress chondrocyte differentiation and antagonize the action of Wnt signaling, which promotes differentiation. FGFR3 negatively regulates the autophagy protein, ATG5. Activation of downstream signals: PP2a (encoded by PPP2CA) regulates p107 (encoded by RBL1) activation, and STAT1 regulates p21Waf1/Cip1 (encoded by CKDN1A) activation. Both function to suppress chondrocyte proliferation. Activation of the MAPKs, ERK1, and ERK2, regulate Sox9 expression, which functions to suppress chondrocyte terminal differentiation and endochondral ossification.
+
+Linked with a dotted arrow to the GeneProduct nodes are diseases caused by mutation in the respective gene.</Description>
+  <AnnotationRef elementRef="f5b65" />
+  <AnnotationRef elementRef="f07d0" />
+  <AnnotationRef elementRef="f6f14" />
+  <AnnotationRef elementRef="acd3c" />
+  <CitationRef elementRef="e9a" />
+  <Graphics boardWidth="1661.578947368421" boardHeight="1224.6533587783417" />
+  <InfoBox centerX="0.0" centerY="0.0" />
+  <DataNodes>
+    <DataNode elementId="ad924" textLabel="THRA" type="GeneProduct">
+      <Xref identifier="ENSG00000126351" dataSource="ensembl" />
+      <Graphics centerX="521.9368636489803" centerY="648.1234551298461" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="af906" textLabel="PTH1R" type="GeneProduct">
+      <Xref identifier="ENSG00000160801" dataSource="ensembl" />
+      <Graphics centerX="521.9368636489803" centerY="321.65098097301427" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="afa26" textLabel="MAPK12" type="GeneProduct" groupRef="ed06a">
+      <Xref identifier="ENSG00000188130" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="679.6435409597528" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="b7904" textLabel="SNAI1" type="GeneProduct">
+      <Xref identifier="ENSG00000124216" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="597.3559586092972" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="b83b3" textLabel="MAPK14" type="GeneProduct" groupRef="ed06a">
+      <Xref identifier="ENSG00000112062" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="729.6435409597526" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="c586c" textLabel="PTHLH" type="GeneProduct">
+      <Xref identifier="ENSG00000087494" dataSource="ensembl" />
+      <Graphics centerX="364.47680378019135" centerY="321.6509809730143" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="c6e97" textLabel="FGF18" type="GeneProduct" groupRef="e95c5">
+      <Xref identifier="ENSG00000156427" dataSource="ensembl" />
+      <Graphics centerX="362.99789702913387" centerY="609.6498735060433" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="d7fa2" textLabel="FGF9" type="GeneProduct" groupRef="e95c5">
+      <Xref identifier="ENSG00000102678" dataSource="ensembl" />
+      <Graphics centerX="362.99789702913387" centerY="584.6498735060433" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="d962b" textLabel="3,3',5'-Triiodothyronine" type="Metabolite">
+      <Xref identifier="CHEBI:11684" dataSource="chebi" />
+      <Graphics centerX="411.9635895662274" centerY="772.1209433949563" width="158.74860770388338" height="25.0" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="dd1a6" textLabel="MAPK11" type="GeneProduct" groupRef="ed06a">
+      <Xref identifier="ENSG00000185386" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="654.6435409597528" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="de0b4" textLabel="STAT1" type="GeneProduct">
+      <Xref identifier="ENSG00000115415" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="547.6287666281231" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="e18cf" textLabel="ATG5" type="GeneProduct">
+      <Xref identifier="ENSG00000057663" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="977.80151493876" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="eaf1d" textLabel="IHH" type="GeneProduct">
+      <Xref identifier="ENSG00000163501" dataSource="ensembl" />
+      <Graphics centerX="1350.5097132154685" centerY="248.52048530340983" width="79.1786108048511" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="f1272" textLabel="BMP2" type="GeneProduct" groupRef="fd823">
+      <Xref identifier="ENSG00000125845" dataSource="ensembl" />
+      <Graphics centerX="1350.5097132154683" centerY="363.11789977645117" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="f6327" textLabel="RAF1" type="GeneProduct">
+      <Xref identifier="ENSG00000132155" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="806.9324580953719" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="f68bb" textLabel="MAPK13" type="GeneProduct" groupRef="ed06a">
+      <Xref identifier="ENSG00000156711" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="704.6435409597527" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="f7ac4" textLabel="FGFR3" type="GeneProduct">
+      <Xref identifier="ENSG00000068078" dataSource="ensembl" />
+      <Graphics centerX="521.9368636489803" centerY="453.7617949850411" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="faba9" textLabel="NPR2" type="GeneProduct">
+      <Xref identifier="ENSG00000159899" dataSource="ensembl" />
+      <Graphics centerX="619.4482543036777" centerY="1042.8311736636938" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="fc775" textLabel="CNP" type="GeneProduct">
+      <Xref identifier="ENSG00000173786" dataSource="ensembl" />
+      <Graphics centerX="1350.5097132154688" centerY="733.1328002706445" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32768" />
+    </DataNode>
+    <DataNode elementId="d3120" textLabel="PTH1R" type="GeneProduct">
+      <Xref identifier="ENSG00000160801" dataSource="ensembl" />
+      <Graphics centerX="1264.8643797982068" centerY="199.7507372418299" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32769" />
+    </DataNode>
+    <DataNode elementId="dcd5c" textLabel="BMP4" type="GeneProduct" groupRef="fd823">
+      <Xref identifier="ENSG00000125378" dataSource="ensembl" />
+      <Graphics centerX="1350.5097132154683" centerY="388.11789977645117" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32771" />
+    </DataNode>
+    <DataNode elementId="d35b0" textLabel="SOX9" type="GeneProduct">
+      <Xref identifier="ENSG00000125398" dataSource="ensembl" />
+      <Graphics centerX="929.5734099007456" centerY="691.7549257645732" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32877" />
+    </DataNode>
+    <DataNode elementId="cb3cc" textLabel="RBL1" type="GeneProduct">
+      <Xref identifier="ENSG00000080839" dataSource="ensembl" />
+      <Graphics centerX="929.5734099007456" centerY="493.4266551213315" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32878" />
+    </DataNode>
+    <DataNode elementId="d45e2" textLabel="CDKN1A" type="GeneProduct">
+      <Xref identifier="ENSG00000124762" dataSource="ensembl" />
+      <Graphics centerX="929.5734099007454" centerY="547.628766628123" width="106.70598911070522" height="29.74137931034511" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32879" />
+    </DataNode>
+    <DataNode elementId="cafe0" textLabel="RBL1" type="GeneProduct">
+      <Xref identifier="ENSG00000080839" dataSource="ensembl" />
+      <States>
+        <State elementId="b3a9a" textLabel="P" type="Undefined">
+          <Xref identifier="451295" dataSource="phosphositeplus" />
+          <Graphics relX="-0.8857803752502402" relY="1.0" width="15.0" height="15.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Oval" />
+          <AnnotationRef elementRef="f3b53" />
+          <AnnotationRef elementRef="da8c5" />
+          <AnnotationRef elementRef="afb9f" />
+          <AnnotationRef elementRef="d5544" />
+          <AnnotationRef elementRef="d0355" />
+          <AnnotationRef elementRef="c16fc" />
+        </State>
+        <State elementId="c19af" textLabel="P" type="Undefined">
+          <Xref identifier="450986" dataSource="phosphositeplus" />
+          <Graphics relX="1.0" relY="1.0" width="15.0" height="15.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Oval" />
+          <AnnotationRef elementRef="e3b59" />
+          <AnnotationRef elementRef="e78ba" />
+          <AnnotationRef elementRef="f48da" />
+          <AnnotationRef elementRef="f8d5f" />
+          <AnnotationRef elementRef="ea32e" />
+          <AnnotationRef elementRef="f5101" />
+        </State>
+        <State elementId="de277" textLabel="P" type="Undefined">
+          <Xref identifier="451296" dataSource="phosphositeplus" />
+          <Graphics relX="-0.28029263831732454" relY="1.0" width="15.0" height="15.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Oval" />
+          <AnnotationRef elementRef="c9245" />
+          <AnnotationRef elementRef="c4fa1" />
+          <AnnotationRef elementRef="c7eb7" />
+          <AnnotationRef elementRef="eb5b1" />
+          <AnnotationRef elementRef="d97c5" />
+          <AnnotationRef elementRef="fe40a" />
+        </State>
+        <State elementId="ec1b6" textLabel="P" type="Undefined">
+          <Xref identifier="451297" dataSource="phosphositeplus" />
+          <Graphics relX="0.41659882642608054" relY="0.9274047186932853" width="15.0" height="15.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Oval" />
+          <Comment>TEST....</Comment>
+          <AnnotationRef elementRef="a35e6" />
+          <AnnotationRef elementRef="de3f4" />
+          <AnnotationRef elementRef="dc35a" />
+          <AnnotationRef elementRef="d5bbc" />
+          <AnnotationRef elementRef="d96d5" />
+          <AnnotationRef elementRef="e1520" />
+        </State>
+      </States>
+      <Graphics centerX="929.5734099007456" centerY="361.3185042802095" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32880" />
+    </DataNode>
+    <DataNode elementId="a81a6" textLabel="PPP2CA" type="GeneProduct">
+      <Xref identifier="ENSG00000113575" dataSource="ensembl" />
+      <Graphics centerX="719.7913078753128" centerY="408.73746983900054" width="119.74467330600766" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32882" />
+    </DataNode>
+    <DataNode elementId="c210b" textLabel="MAP2K1" type="GeneProduct" groupRef="a5f45">
+      <Xref identifier="ENSG00000169032" dataSource="ensembl" />
+      <Graphics centerX="800.6800666615908" centerY="869.5630620341938" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32894" />
+    </DataNode>
+    <DataNode elementId="c2f96" textLabel="MAP2K2" type="GeneProduct" groupRef="a5f45">
+      <Xref identifier="ENSG00000126934" dataSource="ensembl" />
+      <Graphics centerX="800.6800666615909" centerY="894.5630620341934" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32895" />
+    </DataNode>
+    <DataNode elementId="c9405" textLabel="MAPK1" type="GeneProduct" groupRef="c4ec7">
+      <Xref identifier="ENSG00000100030" dataSource="ensembl" />
+      <Graphics centerX="929.5734099007456" centerY="869.5630620341936" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32896" />
+    </DataNode>
+    <DataNode elementId="f8aa9" textLabel="MAPK3" type="GeneProduct" groupRef="c4ec7">
+      <Xref identifier="ENSG00000102882" dataSource="ensembl" />
+      <Graphics centerX="929.5734099007456" centerY="894.5630620341936" width="90.0" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Rectangle" zOrder="32897" />
+    </DataNode>
+  </DataNodes>
+  <Interactions>
+    <Interaction elementId="f0473">
+      <Waypoints>
+        <Point elementId="a71e6" arrowHead="Undirected" x="566.9368636489803" y="453.7617949850411" elementRef="f7ac4" relX="1.0" relY="0.0" />
+        <Point elementId="c3dba" arrowHead="Conversion" x="666.7913078753128" y="692.1435409597527" elementRef="ed06a" relX="-1.0" relY="0.0" />
+        <Anchor elementId="b538a" position="0.8101143669825631" shapeType="None" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id1eb94ab6">
+      <Waypoints>
+        <Point elementId="b08e5" arrowHead="Undirected" x="719.7913078753128" y="819.4324580953719" elementRef="f6327" relX="0.0" relY="1.0" />
+        <Point elementId="d9cfc" arrowHead="Conversion" x="747.6800666615909" y="882.0630620341935" elementRef="a5f45" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id28e20273">
+      <Waypoints>
+        <Point elementId="af02a" arrowHead="Undirected" x="566.9368636489803" y="453.7617949850411" elementRef="f7ac4" relX="1.0" relY="0.0" />
+        <Point elementId="cf7ea" arrowHead="Directed" x="674.7913078753128" y="547.6287666281231" elementRef="de0b4" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id299e4be0">
+      <Waypoints>
+        <Point elementId="ec319" arrowHead="Undirected" x="1350.5097132154683" y="466.2617949850411" elementRef="d4121" relX="0.0" relY="1.0" />
+        <Point elementId="ca93e" arrowHead="Directed" x="1350.5097132154685" y="589.3388324743096" elementRef="b0d11" relX="0.0" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id33f73e6c">
+      <Waypoints>
+        <Point elementId="cf148" arrowHead="Undirected" x="1310.9204078130433" y="242.27048530340983" elementRef="eaf1d" relX="-1.0" relY="-0.5" />
+        <Point elementId="ba2d0" arrowHead="Directed" x="386.97680378019135" y="309.1509809730143" elementRef="c586c" relX="0.5" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id3f7a3d9f">
+      <Waypoints>
+        <Point elementId="ec1be" arrowHead="Undirected" x="764.7913078753128" y="547.6287666281231" elementRef="de0b4" relX="1.0" relY="0.0" />
+        <Point elementId="d28f0" arrowHead="Directed" x="876.2204153453929" y="547.628766628123" elementRef="d45e2" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id42281903">
+      <Waypoints>
+        <Point elementId="a79d5" arrowHead="Undirected" x="566.9368636489803" y="460.0117949850411" elementRef="f7ac4" relX="1.0" relY="0.5" />
+        <Point elementId="a04e0" arrowHead="Inhibition" x="674.7913078753128" y="971.55151493876" elementRef="e18cf" relX="-1.0" relY="-0.5" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id4359f136">
+      <Waypoints>
+        <Point elementId="ddb8b" arrowHead="Undirected" x="409.47680378019135" y="321.6509809730143" elementRef="c586c" relX="1.0" relY="0.0" />
+        <Point elementId="b86de" arrowHead="Binding" x="476.9368636489803" y="321.65098097301427" elementRef="af906" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id49bfc176">
+      <Waypoints>
+        <Point elementId="ac4c2" arrowHead="Undirected" x="566.9368636489803" y="321.65098097301427" elementRef="af906" relX="1.0" relY="0.0" />
+        <Point elementId="b3f69" arrowHead="Conversion" x="1112.156311144395" y="492.6000124148002" elementRef="d5617" relX="-0.5" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id50889f26">
+      <Waypoints>
+        <Point elementId="dd2b2" arrowHead="Undirected" x="1350.5097132154688" y="261.0204853034098" elementRef="eaf1d" relX="0.0" relY="1.0" />
+        <Point elementId="c5751" arrowHead="Undirected" x="1252.5313308127875" y="337.96484889274507" />
+        <Point elementId="d09e0" arrowHead="Directed" x="1154.5529484101062" y="492.6000124148002" elementRef="d5617" relX="0.0" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id67ae2259">
+      <Waypoints>
+        <Point elementId="ed7a8" arrowHead="Undirected" x="566.9368636489803" y="453.7617949850411" elementRef="f7ac4" relX="1.0" relY="0.0" />
+        <Point elementId="d892a" arrowHead="Inhibition" x="1315.9552058779418" y="453.7617949850411" elementRef="d4121" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id6a4d617">
+      <Waypoints>
+        <Point elementId="aef67" arrowHead="Undirected" x="764.7913078753128" y="597.3559586092972" elementRef="b7904" relX="1.0" relY="0.0" />
+        <Point elementId="fdc07" arrowHead="Undirected" x="789.8383371824481" y="682.0723626990319" />
+        <Point elementId="bf1b6" arrowHead="Undirected" x="754.8148225288804" y="766.7887667887667" />
+        <Point elementId="fd689" arrowHead="Conversion" x="719.7913078753128" y="794.4324580953719" elementRef="f6327" relX="0.0" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id71b6f2fe">
+      <Waypoints>
+        <Point elementId="ef6f4" arrowHead="Undirected" x="1309.8643797982068" y="206.0007372418299" elementRef="d3120" relX="1.0" relY="0.5" />
+        <Point elementId="c8d03" arrowHead="Inhibition" x="1350.5097132154688" y="236.02048530340983" elementRef="eaf1d" relX="0.0" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id73f7a48d">
+      <Waypoints>
+        <Point elementId="fcc17" arrowHead="Undirected" x="544.4368636489803" y="334.15098097301427" elementRef="af906" relX="0.5" relY="1.0" />
+        <Point elementId="a38a8" arrowHead="Inhibition" x="544.4368636489803" y="441.2617949850411" elementRef="f7ac4" relX="0.5" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id8dd88d7a">
+      <Waypoints>
+        <Point elementId="ef3ef" arrowHead="Undirected" x="719.7913078753128" y="609.8559586092972" elementRef="b7904" relX="0.0" relY="1.0" />
+        <Point elementId="c32dd" arrowHead="Conversion" x="719.7913078753128" y="634.1435409597528" elementRef="ed06a" relX="0.0" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="id9f21bd9c">
+      <Waypoints>
+        <Point elementId="bb4bb" arrowHead="Undirected" x="974.5734099007456" y="493.4266551213315" elementRef="cb3cc" relX="1.0" relY="0.0" />
+        <Point elementId="aa210" arrowHead="Undirected" x="1020.8144796380091" y="499.2633337680659" />
+        <Point elementId="c48c3" arrowHead="Inhibition" x="1069.7596738786838" y="505.1000124148002" elementRef="d5617" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="ida0eba681">
+      <Waypoints>
+        <Point elementId="be373" arrowHead="Undirected" x="853.6800666615909" y="882.0630620341935" elementRef="a5f45" relX="1.0" relY="0.0" />
+        <Point elementId="de8d6" arrowHead="Conversion" x="876.5734099007456" y="882.0630620341936" elementRef="c4ec7" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="ida73cb899">
+      <Waypoints>
+        <Point elementId="b4d78" arrowHead="Undirected" x="719.7913078753128" y="584.8559586092972" elementRef="b7904" relX="0.0" relY="-1.0" />
+        <Point elementId="fb9da" arrowHead="Directed" x="719.7913078753128" y="560.1287666281231" elementRef="de0b4" relX="0.0" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idaaeb1d2a">
+      <Waypoints>
+        <Point elementId="d4654" arrowHead="Undirected" x="451.6507414921982" y="759.6209433949563" elementRef="d962b" relX="0.5" relY="-1.0" />
+        <Point elementId="ccc14" arrowHead="Undirected" x="475.54380257058926" y="716.8939631782222" />
+        <Point elementId="b5977" arrowHead="Directed" x="499.4368636489803" y="660.6234551298461" elementRef="ad924" relX="-0.5" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idc5f96cc3">
+      <Waypoints>
+        <Point elementId="d8e79" arrowHead="Undirected" x="1350.5097132154688" y="745.6328002706445" elementRef="fc775" relX="0.0" relY="1.0" />
+        <Point elementId="f5257" arrowHead="Undirected" x="984.9789837595732" y="1091.2240184757507" />
+        <Point elementId="c86c7" arrowHead="Conversion" x="619.4482543036777" y="1055.3311736636938" elementRef="faba9" relX="0.0" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idc9df5c1c">
+      <Waypoints>
+        <Point elementId="a9626" arrowHead="Undirected" x="566.9368636489803" y="453.7617949850411" elementRef="f7ac4" relX="1.0" relY="0.0" />
+        <Point elementId="ef15f" arrowHead="Conversion" x="659.918971222309" y="408.73746983900054" elementRef="a81a6" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idccdc175">
+      <Waypoints>
+        <Point elementId="b3eb4" arrowHead="Undirected" x="544.4368636489803" y="635.6234551298461" elementRef="ad924" relX="0.5" relY="-1.0" />
+        <Point elementId="d5098" arrowHead="Conversion" x="544.4368636489803" y="466.2617949850411" elementRef="f7ac4" relX="0.5" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idd33a7094">
+      <Waypoints>
+        <Point elementId="e57e0" arrowHead="Undirected" x="364.47680378019135" y="309.1509809730143" elementRef="c586c" relX="0.0" relY="-1.0" />
+        <Point elementId="fbf98" arrowHead="Directed" x="1219.8643797982068" y="199.7507372418299" elementRef="d3120" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="iddd07adca">
+      <Waypoints>
+        <Point elementId="a509f" arrowHead="Undirected" x="415.99789702913387" y="597.1498735060433" elementRef="e95c5" relX="1.0" relY="0.0" />
+        <Point elementId="f5133" arrowHead="Conversion" x="499.4368636489803" y="466.2617949850411" elementRef="f7ac4" relX="-0.5" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idddec9e2e">
+      <Waypoints>
+        <Point elementId="cc7d4" arrowHead="Undirected" x="566.9368636489803" y="453.7617949850411" elementRef="f7ac4" relX="1.0" relY="0.0" />
+        <Point elementId="ce7e5" arrowHead="Conversion" x="674.7913078753128" y="806.9324580953719" elementRef="f6327" relX="-1.0" relY="0.0" />
+        <Anchor elementId="e8235" position="0.4" shapeType="None" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="ide10b4d2d">
+      <Waypoints>
+        <Point elementId="b783b" arrowHead="Undirected" x="1309.8643797982068" y="193.5007372418299" elementRef="d3120" relX="1.0" relY="-0.5" />
+        <Point elementId="d1fc1" arrowHead="Undirected" x="1610.9022556390976" y="403.6859433260612" />
+        <Point elementId="e6197" arrowHead="Inhibition" x="1544.707509972362" y="613.8711494102924" elementRef="b0d11" relX="1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="ide4f255da">
+      <Waypoints>
+        <Point elementId="d7b45" arrowHead="Undirected" x="1297.5097132154683" y="375.61789977645117" elementRef="fd823" relX="-1.0" relY="0.0" />
+        <Point elementId="c8566" arrowHead="Directed" x="1196.9495856758174" y="492.6000124148002" elementRef="d5617" relX="0.5" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="ide70a8a18">
+      <Waypoints>
+        <Point elementId="a7b6d" arrowHead="Undirected" x="619.4482543036777" y="1030.3311736636938" elementRef="faba9" relX="0.0" relY="-1.0" />
+        <Point elementId="b2d86" arrowHead="Inhibition" x="647.8303835237913" y="646.8782722255428" elementRef="b538a" relX="0.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idec87605c">
+      <Waypoints>
+        <Point elementId="e5fbe" arrowHead="Undirected" x="764.7913078753128" y="977.80151493876" elementRef="e18cf" relX="1.0" relY="0.0" />
+        <Point elementId="e779f" arrowHead="Conversion" x="1255.4896935192487" y="697.7560695630118" elementRef="cdf62" relX="-0.5" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idf1a41522">
+      <Waypoints>
+        <Point elementId="a5744" arrowHead="Undirected" x="929.5734099007456" y="849.0630620341936" elementRef="c4ec7" relX="0.0" relY="-1.0" />
+        <Point elementId="a72e9" arrowHead="Conversion" x="929.5734099007456" y="704.2549257645732" elementRef="d35b0" relX="0.0" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idf327257">
+      <Waypoints>
+        <Point elementId="c1bfe" arrowHead="Undirected" x="982.926404456098" y="547.628766628123" elementRef="d45e2" relX="1.0" relY="0.0" />
+        <Point elementId="ce28e" arrowHead="Inhibition" x="1112.156311144395" y="517.6000124148002" elementRef="d5617" relX="-0.5" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="idf75fd50d">
+      <Waypoints>
+        <Point elementId="fc2fd" arrowHead="Undirected" x="1231.903212123355" y="300.1035927917766" elementRef="f053f" relX="1.0" relY="0.0" />
+        <Point elementId="b3f47" arrowHead="Directed" x="1330.715060514256" y="261.0204853034098" elementRef="eaf1d" relX="-0.5" relY="1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </Interaction>
+    <Interaction elementId="a8e2c">
+      <Waypoints>
+        <Point elementId="ce5dd" arrowHead="Undirected" x="772.7913078753128" y="692.1435409597527" elementRef="ed06a" relX="1.0" relY="0.0" />
+        <Point elementId="d5734" arrowHead="Conversion" x="884.5734099007456" y="691.7549257645732" elementRef="d35b0" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="32870" />
+    </Interaction>
+    <Interaction elementId="a6723">
+      <Waypoints>
+        <Point elementId="cb411" arrowHead="Undirected" x="779.6636445283166" y="408.73746983900054" elementRef="a81a6" relX="1.0" relY="0.0" />
+        <Point elementId="f6e55" arrowHead="Catalysis" x="929.5734099007456" y="408.8631600979121" elementRef="b82b5" relX="0.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="32871" />
+    </Interaction>
+    <Interaction elementId="a1dbd">
+      <Waypoints>
+        <Point elementId="c7072" arrowHead="Undirected" x="974.5734099007456" y="691.7549257645732" elementRef="d35b0" relX="1.0" relY="0.0" />
+        <Point elementId="a27d0" arrowHead="Undirected" x="1084.848484848485" y="652.8130375874327" />
+        <Point elementId="f773e" arrowHead="Inhibition" x="1156.311916458575" y="613.8711494102924" elementRef="b0d11" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Elbow" zOrder="32872" />
+    </Interaction>
+    <Interaction elementId="ea34e">
+      <Waypoints>
+        <Point elementId="de05d" arrowHead="Undirected" x="929.5734099007456" y="373.8185042802095" elementRef="cafe0" relX="0.0" relY="1.0" />
+        <Point elementId="e05de" arrowHead="Conversion" x="929.5734099007456" y="480.9266551213315" elementRef="cb3cc" relX="0.0" relY="-1.0" />
+        <Anchor elementId="b82b5" position="0.32718943929566835" shapeType="None" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="32875" />
+    </Interaction>
+    <Interaction elementId="bd494">
+      <Waypoints>
+        <Point elementId="e004b" arrowHead="Undirected" x="619.4482543036777" y="1030.3311736636938" elementRef="faba9" relX="0.0" relY="-1.0" />
+        <Point elementId="db414" arrowHead="Inhibition" x="610.0786413395133" y="595.0300602291734" elementRef="e8235" relX="0.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Solid" lineWidth="1.0" connectorType="Straight" zOrder="32898" />
+    </Interaction>
+  </Interactions>
+  <GraphicalLines>
+    <GraphicalLine elementId="a2c66">
+      <Waypoints>
+        <Point elementId="b7380" arrowHead="Undirected" x="1390.0990186178942" y="248.52048530340983" elementRef="eaf1d" relX="1.0" relY="0.0" />
+        <Point elementId="e1166" arrowHead="Directed" x="1418.9971192466214" y="262.3957291871962" elementRef="c00ab" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="afc50">
+      <Waypoints>
+        <Point elementId="a0a7d" arrowHead="Undirected" x="1395.5097132154683" y="363.11789977645117" elementRef="f1272" relX="1.0" relY="0.0" />
+        <Point elementId="cc38b" arrowHead="Directed" x="1447.967432633543" y="363.11789977645117" elementRef="eb88e" relX="-1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="b8346">
+      <Waypoints>
+        <Point elementId="fe185" arrowHead="Undirected" x="1264.8643797982068" y="199.7507372418299" elementRef="d3120" relX="0.0" relY="0.0" />
+        <Point elementId="e6850" arrowHead="Directed" x="1124.6033899022548" y="93.16382156459957" elementRef="dbb65" relX="0.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="bdb1b">
+      <Waypoints>
+        <Point elementId="edf65" arrowHead="Undirected" x="317.99789702913387" y="584.6498735060433" elementRef="d7fa2" relX="-1.0" relY="0.0" />
+        <Point elementId="dd95a" arrowHead="Directed" x="280.92474526061346" y="655.3242435119565" elementRef="bf27f" relX="-0.5" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="bf586">
+      <Waypoints>
+        <Point elementId="d4c4c" arrowHead="Undirected" x="499.4368636489803" y="334.15098097301427" elementRef="af906" relX="-0.5" relY="1.0" />
+        <Point elementId="d3d35" arrowHead="Directed" x="228.10939952156755" y="427.05367741321805" elementRef="a175b" relX="1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Elbow" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="ec9d7">
+      <Waypoints>
+        <Point elementId="c239a" arrowHead="Undirected" x="476.9368636489803" y="453.7617949850411" elementRef="f7ac4" relX="-1.0" relY="0.0" />
+        <Point elementId="fb933" arrowHead="Directed" x="117.63992815019618" y="525.3831592676424" elementRef="f4099" relX="0.0" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="eee43">
+      <Waypoints>
+        <Point elementId="fb758" arrowHead="Undirected" x="596.9482543036777" y="1055.3311736636938" elementRef="faba9" relX="-0.5" relY="1.0" />
+        <Point elementId="e9236" arrowHead="Directed" x="594.9626953657546" y="1111.1105651778682" elementRef="a4d6a" relX="0.0" relY="-1.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="f89ec">
+      <Waypoints>
+        <Point elementId="c6455" arrowHead="Undirected" x="319.47680378019135" y="321.6509809730143" elementRef="c586c" relX="-1.0" relY="0.0" />
+        <Point elementId="a5f6b" arrowHead="Directed" x="248.66668160935075" y="321.6509809730171" elementRef="b9f09" relX="1.0" relY="0.0" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </GraphicalLine>
+    <GraphicalLine elementId="idbf9d996">
+      <Waypoints>
+        <Point elementId="c1898" arrowHead="Undirected" x="674.0387018578937" y="145.35390487239016" />
+        <Point elementId="d6c9b" arrowHead="Undirected" x="289.135861798103" y="145.34296277946333" />
+      </Waypoints>
+      <Graphics lineColor="000000" lineStyle="Dashed" lineWidth="1.0" connectorType="Straight" zOrder="12288" />
+    </GraphicalLine>
+  </GraphicalLines>
+  <Labels>
+    <Label elementId="a00de" textLabel="Pre-hypertrophic chondrocytes">
+      <Graphics centerX="1358.116812185036" centerY="120.47594577478884" width="184.4366197183098" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="28672" />
+    </Label>
+    <Label elementId="b0d11" textLabel="Chondrocyte differentiation">
+      <Graphics centerX="1350.5097132154685" centerY="613.8711494102923" width="388.3955935137868" height="49.06463387196578" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="14" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Oval" zOrder="28672" />
+    </Label>
+    <Label elementId="b44f3" textLabel="Hypertrophic chondrocytes">
+      <Graphics centerX="1543.9084318838823" centerY="119.97313339483031" width="153.4507042253524" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="28672" />
+    </Label>
+    <Label elementId="b58d2" textLabel="Perichondrium/periosteum">
+      <Graphics centerX="358.7025979208516" centerY="531.9658053085521" width="160.49295774647894" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="28672" />
+    </Label>
+    <Label elementId="c3c29" textLabel="Reserve chondrocytes">
+      <Graphics centerX="360.04138148642585" centerY="367.10563047300985" width="132.29281767955803" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="28672" />
+    </Label>
+    <Label elementId="cdf62" textLabel="Autophagy">
+      <Graphics centerX="1350.5097132154683" centerY="675.8850541431539" width="380.0800787848781" height="43.74203083971574" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="14" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="Oval" zOrder="28672" />
+    </Label>
+    <Label elementId="d4121" textLabel="Wnt">
+      <Graphics centerX="1350.5097132154685" centerY="453.7617949850411" width="69.10901467505288" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="28672" />
+    </Label>
+    <Label elementId="e0dd0" textLabel="Endochondral ossification">
+      <Graphics centerX="394.7342888431051" centerY="133.05540240084966" width="275.3427311614487" height="35.586269744835946" textColor="000000" fontName="Arial" fontWeight="Bold" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="16" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="28672" />
+    </Label>
+    <Label elementId="f053f" textLabel="produced by prehypertrophic&#xA;and hypertrophic chondrocytes ">
+      <Graphics centerX="1142.3036450237878" centerY="300.1035927917766" width="179.19913419913428" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="28672" />
+    </Label>
+    <Label elementId="b782a" textLabel="Proliferating chondrocytes">
+      <Graphics centerX="604.5726227552345" centerY="279.3599139986538" width="184.4366197183098" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="32770" />
+    </Label>
+    <Label elementId="b779d" textLabel="OMIM:215045&#xA;Chondrodysplasia,&#xA;Blomstrand type" href="https://omim.org/entry/215045" groupRef="a175b">
+      <Graphics centerX="121.21541404649807" centerY="465.4768311058336" width="117.39872945898905" height="44.757474505252176" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32850" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="d7c10" textLabel="OMIM:600002&#xA;Eiken syndrome" href="https://omim.org/entry/600002" groupRef="a175b">
+      <Graphics centerX="121.21541404649805" centerY="427.3851037287333" width="99.39701768634109" height="31.425980248945038" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32851" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="b79b1" textLabel="OMIM:156400&#xA;Metaphyseal chondrodysplasia,&#xA;Murk Jansen type" href="https://omim.org/entry/156400" groupRef="a175b">
+      <Graphics centerX="121.21541404649807" centerY="388.9619500361187" width="197.78797095013897" height="45.42032713628457" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32852" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="ec069" textLabel="OMIM:187600&#xA;Thanatophoric dysplasia, type I" href="https://omim.org/entry/187600" groupRef="f4099">
+      <Graphics centerX="117.6399281501962" centerY="551.6591789953131" width="205.29115432601276" height="36.55203945534146" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32853" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="b3373" textLabel="OMIM:187601&#xA;Thanatophoric dysplasia, type II" href="https://omim.org/entry/187601" groupRef="f4099">
+      <Graphics centerX="117.63992815019618" centerY="586.6136178354237" width="205.29115432601276" height="33.35683822487948" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32854" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="ed1c5" textLabel="OMIM:616482&#xA;SADDAN" href="https://omim.org/entry/616482" groupRef="f4099">
+      <Graphics centerX="117.6399281501962" centerY="618.083375648053" width="161.6191420146781" height="29.582677400379154" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32855" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="a7d82" textLabel="OMIM:100800&#xA;Achondroplasia" href="https://omim.org/entry/100800" groupRef="f4099">
+      <Graphics centerX="117.6399281501962" centerY="647.6660530484322" width="161.6191420146781" height="29.582677400379154" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32856" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="c4458" textLabel="OMIM:146000&#xA;Hypochondroplasia" href="https://omim.org/entry/146000" groupRef="f4099">
+      <Graphics centerX="117.6399281501962" centerY="677.2487304488114" width="161.6191420146781" height="29.582677400379154" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32857" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="a698a" textLabel="OMIM:610474&#xA;CATSHL syndrome" href="https://omim.org/entry/610474" groupRef="f4099">
+      <Graphics centerX="117.63992815019618" centerY="706.8314078491907" width="161.6191420146781" height="29.582677400379154" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32858" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="b9f09" textLabel="OMIM:613382&#xA;Brachydactyly, type E2" href="https://omim.org/entry/613382">
+      <Graphics centerX="169.53423366181823" centerY="321.6509809730171" width="158.264895895065" height="34.80840545670691" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32859" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="bf27f" textLabel="OMIM:612961&#xA;Multiple synostoses syndrome 3" href="https://omim.org/entry/612961">
+      <Graphics centerX="332.49681194979826" centerY="671.2081991921741" width="206.2882667567393" height="31.767911360435164" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32860" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="aa68a" textLabel="OMIM:607778&#xA;Acrocapitofemoral dysplasia" href="https://omim.org/entry/607778" groupRef="c00ab">
+      <Graphics centerX="1515.5664486789399" centerY="232.19607688095064" width="177.13865886463697" height="36.960390585342324" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32866" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="eb88e" textLabel="OMIM:112600&#xA;Brachydactyly, type A2" href="https://omim.org/entry/112600">
+      <Graphics centerX="1523.927912745343" centerY="363.11789977645117" width="151.9209602236001" height="33.09588235153345" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32867" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="cb612" textLabel="OMIM:602875&#xA;Acromesomelic dysplasia, Maroteaux type" href="https://omim.org/entry/602875" groupRef="a4d6a">
+      <Graphics centerX="594.9626953657546" centerY="1137.9962635779864" width="255.61916372393648" height="37.77139680023629" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32868" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="d5617" textLabel="Chondrocyte proliferation">
+      <Graphics centerX="1154.5529484101062" centerY="505.10001241480023" width="169.5865490628446" height="25.0" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="14" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="ffffff" shapeType="None" zOrder="32883" />
+    </Label>
+    <Label elementId="e65c4" textLabel="OMIM:612247&#xA;Crouzon syndrome with&#xA;acanthosis nigricans" href="https://omim.org/entry/612247" groupRef="f4099">
+      <Graphics centerX="117.63992815019618" centerY="744.7440640982869" width="161.6191420146781" height="46.24263509781326" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32884" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="ae55c" textLabel="OMIM:602849&#xA;Muenke syndrome" href="https://omim.org/entry/602849" groupRef="f4099">
+      <Graphics centerX="117.6399281501962" centerY="782.6567203473832" width="161.6191420146781" height="29.582677400379154" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32885" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="aba46" textLabel="OMIM:149730&#xA;LADD syndrome" href="https://omim.org/entry/149730" groupRef="f4099">
+      <Graphics centerX="117.6399281501962" centerY="812.2393977477624" width="161.6191420146781" height="29.582677400379154" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32886" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="ea776" textLabel="OMIM:215045&#xA;Chondrodysplasia,&#xA;Blomstrand type" href="https://omim.org/entry/215045" groupRef="dbb65">
+      <Graphics centerX="1124.6033899022548" centerY="131.58697525721524" width="125.62895783597875" height="44.757474505252176" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32888" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="a57a3" textLabel="OMIM:600002&#xA;Eiken syndrome" href="https://omim.org/entry/600002" groupRef="dbb65">
+      <Graphics centerX="1124.6033899022548" centerY="93.49524788011524" width="114.95399480678176" height="31.425980248945038" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32889" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="a636c" textLabel="OMIM:156400&#xA;Metaphyseal chondrodysplasia,&#xA;Murk Jansen type" href="https://omim.org/entry/156400" groupRef="dbb65">
+      <Graphics centerX="1124.6033899022548" centerY="55.072094187500056" width="213.49249409022374" height="45.42032713628457" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32890" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="a040c" textLabel="OMIM:615923&#xA;Epiphyseal chondrodysplasia, Miura type" href="https://omim.org/entry/615923" groupRef="a4d6a">
+      <Graphics centerX="594.9626953657546" centerY="1175.7676603782236" width="255.61916372393648" height="37.771396800236325" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32891" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="a886a" textLabel="OMIM:112500&#xA;Brachydactyly, type A1" href="https://omim.org/entry/112500" groupRef="c00ab">
+      <Graphics centerX="1515.5664486789399" centerY="269.15646746629267" width="153.53894734153863" height="36.960390585342324" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32892" />
+      <Comment>DISEASE</Comment>
+    </Label>
+    <Label elementId="f6de5" textLabel="Syndactyly Lueken type" groupRef="c00ab">
+      <Graphics centerX="1515.5664486789399" centerY="299.35611977253836" width="158.5992454992633" height="23.438914027149032" textColor="0000ff" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="0000ff" borderStyle="Solid" borderWidth="1.0" fillColor="ffcece" shapeType="RoundedRectangle" zOrder="32893" />
+      <Comment>DISEASE</Comment>
+    </Label>
+  </Labels>
+  <Shapes>
+    <Shape elementId="a4954">
+      <Graphics centerX="1356.9052117193824" centerY="497.28911676305876" width="180.71561127418545" height="785.3920146754928" textColor="c0c0c0" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="c0c0c0" borderStyle="Double" borderWidth="3.0" fillColor="00000000" shapeType="Cell" zOrder="16384" rotation="0.0" />
+    </Shape>
+    <Shape elementId="aeb85">
+      <Graphics centerX="362.59443711507043" centerY="609.8230867549167" width="187.27494199535965" height="183.79466357308573" textColor="c0c0c0" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="c0c0c0" borderStyle="Double" borderWidth="3.0" fillColor="00000000" shapeType="Cell" zOrder="16384" rotation="0.0" />
+    </Shape>
+    <Shape elementId="b854a">
+      <Graphics centerX="1547.4316632703253" centerY="497.3194476492495" width="168.29456819619168" height="786.5560926459159" textColor="c0c0c0" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="c0c0c0" borderStyle="Double" borderWidth="3.0" fillColor="00000000" shapeType="Cell" zOrder="16384" rotation="0.0" />
+    </Shape>
+    <Shape elementId="d0c95">
+      <Graphics centerX="678.3344973288705" centerY="145.6156115199795" width="12.91945287305484" height="11.85899272181172" textColor="000000" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="000000" borderStyle="Solid" borderWidth="1.0" fillColor="000000" shapeType="Triangle" zOrder="16384" rotation="0.0" />
+    </Shape>
+    <Shape elementId="dee6b">
+      <Graphics centerX="360.84044014382926" centerY="318.37501143547496" width="160.38882138517604" height="124.73427373223264" textColor="c0c0c0" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="c0c0c0" borderStyle="Double" borderWidth="3.0" fillColor="00000000" shapeType="Cell" zOrder="16384" rotation="0.0" />
+    </Shape>
+    <Shape elementId="fcc67">
+      <Graphics centerX="884.3066003833544" centerY="654.9463197446357" width="720.9941895335223" height="784.7955822197355" textColor="c0c0c0" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="c0c0c0" borderStyle="Double" borderWidth="3.0" fillColor="00000000" shapeType="Cell" zOrder="16384" rotation="0.0" />
+    </Shape>
+    <Shape elementId="e129e">
+      <Graphics centerX="930.6735199117466" centerY="600.4794915423793" width="248.58576369588036" height="422.04786516387503" textColor="c0c0c0" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="c0c0c0" borderStyle="Double" borderWidth="3.0" fillColor="00000000" shapeType="Nucleus" zOrder="32876" rotation="0.0" />
+    </Shape>
+  </Shapes>
+  <Groups>
+    <Group elementId="c00ab" type="Group">
+      <Graphics centerX="1515.5664486789399" centerY="262.3957291871962" width="193.1386588646369" height="113.35969519783342" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="e95c5" type="Group">
+      <Graphics centerX="362.99789702913387" centerY="597.1498735060433" width="106.0" height="66.0" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="a4d6a" type="Group">
+      <Graphics centerX="594.9626953657546" centerY="1156.881961978105" width="271.6191637239365" height="91.54279360047349" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="dbb65" type="Group">
+      <Graphics centerX="1124.6033899022548" centerY="93.16382156459957" width="229.49249409022377" height="137.6037818904836" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="a175b" type="Group">
+      <Graphics centerX="121.21541404649807" centerY="427.05367741321805" width="213.78797095013897" height="137.60378189048322" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="c4ec7" type="Group">
+      <Graphics centerX="929.5734099007456" centerY="882.0630620341936" width="106.0" height="66.0" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="f4099" type="Group">
+      <Graphics centerX="117.63992815019618" centerY="680.2069478577971" width="221.29115432601276" height="309.64757718030944" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="fd823" type="Group">
+      <Graphics centerX="1350.5097132154683" centerY="375.61789977645117" width="106.0" height="66.0" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="a5f45" type="Group">
+      <Graphics centerX="800.6800666615909" centerY="882.0630620341935" width="106.00000000000011" height="65.99999999999966" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+    <Group elementId="ed06a" type="Group">
+      <Graphics centerX="719.7913078753128" centerY="692.1435409597527" width="106.0" height="115.99999999999977" textColor="808080" fontName="Arial" fontWeight="Normal" fontStyle="Normal" fontDecoration="Normal" fontStrikethru="Normal" fontSize="12" hAlign="Center" vAlign="Middle" borderColor="808080" borderStyle="Dashed" borderWidth="1.0" fillColor="0000ff0c" shapeType="Rectangle" zOrder="0" />
+    </Group>
+  </Groups>
+  <Annotations>
+    <Annotation elementId="f5b65" value="thyroid hormone signaling pathway" type="Ontology">
+      <Xref identifier="0000501" dataSource="PW" />
+    </Annotation>
+    <Annotation elementId="f07d0" value="parathyroid hormone signaling pathway" type="Ontology">
+      <Xref identifier="0001135" dataSource="PW" />
+    </Annotation>
+    <Annotation elementId="f6f14" value="fibroblast growth factor signaling pathway" type="Ontology">
+      <Xref identifier="0000328" dataSource="PW" />
+    </Annotation>
+    <Annotation elementId="acd3c" value="Muenke Syndrome" type="Ontology">
+      <Xref identifier="0060703" dataSource="DOID" />
+    </Annotation>
+    <Annotation elementId="f3b53" value="ENSG00000080839" type="parentid">
+      <Xref identifier="ENSG00000080839" dataSource="uniprot" />
+    </Annotation>
+    <Annotation elementId="da8c5" value="RBL1" type="parentsymbol">
+      <Xref identifier="RBL1" dataSource="hgnc" />
+    </Annotation>
+    <Annotation elementId="afb9f" value="KRSFAPStPLTGRRY" type="site" />
+    <Annotation elementId="d5544" value="thr369" type="position" />
+    <Annotation elementId="d0355" value="Phosphorylation" type="Ontology">
+      <Xref identifier="0000216" dataSource="SBO" />
+    </Annotation>
+    <Annotation elementId="c16fc" value="negative regulation of biological process" type="Ontology">
+      <Xref identifier="0048519" dataSource="GO" />
+    </Annotation>
+    <Annotation elementId="e3b59" value="ENSG00000080839" type="parentid">
+      <Xref identifier="ENSG00000080839" dataSource="uniprot" />
+    </Annotation>
+    <Annotation elementId="e78ba" value="RBL1" type="parentsymbol">
+      <Xref identifier="RBL1" dataSource="hgnc" />
+    </Annotation>
+    <Annotation elementId="f48da" value="HIKQQPGsPRRISQQ" type="site" />
+    <Annotation elementId="f8d5f" value="ser975" type="position" />
+    <Annotation elementId="ea32e" value="Phosphorylation" type="Ontology">
+      <Xref identifier="0000216" dataSource="SBO" />
+    </Annotation>
+    <Annotation elementId="f5101" value="negative regulation of biological process" type="Ontology">
+      <Xref identifier="0048519" dataSource="GO" />
+    </Annotation>
+    <Annotation elementId="c9245" value="ENSG00000080839" type="parentid">
+      <Xref identifier="ENSG00000080839" dataSource="uniprot" />
+    </Annotation>
+    <Annotation elementId="c4fa1" value="RBL1" type="parentsymbol">
+      <Xref identifier="RBL1" dataSource="hgnc" />
+    </Annotation>
+    <Annotation elementId="c7eb7" value="RRDMQPLsPISVHER" type="site" />
+    <Annotation elementId="eb5b1" value="ser640" type="position" />
+    <Annotation elementId="d97c5" value="Phosphorylation" type="Ontology">
+      <Xref identifier="0000216" dataSource="SBO" />
+    </Annotation>
+    <Annotation elementId="fe40a" value="negative regulation of biological process" type="Ontology">
+      <Xref identifier="0048519" dataSource="GO" />
+    </Annotation>
+    <Annotation elementId="a35e6" value="ENSG00000080839" type="parentid">
+      <Xref identifier="ENSG00000080839" dataSource="uniprot" />
+    </Annotation>
+    <Annotation elementId="de3f4" value="RBL1" type="parentsymbol">
+      <Xref identifier="RBL1" dataSource="hgnc" />
+    </Annotation>
+    <Annotation elementId="dc35a" value="MMDAPPLsPFPHIKQ" type="site" />
+    <Annotation elementId="d5bbc" value="ser964" type="position" />
+    <Annotation elementId="d96d5" value="Phosphorylation" type="Ontology">
+      <Xref identifier="0000216" dataSource="SBO" />
+    </Annotation>
+    <Annotation elementId="e1520" value="negative regulation of biological process" type="Ontology">
+      <Xref identifier="0048519" dataSource="GO" />
+    </Annotation>
+  </Annotations>
+  <Citations>
+    <Citation elementId="e9a">
+      <Xref identifier="27987249" dataSource="pubmed" />
+    </Citation>
+  </Citations>
+</Pathway>

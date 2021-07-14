@@ -200,7 +200,6 @@ public class Annotation extends PathwayElement {
 		}
 		// remove this annotation from pathway model if empty! TODO
 		if (annotationRefs.isEmpty()) {
-			System.out.println("Here" + getPathwayModel());
 			getPathwayModel().removeAnnotation(this);
 		}
 	}

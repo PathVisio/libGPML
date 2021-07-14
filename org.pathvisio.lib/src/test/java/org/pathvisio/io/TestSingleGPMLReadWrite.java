@@ -40,10 +40,10 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	 * @throws IOException
 	 */
 	public static void testReadWriteGPML() throws IOException, ConverterException {
-//		URL url = Thread.currentThread().getContextClassLoader().getResource("Duplicate_BiopaxID_Issue_Test_WP4969_115143.gpml");
-//		URL url = Thread.currentThread().getContextClassLoader().getResource("State_Comment_Test_WP1602.gpml");
+
+		// file to be read
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource("WP2279.gpml");
+				.getResource("single_test2.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
@@ -51,20 +51,13 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 
-		
-		for (Citation citation: pathwayModel.getCitations()) {
-			if (citation.getElementId().equals("ec9")) {
-				System.out.println("true");
-			} else {
-				System.out.println("false");
-			}
-		}
-		System.out.println(pathwayModel.getElementIds().contains("ec9"));
-		
-		
+				
+		// writes to temp 
 		File tmp = File.createTempFile("testwrite", ".gpml");
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		
+		// choose here whether to write in GPML2013a or GPML2021 format
+//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}

@@ -395,7 +395,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected void readAnnotationRefs(PathwayModel pathwayModel, Annotatable annotatable, Element e)
 			throws ConverterException {
 		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
-			System.out.println(anntRef.getAttributeValue("elementRef"));
 			Annotation annotation = (Annotation) pathwayModel
 					.getPathwayElement(anntRef.getAttributeValue("elementRef"));
 			AnnotationRef annotationRef = new AnnotationRef(annotation);

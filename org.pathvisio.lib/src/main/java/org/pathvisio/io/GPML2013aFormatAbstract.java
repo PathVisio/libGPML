@@ -112,9 +112,9 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
 	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
-	
+
 	/**
-	 * String for Comment source for WikiPathways-description for GPML2013a. 
+	 * String for Comment source for WikiPathways-description for GPML2013a.
 	 */
 	public final static String WP_DESCRIPTION = "WikiPathways-description";
 
@@ -185,15 +185,7 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * Known set of PTM related annotation types for {@link State} {@link Comment}
-	 * in GPML2013a.
-	 */
-	List<String> STATE_ANNOTATIONTYPE_LIST = new ArrayList<>(
-			Arrays.asList("parent", "position", "ptm", "direction", "parentid", "parentsymbol", "site", "sitegrpid"));
-	
-	
-	/**
-	 * {@link BidiMap} of GPML2013a openControlledVocabulary Ontology types 
+	 * {@link BidiMap} of GPML2013a openControlledVocabulary Ontology types
 	 */
 	public static final BidiMap<String, String> OCV_ONTOLOGY_MAP = new DualHashBidiMap<>();
 	static {
@@ -201,24 +193,38 @@ public abstract class GPML2013aFormatAbstract {
 		OCV_ONTOLOGY_MAP.put("Pathway Ontology", "PW");
 		OCV_ONTOLOGY_MAP.put("Cell Type", "CL");
 	}
-	
+
 	/**
 	 * String values for {@link State} {@link Comment} phosphorylation and
 	 * ubiquitylation site information in GPML2013a.
 	 */
-	public final static String STATE_COMMENT_PTM = "ptm";
-	public final static String STATE_COMMENT_DIRECTION = "direction";
-	public final static String STATE_COMMENT_SITE = "site";
-	public final static String STATE_COMMENT_SITEGRPID = "sitegrpid";
-	public final static String SITEGRPID_DATASOURCE = "phosphositeplus";
+	public final static String PARENT = "parent";
+	public final static String POSITION = "position";
+	public final static String PARENTID = "parentid";
+	public final static String PARENTSYMBOL = "parentsymbol";
+	public final static String PTM = "ptm";
+	public final static String DIRECTION = "direction";
+	public final static String SITE = "site";
+	public final static String SITEGRPID = "sitegrpid";
+
+	public final static String PARENTID_DB = "uniprot";
+	public final static String PARENTSYMBOL_DB = "hgnc";
+	public final static String SITEGRPID_DB = "phosphositeplus";
+
+	/**
+	 * Known set of PTM related annotation types for {@link State} {@link Comment}
+	 * in GPML2013a.
+	 */
+	List<String> STATE_ANNOTATIONTYPE_LIST = new ArrayList<>(
+			Arrays.asList(PARENT, POSITION, PTM, DIRECTION, PARENTID, PARENTSYMBOL, SITE, SITEGRPID));
 
 	public static final Map<String, List<String>> STATE_PTM_MAP = new HashMap<String, List<String>>();
 	static {
-		STATE_PTM_MAP.put("p", new ArrayList<>(Arrays.asList("Phosphorylation", "21", "unimod")));
-		STATE_PTM_MAP.put("m", new ArrayList<>(Arrays.asList("Methylation", "34", "unimod")));
-		STATE_PTM_MAP.put("me", new ArrayList<>(Arrays.asList("Methylation", "34", "unimod")));
-		STATE_PTM_MAP.put("u", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
-		STATE_PTM_MAP.put("ub", new ArrayList<>(Arrays.asList("Ubiquitination", "535", "unimod")));
+		STATE_PTM_MAP.put("p", new ArrayList<>(Arrays.asList("Phosphorylation", "0000216", "SBO")));
+		STATE_PTM_MAP.put("m", new ArrayList<>(Arrays.asList("Methylation", "0000214", "SBO")));
+		STATE_PTM_MAP.put("me", new ArrayList<>(Arrays.asList("Methylation", "0000214", "SBO")));
+		STATE_PTM_MAP.put("u", new ArrayList<>(Arrays.asList("Ubiquitination", "000022", "SBO")));
+		STATE_PTM_MAP.put("ub", new ArrayList<>(Arrays.asList("Ubiquitination", "000022", "SBO")));
 
 	}
 	public static final Map<String, List<String>> STATE_DIRECTION_MAP = new HashMap<String, List<String>>();
@@ -246,8 +252,6 @@ public abstract class GPML2013aFormatAbstract {
 	public static final List<String> TRANSLOCATION_LIST = new ArrayList<>(Arrays.asList("mim-translocation"));
 	public static final List<String> TRANSCRIPTION_TRANSLATION_LIST = new ArrayList<>(
 			Arrays.asList("mim-transcription-translation"));
-
-	
 
 	/**
 	 * Map for GPML2021 Interaction Panel arrow head types to GPML2013a arrowHead

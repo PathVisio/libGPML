@@ -423,8 +423,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * This method handles converting {@link State} {@link AnnotationRef}
-	 * information back to {@link Comment} for writing to GPML2013a. NB: "ptm" and
-	 * "direction" are specially handled.
+	 * information back to {@link Comment} for writing to GPML2013a.
+	 * 
+	 * NB: "ptm" and "direction" are specially handled.
 	 *
 	 * @param state
 	 * @param st
@@ -436,44 +437,36 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (AnnotationRef annotationRef : state.getAnnotationRefs()) {
 			String value = annotationRef.getAnnotation().getValue();
 			String type = annotationRef.getAnnotation().getType().getName();
-			// specially handle ptm type
+			// specially handle ptm
 			for (String key : STATE_PTM_MAP.keySet()) {
 				if (value.equals(STATE_PTM_MAP.get(key).get(0))) {
 					value = key;
-					type = STATE_COMMENT_PTM;
+					type = PTM;
 				}
 			}
-			// specially handle direction type
+			// specially handle direction
 			for (String key : STATE_DIRECTION_MAP.keySet()) {
 				if (value.equals(STATE_DIRECTION_MAP.get(key).get(0))) {
 					value = key;
-					type = STATE_COMMENT_DIRECTION;
+					type = DIRECTION;
 				}
 			}
 			annotationsMap.put(type, value);
-			// specially handle sitegrpid
-			if (type.equalsIgnoreCase(STATE_COMMENT_SITE)) {
-				Xref xref = annotationRef.getAnnotation().getXref();
-				if (xref != null) {
-					String identifier = xref.getId();
-					System.out.println(identifier);
-					String dataSource = XrefUtils.getXrefDataSourceStrGPML2013a(xref.getDataSource());
-					if (dataSource.equals(SITEGRPID_DATASOURCE) && identifier != null && !identifier.equals("")) {
-						annotationsMap.put(STATE_COMMENT_SITEGRPID, identifier);
-					}
-				}
+		}
+		if (state.getXref() != null) {
+			if (XrefUtils.getXrefDataSourceStr(state.getXref().getDataSource()).equalsIgnoreCase(SITEGRPID_DB)) {
+				String type = SITEGRPID;
+				String value = state.getXref().getId();
+				annotationsMap.put(type, value);
 			}
 		}
-		// if there are annotations, create commentText string from annotations
+		// create commentText string from annotations map.
 		if (!annotationsMap.isEmpty()) {
 			String commentText = annotationsMap.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue())
 					.collect(Collectors.joining("; "));
-			// initialize jdom comment element
 			Element cmt = new Element("Comment", st.getNamespace());
-			// add text to jdom comment element
 			cmt.setText(commentText);
 			if (cmt != null)
-				// add jdom comment element to jdom state element
 				st.addContent(cmt);
 		}
 	}
@@ -751,9 +744,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (Annotation annotation : pathwayModel.getAnnotations()) {
 			if (annotation == null)
 				continue;
-			// if annotation is for state comment (e.g. parent), avoid writing again
 			String type = annotation.getType().getName();
-			if (STATE_ANNOTATIONTYPE_LIST.contains(type))
+			// for GPML2013a, we only write annotations which annotationsRefs on the pathway
+			boolean hasPathwayAnnotation = false;
+			for (AnnotationRef annotationRef : annotation.getAnnotationRefs()) {
+				if (annotationRef.getAnnotatable().getClass() == Pathway.class)
+					hasPathwayAnnotation = true;
+			}
+			if (!hasPathwayAnnotation)
 				continue;
 			Element ocv = new Element("openControlledVocabulary", BIOPAX_NAMESPACE);
 			Element term = new Element("TERM", BIOPAX_NAMESPACE);
@@ -764,7 +762,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			onto.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			term.setText(annotation.getValue());
 			String prefix = XrefUtils.getXrefDataSourceStr(annotation.getXref().getDataSource());
-			if (OCV_ONTOLOGY_MAP.containsValue(prefix)) 
+			if (OCV_ONTOLOGY_MAP.containsValue(prefix))
 				type = OCV_ONTOLOGY_MAP.getKey(prefix);
 			onto.setText(type);
 			id.setText(prefix + ":" + annotation.getXref().getId());
