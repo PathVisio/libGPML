@@ -47,15 +47,6 @@ public class CitationRef implements Annotatable {
 		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
-	/**
-	 * Instantiates an CitationRef. Source annotation is to be set with
-	 * {@link #setCitationTo()}
-	 * 
-	 * @param citation the source citation this CitationRef refers to.
-	 */
-	public CitationRef() {
-		this.annotationRefs = new ArrayList<AnnotationRef>();
-	}
 
 	/**
 	 * Returns the citation referenced.

@@ -50,14 +50,6 @@ public class AnnotationRef implements Citable, Evidenceable {
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
 	}
 
-	/**
-	 * Instantiates an AnnotationRef. Source annotation is to be set with
-	 * {@link #setAnnotationTo()}
-	 */
-	public AnnotationRef() {
-		this.citationRefs = new ArrayList<CitationRef>();
-		this.evidenceRefs = new ArrayList<EvidenceRef>();
-	}
 
 	/**
 	 * Returns the annotation referenced.

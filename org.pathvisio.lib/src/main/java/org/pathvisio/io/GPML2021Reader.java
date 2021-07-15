@@ -442,7 +442,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			Evidence evidence = (Evidence) pathwayModel.getPathwayElement(evidRef.getAttributeValue("elementRef"));
 			if (evidence != null) {
 				// create new evidenceRef for evidence referenced
-				EvidenceRef evidenceRef = new EvidenceRef(evidence, evidenceable);
+				EvidenceRef evidenceRef = new EvidenceRef(evidence);
 				evidenceable.addEvidenceRef(evidenceRef);
 			}
 		}

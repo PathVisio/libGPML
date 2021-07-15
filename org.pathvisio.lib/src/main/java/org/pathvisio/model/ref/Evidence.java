@@ -43,9 +43,9 @@ public class Evidence extends PathwayElement {
 	 * NB: Manipulated the order of variables to overload constructor. This is not
 	 * best practice, however variable inheritance complicates use of a builder.
 	 * 
-	 * @param value        the name, term, or text of the evidence.
-	 * @param xref         the evidence xref.
-	 * @param url          the url of the evidence.
+	 * @param value the name, term, or text of the evidence.
+	 * @param xref  the evidence xref.
+	 * @param url   the url of the evidence.
 	 */
 	public Evidence(String value, Xref xref, UrlRef url) {
 		super();
@@ -156,9 +156,10 @@ public class Evidence extends PathwayElement {
 	 * @param evidenceRef the given evidenceRef to add.
 	 */
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null) && (evidenceRef.getEvidence() == this);
-		assert !hasEvidenceRef(evidenceRef);
-		evidenceRefs.add(evidenceRef);
+		assert (evidenceRef != null);
+		// add evidenceRef to evidenceRefs
+		if (evidenceRef.getEvidence() == this && !hasEvidenceRef(evidenceRef))
+			evidenceRefs.add(evidenceRef);
 	}
 
 	/**
@@ -169,18 +170,23 @@ public class Evidence extends PathwayElement {
 	 * @param evidenceRef the given evidenceRef to remove.
 	 */
 	public void removeEvidenceRef(EvidenceRef evidenceRef) {
-		evidenceRef.terminate();
-		// remove this evidence from pathway model if empty TODO
-		if (evidenceRefs.isEmpty()) {
-			terminate();
+		assert (evidenceRef != null);
+		Evidence evidence = evidenceRef.getEvidence();
+		// remove citationRef from this citation
+		if (evidence == this || evidence == null && hasEvidenceRef(evidenceRef)) {
+			evidenceRefs.remove(evidenceRef);
+			evidenceRef.terminate();
 		}
+		// remove this evidence from pathway model if empty! TODO
+		if (evidenceRefs.isEmpty())
+			getPathwayModel().removeEvidence(this);
 	}
 
 	/**
 	 * Removes all evidenceRefs from evidenceRefs list of the evidence.
 	 */
 	public void removeEvidenceRefs() {
-		for (int i = 0; i < evidenceRefs.size(); i++) {		
+		for (int i = 0; i < evidenceRefs.size(); i++) {
 			removeEvidenceRef(evidenceRefs.get(i));
 		}
 	}

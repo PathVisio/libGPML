@@ -1,10 +1,8 @@
 package org.pathvisio.model.ref;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.element.DataNode;
 
 import junit.framework.TestCase;
 
@@ -18,28 +16,43 @@ public class TestCitation extends TestCase {
 	/**
 	 * Tests equals method for citations. 
 	 */
-	public static void testEqualsCitation()  {
+	public static void testCitation() {
+
+		PathwayModel p1 = new PathwayModel();
+
+		assert (p1.getCitations().isEmpty());
+
+		Citation c1 = new Citation(new UrlRef(null, null));
+		Annotation a1 = new Annotation("a1", null);
+		p1.addCitation(c1);
+		p1.addAnnotation(a1);
+		CitationRef cr1 = new CitationRef(c1);
+		AnnotationRef ar1 = new AnnotationRef(a1);
+		cr1.addAnnotationRef(ar1);
+		System.out.println("Citation has CitationRefs " + c1.getCitationRefs());
+		System.out.println("Citation has CitationRefs " + c1.getCitationRefs());
+		System.out.println("CitationRef has AnnotationRefs " + cr1.getAnnotationRefs());
 		
-		UrlRef url1 = new UrlRef("Hi", null);
-		UrlRef url2 = new UrlRef("Hi",null);
-		System.out.println(Objects.equals(url1,url2));
-		System.out.println(url1.getDescription().equals(url2.getDescription()));
+		// data node has annotationRef which has a citationRef
+		DataNode d1 = new DataNode(null, null, null, "d1", null);
+		p1.addDataNode(d1);
+		d1.addCitationRef(cr1); 
+		System.out.println("DataNode has CitationRefs " + d1.getCitationRefs());
 
-		List<String> list1 = new ArrayList<String>();
-		List<String> list2 = new ArrayList<String>();
-		list1.add("Hello");
-		list2.add("Hello");
-		list1.add("Hellow");
-		list2.add("Hellow");
-		System.out.println(Objects.equals(list1,list2));
+		
+		assertEquals(cr1.getCitable(), d1);
+		assertEquals(cr1.getCitation(), c1);
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
 
-		Set<UrlRef> list3 = new HashSet<UrlRef>();
-		Set<UrlRef> list4 = new HashSet<UrlRef>();
-		list3.add(url1);
-		list4.add(url2);
-		list3.add(url2);
-		list4.add(url1);
-		System.out.println(Objects.equals(list3,list4));
+//		 c1.removeCitationRef(cr1);
+		 cr1.unsetCitation();
+//		 d1.removeCitationRef(cr1);
+		
+		assertNull(cr1.getCitable());
+		assertNull(cr1.getCitation());
+		System.out.println("DataNode has CitationRef " + d1.getCitationRefs());
+		System.out.println("Citation has CitationRef " + c1.getCitationRefs());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
 
 	}
 	

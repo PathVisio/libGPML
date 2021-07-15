@@ -204,9 +204,6 @@ public class Citation extends PathwayElement {
 	 */
 	protected void addCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
-		// set citation for citationRef if necessary
-		if (citationRef.getCitation() == null)
-			citationRef.setCitationTo(this);
 		// add citationRef to citationRefs
 		if (citationRef.getCitation() == this && !hasCitationRef(citationRef))
 			citationRefs.add(citationRef);
@@ -222,7 +219,6 @@ public class Citation extends PathwayElement {
 	public void removeCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
 		Citation citation = citationRef.getCitation();
-
 		// remove citationRef from this citation
 		if (citation == this || citation == null && hasCitationRef(citationRef)) {
 			citationRefs.remove(citationRef);

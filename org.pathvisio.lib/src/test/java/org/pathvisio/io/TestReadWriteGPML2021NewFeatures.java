@@ -66,17 +66,17 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		pathwayModel.addEvidence(evidence1);
 		pathwayModel.addEvidence(evidence2);
 		// adds evidenceRef to pathway
-		pathwayModel.getPathway().addEvidenceRef(new EvidenceRef(evidence1, pathwayModel.getPathway()));
+		pathwayModel.getPathway().addEvidenceRef(new EvidenceRef(evidence1));
 
 		/*
 		 * Add citation and evidence to Annotation
 		 */
 		AnnotationRef annotationRef1 = pathwayModel.getPathway().getAnnotationRefs().get(0);
 		// adds evidenceRef to annotationRef
-		annotationRef1.addEvidenceRef(new EvidenceRef(evidence2, annotationRef1));
+		annotationRef1.addEvidenceRef(new EvidenceRef(evidence2));
 		// adds citation b9d pathwayModel to annotationRef as citationRef
 		Citation citation1 = pathwayModel.getCitations().get(2);
-		CitationRef citationRef1 = new CitationRef();
+		CitationRef citationRef1 = new CitationRef(citation1);
 		annotationRef1.addCitationRef(citationRef1);
 
 		/**

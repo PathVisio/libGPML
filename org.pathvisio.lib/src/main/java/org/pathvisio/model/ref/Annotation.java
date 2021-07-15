@@ -173,11 +173,8 @@ public class Annotation extends PathwayElement {
 	 * 
 	 * @param annotationRef the given annotationRef to add.
 	 */
-	public void addAnnotationRef(AnnotationRef annotationRef) {
+	protected void addAnnotationRef(AnnotationRef annotationRef) {
 		assert (annotationRef != null);
-		// set citation for citationRef if necessary
-		if (annotationRef.getAnnotation() == null)
-			annotationRef.setAnnotationTo(this);
 		// add citationRef to citationRefs
 		if (annotationRef.getAnnotation() == this && !hasAnnotationRef(annotationRef))
 			annotationRefs.add(annotationRef);

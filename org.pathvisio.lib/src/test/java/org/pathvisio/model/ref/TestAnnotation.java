@@ -15,7 +15,7 @@ public class TestAnnotation extends TestCase {
 
 	/**
 	 */
-	public static void testAnnotationWithAnnotationRef() {
+	public static void testAnnotation() {
 
 		PathwayModel p1 = new PathwayModel();
 

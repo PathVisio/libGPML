@@ -28,16 +28,13 @@ public class EvidenceRef {
 	private Evidenceable evidenceable; // target pathway, pathway element, or evidenceRef
 
 	/**
-	 * Instantiates an EvidenceRef given source {@link Evidence} and target
-	 * {@link Evidenceable}, and initializes evidenceRefs lists.
+	 * Instantiates an EvidenceRef given source {@link Evidence} and initializes
+	 * evidenceRefs lists.
 	 * 
-	 * @param evidence     the source evidence this EvidenceRef refers to.
-	 * @param evidenceable the target pathway, pathway element, or evidenceRef to
-	 *                     which this evidenceRef belongs.
+	 * @param evidence the source evidence this EvidenceRef refers to.
 	 */
-	public EvidenceRef(Evidence evidence, Evidenceable evidenceable) {
+	public EvidenceRef(Evidence evidence) {
 		this.setEvidenceTo(evidence);
-		this.setEvidenceableTo(evidenceable);
 	}
 
 	/**
@@ -67,8 +64,10 @@ public class EvidenceRef {
 		if (evidence == null)
 			throw new IllegalArgumentException("Invalid evidence.");
 		if (hasEvidence())
-			throw new IllegalStateException("EvidenceRef already has a source evidence.");
+			throw new IllegalStateException("EvidenceRef already has a source citation.");
 		setEvidence(evidence);
+		if (!evidence.hasEvidenceRef(this))
+			evidence.addEvidenceRef(this);
 	}
 
 	/**
@@ -85,9 +84,10 @@ public class EvidenceRef {
 	 */
 	public void unsetEvidence() {
 		if (hasEvidence()) {
-			Evidence formerEvidence = this.getEvidence();
+			Evidence evidence = getEvidence();
 			setEvidence(null);
-			formerEvidence.removeEvidenceRef(this);
+			if (evidence.hasEvidenceRef(this))
+				evidence.removeEvidenceRef(this);
 		}
 	}
 
@@ -140,9 +140,10 @@ public class EvidenceRef {
 	 */
 	public void unsetEvidenceable() {
 		if (hasEvidenceable()) {
-			Evidenceable formerEvidenceable = this.getEvidenceable();
+			Evidenceable evidenceable = getEvidenceable();
 			setEvidenceable(null);
-			formerEvidenceable.removeEvidenceRef(this);
+			if (evidenceable.hasEvidenceRef(this))
+				evidenceable.removeEvidenceRef(this);
 		}
 	}
 
