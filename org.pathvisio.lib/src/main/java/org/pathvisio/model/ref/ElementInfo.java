@@ -22,8 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.pathvisio.model.Comment;
-import org.pathvisio.model.element.PathwayElement;
+import org.pathvisio.model.PathwayElement;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an

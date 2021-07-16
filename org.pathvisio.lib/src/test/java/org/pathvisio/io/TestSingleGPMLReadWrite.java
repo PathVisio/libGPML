@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import org.pathvisio.model.*;
-import org.pathvisio.model.element.State;
 
 import junit.framework.TestCase;
 

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.element.PathwayElement;
+import org.pathvisio.model.PathwayElement;
 
 /**
  * This class stores information for a Citation.
@@ -198,7 +198,8 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given citationRef to citationRefs list of the citation.
+	 * Adds the given citationRef to citationRefs list of the citation. NB: This method
+	 * is not used directly.
 	 * 
 	 * @param citationRef the given citationRef to add.
 	 */
@@ -212,7 +213,8 @@ public class Citation extends PathwayElement {
 	/**
 	 * Removes the given citationRef from citationRefs list of the citation. If
 	 * citationRefs becomes empty, this citation is removed from the pathway model
-	 * because it is no longer referenced/used.
+	 * because it is no longer referenced/used. NB: This method
+	 * is not used directly.
 	 * 
 	 * @param citationRef the given citationRef to remove.
 	 */

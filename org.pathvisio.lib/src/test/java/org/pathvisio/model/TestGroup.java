@@ -1,7 +1,8 @@
 package org.pathvisio.model;
 
-import org.pathvisio.model.element.DataNode;
-import org.pathvisio.model.element.Group;
+import org.pathvisio.model.DataNode;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.PathwayModel;
 
 import junit.framework.TestCase;
 

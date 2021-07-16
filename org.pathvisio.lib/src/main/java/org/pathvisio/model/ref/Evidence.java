@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.element.PathwayElement;
+import org.pathvisio.model.PathwayElement;
 
 /**
  * This class stores information for an Evidence.
@@ -151,7 +151,8 @@ public class Evidence extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given evidenceRef to evidenceRefs list of the evidence.
+	 * Adds the given evidenceRef to evidenceRefs list of the evidence. NB: This
+	 * method is not used directly.
 	 * 
 	 * @param evidenceRef the given evidenceRef to add.
 	 */
@@ -165,7 +166,8 @@ public class Evidence extends PathwayElement {
 	/**
 	 * Removes the given evidenceRef from evidenceRefs list of the evidence. If
 	 * evidenceRefs becomes empty, this evidence is removed from the pathway model
-	 * because it is no longer referenced/used.
+	 * because it is no longer referenced/used. NB: This method is not used
+	 * directly.
 	 * 
 	 * @param evidenceRef the given evidenceRef to remove.
 	 */

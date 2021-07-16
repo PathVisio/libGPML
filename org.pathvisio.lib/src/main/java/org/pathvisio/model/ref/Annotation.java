@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.element.PathwayElement;
+import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.type.AnnotationType;
 
 /**
@@ -169,7 +169,8 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given annotationRef to annotationRefs list of the annotation.
+	 * Adds the given annotationRef to annotationRefs list of the annotation. NB: This method
+	 * is not used directly.
 	 * 
 	 * @param annotationRef the given annotationRef to add.
 	 */
@@ -183,7 +184,8 @@ public class Annotation extends PathwayElement {
 	/**
 	 * Removes the given annotationRef from annotationRefs list of this annotation.
 	 * If annotationRefs becomes empty, this annotation is removed from the pathway
-	 * model because it is no longer referenced/used.
+	 * model because it is no longer referenced/used. NB: This method
+	 * is not used directly.
 	 * 
 	 * @param annotationRef the given annotationRef to remove.
 	 */

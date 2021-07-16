@@ -36,8 +36,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.pathvisio.debug.*;
-import org.pathvisio.util.RootElementFinder;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.util.RootElementFinder;
 import org.xml.sax.InputSource;
 
 

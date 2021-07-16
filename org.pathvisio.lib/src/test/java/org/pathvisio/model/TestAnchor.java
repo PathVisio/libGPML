@@ -16,9 +16,11 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.element.Interaction;
+import org.pathvisio.model.Anchor;
+import org.pathvisio.model.Interaction;
+import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.type.AnchorShapeType;
-import org.pathvisio.model.element.Anchor;
+
 import junit.framework.TestCase;
 
 /**

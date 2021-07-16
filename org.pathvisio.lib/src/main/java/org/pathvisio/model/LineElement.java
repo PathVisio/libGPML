@@ -14,12 +14,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.element;
+package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.LineStyleProperty;
 import org.pathvisio.model.ref.ElementInfo;
 

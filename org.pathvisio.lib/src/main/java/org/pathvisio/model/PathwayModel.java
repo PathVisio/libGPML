@@ -30,14 +30,6 @@ import org.pathvisio.debug.*;
 import org.pathvisio.io.*;
 import java.io.Reader;
 
-import org.pathvisio.model.element.DataNode;
-import org.pathvisio.model.element.GraphicalLine;
-import org.pathvisio.model.element.Group;
-import org.pathvisio.model.element.Interaction;
-import org.pathvisio.model.element.Label;
-import org.pathvisio.model.element.PathwayElement;
-import org.pathvisio.model.element.Shape;
-import org.pathvisio.model.element.State;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;

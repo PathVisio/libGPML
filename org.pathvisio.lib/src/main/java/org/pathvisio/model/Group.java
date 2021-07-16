@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.element;
+package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;

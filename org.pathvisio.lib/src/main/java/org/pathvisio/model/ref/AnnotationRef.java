@@ -127,8 +127,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 
 	/**
 	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
-	 * for this annotationRef. Annotatable is only set when an Annotatable adds an
-	 * AnnotationRef.
+	 * for this annotationRef. NB: Annotatable is only set when an Annotatable adds
+	 * an AnnotationRef. This method is not used directly.
 	 * 
 	 * @param citable the given target citable to set.
 	 */
@@ -151,7 +151,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
-	 * Unsets the annotatable, if any, from this annotationRef.
+	 * Unsets the annotatable, if any, from this annotationRef. NB: This method is
+	 * not used directly.
 	 */
 	protected void unsetAnnotatable() {
 		if (hasAnnotatable()) {

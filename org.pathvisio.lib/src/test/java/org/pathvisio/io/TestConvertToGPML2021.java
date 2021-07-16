@@ -18,6 +18,7 @@ package org.pathvisio.io;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.pathvisio.model.PathwayModel;
 
 import junit.framework.TestCase;

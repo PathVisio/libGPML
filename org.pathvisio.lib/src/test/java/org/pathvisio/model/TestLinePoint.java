@@ -16,8 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.element.Interaction;
-import org.pathvisio.model.element.LinePoint;
+import org.pathvisio.model.Interaction;
+import org.pathvisio.model.LinePoint;
+import org.pathvisio.model.PathwayModel;
+
 import junit.framework.TestCase;
 
 /**

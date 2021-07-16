@@ -115,11 +115,12 @@ public class EvidenceRef {
 
 	/**
 	 * Sets the target pathway, pathway element, or evidenceRef {@link Evidenceable}
-	 * for this evidenceRef.
+	 * for this evidenceRef. NB: Evidenceable is only set when an Evidenceable adds
+	 * a EvidenceRef. This method is not used directly.
 	 * 
 	 * @param evidenceable the given target evidenceable to set.
 	 */
-	public void setEvidenceableTo(Evidenceable evidenceable) {
+	protected void setEvidenceableTo(Evidenceable evidenceable) {
 		if (evidenceable == null)
 			throw new IllegalArgumentException("Invalid evidenceable.");
 		if (hasEvidenceable())
@@ -138,9 +139,10 @@ public class EvidenceRef {
 	}
 
 	/**
-	 * Unsets the evidenceable, if any, from this evidenceRef.
+	 * Unsets the evidenceable, if any, from this evidenceRef. NB: This method is
+	 * not used directly.
 	 */
-	public void unsetEvidenceable() {
+	protected void unsetEvidenceable() {
 		if (hasEvidenceable()) {
 			Evidenceable evidenceable = getEvidenceable();
 			setEvidenceable(null);

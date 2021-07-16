@@ -24,8 +24,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.Author;
-import org.pathvisio.model.Comment;
 import org.pathvisio.model.graphics.Coordinate;
 
 /**

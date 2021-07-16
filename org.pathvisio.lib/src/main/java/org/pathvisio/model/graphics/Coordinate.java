@@ -17,7 +17,7 @@
 package org.pathvisio.model.graphics;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.element.LinePoint;
+import org.pathvisio.model.LinePoint;
 
 /**
  * This class holds coordinates x and y.

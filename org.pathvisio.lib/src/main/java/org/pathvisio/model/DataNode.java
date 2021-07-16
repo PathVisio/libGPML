@@ -14,12 +14,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.element;
+package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
@@ -225,11 +224,12 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Sets the pathway model for this pathway element.
+	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
+	 * model adds this pathway element. This method is not used directly.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
-	public void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
+	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		if (pathwayModel == null)
 			throw new IllegalArgumentException("Invalid pathway model.");
 		if (hasPathwayModel())

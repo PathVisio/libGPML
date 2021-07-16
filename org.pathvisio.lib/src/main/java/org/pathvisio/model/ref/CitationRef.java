@@ -122,8 +122,8 @@ public class CitationRef implements Annotatable {
 
 	/**
 	 * Sets the target pathway, pathway element, or annotationRef {@link Citable}
-	 * for this annotationRef. Citable is only set when an Citable adds a
-	 * CitationRef.
+	 * for this annotationRef. NB: Citable is only set when an Citable adds a
+	 * CitationRef. This method is not used directly.
 	 * 
 	 * @param citable the given target citable to set.
 	 */
@@ -146,7 +146,7 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Unsets the citable, if any, from this citationRef.
+	 * Unsets the citable, if any, from this citationRef. NB: This method is not used directly.
 	 */
 	protected void unsetCitable() {
 		if (hasCitable()) {

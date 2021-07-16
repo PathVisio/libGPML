@@ -14,9 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.element;
-
-import org.pathvisio.model.PathwayModel;
+package org.pathvisio.model;
 
 /**
  * Abstract class of pathway elements which are part of a pathway and have an
@@ -60,11 +58,12 @@ public abstract class PathwayElement {
 	}
 
 	/**
-	 * Sets the pathway model for this pathway element.
+	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
+	 * model adds this pathway element. This method is not used directly.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
-	public void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
+	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		if (pathwayModel == null)
 			throw new IllegalArgumentException("Invalid pathway model.");
 		if (hasPathwayModel())
@@ -74,6 +73,7 @@ public abstract class PathwayElement {
 
 	/**
 	 * Sets the pathway model of this pathway element to the given pathway model.
+	 * NB: This method is not used directly.
 	 * 
 	 * @param pathwayModel the new pathway model for this pathway element.
 	 */
@@ -83,10 +83,11 @@ public abstract class PathwayElement {
 
 	/**
 	 * Unsets the pathway model, if any, from this pathway element. The pathway
-	 * element no longer belongs to a pathway model.
+	 * element no longer belongs to a pathway model. NB: This method is not used
+	 * directly.
 	 */
-	public void unsetPathwayModel() {
-		if (hasPathwayModel()) 
+	protected void unsetPathwayModel() {
+		if (hasPathwayModel())
 			setPathwayModel(null);
 	}
 
@@ -109,7 +110,7 @@ public abstract class PathwayElement {
 	}
 
 	/**
-	 * Sets the elementId to generated elementId from pathwayModel. 
+	 * Sets the elementId to generated elementId from pathwayModel.
 	 */
 	public void setGeneratedElementId() {
 		setElementId(pathwayModel.getUniqueElementId());

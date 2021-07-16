@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.io.File;
+
 import org.pathvisio.model.PathwayModel;
 
 /**

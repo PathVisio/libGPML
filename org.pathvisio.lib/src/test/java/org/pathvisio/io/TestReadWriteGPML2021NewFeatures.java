@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.pathvisio.model.*;
-import org.pathvisio.model.element.*;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;

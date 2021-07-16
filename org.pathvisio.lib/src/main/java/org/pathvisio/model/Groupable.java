@@ -1,4 +1,4 @@
-package org.pathvisio.model.element;
+package org.pathvisio.model;
 
 /**
  * Interface for classes which can belong in a {@link Group}. These classes
