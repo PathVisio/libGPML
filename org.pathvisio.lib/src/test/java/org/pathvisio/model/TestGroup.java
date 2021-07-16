@@ -74,7 +74,7 @@ public class TestGroup extends TestCase {
 	 * {@link Groupable#setGroupRefTo()} and {@link Groupable#unsetGroupRef()}.
 	 */
 	public static void testGroupableSetUnset() {
-		System.out.println("TEST 1");
+		System.out.println("TEST 2");
 
 		// create a pathway model
 		PathwayModel p1 = new PathwayModel();
@@ -120,6 +120,48 @@ public class TestGroup extends TestCase {
 		d1.unsetGroupRef();
 		System.out.println("Group contains PathwayElements " + g1.getPathwayElements());
 		assertNull(d1.getGroupRef());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+	}
+
+	/**
+	 * Create a {@link Group} and add to pathway model. Create {@link DataNode} and
+	 * add to pathway model. Add DataNode to Group. Create another Group and add
+	 * DataNode to new Group.
+	 */
+	public static void testAlreadyInGroup() {
+		System.out.println("TEST 3");
+
+		// create a pathway model
+		PathwayModel p1 = new PathwayModel();
+
+		// create groups
+		Group g1 = new Group(null, null, null, null);
+		Group g2 = new Group(null, null, null, null);
+
+		// add to pathway model
+		p1.addGroup(g1);
+		p1.addGroup(g2);
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains Groups " + p1.getGroups());
+
+		// create a data node
+		DataNode d1 = new DataNode(null, null, null, "d1", null);
+		p1.addDataNode(d1);
+
+		// add data node to group 1 
+//		d1.setGroupRefTo(g1);
+		g1.addPathwayElement(d1);
+		assertEquals(d1.getGroupRef(), g1);
+
+		// add data node to group 2 
+//		d1.setGroupRefTo(g2);
+		g2.addPathwayElement(d1);
+		assertEquals(d1.getGroupRef(), g2);
+
+		// remove data node from group
+//		d1.unsetGroupRef();
+		System.out.println("Group 1 contains PathwayElements " + g1.getPathwayElements());
+		System.out.println("Group 2 contains PathwayElements " + g2.getPathwayElements());
 		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
 	}
 
