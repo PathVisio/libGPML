@@ -70,7 +70,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Adds given point to points list.
+	 * Adds given point to points list. Sets lineElement for the given point.
 	 * 
 	 * @param point the point to be added.
 	 */
@@ -86,7 +86,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Removes given point from the points list.
+	 * Removes given point from the points list. Point ceases to exist and is
+	 * terminated.
 	 * 
 	 * @param point the point to be removed.
 	 */
@@ -145,7 +146,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Adds given anchor to anchors list.
+	 * Adds given anchor to anchors list. Sets lineElement for the given anchor.
 	 * 
 	 * @param anchor the anchor to be added.
 	 */
@@ -161,7 +162,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Removes given anchor from the anchors list.
+	 * Removes given anchor from the anchors list. Anchor ceases to exist and is
+	 * terminated.
 	 * 
 	 * @param anchor the anchor to be removed.
 	 */

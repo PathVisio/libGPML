@@ -220,7 +220,6 @@ public class Annotation extends PathwayElement {
 	public void terminate() {
 		removeAnnotationRefs();
 		unsetPathwayModel();
-		// TODO
 	}
 
 	/**

@@ -246,9 +246,8 @@ public class Citation extends PathwayElement {
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
 		removeCitationRefs();
-		// TODO
+		unsetPathwayModel();
 	}
 
 	/**

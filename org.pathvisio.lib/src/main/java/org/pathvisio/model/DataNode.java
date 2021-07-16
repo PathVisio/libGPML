@@ -164,13 +164,13 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Adds given state to states list.
+	 * Adds given state to states list. Sets dataNode for the given state.
 	 * 
 	 * @param state the state to be added.
 	 */
 	public void addState(State state) {
 		assert (state != null);
-		state.setDataNodeTo(this); // TODO
+		state.setDataNodeTo(this); 
 		assert (state.getDataNode() == this);
 		assert !hasState(state);
 		// add state to same pathway model as data node if applicable
@@ -180,7 +180,8 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Removes given state from states list.
+	 * Removes given state from states list. State ceases to exist and is
+	 * terminated.
 	 * 
 	 * @param state the state to be removed.
 	 */
@@ -248,7 +249,7 @@ public class DataNode extends ShapedElement {
 	protected void unsetPathwayModel() {
 		if (hasPathwayModel()) {
 			setPathwayModel(null);
-			for (State state : states) // TODO
+			for (State state : states)
 				state.setPathwayModel(null);
 		}
 	}
@@ -261,11 +262,11 @@ public class DataNode extends ShapedElement {
 	@Override
 	public void terminate() {
 		removeStates();
-		unsetPathwayModel();
-		unsetGroupRef();
 		removeAnnotationRefs();
 		removeCitationRefs();
-		removeEvidenceRefs();// TODO
+		removeEvidenceRefs();
+		unsetGroupRef();
+		unsetPathwayModel();
 	}
 
 }

@@ -199,8 +199,8 @@ public class Evidence extends PathwayElement {
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
 		removeEvidenceRefs();
+		unsetPathwayModel();
 	}
 
 	/**

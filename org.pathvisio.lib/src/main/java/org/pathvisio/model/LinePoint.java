@@ -245,8 +245,8 @@ public class LinePoint extends PathwayElement {
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
 		unsetLineElement();
+		unsetPathwayModel();
 	}
 
 }

@@ -340,10 +340,10 @@ public class State extends ElementInfo {
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
-		unsetDataNode();
 		removeAnnotationRefs();
 		removeCitationRefs();
-		removeEvidenceRefs();// TODO
+		removeEvidenceRefs();
+		unsetDataNode();
+		unsetPathwayModel();
 	}
 }
