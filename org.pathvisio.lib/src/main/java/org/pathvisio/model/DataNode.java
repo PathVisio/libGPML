@@ -242,9 +242,10 @@ public class DataNode extends ShapedElement {
 
 	/**
 	 * Unsets the pathway model, if any, from this pathway element. The pathway
-	 * element no longer belongs to a pathway model.
+	 * element no longer belongs to a pathway model. NB: This method is not used
+	 * directly.
 	 */
-	public void unsetPathwayModel() {
+	protected void unsetPathwayModel() {
 		if (hasPathwayModel()) {
 			setPathwayModel(null);
 			for (State state : states) // TODO

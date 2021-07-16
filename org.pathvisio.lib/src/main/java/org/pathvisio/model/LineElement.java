@@ -230,8 +230,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	public void setGroupRefTo(Group groupRef) {
 		if (groupRef == null)
 			throw new IllegalArgumentException("Invalid group.");
-		if (hasGroupRef())
-			throw new IllegalStateException("This pathway element already belongs to a group.");
+		if (hasGroupRef()) {
+			Group formerGroup = getGroupRef();
+			formerGroup.removePathwayElement(this);
+		}
 		setGroupRef(groupRef);
 		if (!groupRef.hasPathwayElement(this))
 			groupRef.addPathwayElement(this);
@@ -259,11 +261,12 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Sets the pathway model for this pathway element.
+	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
+	 * model adds this pathway element. This method is not used directly.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
-	public void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
+	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		if (pathwayModel == null)
 			throw new IllegalArgumentException("Invalid pathway model.");
 		if (hasPathwayModel())
@@ -278,9 +281,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 
 	/**
 	 * Unsets the pathway model, if any, from this pathway element. The pathway
-	 * element no longer belongs to a pathway model.
+	 * element no longer belongs to a pathway model. NB: This method is not used
+	 * directly.
 	 */
-	public void unsetPathwayModel() {
+	protected void unsetPathwayModel() {
 		if (hasPathwayModel()) {
 			setPathwayModel(null);
 			for (LinePoint point : points) // TODO
@@ -299,10 +303,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	public void terminate() {
 		removePoints();
 		removeAnchors();
-		unsetPathwayModel();
-		unsetGroupRef();
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();
+		unsetGroupRef();
+		unsetPathwayModel();
 	}
 }

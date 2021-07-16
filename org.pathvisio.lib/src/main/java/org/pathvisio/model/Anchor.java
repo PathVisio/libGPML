@@ -33,9 +33,9 @@ public class Anchor extends PathwayElement {
 	/**
 	 * Instantiates an Anchor pathway element.
 	 * 
-	 * @param position    the proportional distance of an anchor along the line it
-	 *                    belongs to.
-	 * @param shapeType   the visual representation of an anchor.
+	 * @param position  the proportional distance of an anchor along the line it
+	 *                  belongs to.
+	 * @param shapeType the visual representation of an anchor.
 	 */
 	public Anchor(double position, AnchorShapeType shapeType) {
 		super();
@@ -43,7 +43,7 @@ public class Anchor extends PathwayElement {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
 		this.position = position; // must be valid
-		setShapeType(shapeType); 
+		setShapeType(shapeType);
 	}
 
 	/**
@@ -65,11 +65,12 @@ public class Anchor extends PathwayElement {
 	}
 
 	/**
-	 * Sets the parent interaction or graphicalLine for this anchor.
+	 * Sets the parent interaction or graphicalLine for this anchor. NB: Only set
+	 * when a line adds this anchor. This method is not used directly.
 	 * 
 	 * @param lineElement the line element to set.
 	 */
-	public void setLineElementTo(LineElement lineElement) {
+	protected void setLineElementTo(LineElement lineElement) {
 		if (lineElement == null)
 			throw new IllegalArgumentException("Invalid line pathway element.");
 		if (hasLineElement())
@@ -78,7 +79,8 @@ public class Anchor extends PathwayElement {
 	}
 
 	/**
-	 * Sets the parent interaction or graphicalLine for this anchor.
+	 * Sets the parent interaction or graphicalLine for this anchor. NB: This method
+	 * is not used directly.
 	 * 
 	 * @param lineElement the line element to set.
 	 */
@@ -87,9 +89,10 @@ public class Anchor extends PathwayElement {
 	}
 
 	/**
-	 * Unsets the line element, if any, from this anchor.
+	 * Unsets the line element, if any, from this anchor. NB: This method is not
+	 * used directly.
 	 */
-	public void unsetLineElement() {
+	protected void unsetLineElement() {
 		if (hasLineElement())
 			setLineElement(null);
 	}

@@ -101,14 +101,15 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Sets the parent data node to which the state belongs.
+	 * Sets the parent data node to which the state belongs. NB: Only set when a
+	 * data nodes adds this state. This method is not used directly.
 	 * 
 	 * NB: prior to GPML2021, elementRef was used to refer to the elementId of
 	 * parent data node.
 	 * 
 	 * @param dataNode the parent data node of the state.
 	 */
-	public void setDataNodeTo(DataNode dataNode) {
+	protected void setDataNodeTo(DataNode dataNode) {
 		if (dataNode == null)
 			throw new IllegalArgumentException("Invalid datanode.");
 		if (hasDataNode())
@@ -117,7 +118,8 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Sets the parent data node for this state.
+	 * Sets the parent data node for this state. NB: This method is not used
+	 * directly.
 	 * 
 	 * @param dataNode the given dataNode to set.
 	 */
@@ -126,10 +128,11 @@ public class State extends ElementInfo {
 	}
 
 	/**
-	 * Unsets the data node, if any, from this state.
+	 * Unsets the data node, if any, from this state. NB: This method is not used
+	 * directly.
 	 */
-	public void unsetDataNode() {
-		if (hasDataNode()) 
+	protected void unsetDataNode() {
+		if (hasDataNode())
 			setDataNode(null);
 	}
 

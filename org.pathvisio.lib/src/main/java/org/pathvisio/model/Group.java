@@ -101,23 +101,27 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Adds the given pathway element to pathwayElements list of the group.
+	 * Adds the given pathway element to pathwayElements list of this group. Checks
+	 * if pathway element is valid. Sets groupRef of pathway element to this group
+	 * if necessary.
 	 * 
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
 	public void addPathwayElement(Groupable pathwayElement) {
 		assert (pathwayElement != null);
 		// set groupRef for pathway element if necessary
-		if (pathwayElement.getGroupRef() == null)
+		if (pathwayElement.getGroupRef() == null || pathwayElement.getGroupRef() != this)
 			pathwayElement.setGroupRefTo(this);
 		// add pathway element to this group
 		if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement))
 			pathwayElements.add(pathwayElement);
-		
+
 	}
 
 	/**
 	 * Removes the given pathway element from pathwayElements list of the group.
+	 * Checks if pathway element is valid. Unsets groupRef of pathway element from
+	 * this group if necessary.
 	 * 
 	 * @param pathwayElement the given pathwayElement to remove.
 	 */

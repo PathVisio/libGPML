@@ -137,8 +137,10 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	public void setGroupRefTo(Group groupRef) {
 		if (groupRef == null)
 			throw new IllegalArgumentException("Invalid group.");
-		if (hasGroupRef())
-			throw new IllegalStateException("This pathway element already belongs to a group.");
+		if (hasGroupRef()) {
+			Group formerGroup = getGroupRef();
+			formerGroup.removePathwayElement(this);
+		}
 		setGroupRef(groupRef);
 		if (!groupRef.hasPathwayElement(this))
 			groupRef.addPathwayElement(this);
@@ -172,11 +174,11 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
-		unsetGroupRef();
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();// TODO
+		unsetGroupRef();
+		unsetPathwayModel();
 	}
 
 }

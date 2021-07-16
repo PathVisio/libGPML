@@ -88,11 +88,12 @@ public class LinePoint extends PathwayElement {
 	}
 
 	/**
-	 * Sets the parent interaction or graphicalLine for this point.
+	 * Sets the parent interaction or graphicalLine for this point. NB: Only set
+	 * when a line adds this point. This method is not used directly.
 	 * 
 	 * @param lineElement the line element to set.
 	 */
-	public void setLineElementTo(LineElement lineElement) {
+	protected void setLineElementTo(LineElement lineElement) {
 		if (lineElement == null)
 			throw new IllegalArgumentException("Invalid line pathway element.");
 		if (hasLineElement())
@@ -101,7 +102,8 @@ public class LinePoint extends PathwayElement {
 	}
 
 	/**
-	 * Sets the parent interaction or graphicalLine for this point.
+	 * Sets the parent interaction or graphicalLine for this point. NB: This method
+	 * is not used directly.
 	 * 
 	 * @param lineElement the line element to set.
 	 */
@@ -110,9 +112,10 @@ public class LinePoint extends PathwayElement {
 	}
 
 	/**
-	 * Unsets the line element, if any, from this point.
+	 * Unsets the line element, if any, from this point. NB: This method is not used
+	 * directly.
 	 */
-	public void unsetLineElement() {
+	protected void unsetLineElement() {
 		if (hasLineElement())
 			setLineElement(null);
 	}
