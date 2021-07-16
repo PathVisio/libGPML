@@ -58,11 +58,11 @@ import org.pathvisio.util.XrefUtils;
  * To ensure unique elementIds for a reading session, all ids are stored in
  * {@link Set} elementIdSet. Biopax id or GroupId and corresponding newly
  * assigned elementIds are stored in {@link Map} biopaxIdToNew or groupIdToNew.
- * Some PublicationXrefs contain duplicate information and are not added to the
- * pathway model as Citation. The {@link Map} citationDuplicates links the id of
- * the duplicate citation to the id of the existing citation so that BiopaxRef
- * for the duplicate citation can find the correct existing citation. Line
- * elementIds are stored in {@link List} lineList.
+ * Some Biopax contain duplicate information and are not added to the pathway
+ * model. The {@link Map} duplicateToBiopaxId stores the duplicate Biopax id and
+ * the id of the existing Biopax/Citation so that BiopaxRefs for the duplicate
+ * can be properly mapped to the existing Biopax. The {@link List} lineList
+ * stores line elementIds .
  * 
  * @author finterly
  */
@@ -87,7 +87,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * See the following links for more information on elementIdSet:
 	 * {@link #readAllElementIds}; biopaxIdToNew:
-	 * {@link #readBiopaxPublicationXref}; citationDuplicates:
+	 * {@link #readBiopaxPublicationXref}; duplicateToBiopaxId:
 	 * {@link #readBiopaxPublicationXref}; groupIdToNew: {@link #readGroups};
 	 * lineList {@link #readGraphicalLines}, {@link #readInteractions},
 	 * {@link #readPoints}.
@@ -101,29 +101,28 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 		Set<String> elementIdSet = new HashSet<String>(); // all elementIds
 		Map<String, String> biopaxIdToNew = new HashMap<String, String>(); // biopax ids and new unique elementIds
-		Map<String, String> citationDuplicates = new HashMap<String, String>(); // duplicate and existing citation
-																				// elementIds
+		Map<String, String> duplicateToBiopaxId = new HashMap<String, String>(); // duplicate biopaxIds
 		Map<String, String> groupIdToNew = new HashMap<String, String>(); // groupIds and new unique elementIds
 		List<String> lineList = new ArrayList<String>(); // ordered list of line pathway element elementIds
-		// reads all elementIds and stores in set
-		readAllElementIds(pathwayModel, root, elementIdSet);
+		readAllElementIds(pathwayModel, root, elementIdSet);// reads all elementIds and stores in set
 		// reads pathway meta data
 		Pathway pathway = readPathway(root);
 		pathwayModel.setPathway(pathway);
 		// reads biopax, equivalent to annotations and citations
-		readBiopax(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates);
+		readBiopax(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId);
 		// reads pathway comments, biopaxRefs, dynamic properties
-		readPathwayInfo(pathwayModel, root, biopaxIdToNew, citationDuplicates);
+		readPathwayInfo(pathwayModel, root, biopaxIdToNew, duplicateToBiopaxId);
 		// reads groups first and then groupRefs
-		readGroups(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates, groupIdToNew);
+		readGroups(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId, groupIdToNew);
 		readGroupGroupRef(pathwayModel, root, groupIdToNew);
-		readLabels(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates, groupIdToNew);
-		readShapes(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates, groupIdToNew);
-		readDataNodes(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates, groupIdToNew);
+		readLabels(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId, groupIdToNew);
+		readShapes(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId, groupIdToNew);
+		readDataNodes(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId, groupIdToNew);
 		// reads states after data nodes
-		readStates(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates);
-		readInteractions(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates, groupIdToNew, lineList);
-		readGraphicalLines(pathwayModel, root, elementIdSet, biopaxIdToNew, citationDuplicates, groupIdToNew, lineList);
+		readStates(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId);
+		readInteractions(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId, groupIdToNew, lineList);
+		readGraphicalLines(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId, groupIdToNew,
+				lineList);
 		// reads points last
 		readPoints(pathwayModel, root, elementIdSet, groupIdToNew, lineList);
 		// removes empty groups
@@ -263,21 +262,22 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * {@link #readBiopaxOpenControlledVocabulary} to {@link Annotation}, and
 	 * {@link #readBiopaxPublicationXref} to {@link Citation}.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds for this pathway model.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readBiopax(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates) throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		Element bp = root.getChild("Biopax", root.getNamespace());
 		if (bp != null) {
 			// reads openControlledVocabulary, equivalent to annotation
 			readBiopaxOpenControlledVocabulary(pathwayModel, bp, elementIdSet);
 			// reads publicationXref, equivalent to citation
-			readBiopaxPublicationXref(pathwayModel, bp, elementIdSet, biopaxIdToNew, citationDuplicates);
+			readBiopaxPublicationXref(pathwayModel, bp, elementIdSet, biopaxIdToNew, duplicateToBiopaxId);
 		}
 	}
 
@@ -319,10 +319,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 			if (xref != null)
 				annotation.setXref(xref);
-			// adds annotation to pathway model
-			annotation = pathwayModel.addAnnotation(annotation);
-			// adds annotationRef to pathway of pathway model for GPML2013a
-			pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotation));
+			// adds annotation to pathway model and annotationRef to pathway
+			Annotation annotationExisting = pathwayModel.addAnnotation(annotation);
+			pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotationExisting));
 		}
 	}
 
@@ -335,22 +334,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * biopaxIdToNew {@link Map}.
 	 * 
 	 * Some PublicationXrefs contain duplicate information and are not added to the
-	 * pathway model.The {@link Map} citationDuplicates links the id of the
+	 * pathway model.The {@link Map} duplicateToBiopaxId links the id of the
 	 * duplicate citation to the id of the existing citation so that BiopaxRef for
 	 * the duplicate citation can find the correct existing citation.
 	 * 
-	 * @param pathwayModel       the pathway model.
-	 * @param bp                 the biopax element.
-	 * @param elementIdSet       the set of all elementIds.
-	 * @param biopaxIdToNew      the map of biopaxId (keys) and new unique
-	 *                           elementIds (values).
-	 * @param citationDuplicates the map of duplicate publicationXref ids to the
-	 *                           existing citation ids.
+	 * @param pathwayModel        the pathway model.
+	 * @param bp                  the biopax element.
+	 * @param elementIdSet        the set of all elementIds for this pathway model.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxPublicationXref(PathwayModel pathwayModel, Element bp, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates) throws ConverterException {
-
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		for (Element pubxf : bp.getChildren("PublicationXref", BIOPAX_NAMESPACE)) {
 			// reads rdf:id of biopax
 			String elementId = pubxf.getAttributeValue("id", RDF_NAMESPACE);
@@ -361,7 +358,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				biopaxIdToNew.put(elementId, newId);
 				elementId = newId;
 			}
-			// biopax id is added to elementIdSet
+			// elementId is added to elementIdSet
 			elementIdSet.add(elementId);
 			// reads rest of PublicationXref
 			String biopaxId = readPubxfInfo(pubxf.getChildren("ID", BIOPAX_NAMESPACE));
@@ -398,11 +395,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				citation.setAuthors(authors);
 			// adds citation to pathway model
 			if (citation != null) {
-				Citation existingCitation = pathwayModel.addCitation(citation);
+				Citation citationExisting = pathwayModel.addCitation(citation);
 				// if an existing citation exists, the duplicate citation is not added
-				if (citation != existingCitation)
+				if (citation != citationExisting)
 					// adds reference from duplicate citation id to existing citation id
-					citationDuplicates.put(citation.getElementId(), existingCitation.getElementId());
+					duplicateToBiopaxId.put(citation.getElementId(), citationExisting.getElementId());
 			}
 		}
 	}
@@ -440,16 +437,17 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * CommentGroup:PublicationXref and BiopaxRef the attribute were not
 	 * implemented.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readPathwayInfo(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew,
-			Map<String, String> citationDuplicates) throws ConverterException {
+			Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		readPathwayComments(pathwayModel, root);
-		readPathwayBiopaxRefs(pathwayModel, root, biopaxIdToNew, citationDuplicates); // equivalent to citationRefs
+		readPathwayBiopaxRefs(pathwayModel, root, biopaxIdToNew, duplicateToBiopaxId); // equivalent to citationRefs
 		readPathwayDynamicProperties(pathwayModel, root);
 	}
 
@@ -473,12 +471,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			// comment must have text
 			if (commentText != null && !commentText.equals("")) {
-				// instantiates comment
 				Comment comment = new Comment(commentText);
-				// sets source
 				if (source != null && !source.equals(""))
 					comment.setSource(source);
-				// adds comment to pathway model
 				pathwayModel.getPathway().addComment(new Comment(source, commentText));
 			}
 		}
@@ -488,23 +483,24 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads biopax reference information {@link Pathway#addCitationRef} for pathway
 	 * model from root element. BiopaxRef is equivalent to citationRef.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readPathwayBiopaxRefs(PathwayModel pathwayModel, Element root, Map<String, String> biopaxIdToNew,
-			Map<String, String> citationDuplicates) throws ConverterException {
+			Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		for (Element bpRef : root.getChildren("BiopaxRef", root.getNamespace())) {
 			String biopaxRef = bpRef.getText();
 			// if biopaxIdToNew contains biopaxRef, sets biopaxRef to its new elementId
 			if (biopaxIdToNew.containsKey(biopaxRef))
 				biopaxRef = biopaxIdToNew.get(biopaxRef);
-			// if citationDuplicates contains biopaxRef, sets biopaxRef to elementId of
+			// if duplicateToBiopaxId contains biopaxRef, sets biopaxRef to elementId of
 			// existing biopax
-			if (citationDuplicates.containsKey(biopaxRef))
-				biopaxRef = citationDuplicates.get(biopaxRef);
+			if (duplicateToBiopaxId.containsKey(biopaxRef))
+				biopaxRef = duplicateToBiopaxId.get(biopaxRef);
 			// returns citation referenced by biopaxRef
 			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
 			// if citation is valid, create citationRef and add to pathway model
@@ -552,18 +548,18 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * NB: Group type "None" is deprecated in GPML2021. Group type "None" is
 	 * replaced with "Group".
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
+	 * @param groupIdToNew        the map of groupId to new unique elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readGroups(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates, Map<String, String> groupIdToNew)
-			throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId,
+			Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element grp : root.getChildren("Group", root.getNamespace())) {
 			// reads group GroupId, equivalent to elementId
 			String elementId = getAttr("Group", "GroupId", grp);
@@ -593,7 +589,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (type == GroupType.PATHWAY)
 				group.getFontProperty().setFontSize(32);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
-			readElementInfo(pathwayModel, group, grp, biopaxIdToNew, citationDuplicates);
+			readElementInfo(pathwayModel, group, grp, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
 			String textLabel = getAttr("Group", "TextLabel", grp);
 			String graphId = getAttr("Group", "GraphId", grp);
@@ -615,8 +611,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
-	 * @param groupIdToNew the map of groupId (keys) and new unique elementIds
-	 *                     (values)
+	 * @param groupIdToNew the map of groupId to new unique elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readGroupGroupRef(PathwayModel pathwayModel, Element root, Map<String, String> groupIdToNew)
@@ -677,18 +672,18 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads label {@link Label} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
+	 * @param groupIdToNew        the map of groupId to new unique elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readLabels(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates, Map<String, String> groupIdToNew)
-			throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId,
+			Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element lb : root.getChildren("Label", root.getNamespace())) {
 			String elementId = readElementId("Label", lb, elementIdSet);
 			String textLabel = getAttr("Label", "TextLabel", lb);
@@ -700,7 +695,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Label label = new Label(rectProperty, fontProperty, shapeStyleProperty, textLabel);
 			label.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
-			readShapedElement(pathwayModel, label, lb, biopaxIdToNew, citationDuplicates);
+			readShapedElement(pathwayModel, label, lb, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
 			String href = getAttr("Label", "Href", lb);
 			readGroupRef(pathwayModel, label, lb, groupIdToNew);
@@ -714,18 +709,18 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads shape {@link Shape} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
+	 * @param groupIdToNew        the map of groupId to new unique elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readShapes(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates, Map<String, String> groupIdToNew)
-			throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId,
+			Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element shp : root.getChildren("Shape", root.getNamespace())) {
 			String elementId = readElementId("Shape", shp, elementIdSet);
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
@@ -737,7 +732,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Shape shape = new Shape(rectProperty, fontProperty, shapeStyleProperty, rotation);
 			shape.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
-			readShapedElement(pathwayModel, shape, shp, biopaxIdToNew, citationDuplicates);
+			readShapedElement(pathwayModel, shape, shp, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
 			String textLabel = getAttr("Shape", "TextLabel", shp);
 			readGroupRef(pathwayModel, shape, shp, groupIdToNew);
@@ -752,18 +747,18 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads data node {@link DataNode} information for pathway model from root
 	 * element.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
+	 * @param groupIdToNew        the map of groupId to new unique elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readDataNodes(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates, Map<String, String> groupIdToNew)
-			throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId,
+			Map<String, String> groupIdToNew) throws ConverterException {
 		for (Element dn : root.getChildren("DataNode", root.getNamespace())) {
 			String elementId = readElementId("DataNode", dn, elementIdSet);
 			Element gfx = dn.getChild("Graphics", dn.getNamespace());
@@ -780,7 +775,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			DataNode dataNode = new DataNode(rectProperty, fontProperty, shapeStyleProperty, textLabel, type);
 			dataNode.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
-			readShapedElement(pathwayModel, dataNode, dn, biopaxIdToNew, citationDuplicates);
+			readShapedElement(pathwayModel, dataNode, dn, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
 			readGroupRef(pathwayModel, dataNode, dn, groupIdToNew);
 			Xref xref = readXref(dn);
@@ -794,15 +789,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads state {@link State} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readStates(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates) throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		for (Element st : root.getChildren("State", root.getNamespace())) {
 			String elementId = readElementId("State", st, elementIdSet);
 			String textLabel = getAttr("State", "TextLabel", st);
@@ -831,7 +827,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// sets textColor to same color as borderColor
 			state.getFontProperty().setTextColor(state.getShapeStyleProperty().getBorderColor());
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
-			readElementInfo(pathwayModel, state, st, biopaxIdToNew, citationDuplicates);
+			readElementInfo(pathwayModel, state, st, biopaxIdToNew, duplicateToBiopaxId);
 			// convert comments to Xref and AnnotationRef if applicable
 			convertStateCommentToRefs(pathwayModel, state, elementIdSet);
 			readStateDynamicProperties(state, st);
@@ -957,19 +953,19 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
-	 * @param lineList      the ordered list of line elementIds.
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
+	 * @param groupIdToNew        the map of groupId to new unique elementIds.
+	 * @param lineList            the ordered list of line elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readInteractions(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates, Map<String, String> groupIdToNew,
-			List<String> lineList) throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId,
+			Map<String, String> groupIdToNew, List<String> lineList) throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
 			String elementId = readElementId("Interaction", ia, elementIdSet);
 			// adds elementId to lineList
@@ -981,7 +977,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			interaction.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
-			readLineElement(pathwayModel, interaction, ia, elementIdSet, biopaxIdToNew, citationDuplicates,
+			readLineElement(pathwayModel, interaction, ia, elementIdSet, biopaxIdToNew, duplicateToBiopaxId,
 					groupIdToNew);
 			// sets optional properties
 			Xref xref = readXref(ia);
@@ -998,19 +994,19 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param root          the root element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
-	 * @param lineList      the ordered list of line elementIds.
+	 * @param pathwayModel        the pathway model.
+	 * @param root                the root element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
+	 * @param groupIdToNew        the map of groupId to new unique elementIds.
+	 * @param lineList            the ordered list of line elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates, Map<String, String> groupIdToNew,
-			List<String> lineList) throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId,
+			Map<String, String> groupIdToNew, List<String> lineList) throws ConverterException {
 		for (Element gln : root.getChildren("GraphicalLine", root.getNamespace())) {
 			String elementId = readElementId("GraphicalLine", gln, elementIdSet);
 			// adds elementId to lineList
@@ -1022,7 +1018,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			graphicalLine.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
-			readLineElement(pathwayModel, graphicalLine, gln, elementIdSet, biopaxIdToNew, citationDuplicates,
+			readLineElement(pathwayModel, graphicalLine, gln, elementIdSet, biopaxIdToNew, duplicateToBiopaxId,
 					groupIdToNew);
 			// adds graphical line to pathway model
 			pathwayModel.addGraphicalLine(graphicalLine);
@@ -1035,21 +1031,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * NB: points are read in {@link #readPoints}
 	 * 
-	 * @param lineElement   the line pathway element.
-	 * @param ln            the jdom line pathway element element.
-	 * @param elementIdSet  the set of all elementIds.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
+	 * @param lineElement         the line pathway element.
+	 * @param ln                  the jdom line pathway element element.
+	 * @param elementIdSet        the set of all elementIds.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
+	 * @param groupIdToNew        the map of groupId to new unique elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readLineElement(PathwayModel pathwayModel, LineElement lineElement, Element ln,
-			Set<String> elementIdSet, Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates,
+			Set<String> elementIdSet, Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId,
 			Map<String, String> groupIdToNew) throws ConverterException {
 		String base = ln.getName();
 		// reads comments, biopaxRefs/citationRefs, dynamic properties
-		readElementInfo(pathwayModel, lineElement, ln, biopaxIdToNew, citationDuplicates);
+		readElementInfo(pathwayModel, lineElement, ln, biopaxIdToNew, duplicateToBiopaxId);
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
 		// reads anchors
@@ -1102,8 +1098,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @param elementIdSet the set of all elementIds.
-	 * @param groupIdToNew the map of groupId (keys) and new unique elementIds
-	 *                     (values)
+	 * @param groupIdToNew the map of groupId to new unique elementIds.
 	 * @param lineList     the ordered list of line elementIds.
 	 * @throws ConverterException
 	 */
@@ -1216,8 +1211,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param pathwayModel  the pathwayModel.
 	 * @param shapedElement the (shaped) pathway element.
 	 * @param se            the jdom (shaped) pathway element element.
-	 * @param groupIdToNew  the map of groupId (keys) and new unique elementIds
-	 *                      (values)
+	 * @param groupIdToNew  the map of groupId to new unique elementIds.
 	 * @throws ConverterException
 	 */
 	protected void readGroupRef(PathwayModel pathwayModel, ShapedElement shapedElement, Element se,
@@ -1239,15 +1233,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads shaped pathway element {@link ShapedElement} information: comments,
 	 * biopaxRefs (equivalent to citationRefs), and dynamic properties.
 	 * 
-	 * @param shapedElement the shaped pathway element.
-	 * @param se            the jdom (shaped) pathway element element.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
+	 * @param shapedElement       the shaped pathway element.
+	 * @param se                  the jdom (shaped) pathway element element.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readShapedElement(PathwayModel pathwayModel, ShapedElement shapedElement, Element se,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates) throws ConverterException {
-		readElementInfo(pathwayModel, shapedElement, se, biopaxIdToNew, citationDuplicates); // reads comments,
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
+		readElementInfo(pathwayModel, shapedElement, se, biopaxIdToNew, duplicateToBiopaxId); // reads comments,
 		// biopaxRefs/citationRefs
 		readShapedDynamicProperties(shapedElement, se); // reads dynamic properties
 	}
@@ -1263,16 +1258,17 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * CommentGroup:PublicationXref and BiopaxRef the attribute were not
 	 * implemented. In GPML2021, Evidence and EvidenceRef was added.
 	 * 
-	 * @param elementInfo   the element info pathway element object.
-	 * @param e             the jdom pathway element element.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
+	 * @param elementInfo         the element info pathway element object.
+	 * @param e                   the jdom pathway element element.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readElementInfo(PathwayModel pathwayModel, ElementInfo elementInfo, Element e,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates) throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		readComments(elementInfo, e);
-		readBiopaxRefs(pathwayModel, elementInfo, e, biopaxIdToNew, citationDuplicates);
+		readBiopaxRefs(pathwayModel, elementInfo, e, biopaxIdToNew, duplicateToBiopaxId);
 	}
 
 	/**
@@ -1304,23 +1300,24 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * for pathway element from element. NB: BiopaxRef is also an attribute in the
 	 * GPML2013a schema but was never implemented.
 	 * 
-	 * @param elementInfo   the element info pathway element object.
-	 * @param e             the jdom pathway element element.
-	 * @param biopaxIdToNew the map of biopaxId (keys) and new unique elementIds
-	 *                      (values).
+	 * @param elementInfo         the element info pathway element object.
+	 * @param e                   the jdom pathway element element.
+	 * @param biopaxIdToNew       the map of biopaxId to new unique elementIds.
+	 * @param duplicateToBiopaxId the map of duplicate biopaxId to existing
+	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
 	protected void readBiopaxRefs(PathwayModel pathwayModel, ElementInfo elementInfo, Element e,
-			Map<String, String> biopaxIdToNew, Map<String, String> citationDuplicates) throws ConverterException {
+			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		for (Element bpRef : e.getChildren("BiopaxRef", e.getNamespace())) {
 			String biopaxRef = bpRef.getText();
 			// if biopaxIdToNew contains biopaxRef, sets biopaxRef to its new elementId
 			if (biopaxIdToNew.containsKey(biopaxRef))
 				biopaxRef = biopaxIdToNew.get(biopaxRef);
-			// if citationDuplicates contains biopaxRef, set biopaxRef to elementId of
+			// if duplicateToBiopaxId contains biopaxRef, set biopaxRef to elementId of
 			// existing biopax
-			if (citationDuplicates.containsKey(biopaxRef))
-				biopaxRef = citationDuplicates.get(biopaxRef);
+			if (duplicateToBiopaxId.containsKey(biopaxRef))
+				biopaxRef = duplicateToBiopaxId.get(biopaxRef);
 			// given the correct biopaxRef/elementId, retrieves citation referenced
 			Citation citation = (Citation) pathwayModel.getPathwayElement(biopaxRef);
 			// if citation valid, create citationRef and add to pathway model.

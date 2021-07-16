@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 public class TestCitation extends TestCase {
 
 	/**
-	 * Tests equals method for citations. 
+	 * Test for adding Citation and CitationRef to pathway model
 	 */
 	public static void testCitation() {
 

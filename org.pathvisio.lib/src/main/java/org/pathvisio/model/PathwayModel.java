@@ -65,7 +65,6 @@ public class PathwayModel {
 	private List<Citation> citations;
 	private List<Evidence> evidences;
 
-
 	/**
 	 * Initializes a pathway model object with {@link Pathway} information.
 	 * 
@@ -418,6 +417,7 @@ public class PathwayModel {
 	public Annotation addAnnotation(Annotation annotation) {
 		Annotation annotationExisting = annotationExists(annotation);
 		if (annotationExisting != null) {
+			Logger.log.trace("Duplicate annotation is not added to pathway model.");
 			return annotationExisting;
 		} else {
 			addPathwayElement(annotation);
@@ -436,9 +436,8 @@ public class PathwayModel {
 	public Annotation annotationExists(Annotation annotation) {
 		for (Annotation annotationExisting : annotations) {
 			if (annotation.equalsAnnotation(annotationExisting)) {
-				Logger.log.trace("Annotation " + annotation.getElementId()
-						+ " is equivalent to existing pathway model annotation " + annotationExisting.getElementId()
-						+ ".");
+				Logger.log.trace("New annotation is equivalent to existing annotation "
+						+ annotationExisting.getElementId() + ".");
 				return annotationExisting;
 			}
 		}
@@ -476,6 +475,7 @@ public class PathwayModel {
 	public Citation addCitation(Citation citation) {
 		Citation citationExisting = hasEqualCitation(citation);
 		if (citationExisting != null) {
+			Logger.log.trace("Duplicate citation is not added to pathway model.");
 			return citationExisting;
 		} else {
 			addPathwayElement(citation);
@@ -494,8 +494,8 @@ public class PathwayModel {
 	public Citation hasEqualCitation(Citation citation) {
 		for (Citation citationExisting : citations) {
 			if (citation.equalsCitation(citationExisting)) {
-				Logger.log.trace("Citation " + citation.getElementId()
-						+ " is equivalent to existing pathway model citation " + citationExisting.getElementId() + ".");
+				Logger.log.trace(
+						"New citation is equivalent to existing citation " + citationExisting.getElementId() + ".");
 				return citationExisting;
 			}
 		}
@@ -529,6 +529,7 @@ public class PathwayModel {
 	public Evidence addEvidence(Evidence evidence) {
 		Evidence evidenceExisting = hasEqualEvidence(evidence);
 		if (evidenceExisting != null) {
+			Logger.log.trace("Duplicate evidence is not added to pathway model.");
 			return evidenceExisting;
 		} else {
 			addPathwayElement(evidence);
@@ -547,8 +548,8 @@ public class PathwayModel {
 	public Evidence hasEqualEvidence(Evidence evidence) {
 		for (Evidence evidenceExisting : evidences) {
 			if (evidence.equalsEvidence(evidenceExisting)) {
-				Logger.log.trace("Evidence " + evidence.getElementId()
-						+ " is equivalent to existing pathway model evidence " + evidenceExisting.getElementId() + ".");
+				Logger.log.trace(
+						"New Evidence is equivalent to existing evidence " + evidenceExisting.getElementId() + ".");
 				return evidenceExisting;
 			}
 		}
@@ -570,7 +571,7 @@ public class PathwayModel {
 		pathwayElement.setPathwayModelTo(this);
 		assert (pathwayElement.getPathwayModel() == this);
 		String elementId = pathwayElement.getElementId();
-		if (elementId == null) 
+		if (elementId == null)
 			pathwayElement.setGeneratedElementId();
 		addElementId(pathwayElement.getElementId(), pathwayElement); // TODO
 	}

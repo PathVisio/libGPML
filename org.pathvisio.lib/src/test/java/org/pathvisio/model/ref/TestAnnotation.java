@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 public class TestAnnotation extends TestCase {
 
 	/**
+	 * Test for adding Annotation and annotationRef to pathway model
 	 */
 	public static void testAnnotation() {
 
@@ -31,28 +32,46 @@ public class TestAnnotation extends TestCase {
 		System.out.println("Annotation has AnnotationRefs " + a1.getAnnotationRefs());
 		System.out.println("Citation has CitationRefs " + c1.getCitationRefs());
 		System.out.println("AnnotationRef has CitationRefs " + ar1.getCitationRefs());
-		
+
 		// data node has annotationRef which has a citationRef
 		DataNode d1 = new DataNode(null, null, null, "d1", null);
 		p1.addDataNode(d1);
-		d1.addAnnotationRef(ar1); 
+		d1.addAnnotationRef(ar1);
 		System.out.println("DataNode has AnnotationRefs " + d1.getAnnotationRefs());
 
-		
 		assertEquals(ar1.getAnnotatable(), d1);
 		assertEquals(ar1.getAnnotation(), a1);
 		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
 
 //		 a1.removeAnnotationRef(ar1);
-		 ar1.unsetAnnotation();
+		ar1.unsetAnnotation();
 //		 d1.removeAnnotationRef(ar1);
-		
+
 		assertNull(ar1.getAnnotatable());
 		assertNull(ar1.getAnnotation());
 		System.out.println("DataNode has AnnotationRef " + d1.getAnnotationRefs());
 		System.out.println("Annotation has AnnotationRef " + a1.getAnnotationRefs());
 		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+	}
 
+	/**
+	 * Tests for case when annotation with duplicate information is added to pathway
+	 * model
+	 */
+	public static void testDuplicateAnnotation() {
+		PathwayModel p2 = new PathwayModel();
+		assert (p2.getAnnotations().isEmpty());
+		Annotation a1 = new Annotation("value", AnnotationType.ONTOLOGY);
+		Annotation a2 = new Annotation("value", AnnotationType.ONTOLOGY);
+		Annotation annotationExisting = p2.addAnnotation(a1);
+		assertEquals(annotationExisting, a1);
+		// annotation a2 contains duplicate information and is not added
+		Annotation annotationExisting2 = p2.addAnnotation(a2);
+		assertEquals(annotationExisting2, a1);
+		assertTrue(p2.getPathwayElements().contains(a1));
+		assertFalse(p2.getPathwayElements().contains(a2));
+		assertTrue(p2.getAnnotations().contains(a1));
+		assertFalse(p2.getAnnotations().contains(a2));
 	}
 
 }
