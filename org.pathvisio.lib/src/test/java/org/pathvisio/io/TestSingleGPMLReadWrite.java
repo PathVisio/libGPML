@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import org.pathvisio.model.*;
+import org.pathvisio.model.element.State;
 
 import junit.framework.TestCase;
 
@@ -42,14 +43,14 @@ public class TestSingleGPMLReadWrite extends TestCase {
 
 		// file to be read
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource("single_test2.gpml");
+				.getResource("WP554_77712.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
 
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
-
+		
 				
 		// writes to temp 
 		File tmp = File.createTempFile("testwrite", ".gpml");

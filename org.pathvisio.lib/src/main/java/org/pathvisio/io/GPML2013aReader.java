@@ -363,10 +363,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// reads rest of PublicationXref
 			String biopaxId = readPubxfInfo(pubxf.getChildren("ID", BIOPAX_NAMESPACE));
 			String biopaxDb = readPubxfInfo(pubxf.getChildren("DB", BIOPAX_NAMESPACE));
-			// DB cannot be null, or else throws error...TODO
-//			if (biopaxId==null && biopaxDb== null) {
-//				biopaxDb = "PubMed";
-//			}
 			Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 			// instantiates citation
 			Citation citation = new Citation(xref);
@@ -882,7 +878,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					// replace parent with parentid for consistency
 					if (type.equals("parent"))
 						type = "parentid";
-					if (STATE_ANNOTATIONTYPE_LIST.contains(type))// type
+					if (STATE_REF_LIST.contains(type))// type
 						isAnnotation = true;
 					annotationsMap.put(type, parts[1]); // type and value
 				}
@@ -1334,8 +1330,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
 	 * shaped pathway elements. If dynamic property codes for DoubleLineProperty or
-	 * CellularComponentProperty, updates borderStyle or shapeType. Otherwise, sets
-	 * dynamic property.
+	 * CellularComponentProperty, updates/overrides borderStyle or shapeType.
+	 * Otherwise, sets dynamic property.
 	 * 
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
@@ -1350,9 +1346,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
 				shapedElement.getShapeStyleProperty().setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
-				// correct for camelCase if necessary
-				if (SHAPETYPE_TO_CAMELCASE.containsKey(value))
-					value = SHAPETYPE_TO_CAMELCASE.get(value);
+				value = toCamelCase(value);
 				ShapeType type = ShapeType.register(value);
 				shapedElement.getShapeStyleProperty().setShapeType(type);
 			} else {
@@ -1364,8 +1358,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
 	 * state pathway element. If dynamic property codes for DoubleLineProperty or
-	 * CellularComponentProperty, updates borderStyle or shapeType. Otherwise, sets
-	 * dynamic property.
+	 * CellularComponentProperty, updates/overrides borderStyle or shapeType.
+	 * Otherwise, sets dynamic property.
 	 * 
 	 * NB: Property (dynamic property) was named Attribute in GPML2013a.
 	 * 
@@ -1484,9 +1478,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Color fillColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "FillColor", gfx));
 
 		String shapeTypeStr = getAttr(base + ".Graphics", "ShapeType", gfx);
-		// correct for camelCase if necessary
-		if (SHAPETYPE_TO_CAMELCASE.containsKey(shapeTypeStr))
-			shapeTypeStr = SHAPETYPE_TO_CAMELCASE.get(shapeTypeStr);
+		shapeTypeStr = toCamelCase(shapeTypeStr);
 		ShapeType shapeType = ShapeType.register(shapeTypeStr);
 		// checks deprecated shape type map for newer shape
 		if (DEPRECATED_MAP.containsKey(shapeType))

@@ -50,7 +50,8 @@ import org.pathvisio.util.MiscUtils;
 import org.xml.sax.SAXException;
 
 /**
- * Abstract class for GPML2013a format. Contains static properties and maps used
+ * Abstract class for GPML2013a format. Contains static properties
+ * {@link String}, {@link Map}, {@link BidiMap}, {@link List}, and methods used
  * in reading or writing GPML2013a.
  * 
  * @author finterly
@@ -90,7 +91,7 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * Namespaces and string used for writing GPML2013a
+	 * In GPML2013a, specific {@link Namespace} are defined for Biopax elements.
 	 */
 	public static final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf",
 			"http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -102,8 +103,9 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String RDF_STRING = "http://www.w3.org/2001/XMLSchema#string";
 
 	/**
-	 * These string keys for dynamic properties are used to store deprecated
-	 * GPML2013a properties, but will not be written to GPML2013a/GPML2021
+	 * Some GPML2013a properties are removed from GPML2021 and therefore cannot be
+	 * mapped to the Java model. These deprecated properties are stored in dynamic
+	 * properties with the following static strings as keys.
 	 */
 	public final static String PATHWAY_AUTHOR = "pathway_author_gpml2013a";
 	public final static String PATHWAY_MAINTAINER = "pathway_maintainer_gpml2013a";
@@ -114,25 +116,31 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";
 
 	/**
-	 * String for Comment source for WikiPathways-description for GPML2013a.
-	 */
-	public final static String WP_DESCRIPTION = "WikiPathways-description";
-
-	/**
-	 * Dynamic properties key set for deprecated GPML2013a pathway properties. Used
-	 * in {@link GPML2013aWriter#writePathwayDynamicProperties}. Dynamic properties
-	 * with these keys are ignored when writing GPML2013a and GPML2021.
+	 * This {@link Set} stores the deprecated GPML2013a properties. Dynamic
+	 * properties with these keys are ignored when writing GPML2013a
+	 * {@link GPML2013aWriter#writePathwayDynamicProperties} and GPML2021
+	 * {@link GPML2021Writer#writeDynamicProperties}.
 	 */
 	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(Arrays.asList(PATHWAY_AUTHOR, PATHWAY_MAINTAINER,
 			PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, LEGEND_CENTER_X, LEGEND_CENTER_Y, GROUP_GRAPHID));
 
-	/** Strings used when writing GPML2013a */
+	/**
+	 * In GPML2013a, {@link Pathway} description is written as a {@link Comment}
+	 * with source="WikiPathways-description".
+	 */
+	public final static String WP_DESCRIPTION = "WikiPathways-description";
+
+	/**
+	 * In GPML2013a, {@link LineStyleType#DOUBLE} and cellular component
+	 * {@link ShapeType} were stored as a dynamic properties using the following
+	 * {@link String}s as keys.
+	 */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
 
 	/**
-	 * {@link BidiMap} to convert known GPML2013a {@link ShapeType} Strings to their
-	 * new camelCase spelling for reading, and back for writing.
+	 * This {@link BidiMap}is used for mapping {@link ShapeType} Strings to their
+	 * new camelCase spelling for reading and writing GPML2013a.
 	 */
 	public static final BidiMap<String, String> SHAPETYPE_TO_CAMELCASE = new DualHashBidiMap<>();
 	static {
@@ -140,31 +148,69 @@ public abstract class GPML2013aFormatAbstract {
 		SHAPETYPE_TO_CAMELCASE.put("Endoplasmic Reticulum", "EndoplasmicReticulum");
 		SHAPETYPE_TO_CAMELCASE.put("Golgi Apparatus", "GolgiApparatus");
 		SHAPETYPE_TO_CAMELCASE.put("Cytosol region", "CytosolRegion");
-		SHAPETYPE_TO_CAMELCASE.put("Extracellular region", "ExtracellularRegion"); // TODO
+		SHAPETYPE_TO_CAMELCASE.put("Extracellular region", "ExtracellularRegion");
 	}
 
 	/**
-	 * Deprecated map used to track deprecated shape types for conversion and
-	 * exclusion.
+	 * Converts shapeType {@link String} to UpperCamelCase convention. In GPML2013a,
+	 * naming convention was inconsistent. Moving forward, enum types strings are
+	 * all in UpperCamelCase.
+	 * 
+	 * @param str the string.
+	 * @return the string in camelCase format, or string as it was.
+	 * @throws ConverterException
+	 */
+	protected String toCamelCase(String str) throws ConverterException {
+		if (SHAPETYPE_TO_CAMELCASE.containsKey(str)) {
+			return SHAPETYPE_TO_CAMELCASE.get(str);
+		} else
+			return str;
+	}
+
+	/**
+	 * Converts shapeType {@link String} from UpperCamelCase convention back to its
+	 * original appearance in GPML2013a.
+	 * 
+	 * @param str the string.
+	 * @return the string in its original format.
+	 * @throws ConverterException
+	 */
+	protected String fromCamelCase(String str) throws ConverterException {
+		if (SHAPETYPE_TO_CAMELCASE.containsValue(str)) {
+			return SHAPETYPE_TO_CAMELCASE.getKey(str);
+		} else
+			return str;
+	}
+
+	/**
+	 * This {@link Map} maps deprecated {@link ShapeType} to the new shape types
+	 * when reading GPML2013a {@link GPML2013aReader#readShapeStyleProperty}.
+	 * However, if the pathway element has dynamic property with
+	 * {@link #CELL_CMPNT_KEY}, shapeType may be overridden after reading dynamic
+	 * properties.
 	 */
 	public static final Map<ShapeType, ShapeType> DEPRECATED_MAP = new HashMap<ShapeType, ShapeType>();
 	static {
-		DEPRECATED_MAP.put(ShapeType.CELL, ShapeType.ROUNDED_RECTANGLE); // TODO
-		DEPRECATED_MAP.put(ShapeType.ORGANELLE, ShapeType.ROUNDED_RECTANGLE); // TODO
+		DEPRECATED_MAP.put(ShapeType.CELL, ShapeType.ROUNDED_RECTANGLE);
+		DEPRECATED_MAP.put(ShapeType.ORGANELLE, ShapeType.ROUNDED_RECTANGLE);
 		DEPRECATED_MAP.put(ShapeType.MEMBRANE, ShapeType.ROUNDED_RECTANGLE);
 		DEPRECATED_MAP.put(ShapeType.CELLA, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.NUCLEUS, ShapeType.OVAL); // TODO
+		DEPRECATED_MAP.put(ShapeType.NUCLEUS, ShapeType.OVAL);
 		DEPRECATED_MAP.put(ShapeType.ORGANA, ShapeType.OVAL);
 		DEPRECATED_MAP.put(ShapeType.ORGANB, ShapeType.OVAL);
 		DEPRECATED_MAP.put(ShapeType.ORGANC, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.VESICLE, ShapeType.OVAL); // TODO
+		DEPRECATED_MAP.put(ShapeType.VESICLE, ShapeType.OVAL);
 		DEPRECATED_MAP.put(ShapeType.PROTEINB, ShapeType.HEXAGON);
 		DEPRECATED_MAP.put(ShapeType.RIBOSOME, ShapeType.HEXAGON);
 	}
 
 	/**
-	 * Cellular Component map used for writing GPML2013a. Temporary Dynamic Property
-	 * for cellular component (for GPML2013a and earlier)
+	 * This cellular component {@link Map} maps {@link ShapeType}s. In GPML2013a,
+	 * cellular component shapeTypes are written as dynamic properties
+	 * {@link GPML2013aWriter#writeShapedOrStateDynamicProperties} with
+	 * {@link #CELL_CMPNT_KEY} key and a value (e.g. "Nucleus); and property
+	 * shapeType in Graphics is written with a corresponding shapeType value (e.g.
+	 * "Oval") {@link GPML2013aWriter#writeShapeStyleProperty}.
 	 */
 	public static final Map<ShapeType, ShapeType> CELL_CMPNT_MAP = new HashMap<ShapeType, ShapeType>();
 	static {
@@ -185,7 +231,10 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * {@link BidiMap} of GPML2013a openControlledVocabulary Ontology types
+	 * This {@link BidiMap} maps GPML2013a openControlledVocabulary Ontology types
+	 * to their {@link DataSource} Prefix for reading
+	 * {@link GPML2013aReader#readBiopaxOpenControlledVocabulary} and writing
+	 * {@link GPML2013aWriter#writeBiopaxOpenControlledVocabulary}.
 	 */
 	public static final BidiMap<String, String> OCV_ONTOLOGY_MAP = new DualHashBidiMap<>();
 	static {
@@ -195,8 +244,8 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * String values for {@link State} {@link Comment} phosphorylation and
-	 * ubiquitylation site information in GPML2013a.
+	 * String values for {@link State} phosphosite {@link Comment} information in
+	 * GPML2013a.
 	 */
 	public final static String PARENT = "parent";
 	public final static String POSITION = "position";
@@ -212,12 +261,21 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String SITEGRPID_DB = "phosphositeplus";
 
 	/**
-	 * Known set of PTM related annotation types for {@link State} {@link Comment}
-	 * in GPML2013a.
+	 * This {@link Set} contains known phosphosite related annotation types for
+	 * {@link State} phosphosite {@link Comment} in GPML2013a. This set is used in
+	 * determining whether a state comment should be written as {@link Annotation}s
+	 * and {@link Xref} in {@link GPML2013aReader#convertStateCommentToRefs}.
 	 */
-	List<String> STATE_ANNOTATIONTYPE_LIST = new ArrayList<>(
+	Set<String> STATE_REF_LIST = new HashSet<>(
 			Arrays.asList(PARENT, POSITION, PTM, DIRECTION, PARENTID, PARENTSYMBOL, SITE, SITEGRPID));
 
+	/**
+	 * This {@link Map} for {@link State} phosphosite {@link Comment} maps PTM
+	 * character to {@link Annotation} and {@link Xref} information. E.g. for ptm=p,
+	 * Annotation value=Phosphorylation, Xref identifier=0000216, and dataSource =
+	 * SBO. Used in writing state comments to annotations and xref
+	 * {@link GPML2013aReader#convertStateCommentToRefs}.
+	 */
 	public static final Map<String, List<String>> STATE_PTM_MAP = new HashMap<String, List<String>>();
 	static {
 		STATE_PTM_MAP.put("p", new ArrayList<>(Arrays.asList("Phosphorylation", "0000216", "SBO")));
@@ -225,8 +283,14 @@ public abstract class GPML2013aFormatAbstract {
 		STATE_PTM_MAP.put("me", new ArrayList<>(Arrays.asList("Methylation", "0000214", "SBO")));
 		STATE_PTM_MAP.put("u", new ArrayList<>(Arrays.asList("Ubiquitination", "000022", "SBO")));
 		STATE_PTM_MAP.put("ub", new ArrayList<>(Arrays.asList("Ubiquitination", "000022", "SBO")));
-
 	}
+
+	/**
+	 * Map for {@link State} phosphosite {@link Comment} direction character to
+	 * {@link Annotation} and {@link Xref} information. "u" for up-regulated and "d"
+	 * for down-regulated. Used in writing state comments to annotations and xref
+	 * {@link GPML2013aReader#convertStateCommentToRefs}.
+	 */
 	public static final Map<String, List<String>> STATE_DIRECTION_MAP = new HashMap<String, List<String>>();
 	static {
 		STATE_DIRECTION_MAP.put("u",
@@ -236,9 +300,11 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * List of GPML2013a arrow head types which correspond to a new Interaction
-	 * Panel arrow head type. The first arrow head type string in the list is
-	 * priority and is returned by {@link #getArrowHeadTypeStr(ArrowHeadType)}.
+	 * In GPML2013a, we introduce a new Interaction Panel of {@link ArrowHeadType}.
+	 * For each new arrowHead type we define a {@link List} of the old arrowHead
+	 * types from GPML2013a which correspond to it. The first GPML2013a arrow head
+	 * type string in the list is prioritized when writing from GPML2021 to
+	 * GPML2013a.
 	 */
 	public static final List<String> UNDIRECTED_LIST = new ArrayList<>(Arrays.asList("Line"));
 	public static final List<String> DIRECTED_LIST = new ArrayList<>(Arrays.asList("Arrow"));
@@ -254,8 +320,8 @@ public abstract class GPML2013aFormatAbstract {
 			Arrays.asList("mim-transcription-translation"));
 
 	/**
-	 * Map for GPML2021 Interaction Panel arrow head types to GPML2013a arrowHead
-	 * types.
+	 * This {@link Map} maps new Interaction Panel arrow head types to the defined
+	 * {@link List} for corresponding GPML2013a arrowHead types.
 	 */
 	public static final Map<ArrowHeadType, List<String>> IA_PANEL_MAP = new HashMap<ArrowHeadType, List<String>>();
 	static {
@@ -549,7 +615,7 @@ public abstract class GPML2013aFormatAbstract {
 	 * 
 	 * @param def   the string for default color object.
 	 * @param value the string for given color object.
-	 * @return
+	 * @return true if color is equal, false otherwise.
 	 */
 	private boolean isEqualsColor(String def, String value) {
 		if (def != null && value != null) {

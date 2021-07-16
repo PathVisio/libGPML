@@ -150,7 +150,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			writeAnnotations(pathwayModel.getAnnotations(), root);
 			writeCitations(pathwayModel.getCitations(), root);
 			writeEvidences(pathwayModel.getEvidences(), root);
-
 		}
 		return doc;
 	}

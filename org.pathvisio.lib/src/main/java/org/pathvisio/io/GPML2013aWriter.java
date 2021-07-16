@@ -396,7 +396,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				setAttr("State", "GraphRef", st, dataNode.getElementId());
 				setAttr("State", "TextLabel", st, state.getTextLabel() == null ? "" : state.getTextLabel());
 				// if there are annotationRefs, writes this information to comment TODO
-				writeStateAnnotationRefsAsComment(state, st);
+				convertStateRefToComments(state, st);
 				writeElementInfo(state, st);
 				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProperty(), st);
 				// sets graphics properties
@@ -422,8 +422,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * This method handles converting {@link State} {@link AnnotationRef}
-	 * information back to {@link Comment} for writing to GPML2013a.
+	 * This method handles converting {@link State} phosphosite
+	 * {@link AnnotationRef} and {@link Xref} information back to {@link Comment}
+	 * for writing to GPML2013a.
 	 * 
 	 * NB: "ptm" and "direction" are specially handled.
 	 *
@@ -431,7 +432,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param st
 	 * @throws ConverterException
 	 */
-	protected void writeStateAnnotationRefsAsComment(State state, Element st) throws ConverterException {
+	protected void convertStateRefToComments(State state, Element st) throws ConverterException {
 		// linked hash map to maintain order of input
 		Map<String, String> annotationsMap = new LinkedHashMap<String, String>();
 		for (AnnotationRef annotationRef : state.getAnnotationRefs()) {
@@ -453,6 +454,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			annotationsMap.put(type, value);
 		}
+		// if sitegrpid from xref, also add to comment
 		if (state.getXref() != null) {
 			if (XrefUtils.getXrefDataSourceStr(state.getXref().getDataSource()).equalsIgnoreCase(SITEGRPID_DB)) {
 				String type = SITEGRPID;
@@ -745,7 +747,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (annotation == null)
 				continue;
 			String type = annotation.getType().getName();
-			// for GPML2013a, we only write annotations which annotationsRefs on the pathway
+			// for GPML2013a, we only write annotations with annotationsRefs on the pathway
 			boolean hasPathwayAnnotation = false;
 			for (AnnotationRef annotationRef : annotation.getAnnotationRefs()) {
 				if (annotationRef.getAnnotatable().getClass() == Pathway.class)
@@ -972,8 +974,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, CELL_CMPNT_KEY);
 			String shapeTypeStr = shapeType.getName();
-			if (SHAPETYPE_TO_CAMELCASE.containsValue(shapeTypeStr))
-				shapeTypeStr = SHAPETYPE_TO_CAMELCASE.getKey(shapeTypeStr);
+			shapeTypeStr = fromCamelCase(shapeTypeStr);
 			setAttr("Attribute", "Value", dp, shapeTypeStr);
 			if (dp != null)
 				se.addContent(dp);
@@ -1087,17 +1088,16 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		/* do not set borderColor, Color is set by textColor */
+		// do not set borderColor, Color is set by textColor
 		ShapeType shapeType = shapeProp.getShapeType();
+		// if shape in cellular component map, specially handle 
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
 			String shapeTypeNewStr = CELL_CMPNT_MAP.get(shapeType).getName();
-			if (SHAPETYPE_TO_CAMELCASE.containsValue(shapeTypeNewStr))
-				shapeTypeNewStr = SHAPETYPE_TO_CAMELCASE.getKey(shapeTypeNewStr);
+			shapeTypeNewStr = fromCamelCase(shapeTypeNewStr);
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeNewStr);
 		} else {
 			String shapeTypeStr = shapeType.getName();
-			if (SHAPETYPE_TO_CAMELCASE.containsValue(shapeTypeStr))
-				shapeTypeStr = SHAPETYPE_TO_CAMELCASE.getKey(shapeTypeStr);
+			shapeTypeStr = fromCamelCase(shapeTypeStr);
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeStr);
 		}
 		String borderStyleStr = shapeProp.getBorderStyle().getName();
