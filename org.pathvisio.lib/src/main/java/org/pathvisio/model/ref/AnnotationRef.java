@@ -19,8 +19,6 @@ package org.pathvisio.model.ref;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pathvisio.model.Pathway;
-
 /**
  * This class stores information for an AnnotationRef with source
  * {@link Annotation}, target {@link Annotatable}, and a list of
@@ -50,7 +48,6 @@ public class AnnotationRef implements Citable, Evidenceable {
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
 	}
 
-
 	/**
 	 * Returns the annotation referenced.
 	 * 
@@ -71,7 +68,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the source annotation for this annotationRef.
+	 * Sets the source annotation for this annotationRef. Adds this annotationRef to
+	 * the source annotation.
 	 * 
 	 * @param annotation the given source annotation to set.
 	 */
@@ -95,7 +93,8 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
-	 * Unsets the annotation, if any, from this annotationRef.
+	 * Unsets the annotation, if any, from this annotationRef. Removes this
+	 * annotationRef from the source annotation.
 	 */
 	public void unsetAnnotation() {
 		if (hasAnnotation()) {
@@ -128,11 +127,12 @@ public class AnnotationRef implements Citable, Evidenceable {
 
 	/**
 	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
-	 * for this annotationRef.
+	 * for this annotationRef. Annotatable is only set when an Annotatable adds an
+	 * AnnotationRef.
 	 * 
 	 * @param citable the given target citable to set.
 	 */
-	public void setAnnotatableTo(Annotatable annotatable) {
+	protected void setAnnotatableTo(Annotatable annotatable) {
 		if (annotatable == null)
 			throw new IllegalArgumentException("Invalid annotatable.");
 		if (hasAnnotatable())
@@ -153,7 +153,7 @@ public class AnnotationRef implements Citable, Evidenceable {
 	/**
 	 * Unsets the annotatable, if any, from this annotationRef.
 	 */
-	public void unsetAnnotatable() {
+	protected void unsetAnnotatable() {
 		if (hasAnnotatable()) {
 			Annotatable annotatable = getAnnotatable();
 			setAnnotatable(null);
@@ -185,21 +185,23 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
-	 * Adds given citationRef to citationRefs list.
+	 * Adds given citationRef to citationRefs list. Sets citable for the given
+	 * citationRef.
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
-		citationRef.setCitableTo(this); // TODO
+		citationRef.setCitableTo(this);
 		assert (citationRef.getCitable() == this);
 		assert !hasCitationRef(citationRef);
 		citationRefs.add(citationRef);
 	}
 
 	/**
-	 * Removes given citationRef from citationRefs list.
+	 * Removes given citationRef from citationRefs list. The citationRef ceases to
+	 * exist and is terminated.
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
@@ -243,21 +245,23 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
-	 * Adds given evidenceRef to evidenceRefs list.
+	 * Adds given evidenceRef to evidenceRefs list. Sets evidenceable for the given
+	 * evidenceRef.
 	 * 
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
 	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
 		assert (evidenceRef != null);
-		evidenceRef.setEvidenceableTo(this); // TODO
+		evidenceRef.setEvidenceableTo(this);
 		assert (evidenceRef.getEvidenceable() == this);
 		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
 
 	/**
-	 * Removes given evidenceRef from evidenceRefs list.
+	 * Removes given evidenceRef from evidenceRefs list. The evidenceRef ceases to
+	 * exist and is terminated.
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */

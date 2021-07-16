@@ -19,8 +19,6 @@ package org.pathvisio.model.ref;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pathvisio.model.Pathway;
-
 /**
  * This class stores information for a CitationRef with source {@link Citation},
  * target {@link Citable}, and a list of {@link AnnotationRef}. The Citable
@@ -47,7 +45,6 @@ public class CitationRef implements Annotatable {
 		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
-
 	/**
 	 * Returns the citation referenced.
 	 * 
@@ -67,7 +64,8 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Sets the source citation for this citationRef.
+	 * Sets the source citation for this citationRef. Adds this citationRef to the
+	 * source citation.
 	 * 
 	 * @param citation the given source citation to set.
 	 */
@@ -91,7 +89,8 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Unsets the citation, if any, from this citationRef.
+	 * Unsets the citation, if any, from this citationRef. Removes this citationRef
+	 * from the source citation.
 	 */
 	public void unsetCitation() {
 		if (hasCitation()) {
@@ -123,11 +122,12 @@ public class CitationRef implements Annotatable {
 
 	/**
 	 * Sets the target pathway, pathway element, or annotationRef {@link Citable}
-	 * for this annotationRef.
+	 * for this annotationRef. Citable is only set when an Citable adds a
+	 * CitationRef.
 	 * 
 	 * @param citable the given target citable to set.
 	 */
-	public void setCitableTo(Citable citable) {
+	protected void setCitableTo(Citable citable) {
 		if (citable == null)
 			throw new IllegalArgumentException("Invalid citable.");
 		if (hasCitable())
@@ -148,7 +148,7 @@ public class CitationRef implements Annotatable {
 	/**
 	 * Unsets the citable, if any, from this citationRef.
 	 */
-	public void unsetCitable() {
+	protected void unsetCitable() {
 		if (hasCitable()) {
 			Citable citable = getCitable();
 			setCitable(null);
@@ -180,21 +180,23 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Adds given annotationRef to annotationRefs list.
+	 * Adds given annotationRef to annotationRefs list. Sets annotable for the given
+	 * annotationRef.
 	 * 
 	 * @param annotationRef the annotationRef to be added.
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
 		assert (annotationRef != null);
-		annotationRef.setAnnotatableTo(this); // TODO
+		annotationRef.setAnnotatableTo(this);
 		assert (annotationRef.getAnnotatable() == this);
 		assert !hasAnnotationRef(annotationRef);
 		annotationRefs.add(annotationRef);
 	}
 
 	/**
-	 * Removes given annotationRef from annotationRefs list.
+	 * Removes given annotationRef from annotationRefs list. The annotationRef
+	 * ceases to exist and is terminated.
 	 * 
 	 * @param annotationRef the annotationRef to be removed.
 	 */

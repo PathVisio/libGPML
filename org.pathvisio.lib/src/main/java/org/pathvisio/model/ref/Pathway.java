@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model;
+package org.pathvisio.model.ref;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -24,13 +24,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bridgedb.Xref;
+import org.pathvisio.model.Author;
+import org.pathvisio.model.Comment;
 import org.pathvisio.model.graphics.Coordinate;
-import org.pathvisio.model.ref.Annotatable;
-import org.pathvisio.model.ref.AnnotationRef;
-import org.pathvisio.model.ref.Citable;
-import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.EvidenceRef;
-import org.pathvisio.model.ref.Evidenceable;
 
 /**
  * This class stores metadata for a Pathway.
@@ -466,21 +462,23 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Adds given annotationRef to annotationRefs list.
+	 * Adds given annotationRef to annotationRefs list. Sets annotable for the given
+	 * annotationRef.
 	 * 
 	 * @param annotationRef the annotationRef to be added.
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
 		assert (annotationRef != null);
-		annotationRef.setAnnotatableTo(this); // TODO
+		annotationRef.setAnnotatableTo(this); 
 		assert (annotationRef.getAnnotatable() == this);
 		assert !hasAnnotationRef(annotationRef);
 		annotationRefs.add(annotationRef);
 	}
 
 	/**
-	 * Removes given annotationRef from annotationRefs list.
+	 * Removes given annotationRef from annotationRefs list. The annotationRef
+	 * ceases to exist and is terminated.
 	 * 
 	 * @param annotationRef the annotationRef to be removed.
 	 */
@@ -524,21 +522,23 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Adds given citationRef to citationRefs list.
+	 * Adds given citationRef to citationRefs list. Sets citable for the given
+	 * citationRef.
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
-		citationRef.setCitableTo(this); // TODO
+		citationRef.setCitableTo(this); 
 		assert (citationRef.getCitable() == this);
 		assert !hasCitationRef(citationRef);
 		citationRefs.add(citationRef);
 	}
 
 	/**
-	 * Removes given citationRef from citationRefs list.
+	 * Removes given citationRef from citationRefs list. The citationRef ceases to
+	 * exist and is terminated.
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
@@ -582,21 +582,23 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Adds given evidenceRef to evidenceRefs list.
+	 * Adds given evidenceRef to evidenceRefs list. Sets evidenceable for the given
+	 * evidenceRef.
 	 * 
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
 	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
 		assert (evidenceRef != null);
-		evidenceRef.setEvidenceableTo(this); // TODO
+		evidenceRef.setEvidenceableTo(this);
 		assert (evidenceRef.getEvidenceable() == this);
 		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
 
 	/**
-	 * Removes given evidenceRef from evidenceRefs list.
+	 * Removes given evidenceRef from evidenceRefs list. The evidenceRef ceases to
+	 * exist and is terminated.
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */

@@ -216,7 +216,7 @@ public class Citation extends PathwayElement {
 	 * 
 	 * @param citationRef the given citationRef to remove.
 	 */
-	public void removeCitationRef(CitationRef citationRef) {
+	protected void removeCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
 		Citation citation = citationRef.getCitation();
 		// remove citationRef from this citation
@@ -224,7 +224,7 @@ public class Citation extends PathwayElement {
 			citationRefs.remove(citationRef);
 			citationRef.terminate();
 		}
-		// remove this citation from pathway model if empty! TODO
+		// remove this citation from pathway model if empty!
 		if (citationRefs.isEmpty())
 			getPathwayModel().removeCitation(this);
 	}

@@ -86,21 +86,6 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	}
 
 	/**
-	 * TODO Finds the first comment with a specific source.
-	 * 
-	 * @param source the source of the comment to be found.
-	 * @return the comment content with a given source.
-	 */
-	public String findComment(String source) {
-		for (Comment comment : comments) {
-			if (source.equals(comment.getSource())) {
-				return comment.getCommentText();
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Returns the map of dynamic properties.
 	 * 
 	 * @return dynamicProperties the map of dynamic properties.
@@ -165,21 +150,23 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	}
 
 	/**
-	 * Adds given annotationRef to annotationRefs list.
+	 * Adds given annotationRef to annotationRefs list. Sets annotable for the given
+	 * annotationRef.
 	 * 
 	 * @param annotationRef the annotationRef to be added.
 	 */
 	@Override
-	public void addAnnotationRef(AnnotationRef annotationRef) {	
+	public void addAnnotationRef(AnnotationRef annotationRef) {
 		assert (annotationRef != null);
-		annotationRef.setAnnotatableTo(this); // TODO
+		annotationRef.setAnnotatableTo(this);
 		assert (annotationRef.getAnnotatable() == this);
 		assert !hasAnnotationRef(annotationRef);
 		annotationRefs.add(annotationRef);
 	}
 
 	/**
-	 * Removes given annotationRef from annotationRefs list.
+	 * Removes given annotationRef from annotationRefs list. The annotationRef
+	 * ceases to exist and is terminated.
 	 * 
 	 * @param annotationRef the annotationRef to be removed.
 	 */
@@ -195,7 +182,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeAnnotationRefs() {
-		for (int i = 0; i < annotationRefs.size(); i++) {		
+		for (int i = 0; i < annotationRefs.size(); i++) {
 			removeAnnotationRef(annotationRefs.get(i));
 		}
 	}
@@ -223,21 +210,23 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	}
 
 	/**
-	 * Adds given citationRef to citationRefs list.
+	 * Adds given citationRef to citationRefs list. Sets citable for the given
+	 * citationRef.
 	 * 
 	 * @param citationRef the citationRef to be added.
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
 		assert (citationRef != null);
-		citationRef.setCitableTo(this); // TODO
+		citationRef.setCitableTo(this);
 		assert (citationRef.getCitable() == this);
 		assert !hasCitationRef(citationRef);
 		citationRefs.add(citationRef);
 	}
 
 	/**
-	 * Removes given citationRef from citationRefs list.
+	 * Removes given citationRef from citationRefs list. The citationRef ceases to
+	 * exist and is terminated.
 	 * 
 	 * @param citationRef the citationRef to be removed.
 	 */
@@ -253,7 +242,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeCitationRefs() {
-		for (int i = 0; i < citationRefs.size(); i++) {		
+		for (int i = 0; i < citationRefs.size(); i++) {
 			removeCitationRef(citationRefs.get(i));
 		}
 	}
@@ -281,21 +270,23 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	}
 
 	/**
-	 * Adds given evidenceRef to evidenceRefs list.
+	 * Adds given evidenceRef to evidenceRefs list. Sets evidenceable for the given
+	 * evidenceRef.
 	 * 
 	 * @param evidenceRef the evidenceRef to be added.
 	 */
 	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
 		assert (evidenceRef != null);
-		evidenceRef.setEvidenceableTo(this); // TODO
+		evidenceRef.setEvidenceableTo(this);
 		assert (evidenceRef.getEvidenceable() == this);
 		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
 	}
 
 	/**
-	 * Removes given evidenceRef from evidenceRefs list.
+	 * Removes given evidenceRef from evidenceRefs list. The evidenceRef ceases to
+	 * exist and is terminated.
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.
 	 */
@@ -323,9 +314,9 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void terminate() {
-		unsetPathwayModel();
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();
+		unsetPathwayModel();
 	}
 }

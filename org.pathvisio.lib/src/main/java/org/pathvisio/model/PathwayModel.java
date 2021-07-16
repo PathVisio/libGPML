@@ -42,6 +42,7 @@ import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.Evidence;
+import org.pathvisio.model.ref.Pathway;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
@@ -228,7 +229,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds the given dataNode to dataNodes list.
+	 * Adds the given dataNode to dataNodes list. Sets pathwayModel and elementId,
+	 * and maps to elementIdToPathwayElement.
 	 * 
 	 * @param dataNode the data node to be added.
 	 */
@@ -238,7 +240,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes the given dataNodes from dataNodes list.
+	 * Removes the given dataNode from dataNodes list and elementIdToPathwayElement
+	 * map.
 	 * 
 	 * @param dataNode the data node to be removed.
 	 */
@@ -257,7 +260,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds the given interaction to interactions list.
+	 * Adds the given interaction to interactions list. Sets pathwayModel and
+	 * elementId, and maps to elementIdToPathwayElement.
 	 * 
 	 * @param interaction the interaction to be added.
 	 */
@@ -267,7 +271,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes the given interaction from interactions list.
+	 * Removes the given interaction from interactions list and
+	 * elementIdToPathwayElement map..
 	 * 
 	 * @param interaction the interaction to be removed.
 	 */
@@ -287,7 +292,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds the given graphicalLine to graphicalLines list.
+	 * Adds the given graphicalLine to graphicalLines list. Sets pathwayModel and
+	 * elementId, and maps to elementIdToPathwayElement.
 	 * 
 	 * @param graphicalLine the graphicalLine to be added.
 	 */
@@ -297,7 +303,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes the given graphicalLine from graphicalLines list.
+	 * Removes the given graphicalLine from graphicalLines list and
+	 * elementIdToPathwayElement map..
 	 * 
 	 * @param graphicalLine the graphicalLine to be removed.
 	 */
@@ -317,7 +324,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds the given label to labels list.
+	 * Adds the given label to labels list. Sets pathwayModel and elementId, and
+	 * maps to elementIdToPathwayElement.
 	 * 
 	 * @param label the label to be added.
 	 */
@@ -327,7 +335,7 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes the given label from labels list.
+	 * Removes the given label from labels list and elementIdToPathwayElement map.
 	 * 
 	 * @param label the label to be removed.
 	 */
@@ -347,7 +355,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds the given shape to shapes list.
+	 * Adds the given shape to shapes list.Sets pathwayModel and elementId, and maps
+	 * to elementIdToPathwayElement.
 	 * 
 	 * @param shape the shape to be added.
 	 */
@@ -357,7 +366,7 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes the given shape from shapes list.
+	 * Removes the given shape from shapes list and elementIdToPathwayElement map.
 	 * 
 	 * @param shape the shape to be removed.
 	 */
@@ -377,7 +386,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds the given group to groups list.
+	 * Adds the given group to groups list. Sets pathwayModel and elementId, and
+	 * maps to elementIdToPathwayElement.
 	 * 
 	 * @param group the group to be added.
 	 */
@@ -387,7 +397,7 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes the given group from groups list.
+	 * Removes the given group from groups list and elementIdToPathwayElement map.
 	 * 
 	 * @param group the group to be removed.
 	 */
@@ -408,7 +418,8 @@ public class PathwayModel {
 	/**
 	 * Adds given annotation to annotations list. If there is an annotation with
 	 * equivalent properties in the pathway model, the given annotation is not added
-	 * and the equivalent annotation is returned.
+	 * and the equivalent annotation is returned. Also sets pathwayModel and
+	 * elementId, and maps to elementIdToPathwayElement.
 	 * 
 	 * @param annotation the new annotation to be added.
 	 * @return annotation the new annotation or annotationExisting the existing
@@ -445,7 +456,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes given annotation from annotations list.
+	 * Removes given annotation from annotations list and elementIdToPathwayElement
+	 * map.
 	 * 
 	 * @param annotation the annotation to be removed.
 	 */
@@ -466,7 +478,8 @@ public class PathwayModel {
 	/**
 	 * Adds given citation to citations list. If there is an citation with
 	 * equivalent properties in the pathway model, the given citation is not added
-	 * and the equivalent citation is returned.
+	 * and the equivalent citation is returned. Also sets pathwayModel and
+	 * elementId, and maps to elementIdToPathwayElement.
 	 * 
 	 * @param citation the new citation to be added.
 	 * @return citation the new citation or citationExisting the existing equivalent
@@ -503,7 +516,7 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes given citation from citation=s list.
+	 * Removes given citation from citations list and elementIdToPathwayElement map.
 	 * 
 	 * @param citation the citation to be removed.
 	 */
@@ -522,7 +535,10 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds given evidence to evidences.
+	 * Adds given evidence to evidences. If there is an evidence with equivalent
+	 * properties in the pathway model, the given evidence is not added and the
+	 * equivalent evidence is returned. Also sets pathwayModel and elementId, and
+	 * maps to elementIdToPathwayElement.
 	 * 
 	 * @param evidence the evidence to be added.
 	 */
@@ -557,7 +573,7 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes given evidence from evidences list.
+	 * Removes given evidence from evidences list and elementIdToPathwayElement map.
 	 * 
 	 * @param evidence the evidence to be removed.
 	 */
@@ -566,6 +582,14 @@ public class PathwayModel {
 		removePathwayElement(evidence);
 	}
 
+	/**
+	 * Adds the given pathway element to pathway model. Sets pathwayModel for the
+	 * given pathway element. Sets an unique elementId for given pathway element if
+	 * not already set. Corresponding elementId and given pathway element are added
+	 * to elementIdToPathwayElement map.
+	 * 
+	 * @param pathwayElement the pathway element to add.
+	 */
 	public void addPathwayElement(PathwayElement pathwayElement) {
 		assert (pathwayElement != null);
 		pathwayElement.setPathwayModelTo(this);
@@ -576,6 +600,13 @@ public class PathwayModel {
 		addElementId(pathwayElement.getElementId(), pathwayElement); // TODO
 	}
 
+	/**
+	 * Removes the given pathway element from pathway model and
+	 * elementIdToPathwayElement map. The pathway element is terminated in the
+	 * process.
+	 * 
+	 * @param pathwayElement the pathway element to remove.
+	 */
 	public void removePathwayElement(PathwayElement pathwayElement) {
 		assert (pathwayElement != null);
 		assert (hasPathwayElement(pathwayElement));

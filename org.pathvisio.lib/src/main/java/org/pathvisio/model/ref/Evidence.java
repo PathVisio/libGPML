@@ -155,7 +155,7 @@ public class Evidence extends PathwayElement {
 	 * 
 	 * @param evidenceRef the given evidenceRef to add.
 	 */
-	public void addEvidenceRef(EvidenceRef evidenceRef) {
+	protected void addEvidenceRef(EvidenceRef evidenceRef) {
 		assert (evidenceRef != null);
 		// add evidenceRef to evidenceRefs
 		if (evidenceRef.getEvidence() == this && !hasEvidenceRef(evidenceRef))
@@ -169,7 +169,7 @@ public class Evidence extends PathwayElement {
 	 * 
 	 * @param evidenceRef the given evidenceRef to remove.
 	 */
-	public void removeEvidenceRef(EvidenceRef evidenceRef) {
+	protected void removeEvidenceRef(EvidenceRef evidenceRef) {
 		assert (evidenceRef != null);
 		Evidence evidence = evidenceRef.getEvidence();
 		// remove citationRef from this citation
@@ -177,7 +177,7 @@ public class Evidence extends PathwayElement {
 			evidenceRefs.remove(evidenceRef);
 			evidenceRef.terminate();
 		}
-		// remove this evidence from pathway model if empty! TODO
+		// remove this evidence from pathway model if empty!
 		if (evidenceRefs.isEmpty())
 			getPathwayModel().removeEvidence(this);
 	}

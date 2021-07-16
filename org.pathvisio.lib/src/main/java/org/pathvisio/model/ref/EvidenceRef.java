@@ -56,7 +56,8 @@ public class EvidenceRef {
 	}
 
 	/**
-	 * Sets the source evidence for this evidenceRef.
+	 * Sets the source evidence for this evidenceRef. Adds this evidencRef to the
+	 * source evidence.
 	 * 
 	 * @param evidence the given source evidence to set.
 	 */
@@ -80,7 +81,8 @@ public class EvidenceRef {
 	}
 
 	/**
-	 * Unsets the evidence, if any, from this evidenceRef.
+	 * Unsets the evidence, if any, from this evidenceRef. Removes this evidenceRef
+	 * from the source evidence.
 	 */
 	public void unsetEvidence() {
 		if (hasEvidence()) {

@@ -38,6 +38,7 @@ import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Evidenceable;
+import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;

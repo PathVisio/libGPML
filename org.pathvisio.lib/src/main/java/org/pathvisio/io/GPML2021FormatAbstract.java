@@ -77,7 +77,7 @@ public abstract class GPML2021FormatAbstract {
 	}
 
 	/**
-	 * Default values necessary for reading with validation off
+	 * Default values necessary for reading (when validation off)
 	 */
 	public final static String BACKGROUNDCOLOR_DEFAULT = "ffffff";
 	public final static String GROUPTYPE_DEFAULT = "Group";

@@ -42,6 +42,7 @@ import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
+import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
