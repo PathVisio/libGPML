@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.pathvisio</groupId>
 	<artifactId>org.pathvisio.libgpml</artifactId>
-	<version>4.0.0</version>
+	<version>4.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>libGPML</name>
 	<description>library for reading / writing GPML</description>
