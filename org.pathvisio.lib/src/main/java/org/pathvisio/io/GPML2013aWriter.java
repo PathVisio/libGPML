@@ -169,15 +169,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void validateLineElements(PathwayModel pathwayModel) throws ConverterException {
 		for (Interaction interaction : pathwayModel.getInteractions()) {
-			if (interaction.getPoints().size() < 2) {
+			if (interaction.getLinePoints().size() < 2) {
 				throw new ConverterException("Interaction " + interaction.getElementId() + " has "
-						+ interaction.getPoints().size() + " point(s),  must have at least 2.");
+						+ interaction.getLinePoints().size() + " point(s),  must have at least 2.");
 			}
 		}
 		for (GraphicalLine graphicalLine : pathwayModel.getGraphicalLines()) {
-			if (graphicalLine.getPoints().size() < 2) {
+			if (graphicalLine.getLinePoints().size() < 2) {
 				throw new ConverterException("GraphicalLine " + graphicalLine.getElementId() + " has "
-						+ graphicalLine.getPoints().size() + " point(s),  must have at least 2.");
+						+ graphicalLine.getLinePoints().size() + " point(s),  must have at least 2.");
 			}
 		}
 	}
@@ -399,7 +399,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				// if there are annotationRefs, writes this information to comment TODO
 				convertStateRefToComments(state, st);
 				writeElementInfo(state, st);
-				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProperty(), st);
+				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProp(), st);
 				// sets graphics properties
 				Element gfx = new Element("Graphics", st.getNamespace());
 				st.addContent(gfx);
@@ -410,9 +410,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				// state does not have custom font properties in GPML2013a
 				// z-order for state is not written to GPML2013a
 				setAttr("State.Graphics", "FillColor", gfx,
-						ColorUtils.colorToHex(state.getShapeStyleProperty().getFillColor(), false));
-				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx);
-				writeColor(state.getFontProperty(), gfx);
+						ColorUtils.colorToHex(state.getShapeStyleProp().getFillColor(), false));
+				writeShapeStyleProperty(state.getShapeStyleProp(), gfx);
+				writeColor(state.getFontProp(), gfx);
 				// writes xref (write even if empty)
 				writeXref(state.getXref(), st, true);
 				if (st != null) {
@@ -524,13 +524,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeLineElement(LineElement lineElement, Element ln) throws ConverterException {
 		// writes comments, biopaxRefs/citationRefs, dynamic properties
 		writeElementInfo(lineElement, ln);
-		writeLineDynamicProperties(lineElement.getDynamicProperties(), lineElement.getLineStyleProperty(), ln);
+		writeLineDynamicProperties(lineElement.getDynamicProperties(), lineElement.getLineStyleProp(), ln);
 		// sets graphics properties
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
-		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
+		writeLineStyleProperty(lineElement.getLineStyleProp(), gfx);
 		// writes points
-		writePoints(lineElement.getPoints(), gfx);
+		writePoints(lineElement.getLinePoints(), gfx);
 		// writes anchors
 		writeAnchors(lineElement.getAnchors(), gfx);
 		writeGroupRef(lineElement.getGroupRef(), ln);
@@ -667,7 +667,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Group", "Style", grp, group.getType().getName());
 			writeXref(group.getXref(), grp, false);
 			writeElementInfo(group, grp);
-			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group.getShapeStyleProperty(), grp);
+			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group.getShapeStyleProp(), grp);
 			// sets optional properties
 			if (group.getTextLabel() != null)
 				setAttr("Group", "TextLabel", grp, group.getTextLabel());
@@ -899,23 +899,23 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
 		String base = se.getName();
 		writeElementInfo(shapedElement, se);
-		writeShapedOrStateDynamicProperties(shapedElement.getDynamicProperties(), shapedElement.getShapeStyleProperty(),
+		writeShapedOrStateDynamicProperties(shapedElement.getDynamicProperties(), shapedElement.getShapeStyleProp(),
 				se);
 		Element gfx = new Element("Graphics", se.getNamespace());
 		se.addContent(gfx);
 		// writes rect properties
-		writeRectProperty(shapedElement.getRectProperty(), gfx);
+		writeRectProperty(shapedElement.getRectProp(), gfx);
 		// retrieves shape style property
-		ShapeStyleProperty shapeProp = shapedElement.getShapeStyleProperty();
+		ShapeStyleProperty shapeProp = shapedElement.getShapeStyleProp();
 		// writes z-order and fill color (separately to preserve GPML2013 order)
 		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapeProp.getZOrder()));
 		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapeProp.getFillColor(), false));
 		// writes font properties
-		writeFontProperty(shapedElement.getFontProperty(), gfx);
+		writeFontProperty(shapedElement.getFontProp(), gfx);
 		// writes rest of shape style properties
 		writeShapeStyleProperty(shapeProp, gfx);
 		// writes color
-		writeColor(shapedElement.getFontProperty(), gfx);
+		writeColor(shapedElement.getFontProp(), gfx);
 	}
 
 	/**

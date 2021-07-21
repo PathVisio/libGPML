@@ -19,27 +19,20 @@ package testsForCuration;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.bio.DataSourceTxt;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.input.sax.XMLReaderJDOMFactory;
-import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.pathvisio.io.ConverterException;
-import org.pathvisio.model.*;
 
 import junit.framework.TestCase;
 
@@ -98,10 +91,10 @@ public class FindXrefDataSource extends TestCase {
 							if (xref != null) {
 								String dataSource = xref.getAttributeValue("Database");
 								// Finds GPMLs with Specific DataSources
-								if (dataSource.equals("NanoParticle Ontology")) {
-									specificSet.add(file.getName());
-//									System.out.println(file.getName());
-								}
+//								if (dataSource.equals("NanoParticle Ontology")) {
+//									specificSet.add(file.getName());
+////									System.out.println(file.getName());
+//								}
 								dataSources.add(dataSource);
 								dataSourceSet.add(dataSource);
 							}
@@ -119,15 +112,15 @@ public class FindXrefDataSource extends TestCase {
 
 		}
 
-//		for (String dataSource : dataSourceSet) {
-//			boolean exist = DataSource.fullNameExists(dataSource);
-//			if (exist == false) // of system code exists
-//				exist = DataSource.systemCodeExists(dataSource);
-//			int occurrences = Collections.frequency(dataSources, dataSource);
-//			// print only datasources not in bridgedb
-//			if (exist == false) {
-//				System.out.println(dataSource + ": " + occurrences + ": " + exist);
-//			}
-//		}
+		for (String dataSource : dataSourceSet) {
+			boolean exist = DataSource.fullNameExists(dataSource);
+			if (exist == false) // of system code exists
+				exist = DataSource.systemCodeExists(dataSource);
+			int occurrences = Collections.frequency(dataSources, dataSource);
+			// print only datasources not in bridgedb
+			if (exist == false) {
+				System.out.println(dataSource + ": " + occurrences + ": " + exist);
+			}
+		}
 	}
 }

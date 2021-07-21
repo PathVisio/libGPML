@@ -164,15 +164,15 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void validateLineElements(PathwayModel pathwayModel) throws ConverterException {
 		for (Interaction interaction : pathwayModel.getInteractions()) {
-			if (interaction.getPoints().size() < 2) {
+			if (interaction.getLinePoints().size() < 2) {
 				throw new ConverterException("Interaction " + interaction.getElementId() + " has "
-						+ interaction.getPoints().size() + " point(s),  must have at least 2.");
+						+ interaction.getLinePoints().size() + " point(s),  must have at least 2.");
 			}
 		}
 		for (GraphicalLine graphicalLine : pathwayModel.getGraphicalLines()) {
-			if (graphicalLine.getPoints().size() < 2) {
+			if (graphicalLine.getLinePoints().size() < 2) {
 				throw new ConverterException("GraphicalLine " + graphicalLine.getElementId() + " has "
-						+ graphicalLine.getPoints().size() + " point(s),  must have at least 2.");
+						+ graphicalLine.getLinePoints().size() + " point(s),  must have at least 2.");
 			}
 		}
 	}
@@ -487,9 +487,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				gfx.setAttribute("relY", Double.toString(state.getRelY()));
 				gfx.setAttribute("width", Double.toString(state.getWidth()));
 				gfx.setAttribute("height", Double.toString(state.getHeight()));
-				writeFontProperty(state.getFontProperty(), gfx);
+				writeFontProperty(state.getFontProp(), gfx);
 				// writes all shape style properties except zOrder
-				writeShapeStyleProperty(state.getShapeStyleProperty(), gfx, false);
+				writeShapeStyleProperty(state.getShapeStyleProp(), gfx, false);
 				writeElementInfo(state, st);
 				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
 				st.setAttribute("type", state.getType().getName());
@@ -571,11 +571,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected void writeLineElement(LineElement lineElement, Element ln) throws ConverterException {
 		Element wyps = new Element("Waypoints", ln.getNamespace());
 		ln.addContent(wyps);
-		writePoints(lineElement.getPoints(), wyps);
+		writePoints(lineElement.getLinePoints(), wyps);
 		writeAnchors(lineElement.getAnchors(), wyps);
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
-		writeLineStyleProperty(lineElement.getLineStyleProperty(), gfx);
+		writeLineStyleProperty(lineElement.getLineStyleProp(), gfx);
 		writeElementInfo(lineElement, ln);
 		writeGroupRef(lineElement.getGroupRef(), ln);
 	}
@@ -872,9 +872,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
 		Element gfx = new Element("Graphics", se.getNamespace());
 		se.addContent(gfx);
-		writeRectProperty(shapedElement.getRectProperty(), gfx);
-		writeFontProperty(shapedElement.getFontProperty(), gfx);
-		writeShapeStyleProperty(shapedElement.getShapeStyleProperty(), gfx, true);
+		writeRectProperty(shapedElement.getRectProp(), gfx);
+		writeFontProperty(shapedElement.getFontProp(), gfx);
+		writeShapeStyleProperty(shapedElement.getShapeStyleProp(), gfx, true);
 		writeElementInfo(shapedElement, se);
 	}
 

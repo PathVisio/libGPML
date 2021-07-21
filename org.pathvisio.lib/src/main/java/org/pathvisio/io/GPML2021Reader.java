@@ -621,7 +621,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 				// sets zOrder based on parent data node TODO
-				shapeStyleProperty.setZOrder(dataNode.getShapeStyleProperty().getZOrder() + 1);
+				shapeStyleProperty.setZOrder(dataNode.getShapeStyleProp().getZOrder() + 1);
 				State state = new State(textLabel, type, relX, relY, width, height, fontProperty,
 						shapeStyleProperty);
 				state.setElementId(elementId);
@@ -706,8 +706,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
 		readPoints(pathwayModel, lineElement, wyps);
 		// checks if line has at least 2 point
-		if (lineElement.getPoints().size() < 2) {
-			throw new ConverterException("Line " + lineElement.getElementId() + " has " + lineElement.getPoints().size()
+		if (lineElement.getLinePoints().size() < 2) {
+			throw new ConverterException("Line " + lineElement.getElementId() + " has " + lineElement.getLinePoints().size()
 					+ " point(s),  must have at least 2.");
 		}
 		readAnchors(pathwayModel, lineElement, wyps);
@@ -734,7 +734,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			LinePoint point = new LinePoint(arrowHead, xy);
 			point.setElementId(elementId);
 			// adds point to lineElement (elementRef, relX, and relY read later)
-			lineElement.addPoint(point);
+			lineElement.addLinePoint(point);
 		}
 	}
 

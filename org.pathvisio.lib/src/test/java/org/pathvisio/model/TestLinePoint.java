@@ -58,18 +58,18 @@ public class TestLinePoint extends TestCase {
 		assertNull(pt1.getElementId());
 		assertNull(pt1.getLineElement());
 		assertNull(pt1.getPathwayModel());
-		assertTrue(i1.getPoints().isEmpty());
+		assertTrue(i1.getLinePoints().isEmpty());
 		// add state to data node (which also adds to pathway model)
-		i1.addPoint(pt1);
+		i1.addLinePoint(pt1);
 		assertEquals(pt1.getLineElement(), i1);
 		assertEquals(pt1.getPathwayModel(), p1);
 		System.out.println("Point elementId is " + pt1.getElementId());
-		System.out.println("Interaction contains Points " + i1.getPoints());
+		System.out.println("Interaction contains Points " + i1.getLinePoints());
 		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
 
 		// remove point
-		i1.removePoint(pt1);
-		System.out.println("Interaction contains Points " + i1.getPoints());
+		i1.removeLinePoint(pt1);
+		System.out.println("Interaction contains Points " + i1.getLinePoints());
 		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
 
 		// remove line element
@@ -99,14 +99,14 @@ public class TestLinePoint extends TestCase {
 		assertNull(pt2.getElementId());
 		assertNull(pt2.getLineElement());
 		assertNull(pt2.getPathwayModel());
-		assertTrue(i2.getPoints().isEmpty());
+		assertTrue(i2.getLinePoints().isEmpty());
 		// add point to interaction
-		i2.addPoint(pt2);
+		i2.addLinePoint(pt2);
 		assertNull(pt2.getElementId());
 		assertNull(pt2.getPathwayModel());
 		assertEquals(pt2.getLineElement(), i2);
 		assertNull(i2.getPathwayModel());
-		System.out.println("Interaction contains Points " + i2.getPoints());
+		System.out.println("Interaction contains Points " + i2.getLinePoints());
 
 		// add interaction to pathway model
 		p2.addInteraction(i2);
@@ -116,8 +116,8 @@ public class TestLinePoint extends TestCase {
 		System.out.println("PathwayModel contains Interactions " + p2.getDataNodes());
 
 		// remove point
-		i2.removePoint(pt2);
-		System.out.println("DataNode contains Points " + i2.getPoints());
+		i2.removeLinePoint(pt2);
+		System.out.println("DataNode contains Points " + i2.getLinePoints());
 		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayElements());
 
 		// remove interaction

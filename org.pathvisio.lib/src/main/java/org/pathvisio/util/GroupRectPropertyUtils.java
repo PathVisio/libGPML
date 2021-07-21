@@ -77,10 +77,10 @@ public class GroupRectPropertyUtils {
 	 *         coordinates.
 	 */
 	public static Rectangle2D getShapedElementBounds(ShapedElement shapedElement) {
-		double centerX = shapedElement.getRectProperty().getCenterXY().getX();
-		double centerY = shapedElement.getRectProperty().getCenterXY().getY();
-		double width = shapedElement.getRectProperty().getWidth();
-		double height = shapedElement.getRectProperty().getHeight();
+		double centerX = shapedElement.getRectProp().getCenterXY().getX();
+		double centerY = shapedElement.getRectProp().getCenterXY().getY();
+		double width = shapedElement.getRectProp().getWidth();
+		double height = shapedElement.getRectProp().getHeight();
 		double leftX = centerX - (width / 2);
 		double topY = centerY - (height / 2);
 		Rectangle2D bounds = new Rectangle2D.Double(leftX, topY, width, height);
@@ -101,7 +101,7 @@ public class GroupRectPropertyUtils {
 	 *         coordinates.
 	 */
 	public static Rectangle2D getLineElementBound(LineElement lineElement) {
-		List<LinePoint> points = lineElement.getPoints();
+		List<LinePoint> points = lineElement.getLinePoints();
 		LinePoint point1 = points.get(0); // first point
 		LinePoint point2 = points.get(points.size() - 1); // last point
 		double x1 = point1.getXY().getX();

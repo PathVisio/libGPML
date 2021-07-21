@@ -55,7 +55,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * 
 	 * @return points the list of points, an empty list if no anchors are defined.
 	 */
-	public List<LinePoint> getPoints() {
+	public List<LinePoint> getLinePoints() {
 		return points;
 	}
 
@@ -65,7 +65,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param point the point to look for.
 	 * @return true if has point, false otherwise.
 	 */
-	public boolean hasPoint(LinePoint point) {
+	public boolean hasLinePoint(LinePoint point) {
 		return points.contains(point);
 	}
 
@@ -74,11 +74,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * 
 	 * @param point the point to be added.
 	 */
-	public void addPoint(LinePoint point) {
+	public void addLinePoint(LinePoint point) {
 		assert (point != null);
 		point.setLineElementTo(this); // TODO
 		assert (point.getLineElement() == this);
-		assert !hasPoint(point);
+		assert !hasLinePoint(point);
 		// add point to same pathway model as line if applicable
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(point);
@@ -91,8 +91,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * 
 	 * @param point the point to be removed.
 	 */
-	public void removePoint(LinePoint point) {
-		assert (point != null && hasPoint(point));
+	public void removeLinePoint(LinePoint point) {
+		assert (point != null && hasLinePoint(point));
 		if (getPathwayModel() != null)
 			getPathwayModel().removePathwayElement(point);
 		points.remove(point);
@@ -102,9 +102,9 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	/**
 	 * Removes all points from the points list.
 	 */
-	public void removePoints() {
+	public void removeLinePoints() {
 		for (int i = 0; i < points.size(); i++) {
-			removePoint(points.get(i));
+			removeLinePoint(points.get(i));
 		}
 	}
 
@@ -113,7 +113,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * 
 	 * @return the first point of points list.
 	 */
-	public LinePoint getStartPoint() {
+	public LinePoint getStartLinePoint() {
 		return points.get(0);
 	}
 
@@ -122,7 +122,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * 
 	 * @return the last point of points list.
 	 */
-	public LinePoint getEndPoint() {
+	public LinePoint getEndLinePoint() {
 		return points.get(points.size() - 1);
 	}
 
@@ -189,7 +189,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * 
 	 * @return lineStyleProperty the line style properties.
 	 */
-	public LineStyleProperty getLineStyleProperty() {
+	public LineStyleProperty getLineStyleProp() {
 		return lineStyleProperty;
 	}
 
@@ -198,7 +198,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * 
 	 * @param lineStyleProperty the line style properties.
 	 */
-	public void setLineStyleProperty(LineStyleProperty lineStyleProperty) {
+	public void setLineStyleProp(LineStyleProperty lineStyleProperty) {
 		this.lineStyleProperty = lineStyleProperty;
 	}
 
@@ -303,7 +303,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 */
 	@Override
 	public void terminate() {
-		removePoints();
+		removeLinePoints();
 		removeAnchors();
 		removeAnnotationRefs();
 		removeCitationRefs();

@@ -56,7 +56,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * 
 	 * @return rectProperty the centering and dimension properties.
 	 */
-	public RectProperty getRectProperty() {
+	public RectProperty getRectProp() {
 		return rectProperty;
 	}
 
@@ -65,7 +65,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * 
 	 * @param rectProperty the centering and dimension properties.
 	 */
-	public void setRectProperty(RectProperty rectProperty) {
+	public void setRectProp(RectProperty rectProperty) {
 		this.rectProperty = rectProperty;
 	}
 
@@ -75,7 +75,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * 
 	 * @return fontProperty the font properties.
 	 */
-	public FontProperty getFontProperty() {
+	public FontProperty getFontProp() {
 		return fontProperty;
 	}
 
@@ -84,7 +84,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * 
 	 * @param fontProperty the font properties.
 	 */
-	public void setFontProperty(FontProperty fontProperty) {
+	public void setFontProp(FontProperty fontProperty) {
 		this.fontProperty = fontProperty;
 	}
 
@@ -94,7 +94,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * 
 	 * @return shapeStyleProperty the shape style properties.
 	 */
-	public ShapeStyleProperty getShapeStyleProperty() {
+	public ShapeStyleProperty getShapeStyleProp() {
 		return shapeStyleProperty;
 	}
 
@@ -103,7 +103,7 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 	 * 
 	 * @param shapeStyleProperty the shape style properties.
 	 */
-	public void setShapeStyleProperty(ShapeStyleProperty shapeStyleProperty) {
+	public void setShapeStyleProp(ShapeStyleProperty shapeStyleProperty) {
 		this.shapeStyleProperty = shapeStyleProperty;
 	}
 

@@ -283,7 +283,7 @@ public class State extends ElementInfo {
 	 * 
 	 * @return fontProperty the font properties.
 	 */
-	public FontProperty getFontProperty() {
+	public FontProperty getFontProp() {
 		return fontProperty;
 	}
 
@@ -292,7 +292,7 @@ public class State extends ElementInfo {
 	 * 
 	 * @param fontProperty the font properties.
 	 */
-	public void setFontProperty(FontProperty fontProperty) {
+	public void setFontProp(FontProperty fontProperty) {
 		this.fontProperty = fontProperty;
 	}
 
@@ -302,7 +302,7 @@ public class State extends ElementInfo {
 	 * 
 	 * @return shapeStyleProperty the shape style properties.
 	 */
-	public ShapeStyleProperty getShapeStyleProperty() {
+	public ShapeStyleProperty getShapeStyleProp() {
 		return shapeStyleProperty;
 	}
 
@@ -311,7 +311,7 @@ public class State extends ElementInfo {
 	 * 
 	 * @param shapeStyleProperty the shape style properties.
 	 */
-	public void setShapeStyleProperty(ShapeStyleProperty shapeStyleProperty) {
+	public void setShapeStyleProp(ShapeStyleProperty shapeStyleProperty) {
 		this.shapeStyleProperty = shapeStyleProperty;
 	}
 

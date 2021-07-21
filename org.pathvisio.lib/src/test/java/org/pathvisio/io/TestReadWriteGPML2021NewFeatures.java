@@ -84,16 +84,16 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		 */
 		Shape virus = (Shape) pathwayModel.getPathwayElement("f2086");
 		ShapeType virusShape = ShapeType.register("virus");
-		virus.getShapeStyleProperty().setShapeType(virusShape);
+		virus.getShapeStyleProp().setShapeType(virusShape);
 
 		/**
 		 * Customize graphics features of group. Change shapeTypes to triangle,
 		 */
 		Group group1 = (Group) pathwayModel.getPathwayElement("grp001");
 		Group group2 = (Group) pathwayModel.getPathwayElement("grp002");
-		group1.getShapeStyleProperty().setBorderColor(ColorUtils.stringToColor("Purple"));
+		group1.getShapeStyleProp().setBorderColor(ColorUtils.stringToColor("Purple"));
 		// orange --> black (default) since it is not in color map
-		group2.getShapeStyleProperty().setBorderColor(ColorUtils.stringToColor("orange"));
+		group2.getShapeStyleProp().setBorderColor(ColorUtils.stringToColor("orange"));
 
 		/**
 		 * Create data node with type alias with elementRef to groups grp001 using base

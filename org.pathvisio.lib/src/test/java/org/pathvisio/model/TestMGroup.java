@@ -47,10 +47,10 @@ public class TestMGroup extends TestCase
 		
 		assertNotNull(group.getElementId());
 		
-		node.getRectProperty().getCenterXY().setX(120);
-		node.getRectProperty().getCenterXY().setY(20);
-		node.getRectProperty().setWidth(20);
-		node.getRectProperty().setHeight(20);
+		node.getRectProp().getCenterXY().setX(120);
+		node.getRectProp().getCenterXY().setY(20);
+		node.getRectProp().setWidth(20);
+		node.getRectProp().setHeight(20);
 		
 		assertEquals (0, group.getPathwayElements().size());
 		
