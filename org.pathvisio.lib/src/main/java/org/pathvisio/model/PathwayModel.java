@@ -20,8 +20,10 @@ import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -35,6 +37,7 @@ import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.Pathway;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for a Pathway model. Pathway model contains
@@ -47,7 +50,12 @@ import org.pathvisio.model.ref.Pathway;
 public class PathwayModel {
 
 	private Pathway pathway; // pathway information
+	// for elementId to PathwayElement
 	private Map<String, PathwayElement> elementIdToPathwayElement;
+	// for PathwayElement and all the LinePoints which point to it
+	private Map<PathwayElement, Set<LinePoint>> pathwayElementToLinePoints;
+	// for Group aliasRef and all the DataNode aliases for it
+	private Map<Group, Set<DataNode>> aliasRefToAliases;
 	private List<DataNode> dataNodes; // contains states
 	private List<Interaction> interactions; // contains points and anchors
 	private List<GraphicalLine> graphicalLines; // contains points and anchors
@@ -67,6 +75,8 @@ public class PathwayModel {
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
 		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
+		this.pathwayElementToLinePoints = new HashMap<PathwayElement, Set<LinePoint>>();
+		this.aliasRefToAliases = new HashMap<Group, Set<DataNode>>();
 		this.dataNodes = new ArrayList<DataNode>();
 		this.interactions = new ArrayList<Interaction>();
 		this.graphicalLines = new ArrayList<GraphicalLine>();
@@ -209,6 +219,106 @@ public class PathwayModel {
 			result = Integer.toHexString(Math.abs(random.nextInt()) % mod + min);
 		} while (ids.contains(result));
 		return result;
+	}
+
+	/**
+	 * Returns all LinePoints that refer to a PathwayElement with a particular
+	 * elementId.
+	 */
+	public Set<LinePoint> getReferringLinePoints(String id) {
+		PathwayElement pathwayElement = getPathwayElement(id);
+		Set<LinePoint> refs = pathwayElementToLinePoints.get(pathwayElement);
+		if (refs != null) {
+			// create defensive copy to prevent problems with ConcurrentModification.
+			return new HashSet<LinePoint>(refs);
+		} else {
+			return Collections.emptySet();
+		}
+	}
+
+	/**
+	 * Register a link from a graph id to a graph ref
+	 * 
+	 * @param id     The graph id
+	 * @param target The target GraphRefContainer
+	 */
+	public void addGraphRef(String id, GraphRefContainer target) {
+		Utils.multimapPut(graphRefs, id, target);
+	}
+
+	/**
+	 * Remove a reference to another Id.
+	 * 
+	 * @param id
+	 * @param target
+	 */
+	void removeGraphRef(String id, GraphRefContainer target) {
+		if (!graphRefs.containsKey(id))
+			throw new IllegalArgumentException();
+
+		graphRefs.get(id).remove(target);
+		if (graphRefs.get(id).size() == 0)
+			graphRefs.remove(id);
+	}
+
+	/**
+	 * Returns the Group to which a data node refers to. For example, when a
+	 * DataNode has type="alias" it may be an alias for a Group pathway element. To
+	 * get elementRef for a dataNode use {@link DataNode#getAliasRef()}.
+	 * 
+	 * @param dataNode the dataNode which has elementRef
+	 * @return pathway element to which dataNode elementRef refers.
+	 */
+	public PathwayElement getDataNodesFromGroup(DataNode dataNode) {
+		return elementRefToDataNode.get(dataNode);
+	}
+
+	/**
+	 * Adds mapping of elementRef to data node in the elementRefToDataNode hash map.
+	 * 
+	 * @param elementRef the pathway element to which a dataNode refers.
+	 * @param dataNode   the datanode which has a elementRef.
+	 * @throws IllegalArgumentException if elementRef or dataNode are null.
+	 */
+	public void addAlias(Group aliasRef, DataNode alias) {
+		if (aliasRef == null || alias == null) 
+			throw new IllegalArgumentException("AliasRef and alias must be valid.");
+		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
+		if (aliases == null) {
+			aliases = new HashSet<DataNode>();
+			aliasRefToAliases.put(aliasRef, aliases);
+		}
+		aliases.add(alias);
+	}
+
+	public void removeAlias(DataNode alias) {
+		if (alias == null) 
+			throw new IllegalArgumentException("Alias must be valid.");
+		Group aliasRef = alias.getAliasRef();
+		//TODO check if has alias & aliasRef
+		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
+		aliases.remove(alias);
+		//TODO if aliasRef empty...remove...
+		if (aliases.isEmpty())
+			removeAliasRef(aliasRef);
+	}
+
+	/**
+	 * Removes the mapping of given elementRef key from the elementRefToDataNode
+	 * hash map. TODO public?
+	 * 
+	 * @param elementRef the elementRef key.
+	 */
+	public void removeAliasRef(Group aliasRef) {
+		// TODO check if has...
+		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
+		if (!aliases.isEmpty()) {
+			for (DataNode alias : aliases) {
+				removeAlias(alias);
+				//TODO is this thorough enough? 
+			}
+		}
+		aliasRefToAliases.remove(aliasRef);
 	}
 
 	/**

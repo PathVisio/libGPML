@@ -264,7 +264,7 @@ public class DataNode extends ShapedElement {
 	 * 
 	 * @return aliasRef the pathway element to which the data node refers.
 	 */
-	public PathwayElement getAliasRef() {
+	public Group getAliasRef() {
 		return aliasRef;
 	}
 
@@ -273,7 +273,7 @@ public class DataNode extends ShapedElement {
 	 *
 	 * @return true if and only if the aliasRef of this data node is effective.
 	 */
-	public boolean hasElementRef() {
+	public boolean hasAliasRef() {
 		return getAliasRef() != null;
 	}
 
@@ -287,9 +287,9 @@ public class DataNode extends ShapedElement {
 	public void setAliasRefTo(Group aliasRef) {
 		if (aliasRef == null)
 			throw new IllegalArgumentException("Invalid aliasRef.");
-		if (hasElementRef()) {
-			PathwayElement formerElementRef = getAliasRef();
-			getPathwayModel().removeElementRef(formerElementRef);
+		if (hasAliasRef()) {
+			Group formerAliasRef = getAliasRef();
+			getPathwayModel().removeDataNode(formerAliasRef);
 		}
 		setAliasRef(aliasRef);
 		getPathwayModel().addElementRef(aliasRef, this);
