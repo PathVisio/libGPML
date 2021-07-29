@@ -30,9 +30,10 @@ import org.pathvisio.debug.Logger;
  */
 public class ShapeType {
 
-	private static final Map<String, ShapeType> nameToShapeType = new TreeMap<String, ShapeType>(String.CASE_INSENSITIVE_ORDER);
+	private static final Map<String, ShapeType> nameToShapeType = new TreeMap<String, ShapeType>(
+			String.CASE_INSENSITIVE_ORDER);
 
-	// TODO unify case 
+	// TODO unify case
 	public static final ShapeType NONE = new ShapeType("None");
 	public static final ShapeType RECTANGLE = new ShapeType("Rectangle"); // TODO: DEFAULT?
 	public static final ShapeType ROUNDED_RECTANGLE = new ShapeType("RoundedRectangle");
@@ -71,17 +72,26 @@ public class ShapeType {
 	public static final ShapeType ORGANC = new ShapeType("OrganC"); // Oval
 	public static final ShapeType PROTEINB = new ShapeType("ProteinB"); // Hexagon
 
-	
 	private String name;
+	private final boolean isResizeable;
+	private final boolean isRotatable;
 
 	/**
 	 * The constructor is private. ShapeType cannot be directly instantiated. Use
 	 * create() method to instantiate ShapeType.
 	 * 
 	 * @param name the string key of this ShapeType.
+	 * @param isResizeable if true object is resizeable. 
 	 * @throws NullPointerException if name is null.
 	 */
 	private ShapeType(String name) {
+		this(name, true, true);
+	}
+
+	// TODO documentation
+	private ShapeType(String name, boolean isResizeable, boolean isRotatable) {
+		this.isResizeable = isResizeable;
+		this.isRotatable = isRotatable;
 		if (name == null) {
 			throw new NullPointerException();
 		}
@@ -102,7 +112,7 @@ public class ShapeType {
 		if (nameToShapeType.containsKey(name)) {
 			return nameToShapeType.get(name);
 		} else {
-			Logger.log.trace("Registered shape type " + name); 
+			Logger.log.trace("Registered shape type " + name);
 			return new ShapeType(name);
 		}
 	}
@@ -114,6 +124,14 @@ public class ShapeType {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	public boolean isResizeable() {
+		return isResizeable;
+	}
+
+	public boolean isRotatable() {
+		return isRotatable;
 	}
 
 	/**
