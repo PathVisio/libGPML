@@ -27,7 +27,7 @@ import org.pathvisio.model.graphics.ShapeStyleProperty;
  */
 public class Shape extends ShapedElement {
 
-	private double rotation = 0; // in radians? TODO just read/write
+	private double rotation; // optional, in radians
 	private String textLabel; // optional
 
 	/**
@@ -36,7 +36,7 @@ public class Shape extends ShapedElement {
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
-	 * @param rotation           the rotation in radians? TODO
+	 * @param rotation           the rotation of shape in radians.
 	 * @param textLabel          the text of the shape.
 	 */
 	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
@@ -44,6 +44,14 @@ public class Shape extends ShapedElement {
 		super(rectProperty, fontProperty, shapeStyleProperty);
 		this.rotation = rotation;
 		this.textLabel = textLabel;
+	}
+
+	/**
+	 * Instantiates a Shape given all possible parameters except rotation.
+	 */
+	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			String textLabel) {
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel);
 	}
 
 	/**
@@ -55,23 +63,11 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Returns the text of of the shape.
-	 * 
-	 * @return textLabel the text of of the shape.
-	 * 
+	 * Instantiates a Shape given all possible parameters except rotation and
+	 * textLabel.
 	 */
-	public String getTextLabel() {
-		return textLabel;
-	}
-
-	/**
-	 * Sets the text of of the shape.
-	 * 
-	 * @param textLabel the text of of the shape.
-	 * 
-	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
+	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, null);
 	}
 
 	/**
@@ -92,6 +88,26 @@ public class Shape extends ShapedElement {
 	 */
 	public void setRotation(Double rotation) {
 		this.rotation = rotation;
+	}
+
+	/**
+	 * Returns the text of of the shape.
+	 * 
+	 * @return textLabel the text of of the shape.
+	 * 
+	 */
+	public String getTextLabel() {
+		return textLabel;
+	}
+
+	/**
+	 * Sets the text of of the shape.
+	 * 
+	 * @param textLabel the text of of the shape.
+	 * 
+	 */
+	public void setTextLabel(String textLabel) {
+		this.textLabel = textLabel;
 	}
 
 }

@@ -27,6 +27,7 @@ import org.pathvisio.model.graphics.ShapeStyleProperty;
  */
 public class Label extends ShapedElement {
 
+	private double rotation; // optional, in radians
 	private String textLabel;
 	private String href; // optional
 
@@ -36,22 +37,58 @@ public class Label extends ShapedElement {
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
+	 * @param rotation           the rotation of shape in radians.
 	 * @param textLabel          the text of the label.
 	 * @param href               the hyperlink of the label.
 	 */
 	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, String href) {
+			double rotation, String textLabel, String href) {
 		super(rectProperty, fontProperty, shapeStyleProperty);
+		this.rotation = rotation;
 		this.textLabel = textLabel;
 		this.href = href;
+	}
+
+	/**
+	 * Instantiates a Label given all possible parameters except rotation.
+	 */
+	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			String textLabel, String href) {
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, null);
 	}
 
 	/**
 	 * Instantiates a Label given all possible parameters except href.
 	 */
 	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			double rotation, String textLabel) {
+		this(rectProperty, fontProperty, shapeStyleProperty, rotation, textLabel, null);
+	}
+
+	/**
+	 * Instantiates a Label given all possible parameters except rotation and href.
+	 */
+	public Label(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
 			String textLabel) {
-		this(rectProperty, fontProperty, shapeStyleProperty, textLabel, null);
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, null);
+	}
+
+	/**
+	 * Returns the rotation of this label.
+	 * 
+	 * @return rotation the rotation of the label.
+	 */
+	public double getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets the rotation of this label.
+	 * 
+	 * @param rotation the rotation of the label.
+	 */
+	public void setRotation(Double rotation) {
+		this.rotation = rotation;
 	}
 
 	/**

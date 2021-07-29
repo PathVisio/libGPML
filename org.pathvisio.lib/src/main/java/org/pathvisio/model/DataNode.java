@@ -31,61 +31,116 @@ import org.pathvisio.model.type.DataNodeType;
  */
 public class DataNode extends ShapedElement {
 
+	private double rotation; // optional, in radians
 	private String textLabel;
 	private DataNodeType type = DataNodeType.UNDEFINED;
 	private List<State> states;
 	private Xref xref; // optional
-	private PathwayElement elementRef; // optional, the pathway element to which the data node refers to as an alias.
+	private Group aliasRef; // optional, the pathway element to which the data node refers to as an alias.
 
 	/**
 	 * 
 	 * Instantiates a Data Node pathway element given all possible parameters. The
 	 * data node is an alias and refers to another pathway element. In GPML, the
-	 * datanode has elementRef which refers to the elementId of a pathway element
+	 * datanode has aliasRef which refers to the elementId of a pathway element
 	 * (normally gpml:Group).
 	 * 
 	 * @param rectProperty       the centering (position) and dimension properties.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
+	 * @param rotation           the rotation of shape in radians.
 	 * @param textLabel          the text of the datanode.
 	 * @param type               the type of datanode, e.g. complex.
 	 * @param xref               the data node Xref.
-	 * @param elementRef         the pathway element the data node refers to.
+	 * @param aliasRef           the group the data node alias refers to.
 	 */
 	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, DataNodeType type, Xref xref, PathwayElement elementRef) {
+			double rotation, String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
 		super(rectProperty, fontProperty, shapeStyleProperty);
+		this.rotation = rotation;
 		this.textLabel = textLabel;
 		this.type = type;
 		this.states = new ArrayList<State>();
 		this.xref = xref;
-		this.elementRef = elementRef;
+		setAliasRefTo(aliasRef);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except rotation.
+	 */
+	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, xref, aliasRef);
 	}
 
 	/**
 	 * Instantiates a DataNode given all possible parameters except xref.
 	 */
 	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, DataNodeType type, PathwayElement elementRef) {
-		this(rectProperty, fontProperty, shapeStyleProperty, textLabel, type, null, elementRef);
+			double rotation, String textLabel, DataNodeType type, Group aliasRef) {
+		this(rectProperty, fontProperty, shapeStyleProperty, rotation, textLabel, type, null, aliasRef);
 	}
 
 	/**
-	 * Instantiates a DataNode given all possible parameters except elementRef,
-	 * because the data node does not refer to another pathway element.
+	 * Instantiates a DataNode given all possible parameters except rotation and
+	 * xref.
+	 */
+	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			String textLabel, DataNodeType type, Group aliasRef) {
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, null, aliasRef);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except aliasRef.
+	 */
+	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			double rotation, String textLabel, DataNodeType type, Xref xref) {
+		this(rectProperty, fontProperty, shapeStyleProperty, rotation, textLabel, type, xref, null);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except rotation and
+	 * aliasRef.
 	 */
 	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
 			String textLabel, DataNodeType type, Xref xref) {
-		this(rectProperty, fontProperty, shapeStyleProperty, textLabel, type, xref, null);
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, xref, null);
 	}
 
 	/**
 	 * Instantiates a DataNode given all possible parameters except xref and
-	 * elementRef.
+	 * aliasRef.
+	 */
+	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
+			double rotation, String textLabel, DataNodeType type) {
+		this(rectProperty, fontProperty, shapeStyleProperty, rotation, textLabel, type, null, null);
+	}
+
+	/**
+	 * Instantiates a DataNode given all possible parameters except rotation, xref,
+	 * and aliasRef.
 	 */
 	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
 			String textLabel, DataNodeType type) {
-		this(rectProperty, fontProperty, shapeStyleProperty, textLabel, type, null, null);
+		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, null, null);
+	}
+
+	/**
+	 * Returns the rotation of this data node.
+	 * 
+	 * @return rotation the rotation of the data node.
+	 */
+	public double getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets the rotation of this data node.
+	 * 
+	 * @param rotation the rotation of the data node.
+	 */
+	public void setRotation(Double rotation) {
+		this.rotation = rotation;
 	}
 
 	/**
@@ -170,7 +225,7 @@ public class DataNode extends ShapedElement {
 	 */
 	public void addState(State state) {
 		assert (state != null);
-		state.setDataNodeTo(this); 
+		state.setDataNodeTo(this);
 		assert (state.getDataNode() == this);
 		assert !hasState(state);
 		// add state to same pathway model as data node if applicable
@@ -204,24 +259,49 @@ public class DataNode extends ShapedElement {
 
 	/**
 	 * Returns the pathway element to which the data node refers to as an alias. In
-	 * GPML, this is elementRef which refers to the elementId of a pathway element
+	 * GPML, this is aliasRef which refers to the elementId of a pathway element
 	 * (normally gpml:Group). TODO
 	 * 
-	 * @return elementRef the pathway element to which the data node refers.
+	 * @return aliasRef the pathway element to which the data node refers.
 	 */
-	public PathwayElement getElementRef() {
-		return elementRef;
+	public PathwayElement getAliasRef() {
+		return aliasRef;
+	}
+
+	/**
+	 * Checks whether this data node has an aliasRef.
+	 *
+	 * @return true if and only if the aliasRef of this data node is effective.
+	 */
+	public boolean hasElementRef() {
+		return getAliasRef() != null;
 	}
 
 	/**
 	 * Sets the pathway element to which the data node refers to as an alias. In
-	 * GPML, this is elementRef which refers to the elementId of a pathway element
+	 * GPML, this is aliasRef which refers to the elementId of a pathway element
 	 * (normally gpml:Group). TODO
 	 * 
-	 * @param elementRef the pathway element to which the data node refers.
+	 * @param aliasRef the pathway element to which the data node refers.
 	 */
-	public void setElementRef(PathwayElement elementRef) {
-		this.elementRef = elementRef;
+	public void setAliasRefTo(Group aliasRef) {
+		if (aliasRef == null)
+			throw new IllegalArgumentException("Invalid aliasRef.");
+		if (hasElementRef()) {
+			PathwayElement formerElementRef = getAliasRef();
+			getPathwayModel().removeElementRef(formerElementRef);
+		}
+		setAliasRef(aliasRef);
+		getPathwayModel().addElementRef(aliasRef, this);
+	}
+
+	/**
+	 * Sets the parent group for this pathway element.
+	 * 
+	 * @param groupRef the given group to set.
+	 */
+	private void setAliasRef(Group aliasRef) {
+		this.aliasRef = aliasRef;
 	}
 
 	/**

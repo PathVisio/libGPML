@@ -37,6 +37,7 @@ public class State extends ElementInfo {
 	private double height;
 	private FontProperty fontProperty;
 	private ShapeStyleProperty shapeStyleProperty;
+	private double rotation; // optional, in radians
 	private Xref xref; // optional
 
 	/**
@@ -54,10 +55,11 @@ public class State extends ElementInfo {
 	 * @param height             the pixel value for the y dimensional length.
 	 * @param fontProperty       the font properties, e.g. textColor, fontName...
 	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
+	 * @param rotation           the rotation of shape in radians.
 	 * @param xref               the state xref.
 	 */
 	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
-			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Xref xref) {
+			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, double rotation, Xref xref) {
 		super();
 		this.textLabel = textLabel;
 		this.type = type;
@@ -67,12 +69,31 @@ public class State extends ElementInfo {
 		this.height = height;
 		this.fontProperty = fontProperty;
 		this.shapeStyleProperty = shapeStyleProperty;
+		this.rotation = rotation;
 		this.xref = xref;
 	}
 
 	/**
 	 * Instantiates a State pathway element given all possible parameters except
+	 * rotation.
+	 */
+	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
+			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Xref xref) {
+		this(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, 0, xref);
+	}
+
+	/**
+	 * Instantiates a State pathway element given all possible parameters except
 	 * xref.
+	 */
+	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
+			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, double rotation) {
+		this(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, rotation, null);
+	}
+
+	/**
+	 * Instantiates a State pathway element given all possible parameters except
+	 * rotation and xref.
 	 */
 	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
 			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
@@ -313,6 +334,24 @@ public class State extends ElementInfo {
 	 */
 	public void setShapeStyleProp(ShapeStyleProperty shapeStyleProperty) {
 		this.shapeStyleProperty = shapeStyleProperty;
+	}
+
+	/**
+	 * Returns the rotation of this state.
+	 * 
+	 * @return rotation the rotation of the state.
+	 */
+	public double getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets the rotation of this state.
+	 * 
+	 * @param rotation the rotation of the state.
+	 */
+	public void setRotation(Double rotation) {
+		this.rotation = rotation;
 	}
 
 	/**
