@@ -517,8 +517,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, label, lb);
 				// sets optional properties
+				String rotationStr = gfx.getAttributeValue("rotation");
 				String href = lb.getAttributeValue("href");
 				String groupRef = lb.getAttributeValue("groupRef");
+				if (rotationStr!= null) 
+					label.setRotation(Double.parseDouble(rotationStr.trim()));
 				if (href != null)
 					label.setHref(href);
 				if (groupRef != null && !groupRef.equals(""))
@@ -544,14 +547,16 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				RectProperty rectProperty = readRectProperty(gfx);
 				FontProperty fontProperty = readFontProperty(gfx);
 				ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-				double rotation = Double.parseDouble(gfx.getAttributeValue("rotation").trim());
-				Shape shape = new Shape(rectProperty, fontProperty, shapeStyleProperty, rotation);
+				Shape shape = new Shape(rectProperty, fontProperty, shapeStyleProperty);
 				shape.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, shape, shp);
 				// sets optional properties
+				String rotationStr = gfx.getAttributeValue("rotation");
 				String textLabel = shp.getAttributeValue("textLabel");
 				String groupRef = shp.getAttributeValue("groupRef");
+				if (rotationStr!= null) 
+					shape.setRotation(Double.parseDouble(rotationStr.trim()));
 				if (textLabel != null)
 					shape.setTextLabel(textLabel);
 				if (groupRef != null && !groupRef.equals(""))
@@ -587,8 +592,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// reads states
 				readStates(pathwayModel, dataNode, dn);
 				// sets optional properties
+				String rotationStr = gfx.getAttributeValue("rotation");
 				String groupRef = dn.getAttributeValue("groupRef");
 				Xref xref = readXref(dn);
+				if (rotationStr!= null) 
+					dataNode.setRotation(Double.parseDouble(rotationStr.trim()));
 				if (groupRef != null && !groupRef.equals(""))
 					dataNode.setGroupRefTo((Group) pathwayModel.getPathwayElement(groupRef));
 				if (xref != null)
@@ -628,6 +636,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, state, st);
 				// sets optional properties
+				String rotationStr = gfx.getAttributeValue("rotation");
+				if (rotationStr!= null) 
+					state.setRotation(Double.parseDouble(rotationStr.trim()));
 				Xref xref = readXref(st);
 				if (xref != null)
 					state.setXref(xref);
@@ -768,13 +779,13 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected void readDataNodeElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element dns = root.getChild("DataNodes", root.getNamespace());
 		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
-			String elementRefStr = dn.getAttributeValue("elementRef");
-			if (elementRefStr != null && !elementRefStr.equals("")) {
-				PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
-				if (elementRef != null) {
+			String aliasRefStr = dn.getAttributeValue("elementRef");
+			if (aliasRefStr != null && !aliasRefStr.equals("")) {
+				Group aliasRef = (Group) pathwayModel.getPathwayElement(aliasRefStr);
+				if (aliasRef != null) {
 					String elementId = dn.getAttributeValue("elementId");
 					DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementId);
-					dataNode.setElementRef(elementRef);
+					dataNode.setAliasRefTo(aliasRef);
 				}
 			}
 		}

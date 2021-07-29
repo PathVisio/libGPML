@@ -368,7 +368,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (dn != null)
 				root.addContent(dn);
 			// warnings for conversion GPML2021 to GPML2013a
-			if (dataNode.getElementRef() != null)
+			if (dataNode.getAliasRef() != null)
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: DataNode " + dataNode.getElementId()
 						+ " elementRef info lost.");
 		}

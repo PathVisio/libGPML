@@ -294,7 +294,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					au.setAttribute("username", username);
 				if (order != 0)
 					au.setAttribute("order", String.valueOf(order));
-
 				if (au != null) {
 					auList.add(au);
 				}
@@ -449,10 +448,14 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeXref(dataNode.getXref(), dn, false);
 				writeStates(dataNode.getStates(), dn);
 				writeShapedElement(dataNode, dn);
+				Element gfx = dn.getChild("Graphics", dn.getNamespace());
+				double rotation = dataNode.getRotation();
+				if (rotation != 0)
+					gfx.setAttribute("rotation", Double.toString(rotation));
 				dn.setAttribute("textLabel", dataNode.getTextLabel());
 				dn.setAttribute("type", dataNode.getType().getName());
 				writeGroupRef(dataNode.getGroupRef(), dn);
-				writeElementRef(dataNode.getElementRef(), dn);
+				writeElementRef(dataNode.getAliasRef(), dn);
 				if (dn != null) {
 					dnList.add(dn);
 				}
@@ -490,6 +493,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeFontProperty(state.getFontProp(), gfx);
 				// writes all shape style properties except zOrder
 				writeShapeStyleProperty(state.getShapeStyleProp(), gfx, false);
+				double rotation = state.getRotation();
+				if (rotation != 0)
+					gfx.setAttribute("rotation", Double.toString(rotation));
 				writeElementInfo(state, st);
 				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
 				st.setAttribute("type", state.getType().getName());
@@ -651,6 +657,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					continue;
 				Element lb = new Element("Label", root.getNamespace());
 				writeShapedElement(label, lb);
+				Element gfx = lb.getChild("Graphics", lb.getNamespace());
+				double rotation = label.getRotation();
+				if (rotation != 0)
+					gfx.setAttribute("rotation", Double.toString(rotation));
 				lb.setAttribute("textLabel", label.getTextLabel());
 				if (label.getHref() != null)
 					lb.setAttribute("href", label.getHref());
@@ -686,7 +696,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 					shp.setAttribute("textLabel", shape.getTextLabel());
 				writeGroupRef(shape.getGroupRef(), shp);
 				Element gfx = shp.getChild("Graphics", shp.getNamespace());
-				gfx.setAttribute("rotation", Double.toString(shape.getRotation()));
+				double rotation = shape.getRotation();
+				if (rotation != 0)
+					gfx.setAttribute("rotation", Double.toString(rotation));
 				if (shp != null) {
 					shpList.add(shp);
 				}
