@@ -377,8 +377,29 @@ public abstract class GPML2013aFormatAbstract {
 		}
 	}
 
+	/**
+	 * Attribute info map is initiated with {@link #initAttributeInfo()}.
+	 * 
+	 */
 	private static final Map<String, AttributeInfo> ATTRIBUTE_INFO = initAttributeInfo();
 
+	/**
+	 * The {@link Map} initAttributeInfo maps {@link String} tag to
+	 * {@link AttributeInfo}. For GPML2013a reading/writing, we often use
+	 * {@link #getAttr()} and {@link #setAttr()} in place of standard jdom methods
+	 * {@link Element#getAttributeValue()} and {@link Element#setAttribute()}
+	 * respectively. If an attribute is null when reading, its default value is
+	 * fetched from this map. When writing, if trying to set a default value or an
+	 * optional value to null, the attribute is omitted which results in a leaner
+	 * xml output.
+	 * 
+	 * This map defines custom default values not in the GPML2013a schema such as
+	 * default "Label.Graphics@FillColor" as "Transparent". We do not do this for
+	 * GPML2021 as it can be confusing to have custom reading/writing resulting in
+	 * xml which do not adhere to the schema.
+	 * 
+	 * @return
+	 */
 	private static Map<String, AttributeInfo> initAttributeInfo() {
 		Map<String, AttributeInfo> result = new HashMap<String, AttributeInfo>();
 		result.put("Comment@Source", new AttributeInfo("xsd:string", null, "optional"));
@@ -540,8 +561,8 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * A {@link Map} collection that contains {@link String} as key and
-	 * {@link AttributeInfo} as value.
+	 * Returns {@link Map} ATTRIBUTE_INFO collection that contains {@link String} as
+	 * key and {@link AttributeInfo} as value.
 	 */
 	protected Map<String, AttributeInfo> getAttributeInfo() {
 		return ATTRIBUTE_INFO;
@@ -633,7 +654,8 @@ public abstract class GPML2013aFormatAbstract {
 	 * Sets a certain attribute value, performs a basic check for some types, and
 	 * throws an exception if trying to set an invalid value. If trying to set a
 	 * default value or an optional value to null, the attribute is omitted, which
-	 * results in a leaner xml output.
+	 * results in a leaner xml output. This customized method is often used in place
+	 * of {@link Element#setAttribute()} for writing GPML2013a.
 	 *
 	 * @param tag   used for lookup in the defaults table.
 	 * @param name  used for lookup in the defaults table.
@@ -665,7 +687,8 @@ public abstract class GPML2013aFormatAbstract {
 
 	/**
 	 * Gets a certain attribute value, and replaces it with a suitable default under
-	 * certain conditions.
+	 * certain conditions. This customized method is often used in place of
+	 * {@link Element#getAttributeValue()} for reading GPML2013a.
 	 *
 	 * @param tag  used for lookup in the defaults table.
 	 * @param name used for lookup in the defaults table.

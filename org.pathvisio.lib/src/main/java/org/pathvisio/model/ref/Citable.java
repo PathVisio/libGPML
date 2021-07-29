@@ -45,5 +45,8 @@ public interface Citable {
 	 * Removes all citationRefs from citationRefs list.
 	 */
 	public void removeCitationRefs();
+	
+	// TODO addCitation(); 
+	// add citation. Take the citation, and creates citationRef, and links everything
 
 }

@@ -222,6 +222,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 		assert !hasCitationRef(citationRef);
 		citationRefs.add(citationRef);
 	}
+	
 
 	/**
 	 * Removes given citationRef from citationRefs list. The citationRef ceases to
