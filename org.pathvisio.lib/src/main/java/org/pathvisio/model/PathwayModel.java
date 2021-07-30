@@ -273,6 +273,14 @@ public class PathwayModel {
 		return elementRefToDataNode.get(dataNode);
 	}
 
+	public boolean hasAliasRef(Group aliasRef) {
+		return aliasRefToAliases.containsKey(aliasRef);
+	}
+
+	public boolean hasAlias(Group aliasRef, DataNode alias) {
+		return aliasRefToAliases.get(aliasRef).contains(alias);
+	}
+
 	/**
 	 * Adds mapping of elementRef to data node in the elementRefToDataNode hash map.
 	 * 
@@ -281,7 +289,7 @@ public class PathwayModel {
 	 * @throws IllegalArgumentException if elementRef or dataNode are null.
 	 */
 	public void addAlias(Group aliasRef, DataNode alias) {
-		if (aliasRef == null || alias == null) 
+		if (aliasRef == null || alias == null)
 			throw new IllegalArgumentException("AliasRef and alias must be valid.");
 		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
 		if (aliases == null) {
@@ -291,14 +299,16 @@ public class PathwayModel {
 		aliases.add(alias);
 	}
 
-	public void removeAlias(DataNode alias) {
-		if (alias == null) 
-			throw new IllegalArgumentException("Alias must be valid.");
-		Group aliasRef = alias.getAliasRef();
-		//TODO check if has alias & aliasRef
+	public void removeAlias(Group aliasRef, DataNode alias) {
+		if (alias == null || aliasRef == null)
+			throw new IllegalArgumentException("AliasRef and alias must be valid.");
+		assert (alias.getAliasRef() == aliasRef);
+		assert (hasAlias(aliasRef, alias));
 		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
 		aliases.remove(alias);
-		//TODO if aliasRef empty...remove...
+		if (alias.getAliasRef() != null) 
+			alias.setAliasRefTo(null);
+		// removes aliasRef if it has no aliases
 		if (aliases.isEmpty())
 			removeAliasRef(aliasRef);
 	}
@@ -310,12 +320,11 @@ public class PathwayModel {
 	 * @param elementRef the elementRef key.
 	 */
 	public void removeAliasRef(Group aliasRef) {
-		// TODO check if has...
+		assert (hasAliasRef(aliasRef));
 		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
 		if (!aliases.isEmpty()) {
 			for (DataNode alias : aliases) {
-				removeAlias(alias);
-				//TODO is this thorough enough? 
+				removeAlias(aliasRef, alias);
 			}
 		}
 		aliasRefToAliases.remove(aliasRef);

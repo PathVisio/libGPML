@@ -18,6 +18,7 @@ package org.pathvisio.model.graphics;
 
 import java.awt.Color;
 
+import org.pathvisio.io.listener.PathwayElementEvent;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.LineStyleType;
 
@@ -95,11 +96,11 @@ public class LineStyleProperty {
 	/**
 	 * Returns the visual appearance of a line, e.g. Solid or Broken.
 	 * 
-	 * @return lineStyle the style of a line. 
+	 * @return lineStyle the style of a line.
 	 */
 	public LineStyleType getLineStyle() {
 		if (lineStyle == null) {
-			return LineStyleType.SOLID; 
+			return LineStyleType.SOLID;
 		} else {
 			return lineStyle;
 		}
@@ -114,15 +115,18 @@ public class LineStyleProperty {
 	public void setLineStyle(LineStyleType lineStyle) {
 		if (lineStyle == null) {
 			throw new IllegalArgumentException();
-		} else {
+		}
+		if (this.lineStyle != lineStyle) {
 			this.lineStyle = lineStyle;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 		}
 	}
+
 
 	/**
 	 * Returns the pixel value for the width of a line.
 	 * 
-	 * @return lineWidth the width of a line. 
+	 * @return lineWidth the width of a line.
 	 */
 	public double getLineWidth() {
 		if (lineWidth < 0) {
@@ -136,7 +140,7 @@ public class LineStyleProperty {
 	 * Sets the pixel value for the width of a line.
 	 * 
 	 * @param lineWidth the width of a line.
-	 * @throws IllegalArgumentException if lineWidth is a negative value. 
+	 * @throws IllegalArgumentException if lineWidth is a negative value.
 	 */
 	public void setLineWidth(double lineWidth) {
 		if (lineWidth < 0) {
@@ -172,11 +176,16 @@ public class LineStyleProperty {
 	public void setConnectorType(ConnectorType connectorType) {
 		if (connectorType == null) {
 			throw new IllegalArgumentException();
-		} else {
+		} 
+		if (!this.connectorType.equals(connectorType)) {
 			this.connectorType = connectorType;
+			// TODO: create a static property for connector type, linestyle is not the
+			// correct mapping
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 		}
 	}
-
+	
+	
 	/**
 	 * Returns the order of a line.
 	 * 

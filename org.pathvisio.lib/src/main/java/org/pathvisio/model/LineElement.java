@@ -232,10 +232,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	public void setGroupRefTo(Group groupRef) {
 		if (groupRef == null)
 			throw new IllegalArgumentException("Invalid group.");
-		if (hasGroupRef()) {
-			Group formerGroup = getGroupRef();
-			formerGroup.removePathwayElement(this);
-		}
+		unsetGroupRef(); // first unsets if necessary
 		setGroupRef(groupRef);
 		if (!groupRef.hasPathwayElement(this))
 			groupRef.addPathwayElement(this);

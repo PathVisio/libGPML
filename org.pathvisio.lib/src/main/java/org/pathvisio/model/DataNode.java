@@ -278,30 +278,35 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Sets the pathway element to which the data node refers to as an alias. In
-	 * GPML, this is aliasRef which refers to the elementId of a pathway element
-	 * (normally gpml:Group). TODO
+	 * Sets the group aliasRef to which the data node refers to as an alias. In
+	 * GPML, this is aliasRef which refers to the elementId of gpml:Group.
 	 * 
-	 * @param aliasRef the pathway element to which the data node refers.
+	 * @param aliasRef the group to which the data node refers.
 	 */
 	public void setAliasRefTo(Group aliasRef) {
 		if (aliasRef == null)
 			throw new IllegalArgumentException("Invalid aliasRef.");
-		if (hasAliasRef()) {
-			Group formerAliasRef = getAliasRef();
-			getPathwayModel().removeDataNode(formerAliasRef);
-		}
+		unsetAliasRef(); // first unsets if necessary
 		setAliasRef(aliasRef);
-		getPathwayModel().addElementRef(aliasRef, this);
+		getPathwayModel().addAlias(aliasRef, this);
 	}
 
 	/**
-	 * Sets the parent group for this pathway element.
+	 * Sets the aliasRef for this data node.
 	 * 
-	 * @param groupRef the given group to set.
+	 * @param aliasRef the given group to set.
 	 */
 	private void setAliasRef(Group aliasRef) {
 		this.aliasRef = aliasRef;
+	}
+
+	/**
+	 * Unsets the aliasRef, if any, from this data node. Also removes references in
+	 * pathway model.
+	 */
+	public void unsetAliasRef() {
+		if (hasAliasRef())
+			getPathwayModel().removeAlias(getAliasRef(), this);
 	}
 
 	/**
