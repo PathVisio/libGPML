@@ -25,7 +25,7 @@ import org.pathvisio.model.graphics.ShapeStyleProperty;
  * 
  * @author finterly
  */
-public class Shape extends ShapedElement {
+public class Shape extends ShapedElement implements Rotatable {
 
 	private double rotation; // optional, in radians
 	private String textLabel; // optional

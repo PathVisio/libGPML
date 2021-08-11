@@ -16,12 +16,14 @@
  ******************************************************************************/
 package org.pathvisio.model.ref;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.pathvisio.io.listener.PathwayElementEvent;
 import org.pathvisio.model.PathwayElement;
 
 /**
@@ -32,7 +34,7 @@ import org.pathvisio.model.PathwayElement;
  * 
  * @author unknown, AP20070508, finterly
  */
-public abstract class ElementInfo extends PathwayElement implements Annotatable, Citable, Evidenceable {
+public abstract class ElementInfo extends PathwayElement implements Annotatable, Citable, Evidenceable { // PropertyChangeListener,
 
 	private List<Comment> comments;
 	/**
@@ -73,6 +75,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	public void addComment(Comment comment) {
 		comments.add(comment);
+		// TODO Change source/comment text?
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, comment));
 	}
 
 	/**
@@ -124,6 +128,8 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 			dynamicProperties.remove(key);
 		else
 			dynamicProperties.put(key, value);
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, key));
+
 	}
 
 	/**
@@ -222,7 +228,6 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 		assert !hasCitationRef(citationRef);
 		citationRefs.add(citationRef);
 	}
-	
 
 	/**
 	 * Removes given citationRef from citationRefs list. The citationRef ceases to

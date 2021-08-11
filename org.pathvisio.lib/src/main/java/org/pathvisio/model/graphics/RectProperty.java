@@ -23,7 +23,7 @@ package org.pathvisio.model.graphics;
  * 
  * @author finterly
  */
-public class RectProperty {
+public class RectProperty extends Graphics {
 
 	private Coordinate centerXY;
 	private double width;

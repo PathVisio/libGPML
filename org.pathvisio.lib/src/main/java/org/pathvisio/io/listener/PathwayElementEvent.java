@@ -40,15 +40,17 @@ public final class PathwayElementEvent {
 	private final Object property;
 	private final boolean coordinateChange;
 
-	protected static PathwayElementEvent createSinglePropertyEvent(PathwayElement pwe, Object property) {
+	//TODO public for now
+	public static PathwayElementEvent createSinglePropertyEvent(PathwayElement pwe, Object property) {
 		return new PathwayElementEvent(pwe, property, false);
 	}
 	
-	protected static PathwayElementEvent createAllPropertiesEvent(PathwayElement pwe) {
+	//TODO public for now
+	public static PathwayElementEvent createAllPropertiesEvent(PathwayElement pwe) {
 		return new PathwayElementEvent(pwe, null, false);
 	}
-	
-	protected static PathwayElementEvent createCoordinatePropertyEvent(PathwayElement pwe) {
+	//TODO public for now
+	public static PathwayElementEvent createCoordinatePropertyEvent(PathwayElement pwe) {
 		return new PathwayElementEvent(pwe, null, true);
 	}
 	
@@ -86,7 +88,7 @@ public final class PathwayElementEvent {
 	 * @param prop The property to check.
 	 * @return true if the property may have been modified, false if not.
 	 */
-	public boolean affectsProperty(Property prop) {
+	public boolean affectsProperty(Object prop) { //TODO 
 		return property == null || property.equals(prop);
 	}
 

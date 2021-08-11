@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.pathvisio.io.listener.PathwayElementEvent;
 import org.pathvisio.model.type.AnchorShapeType;
 
 /**
@@ -141,10 +142,9 @@ public class Anchor extends PathwayElement {
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
 	public void setShapeType(AnchorShapeType shapeType) {
-		if (shapeType == null) {
-			throw new IllegalArgumentException();
-		} else {
+		if (!shapeType.equals(shapeType) && shapeType != null) {
 			this.shapeType = shapeType;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, shapeType));
 		}
 	}
 

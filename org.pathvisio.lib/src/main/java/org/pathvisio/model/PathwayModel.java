@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EventListener;
 import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,10 @@ import java.util.Set;
 import org.bridgedb.Xref;
 import org.pathvisio.debug.*;
 import org.pathvisio.io.*;
+import org.pathvisio.io.listener.PathwayElementEvent;
+import org.pathvisio.io.listener.PathwayEvent;
+import org.pathvisio.io.listener.PathwayListener;
+
 import java.io.Reader;
 
 import org.pathvisio.model.graphics.Coordinate;
@@ -236,42 +241,42 @@ public class PathwayModel {
 		}
 	}
 
-	/**
-	 * Register a link from a graph id to a graph ref
-	 * 
-	 * @param id     The graph id
-	 * @param target The target GraphRefContainer
-	 */
-	public void addGraphRef(String id, GraphRefContainer target) {
-		Utils.multimapPut(graphRefs, id, target);
-	}
-
-	/**
-	 * Remove a reference to another Id.
-	 * 
-	 * @param id
-	 * @param target
-	 */
-	void removeGraphRef(String id, GraphRefContainer target) {
-		if (!graphRefs.containsKey(id))
-			throw new IllegalArgumentException();
-
-		graphRefs.get(id).remove(target);
-		if (graphRefs.get(id).size() == 0)
-			graphRefs.remove(id);
-	}
-
-	/**
-	 * Returns the Group to which a data node refers to. For example, when a
-	 * DataNode has type="alias" it may be an alias for a Group pathway element. To
-	 * get elementRef for a dataNode use {@link DataNode#getAliasRef()}.
-	 * 
-	 * @param dataNode the dataNode which has elementRef
-	 * @return pathway element to which dataNode elementRef refers.
-	 */
-	public PathwayElement getDataNodesFromGroup(DataNode dataNode) {
-		return elementRefToDataNode.get(dataNode);
-	}
+//	/**
+//	 * Register a link from a graph id to a graph ref
+//	 * 
+//	 * @param id     The graph id
+//	 * @param target The target GraphRefContainer
+//	 */
+//	public void addGraphRef(String id, GraphRefContainer target) {
+//		Utils.multimapPut(graphRefs, id, target);
+//	}
+//
+//	/**
+//	 * Remove a reference to another Id.
+//	 * 
+//	 * @param id
+//	 * @param target
+//	 */
+//	void removeGraphRef(String id, GraphRefContainer target) {
+//		if (!graphRefs.containsKey(id))
+//			throw new IllegalArgumentException();
+//
+//		graphRefs.get(id).remove(target);
+//		if (graphRefs.get(id).size() == 0)
+//			graphRefs.remove(id);
+//	}
+//
+//	/**
+//	 * Returns the Group to which a data node refers to. For example, when a
+//	 * DataNode has type="alias" it may be an alias for a Group pathway element. To
+//	 * get elementRef for a dataNode use {@link DataNode#getAliasRef()}.
+//	 * 
+//	 * @param dataNode the dataNode which has elementRef
+//	 * @return pathway element to which dataNode elementRef refers.
+//	 */
+//	public PathwayElement getDataNodesFromGroup(DataNode dataNode) {
+//		return elementRefToDataNode.get(dataNode);
+//	}
 
 	public boolean hasAliasRef(Group aliasRef) {
 		return aliasRefToAliases.containsKey(aliasRef);
@@ -306,7 +311,7 @@ public class PathwayModel {
 		assert (hasAlias(aliasRef, alias));
 		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
 		aliases.remove(alias);
-		if (alias.getAliasRef() != null) 
+		if (alias.getAliasRef() != null)
 			alias.setAliasRefTo(null);
 		// removes aliasRef if it has no aliases
 		if (aliases.isEmpty())
@@ -851,75 +856,137 @@ public class PathwayModel {
 //		new BatikImageExporter(ImageExporter.TYPE_SVG).doExport(file, this);
 //	}
 //
-//	/**
-//	 * Implement this interface if you want to be notified when the "changed" status changes.
-//	 * This happens e.g. when the user makes a change to an unchanged pathway,
-//	 * or when a changed pathway is saved.
-//	 */
-//	public interface StatusFlagListener extends EventListener
-//	{
-//		public void statusFlagChanged (StatusFlagEvent e);
-//	}
-//
-//	/**
-//	 * Event for a change in the "changed" status of this Pathway
-//	 */
-//	public static class StatusFlagEvent
-//	{
-//		private boolean newStatus;
-//		public StatusFlagEvent (boolean newStatus) { this.newStatus = newStatus; }
-//		public boolean getNewStatus() {
-//			return newStatus;
-//		}
-//	}
-//
-//	private List<StatusFlagListener> statusFlagListeners = new ArrayList<StatusFlagListener>();
-//
-//	/**
-//	 * Register a status flag listener
-//	 */
-//	public void addStatusFlagListener (StatusFlagListener v)
-//	{
-//		if (!statusFlagListeners.contains(v)) statusFlagListeners.add(v);
-//	}
-//
-//	/**
-//	 * Remove a status flag listener
-//	 */
-//	public void removeStatusFlagListener (StatusFlagListener v)
-//	{
-//		statusFlagListeners.remove(v);
-//	}
-//
-//	//TODO: make private
-//	public void fireStatusFlagEvent(StatusFlagEvent e)
-//	{
-//		for (StatusFlagListener g : statusFlagListeners)
-//		{
-//			g.statusFlagChanged (e);
-//		}
-//	}
-//
-//	private List<PathwayListener> listeners = new ArrayList<PathwayListener>();
-//
-//	public void addListener(PathwayListener v)
-//	{
-//		if(!listeners.contains(v)) listeners.add(v);
-//	}
-//
-//	public void removeListener(PathwayListener v) { listeners.remove(v); }
-//
-//    /**
-//	   Firing the ObjectModifiedEvent has the side effect of
-//	   marking the Pathway as changed.
-//	 */
-//	public void fireObjectModifiedEvent(PathwayEvent e)
-//	{
-//		markChanged();
-//		for (PathwayListener g : listeners)
-//		{
-//			g.pathwayModified(e);
-//		}
-//	}
+
+	/**
+	 * Listener methods
+	 * 
+	 */
+	private boolean changed = true;
+
+	/**
+	 * The "changed" flag tracks if the Pathway has been changed since the file was
+	 * opened or last saved. New pathways start changed.
+	 */
+	public boolean hasChanged() {
+		return changed;
+	}
+
+	/**
+	 * clearChangedFlag should be called after when the current pathway is known to
+	 * be the same as the one on disk. This happens when you just opened it, or when
+	 * you just saved it.
+	 */
+	public void clearChangedFlag() {
+		if (changed) {
+			changed = false;
+			fireStatusFlagEvent(new StatusFlagEvent(changed));
+			// System.out.println ("Changed flag is cleared");
+		}
+	}
+
+	/**
+	 * To be called after each edit operation
+	 */
+	private void markChanged() {
+		if (!changed) {
+			changed = true;
+			fireStatusFlagEvent(new StatusFlagEvent(changed));
+			// System.out.println ("Changed flag is set");
+		}
+	}
+
+	/**
+	 * Used by children of this Pathway to notify the parent of modifications. A
+	 * coordinate change could trigger dependent objects such as states, groups and
+	 * connectors to be updated as well.
+	 */
+	void childModified(PathwayElementEvent e) {
+		markChanged();
+		if (e.isCoordinateChange()) {
+
+			PathwayElement elt = e.getModifiedPathwayElement();
+			for (LinePoint refc : getReferringLinePoints(elt.getElementId())) {
+				elt.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(elt));
+				// TODO looks ok?
+			}
+//			String ref = elt.getGroupRef();
+//			if (ref != null && getGroupById(ref) != null) {
+//				// identify group object and notify model change to trigger view update
+//				PathwayElement group = getGroupById(ref);
+//				group.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(group));
+//			}
+//			checkMBoardSize(e.getModifiedPathwayElement());
+		}
+	}
+
+	/**
+	 * Implement this interface if you want to be notified when the "changed" status
+	 * changes. This happens e.g. when the user makes a change to an unchanged
+	 * pathway, or when a changed pathway is saved.
+	 */
+	public interface StatusFlagListener extends EventListener {
+		public void statusFlagChanged(StatusFlagEvent e);
+	}
+
+	/**
+	 * Event for a change in the "changed" status of this Pathway
+	 */
+	public static class StatusFlagEvent {
+		private boolean newStatus;
+
+		public StatusFlagEvent(boolean newStatus) {
+			this.newStatus = newStatus;
+		}
+
+		public boolean getNewStatus() {
+			return newStatus;
+		}
+	}
+
+	private List<StatusFlagListener> statusFlagListeners = new ArrayList<StatusFlagListener>();
+
+	/**
+	 * Register a status flag listener
+	 */
+	public void addStatusFlagListener(StatusFlagListener v) {
+		if (!statusFlagListeners.contains(v))
+			statusFlagListeners.add(v);
+	}
+
+	/**
+	 * Remove a status flag listener
+	 */
+	public void removeStatusFlagListener(StatusFlagListener v) {
+		statusFlagListeners.remove(v);
+	}
+
+	// TODO: make private
+	public void fireStatusFlagEvent(StatusFlagEvent e) {
+		for (StatusFlagListener g : statusFlagListeners) {
+			g.statusFlagChanged(e);
+		}
+	}
+
+	private List<PathwayListener> listeners = new ArrayList<PathwayListener>();
+
+	public void addListener(PathwayListener v) {
+		if (!listeners.contains(v))
+			listeners.add(v);
+	}
+
+	public void removeListener(PathwayListener v) {
+		listeners.remove(v);
+	}
+
+	/**
+	 * Firing the ObjectModifiedEvent has the side effect of marking the Pathway as
+	 * changed.
+	 */
+	public void fireObjectModifiedEvent(PathwayEvent e) {
+		markChanged();
+		for (PathwayListener g : listeners) {
+			g.pathwayModified(e);
+		}
+	}
 
 }

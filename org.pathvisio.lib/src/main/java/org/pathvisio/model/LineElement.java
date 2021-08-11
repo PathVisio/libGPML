@@ -19,6 +19,7 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pathvisio.io.listener.PathwayElementEvent;
 import org.pathvisio.model.graphics.LineStyleProperty;
 import org.pathvisio.model.ref.ElementInfo;
 
@@ -47,7 +48,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		super();
 		this.points = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
-		this.lineStyleProperty = lineStyleProperty;
+		setLineStyleProp(lineStyleProperty);
 	}
 
 	/**
@@ -83,6 +84,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(point);
 		points.add(point);
+		//TODO 
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
 	/**
@@ -159,6 +162,9 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(anchor);
 		anchors.add(anchor);
+		//TODO 
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, anchor));
+
 	}
 
 	/**
@@ -199,6 +205,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param lineStyleProperty the line style properties.
 	 */
 	public void setLineStyleProp(LineStyleProperty lineStyleProperty) {
+//		lineStyleProperty.addPropertyChangeListener(this);
 		this.lineStyleProperty = lineStyleProperty;
 	}
 

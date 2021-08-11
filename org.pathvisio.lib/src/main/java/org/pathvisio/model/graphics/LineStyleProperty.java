@@ -28,7 +28,7 @@ import org.pathvisio.model.type.LineStyleType;
  * 
  * @author finterly
  */
-public class LineStyleProperty {
+public class LineStyleProperty extends Graphics{
 
 	private Color lineColor = Color.decode("#000000"); // black
 	private LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
@@ -118,7 +118,7 @@ public class LineStyleProperty {
 		}
 		if (this.lineStyle != lineStyle) {
 			this.lineStyle = lineStyle;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 		}
 	}
 
@@ -179,9 +179,8 @@ public class LineStyleProperty {
 		} 
 		if (!this.connectorType.equals(connectorType)) {
 			this.connectorType = connectorType;
-			// TODO: create a static property for connector type, linestyle is not the
-			// correct mapping
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+			//TODO 
+		    propChangeSupport.firePropertyChange("connectorType", this.connectorType, connectorType);
 		}
 	}
 	

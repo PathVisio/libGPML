@@ -27,7 +27,7 @@ import org.pathvisio.model.type.ShapeType;
  * 
  * @author finterly
  */
-public class ShapeStyleProperty {
+public class ShapeStyleProperty extends Graphics {
 
 	private Color borderColor = Color.decode("#000000"); // black
 	private LineStyleType borderStyle = LineStyleType.SOLID; // solid TODO: Fix

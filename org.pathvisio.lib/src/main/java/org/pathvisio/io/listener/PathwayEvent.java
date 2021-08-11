@@ -38,6 +38,9 @@ public class PathwayEvent
 	 */
 	public static final int ADDED = 3;
 
+	/**
+	 * Sent to listeners of Pathway when an object is resized
+	 */
 	public static final int RESIZED = 4;
 
 	private PathwayElement affectedData;

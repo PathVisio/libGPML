@@ -29,7 +29,7 @@ import org.pathvisio.model.type.DataNodeType;
  * 
  * @author finterly
  */
-public class DataNode extends ShapedElement {
+public class DataNode extends ShapedElement implements Rotatable {
 
 	private double rotation; // optional, in radians
 	private String textLabel;

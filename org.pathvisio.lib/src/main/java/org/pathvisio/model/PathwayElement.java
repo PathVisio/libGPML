@@ -16,6 +16,12 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.pathvisio.io.listener.PathwayElementEvent;
+import org.pathvisio.io.listener.PathwayElementListener;
+
 /**
  * Abstract class of pathway elements which are part of a pathway and have an
  * elementId.
@@ -107,6 +113,7 @@ public abstract class PathwayElement {
 	 */
 	public void setElementId(String elementId) {
 		this.elementId = elementId;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, elementId));
 	}
 
 	/**
@@ -125,6 +132,38 @@ public abstract class PathwayElement {
 		// At this point we cannot use the method setElementId,
 		// because it does not accept null as a legal value.
 		this.elementId = null;
+	}
+
+	/**
+	 * Fire and Listener methods below TODO
+	 */
+	int noFire = 0;
+
+	public void dontFireEvents(int times) {
+		noFire = times;
+	}
+
+	private Set<PathwayElementListener> listeners = new HashSet<PathwayElementListener>();
+
+	public void addListener(PathwayElementListener v) {
+		if (!listeners.contains(v))
+			listeners.add(v);
+	}
+
+	public void removeListener(PathwayElementListener v) {
+		listeners.remove(v);
+	}
+
+	public void fireObjectModifiedEvent(PathwayElementEvent e) {
+		if (noFire > 0) {
+			noFire -= 1;
+			return;
+		}
+		if (pathwayModel != null)
+			pathwayModel.childModified(e);
+		for (PathwayElementListener g : listeners) {
+			g.gmmlObjectModified(e);
+		}
 	}
 
 }

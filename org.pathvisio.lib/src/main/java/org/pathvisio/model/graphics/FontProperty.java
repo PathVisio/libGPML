@@ -26,7 +26,7 @@ import org.pathvisio.model.type.VAlignType;
  * 
  * @author finterly
  */
-public class FontProperty {
+public class FontProperty extends Graphics{
 
 	private Color textColor = Color.decode("#000000"); // black
 	private String fontName = "Arial"; // Arial

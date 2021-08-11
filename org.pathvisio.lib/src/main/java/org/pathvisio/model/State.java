@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+//import java.beans.PropertyChangeEvent;
+
 import org.bridgedb.Xref;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.ElementInfo;
@@ -26,7 +28,7 @@ import org.pathvisio.model.type.StateType;
  * 
  * @author finterly
  */
-public class State extends ElementInfo {
+public class State extends ElementInfo implements Rotatable {
 
 	private DataNode dataNode; // parent dataNode (NB: elementRef was formerly elementId of parent data node)
 	private String textLabel;
@@ -314,6 +316,7 @@ public class State extends ElementInfo {
 	 * @param fontProperty the font properties.
 	 */
 	public void setFontProp(FontProperty fontProperty) {
+//		fontProperty.addPropertyChangeListener(this);
 		this.fontProperty = fontProperty;
 	}
 
@@ -333,6 +336,7 @@ public class State extends ElementInfo {
 	 * @param shapeStyleProperty the shape style properties.
 	 */
 	public void setShapeStyleProp(ShapeStyleProperty shapeStyleProperty) {
+//		shapeStyleProperty.addPropertyChangeListener(this);
 		this.shapeStyleProperty = shapeStyleProperty;
 	}
 
@@ -385,4 +389,11 @@ public class State extends ElementInfo {
 		unsetDataNode();
 		unsetPathwayModel();
 	}
+
+//	@Override
+//	public void propertyChange(PropertyChangeEvent evt) {
+//		float speed = model.getSpeed();
+//		view.setSpeed(speed);
+//	}
+
 }
