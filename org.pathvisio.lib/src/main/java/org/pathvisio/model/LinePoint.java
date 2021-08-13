@@ -189,7 +189,7 @@ public class LinePoint extends GenericPoint {
 	}
 	
 	//TODO 
-	protected void moveBy(double  deltaX, double deltaY) {
+	public void moveBy(double  deltaX, double deltaY) {
 		double x = xy.getX() + deltaX;
 		double y = xy.getY() + deltaY;
 		xy.setX(x);
@@ -198,7 +198,7 @@ public class LinePoint extends GenericPoint {
 	}
 
 	//TODO 
-	protected void moveTo(double x, double y) {
+	public void moveTo(double x, double y) {
 		xy.setX(x);
 		xy.setY(y);
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
