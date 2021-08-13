@@ -25,6 +25,7 @@ import java.util.EventListener;
 import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -964,6 +965,20 @@ public class PathwayModel {
 	public void fireStatusFlagEvent(StatusFlagEvent e) {
 		for (StatusFlagListener g : statusFlagListeners) {
 			g.statusFlagChanged(e);
+		}
+	}
+
+	/**
+	 * Transfer statusflag listeners from one pathway to another. This is used
+	 * needed when copies of the pathway are created / returned by UndoManager. The
+	 * status flag listeners are only interested in status flag events of the active
+	 * copy.
+	 */
+	public void transferStatusFlagListeners(PathwayModel dest) {
+		for (Iterator<StatusFlagListener> i = statusFlagListeners.iterator(); i.hasNext();) {
+			StatusFlagListener l = i.next();
+			dest.addStatusFlagListener(l);
+			i.remove();
 		}
 	}
 

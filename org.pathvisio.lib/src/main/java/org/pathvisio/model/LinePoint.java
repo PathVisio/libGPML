@@ -17,6 +17,7 @@
 package org.pathvisio.model;
 
 import org.pathvisio.debug.Logger;
+import org.pathvisio.io.listener.PathwayElementEvent;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.type.ArrowHeadType;
 
@@ -27,9 +28,8 @@ import org.pathvisio.model.type.ArrowHeadType;
  * 
  * @author finterly
  */
-public class LinePoint extends PathwayElement {
+public class LinePoint extends GenericPoint {
 
-	private LineElement lineElement;
 	private ArrowHeadType arrowHead;
 	private Coordinate xy;
 	private PathwayElement elementRef; // optional, the pathway element to which the point refers.
@@ -67,57 +67,6 @@ public class LinePoint extends PathwayElement {
 		super();
 		this.arrowHead = arrowHead;
 		this.xy = xy;
-	}
-
-	/**
-	 * Returns the parent interaction or graphicalLine for this point.
-	 * 
-	 * @return lineElement the parent line element of this point.
-	 */
-	public LineElement getLineElement() {
-		return lineElement;
-	}
-
-	/**
-	 * Checks whether this point has a parent line element.
-	 *
-	 * @return true if and only if the line element of this point is effective.
-	 */
-	public boolean hasLineElement() {
-		return getLineElement() != null;
-	}
-
-	/**
-	 * Sets the parent interaction or graphicalLine for this point. NB: Only set
-	 * when a line adds this point. This method is not used directly.
-	 * 
-	 * @param lineElement the line element to set.
-	 */
-	protected void setLineElementTo(LineElement lineElement) {
-		if (lineElement == null)
-			throw new IllegalArgumentException("Invalid line pathway element.");
-		if (hasLineElement())
-			throw new IllegalStateException("Point already belongs to a line element.");
-		setLineElement(lineElement);
-	}
-
-	/**
-	 * Sets the parent interaction or graphicalLine for this point. NB: This method
-	 * is not used directly.
-	 * 
-	 * @param lineElement the line element to set.
-	 */
-	private void setLineElement(LineElement lineElement) {
-		this.lineElement = lineElement;
-	}
-
-	/**
-	 * Unsets the line element, if any, from this point. NB: This method is not used
-	 * directly.
-	 */
-	protected void unsetLineElement() {
-		if (hasLineElement())
-			setLineElement(null);
 	}
 
 	/**
@@ -237,6 +186,22 @@ public class LinePoint extends PathwayElement {
 			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
 		}
 		this.relY = relY;
+	}
+	
+	//TODO 
+	protected void moveBy(double  deltaX, double deltaY) {
+		double x = xy.getX() + deltaX;
+		double y = xy.getY() + deltaY;
+		xy.setX(x);
+		xy.setY(y);
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+	}
+
+	//TODO 
+	protected void moveTo(double x, double y) {
+		xy.setX(x);
+		xy.setY(y);
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
 	/**

@@ -25,9 +25,8 @@ import org.pathvisio.model.type.AnchorShapeType;
  * 
  * @author finterly
  */
-public class Anchor extends PathwayElement {
+public class Anchor extends GenericPoint {
 
-	private LineElement lineElement; // parent line element
 	private double position;
 	private AnchorShapeType shapeType = AnchorShapeType.NONE;
 
@@ -45,57 +44,6 @@ public class Anchor extends PathwayElement {
 		}
 		this.position = position; // must be valid
 		setShapeType(shapeType);
-	}
-
-	/**
-	 * Returns the parent interaction or graphicalLine for this anchor.
-	 * 
-	 * @return lineElement the parent line element of this anchor.
-	 */
-	public LineElement getLineElement() {
-		return lineElement;
-	}
-
-	/**
-	 * Checks whether this anchor has a parent line element.
-	 *
-	 * @return true if and only if the line element of this anchor is effective.
-	 */
-	public boolean hasLineElement() {
-		return getLineElement() != null;
-	}
-
-	/**
-	 * Sets the parent interaction or graphicalLine for this anchor. NB: Only set
-	 * when a line adds this anchor. This method is not used directly.
-	 * 
-	 * @param lineElement the line element to set.
-	 */
-	protected void setLineElementTo(LineElement lineElement) {
-		if (lineElement == null)
-			throw new IllegalArgumentException("Invalid line pathway element.");
-		if (hasLineElement())
-			throw new IllegalStateException("Anchor already belongs to a line element.");
-		setLineElement(lineElement);
-	}
-
-	/**
-	 * Sets the parent interaction or graphicalLine for this anchor. NB: This method
-	 * is not used directly.
-	 * 
-	 * @param lineElement the line element to set.
-	 */
-	private void setLineElement(LineElement lineElement) {
-		this.lineElement = lineElement;
-	}
-
-	/**
-	 * Unsets the line element, if any, from this anchor. NB: This method is not
-	 * used directly.
-	 */
-	protected void unsetLineElement() {
-		if (hasLineElement())
-			setLineElement(null);
 	}
 
 	/**
