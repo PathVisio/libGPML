@@ -16,6 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.Set;
+
+import org.pathvisio.model.GraphLink.LinkableFrom;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;
@@ -27,7 +31,7 @@ import org.pathvisio.model.ref.ElementInfo;
  * 
  * @author finterly
  */
-public abstract class ShapedElement extends ElementInfo implements Groupable {
+public abstract class ShapedElement extends ElementInfo implements LinkableTo, Groupable {
 
 	private RectProperty rectProperty;
 	private FontProperty fontProperty;
@@ -162,6 +166,15 @@ public abstract class ShapedElement extends ElementInfo implements Groupable {
 			if (groupRef.hasPathwayElement(this))
 				groupRef.removePathwayElement(this);
 		}
+	}
+	
+	/**
+	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
+	 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
+	 */
+	@Override
+	public Set<LinkableFrom> getLinkableFroms() {
+		return GraphLink.getReferences(this, getPathwayModel());
 	}
 
 	/**

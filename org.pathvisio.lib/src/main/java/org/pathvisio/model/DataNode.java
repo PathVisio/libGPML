@@ -19,6 +19,7 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.bridgedb.Xref;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.FontProperty;
 import org.pathvisio.model.graphics.RectProperty;
 import org.pathvisio.model.graphics.ShapeStyleProperty;

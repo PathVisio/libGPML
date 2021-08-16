@@ -16,9 +16,13 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.Set;
+
 //import java.beans.PropertyChangeEvent;
 
 import org.bridgedb.Xref;
+import org.pathvisio.model.GraphLink.LinkableFrom;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.type.StateType;
@@ -28,7 +32,7 @@ import org.pathvisio.model.type.StateType;
  * 
  * @author finterly
  */
-public class State extends ElementInfo implements Rotatable {
+public class State extends ElementInfo implements LinkableTo, Rotatable {
 
 	private DataNode dataNode; // parent dataNode (NB: elementRef was formerly elementId of parent data node)
 	private String textLabel;
@@ -374,6 +378,15 @@ public class State extends ElementInfo implements Rotatable {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+	}
+
+	/**
+	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
+	 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
+	 */
+	@Override
+	public Set<LinkableFrom> getLinkableFroms() {
+		return GraphLink.getReferences(this, getPathwayModel());
 	}
 
 	/**

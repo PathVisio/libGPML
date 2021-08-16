@@ -16,7 +16,11 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.Set;
+
 import org.pathvisio.io.listener.PathwayElementEvent;
+import org.pathvisio.model.GraphLink.LinkableFrom;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.type.AnchorShapeType;
 
 /**
@@ -25,7 +29,7 @@ import org.pathvisio.model.type.AnchorShapeType;
  * 
  * @author finterly
  */
-public class Anchor extends GenericPoint {
+public class Anchor extends GenericPoint implements LinkableTo {
 
 	private double position;
 	private AnchorShapeType shapeType = AnchorShapeType.NONE;
@@ -94,6 +98,15 @@ public class Anchor extends GenericPoint {
 			this.shapeType = shapeType;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, shapeType));
 		}
+	}
+
+	/**
+	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
+	 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
+	 */
+	@Override
+	public Set<LinkableFrom> getLinkableFroms() {
+		return GraphLink.getReferences(this, getPathwayModel());
 	}
 
 	/**

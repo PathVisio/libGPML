@@ -38,6 +38,8 @@ import org.pathvisio.io.listener.PathwayListener;
 
 import java.io.Reader;
 
+import org.pathvisio.model.GraphLink.LinkableFrom;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
@@ -59,7 +61,7 @@ public class PathwayModel {
 	// for elementId to PathwayElement
 	private Map<String, PathwayElement> elementIdToPathwayElement;
 	// for PathwayElement and all the LinePoints which point to it
-	private Map<PathwayElement, Set<LinePoint>> pathwayElementToLinePoints;
+	private Map<LinkableTo, Set<LinkableFrom>> pathwayElementToLinePoints;
 	// for Group aliasRef and all the DataNode aliases for it
 	private Map<Group, Set<DataNode>> aliasRefToAliases;
 	private List<DataNode> dataNodes; // contains states
@@ -81,7 +83,7 @@ public class PathwayModel {
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
 		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
-		this.pathwayElementToLinePoints = new HashMap<PathwayElement, Set<LinePoint>>();
+		this.pathwayElementToLinePoints = new HashMap<LinkableTo, Set<LinkableFrom>>();
 		this.aliasRefToAliases = new HashMap<Group, Set<DataNode>>();
 		this.dataNodes = new ArrayList<DataNode>();
 		this.interactions = new ArrayList<Interaction>();
@@ -228,15 +230,14 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Returns all LinePoints that refer to a PathwayElement with a particular
-	 * elementId.
+	 * Returns all {@link LinkableFrom} {@link LinePoints} that refer to a
+	 * {@link LinkableTo} pathway element.
 	 */
-	public Set<LinePoint> getReferringLinePoints(String id) {
-		PathwayElement pathwayElement = getPathwayElement(id);
-		Set<LinePoint> refs = pathwayElementToLinePoints.get(pathwayElement);
+	public Set<LinkableFrom> getReferringLinkableFroms(LinkableTo pathwayElement) {
+		Set<LinkableFrom> refs = pathwayElementToLinePoints.get(pathwayElement);
 		if (refs != null) {
 			// create defensive copy to prevent problems with ConcurrentModification.
-			return new HashSet<LinePoint>(refs);
+			return new HashSet<LinkableFrom>(refs);
 		} else {
 			return Collections.emptySet();
 		}
@@ -906,9 +907,12 @@ public class PathwayModel {
 		if (e.isCoordinateChange()) {
 
 			PathwayElement elt = e.getModifiedPathwayElement();
-			for (LinePoint refc : getReferringLinePoints(elt.getElementId())) {
-				elt.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(elt));
-				// TODO looks ok?
+
+			if (elt.getClass() == LinkableTo.class) {
+				for (LinkableFrom linePoints : getReferringLinkableFroms((LinkableTo) elt)) {
+					elt.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(elt));
+					// TODO looks ok?
+				}
 			}
 //			String ref = elt.getGroupRef();
 //			if (ref != null && getGroupById(ref) != null) {
