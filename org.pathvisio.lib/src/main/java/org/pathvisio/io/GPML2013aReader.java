@@ -35,6 +35,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
@@ -46,7 +47,7 @@ import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
-import org.pathvisio.util.GroupRectPropertyUtils;
+import org.pathvisio.util.BoundsUtils;
 import org.pathvisio.util.XrefUtils;
 
 /**
@@ -143,7 +144,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void calculateGroupRectProperty(List<Group> groups) {
 		for (Group group : groups) {
-			Rectangle2D bounds = GroupRectPropertyUtils.calculateGroupBounds(group);
+			Rectangle2D bounds = BoundsUtils.calculateGroupBounds(group);
 			group.getRectProp().getCenterXY().setX(bounds.getCenterX());
 			group.getRectProp().getCenterXY().setY(bounds.getCenterY());
 			group.getRectProp().setWidth(bounds.getWidth());
@@ -769,6 +770,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				typeStr = "Undefined";
 			DataNodeType type = DataNodeType.register(typeStr);
 			// instantiates data node
+			System.out.println("Writing DataNode " + elementId);
 			DataNode dataNode = new DataNode(rectProperty, fontProperty, shapeStyleProperty, textLabel, type);
 			dataNode.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
@@ -1134,7 +1136,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
 						// retrieves referenced pathway element (aside from group) by elementId
-						PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+						LinkableTo elementRef = (LinkableTo) pathwayModel.getPathwayElement(elementRefStr);
 						// if elementRef refers to a group, it cannot be found by elementId
 						if (elementRef == null) {
 							// finds group by its graphId stored in dynamic properties

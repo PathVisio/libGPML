@@ -33,6 +33,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
@@ -849,7 +850,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e          the parent element.
 	 * @return true if elementRef exists and is successfully written.
 	 */
-	protected boolean writeElementRef(PathwayElement elementRef, Element e) {
+	protected boolean writeElementRef(LinkableTo elementRef, Element e) {
 		if (elementRef != null) {
 			String elementRefStr = elementRef.getElementId();
 			if (elementRefStr != null && !elementRefStr.equals(""))

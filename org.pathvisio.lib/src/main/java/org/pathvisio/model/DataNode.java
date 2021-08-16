@@ -285,11 +285,11 @@ public class DataNode extends ShapedElement implements Rotatable {
 	 * @param aliasRef the group to which the data node refers.
 	 */
 	public void setAliasRefTo(Group aliasRef) {
-		if (aliasRef == null)
-			throw new IllegalArgumentException("Invalid aliasRef.");
-		unsetAliasRef(); // first unsets if necessary
-		setAliasRef(aliasRef);
-		getPathwayModel().addAlias(aliasRef, this);
+		if (aliasRef != null) {
+			unsetAliasRef(); // first unsets if necessary
+			setAliasRef(aliasRef);
+			getPathwayModel().addAlias(aliasRef, this);
+		}
 	}
 
 	/**

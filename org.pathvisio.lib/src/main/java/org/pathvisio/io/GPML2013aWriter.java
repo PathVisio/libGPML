@@ -36,6 +36,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
@@ -871,7 +872,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param pt         the jdom point element.
 	 * @return true if elementRef exists and is successfully written.
 	 */
-	protected boolean writePointElementRef(PathwayElement elementRef, Element pt) {
+	protected boolean writePointElementRef(LinkableTo elementRef, Element pt) {
 		// if elementRef refers to a group, write group's graphId (not elementId)
 		if (elementRef != null && elementRef.getClass() == Group.class) {
 			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);

@@ -13,7 +13,7 @@ import org.pathvisio.model.type.*;
  * 
  * @author finterly
  */
-public class GroupRectPropertyUtils {
+public class BoundsUtils {
 
 	/**
 	 * Default margins for group bounding-box in GPML2013a. Makes the bounds

@@ -26,6 +26,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.pathvisio.model.*;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.Annotatable;
 import org.pathvisio.model.ref.Annotation;
@@ -809,7 +810,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 						String elementRefStr = pt.getAttributeValue("elementRef");
 						if (elementRefStr != null && !elementRefStr.equals("")) {
-							PathwayElement elementRef = pathwayModel.getPathwayElement(elementRefStr);
+							LinkableTo elementRef = (LinkableTo) pathwayModel.getPathwayElement(elementRefStr);
 							if (elementRef != null) {
 								String elementId = pt.getAttributeValue("elementId");
 								LinePoint point = (LinePoint) pathwayModel.getPathwayElement(elementId);

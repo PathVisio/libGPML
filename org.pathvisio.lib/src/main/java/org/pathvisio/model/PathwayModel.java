@@ -908,12 +908,14 @@ public class PathwayModel {
 
 			PathwayElement elt = e.getModifiedPathwayElement();
 
-			if (elt.getClass() == LinkableTo.class) {
-				for (LinkableFrom linePoints : getReferringLinkableFroms((LinkableTo) elt)) {
-					elt.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(elt));
-					// TODO looks ok?
-				}
-			}
+//			if (elt.getClass() == LinkableTo.class) {
+//				for (LinkableFrom linePoints : getReferringLinkableFroms((LinkableTo) elt)) {
+					//refc.refeeChanged();
+			
+//					elt.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(elt));
+//					// TODO looks ok?
+//				}
+//			}
 //			String ref = elt.getGroupRef();
 //			if (ref != null && getGroupById(ref) != null) {
 //				// identify group object and notify model change to trigger view update

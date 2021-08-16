@@ -198,8 +198,8 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * coordinates based on the object to link to. TODO
 	 */
 	public void linkTo(LinkableTo idc) {
-		Point2D rel = idc.toRelativeCoordinate(toPoint2D());
-		linkTo(idc, rel.getX(), rel.getY());
+//		Point2D rel = idc.toRelativeCoordinate(toPoint2D());
+		linkTo(idc, relX, relY);
 	}
 
 	/**
@@ -218,12 +218,12 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	public void unlink() {
 		if (elementRef != null) {
 			if (getPathwayModel() != null) {
-				Point2D abs = getAbsolute();
-				moveTo(abs.getX(), abs.getY());
+//				Point2D abs = getAbsolute();
+//				moveTo(abs.getX(), abs.getY());
 			}
 			// relativeSet = false;
 			setElementRef(null);
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
+//			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
 		}
 	}
 	

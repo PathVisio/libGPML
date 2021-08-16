@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import org.pathvisio.model.GraphLink.LinkableFrom;
@@ -167,7 +169,7 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 				groupRef.removePathwayElement(this);
 		}
 	}
-	
+
 	/**
 	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
 	 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
