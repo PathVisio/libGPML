@@ -38,18 +38,31 @@ public class AnchorShapeType {
 	public static final AnchorShapeType NONE = new AnchorShapeType("None");
 
 	private String name;
+	private boolean disallowLinks;
 
 	/**
 	 * Constructor to initialize the state of enum types.
 	 * 
-	 * @param name the string key.
+	 * @param name          the string key.
+	 * @param disallowLinks the boolean if set to true nothing will be able to
+	 *                      attach to this anchor
 	 */
-	private AnchorShapeType(String name) {
+	private AnchorShapeType(String name, final boolean disallowLinks) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
 		this.name = name;
+		this.disallowLinks = disallowLinks;
 		nameToAnchorShapeType.put(name, this); // adds this name and ShapeType to map.
+	}
+
+	/**
+	 * Constructor to initialize the state of enum types without disallowLinks.
+	 * 
+	 * @param name the string key.
+	 */
+	private AnchorShapeType(String name) {
+		this(name, false);
 	}
 
 	/**
@@ -116,6 +129,16 @@ public class AnchorShapeType {
 	 */
 	public String toString() {
 		return name;
+	}
+
+	/**
+	 * Returns the booleans disallowLinks.
+	 * 
+	 * @return disallowLinks the boolean if set to true nothing will be able to
+	 *         attach to this anchor
+	 */
+	public boolean isDisallowLinks() {
+		return disallowLinks;
 	}
 
 	/**
