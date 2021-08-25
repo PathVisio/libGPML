@@ -733,6 +733,57 @@ public class PathwayModel {
 	}
 
 	/**
+	 * TODO 
+	 * 
+	 * removes object sets parent of object to null fires PathwayEvent.DELETED event
+	 * <i>before</i> removal of the object
+	 * 
+	 * TODO was forceRemove??? 
+	 * removes object, regardless whether the object may be removed or not sets
+	 * parent of object to null fires PathwayEvent.DELETED event <i>before</i>
+	 * removal of the object
+	 *
+	 * @param o the object to remove
+	 */
+	public void remove(PathwayElement pathwayElement) {
+		assert (pathwayElement.getPathwayModel() == this); // can only remove direct child objects
+		if (pathwayElement.getClass() == DataNode.class) {
+			removeDataNode((DataNode) pathwayElement);
+		}
+		if (pathwayElement.getClass() == State.class) {
+			DataNode dataNode = ((State) pathwayElement).getDataNode();
+			dataNode.removeState((State) pathwayElement);
+		}
+		if (pathwayElement.getClass() == Interaction.class) {
+			removeInteraction((Interaction) pathwayElement);
+		}
+		if (pathwayElement.getClass() == GraphicalLine.class) {
+			removeGraphicalLine((GraphicalLine) pathwayElement);
+		}
+		if (pathwayElement.getClass() == Label.class) {
+			removeLabel((Label) pathwayElement);
+		}
+		if (pathwayElement.getClass() == Shape.class) {
+			removeShape((Shape) pathwayElement);
+		}
+		if (pathwayElement.getClass() == Group.class) {
+			removeGroup((Group) pathwayElement);
+		}
+		if (pathwayElement.getClass() == Anchor.class) {
+			LineElement lineElement = ((Anchor) pathwayElement).getLineElement();
+			lineElement.removeAnchor((Anchor) pathwayElement);
+		}
+		if (pathwayElement.getClass() == LinePoint.class) {
+			LineElement lineElement = ((LinePoint) pathwayElement).getLineElement();
+			lineElement.removeLinePoint((LinePoint) pathwayElement);
+		}
+		// Citation...Anchor..Annotation...????? 		
+		fireObjectModifiedEvent(new PathwayEvent(pathwayElement, PathwayEvent.DELETED)); //TODO 
+
+	}
+	
+
+	/**
 	 * Returns the Xref of all DataNodes in this pathway as a List.
 	 * 
 	 * @return result the list of xref of all datanodes or an empty arraylist if
@@ -910,8 +961,8 @@ public class PathwayModel {
 
 //			if (elt.getClass() == LinkableTo.class) {
 //				for (LinkableFrom linePoints : getReferringLinkableFroms((LinkableTo) elt)) {
-					//refc.refeeChanged();
-			
+			// refc.refeeChanged();
+
 //					elt.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(elt));
 //					// TODO looks ok?
 //				}
