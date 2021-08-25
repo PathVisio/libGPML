@@ -46,7 +46,7 @@ public class Anchor extends GenericPoint implements LinkableTo {
 		if (position < 0 || position > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
-		this.position = position; // must be valid
+		setPosition(position); // must be valid
 		setShapeType(shapeType);
 	}
 

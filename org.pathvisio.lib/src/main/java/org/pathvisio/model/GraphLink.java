@@ -56,6 +56,9 @@ public abstract class GraphLink {
 		 * @return the LinkableFrom line points.
 		 */
 		Set<LinkableFrom> getLinkableFroms();
+		
+		
+		
 
 //		/**
 //		 * return the parent Gmmldata Object, needed for maintaining a consistent list

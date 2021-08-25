@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.util.Set;
 
 /**
  * Abstract class of generic point, extended by {@link LinePoint} and
@@ -84,5 +85,7 @@ public abstract class GenericPoint extends PathwayElement {
 		if (hasLineElement())
 			setLineElement(null);
 	}
+	
+
 
 }

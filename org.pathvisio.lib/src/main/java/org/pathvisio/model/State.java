@@ -136,7 +136,7 @@ public class State extends ElementInfo implements LinkableTo, Rotatable {
 	 * 
 	 * @param dataNode the parent data node of the state.
 	 */
-	protected void setDataNodeTo(DataNode dataNode) {
+	protected void setDataNodeTo(DataNode dataNode) { //TODO Make LinkTooo? 
 		if (dataNode == null)
 			throw new IllegalArgumentException("Invalid datanode.");
 		if (hasDataNode())
@@ -392,7 +392,7 @@ public class State extends ElementInfo implements LinkableTo, Rotatable {
 	/**
 	 * Terminates this state. The pathway model and data node, if any, are unset
 	 * from this state. Links to all annotationRefs, citationRefs, and evidenceRefs
-	 * are removed from this data node.
+	 * are removed from this state.
 	 */
 	@Override
 	public void terminate() {

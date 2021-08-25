@@ -117,6 +117,11 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 		this.xy = xy;
 	}
 
+	// TODO 
+	public Point2D toPoint2D() {
+		return new Point2D.Double(xy.getX(), xy.getY());
+	}
+
 	/**
 	 * Returns the pathway element to which the point refers to. In GPML, this is
 	 * elementRef which refers to the elementId of a pathway element.
@@ -192,7 +197,6 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 		this.relY = relY;
 	}
 
-	
 	/**
 	 * Link to an object. Current absolute coordinates will be converted to relative
 	 * coordinates based on the object to link to. TODO
@@ -203,14 +207,13 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	}
 
 	/**
-	 * Link to an object using the given relative coordinates TODO 
-	 */ 
+	 * Link to an object using the given relative coordinates TODO
+	 */
 	public void linkTo(LinkableTo pathwayElement, double relX, double relY) {
 		setElementRef(pathwayElement);
 		setRelativePosition(relX, relY);
 	}
 
-	
 	/**
 	 * note that this may be called any number of times when this point is already
 	 * unlinked
@@ -226,16 +229,15 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 //			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
 		}
 	}
-	
-	//TODO 
+
+	// TODO
 	public void setRelativePosition(double rx, double ry) {
-		moveTo(rx, ry );
+		moveTo(rx, ry);
 //		relativeSet = true; TODO 
 	}
-	
 
 //	private boolean relativeSet; TODO 
-	
+
 //	/**
 //	 * Helper method for converting older GPML files without relative coordinates. TODO
 //	 * 
@@ -245,7 +247,7 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 //	protected boolean relativeSet() {
 //		return relativeSet;
 //	}
-	
+
 	// TODO
 	public void moveBy(double deltaX, double deltaY) {
 		double x = xy.getX() + deltaX;
@@ -262,7 +264,12 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
-	
+	// TODO weird
+	public void moveTo(LinePoint linePoint) {
+		xy = linePoint.getXY();
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+	}
+
 	public void refeeChanged() {
 		// called whenever the object being referred to has changed.
 //		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));

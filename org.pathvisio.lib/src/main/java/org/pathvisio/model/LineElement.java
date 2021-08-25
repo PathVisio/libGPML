@@ -84,7 +84,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(point);
 		points.add(point);
-		//TODO 
+		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
@@ -120,6 +120,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		return points.get(0);
 	}
 
+	//TODO weird 
+	public void setStartLinePoint(LinePoint linePoint) {
+		getStartLinePoint().moveTo(linePoint);
+	}
+
 	/**
 	 * Returns the end (last) point of points list. TODO necessary method?
 	 * 
@@ -127,6 +132,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 */
 	public LinePoint getEndLinePoint() {
 		return points.get(points.size() - 1);
+	}
+
+	//TODO weird 
+	public void setEndLinePoint(LinePoint linePoint) {
+		getEndLinePoint().moveTo(linePoint);
 	}
 
 	/**
@@ -162,7 +172,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(anchor);
 		anchors.add(anchor);
-		//TODO 
+		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, anchor));
 
 	}

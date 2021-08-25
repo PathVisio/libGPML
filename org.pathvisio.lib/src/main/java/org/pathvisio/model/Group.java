@@ -202,4 +202,18 @@ public class Group extends ShapedElement {
 		this.xref = xref;
 	}
 
+	/**
+	 * Terminates this group. The pathway model and pathway elements, if any, are
+	 * unset or removed from this group. Links to all annotationRefs, citationRefs,
+	 * and evidenceRefs are removed from this group.
+	 */
+	@Override
+	public void terminate() {
+		removeAnnotationRefs();
+		removeCitationRefs();
+		removeEvidenceRefs();
+		removePathwayElements();
+		unsetPathwayModel();
+	}
+
 }

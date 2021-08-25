@@ -204,6 +204,8 @@ public class Utils {
 	public static int getDirectionX(Point2D start, Point2D end) {
 		return (int)Math.signum(end.getX() - start.getX());
 	}
+	
+	
 
 	/**
 	 * Get the direction of the line on the y axis
