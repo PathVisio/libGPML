@@ -18,7 +18,7 @@ package org.pathvisio.model;
 
 import java.util.Set;
 
-import org.pathvisio.io.listener.PathwayElementEvent;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.type.AnchorShapeType;

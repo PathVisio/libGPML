@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2019 BiGCaT Bioinformatics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -14,21 +14,48 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io.listener;
 
-import java.util.EventListener;
+package org.pathvisio.props;
 
 /**
- * Implement this if you want to be notified of changes to a Pathway.
- *
- * This means addition of new elements to a Pathway and
- * removal of elements from a Pathway, but not
- * changes to properties of a single PathwayElement
- *
- * For example this is used by VPathway to refresh itself when a new
- * element is added.
+ * The properties in {@link StaticProperty} define properties of different types,
+ * all the possible types are defined here.
  */
-public interface PathwayListener extends EventListener
+public enum StaticPropertyType implements PropertyType
 {
-	public void pathwayModified(PathwayEvent e);
+	BOOLEAN,
+	DOUBLE,
+	INTEGER,
+	DATASOURCE,
+	LINESTYLE,
+	COLOR,
+	STRING,
+	ORIENTATION,
+	SHAPETYPE,
+	LINETYPE,
+	OUTLINETYPE,
+	GENETYPE,
+	FONT,
+	ANGLE,
+	ORGANISM,
+	DB_ID,
+	DB_SYMBOL,
+	BIOPAXREF,
+	COMMENTS,
+	GROUPSTYLETYPE,
+	ALIGNTYPE,
+	VALIGNTYPE;
+
+	private String id;
+
+
+	private StaticPropertyType() {
+		id = "core." + name();
+		PropertyManager.registerPropertyType(this);
+	}
+
+
+	public String getId() {
+		return id;
+	}
 }

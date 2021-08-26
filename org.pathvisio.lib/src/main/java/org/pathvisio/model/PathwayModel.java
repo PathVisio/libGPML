@@ -31,10 +31,10 @@ import java.util.Random;
 import java.util.Set;
 import org.bridgedb.Xref;
 import org.pathvisio.debug.*;
+import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayEvent;
+import org.pathvisio.events.PathwayListener;
 import org.pathvisio.io.*;
-import org.pathvisio.io.listener.PathwayElementEvent;
-import org.pathvisio.io.listener.PathwayEvent;
-import org.pathvisio.io.listener.PathwayListener;
 
 import java.io.Reader;
 

@@ -20,7 +20,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pathvisio.io.listener.PathwayElementEvent;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.LineStyleType;

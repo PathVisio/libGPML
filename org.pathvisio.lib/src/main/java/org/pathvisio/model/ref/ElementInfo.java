@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.pathvisio.io.listener.PathwayElementEvent;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayElement;
 
 /**

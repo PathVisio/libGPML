@@ -19,7 +19,7 @@ package org.pathvisio.model;
 import java.awt.geom.Point2D;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.io.listener.PathwayElementEvent;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.Coordinate;
