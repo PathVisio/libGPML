@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 

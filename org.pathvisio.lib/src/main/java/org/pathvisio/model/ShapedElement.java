@@ -73,6 +73,22 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	}
 
 	/**
+	 * Returns text label for shaped pathway elements. Text labels are required for
+	 * {@link DataNode}, {@link State} and {@link Label}; and optional for
+	 * {@link Shape} and {@link Group}.
+	 * 
+	 * @return the text of of the shaped pathway element.
+	 */
+	public abstract String getTextLabel();
+
+	/**
+	 * Sets text label for shaped pathway elements.
+	 * 
+	 * @param textLabel the the text of of the shaped pathway element.
+	 */
+	public abstract void setTextLabel(String textLabel);
+
+	/**
 	 * Returns the center x and y coordinate of an object.
 	 * 
 	 * @return centerXY the middle of an object in the x and y direction.
