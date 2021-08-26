@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.graphics.Coordinate;
 
 /**
  * This class stores metadata for a Pathway.
@@ -33,7 +32,7 @@ import org.pathvisio.model.graphics.Coordinate;
  * Pathway. Example of how a Pathway object can be created:
  * 
  * Pathway pathway = new Pathway.PathwayBuilder("Title", 100, 100,
- * Color.decode("#ffffff"), infobox).setOrganism("Homo Sapiens")
+ * Color.decode("#ffffff")).setOrganism("Homo Sapiens")
  * .setSource("WikiPathways").setVersion("r1").setLicense("CC0").setXref(xref).build();
  * 
  * @author finterly
@@ -44,7 +43,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	private double boardWidth;
 	private double boardHeight;
 	private Color backgroundColor;
-	private Coordinate infoBox; // the centerXY of gpml:InfoBox
 	private List<Author> authors;
 	private List<Comment> comments;
 	private Map<String, String> dynamicProperties;
@@ -69,7 +67,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		private double boardWidth = 0;
 		private double boardHeight = 0;
 		private Color backgroundColor = Color.decode("#ffffff");
-		private Coordinate infoBox = new Coordinate(0, 0);
 		private List<Author> authors;
 		private List<Comment> comments;
 		private Map<String, String> dynamicProperties;
@@ -92,16 +89,12 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		 * @param boardHeight     define the drawing size.
 		 * @param backgroundColor the background color of the drawing, default #ffffff
 		 *                        (white)
-		 * @param infoBox         the info box xy coordinates for where information,
-		 *                        e.g. name and organism, are displayed in the pathway.
 		 */
-		public PathwayBuilder(String title, double boardWidth, double boardHeight, Color backgroundColor,
-				Coordinate infoBox) {
+		public PathwayBuilder(String title, double boardWidth, double boardHeight, Color backgroundColor) {
 			this.title = title;
 			this.boardWidth = boardWidth;
 			this.boardHeight = boardHeight;
 			this.backgroundColor = backgroundColor;
-			this.infoBox = infoBox;
 			this.authors = new ArrayList<Author>();
 			this.comments = new ArrayList<Comment>(); // 0 to unbounded
 			this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
@@ -201,7 +194,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		this.boardWidth = builder.boardWidth;
 		this.boardHeight = builder.boardHeight;
 		this.backgroundColor = builder.backgroundColor;
-		this.infoBox = builder.infoBox;
 		this.authors = builder.authors;
 		this.comments = builder.comments;
 		this.dynamicProperties = builder.dynamicProperties;
@@ -304,27 +296,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		this.backgroundColor = backgroundColor;
 	}
 
-	/**
-	 * Returns infoBox. InfoBox holds the xy coordinates for where information, e.g.
-	 * name and organism, are displayed in the pathway. Is Pathway.InfoBox or
-	 * gpml:InfoBox in GPML.
-	 *
-	 * @return infoBox the Coordinate center of the info box.
-	 */
-	public Coordinate getInfoBox() {
-		return infoBox;
-	}
-
-	/**
-	 * Sets infoBox. InfoBox holds the xy coordinates for where information, e.g.
-	 * name and organism, are displayed in the pathway. Is Pathway.InfoBox or
-	 * gpml:InfoBox in GPML.
-	 *
-	 * @param infoBox the Coordinate center of the info box.
-	 */
-	public void setInfoBox(Coordinate infoBox) {
-		this.infoBox = infoBox;
-	}
 
 	/**
 	 * Returns the list of authors for the pathway model.

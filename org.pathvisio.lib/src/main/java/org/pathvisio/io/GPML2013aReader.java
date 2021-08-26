@@ -145,10 +145,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void calculateGroupRectProperty(List<Group> groups) {
 		for (Group group : groups) {
 			Rectangle2D bounds = BoundsUtils.calculateGroupBounds(group);
-			group.getRectProp().getCenterXY().setX(bounds.getCenterX());
-			group.getRectProp().getCenterXY().setY(bounds.getCenterY());
-			group.getRectProp().setWidth(bounds.getWidth());
-			group.getRectProp().setHeight(bounds.getHeight());
+			group.getCenterXY().setX(bounds.getCenterX());
+			group.getCenterXY().setY(bounds.getCenterY());
+			group.setWidth(bounds.getWidth());
+			group.setHeight(bounds.getHeight());
 		}
 	}
 
@@ -193,10 +193,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Element gfx = root.getChild("Graphics", root.getNamespace());
 		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx).trim());
 		double boardHeight = Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx).trim());
-		Coordinate infoBox = readInfoBox(root);
+		Element ifbx = root.getChild("InfoBox", root.getNamespace());
 		// instantiates pathway, default backgroundColor is ffffff (white)
-		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff"), infoBox)
-				.build();
+		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff")).build();
 		// sets optional properties
 		String organism = getAttr("Pathway", "Organism", root);
 		String source = getAttr("Pathway", "Data-Source", root);
@@ -224,6 +223,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		if (lastModified != null)
 			pathway.setDynamicProperty(PATHWAY_LASTMODIFIED, lastModified);
 		// reads legend
+		readInfoBox(pathway, root);
 		readLegend(pathway, root);
 		return pathway;
 	}
@@ -234,11 +234,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param root the root element.
 	 * @return the infoBox as coordinates.
 	 */
-	protected Coordinate readInfoBox(Element root) {
+	protected void readInfoBox(Pathway pathway, Element root) {
 		Element ifbx = root.getChild("InfoBox", root.getNamespace());
-		double centerX = Double.parseDouble(ifbx.getAttributeValue("CenterX").trim());
-		double centerY = Double.parseDouble(ifbx.getAttributeValue("CenterY").trim());
-		return new Coordinate(centerX, centerY);
+		if (ifbx != null) {
+			String centerX = ifbx.getAttributeValue("CenterX").trim();
+			pathway.setDynamicProperty(INFOBOX_CENTER_X, centerX);
+			String centerY = ifbx.getAttributeValue("CenterY").trim();
+			pathway.setDynamicProperty(INFOBOX_CENTER_Y, centerY);
+		}
 	}
 
 	/**
@@ -575,17 +578,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (typeStr.equals("None"))
 				typeStr = "Group";
 			GroupType type = GroupType.register(typeStr);
-			// temp rect properties (calculate rect properties after pathway elements added)
-			RectProperty rectProperty = new RectProperty(new Coordinate(0, 0), 1, 1);
-			FontProperty fontProperty = new FontProperty(Color.decode("#808080"), "Arial", false, false, false, false,
-					12, HAlignType.CENTER, VAlignType.MIDDLE);
-			ShapeStyleProperty shapeStyleProperty = readGroupShapeStyleProperty(type);
 			// instantiates group
-			Group group = new Group(rectProperty, fontProperty, shapeStyleProperty, type);
+			Group group = new Group(type);
+			// Set graphics props. Calculate rect properties after pathway elements added
+			group.setTextColor(Color.decode("#808080"));
+			readGroupShapeStyleProperty(group, type);
 			group.setElementId(elementId);
 			// type "Pathway" has font size (custom font name "Times" never implemented)
 			if (type == GroupType.PATHWAY)
-				group.getFontProp().setFontSize(32);
+				group.setFontSize(32);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(pathwayModel, group, grp, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
@@ -645,25 +646,37 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @returns the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
-	protected ShapeStyleProperty readGroupShapeStyleProperty(GroupType type) throws ConverterException {
+	protected void readGroupShapeStyleProperty(Group group, GroupType type) throws ConverterException {
 		if (type.getName() == "Group") {
 			// fillColor translucent blue, hovers to transparent
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0,
-					ColorUtils.hexToColor("#0000ff0c"), ShapeType.RECTANGLE);
+			group.setBorderColor(Color.decode("#808080"));
+			group.setBorderStyle(LineStyleType.DASHED);
+			group.setBorderWidth(1.0);
+			group.setFillColor(ColorUtils.hexToColor("#0000ff0c"));
+			group.setShapeType(ShapeType.RECTANGLE);
 		} else if (type.getName() == "Complex") {
 			// fillColor translucent yellowish-gray, hovers to translucent red #ff00000c
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0,
-					ColorUtils.hexToColor("#b4b46419"), ShapeType.OCTAGON);
+			group.setBorderColor(Color.decode("#808080"));
+			group.setBorderStyle(LineStyleType.SOLID);
+			group.setBorderWidth(1.0);
+			group.setFillColor(ColorUtils.hexToColor("#b4b46419"));
+			group.setShapeType(ShapeType.OCTAGON);
 		} else if (type.getName() == "Pathway") {
 			// fontSize 32, fontName "Times" (was not implemented)
 			// fillColor translucent green, hovers to more opaque green #00ff0019
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.SOLID, 1.0,
-					ColorUtils.hexToColor("#00ff000c"), ShapeType.RECTANGLE);
+			group.setBorderColor(Color.decode("#808080"));
+			group.setBorderStyle(LineStyleType.SOLID);
+			group.setBorderWidth(1.0);
+			group.setFillColor(ColorUtils.hexToColor("#00ff000c"));
+			group.setShapeType(ShapeType.RECTANGLE);
 		} else {
 			// GroupType "None", or default
 			// fillColor translucent yellowish-gray, hovers to translucent red #ff00000c
-			return new ShapeStyleProperty(Color.decode("#808080"), LineStyleType.DASHED, 1.0,
-					ColorUtils.hexToColor("#b4b46419"), ShapeType.RECTANGLE);
+			group.setBorderColor(Color.decode("#808080"));
+			group.setBorderStyle(LineStyleType.DASHED);
+			group.setBorderWidth(1.0);
+			group.setFillColor(ColorUtils.hexToColor("#b4b46419"));
+			group.setShapeType(ShapeType.RECTANGLE);
 		}
 	}
 
@@ -686,11 +699,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId("Label", lb, elementIdSet);
 			String textLabel = getAttr("Label", "TextLabel", lb);
 			Element gfx = lb.getChild("Graphics", lb.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			// instantiates label
-			Label label = new Label(rectProperty, fontProperty, shapeStyleProperty, textLabel);
+			Label label = new Label(textLabel);
+			// set graphics props
+			readRectProperty(label, gfx);
+			readFontProperty(label, gfx);
+			readShapeStyleProperty(label, gfx);
 			label.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(pathwayModel, label, lb, biopaxIdToNew, duplicateToBiopaxId);
@@ -722,12 +736,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element shp : root.getChildren("Shape", root.getNamespace())) {
 			String elementId = readElementId("Shape", shp, elementIdSet);
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
-			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx).trim());
 			// instantiates shape
-			Shape shape = new Shape(rectProperty, fontProperty, shapeStyleProperty, rotation);
+			Shape shape = new Shape();
+			// set graphics props
+			readRectProperty(shape, gfx);
+			readFontProperty(shape, gfx);
+			readShapeStyleProperty(shape, gfx);
 			shape.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(pathwayModel, shape, shp, biopaxIdToNew, duplicateToBiopaxId);
@@ -760,9 +774,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		for (Element dn : root.getChildren("DataNode", root.getNamespace())) {
 			String elementId = readElementId("DataNode", dn, elementIdSet);
 			Element gfx = dn.getChild("Graphics", dn.getNamespace());
-			RectProperty rectProperty = readRectProperty(gfx);
-			FontProperty fontProperty = readFontProperty(gfx);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			String textLabel = getAttr("DataNode", "TextLabel", dn);
 			String typeStr = getAttr("DataNode", "Type", dn);
 			// in GPML2021, "Unknown" data node type is named "Undefined"
@@ -771,7 +782,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			DataNodeType type = DataNodeType.register(typeStr);
 			// instantiates data node
 			System.out.println("Writing DataNode " + elementId);
-			DataNode dataNode = new DataNode(rectProperty, fontProperty, shapeStyleProperty, textLabel, type);
+			DataNode dataNode = new DataNode(textLabel, type);
+			// set graphics props
+			readRectProperty(dataNode, gfx);
+			readFontProperty(dataNode, gfx);
+			readShapeStyleProperty(dataNode, gfx);
 			dataNode.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(pathwayModel, dataNode, dn, biopaxIdToNew, duplicateToBiopaxId);
@@ -809,22 +824,17 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Element gfx = st.getChild("Graphics", st.getNamespace());
 			double relX = Double.parseDouble(getAttr("State.Graphics", "RelX", gfx).trim());
 			double relY = Double.parseDouble(getAttr("State.Graphics", "RelY", gfx).trim());
-			double width = Double.parseDouble(getAttr("State.Graphics", "Width", gfx).trim());
-			double height = Double.parseDouble(getAttr("State.Graphics", "Height", gfx).trim());
-			// state does not have font properties in GPML2013a, set default values
-			FontProperty fontProperty = new FontProperty(Color.decode("#000000"), "Arial", false, false, false, false,
-					12, HAlignType.CENTER, VAlignType.MIDDLE);
-			ShapeStyleProperty shapeStyleProperty = readShapeStyleProperty(gfx);
 			// finds parent datanode from state elementRef
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayElement(elementRef);
-			// sets zOrder based on parent data node TODO
-			shapeStyleProperty.setZOrder(dataNode.getShapeStyleProp().getZOrder() + 1);
 			// instantiates state
-			State state = new State(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty);
+			State state = new State(textLabel, type, relX, relY);
 			state.setElementId(elementId);
+			// set graphics props. No font properties in GPML2013a, set default values
+			readRectProperty(state, gfx);
+			readShapeStyleProperty(state, gfx);
 			// sets textColor to same color as borderColor
-			state.getFontProp().setTextColor(state.getShapeStyleProp().getBorderColor());
+			state.setTextColor(state.getBorderColor());
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readElementInfo(pathwayModel, state, st, biopaxIdToNew, duplicateToBiopaxId);
 			// convert comments to Xref and AnnotationRef if applicable
@@ -832,7 +842,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			readStateDynamicProperties(state, st);
 			// if has DoubleLineProperty key, sets border style as Double
 			if ("Double".equalsIgnoreCase(state.getDynamicProperty("org.pathvisio.DoubleLineProperty"))) {
-				state.getShapeStyleProp().setBorderStyle(LineStyleType.DOUBLE);
+				state.setBorderStyle(LineStyleType.DOUBLE);
 			}
 			// sets optional properties
 			Xref xref = readXref(st);
@@ -840,6 +850,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				state.setXref(xref);
 			// adds state to parent data node of pathway model
 			dataNode.addState(state);
+			state.setZOrder(dataNode.getZOrder() + 1);
+
 		}
 	}
 
@@ -970,9 +982,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// adds elementId to lineList
 			lineList.add(elementId);
 			Element gfx = ia.getChild("Graphics", ia.getNamespace());
-			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			// instantiates interaction
-			Interaction interaction = new Interaction(lineStyleProperty);
+			Interaction interaction = new Interaction();
+			// set line style graphics
+			readLineStyleProperty(interaction, gfx);
 			interaction.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
@@ -1011,9 +1024,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// adds elementId to lineList
 			lineList.add(elementId);
 			Element gfx = gln.getChild("Graphics", gln.getNamespace());
-			LineStyleProperty lineStyleProperty = readLineStyleProperty(gfx);
 			// instantiates graphical line
-			GraphicalLine graphicalLine = new GraphicalLine(lineStyleProperty);
+			GraphicalLine graphicalLine = new GraphicalLine();
+			// set line style graphics
+			readLineStyleProperty(graphicalLine, gfx);
 			graphicalLine.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
@@ -1347,11 +1361,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String key = getAttr("Attribute", "Key", dp);
 			String value = getAttr("Attribute", "Value", dp);
 			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
-				shapedElement.getShapeStyleProp().setBorderStyle(LineStyleType.DOUBLE);
+				shapedElement.setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
 				value = toCamelCase(value);
 				ShapeType type = ShapeType.register(value);
-				shapedElement.getShapeStyleProp().setShapeType(type);
+				shapedElement.setShapeType(type);
 			} else {
 				shapedElement.setDynamicProperty(key, value);
 			}
@@ -1375,10 +1389,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String key = getAttr("Attribute", "Key", dp);
 			String value = getAttr("Attribute", "Value", dp);
 			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
-				state.getShapeStyleProp().setBorderStyle(LineStyleType.DOUBLE);
+				state.setBorderStyle(LineStyleType.DOUBLE);
 			} else if (key.equals(CELL_CMPNT_KEY)) {
 				ShapeType type = ShapeType.register(value);
-				state.getShapeStyleProp().setShapeType(type);
+				state.setShapeType(type);
 			} else {
 				state.setDynamicProperty(key, value);
 			}
@@ -1402,7 +1416,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String value = getAttr("Attribute", "Value", dp);
 			/* dynamic property DoubleLineProperty sets lineStyle */
 			if (key.equals(DOUBLE_LINE_KEY) && value.equalsIgnoreCase("Double")) {
-				lineElement.getLineStyleProp().setLineStyle(LineStyleType.DOUBLE);
+				lineElement.setLineStyle(LineStyleType.DOUBLE);
 			} else {
 				lineElement.setDynamicProperty(key, value);
 			}
@@ -1417,14 +1431,19 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @returns the rectProperty object.
 	 * @throws ConverterException
 	 */
-	protected RectProperty readRectProperty(Element gfx) throws ConverterException {
+	protected void readRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		double centerX = Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx).trim());
-		double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx).trim());
+		// if not state
+		if (shapedElement.getClass() != State.class) {
+			double centerX = Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx).trim());
+			double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx).trim());
+			shapedElement.getCenterXY().setX(centerX);
+			shapedElement.getCenterXY().setY(centerY);
+		}
 		double width = Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx).trim());
 		double height = Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx).trim());
-		// instantiates rect properties
-		return new RectProperty(new Coordinate(centerX, centerY), width, height);
+		shapedElement.setWidth(width);
+		shapedElement.setHeight(height);
 	}
 
 	/**
@@ -1435,7 +1454,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @returns the fontProperty object.
 	 * @throws ConverterException
 	 */
-	protected FontProperty readFontProperty(Element gfx) throws ConverterException {
+	protected void readFontProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		Color textColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		String fontName = getAttr(base + ".Graphics", "FontName", gfx);
@@ -1443,16 +1462,19 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		String fontStyleStr = getAttr(base + ".Graphics", "FontStyle", gfx);
 		String fontDecorationStr = getAttr(base + ".Graphics", "FontDecoration", gfx);
 		String fontStrikethruStr = getAttr(base + ".Graphics", "FontStrikethru", gfx);
-		boolean fontWeight = fontWeightStr != null && fontWeightStr.equalsIgnoreCase("Bold");
-		boolean fontStyle = fontStyleStr != null && fontStyleStr.equalsIgnoreCase("Italic");
-		boolean fontDecoration = fontDecorationStr != null && fontDecorationStr.equalsIgnoreCase("Underline");
-		boolean fontStrikethru = fontStrikethruStr != null && fontStrikethruStr.equalsIgnoreCase("Strikethru");
 		int fontSize = Integer.parseInt(getAttr(base + ".Graphics", "FontSize", gfx).trim());
 		HAlignType hAlignType = HAlignType.fromName(getAttr(base + ".Graphics", "Align", gfx));
 		VAlignType vAlignType = VAlignType.fromName(getAttr(base + ".Graphics", "Valign", gfx));
-		// instantiates font properties and returns
-		return new FontProperty(textColor, fontName, fontWeight, fontStyle, fontDecoration, fontStrikethru, fontSize,
-				hAlignType, vAlignType);
+		// set font properties
+		shapedElement.setTextColor(textColor);
+		shapedElement.setFontName(fontName);
+		shapedElement.setFontWeight(fontWeightStr != null && fontWeightStr.equalsIgnoreCase("Bold"));
+		shapedElement.setFontStyle(fontStyleStr != null && fontStyleStr.equalsIgnoreCase("Italic"));
+		shapedElement.setFontDecoration(fontDecorationStr != null && fontDecorationStr.equalsIgnoreCase("Underline"));
+		shapedElement.setFontStrikethru(fontStrikethruStr != null && fontStrikethruStr.equalsIgnoreCase("Strikethru"));
+		shapedElement.setFontSize(fontSize);
+		shapedElement.setHAlign(hAlignType);
+		shapedElement.setVAlign(vAlignType);
 	}
 
 	/**
@@ -1469,7 +1491,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @returns the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
-	protected ShapeStyleProperty readShapeStyleProperty(Element gfx) throws ConverterException {
+	protected void readShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		Color borderColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		String borderStyleStr = getAttr(base + ".Graphics", "LineStyle", gfx);
@@ -1479,22 +1501,26 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		LineStyleType borderStyle = LineStyleType.register(borderStyleStr);
 		double borderWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		Color fillColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "FillColor", gfx));
-
 		String shapeTypeStr = getAttr(base + ".Graphics", "ShapeType", gfx);
 		shapeTypeStr = toCamelCase(shapeTypeStr);
 		ShapeType shapeType = ShapeType.register(shapeTypeStr);
 		// checks deprecated shape type map for newer shape
 		if (DEPRECATED_MAP.containsKey(shapeType))
 			shapeType = DEPRECATED_MAP.get(shapeType);
-		// instantiates shape style properties
-		ShapeStyleProperty shapeStyleProperty = new ShapeStyleProperty(borderColor, borderStyle, borderWidth, fillColor,
-				shapeType);
-		// sets optional property z-order
+		// set shape style properties
+		shapedElement.setBorderColor(borderColor);
+		shapedElement.setBorderStyle(borderStyle);
+		shapedElement.setBorderWidth(borderWidth);
+		shapedElement.setFillColor(fillColor);
+		shapedElement.setShapeType(shapeType);
 		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
 		if (zOrder != null)
-			shapeStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
-		// returns shape style property
-		return shapeStyleProperty;
+			shapedElement.setZOrder(Integer.parseInt(zOrder.trim()));
+		// set rotation if shape
+		if (shapedElement.getClass() == Shape.class) {
+			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx).trim());
+			shapedElement.setRotation(rotation);
+		}
 	}
 
 	/**
@@ -1505,7 +1531,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @returns the lineStyleProperty object.
 	 * @throws ConverterException
 	 */
-	protected LineStyleProperty readLineStyleProperty(Element gfx) throws ConverterException {
+	protected void readLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		Color lineColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "Color", gfx));
 		String lineStyleStr = getAttr(base + ".Graphics", "LineStyle", gfx);
@@ -1515,14 +1541,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		LineStyleType lineStyle = LineStyleType.register(lineStyleStr);
 		double lineWidth = Double.parseDouble(getAttr(base + ".Graphics", "LineThickness", gfx).trim());
 		ConnectorType connectorType = ConnectorType.register(getAttr(base + ".Graphics", "ConnectorType", gfx));
-		// instantiates line style property
-		LineStyleProperty lineStyleProperty = new LineStyleProperty(lineColor, lineStyle, lineWidth, connectorType);
+		// set line style property
+		lineElement.setLineColor(lineColor);
+		lineElement.setLineStyle(lineStyle);
+		lineElement.setLineWidth(lineWidth);
+		lineElement.setConnectorType(connectorType);
 		// sets optional property z-order
 		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
 		if (zOrder != null)
-			lineStyleProperty.setZOrder(Integer.parseInt(zOrder.trim()));
-		// returns line style property
-		return lineStyleProperty;
+			lineElement.setZOrder(Integer.parseInt(zOrder.trim()));
 	}
 
 }

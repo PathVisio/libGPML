@@ -100,7 +100,7 @@ public class PathwayModel {
 	 * Initializes a pathway model object with {@link Pathway} default values.
 	 */
 	public PathwayModel() {
-		this(new Pathway.PathwayBuilder("Click to add title", 0, 0, Color.decode("#ffffff"), new Coordinate(0, 0))
+		this(new Pathway.PathwayBuilder("Click to add title", 0, 0, Color.decode("#ffffff"))
 				.build());
 	}
 

@@ -40,8 +40,8 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 
 	// rect properties
 	private Coordinate centerXY;
-	private double width;
-	private double height;
+	private double width = 1.0;
+	private double height = 1.0;
 	// font properties
 	private Color textColor = Color.decode("#000000"); // black
 	private String fontName = "Arial"; // Arial
@@ -59,7 +59,7 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	private Color fillColor = Color.decode("#ffffff"); // white TODO: Transparent if Label
 	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
 	private int zOrder; // optional
-	private double rotation; // optional, in radians
+	private double rotation = 0; // optional, in radians
 
 	/**
 	 * Instantiates a shaped pathway element. Property groupRef is to be set by
