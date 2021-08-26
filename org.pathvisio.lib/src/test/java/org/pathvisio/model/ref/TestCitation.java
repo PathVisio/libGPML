@@ -34,7 +34,7 @@ public class TestCitation extends TestCase {
 		System.out.println("CitationRef has AnnotationRefs " + cr1.getAnnotationRefs());
 		
 		// data node has annotationRef which has a citationRef
-		DataNode d1 = new DataNode(null, null, null, "d1", null);
+		DataNode d1 = new DataNode("d1", null);
 		p1.addDataNode(d1);
 		d1.addCitationRef(cr1); 
 		System.out.println("DataNode has CitationRefs " + d1.getCitationRefs());

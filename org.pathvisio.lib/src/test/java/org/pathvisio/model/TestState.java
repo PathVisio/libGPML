@@ -41,7 +41,7 @@ public class TestState extends TestCase {
 		assertTrue(p1.getDataNodes().isEmpty());
 
 		// create a data node
-		DataNode d1 = new DataNode(null, null, null, "d1", null);
+		DataNode d1 = new DataNode("d1", null);
 		assertNull(d1.getElementId());
 		assertNull(d1.getPathwayModel());
 		// add to pathway model
@@ -54,7 +54,7 @@ public class TestState extends TestCase {
 		assertEquals(d1.getPathwayModel(), p1);
 
 		// create a state
-		State st1 = new State("st1", null, 0, 0, 0, 0, null, null);
+		State st1 = new State("st1", null, 0, 0);
 		assertNull(st1.getElementId());
 		assertNull(st1.getDataNode());
 		assertNull(st1.getPathwayModel());
@@ -89,12 +89,12 @@ public class TestState extends TestCase {
 		PathwayModel p2 = new PathwayModel();
 		assertTrue(p2.getDataNodes().isEmpty());
 		// create a data node
-		DataNode d2 = new DataNode(null, null, null, "d2", null);
+		DataNode d2 = new DataNode("d2", null);
 		assertNull(d2.getElementId());
 		assertNull(d2.getPathwayModel());
 
 		// create a state
-		State st2 = new State("st2", null, 0, 0, 0, 0, null, null);
+		State st2 = new State("st2", null, 0, 0);
 		assertNull(st2.getElementId());
 		assertNull(st2.getDataNode());
 		assertNull(st2.getPathwayModel());

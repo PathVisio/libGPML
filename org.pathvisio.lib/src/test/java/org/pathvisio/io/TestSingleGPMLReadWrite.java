@@ -50,9 +50,9 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 		
-		pathwayModel.getDataNodes().get(0).getShapeStyleProp().setBorderStyle(null);
+		pathwayModel.getDataNodes().get(0).setBorderStyle(null);
 		
-		System.out.println(pathwayModel.getDataNodes().get(0).getShapeStyleProp().getBorderStyle().getName());
+		System.out.println(pathwayModel.getDataNodes().get(0).getBorderStyle().getName());
 		
 		// writes to temp 
 		File tmp = File.createTempFile("testwrite", ".gpml");

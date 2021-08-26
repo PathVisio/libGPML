@@ -16,51 +16,44 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.Interaction;
-import org.pathvisio.model.PathwayModel;
-
 import junit.framework.TestCase;
 
 /**
- * Test for Group class. 
+ * Test for Group class.
  * 
  * @author unknown, finterly
  */
-public class TestMGroup extends TestCase
-{
+public class TestMGroup extends TestCase {
 	/**
-	 * Check that when a line points to the group, it stays at the same position when the group disappears.
-	 * Test for regression of bug #1058
+	 * Check that when a line points to the group, it stays at the same position
+	 * when the group disappears. Test for regression of bug #1058
 	 */
-	public void testUngroup()
-	{
+	public void testUngroup() {
 		PathwayModel pwy = new PathwayModel();
 		Interaction line = new Interaction(null);
-		
-		Group group = new Group(null, null, null, null);
-		DataNode node = new DataNode(null, null, null, "d1", null );
+
+		Group group = new Group(null);
+		DataNode node = new DataNode("d1", null);
 		pwy.addInteraction(line);
 		pwy.addDataNode(node);
 		pwy.addGroup(group);
-		
+
 		assertNotNull(group.getElementId());
-		
-		node.getRectProp().getCenterXY().setX(120);
-		node.getRectProp().getCenterXY().setY(20);
-		node.getRectProp().setWidth(20);
-		node.getRectProp().setHeight(20);
-		
-		assertEquals (0, group.getPathwayElements().size());
-		
+
+		node.getCenterXY().setX(120);
+		node.getCenterXY().setY(20);
+		node.setWidth(20);
+		node.setHeight(20);
+
+		assertEquals(0, group.getPathwayElements().size());
+
 		// add node to group
 		node.setGroupRefTo(group);
-		
+
 		// check that now it's really part of group
-		assertEquals (1, group.getPathwayElements().size());
-		assertTrue (group.getPathwayElements().contains(node));
-	
+		assertEquals(1, group.getPathwayElements().size());
+		assertTrue(group.getPathwayElements().contains(node));
+
 //		line.getPoints().get(line.getPoints().size()-1).getXY().setX(group.getMCenterX());
 //		line..getPoints().get(line.getPoints().size()-1).getXY().setY(group.getMTop());
 //		line.setEndGraphRef(group.getElementId());
@@ -80,5 +73,5 @@ public class TestMGroup extends TestCase
 //		assertNull (line.getEndGraphRef());
 //		assertNull (node.getGroupRef());
 	}
-	
+
 }

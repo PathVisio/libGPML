@@ -25,7 +25,7 @@ public class TestGroup extends TestCase {
 		PathwayModel p1 = new PathwayModel();
 
 		// create group
-		Group g1 = new Group(null, null, null, null);
+		Group g1 = new Group(null);
 		assertNull(g1.getElementId());
 		assertNull(g1.getPathwayModel());
 		// add to pathway model
@@ -38,7 +38,7 @@ public class TestGroup extends TestCase {
 		assertEquals(g1.getPathwayModel(), p1);
 
 		// create a data node
-		DataNode d1 = new DataNode(null, null, null, "d1", null);
+		DataNode d1 = new DataNode("d1", null);
 		assertNull(d1.getElementId());
 		assertNull(d1.getPathwayModel());
 		// add to pathway model
@@ -80,7 +80,7 @@ public class TestGroup extends TestCase {
 		PathwayModel p1 = new PathwayModel();
 
 		// create group
-		Group g1 = new Group(null, null, null, null);
+		Group g1 = new Group(null);
 		assertNull(g1.getElementId());
 		assertNull(g1.getPathwayModel());
 		// add to pathway model
@@ -93,7 +93,7 @@ public class TestGroup extends TestCase {
 		assertEquals(g1.getPathwayModel(), p1);
 
 		// create a data node
-		DataNode d1 = new DataNode(null, null, null, "d1", null);
+		DataNode d1 = new DataNode("d1", null);
 		assertNull(d1.getElementId());
 		assertNull(d1.getPathwayModel());
 		// add to pathway model
@@ -135,8 +135,8 @@ public class TestGroup extends TestCase {
 		PathwayModel p1 = new PathwayModel();
 
 		// create groups
-		Group g1 = new Group(null, null, null, null);
-		Group g2 = new Group(null, null, null, null);
+		Group g1 = new Group(null);
+		Group g2 = new Group(null);
 
 		// add to pathway model
 		p1.addGroup(g1);
@@ -145,7 +145,7 @@ public class TestGroup extends TestCase {
 		System.out.println("PathwayModel contains Groups " + p1.getGroups());
 
 		// create a data node
-		DataNode d1 = new DataNode(null, null, null, "d1", null);
+		DataNode d1 = new DataNode("d1", null);
 		p1.addDataNode(d1);
 
 		// add data node to group 1 
