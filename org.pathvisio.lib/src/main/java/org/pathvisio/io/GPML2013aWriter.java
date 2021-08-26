@@ -37,7 +37,6 @@ import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
@@ -154,7 +153,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeShapes(pathwayModel.getShapes(), root);
 			writeGroups(pathwayModel.getGroups(), root);
 
-			writeInfoBox(pathwayModel.getPathway().getInfoBox(), root);
+			writeInfoBox(pathwayModel.getPathway(), root);
 			writeLegend(pathwayModel.getPathway(), root);
 
 			writeBiopax(pathwayModel, root);
@@ -400,7 +399,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				// if there are annotationRefs, writes this information to comment TODO
 				convertStateRefToComments(state, st);
 				writeElementInfo(state, st);
-				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state.getShapeStyleProp(), st);
+				writeShapedOrStateDynamicProperties(state.getDynamicProperties(), state, st);
 				// sets graphics properties
 				Element gfx = new Element("Graphics", st.getNamespace());
 				st.addContent(gfx);
@@ -410,10 +409,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				setAttr("State.Graphics", "Height", gfx, Double.toString(state.getHeight()));
 				// state does not have custom font properties in GPML2013a
 				// z-order for state is not written to GPML2013a
-				setAttr("State.Graphics", "FillColor", gfx,
-						ColorUtils.colorToHex(state.getShapeStyleProp().getFillColor(), false));
-				writeShapeStyleProperty(state.getShapeStyleProp(), gfx);
-				writeColor(state.getFontProp(), gfx);
+				setAttr("State.Graphics", "FillColor", gfx, ColorUtils.colorToHex(state.getFillColor(), false));
+				writeShapeStyleProperty(state, gfx);
+				writeColor(state, gfx);
 				// writes xref (write even if empty)
 				writeXref(state.getXref(), st, true);
 				if (st != null) {
@@ -525,11 +523,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeLineElement(LineElement lineElement, Element ln) throws ConverterException {
 		// writes comments, biopaxRefs/citationRefs, dynamic properties
 		writeElementInfo(lineElement, ln);
-		writeLineDynamicProperties(lineElement.getDynamicProperties(), lineElement.getLineStyleProp(), ln);
+		writeLineDynamicProperties(lineElement.getDynamicProperties(), lineElement, ln);
 		// sets graphics properties
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
-		writeLineStyleProperty(lineElement.getLineStyleProp(), gfx);
+		writeLineStyleProperty(lineElement, gfx);
 		// writes points
 		writePoints(lineElement.getLinePoints(), gfx);
 		// writes anchors
@@ -668,7 +666,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Group", "Style", grp, group.getType().getName());
 			writeXref(group.getXref(), grp, false);
 			writeElementInfo(group, grp);
-			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group.getShapeStyleProp(), grp);
+			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group, grp);
 			// sets optional properties
 			if (group.getTextLabel() != null)
 				setAttr("Group", "TextLabel", grp, group.getTextLabel());
@@ -686,10 +684,12 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param infoBox the infobox xy coordinates.
 	 * @param root    the root element.
 	 */
-	protected void writeInfoBox(Coordinate infoBox, Element root) {
+	protected void writeInfoBox(Pathway pathway, Element root) {
+		String centerX = pathway.getDynamicProperty(INFOBOX_CENTER_X);
+		String centerY = pathway.getDynamicProperty(INFOBOX_CENTER_Y);
 		Element ifb = new Element("InfoBox", root.getNamespace());
-		ifb.setAttribute("CenterX", Double.toString(infoBox.getX()));
-		ifb.setAttribute("CenterY", Double.toString(infoBox.getY()));
+		ifb.setAttribute("CenterX", centerX);
+		ifb.setAttribute("CenterY", centerY);
 		root.addContent(ifb);
 	}
 
@@ -900,23 +900,20 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
 		String base = se.getName();
 		writeElementInfo(shapedElement, se);
-		writeShapedOrStateDynamicProperties(shapedElement.getDynamicProperties(), shapedElement.getShapeStyleProp(),
-				se);
+		writeShapedOrStateDynamicProperties(shapedElement.getDynamicProperties(), shapedElement, se);
 		Element gfx = new Element("Graphics", se.getNamespace());
 		se.addContent(gfx);
 		// writes rect properties
-		writeRectProperty(shapedElement.getRectProp(), gfx);
-		// retrieves shape style property
-		ShapeStyleProperty shapeProp = shapedElement.getShapeStyleProp();
+		writeRectProperty(shapedElement, gfx);
 		// writes z-order and fill color (separately to preserve GPML2013 order)
-		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapeProp.getZOrder()));
-		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapeProp.getFillColor(), false));
+		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapedElement.getZOrder()));
+		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapedElement.getFillColor(), false));
 		// writes font properties
-		writeFontProperty(shapedElement.getFontProp(), gfx);
+		writeFontProperty(shapedElement, gfx);
 		// writes rest of shape style properties
-		writeShapeStyleProperty(shapeProp, gfx);
+		writeShapeStyleProperty(shapedElement, gfx);
 		// writes color
-		writeColor(shapedElement.getFontProp(), gfx);
+		writeColor(shapedElement, gfx);
 	}
 
 	/**
@@ -959,7 +956,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeShapedOrStateDynamicProperties(Map<String, String> dynamicProperties,
-			ShapeStyleProperty shapeProp, Element se) throws ConverterException {
+			ShapedElement shapedElement, Element se) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
 			// if key is for group graphId, do not write to GPML2013a
 			if (key == GROUP_GRAPHID)
@@ -971,7 +968,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				se.addContent(dp);
 		}
 		// if shape in cellular component map, write info to dynamic property
-		ShapeType shapeType = shapeProp.getShapeType();
+		ShapeType shapeType = shapedElement.getShapeType();
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, CELL_CMPNT_KEY);
@@ -982,7 +979,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				se.addContent(dp);
 		}
 		// if double lineStyle, write info to dynamic property
-		LineStyleType borderStyle = shapeProp.getBorderStyle();
+		LineStyleType borderStyle = shapedElement.getBorderStyle();
 		if (borderStyle.getName().equalsIgnoreCase("Double")) {
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
@@ -1002,7 +999,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param ln                the jdom line pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void writeLineDynamicProperties(Map<String, String> dynamicProperties, LineStyleProperty lineProp,
+	protected void writeLineDynamicProperties(Map<String, String> dynamicProperties, LineElement lineElement,
 			Element ln) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
 			Element dp = new Element("Attribute", ln.getNamespace());
@@ -1012,7 +1009,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				ln.addContent(dp);
 		}
 		// if double lineStyle, write info to dynamic property
-		LineStyleType lineStyle = lineProp.getLineStyle();
+		LineStyleType lineStyle = lineElement.getLineStyle();
 		if (lineStyle.getName().equalsIgnoreCase("Double")) {
 			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
@@ -1029,12 +1026,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param gfx      the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeRectProperty(RectProperty rectProp, Element gfx) throws ConverterException {
+	protected void writeRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		setAttr(base + ".Graphics", "CenterX", gfx, Double.toString(rectProp.getCenterXY().getX()));
-		setAttr(base + ".Graphics", "CenterY", gfx, Double.toString(rectProp.getCenterXY().getY()));
-		setAttr(base + ".Graphics", "Width", gfx, Double.toString(rectProp.getWidth()));
-		setAttr(base + ".Graphics", "Height", gfx, Double.toString(rectProp.getHeight()));
+		if (shapedElement.getClass() != State.class) {
+			setAttr(base + ".Graphics", "CenterX", gfx, Double.toString(shapedElement.getCenterXY().getX()));
+			setAttr(base + ".Graphics", "CenterY", gfx, Double.toString(shapedElement.getCenterXY().getY()));
+		}
+		setAttr(base + ".Graphics", "Width", gfx, Double.toString(shapedElement.getWidth()));
+		setAttr(base + ".Graphics", "Height", gfx, Double.toString(shapedElement.getHeight()));
 	}
 
 	/**
@@ -1050,9 +1049,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param gfx      the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeColor(FontProperty fontProp, Element gfx) throws ConverterException {
+	protected void writeColor(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(fontProp.getTextColor(), false));
+		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(shapedElement.getTextColor(), false));
 
 	}
 
@@ -1063,16 +1062,17 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param gfx      the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeFontProperty(FontProperty fontProp, Element gfx) throws ConverterException {
+	protected void writeFontProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		setAttr(base + ".Graphics", "FontName", gfx, fontProp.getFontName() == null ? "" : fontProp.getFontName());
-		setAttr(base + ".Graphics", "FontWeight", gfx, fontProp.getFontWeight() ? "Bold" : "Normal");
-		setAttr(base + ".Graphics", "FontStyle", gfx, fontProp.getFontStyle() ? "Italic" : "Normal");
-		setAttr(base + ".Graphics", "FontDecoration", gfx, fontProp.getFontDecoration() ? "Underline" : "Normal");
-		setAttr(base + ".Graphics", "FontStrikethru", gfx, fontProp.getFontStrikethru() ? "Strikethru" : "Normal");
-		setAttr(base + ".Graphics", "FontSize", gfx, Integer.toString((int) fontProp.getFontSize()));
-		setAttr(base + ".Graphics", "Valign", gfx, fontProp.getVAlign().getName());
-		setAttr(base + ".Graphics", "Align", gfx, fontProp.getHAlign().getName());
+		setAttr(base + ".Graphics", "FontName", gfx,
+				shapedElement.getFontName() == null ? "" : shapedElement.getFontName());
+		setAttr(base + ".Graphics", "FontWeight", gfx, shapedElement.getFontWeight() ? "Bold" : "Normal");
+		setAttr(base + ".Graphics", "FontStyle", gfx, shapedElement.getFontStyle() ? "Italic" : "Normal");
+		setAttr(base + ".Graphics", "FontDecoration", gfx, shapedElement.getFontDecoration() ? "Underline" : "Normal");
+		setAttr(base + ".Graphics", "FontStrikethru", gfx, shapedElement.getFontStrikethru() ? "Strikethru" : "Normal");
+		setAttr(base + ".Graphics", "FontSize", gfx, Integer.toString((int) shapedElement.getFontSize()));
+		setAttr(base + ".Graphics", "Valign", gfx, shapedElement.getVAlign().getName());
+		setAttr(base + ".Graphics", "Align", gfx, shapedElement.getHAlign().getName());
 	}
 
 	/**
@@ -1088,11 +1088,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param gfx       the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeShapeStyleProperty(ShapeStyleProperty shapeProp, Element gfx) throws ConverterException {
+	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		// do not set borderColor, Color is set by textColor
-		ShapeType shapeType = shapeProp.getShapeType();
-		// if shape in cellular component map, specially handle 
+		ShapeType shapeType = shapedElement.getShapeType();
+		// if shape in cellular component map, specially handle
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
 			String shapeTypeNewStr = CELL_CMPNT_MAP.get(shapeType).getName();
 			shapeTypeNewStr = fromCamelCase(shapeTypeNewStr);
@@ -1102,14 +1102,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			shapeTypeStr = fromCamelCase(shapeTypeStr);
 			setAttr(base + ".Graphics", "ShapeType", gfx, shapeTypeStr);
 		}
-		String borderStyleStr = shapeProp.getBorderStyle().getName();
+		String borderStyleStr = shapedElement.getBorderStyle().getName();
 		// in GPML2013a, "Dashed" line style is "Broken" and must be written so
 		if (borderStyleStr.equalsIgnoreCase("Dashed"))
 			borderStyleStr = "Broken";
 		// if "Double", line style information is written to dynamic property instead
 		if (!borderStyleStr.equalsIgnoreCase("Double"))
 			setAttr(base + ".Graphics", "LineStyle", gfx, borderStyleStr);
-		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapeProp.getBorderWidth()));
+		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapedElement.getBorderWidth()));
 	}
 
 	/**
@@ -1119,19 +1119,19 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param gfx      the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeLineStyleProperty(LineStyleProperty lineProp, Element gfx) throws ConverterException {
+	protected void writeLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		setAttr(base + ".Graphics", "ConnectorType", gfx, lineProp.getConnectorType().getName());
-		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(lineProp.getZOrder()));
-		String lineStyleStr = lineProp.getLineStyle().getName();
+		setAttr(base + ".Graphics", "ConnectorType", gfx, lineElement.getConnectorType().getName());
+		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(lineElement.getZOrder()));
+		String lineStyleStr = lineElement.getLineStyle().getName();
 		// in GPML2013a, "Dashed" line style is "Broken" and must be written so
 		if (lineStyleStr.equalsIgnoreCase("Dashed"))
 			lineStyleStr = "Broken";
 		// if "Double", line style information is written to dynamic property instead
 		if (!lineStyleStr.equalsIgnoreCase("Double"))
 			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyleStr);
-		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineProp.getLineWidth()));
-		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(lineProp.getLineColor(), false));
+		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineElement.getLineWidth()));
+		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(lineElement.getLineColor(), false));
 	}
 
 }

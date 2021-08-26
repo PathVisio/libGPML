@@ -193,7 +193,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Element gfx = root.getChild("Graphics", root.getNamespace());
 		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx).trim());
 		double boardHeight = Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx).trim());
-		Element ifbx = root.getChild("InfoBox", root.getNamespace());
 		// instantiates pathway, default backgroundColor is ffffff (white)
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff")).build();
 		// sets optional properties
@@ -981,11 +980,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId("Interaction", ia, elementIdSet);
 			// adds elementId to lineList
 			lineList.add(elementId);
-			Element gfx = ia.getChild("Graphics", ia.getNamespace());
 			// instantiates interaction
 			Interaction interaction = new Interaction();
-			// set line style graphics
-			readLineStyleProperty(interaction, gfx);
 			interaction.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
@@ -1023,11 +1019,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId("GraphicalLine", gln, elementIdSet);
 			// adds elementId to lineList
 			lineList.add(elementId);
-			Element gfx = gln.getChild("Graphics", gln.getNamespace());
 			// instantiates graphical line
 			GraphicalLine graphicalLine = new GraphicalLine();
-			// set line style graphics
-			readLineStyleProperty(graphicalLine, gfx);
 			graphicalLine.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			// graphics, anchors, groupRef
@@ -1061,6 +1054,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readElementInfo(pathwayModel, lineElement, ln, biopaxIdToNew, duplicateToBiopaxId);
 		readLineDynamicProperties(lineElement, ln);
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
+		// read line style graphics
+		readLineStyleProperty(lineElement, gfx);
 		// reads anchors
 		readAnchors(pathwayModel, lineElement, gfx, elementIdSet);
 		// sets optional property groupRef
