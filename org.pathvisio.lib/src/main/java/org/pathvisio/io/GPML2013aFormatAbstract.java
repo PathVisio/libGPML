@@ -114,7 +114,6 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String PATHWAY_LASTMODIFIED = "pathway_lastModified_gpml2013a";
 	public final static String INFOBOX_CENTER_X = "pathway_infobox_centerX_gpml2013a";
 	public final static String INFOBOX_CENTER_Y = "pathway_infobox_centerY_gpml2013a";
-
 	public final static String LEGEND_CENTER_X = "pathway_legend_centerX_gpml2013a";
 	public final static String LEGEND_CENTER_Y = "pathway_legend_centerY_gpml2013a";
 	public final static String GROUP_GRAPHID = "group_graphId_gpml2013a";

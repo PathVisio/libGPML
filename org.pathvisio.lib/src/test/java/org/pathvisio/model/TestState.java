@@ -16,10 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.State;
-
 import junit.framework.TestCase;
 
 /**

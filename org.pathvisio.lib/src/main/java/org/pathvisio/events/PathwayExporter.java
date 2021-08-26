@@ -24,24 +24,29 @@ import org.pathvisio.model.PathwayModel;
 /**
  * Interface for an exporter that writes a pathway to a file
  */
-public interface PathwayExporter extends PathwayIO 
-{
+public interface PathwayExporter extends PathwayIO {
 	/**
 	 * Export the given pathway to the file
-	 * @param file The file to export to
+	 * 
+	 * @param file    The file to export to
 	 * @param pathway The pathway to export
-	 * @throws ConverterException when there is a fatal conversion problem. Implementations should only throw in case there is a non-recoverable error. Ohterwise, it should emit a warning.
+	 * @throws ConverterException when there is a fatal conversion problem.
+	 *                            Implementations should only throw in case there is
+	 *                            a non-recoverable error. Ohterwise, it should emit
+	 *                            a warning.
 	 */
 	public void doExport(File file, PathwayModel pathwayModel) throws ConverterException;
 
-
-	
 	/**
 	 * Export the given pathway to the file
-	 * @param file The file to export to
+	 * 
+	 * @param file    The file to export to
 	 * @param pathway The pathway to export
-	 * @param zoom 
-	 * @throws ConverterException when there is a fatal conversion problem. Implementations should only throw in case there is a non-recoverable error. Ohterwise, it should emit a warning.
+	 * @param zoom
+	 * @throws ConverterException when there is a fatal conversion problem.
+	 *                            Implementations should only throw in case there is
+	 *                            a non-recoverable error. Ohterwise, it should emit
+	 *                            a warning.
 	 */
 	public void doExport(File file, PathwayModel pathwayModel, int zoom) throws ConverterException;
 //	public void doExport(File file, Pathway pathway, int width, int height) throws ConverterException;

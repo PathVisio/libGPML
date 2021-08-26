@@ -2,7 +2,6 @@ package org.pathvisio.model.ref;
 
 
 import org.pathvisio.model.Shape;
-import org.pathvisio.model.graphics.Coordinate;
 
 import junit.framework.TestCase;
 

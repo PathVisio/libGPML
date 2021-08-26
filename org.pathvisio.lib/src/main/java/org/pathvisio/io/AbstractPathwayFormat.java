@@ -20,6 +20,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pathvisio.events.PathwayExporter;
+import org.pathvisio.events.PathwayImporter;
+
 /**
  * base implementation of PathwayImporter and PathwayExporter warnings mechanism. 
  */

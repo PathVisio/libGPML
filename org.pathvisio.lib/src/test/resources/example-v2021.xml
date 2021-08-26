@@ -22,7 +22,6 @@
 		<AnnotationRef elementRef="a1"/>
 	</CitationRef>
 	<Graphics boardWidth="543.9626948775056" boardHeight="279.2271714922049"/>
-	<InfoBox centerX="0.0" centerY="0.0"/>
 	<DataNodes>
 		<DataNode elementId="dbf54" textLabel="ACO2" groupRef="bcdd3" type="Protein">
 			<Xref identifier="Q99798" dataSource="uniprot"/>

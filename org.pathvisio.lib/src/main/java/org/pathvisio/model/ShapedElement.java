@@ -65,7 +65,8 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * Instantiates a shaped pathway element. Property groupRef is to be set by
 	 * {@link #setGroupRefTo(Group)}. In GPML, groupRef refers to the elementId
 	 * (formerly groupId) of the parent gpml:Group. Note, a group can also belong in
-	 * another group.
+	 * another group. Graphics properties have default values and can be set after a
+	 * shaped pathway element is already instantiated.
 	 */
 	public ShapedElement() {
 		super();
