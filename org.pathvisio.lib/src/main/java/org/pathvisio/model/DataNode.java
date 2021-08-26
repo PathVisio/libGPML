@@ -19,10 +19,6 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.bridgedb.Xref;
-import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.graphics.FontProperty;
-import org.pathvisio.model.graphics.RectProperty;
-import org.pathvisio.model.graphics.ShapeStyleProperty;
 import org.pathvisio.model.type.DataNodeType;
 
 /**
@@ -30,9 +26,8 @@ import org.pathvisio.model.type.DataNodeType;
  * 
  * @author finterly
  */
-public class DataNode extends ShapedElement implements Rotatable {
+public class DataNode extends ShapedElement {
 
-	private double rotation; // optional, in radians
 	private String textLabel;
 	private DataNodeType type = DataNodeType.UNDEFINED;
 	private List<State> states;
@@ -46,19 +41,13 @@ public class DataNode extends ShapedElement implements Rotatable {
 	 * datanode has aliasRef which refers to the elementId of a pathway element
 	 * (normally gpml:Group).
 	 * 
-	 * @param rectProperty       the centering (position) and dimension properties.
-	 * @param fontProperty       the font properties, e.g. textColor, fontName...
-	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
-	 * @param rotation           the rotation of shape in radians.
-	 * @param textLabel          the text of the datanode.
-	 * @param type               the type of datanode, e.g. complex.
-	 * @param xref               the data node Xref.
-	 * @param aliasRef           the group the data node alias refers to.
+	 * @param rotation  the rotation of shape in radians.
+	 * @param textLabel the text of the datanode.
+	 * @param type      the type of datanode, e.g. complex.
+	 * @param xref      the data node Xref.
+	 * @param aliasRef  the group the data node alias refers to.
 	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			double rotation, String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
-		super(rectProperty, fontProperty, shapeStyleProperty);
-		this.rotation = rotation;
+	public DataNode(String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
 		this.textLabel = textLabel;
 		this.type = type;
 		this.states = new ArrayList<State>();
@@ -67,81 +56,25 @@ public class DataNode extends ShapedElement implements Rotatable {
 	}
 
 	/**
-	 * Instantiates a DataNode given all possible parameters except rotation.
-	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
-		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, xref, aliasRef);
-	}
-
-	/**
 	 * Instantiates a DataNode given all possible parameters except xref.
 	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			double rotation, String textLabel, DataNodeType type, Group aliasRef) {
-		this(rectProperty, fontProperty, shapeStyleProperty, rotation, textLabel, type, null, aliasRef);
-	}
-
-	/**
-	 * Instantiates a DataNode given all possible parameters except rotation and
-	 * xref.
-	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, DataNodeType type, Group aliasRef) {
-		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, null, aliasRef);
+	public DataNode(String textLabel, DataNodeType type, Group aliasRef) {
+		this(textLabel, type, null, aliasRef);
 	}
 
 	/**
 	 * Instantiates a DataNode given all possible parameters except aliasRef.
 	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			double rotation, String textLabel, DataNodeType type, Xref xref) {
-		this(rectProperty, fontProperty, shapeStyleProperty, rotation, textLabel, type, xref, null);
-	}
-
-	/**
-	 * Instantiates a DataNode given all possible parameters except rotation and
-	 * aliasRef.
-	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, DataNodeType type, Xref xref) {
-		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, xref, null);
+	public DataNode(String textLabel, DataNodeType type, Xref xref) {
+		this(textLabel, type, xref, null);
 	}
 
 	/**
 	 * Instantiates a DataNode given all possible parameters except xref and
 	 * aliasRef.
 	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			double rotation, String textLabel, DataNodeType type) {
-		this(rectProperty, fontProperty, shapeStyleProperty, rotation, textLabel, type, null, null);
-	}
-
-	/**
-	 * Instantiates a DataNode given all possible parameters except rotation, xref,
-	 * and aliasRef.
-	 */
-	public DataNode(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel, DataNodeType type) {
-		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel, type, null, null);
-	}
-
-	/**
-	 * Returns the rotation of this data node.
-	 * 
-	 * @return rotation the rotation of the data node.
-	 */
-	public double getRotation() {
-		return rotation;
-	}
-
-	/**
-	 * Sets the rotation of this data node.
-	 * 
-	 * @param rotation the rotation of the data node.
-	 */
-	public void setRotation(Double rotation) {
-		this.rotation = rotation;
+	public DataNode(String textLabel, DataNodeType type) {
+		this(textLabel, type, null, null);
 	}
 
 	/**

@@ -16,12 +16,14 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.io.listener.PathwayElementEvent;
-import org.pathvisio.model.graphics.LineStyleProperty;
 import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.type.ConnectorType;
+import org.pathvisio.model.type.LineStyleType;
 
 /**
  * This abstract class stores information for a Line pathway element, e.g.
@@ -33,8 +35,14 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 
 	private List<LinePoint> points; // minimum 2
 	private List<Anchor> anchors;
-	private LineStyleProperty lineStyleProperty;
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
+	
+	// line style properties
+	private Color lineColor = Color.decode("#000000"); // black
+	private LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
+	private double lineWidth = 1.0; // 1.0
+	private ConnectorType connectorType = ConnectorType.STRAIGHT; // straight, elbow, curved...
+	private int zOrder; // optional
 
 	/**
 	 * Instantiates a line pathway element. Property groupRef is to be set by
@@ -42,13 +50,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * (formerly groupId) of the parent gpml:Group. Note, a group can also belong in
 	 * another group.
 	 * 
-	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 */
-	public LineElement(LineStyleProperty lineStyleProperty) {
+	public LineElement() {
 		super();
 		this.points = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
-		setLineStyleProp(lineStyleProperty);
 	}
 
 	/**
@@ -120,7 +126,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		return points.get(0);
 	}
 
-	//TODO weird 
+	// TODO weird
 	public void setStartLinePoint(LinePoint linePoint) {
 		getStartLinePoint().moveTo(linePoint);
 	}
@@ -134,7 +140,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		return points.get(points.size() - 1);
 	}
 
-	//TODO weird 
+	// TODO weird
 	public void setEndLinePoint(LinePoint linePoint) {
 		getEndLinePoint().moveTo(linePoint);
 	}
@@ -201,25 +207,6 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Returns the line style properties of the pathway element, e.g. lineColor...
-	 * 
-	 * @return lineStyleProperty the line style properties.
-	 */
-	public LineStyleProperty getLineStyleProp() {
-		return lineStyleProperty;
-	}
-
-	/**
-	 * Sets the line style properties of the pathway element, e.g. lineColor...
-	 * 
-	 * @param lineStyleProperty the line style properties.
-	 */
-	public void setLineStyleProp(LineStyleProperty lineStyleProperty) {
-//		lineStyleProperty.addPropertyChangeListener(this);
-		this.lineStyleProperty = lineStyleProperty;
-	}
-
-	/**
 	 * Returns the parent group of the pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
 	 * 
@@ -274,6 +261,141 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 			if (groupRef.hasPathwayElement(this))
 				groupRef.removePathwayElement(this);
 		}
+	}
+
+	/**
+	 * Returns the color of a line.
+	 * 
+	 * @return lineColor the color of a line.
+	 */
+	public Color getLineColor() {
+		if (lineColor == null) {
+			return Color.decode("#000000"); // black
+		} else {
+			return lineColor;
+		}
+	}
+
+	/**
+	 * Sets the color of a line.
+	 * 
+	 * @param lineColor the color of a line.
+	 * @throws IllegalArgumentException if color null.
+	 */
+	public void setLineColor(Color lineColor) {
+		if (lineColor == null) {
+			throw new IllegalArgumentException();
+		} else {
+			this.lineColor = lineColor;
+		}
+	}
+
+	/**
+	 * Returns the visual appearance of a line, e.g. Solid or Broken.
+	 * 
+	 * @return lineStyle the style of a line.
+	 */
+	public LineStyleType getLineStyle() {
+		if (lineStyle == null) {
+			return LineStyleType.SOLID;
+		} else {
+			return lineStyle;
+		}
+	}
+
+	/**
+	 * Sets the visual appearance of a line, e.g. Solid or Broken.
+	 * 
+	 * @param lineStyle the style of a line.
+	 * @throws IllegalArgumentException if lineStyle null.
+	 */
+	public void setLineStyle(LineStyleType lineStyle) {
+		if (lineStyle == null) {
+			throw new IllegalArgumentException();
+		}
+		if (this.lineStyle != lineStyle) {
+			this.lineStyle = lineStyle;
+//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+		}
+	}
+
+	/**
+	 * Returns the pixel value for the width of a line.
+	 * 
+	 * @return lineWidth the width of a line.
+	 */
+	public double getLineWidth() {
+		if (lineWidth < 0) {
+			return 1.0;
+		} else {
+			return lineWidth;
+		}
+	}
+
+	/**
+	 * Sets the pixel value for the width of a line.
+	 * 
+	 * @param lineWidth the width of a line.
+	 * @throws IllegalArgumentException if lineWidth is a negative value.
+	 */
+	public void setLineWidth(double lineWidth) {
+		if (lineWidth < 0) {
+			throw new IllegalArgumentException();
+		} else {
+			this.lineWidth = lineWidth;
+		}
+	}
+
+	/**
+	 * Returns the value of the connectorType property. Specifies a set of rules to
+	 * govern layout of Graphical Lines and Interactions. PathVisio (Java): Line
+	 * Type and GPML: ConnectorType e.g. Curved, Elbow, Straight
+	 * 
+	 * @return connectorType the layout of a line.
+	 */
+	public ConnectorType getConnectorType() {
+		if (connectorType == null) {
+			return ConnectorType.STRAIGHT;
+		} else {
+			return connectorType;
+		}
+	}
+
+	/**
+	 * Sets the value of the connectorType property. Specifies a set of rules to
+	 * govern layout of Graphical Lines and Interactions. PathVisio (Java): Line
+	 * Type and GPML: ConnectorType e.g. Curved, Elbow, Straight
+	 * 
+	 * @param connectorType the layout of a line.
+	 * @throws IllegalArgumentException if ConnectorType null.
+	 */
+	public void setConnectorType(ConnectorType connectorType) {
+		if (connectorType == null) {
+			throw new IllegalArgumentException();
+		}
+		if (!this.connectorType.equals(connectorType)) {
+			this.connectorType = connectorType;
+			// TODO
+//			propChangeSupport.firePropertyChange("connectorType", this.connectorType, connectorType);
+		}
+	}
+
+	/**
+	 * Returns the order of a line.
+	 * 
+	 * @return zOrder the order of a line.
+	 */
+	public int getZOrder() {
+		return zOrder;
+	}
+
+	/**
+	 * Sets the order of a line.
+	 * 
+	 * @param zOrder the order of a line.
+	 */
+	public void setZOrder(int zOrder) {
+		this.zOrder = zOrder;
 	}
 
 	/**

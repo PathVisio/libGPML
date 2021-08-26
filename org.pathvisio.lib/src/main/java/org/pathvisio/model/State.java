@@ -32,78 +32,43 @@ import org.pathvisio.model.type.StateType;
  * 
  * @author finterly
  */
-public class State extends ElementInfo implements LinkableTo, Rotatable {
+public class State extends ShapedElement implements LinkableTo {
 
 	private DataNode dataNode; // parent dataNode (NB: elementRef was formerly elementId of parent data node)
 	private String textLabel;
 	private StateType type;
 	private double relX;
 	private double relY;
-	private double width;
-	private double height;
-	private FontProperty fontProperty;
-	private ShapeStyleProperty shapeStyleProperty;
-	private double rotation; // optional, in radians
 	private Xref xref; // optional
 
 	/**
 	 * Instantiates a State pathway element given all possible parameters.
 	 * 
-	 * @param textLabel          the text label of the state.
-	 * @param type               the type of the state, e.g. protein modification.
-	 * @param relX               the relative x coordinates on the parent object,
-	 *                           where 0,0 is at the center of the object and 1,1 at
-	 *                           the bottom-right corner of the object.
-	 * @param relY               the relative y coordinates on the parent object,
-	 *                           where 0,0 is at the center of the object and 1,1 at
-	 *                           the bottom-right corner of the object.
-	 * @param width              the pixel value for the x dimensional length.
-	 * @param height             the pixel value for the y dimensional length.
-	 * @param fontProperty       the font properties, e.g. textColor, fontName...
-	 * @param shapeStyleProperty the shape style properties, e.g. borderColor...
-	 * @param rotation           the rotation of shape in radians.
-	 * @param xref               the state xref.
+	 * @param textLabel the text label of the state.
+	 * @param type      the type of the state, e.g. protein modification.
+	 * @param relX      the relative x coordinates on the parent object, where 0,0
+	 *                  is at the center of the object and 1,1 at the bottom-right
+	 *                  corner of the object.
+	 * @param relY      the relative y coordinates on the parent object, where 0,0
+	 *                  is at the center of the object and 1,1 at the bottom-right
+	 *                  corner of the object.
+	 * @param xref      the state xref.
 	 */
-	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
-			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, double rotation, Xref xref) {
+	public State(String textLabel, StateType type, double relX, double relY, Xref xref) {
 		super();
 		this.textLabel = textLabel;
 		this.type = type;
 		this.relX = relX;
 		this.relY = relY;
-		this.width = width;
-		this.height = height;
-		this.fontProperty = fontProperty;
-		this.shapeStyleProperty = shapeStyleProperty;
-		this.rotation = rotation;
 		this.xref = xref;
-	}
-
-	/**
-	 * Instantiates a State pathway element given all possible parameters except
-	 * rotation.
-	 */
-	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
-			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, Xref xref) {
-		this(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, 0, xref);
 	}
 
 	/**
 	 * Instantiates a State pathway element given all possible parameters except
 	 * xref.
 	 */
-	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
-			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty, double rotation) {
-		this(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, rotation, null);
-	}
-
-	/**
-	 * Instantiates a State pathway element given all possible parameters except
-	 * rotation and xref.
-	 */
-	public State(String textLabel, StateType type, double relX, double relY, double width, double height,
-			FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
-		this(textLabel, type, relX, relY, width, height, fontProperty, shapeStyleProperty, null);
+	public State(String textLabel, StateType type, double relX, double relY) {
+		this(textLabel, type, relX, relY, null);
 	}
 
 	/**
@@ -136,7 +101,7 @@ public class State extends ElementInfo implements LinkableTo, Rotatable {
 	 * 
 	 * @param dataNode the parent data node of the state.
 	 */
-	protected void setDataNodeTo(DataNode dataNode) { //TODO Make LinkTooo? 
+	protected void setDataNodeTo(DataNode dataNode) { // TODO Make LinkTooo?
 		if (dataNode == null)
 			throw new IllegalArgumentException("Invalid datanode.");
 		if (hasDataNode())
@@ -256,110 +221,6 @@ public class State extends ElementInfo implements LinkableTo, Rotatable {
 		} else {
 			throw new IllegalArgumentException("relY " + relY + " should be between -1.0 and 1.0");
 		}
-	}
-
-	/**
-	 * Returns the width of the state.
-	 * 
-	 * @return width the width of the state.
-	 */
-	public double getWidth() {
-		return width;
-	}
-
-	/**
-	 * Sets the width of the state.
-	 * 
-	 * @param width the width of the state.
-	 * @throws IllegalArgumentException if width is a negative value.
-	 */
-	public void setWidth(double width) {
-		if (width < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + width);
-		} else {
-			this.width = width;
-		}
-	}
-
-	/**
-	 * Returns the height of the state.
-	 * 
-	 * @return height the height of the state.
-	 */
-	public double getHeight() {
-		return height;
-	}
-
-	/**
-	 * Sets the height of the state.
-	 * 
-	 * @param height the height of the state.
-	 * @throws IllegalArgumentException if height is a negative value.
-	 */
-	public void setHeight(double height) {
-		if (height < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + height);
-		} else {
-			this.height = height;
-		}
-	}
-
-	/**
-	 * Returns the font properties of the pathway element, e.g. textColor,
-	 * fontName...
-	 * 
-	 * @return fontProperty the font properties.
-	 */
-	public FontProperty getFontProp() {
-		return fontProperty;
-	}
-
-	/**
-	 * Sets the font properties of the pathway element, e.g. textColor, fontName...
-	 * 
-	 * @param fontProperty the font properties.
-	 */
-	public void setFontProp(FontProperty fontProperty) {
-//		fontProperty.addPropertyChangeListener(this);
-		this.fontProperty = fontProperty;
-	}
-
-	/**
-	 * Returns the shape style properties of the pathway element, e.g.
-	 * borderColor...
-	 * 
-	 * @return shapeStyleProperty the shape style properties.
-	 */
-	public ShapeStyleProperty getShapeStyleProp() {
-		return shapeStyleProperty;
-	}
-
-	/**
-	 * Sets the shape style properties of the pathway element, e.g. borderColor...
-	 * 
-	 * @param shapeStyleProperty the shape style properties.
-	 */
-	public void setShapeStyleProp(ShapeStyleProperty shapeStyleProperty) {
-//		shapeStyleProperty.addPropertyChangeListener(this);
-		this.shapeStyleProperty = shapeStyleProperty;
-	}
-
-	/**
-	 * Returns the rotation of this state.
-	 * 
-	 * @return rotation the rotation of the state.
-	 */
-	public double getRotation() {
-		return rotation;
-	}
-
-	/**
-	 * Sets the rotation of this state.
-	 * 
-	 * @param rotation the rotation of the state.
-	 */
-	public void setRotation(Double rotation) {
-		this.rotation = rotation;
 	}
 
 	/**

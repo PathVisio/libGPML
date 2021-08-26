@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.graphics.LineStyleProperty;
-
 /**
  * This class stores information for GraphicalLine pathway element.
  * 
@@ -32,8 +30,8 @@ public class GraphicalLine extends LineElement {
 	 * @param elementId         the unique pathway element identifier.
 	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 */
-	public GraphicalLine(LineStyleProperty lineStyleProperty) {
-		super(lineStyleProperty);
+	public GraphicalLine() {
+		super();
 	}
 
 }

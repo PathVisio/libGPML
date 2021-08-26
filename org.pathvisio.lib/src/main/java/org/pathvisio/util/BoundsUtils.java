@@ -77,10 +77,10 @@ public class BoundsUtils {
 	 *         coordinates.
 	 */
 	public static Rectangle2D getShapedElementBounds(ShapedElement shapedElement) {
-		double centerX = shapedElement.getRectProp().getCenterXY().getX();
-		double centerY = shapedElement.getRectProp().getCenterXY().getY();
-		double width = shapedElement.getRectProp().getWidth();
-		double height = shapedElement.getRectProp().getHeight();
+		double centerX = shapedElement.getCenterXY().getX();
+		double centerY = shapedElement.getCenterXY().getY();
+		double width = shapedElement.getWidth();
+		double height = shapedElement.getHeight();
 		double leftX = centerX - (width / 2);
 		double topY = centerY - (height / 2);
 		Rectangle2D bounds = new Rectangle2D.Double(leftX, topY, width, height);

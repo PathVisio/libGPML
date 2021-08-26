@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.graphics.FontProperty;
-import org.pathvisio.model.graphics.RectProperty;
-import org.pathvisio.model.graphics.ShapeStyleProperty;
+
 import org.pathvisio.model.type.GroupType;
 
 /**
@@ -43,16 +41,12 @@ public class Group extends ShapedElement {
 	/**
 	 * Instantiates a Group given all possible parameters.
 	 * 
-	 * @param rectProperty       the centering (position) and dimension properties.
-	 * @param fontProperty       the font properties, e.g. textColor, fontName...
-	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
-	 * @param type               the type of the group.
-	 * @param textLabel          the text of the group.
-	 * @param xref               the group Xref.
+	 * @param type      the type of the group.
+	 * @param textLabel the text of the group.
+	 * @param xref      the group Xref.
 	 */
-	public Group(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			GroupType type, String textLabel, Xref xref) {
-		super(rectProperty, fontProperty, shapeStyleProperty);
+	public Group(GroupType type, String textLabel, Xref xref) {
+		super();
 		this.type = type;
 		this.textLabel = textLabel;
 		this.xref = xref;
@@ -62,25 +56,22 @@ public class Group extends ShapedElement {
 	/**
 	 * Instantiates a Group given all possible parameters except textLabel.
 	 */
-	public Group(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			GroupType type, Xref xref) {
-		this(rectProperty, fontProperty, shapeStyleProperty, type, null, xref);
+	public Group(GroupType type, Xref xref) {
+		this(type, null, xref);
 	}
 
 	/**
 	 * Instantiates a Group given all possible parameters except xref.
 	 */
-	public Group(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			GroupType type, String textLabel) {
-		this(rectProperty, fontProperty, shapeStyleProperty, type, textLabel, null);
+	public Group(GroupType type, String textLabel) {
+		this(type, textLabel, null);
 	}
 
 	/**
 	 * Instantiates a Group given all possible parameters except textLabel and xref.
 	 */
-	public Group(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			GroupType type) {
-		this(rectProperty, fontProperty, shapeStyleProperty, type, null, null);
+	public Group(GroupType type) {
+		this(type, null, null);
 	}
 
 	/**

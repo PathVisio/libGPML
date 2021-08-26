@@ -16,78 +16,30 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.graphics.FontProperty;
-import org.pathvisio.model.graphics.RectProperty;
-import org.pathvisio.model.graphics.ShapeStyleProperty;
-
 /**
  * This class stores all information relevant to a Shape pathway element.
  * 
  * @author finterly
  */
-public class Shape extends ShapedElement implements Rotatable {
+public class Shape extends ShapedElement {
 
-	private double rotation; // optional, in radians
 	private String textLabel; // optional
 
 	/**
 	 * Instantiates a Label pathway element given all possible parameters.
 	 * 
-	 * @param rectProperty       the centering (position) and dimension properties.
-	 * @param fontProperty       the font properties, e.g. textColor, fontName...
-	 * @param shapeStyleProperty the shape style properties, e.g. borderColor.
-	 * @param rotation           the rotation of shape in radians.
-	 * @param textLabel          the text of the shape.
+	 * @param textLabel the text of the shape.
 	 */
-	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			double rotation, String textLabel) {
-		super(rectProperty, fontProperty, shapeStyleProperty);
-		this.rotation = rotation;
+	public Shape(String textLabel) {
+		super();
 		this.textLabel = textLabel;
-	}
-
-	/**
-	 * Instantiates a Shape given all possible parameters except rotation.
-	 */
-	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			String textLabel) {
-		this(rectProperty, fontProperty, shapeStyleProperty, 0, textLabel);
 	}
 
 	/**
 	 * Instantiates a Shape given all possible parameters except textLabel.
 	 */
-	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty,
-			double rotation) {
-		this(rectProperty, fontProperty, shapeStyleProperty, rotation, null);
-	}
-
-	/**
-	 * Instantiates a Shape given all possible parameters except rotation and
-	 * textLabel.
-	 */
-	public Shape(RectProperty rectProperty, FontProperty fontProperty, ShapeStyleProperty shapeStyleProperty) {
-		this(rectProperty, fontProperty, shapeStyleProperty, 0, null);
-	}
-
-	/**
-	 * Returns the rotation of this shape.
-	 * 
-	 * @return rotation the rotation of the shape.
-	 */
-	public double getRotation() {
-
-		return rotation;
-
-	}
-
-	/**
-	 * Sets the rotation of this shape.
-	 * 
-	 * @param rotation the rotation of the shape.
-	 */
-	public void setRotation(Double rotation) {
-		this.rotation = rotation;
+	public Shape() {
+		this(null);
 	}
 
 	/**

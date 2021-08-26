@@ -17,7 +17,6 @@
 package org.pathvisio.model;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.graphics.LineStyleProperty;
 
 /**
  * This class stores information for an Interaction pathway element.
@@ -31,11 +30,10 @@ public class Interaction extends LineElement {
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters.
 	 * 
-	 * @param lineStyleProperty the line style properties, e.g. lineColor.
-	 * @param xref              the interaction Xref.
+	 * @param xref the interaction Xref.
 	 */
-	public Interaction(LineStyleProperty lineStyleProperty, Xref xref) {
-		super(lineStyleProperty);
+	public Interaction(Xref xref) {
+		super();
 		this.xref = xref;
 	}
 
@@ -43,8 +41,8 @@ public class Interaction extends LineElement {
 	 * Instantiates an Interaction pathway element given all possible parameters
 	 * except xref.
 	 */
-	public Interaction(LineStyleProperty lineStyleProperty) {
-		this(lineStyleProperty, null);
+	public Interaction() {
+		this(null);
 	}
 
 	/**
