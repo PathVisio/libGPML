@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.events.PathwayElementListener;
+import org.pathvisio.props.StaticProperty;
 
 /**
  * Abstract class of pathway elements which are part of a pathway and have an
@@ -113,7 +114,7 @@ public abstract class PathwayElement {
 	 */
 	public void setElementId(String elementId) {
 		this.elementId = elementId;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, elementId));
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.ELEMENTID));
 	}
 
 	/**

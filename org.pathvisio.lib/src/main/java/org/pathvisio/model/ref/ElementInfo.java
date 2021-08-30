@@ -86,6 +86,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	public void removeComment(Comment comment) {
 		comments.remove(comment);
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
 	}
 
 	/**
@@ -162,11 +163,12 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null);
-		annotationRef.setAnnotatableTo(this);
-		assert (annotationRef.getAnnotatable() == this);
-		assert !hasAnnotationRef(annotationRef);
-		annotationRefs.add(annotationRef);
+		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
+			annotationRef.setAnnotatableTo(this);
+			assert (annotationRef.getAnnotatable() == this);
+			annotationRefs.add(annotationRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
+		}
 	}
 
 	/**
@@ -177,9 +179,11 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null && hasAnnotationRef(annotationRef));
-		annotationRefs.remove(annotationRef);
-		annotationRef.terminate();
+		if (annotationRef != null && hasAnnotationRef(annotationRef)) {
+			annotationRefs.remove(annotationRef);
+			annotationRef.terminate();
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
+		}
 	}
 
 	/**
@@ -222,11 +226,13 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		assert (citationRef != null);
-		citationRef.setCitableTo(this);
-		assert (citationRef.getCitable() == this);
-		assert !hasCitationRef(citationRef);
-		citationRefs.add(citationRef);
+		if (citationRef != null && !hasCitationRef(citationRef)) {
+			citationRef.setCitableTo(this);
+			assert (citationRef.getCitable() == this);
+			citationRefs.add(citationRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+
+		}
 	}
 
 	/**
@@ -237,9 +243,11 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeCitationRef(CitationRef citationRef) {
-		assert (citationRef != null && hasCitationRef(citationRef));
-		citationRefs.remove(citationRef);
-		citationRef.terminate();
+		if (citationRef != null && hasCitationRef(citationRef)) {
+			citationRefs.remove(citationRef);
+			citationRef.terminate();
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+		}
 	}
 
 	/**
@@ -282,11 +290,12 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null);
-		evidenceRef.setEvidenceableTo(this);
-		assert (evidenceRef.getEvidenceable() == this);
-		assert !hasEvidenceRef(evidenceRef);
-		evidenceRefs.add(evidenceRef);
+		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
+			evidenceRef.setEvidenceableTo(this);
+			assert (evidenceRef.getEvidenceable() == this);
+			evidenceRefs.add(evidenceRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
+		}
 	}
 
 	/**
@@ -297,9 +306,11 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	 */
 	@Override
 	public void removeEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null && hasEvidenceRef(evidenceRef));
-		evidenceRefs.remove(evidenceRef);
-		evidenceRef.terminate();
+		if (evidenceRef != null && hasEvidenceRef(evidenceRef)) {
+			evidenceRefs.remove(evidenceRef);
+			evidenceRef.terminate();
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
+		}
 	}
 
 	/**

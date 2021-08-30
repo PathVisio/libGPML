@@ -18,12 +18,17 @@ package org.pathvisio.model.ref;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import org.bridgedb.Xref;
+import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayElementListener;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores metadata for a Pathway.
@@ -225,8 +230,11 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	public void setTitle(String title) {
 		if (title == null) {
 			throw new IllegalArgumentException();
-		} else
+		}
+		if (this.title != title) {
 			this.title = title;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TITLE));
+		}
 	}
 
 	/**
@@ -296,7 +304,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		this.backgroundColor = backgroundColor;
 	}
 
-
 	/**
 	 * Returns the list of authors for the pathway model.
 	 * 
@@ -340,6 +347,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	public void addComment(Comment comment) {
 		comments.add(comment);
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
 	}
 
 	/**
@@ -406,6 +414,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 			dynamicProperties.remove(key);
 		else
 			dynamicProperties.put(key, value);
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, key));
 	}
 
 	/**
@@ -438,11 +447,12 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	@Override
 	public void addAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null);
-		annotationRef.setAnnotatableTo(this); 
-		assert (annotationRef.getAnnotatable() == this);
-		assert !hasAnnotationRef(annotationRef);
-		annotationRefs.add(annotationRef);
+		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
+			annotationRef.setAnnotatableTo(this);
+			assert (annotationRef.getAnnotatable() == this);
+			annotationRefs.add(annotationRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
+		}
 	}
 
 	/**
@@ -453,9 +463,11 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null && hasAnnotationRef(annotationRef));
-		annotationRefs.remove(annotationRef);
-		annotationRef.terminate();
+		if (annotationRef != null && hasAnnotationRef(annotationRef)) {
+			annotationRefs.remove(annotationRef);
+			annotationRef.terminate();
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
+		}
 	}
 
 	/**
@@ -498,11 +510,13 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	@Override
 	public void addCitationRef(CitationRef citationRef) {
-		assert (citationRef != null);
-		citationRef.setCitableTo(this); 
-		assert (citationRef.getCitable() == this);
-		assert !hasCitationRef(citationRef);
-		citationRefs.add(citationRef);
+		if (citationRef != null && !hasCitationRef(citationRef)) {
+			citationRef.setCitableTo(this);
+			assert (citationRef.getCitable() == this);
+			citationRefs.add(citationRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+
+		}
 	}
 
 	/**
@@ -513,9 +527,11 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	@Override
 	public void removeCitationRef(CitationRef citationRef) {
-		assert (citationRef != null && hasCitationRef(citationRef));
-		citationRefs.remove(citationRef);
-		citationRef.terminate();
+		if (citationRef != null && hasCitationRef(citationRef)) {
+			citationRefs.remove(citationRef);
+			citationRef.terminate();
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+		}
 	}
 
 	/**
@@ -558,11 +574,12 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	@Override
 	public void addEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null);
-		evidenceRef.setEvidenceableTo(this);
-		assert (evidenceRef.getEvidenceable() == this);
-		assert !hasEvidenceRef(evidenceRef);
-		evidenceRefs.add(evidenceRef);
+		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
+			evidenceRef.setEvidenceableTo(this);
+			assert (evidenceRef.getEvidenceable() == this);
+			evidenceRefs.add(evidenceRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
+		}
 	}
 
 	/**
@@ -573,9 +590,11 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	@Override
 	public void removeEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null && hasEvidenceRef(evidenceRef));
-		evidenceRefs.remove(evidenceRef);
-		evidenceRef.terminate();
+		if (evidenceRef != null && hasEvidenceRef(evidenceRef)) {
+			evidenceRefs.remove(evidenceRef);
+			evidenceRef.terminate();
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
+		}
 	}
 
 	/**
@@ -628,8 +647,11 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	public void setOrganism(String organism) {
 		if (organism == null) {
 			throw new IllegalArgumentException();
-		} else
+		}
+		if (!Utils.stringEquals(this.organism, organism)) {
 			this.organism = organism;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
+		}
 	}
 
 	/**
@@ -670,8 +692,11 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	public void setVersion(String version) {
 		if (version == null) {
 			throw new IllegalArgumentException();
-		} else
+		}
+		if (this.version != version) {
 			this.version = version;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
+		}
 	}
 
 	/**
@@ -708,6 +733,41 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.IDENTIFIER));
+	}
+
+	// TODO....
+
+	/**
+	 * Fire and Listener methods below TODO
+	 */
+	int noFire = 0;
+
+	public void dontFireEvents(int times) {
+		noFire = times;
+	}
+
+	private Set<PathwayElementListener> listeners = new HashSet<PathwayElementListener>();
+
+	public void addListener(PathwayElementListener v) {
+		if (!listeners.contains(v))
+			listeners.add(v);
+	}
+
+	public void removeListener(PathwayElementListener v) {
+		listeners.remove(v);
+	}
+
+	public void fireObjectModifiedEvent(PathwayElementEvent e) {
+		if (noFire > 0) {
+			noFire -= 1;
+			return;
+		}
+		if (pathwayModel != null)
+			pathwayModel.childModified(e);
+		for (PathwayElementListener g : listeners) {
+			g.gmmlObjectModified(e);
+		}
 	}
 
 }

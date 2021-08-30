@@ -24,6 +24,7 @@ import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.type.ArrowHeadType;
+import org.pathvisio.props.StaticProperty;
 
 /**
  * This class stores information for a Point pathway element. This class is
@@ -96,7 +97,10 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * @param arrowHead the arrowhead property of the point.
 	 */
 	public void setArrowHead(ArrowHeadType arrowHead) {
-		this.arrowHead = arrowHead;
+		if (this.arrowHead != arrowHead && arrowHead != null) {
+			this.arrowHead = arrowHead;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ARROWHEADTYPE));
+		}
 	}
 
 	/**
@@ -117,7 +121,7 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 		this.xy = xy;
 	}
 
-	// TODO 
+	// TODO
 	public Point2D toPoint2D() {
 		return new Point2D.Double(xy.getX(), xy.getY());
 	}
@@ -139,7 +143,12 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * @param elementRef the pathway element to which the point refers.
 	 */
 	public void setElementRef(LinkableTo elementRef) {
-		this.elementRef = elementRef;
+		// TODO WEIRD LOGIC
+		// TODO: check that new graphRef exists and that it points to a DataNode
+		if (!(this.elementRef == null ? elementRef == null : this.elementRef.equals(elementRef))) {
+			this.elementRef = elementRef;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ELEMENTREF));
+		}
 	}
 
 	/**
@@ -167,7 +176,10 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 		if (Math.abs(relX) > 1.0) {
 			Logger.log.trace("Warning: relX absolute value of " + String.valueOf(relX) + " greater than 1");
 		}
-		this.relX = relX;
+		if (this.relX != relX) {
+			this.relX = relX;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -194,7 +206,10 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 		if (Math.abs(relY) > 1.0) {
 			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
 		}
-		this.relY = relY;
+		if (this.relY != relY) {
+			this.relY = relY;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -226,7 +241,8 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 			}
 			// relativeSet = false;
 			setElementRef(null);
-//			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this)); // TODO this or
+																								// lineElement????
 		}
 	}
 
@@ -272,7 +288,7 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 
 	public void refeeChanged() {
 		// called whenever the object being referred to has changed.
-//		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(PathwayElement.this));
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this)); // TODO this or lineElement?
 	}
 
 	/**

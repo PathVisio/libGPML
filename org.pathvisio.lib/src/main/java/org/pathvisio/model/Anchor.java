@@ -22,6 +22,7 @@ import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.type.AnchorShapeType;
+import org.pathvisio.props.StaticProperty;
 
 /**
  * This class stores information for an Anchor pathway element. Anchor element
@@ -96,7 +97,7 @@ public class Anchor extends GenericPoint implements LinkableTo {
 	public void setShapeType(AnchorShapeType shapeType) {
 		if (!shapeType.equals(shapeType) && shapeType != null) {
 			this.shapeType = shapeType;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, shapeType));
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}
 	}
 

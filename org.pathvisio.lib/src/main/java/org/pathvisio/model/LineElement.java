@@ -24,6 +24,7 @@ import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.props.StaticProperty;
 
 /**
  * This abstract class stores information for a Line pathway element, e.g.
@@ -33,10 +34,10 @@ import org.pathvisio.model.type.LineStyleType;
  */
 public abstract class LineElement extends ElementInfo implements Groupable {
 
-	private List<LinePoint> points; // minimum 2
+	private List<LinePoint> linePoints; // minimum 2
 	private List<Anchor> anchors;
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
-	
+
 	// line style properties
 	private Color lineColor = Color.decode("#000000"); // black
 	private LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
@@ -54,7 +55,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 */
 	public LineElement() {
 		super();
-		this.points = new ArrayList<LinePoint>(); // should have at least two points
+		this.linePoints = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
 	}
 
@@ -64,7 +65,22 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @return points the list of points, an empty list if no anchors are defined.
 	 */
 	public List<LinePoint> getLinePoints() {
-		return points;
+		return linePoints;
+	}
+
+	/**
+	 * Sets line points
+	 * 
+	 * @param points
+	 */
+	public void setLinePoints(List<LinePoint> points) {
+		if (points != null) {
+			if (points.size() < 2) {
+				throw new IllegalArgumentException("Points array should at least have two elements");
+			}
+			this.linePoints = points;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -74,7 +90,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @return true if has point, false otherwise.
 	 */
 	public boolean hasLinePoint(LinePoint point) {
-		return points.contains(point);
+		return linePoints.contains(point);
 	}
 
 	/**
@@ -90,7 +106,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		// add point to same pathway model as line if applicable
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(point);
-		points.add(point);
+		linePoints.add(point);
 		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
@@ -105,7 +121,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		assert (point != null && hasLinePoint(point));
 		if (getPathwayModel() != null)
 			getPathwayModel().removePathwayElement(point);
-		points.remove(point);
+		linePoints.remove(point);
 		point.terminate();
 	}
 
@@ -113,8 +129,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * Removes all points from the points list.
 	 */
 	public void removeLinePoints() {
-		for (int i = 0; i < points.size(); i++) {
-			removeLinePoint(points.get(i));
+		for (int i = 0; i < linePoints.size(); i++) {
+			removeLinePoint(linePoints.get(i));
 		}
 	}
 
@@ -124,7 +140,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @return the first point of points list.
 	 */
 	public LinePoint getStartLinePoint() {
-		return points.get(0);
+		return linePoints.get(0);
 	}
 
 	// TODO weird
@@ -138,7 +154,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @return the last point of points list.
 	 */
 	public LinePoint getEndLinePoint() {
-		return points.get(points.size() - 1);
+		return linePoints.get(linePoints.size() - 1);
 	}
 
 	// TODO weird
@@ -179,9 +195,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(anchor);
 		anchors.add(anchor);
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, anchor));
-
+		// No anchor property, use LINESTYLE as dummy property to force redraw on line
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 	}
 
 	/**
@@ -196,6 +211,8 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 			getPathwayModel().removePathwayElement(anchor);
 		anchors.remove(anchor);
 		anchor.terminate();
+		// No anchor property, use LINESTYLE as dummy property to force redraw on line
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 	}
 
 	/**
@@ -237,10 +254,12 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	public void setGroupRefTo(Group groupRef) {
 		if (groupRef == null)
 			throw new IllegalArgumentException("Invalid group.");
-		unsetGroupRef(); // first unsets if necessary
-		setGroupRef(groupRef);
-		if (!groupRef.hasPathwayElement(this))
-			groupRef.addPathwayElement(this);
+		if (this.groupRef != groupRef) {
+			unsetGroupRef(); // first unsets if necessary
+			setGroupRef(groupRef);
+			if (!groupRef.hasPathwayElement(this))
+				groupRef.addPathwayElement(this);
+		}
 	}
 
 	/**
@@ -249,7 +268,9 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param groupRef the given group to set.
 	 */
 	private void setGroupRef(Group groupRef) {
+		// TODO
 		this.groupRef = groupRef;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
 
 	/**
@@ -261,6 +282,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 			setGroupRef(null);
 			if (groupRef.hasPathwayElement(this))
 				groupRef.removePathwayElement(this);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 		}
 	}
 
@@ -286,8 +308,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	public void setLineColor(Color lineColor) {
 		if (lineColor == null) {
 			throw new IllegalArgumentException();
-		} else {
+		}
+		if (this.lineColor != lineColor) {
 			this.lineColor = lineColor;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINECOLOR));
 		}
 	}
 
@@ -316,7 +340,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		}
 		if (this.lineStyle != lineStyle) {
 			this.lineStyle = lineStyle;
-//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 		}
 	}
 
@@ -342,8 +366,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	public void setLineWidth(double lineWidth) {
 		if (lineWidth < 0) {
 			throw new IllegalArgumentException();
-		} else {
+		}
+		if (this.lineWidth != lineWidth) {
 			this.lineWidth = lineWidth;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINEWIDTH));
 		}
 	}
 
@@ -376,8 +402,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		}
 		if (!this.connectorType.equals(connectorType)) {
 			this.connectorType = connectorType;
-			// TODO
-//			propChangeSupport.firePropertyChange("connectorType", this.connectorType, connectorType);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CONNECTORTYPE));
 		}
 	}
 
@@ -396,7 +421,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param zOrder the order of a line.
 	 */
 	public void setZOrder(int zOrder) {
-		this.zOrder = zOrder;
+		if (this.zOrder != zOrder) {
+			this.zOrder = zOrder;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
+		}
 	}
 
 	/**
@@ -412,7 +440,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
 		setPathwayModel(pathwayModel);
 		// if line element has points and anchors, also add them to pathway model TODO
-		for (LinePoint point : points) // TODO
+		for (LinePoint point : linePoints) // TODO
 			pathwayModel.addPathwayElement(point);
 		for (Anchor anchor : anchors) // TODO
 			pathwayModel.addPathwayElement(anchor);
@@ -426,7 +454,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	protected void unsetPathwayModel() {
 		if (hasPathwayModel()) {
 			setPathwayModel(null);
-			for (LinePoint point : points) // TODO
+			for (LinePoint point : linePoints) // TODO
 				point.setPathwayModel(null);
 			for (Anchor anchor : anchors) // TODO
 				anchor.setPathwayModel(null);

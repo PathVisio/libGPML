@@ -17,6 +17,8 @@
 package org.pathvisio.model.ref;
 
 import org.bridgedb.Xref;
+import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.props.StaticProperty;
 
 /**
  * This class stores information for an Author. An Author must have name and
@@ -185,6 +187,8 @@ public class Author {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 }

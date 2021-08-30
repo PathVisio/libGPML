@@ -31,10 +31,13 @@ public enum StaticPropertyType implements PropertyType {
 	ORGANISM, // TODO??
 
 	// xref
-	IDENTIFIER, DATASOURCE,
+	IDENTIFIER, DATASOURCE, XREF,
 
 	// meta-information
 	COMMENT,
+	ANNOTATIONREF,
+	CITATIONREF,
+	EVIDENCEREF,
 
 	// font props
 	FONTNAME,

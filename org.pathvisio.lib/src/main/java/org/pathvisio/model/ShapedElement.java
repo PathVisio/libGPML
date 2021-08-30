@@ -19,6 +19,7 @@ package org.pathvisio.model;
 import java.awt.Color;
 import java.util.Set;
 
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.Coordinate;
@@ -27,10 +28,12 @@ import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.model.type.VAlignType;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for shaped pathway element {@link DataNode},
- * {@link Label}, {@link Shape}, and {@link Group}.
+ * {@link State}, {@link Label}, {@link Shape}, and {@link Group}.
  * 
  * @author finterly
  */
@@ -103,7 +106,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * @param centerXY the middle of an object in the x and y direction.
 	 */
 	public void setCenterXY(Coordinate centerXY) {
-		this.centerXY = centerXY;
+		if (this.centerXY != centerXY) {
+			this.centerXY = centerXY;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -124,8 +130,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setWidth(double width) {
 		if (width < 0) {
 			throw new IllegalArgumentException("Tried to set dimension < 0: " + width);
-		} else {
+		}
+		if (this.width != width) {
 			this.width = width;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -147,8 +155,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setHeight(double height) {
 		if (height < 0) {
 			throw new IllegalArgumentException("Tried to set dimension < 0: " + height);
-		} else {
+		}
+		if (this.height != height) {
 			this.height = height;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -203,8 +213,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setFontName(String fontName) {
 		if (fontName == null) {
 			throw new IllegalArgumentException();
-		} else {
+		}
+		if (!Utils.stringEquals(this.fontName, fontName)) {
 			this.fontName = fontName;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTNAME));
 		}
 	}
 
@@ -226,7 +238,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 *                   weight is normal.
 	 */
 	public void setFontWeight(boolean fontWeight) {
-		this.fontWeight = fontWeight;
+		if (this.fontWeight != fontWeight) {
+			this.fontWeight = fontWeight;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTWEIGHT));
+		}
 	}
 
 	/**
@@ -248,7 +263,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 *                  typographic style is normal.
 	 */
 	public void setFontStyle(boolean fontStyle) {
-		this.fontStyle = fontStyle;
+		if (this.fontStyle != fontStyle) {
+			this.fontStyle = fontStyle;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
+		}
 	}
 
 	/**
@@ -269,7 +287,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 *                       false, typographic style is normal.
 	 */
 	public void setFontDecoration(boolean fontDecoration) {
-		this.fontDecoration = fontDecoration;
+		if (this.fontDecoration != fontDecoration) {
+			this.fontDecoration = fontDecoration;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTDECORATION));
+		}
 	}
 
 	/**
@@ -289,7 +310,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 *                       If false, typographic style is normal.
 	 */
 	public void setFontStrikethru(boolean fontStrikethru) {
-		this.fontStrikethru = fontStrikethru;
+		if (this.fontStrikethru != fontStrikethru) {
+			this.fontStrikethru = fontStrikethru;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTRIKETHRU));
+		}
 	}
 
 	/**
@@ -315,8 +339,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setFontSize(int fontSize) {
 		if (fontSize < 0) {
 			throw new IllegalArgumentException("Tried to set font size < 0: " + fontSize);
-		} else {
+		}
+		if (this.fontSize != fontSize) {
 			this.fontSize = fontSize;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSIZE));
 		}
 	}
 
@@ -340,7 +366,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * @param hAlign the horizontal alignment value of displayed text.
 	 */
 	public void setHAlign(HAlignType hAlign) {
-		this.hAlign = hAlign;
+		if (this.hAlign != hAlign) {
+			this.hAlign = hAlign;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HALIGN));
+		}
 	}
 
 	/**
@@ -363,7 +392,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * 
 	 */
 	public void setVAlign(VAlignType vAlign) {
-		this.vAlign = vAlign;
+		if (this.vAlign != vAlign) {
+			this.vAlign = vAlign;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VALIGN));
+		}
 	}
 
 	/**
@@ -437,8 +469,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setBorderWidth(double borderWidth) {
 		if (borderWidth < 0) {
 			throw new IllegalArgumentException();
-		} else {
+		}
+		if (this.borderWidth != borderWidth) {
 			this.borderWidth = borderWidth;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERWIDTH));
 		}
 	}
 
@@ -465,8 +499,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setFillColor(Color fillColor) {
 		if (fillColor == null) {
 			throw new IllegalArgumentException();
-		} else {
+		}
+		if (this.fillColor != fillColor) {
 			this.fillColor = fillColor;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FILLCOLOR));
 		}
 	}
 
@@ -500,8 +536,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setShapeType(ShapeType shapeType) {
 		if (shapeType == null) {
 			throw new IllegalArgumentException();
-		} else {
+		}
+		if (this.shapeType != shapeType) {
 			this.shapeType = shapeType;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SHAPETYPE));
 		}
 	}
 
@@ -520,7 +558,10 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * @param zOrder the order of an object.
 	 */
 	public void setZOrder(int zOrder) {
-		this.zOrder = zOrder;
+		if (this.zOrder != zOrder) {
+			this.zOrder = zOrder;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
+		}
 	}
 
 	/**
@@ -538,7 +579,11 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * @param rotation the rotation of the object.
 	 */
 	public void setRotation(Double rotation) {
-		this.rotation = rotation;
+		if (this.rotation != rotation) {
+			this.rotation = rotation;
+			// TODO rotation????
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -571,10 +616,12 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public void setGroupRefTo(Group groupRef) {
 		if (groupRef == null)
 			throw new IllegalArgumentException("Invalid group.");
-		unsetGroupRef(); // first unsets if necessary
-		setGroupRef(groupRef);
-		if (!groupRef.hasPathwayElement(this))
-			groupRef.addPathwayElement(this);
+		if (this.groupRef != groupRef) {
+			unsetGroupRef(); // first unsets if necessary
+			setGroupRef(groupRef);
+			if (!groupRef.hasPathwayElement(this))
+				groupRef.addPathwayElement(this);
+		}
 	}
 
 	/**
@@ -583,7 +630,9 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * @param groupRef the given group to set.
 	 */
 	private void setGroupRef(Group groupRef) {
+		// TODO
 		this.groupRef = groupRef;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
 
 	/**
@@ -595,6 +644,7 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 			setGroupRef(null);
 			if (groupRef.hasPathwayElement(this))
 				groupRef.removePathwayElement(this);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 		}
 	}
 

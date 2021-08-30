@@ -16,6 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
+
 /**
  * This class stores all information relevant to a Shape pathway element.
  * 
@@ -53,13 +57,16 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of of the shape.
+	 * Sets the text of of the shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the shape.
-	 * 
+	 * @param textLabel the text of of the shaped pathway element.
 	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
+	public void setTextLabel(String input) {
+		String textLabel = (input == null) ? "" : input;
+		if (!Utils.stringEquals(this.textLabel, textLabel)) {
+			this.textLabel = textLabel;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+		}
 	}
 
 }

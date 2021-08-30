@@ -37,9 +37,10 @@ public enum StaticProperty implements Property {
 	VERSION("version", "version", StaticPropertyType.STRING, 137),
 	LICENSE("license", "license", StaticPropertyType.STRING, 142),
 
-	// xref: pathway, author, datanode, state, interaction, group
+	// TODO xref: pathway, author, datanode, state, interaction, group  
 	IDENTIFIER("identifier", "identifier", StaticPropertyType.IDENTIFIER, 122),
 	DATASOURCE("dataSource", "dataSource", StaticPropertyType.DATASOURCE, 123),
+	XREF("xref", "xref", StaticPropertyType.XREF, 123),
 
 	// author
 	NAME("name", "author name", StaticPropertyType.STRING, 138),
@@ -56,7 +57,11 @@ public enum StaticProperty implements Property {
 
 	// elementinfo: datanode, state, interaction, graphicalline, label, shape, group
 	COMMENT("comment", "comment", StaticPropertyType.COMMENT, 101),
+	ANNOTATIONREF( "annotationRef", "annotationRef", StaticPropertyType.ANNOTATIONREF, 153, false, true, false),
+	CITATIONREF( "citationRef", "citationRef", StaticPropertyType.CITATIONREF, 153, false, true, false),
+	EVIDENCEREF( "evidenceRef", "evidenceRef", StaticPropertyType.EVIDENCEREF, 153, false, true, false),
 
+	
 	// rect props
 	CENTERX("centerX", "centerX", StaticPropertyType.DOUBLE, 103, true, false, false),
 	CENTERY("centerY", "centerY", StaticPropertyType.DOUBLE, 104, true, false, false),
@@ -112,11 +117,13 @@ public enum StaticProperty implements Property {
 	ELEMENTREF("elementRef", "elementRef", StaticPropertyType.STRING, 109, false, true, false),
 
 	// label
-	HREF("Href", "Link", StaticPropertyType.STRING, 135),
-
-
+	HREF("href", "href", StaticPropertyType.STRING, 135),
+	
 	// brace
-	ORIENTATION("Orientation", "Orientation", StaticPropertyType.ORIENTATION, 121); // TODO????
+	ORIENTATION("Orientation", "Orientation", StaticPropertyType.ORIENTATION, 121), // TODO????
+	
+	// datanode, state, interaction, graphicalline, label, shape, group 
+	GROUPREF("GroupRef","GroupRef",StaticPropertyType.STRING,151,false,true,false);
 
 	
 	// line
@@ -130,7 +137,7 @@ public enum StaticProperty implements Property {
 //	STARTGRAPHREF ("StartGraphRef", "StartGraphRef", StaticPropertyType.STRING, 148, false, true, false),
 	// ENDGRAPHREF ("EndGraphRef", "EndGraphRef", StaticPropertyType.STRING, 149,
 	// false, true, false),
-	// GROUPID("GroupId","GroupId",StaticPropertyType.STRING,150,false,true,false),GROUPREF("GroupRef","GroupRef",StaticPropertyType.STRING,151,false,true,false),GROUPSTYLE("GroupStyle","Group
+	// GROUPID("GroupId","GroupId",StaticPropertyType.STRING,150,false,true,false),
 	// style",StaticPropertyType.GROUPSTYLETYPE,152),BIOPAXREF("BiopaxRef","BiopaxRef",StaticPropertyType.BIOPAXREF,153,false,true,false),
 
 	private String tag, name;

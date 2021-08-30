@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
-
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.type.GroupType;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores all information relevant to a Group pathway element.
@@ -150,7 +152,10 @@ public class Group extends ShapedElement {
 	 * @param type the type of group, e.g. complex.
 	 */
 	public void setType(GroupType type) {
-		this.type = type;
+		if (this.type != type) {
+			this.type = type;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPTYPE));
+		}
 	}
 
 	/**
@@ -164,13 +169,16 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of of the group.
+	 * Sets the text of of the shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the group.
-	 * 
+	 * @param textLabel the text of of the shaped pathway element.
 	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
+	public void setTextLabel(String input) {
+		String textLabel = (input == null) ? "" : input;
+		if (!Utils.stringEquals(this.textLabel, textLabel)) {
+			this.textLabel = textLabel;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+		}
 	}
 
 	/**
@@ -189,6 +197,8 @@ public class Group extends ShapedElement {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 	/**

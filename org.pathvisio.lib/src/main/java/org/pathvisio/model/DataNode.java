@@ -19,7 +19,10 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.bridgedb.Xref;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for a DataNode pathway element.
@@ -88,13 +91,16 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of of the datanode.
+	 * Sets the text of of the shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the datanode.
-	 * 
+	 * @param textLabel the text of of the shaped pathway element.
 	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
+	public void setTextLabel(String input) {
+		String textLabel = (input == null) ? "" : input;
+		if (!Utils.stringEquals(this.textLabel, textLabel)) {
+			this.textLabel = textLabel;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+		}
 	}
 
 	/**
@@ -112,7 +118,13 @@ public class DataNode extends ShapedElement {
 	 * @param type the type of datanode, e.g. complex.
 	 */
 	public void setType(DataNodeType type) {
-		this.type = type;
+		if (type == null)
+			throw new IllegalArgumentException();
+		// TODO
+		if (!Utils.stringEquals(this.type.getName(), type.getName())) {
+			this.type = type;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TYPE));
+		}
 	}
 
 	/**
@@ -131,6 +143,8 @@ public class DataNode extends ShapedElement {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 	/*

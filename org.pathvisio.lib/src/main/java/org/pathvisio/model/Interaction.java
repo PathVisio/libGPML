@@ -17,6 +17,8 @@
 package org.pathvisio.model;
 
 import org.bridgedb.Xref;
+import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.props.StaticProperty;
 
 /**
  * This class stores information for an Interaction pathway element.
@@ -61,6 +63,8 @@ public class Interaction extends LineElement {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 }

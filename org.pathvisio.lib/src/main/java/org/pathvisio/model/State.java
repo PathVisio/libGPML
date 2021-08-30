@@ -21,11 +21,14 @@ import java.util.Set;
 //import java.beans.PropertyChangeEvent;
 
 import org.bridgedb.Xref;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.type.StateType;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores all information relevant to a State pathway element.
@@ -139,13 +142,16 @@ public class State extends ShapedElement implements LinkableTo {
 	}
 
 	/**
-	 * Sets the text of of the state.
+	 * Sets the text of of the shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the state.
-	 * 
+	 * @param textLabel the text of of the shaped pathway element.
 	 */
-	public void setTextLabel(String textLabel) {
-		this.textLabel = textLabel;
+	public void setTextLabel(String input) {
+		String textLabel = (input == null) ? "" : input;
+		if (!Utils.stringEquals(this.textLabel, textLabel)) {
+			this.textLabel = textLabel;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+		}
 	}
 
 	/**
@@ -239,6 +245,8 @@ public class State extends ShapedElement implements LinkableTo {
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 	/**
