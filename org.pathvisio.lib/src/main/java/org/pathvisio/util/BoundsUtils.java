@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import org.pathvisio.model.*;
+import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.type.*;
 
 /**
@@ -77,8 +78,17 @@ public class BoundsUtils {
 	 *         coordinates.
 	 */
 	public static Rectangle2D getShapedElementBounds(ShapedElement shapedElement) {
-		double centerX = shapedElement.getCenterXY().getX();
-		double centerY = shapedElement.getCenterXY().getY();
+		double centerX = 0; 
+		double centerY = 0; 
+		// TODO if nested group, calculate bounds of the inner group
+		if (shapedElement.getClass() == Group.class) {
+			Rectangle2D bounds = calculateGroupBounds((Group) shapedElement);
+			centerX = bounds.getCenterX();
+			centerY = bounds.getCenterY();
+		} else {
+			centerX = shapedElement.getCenterXY().getX();
+			centerY = shapedElement.getCenterXY().getY();
+		}
 		double width = shapedElement.getWidth();
 		double height = shapedElement.getHeight();
 		double leftX = centerX - (width / 2);

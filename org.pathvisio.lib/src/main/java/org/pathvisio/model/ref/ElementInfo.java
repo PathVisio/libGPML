@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model.ref;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,7 @@ import java.util.TreeMap;
 
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayElement;
+import org.pathvisio.props.StaticProperty;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an
@@ -76,7 +76,7 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	public void addComment(Comment comment) {
 		comments.add(comment);
 		// TODO Change source/comment text?
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, comment));
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
 	}
 
 	/**

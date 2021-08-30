@@ -164,6 +164,11 @@
 				<xsd:documentation>The order of an object along the z-axis.</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
+		<xsd:attribute name="rotation" type="xsd:float" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>A float value (rotation in radians).</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 	</xsd:attributeGroup>
 	<!-- 
 		Line Style Properties in the order to be written.  
@@ -306,13 +311,14 @@
 	<!-- ###################################################################### -->
 	<!-- 
 		Pathway 
-        This is the root element of the structure. 
+        This is the root element of the structure. Meta-information (e.g. title, organism) are displayed in the info box of the pathway 
+		which is always in the top left corner.  
 		
 		Pathway properties in the order to be written in the gpml:
 		- title, organism, source, version, license
 		- Xref, Description, Authors
 		- CommentGroup (Comment, Property, AnnotationRef, CitationRef, EvidenceRef)
-		- Graphics (boardWidth, boardHeight, backgroundColor), InfoBox
+		- Graphics (boardWidth, boardHeight, backgroundColor)
 		- DataNodes, Interactions, GraphicalLines, Labels, Shapes, Groups
 		- Annotations, Citations, Evidences
 	-->
@@ -388,7 +394,6 @@
 					</xsd:complexType>
 				</xsd:element>
 				<!-- End Graphics related attributes-->
-				<xsd:element ref="gpml:InfoBox" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="gpml:DataNodes" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="gpml:Interactions" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="gpml:GraphicalLines" minOccurs="0" maxOccurs="1"/>
@@ -442,7 +447,7 @@
 	-->
 	<xsd:element name="DataNodes">
 		<xsd:annotation>
-			<xsd:documentation>List of Data nodes.</xsd:documentation>
+			<xsd:documentation>List of Data nodes. A data node denotes a biological entity that forms a node in a pathway.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -513,9 +518,9 @@
 								<xsd:documentation>When a pathway element is part of a gpml:Group, groupRef refers to the elementId of the parent group.</xsd:documentation>
 							</xsd:annotation>
 						</xsd:attribute>
-						<xsd:attribute name="elementRef" type="xsd:IDREF" use="optional">
+						<xsd:attribute name="aliasRef" type="xsd:IDREF" use="optional">
 							<xsd:annotation>
-								<xsd:documentation>An elementRef indicates a child/parent relationship between objects. The elementRef of the child refers to the elementId of the parent. A DataNode can have type "Alias" and refer to a gpml:Group.</xsd:documentation>
+								<xsd:documentation>An aliasRef indicates a child/parent relationship between objects. A DataNode can have type "Alias" and refer to a gpml:Group.</xsd:documentation>
 							</xsd:annotation>
 						</xsd:attribute>
 					</xsd:complexType>
@@ -539,7 +544,7 @@
 	-->
 	<xsd:element name="States">
 		<xsd:annotation>
-			<xsd:documentation>List of States.</xsd:documentation>
+			<xsd:documentation>List of States. A state represents a specific state of the biological entity (e.g. phosphorylation, genetic variants, etc). A state is linked to a data node.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -632,7 +637,7 @@
 	-->
 	<xsd:element name="Interactions">
 		<xsd:annotation>
-			<xsd:documentation>List of Interactions.</xsd:documentation>
+			<xsd:documentation>List of Interactions. An interaction represents the biological relation between entities. An Xref can be specified for Interactions (in contrast to GraphicalLines).</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -692,14 +697,14 @@
     -->
 	<xsd:element name="GraphicalLines">
 		<xsd:annotation>
-			<xsd:documentation>List of Graphical lines.</xsd:documentation>
+			<xsd:documentation>List of Graphical lines. A graphical line is a visual annotation without semantic meaning. It is often used to partition space or connect other pathway elements. An Xref cannot be specified for GraphicalLines (in contrast to Interactions).</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<!-- GraphicalLine -->
 				<xsd:element name="GraphicalLine" minOccurs="0" maxOccurs="unbounded">
 					<xsd:annotation>
-						<xsd:documentation>Graphical line annotations without semantic meaning. An Xref cannot be specified for GraphicalLines (in contrast to Interactions).</xsd:documentation>
+						<xsd:documentation>Graphical line are visual annotations without semantic meaning. An Xref cannot be specified for GraphicalLines (in contrast to Interactions).</xsd:documentation>
 					</xsd:annotation>
 					<xsd:complexType>
 						<xsd:sequence>
@@ -750,7 +755,7 @@
 	-->
 	<xsd:element name="Labels">
 		<xsd:annotation>
-			<xsd:documentation>List of Labels.</xsd:documentation>
+			<xsd:documentation>List of Labels. A label is a text field which can be used to annotate any aspect of a pathway.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -806,12 +811,12 @@
 		
 		Shape properties in the order to be written: 
 		- elementId, textLabel, groupRef
-		- Graphics (RectAttributes, FontAttributes, ShapeStyleAttributes), rotation
+		- Graphics (RectAttributes, FontAttributes, ShapeStyleAttributes)
 		- CommentGroup (Comment, Property, AnnotationRef, CitationRef, EvidenceRef)
 	-->
 	<xsd:element name="Shapes">
 		<xsd:annotation>
-			<xsd:documentation>List of Shapes.</xsd:documentation>
+			<xsd:documentation>List of Shapes. A shape is a visual annotation or graphical element.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -828,11 +833,6 @@
 									<xsd:attributeGroup ref="gpml:RectAttributes"/>
 									<xsd:attributeGroup ref="gpml:FontAttributes"/>
 									<xsd:attributeGroup ref="gpml:ShapeStyleAttributes"/>
-									<xsd:attribute name="rotation" type="xsd:float" default="0.0">
-										<xsd:annotation>
-											<xsd:documentation>A float value (rotation in radians).</xsd:documentation>
-										</xsd:annotation>
-									</xsd:attribute>
 								</xsd:complexType>
 							</xsd:element>
 							<xsd:group ref="gpml:CommentGroup"/>
@@ -873,7 +873,7 @@
 	-->
 	<xsd:element name="Groups">
 		<xsd:annotation>
-			<xsd:documentation>List of Groups.</xsd:documentation>
+			<xsd:documentation>List of Groups. A group is a collection of structurally or functionally similar or related pathway elements.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -941,32 +941,6 @@
 	<!-- End: Groups -->
 	<!-- ###################################################################### -->
 	<!-- 
-		InfoBox 
-		Holds the coordinates for where meta-information (e.g. title, organism) are displayed in the pathway. 
-		
-		InfoBox properties in the order to be written: 
-		- centerX, centerY
-	-->
-	<xsd:element name="InfoBox">
-		<xsd:annotation>
-			<xsd:documentation>The information box holds the coordinates for where information (e.g. title and organism) are displayed in the pathway.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:attribute name="centerX" type="xsd:float" use="required">
-				<xsd:annotation>
-					<xsd:documentation>The middle of the infobox in the x-direction.</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="centerY" type="xsd:float" use="required">
-				<xsd:annotation>
-					<xsd:documentation>The middle of the infobox in the x-direction.</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-		</xsd:complexType>
-	</xsd:element>
-	<!-- End: InfoBox -->
-	<!-- ###################################################################### -->
-	<!-- 
 		Annotations
 		Pathway or pathway element AnnotationRefs refer to Annotations. 
 		
@@ -976,7 +950,7 @@
 	-->
 	<xsd:element name="Annotations">
 		<xsd:annotation>
-			<xsd:documentation>List of Annotations.</xsd:documentation>
+			<xsd:documentation>List of Annotations. An annotation is a reference with additional information, e.g. some Ontology.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1078,7 +1052,7 @@
 	-->
 	<xsd:element name="Citations">
 		<xsd:annotation>
-			<xsd:documentation>List of Citations.</xsd:documentation>
+			<xsd:documentation>List of Citations. A citation is a reference to a source of information.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1158,7 +1132,7 @@
 	-->
 	<xsd:element name="Evidences">
 		<xsd:annotation>
-			<xsd:documentation>List of Evidence.</xsd:documentation>
+			<xsd:documentation>List of Evidence. An evidence provides information on type of scientific evidence.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>

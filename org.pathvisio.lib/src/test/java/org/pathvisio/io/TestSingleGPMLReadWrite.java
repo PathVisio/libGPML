@@ -42,24 +42,20 @@ public class TestSingleGPMLReadWrite extends TestCase {
 
 		// file to be read
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource("example-v2013a.xml");
+				.getResource("WP1140.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
 
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
-		
-		pathwayModel.getDataNodes().get(0).setBorderStyle(null);
-		
-		System.out.println(pathwayModel.getDataNodes().get(0).getBorderStyle().getName());
-		
+				
 		// writes to temp 
 		File tmp = File.createTempFile("testwrite", ".gpml");
 		
 		// choose here whether to write in GPML2013a or GPML2021 format
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}

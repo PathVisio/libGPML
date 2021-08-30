@@ -452,11 +452,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				GroupType type = GroupType.register(grp.getAttributeValue("type", GROUPTYPE_DEFAULT));
 				Element gfx = grp.getChild("Graphics", grp.getNamespace());
 				Group group = new Group(type);
+				group.setElementId(elementId);
 				// read graphics
 				readRectProperty(group, gfx);
 				readFontProperty(group, gfx);
 				readShapeStyleProperty(group, gfx);
-				group.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, group, grp);
 				// sets optional properties
@@ -498,11 +498,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String textLabel = lb.getAttributeValue("textLabel");
 				Element gfx = lb.getChild("Graphics", lb.getNamespace());
 				Label label = new Label(textLabel);
+				label.setElementId(elementId);
 				// read graphics
 				readRectProperty(label, gfx);
 				readFontProperty(label, gfx);
 				readShapeStyleProperty(label, gfx);
-				label.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, label, lb);
 				// sets optional properties
@@ -534,11 +534,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String elementId = shp.getAttributeValue("elementId");
 				Element gfx = shp.getChild("Graphics", shp.getNamespace());
 				Shape shape = new Shape();
+				shape.setElementId(elementId);
 				// read graphics
 				readRectProperty(shape, gfx);
 				readFontProperty(shape, gfx);
 				readShapeStyleProperty(shape, gfx);
-				shape.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, shape, shp);
 				// sets optional properties
@@ -573,11 +573,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String textLabel = dn.getAttributeValue("textLabel");
 				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT));
 				DataNode dataNode = new DataNode(textLabel, type);
+				dataNode.setElementId(elementId);
 				// read graphics
 				readRectProperty(dataNode, gfx);
 				readFontProperty(dataNode, gfx);
 				readShapeStyleProperty(dataNode, gfx);
-				dataNode.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, dataNode, dn);
 				// reads states
@@ -617,11 +617,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				double relY = Double.parseDouble(gfx.getAttributeValue("relY").trim());
 				// sets zOrder based on parent data node TODO
 				State state = new State(textLabel, type, relX, relY);
+				state.setElementId(elementId);
 				// read graphics
 				readRectProperty(state, gfx);
 				readFontProperty(state, gfx);
 				readShapeStyleProperty(state, gfx);
-				state.setElementId(elementId);
 				// reads comment group, evidenceRefs
 				readElementInfo(pathwayModel, state, st);
 				// sets optional properties
@@ -885,8 +885,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (shapedElement.getClass() != State.class) {
 			double centerX = Double.parseDouble(gfx.getAttributeValue("centerX").trim());
 			double centerY = Double.parseDouble(gfx.getAttributeValue("centerY").trim());
-			shapedElement.getCenterXY().setX(centerX);
-			shapedElement.getCenterXY().setY(centerY);
+			Coordinate CenterXY  = new Coordinate(centerX, centerY);
+			shapedElement.setCenterXY(CenterXY);
 		}
 		double width = Double.parseDouble(gfx.getAttributeValue("width").trim());
 		double height = Double.parseDouble(gfx.getAttributeValue("height").trim());

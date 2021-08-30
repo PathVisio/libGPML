@@ -17,6 +17,7 @@
 package org.pathvisio.events;
 
 import org.pathvisio.model.PathwayElement;
+import org.pathvisio.props.Property;
 
 /**
  * This event is used to notify {@link PathwayElementListener}s of changes to properties of a PathwayElement.  
@@ -88,7 +89,7 @@ public final class PathwayElementEvent {
 	 * @param prop The property to check.
 	 * @return true if the property may have been modified, false if not.
 	 */
-	public boolean affectsProperty(Object prop) { //TODO 
+	public boolean affectsProperty(Property prop) { //TODO 
 		return property == null || property.equals(prop);
 	}
 

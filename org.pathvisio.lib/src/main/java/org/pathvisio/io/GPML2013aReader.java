@@ -145,8 +145,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void calculateGroupRectProperty(List<Group> groups) {
 		for (Group group : groups) {
 			Rectangle2D bounds = BoundsUtils.calculateGroupBounds(group);
-			group.getCenterXY().setX(bounds.getCenterX());
-			group.getCenterXY().setY(bounds.getCenterY());
+			Coordinate centerXY = new Coordinate(bounds.getCenterX(), bounds.getCenterY());
+			group.setCenterXY(centerXY);
 			group.setWidth(bounds.getWidth());
 			group.setHeight(bounds.getHeight());
 		}
@@ -622,7 +622,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					groupRefStr = groupIdToNew.get(groupRefStr);
 				// given the correct groupRefStr/elementId, retrieves groupRef
 				Group groupRef = (Group) pathwayModel.getPathwayElement(groupRefStr);
-				// read this group elementId
 				String elementId = getAttr("Group", "GroupId", grp);
 				// if groupIdToNew contains elementId, sets elementId to its new elementId
 				if (groupIdToNew.containsKey(elementId))
@@ -700,11 +699,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Element gfx = lb.getChild("Graphics", lb.getNamespace());
 			// instantiates label
 			Label label = new Label(textLabel);
+			label.setElementId(elementId);
 			// set graphics props
 			readRectProperty(label, gfx);
 			readFontProperty(label, gfx);
 			readShapeStyleProperty(label, gfx);
-			label.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(pathwayModel, label, lb, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
@@ -737,11 +736,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
 			// instantiates shape
 			Shape shape = new Shape();
+			shape.setElementId(elementId);
 			// set graphics props
 			readRectProperty(shape, gfx);
 			readFontProperty(shape, gfx);
 			readShapeStyleProperty(shape, gfx);
-			shape.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(pathwayModel, shape, shp, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
@@ -780,13 +779,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				typeStr = "Undefined";
 			DataNodeType type = DataNodeType.register(typeStr);
 			// instantiates data node
-			System.out.println("Writing DataNode " + elementId);
 			DataNode dataNode = new DataNode(textLabel, type);
+			dataNode.setElementId(elementId);
 			// set graphics props
 			readRectProperty(dataNode, gfx);
 			readFontProperty(dataNode, gfx);
 			readShapeStyleProperty(dataNode, gfx);
-			dataNode.setElementId(elementId);
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
 			readShapedElement(pathwayModel, dataNode, dn, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
@@ -1432,8 +1430,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		if (shapedElement.getClass() != State.class) {
 			double centerX = Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx).trim());
 			double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx).trim());
-			shapedElement.getCenterXY().setX(centerX);
-			shapedElement.getCenterXY().setY(centerY);
+			Coordinate CenterXY  = new Coordinate(centerX, centerY);
+			shapedElement.setCenterXY(CenterXY);
 		}
 		double width = Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx).trim());
 		double height = Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx).trim());
