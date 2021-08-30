@@ -152,7 +152,7 @@ public class Group extends ShapedElement {
 	 * @param type the type of group, e.g. complex.
 	 */
 	public void setType(GroupType type) {
-		if (this.type != type) {
+		if (this.type != type && type != null) {
 			this.type = type;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPTYPE));
 		}

@@ -95,7 +95,7 @@ public class Anchor extends GenericPoint implements LinkableTo {
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
 	public void setShapeType(AnchorShapeType shapeType) {
-		if (!shapeType.equals(shapeType) && shapeType != null) {
+		if (this.shapeType != shapeType && shapeType != null) {
 			this.shapeType = shapeType;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}

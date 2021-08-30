@@ -169,7 +169,10 @@ public class State extends ShapedElement implements LinkableTo {
 	 * @param type the type of state, e.g. complex.
 	 */
 	public void setType(StateType type) {
-		this.type = type;
+		if (this.type != type && type != null) {
+			this.type = type;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.STATETYPE));
+		}
 	}
 
 	/**

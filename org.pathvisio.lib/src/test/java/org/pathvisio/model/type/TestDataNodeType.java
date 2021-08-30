@@ -66,6 +66,7 @@ public class TestDataNodeType extends TestCase {
 		assertFalse(names.contains("NEW data NODE type"));
 
 		System.out.println(DataNodeType.getNames());
+		System.out.println(rna1 == DataNodeType.RNA);
 
 	}
 }

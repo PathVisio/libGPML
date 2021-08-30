@@ -89,9 +89,9 @@ public class Label extends ShapedElement {
 	public void setHref(String href) {
 		String input = (href == null) ? "" : href;
 		if (!Utils.stringEquals(this.href, input)) {
-		this.href = href;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
-
+			this.href = href;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
+		}
 	}
 
 }

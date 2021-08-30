@@ -118,12 +118,9 @@ public class DataNode extends ShapedElement {
 	 * @param type the type of datanode, e.g. complex.
 	 */
 	public void setType(DataNodeType type) {
-		if (type == null)
-			throw new IllegalArgumentException();
-		// TODO
-		if (!Utils.stringEquals(this.type.getName(), type.getName())) {
+		if (this.type != type && type != null) {
 			this.type = type;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TYPE));
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.DATANODETYPE));
 		}
 	}
 

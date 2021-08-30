@@ -19,15 +19,14 @@ package org.pathvisio.events;
 import org.pathvisio.model.PathwayElement;
 
 /**
- * Used to notify listeners of changes to the model, i.e a Pathway or PathwayElement.
- * This can mean the addition or removal of whole elements, or just a modification to
- * one of the properties of an existing element.
+ * Used to notify listeners of changes to the model, i.e a Pathway or
+ * PathwayElement. This can mean the addition or removal of whole elements, or
+ * just a modification to one of the properties of an existing element.
  *
- * This event is currently used both by PathwayListener's and  PathwayElementListener's.
- * That may change in the future.
+ * This event is currently used both by PathwayListener's and
+ * PathwayElementListener's. That may change in the future.
  */
-public class PathwayEvent
-{
+public class PathwayEvent {
 	/**
 	 * Sent to listeners of Pathway when an object was deleted
 	 */
@@ -44,13 +43,18 @@ public class PathwayEvent
 	public static final int RESIZED = 4;
 
 	private PathwayElement affectedData;
-	public PathwayElement getAffectedData () { return affectedData; }
+
+	public PathwayElement getAffectedData() {
+		return affectedData;
+	}
 
 	private int type;
-	public int getType() { return type; }
 
-	public PathwayEvent (PathwayElement object, int t)
-	{
+	public int getType() {
+		return type;
+	}
+
+	public PathwayEvent(PathwayElement object, int t) {
 		affectedData = object;
 		type = t;
 	}
