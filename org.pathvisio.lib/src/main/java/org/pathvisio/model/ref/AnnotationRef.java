@@ -86,10 +86,10 @@ public class AnnotationRef implements Citable, Evidenceable {
 	/**
 	 * Sets the source annotation for this annotationRef.
 	 * 
-	 * @param annotation the given source annotation to set.
+	 * @param v the given source annotation to set.
 	 */
-	private void setAnnotation(Annotation annotation) {
-		this.annotation = annotation;
+	private void setAnnotation(Annotation v) {
+		annotation = v;
 	}
 
 	/**
@@ -144,10 +144,10 @@ public class AnnotationRef implements Citable, Evidenceable {
 	 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
 	 * for this annotationRef.
 	 * 
-	 * @param annotatable the given target annotatable to set.
+	 * @param v the given target annotatable to set.
 	 */
-	private void setAnnotatable(Annotatable annotatable) {
-		this.annotatable = annotatable;
+	private void setAnnotatable(Annotatable v) {
+		annotatable = v;
 	}
 
 	/**

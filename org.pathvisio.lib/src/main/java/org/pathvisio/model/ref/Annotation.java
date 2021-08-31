@@ -79,60 +79,60 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Returns the name, term, or text of the annotation.
+	 * Returns the name, term, or text of this annotation.
 	 * 
-	 * @return value the name, term, or text of the annotation.
+	 * @return value the name, term, or text of this annotation.
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Sets the name, term, or text of the annotation.
+	 * Sets the name, term, or text of this annotation.
 	 * 
-	 * @param value the name, term, or text of the annotation.
+	 * @param v the name, term, or text of this annotation.
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public void setValue(String v) {
+		value = v;
 	}
 
 	/**
-	 * Returns the type of the annotation.
+	 * Returns the type of this annotation.
 	 * 
-	 * @return type the type of annotation, e.g. ontology term.
+	 * @return type the type of this annotation, e.g. ontology term.
 	 */
 	public AnnotationType getType() {
 		return type;
 	}
 
 	/**
-	 * Sets the type of the annotation.
+	 * Sets the type of this annotation.
 	 * 
-	 * @param type the type of annotation, e.g. ontology term.
+	 * @param v the type to set for this annotation, e.g. ontology term.
 	 */
-	public void setType(AnnotationType type) {
-		if (this.type != type && type != null) {
-			this.type = type;
+	public void setType(AnnotationType v) {
+		if (type != v && v != null) {
+			type = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONTYPE));
 		}
 	}
 
 	/**
-	 * Returns the url of the annotation.
+	 * Returns the url of this annotation.
 	 * 
-	 * @return url the url of the annotation.
+	 * @return url the url of this annotation.
 	 */
 	public UrlRef getUrl() {
 		return url;
 	}
 
 	/**
-	 * Sets the url of the annotation.
+	 * Sets the url of this annotation.
 	 * 
-	 * @param url the url of the annotation.
+	 * @param url the url to set for this annotation.
 	 */
-	public void setUrl(UrlRef url) {
-		this.url = url;
+	public void setUrl(UrlRef v) {
+		url = v;
 	}
 
 	/**
@@ -145,12 +145,12 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Sets the Xref for the annotation.
+	 * Sets the Xref for this annotation.
 	 * 
-	 * @param xref the xref of the annotation.
+	 * @param v the xref to set for this annotation.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 	}
 
 	/**

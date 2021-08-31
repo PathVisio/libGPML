@@ -85,11 +85,11 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	public abstract String getTextLabel();
 
 	/**
-	 * Sets text label for shaped pathway elements.
+	 * Sets text label for this shaped pathway elements.
 	 * 
-	 * @param textLabel the the text of of the shaped pathway element.
+	 * @param v the the text to set for this shaped pathway element.
 	 */
-	public abstract void setTextLabel(String textLabel);
+	public abstract void setTextLabel(String v);
 
 	/**
 	 * Returns the center x and y coordinate of an object.
@@ -101,69 +101,70 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	}
 
 	/**
-	 * Sets the center x and y coordinate of an object.
+	 * Sets the center x and y coordinate for this shaped pathway element.
 	 * 
-	 * @param centerXY the middle of an object in the x and y direction.
+	 * @param v the middle in the x and y direction to set for this shaped pathway
+	 *          element.
 	 */
-	public void setCenterXY(Coordinate centerXY) {
-		if (this.centerXY != centerXY) {
-			this.centerXY = centerXY;
+	public void setCenterXY(Coordinate v) {
+		if (centerXY != v) {
+			centerXY = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
 	/**
-	 * Returns the width of an object.
+	 * Returns the width of this shaped pathway element.
 	 * 
-	 * @return width the width of an object.
+	 * @return width the width of this shaped pathway element.
 	 */
 	public double getWidth() {
 		return width;
 	}
 
 	/**
-	 * Sets the width of an object.
+	 * Sets the width of this shaped pathway element.
 	 * 
-	 * @param width the width of an object.
+	 * @param v the width to set for this shaped pathway element.
 	 * @throws IllegalArgumentException if width is a negative value.
 	 */
-	public void setWidth(double width) {
-		if (width < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + width);
+	public void setWidth(double v) {
+		if (v < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + v);
 		}
-		if (this.width != width) {
-			this.width = width;
+		if (width != v) {
+			width = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
 	/**
-	 * Returns the height of an object.
+	 * Returns the height of this shaped pathway element.
 	 * 
-	 * @return height the height of an object.
+	 * @return height the height of this shaped pathway element.
 	 */
 	public double getHeight() {
 		return height;
 	}
 
 	/**
-	 * Sets the height of an object.
+	 * Sets the height of this shaped pathway element.
 	 * 
-	 * @param height the height of an object.
+	 * @param height the height to set for this shaped pathway element.
 	 * @throws IllegalArgumentException if height is a negative value.
 	 */
-	public void setHeight(double height) {
-		if (height < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + height);
+	public void setHeight(double v) {
+		if (v < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + v);
 		}
-		if (this.height != height) {
-			this.height = height;
+		if (height != v) {
+			height = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
 	/**
-	 * Returns the color of text.
+	 * Returns the color of text for this shaped pathway element..
 	 * 
 	 * @return textColor the color of text.
 	 */
@@ -176,16 +177,16 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	}
 
 	/**
-	 * Sets the color of text.
+	 * Sets the color of text for this shaped pathway element.
 	 * 
-	 * @param textColor the color of text
+	 * @param v the color of text for this shaped pathway element.
 	 * @throws IllegalArgumentException if color null.
 	 */
-	public void setTextColor(Color textColor) {
-		if (textColor == null) {
+	public void setTextColor(Color v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		} else {
-			this.textColor = textColor;
+			textColor = v;
 		}
 	}
 
@@ -210,12 +211,12 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * @param fontName the name of the font.
 	 * @throws IllegalArgumentException if given fontName is null.
 	 */
-	public void setFontName(String fontName) {
-		if (fontName == null) {
+	public void setFontName(String v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (!Utils.stringEquals(this.fontName, fontName)) {
-			this.fontName = fontName;
+		if (!Utils.stringEquals(fontName, v)) {
+			fontName = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTNAME));
 		}
 	}
@@ -234,12 +235,12 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	/**
 	 * Sets the thickness of the font used, a bold font would have more weight.
 	 * 
-	 * @param fontWeight the boolean, if true font weight is bold. If false, font
-	 *                   weight is normal.
+	 * @param v the boolean, if true font weight is bold. If false, font weight is
+	 *          normal.
 	 */
-	public void setFontWeight(boolean fontWeight) {
-		if (this.fontWeight != fontWeight) {
-			this.fontWeight = fontWeight;
+	public void setFontWeight(boolean v) {
+		if (fontWeight != v) {
+			fontWeight = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTWEIGHT));
 		}
 	}
@@ -259,12 +260,12 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	/**
 	 * Sets the typographic style applied to displayed text, e.g. normal or italic.
 	 * 
-	 * @param fontStyle the boolean, if true typographic style is italic. If false,
-	 *                  typographic style is normal.
+	 * @param v the boolean, if true typographic style is italic. If false,
+	 *          typographic style is normal.
 	 */
-	public void setFontStyle(boolean fontStyle) {
-		if (this.fontStyle != fontStyle) {
-			this.fontStyle = fontStyle;
+	public void setFontStyle(boolean v) {
+		if (fontStyle != v) {
+			fontStyle = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
 		}
 	}
@@ -283,12 +284,12 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	/**
 	 * Sets the typographic style for underline or normal.
 	 * 
-	 * @param fontDecoration the boolean, if true typographic style is underline. If
-	 *                       false, typographic style is normal.
+	 * @param v the boolean, if true typographic style is underline. If false,
+	 *          typographic style is normal.
 	 */
-	public void setFontDecoration(boolean fontDecoration) {
-		if (this.fontDecoration != fontDecoration) {
-			this.fontDecoration = fontDecoration;
+	public void setFontDecoration(boolean v) {
+		if (fontDecoration != v) {
+			fontDecoration = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTDECORATION));
 		}
 	}
@@ -306,12 +307,12 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	/**
 	 * Sets the typographic style for strikethru or normal.
 	 * 
-	 * @param fontStrikethru the boolean, if true typographic style is strikethru.
-	 *                       If false, typographic style is normal.
+	 * @param v the boolean, if true typographic style is strikethru. If false,
+	 *          typographic style is normal.
 	 */
-	public void setFontStrikethru(boolean fontStrikethru) {
-		if (this.fontStrikethru != fontStrikethru) {
-			this.fontStrikethru = fontStrikethru;
+	public void setFontStrikethru(boolean v) {
+		if (fontStrikethru != v) {
+			fontStrikethru = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTRIKETHRU));
 		}
 	}
@@ -336,12 +337,12 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * @param fontSize the value for the size of the font.
 	 * @throws IllegalArgumentException if fontSize is a negative value.
 	 */
-	public void setFontSize(int fontSize) {
-		if (fontSize < 0) {
-			throw new IllegalArgumentException("Tried to set font size < 0: " + fontSize);
+	public void setFontSize(int v) {
+		if (v < 0) {
+			throw new IllegalArgumentException("Tried to set font size < 0: " + v);
 		}
-		if (this.fontSize != fontSize) {
-			this.fontSize = fontSize;
+		if (fontSize != v) {
+			fontSize = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSIZE));
 		}
 	}
@@ -363,11 +364,11 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	/**
 	 * Sets the horizontal alignment of displayed text, e.g., Left, Center, Right.
 	 * 
-	 * @param hAlign the horizontal alignment value of displayed text.
+	 * @param v the horizontal alignment value of displayed text.
 	 */
-	public void setHAlign(HAlignType hAlign) {
-		if (this.hAlign != hAlign) {
-			this.hAlign = hAlign;
+	public void setHAlign(HAlignType v) {
+		if (hAlign != v) {
+			hAlign = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HALIGN));
 		}
 	}
@@ -388,20 +389,20 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	/**
 	 * Sets the vertical alignment of displayed text, e.g., Top, Middle, Bottom.
 	 * 
-	 * @param vAlign the vertical alignment value of displayed text.
+	 * @param v the vertical alignment value of displayed text.
 	 * 
 	 */
-	public void setVAlign(VAlignType vAlign) {
-		if (this.vAlign != vAlign) {
-			this.vAlign = vAlign;
+	public void setVAlign(VAlignType v) {
+		if (vAlign != v) {
+			vAlign = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VALIGN));
 		}
 	}
 
 	/**
-	 * Returns the border color of an object.
+	 * Returns the border color of this shaped pathway element.
 	 * 
-	 * @return borderColor the border color of an object.
+	 * @return borderColor the border color of this shaped pathway element.
 	 */
 	public Color getBorderColor() {
 		if (borderColor == null) {
@@ -412,16 +413,18 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	}
 
 	/**
-	 * Sets the border color of an object.
+	 * Sets the border color of this shaped pathway element.
 	 * 
-	 * @param borderColor the border color of an object.
+	 * @param v the border color of this shaped pathway element.
 	 * @throws IllegalArgumentException if color null.
 	 */
-	public void setBorderColor(Color borderColor) {
-		if (borderColor == null) {
+	public void setBorderColor(Color v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
-		} else {
-			this.borderColor = borderColor;
+		}
+		if (borderColor != v) {
+			borderColor = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERCOLOR));
 		}
 	}
 
@@ -441,14 +444,17 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	/**
 	 * Sets the visual appearance of a border, e.g. Solid or Broken.
 	 * 
-	 * @param borderStyle the style of a border.
+	 * @param v the style of a border.
 	 */
-	public void setBorderStyle(LineStyleType borderStyle) {
-		this.borderStyle = borderStyle;
+	public void setBorderStyle(LineStyleType v) {
+		if (v != null && borderStyle != v) {
+			borderStyle = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
+		}
 	}
 
 	/**
-	 * Returns the pixel value for the border of an object.
+	 * Returns the pixel value for the border of this shaped pathway element.
 	 * 
 	 * @return borderWidth the width of a border.
 	 */
@@ -461,26 +467,26 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	}
 
 	/**
-	 * Sets the pixel value for the border of an object.
+	 * Sets the pixel value for the border of this shaped pathway element.
 	 * 
-	 * @param borderWidth the width of a border.
+	 * @param v the width of a border.
 	 * @throws IllegalArgumentException if borderWidth is a negative value.
 	 */
-	public void setBorderWidth(double borderWidth) {
-		if (borderWidth < 0) {
+	public void setBorderWidth(double v) {
+		if (v < 0) {
 			throw new IllegalArgumentException();
 		}
-		if (this.borderWidth != borderWidth) {
-			this.borderWidth = borderWidth;
+		if (borderWidth != v) {
+			borderWidth = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERWIDTH));
 		}
 	}
 
 	/**
-	 * Returns the color used to paint the area of an object, not including its
+	 * Returns the color used to paint the area of this shaped pathway element., not including its
 	 * border.
 	 * 
-	 * @return fillColor the fill color of an object.
+	 * @return fillColor the fill color of this shaped pathway element.
 	 */
 	public Color getFillColor() {
 		if (fillColor == null) {
@@ -491,17 +497,17 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	}
 
 	/**
-	 * Sets the color used to paint the area of an object, not including its border.
+	 * Sets the color used to paint the area of this shaped pathway element, not including its border.
 	 * 
-	 * @param fillColor the fill color of an object.
+	 * @param v the fill color of this shaped pathway element.
 	 * @throws IllegalArgumentException if fillColor null.
 	 */
-	public void setFillColor(Color fillColor) {
-		if (fillColor == null) {
+	public void setFillColor(Color v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (this.fillColor != fillColor) {
-			this.fillColor = fillColor;
+		if (fillColor != v) {
+			fillColor = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FILLCOLOR));
 		}
 	}
@@ -513,7 +519,7 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
 	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
 	 * 
-	 * @return shapeType the visual appearance of an object.
+	 * @return shapeType the visual appearance of this shaped pathway element.
 	 */
 	public ShapeType getShapeType() {
 		if (shapeType == null) {
@@ -530,67 +536,67 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
 	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
 	 * 
-	 * @param shapeType the visual appearance of an object.
+	 * @param v the visual appearance of this shaped pathway element.
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
-	public void setShapeType(ShapeType shapeType) {
-		if (shapeType == null) {
+	public void setShapeType(ShapeType v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (this.shapeType != shapeType) {
-			this.shapeType = shapeType;
+		if (shapeType != v) {
+			shapeType = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SHAPETYPE));
 		}
 	}
 
 	/**
-	 * Returns the z-order of an object.
+	 * Returns the z-order of this shaped pathway element.
 	 * 
-	 * @return zOrder the order of an object.
+	 * @return zOrder the order of this shaped pathway element.
 	 */
 	public int getZOrder() {
 		return zOrder;
 	}
 
 	/**
-	 * Sets the z-order of an object.
+	 * Sets the z-order of this shaped pathway element.
 	 * 
-	 * @param zOrder the order of an object.
+	 * @param v the order of this shaped pathway element.
 	 */
-	public void setZOrder(int zOrder) {
-		if (this.zOrder != zOrder) {
-			this.zOrder = zOrder;
+	public void setZOrder(int v) {
+		if (zOrder != v) {
+			this.zOrder = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
 		}
 	}
 
 	/**
-	 * Returns the rotation of this object.
+	 * Returns the rotation of this shaped pathway element.
 	 * 
-	 * @return rotation the rotation of the object.
+	 * @return rotation the rotation of this shaped pathway element.
 	 */
 	public double getRotation() {
 		return rotation;
 	}
 
 	/**
-	 * Sets the rotation of this object.
+	 * Sets the rotation of this shaped pathway element.
 	 * 
-	 * @param rotation the rotation of the object.
+	 * @param rotation the rotation of this shaped pathway element.
 	 */
-	public void setRotation(Double rotation) {
-		if (this.rotation != rotation) {
-			this.rotation = rotation;
+	public void setRotation(Double v) {
+		if (rotation != v) {
+			rotation = v;
 			// TODO rotation????
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
 	/**
-	 * Returns the parent group of the pathway element. In GPML, groupRef refers to
+	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
 	 * 
-	 * @return groupRef the parent group of the pathway element.
+	 * @return groupRef the parent group of this pathway element.
 	 */
 	public Group getGroupRef() {
 		return groupRef;
@@ -606,32 +612,32 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	}
 
 	/**
-	 * Verifies if given parent group is new and valid. Sets the parent group of the
+	 * Verifies if given parent group is new and valid. Sets the parent group of this
 	 * pathway element. Adds this pathway element to the the pathwayElements list of
 	 * the new parent group. If there is an old parent group, this pathway element
 	 * is removed from its pathwayElements list.
 	 * 
-	 * @param groupRef the new parent group to set.
+	 * @param v the new parent group to set.
 	 */
-	public void setGroupRefTo(Group groupRef) {
-		if (groupRef == null)
+	public void setGroupRefTo(Group v) {
+		if (v == null)
 			throw new IllegalArgumentException("Invalid group.");
-		if (this.groupRef != groupRef) {
+		if (groupRef != v) {
 			unsetGroupRef(); // first unsets if necessary
-			setGroupRef(groupRef);
-			if (!groupRef.hasPathwayElement(this))
-				groupRef.addPathwayElement(this);
+			setGroupRef(v);
+			if (!v.hasPathwayElement(this))
+				v.addPathwayElement(this);
 		}
 	}
 
 	/**
 	 * Sets the parent group for this pathway element.
 	 * 
-	 * @param groupRef the given group to set.
+	 * @param v the given group to set.
 	 */
-	private void setGroupRef(Group groupRef) {
+	private void setGroupRef(Group v) {
 		// TODO
-		this.groupRef = groupRef;
+		groupRef = v;
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
 

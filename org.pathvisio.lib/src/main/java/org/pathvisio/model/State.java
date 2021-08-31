@@ -96,13 +96,13 @@ public class State extends ShapedElement implements LinkableTo {
 	}
 
 	/**
-	 * Sets the parent data node to which the state belongs. NB: Only set when a
+	 * Sets the parent data node to which this state belongs. NB: Only set when a
 	 * data nodes adds this state. This method is not used directly.
 	 * 
 	 * NB: prior to GPML2021, elementRef was used to refer to the elementId of
 	 * parent data node.
 	 * 
-	 * @param dataNode the parent data node of the state.
+	 * @param dataNode the parent data node of this state.
 	 */
 	protected void setDataNodeTo(DataNode dataNode) { // TODO Make LinkTooo?
 		if (dataNode == null)
@@ -116,10 +116,10 @@ public class State extends ShapedElement implements LinkableTo {
 	 * Sets the parent data node for this state. NB: This method is not used
 	 * directly.
 	 * 
-	 * @param dataNode the given dataNode to set.
+	 * @param v the given dataNode to set.
 	 */
-	private void setDataNode(DataNode dataNode) {
-		this.dataNode = dataNode;
+	private void setDataNode(DataNode v) {
+		dataNode = v;
 	}
 
 	/**
@@ -132,9 +132,9 @@ public class State extends ShapedElement implements LinkableTo {
 	}
 
 	/**
-	 * Returns the text of of the state.
+	 * Returns the text of of this state.
 	 * 
-	 * @return textLabel the text of of the state.
+	 * @return textLabel the text of of this state.
 	 * 
 	 */
 	public String getTextLabel() {
@@ -142,35 +142,35 @@ public class State extends ShapedElement implements LinkableTo {
 	}
 
 	/**
-	 * Sets the text of of the shaped pathway element.
+	 * Sets the text of of this shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the shaped pathway element.
+	 * @param v the text to set for this shaped pathway element.
 	 */
-	public void setTextLabel(String input) {
-		String textLabel = (input == null) ? "" : input;
-		if (!Utils.stringEquals(this.textLabel, textLabel)) {
-			this.textLabel = textLabel;
+	public void setTextLabel(String v) {
+		String value = (v == null) ? "" : v;
+		if (!Utils.stringEquals(textLabel, value)) {
+			textLabel = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
 	/**
-	 * Returns the type of the state.
+	 * Returns the type of this state.
 	 * 
-	 * @return type the type of state, e.g. complex.
+	 * @return type the type of this state, e.g. complex.
 	 */
 	public StateType getType() {
 		return type;
 	}
 
 	/**
-	 * Sets the type of the state.
+	 * Sets the type of this state.
 	 * 
-	 * @param type the type of state, e.g. complex.
+	 * @param v the type of this state, e.g. complex.
 	 */
-	public void setType(StateType type) {
-		if (this.type != type && type != null) {
-			this.type = type;
+	public void setType(StateType v) {
+		if (type != v && v != null) {
+			type = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.STATETYPE));
 		}
 	}
@@ -196,11 +196,12 @@ public class State extends ShapedElement implements LinkableTo {
 	 * @param relX the relative x coordinate.
 	 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 	 */
-	public void setRelX(double relX) {
-		if (Math.abs(relX) <= 1.0) {
-			this.relX = relX;
+	public void setRelX(double v) {
+		if (Math.abs(v) <= 1.0) {
+			relX = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		} else {
-			throw new IllegalArgumentException("relX " + relX + " should be between -1.0 and 1.0");
+			throw new IllegalArgumentException("relX " + v + " should be between -1.0 and 1.0");
 		}
 	}
 
@@ -222,32 +223,33 @@ public class State extends ShapedElement implements LinkableTo {
 	 * is at the center of the data node and 1,1 at the bottom right corner of the
 	 * data node.
 	 * 
-	 * @param relY the relative y coordinate.
+	 * @param v the relative y coordinate.
 	 */
-	public void setRelY(double relY) {
-		if (Math.abs(relY) <= 1.0) {
-			this.relY = relY;
+	public void setRelY(double v) {
+		if (Math.abs(v) <= 1.0) {
+			relY = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		} else {
-			throw new IllegalArgumentException("relY " + relY + " should be between -1.0 and 1.0");
+			throw new IllegalArgumentException("relY " + v + " should be between -1.0 and 1.0");
 		}
 	}
 
 	/**
-	 * Returns the Xref for the state.
+	 * Returns the Xref for this state.
 	 * 
-	 * @return xref the xref of the state.
+	 * @return xref the xref of this state.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
-	 * Sets the Xref for the state.
+	 * Sets the Xref for this state.
 	 * 
-	 * @param xref the xref of the state.
+	 * @param v the xref of this state.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
@@ -274,11 +276,5 @@ public class State extends ShapedElement implements LinkableTo {
 		unsetDataNode();
 		unsetPathwayModel();
 	}
-
-//	@Override
-//	public void propertyChange(PropertyChangeEvent evt) {
-//		float speed = model.getSpeed();
-//		view.setSpeed(speed);
-//	}
 
 }

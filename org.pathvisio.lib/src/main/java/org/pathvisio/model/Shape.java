@@ -57,14 +57,14 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of of the shaped pathway element.
+	 * Sets the text of this shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the shaped pathway element.
+	 * @param v the text to set.
 	 */
-	public void setTextLabel(String input) {
-		String textLabel = (input == null) ? "" : input;
-		if (!Utils.stringEquals(this.textLabel, textLabel)) {
-			this.textLabel = textLabel;
+	public void setTextLabel(String v) {
+		String value = (v == null) ? "" : v;
+		if (!Utils.stringEquals(textLabel, value)) {
+			textLabel = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}

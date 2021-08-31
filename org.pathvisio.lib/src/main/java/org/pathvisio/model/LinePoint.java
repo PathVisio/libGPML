@@ -113,12 +113,12 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	}
 
 	/**
-	 * Sets the xy coordinate position of the point.
+	 * Sets the xy coordinate position of this point.
 	 * 
-	 * @param xy the xy coordinate position of the point.
+	 * @param xy the xy coordinate position of this point.
 	 */
-	public void setXY(Coordinate xy) {
-		this.xy = xy;
+	public void setXY(Coordinate v) {
+		xy = v;
 	}
 
 	// TODO
@@ -127,10 +127,10 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	}
 
 	/**
-	 * Returns the pathway element to which the point refers to. In GPML, this is
+	 * Returns the pathway element to which this point refers to. In GPML, this is
 	 * elementRef which refers to the elementId of a pathway element.
 	 * 
-	 * @return elementRef the pathway element to which the point refers.
+	 * @return elementRef the pathway element to which this point refers.
 	 */
 	public LinkableTo getElementRef() {
 		return elementRef;
@@ -140,13 +140,13 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * Sets the pathway element to which the point refers to. In GPML, this is
 	 * elementRef which refers to the elementId of a pathway element.
 	 * 
-	 * @param elementRef the pathway element to which the point refers.
+	 * @param v the pathway element to which this point refers.
 	 */
-	public void setElementRef(LinkableTo elementRef) {
+	public void setElementRef(LinkableTo v) {
 		// TODO WEIRD LOGIC
 		// TODO: check that new graphRef exists and that it points to a DataNode
-		if (!(this.elementRef == null ? elementRef == null : this.elementRef.equals(elementRef))) {
-			this.elementRef = elementRef;
+		if (!(elementRef == null ? v == null : elementRef.equals(v))) {
+			elementRef = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ELEMENTREF));
 		}
 	}
@@ -169,15 +169,15 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * is at the center of the object and 1,1 at the bottom right corner of the
 	 * object.
 	 * 
-	 * @param relX the relative x coordinate.
+	 * @param v the relative x coordinate.
 	 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 	 */
-	public void setRelX(double relX) {
-		if (Math.abs(relX) > 1.0) {
-			Logger.log.trace("Warning: relX absolute value of " + String.valueOf(relX) + " greater than 1");
+	public void setRelX(double v) {
+		if (Math.abs(v) > 1.0) {
+			Logger.log.trace("Warning: relX absolute value of " + String.valueOf(v) + " greater than 1");
 		}
-		if (this.relX != relX) {
-			this.relX = relX;
+		if (relX != v) {
+			relX = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
@@ -200,14 +200,14 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * is at the center of the object and 1,1 at the bottom right corner of the
 	 * object.
 	 * 
-	 * @param relY the relative y coordinate.
+	 * @param v the relative y coordinate.
 	 */
-	public void setRelY(double relY) {
-		if (Math.abs(relY) > 1.0) {
-			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(relY) + " greater than 1");
+	public void setRelY(double v) {
+		if (Math.abs(v) > 1.0) {
+			Logger.log.trace("Warning: relY absolute value of " + String.valueOf(v) + " greater than 1");
 		}
-		if (this.relY != relY) {
-			this.relY = relY;
+		if (relY != v) {
+			relY = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
@@ -215,10 +215,12 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	/**
 	 * Link to an object. Current absolute coordinates will be converted to relative
 	 * coordinates based on the object to link to. TODO
+	 * 
+	 * @param pathwayElement the linkableTo pathway element to link to.
 	 */
-	public void linkTo(LinkableTo idc) {
+	public void linkTo(LinkableTo pathwayElement) {
 //		Point2D rel = idc.toRelativeCoordinate(toPoint2D());
-		linkTo(idc, relX, relY);
+		linkTo(pathwayElement, relX, relY);
 	}
 
 	/**

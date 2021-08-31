@@ -147,10 +147,10 @@ public class Author {
 	/**
 	 * Sets the username of this author.
 	 * 
-	 * @param username the username of this author.
+	 * @param v the username of this author.
 	 */
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUsername(String v) {
+		username = v;
 	}
 
 	/**
@@ -165,10 +165,10 @@ public class Author {
 	/**
 	 * Sets the authorship order of this author.
 	 *
-	 * @param order the authorship order.
+	 * @param v the authorship order.
 	 */
-	public void setOrder(int order) {
-		this.order = order;
+	public void setOrder(int v) {
+		order = v;
 	}
 
 	/**
@@ -183,10 +183,10 @@ public class Author {
 	/**
 	 * Sets the Xref for the author.
 	 * 
-	 * @param xref the xref of the author.
+	 * @param v the xref of the author.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}

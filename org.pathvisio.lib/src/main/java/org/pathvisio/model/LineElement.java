@@ -225,10 +225,10 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Returns the parent group of the pathway element. In GPML, groupRef refers to
+	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
 	 * 
-	 * @return groupRef the parent group of the pathway element.
+	 * @return groupRef the parent group of this pathway element.
 	 */
 	public Group getGroupRef() {
 		return groupRef;
@@ -265,11 +265,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	/**
 	 * Sets the parent group for this pathway element.
 	 * 
-	 * @param groupRef the given group to set.
+	 * @param v the given group to set.
 	 */
-	private void setGroupRef(Group groupRef) {
+	private void setGroupRef(Group v) {
 		// TODO
-		this.groupRef = groupRef;
+		groupRef = v;
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
 
@@ -305,12 +305,12 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param lineColor the color of a line.
 	 * @throws IllegalArgumentException if color null.
 	 */
-	public void setLineColor(Color lineColor) {
-		if (lineColor == null) {
+	public void setLineColor(Color v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (this.lineColor != lineColor) {
-			this.lineColor = lineColor;
+		if (lineColor != v) {
+			lineColor = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINECOLOR));
 		}
 	}
@@ -331,15 +331,15 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	/**
 	 * Sets the visual appearance of a line, e.g. Solid or Broken.
 	 * 
-	 * @param lineStyle the style of a line.
+	 * @param v the line style to set.
 	 * @throws IllegalArgumentException if lineStyle null.
 	 */
-	public void setLineStyle(LineStyleType lineStyle) {
-		if (lineStyle == null) {
+	public void setLineStyle(LineStyleType v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (this.lineStyle != lineStyle) {
-			this.lineStyle = lineStyle;
+		if (lineStyle != v) {
+			lineStyle = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 		}
 	}
@@ -363,12 +363,12 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param lineWidth the width of a line.
 	 * @throws IllegalArgumentException if lineWidth is a negative value.
 	 */
-	public void setLineWidth(double lineWidth) {
-		if (lineWidth < 0) {
+	public void setLineWidth(double v) {
+		if (v < 0) {
 			throw new IllegalArgumentException();
 		}
-		if (this.lineWidth != lineWidth) {
-			this.lineWidth = lineWidth;
+		if (lineWidth != v) {
+			lineWidth = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINEWIDTH));
 		}
 	}
@@ -396,12 +396,12 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	 * @param connectorType the layout of a line.
 	 * @throws IllegalArgumentException if ConnectorType null.
 	 */
-	public void setConnectorType(ConnectorType connectorType) {
-		if (connectorType == null) {
+	public void setConnectorType(ConnectorType v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (!this.connectorType.equals(connectorType)) {
-			this.connectorType = connectorType;
+		if (connectorType != v) {
+			connectorType = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CONNECTORTYPE));
 		}
 	}
@@ -418,11 +418,11 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	/**
 	 * Sets the order of a line.
 	 * 
-	 * @param zOrder the order of a line.
+	 * @param v the order of a line.
 	 */
-	public void setZOrder(int zOrder) {
-		if (this.zOrder != zOrder) {
-			this.zOrder = zOrder;
+	public void setZOrder(int v) {
+		if (zOrder != v) {
+			zOrder = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
 		}
 	}

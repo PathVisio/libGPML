@@ -60,20 +60,20 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of of the shaped pathway element.
+	 * Sets the text of this shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the shaped pathway element.
+	 * @param v the text to set.
 	 */
-	public void setTextLabel(String input) {
-		String textLabel = (input == null) ? "" : input;
-		if (!Utils.stringEquals(this.textLabel, textLabel)) {
-			this.textLabel = textLabel;
+	public void setTextLabel(String v) {
+		String value = (v == null) ? "" : v;
+		if (!Utils.stringEquals(textLabel, value)) {
+			textLabel = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
 	/**
-	 * Returns the hyperlink for a Label.
+	 * Returns the hyperlink for this label.
 	 * 
 	 * @return href the hyperlink reference to a url.
 	 */
@@ -82,14 +82,14 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Sets the hyperlink for a Label.
+	 * Sets the hyperlink for this Label.
 	 * 
 	 * @param href the hyperlink reference to a url.
 	 */
-	public void setHref(String href) {
-		String input = (href == null) ? "" : href;
-		if (!Utils.stringEquals(this.href, input)) {
-			this.href = href;
+	public void setHref(String v) {
+		String value = (v == null) ? "" : v;
+		if (!Utils.stringEquals(href, value)) {
+			href = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
 		}
 	}

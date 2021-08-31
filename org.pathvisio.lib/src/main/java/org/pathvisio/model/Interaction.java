@@ -48,7 +48,7 @@ public class Interaction extends LineElement {
 	}
 
 	/**
-	 * Returns the Xref for the interaction.
+	 * Returns the Xref for this interaction.
 	 * 
 	 * @return xref the xref of interaction.
 	 */
@@ -57,9 +57,9 @@ public class Interaction extends LineElement {
 	}
 
 	/**
-	 * Sets the Xref for the interaction.
+	 * Sets the Xref for this interaction.
 	 * 
-	 * @param xref the xref of the interaction.
+	 * @param v the xref to set for this interaction.
 	 */
 	public void setXref(Xref xref) {
 		this.xref = xref;

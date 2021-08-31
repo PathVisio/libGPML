@@ -71,43 +71,43 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Returns the Citation Xref.
+	 * Returns this Citation Xref.
 	 * 
-	 * @return xref the citation xref.
+	 * @return xref this citation xref.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
-	 * Sets the Xref for the citation.
+	 * Sets the Xref for this citation.
 	 * 
-	 * @param xref the xref of the citation.
+	 * @param v the xref of this citation.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 	}
 
 	/**
-	 * Returns the url of the citation.
+	 * Returns the url of this citation.
 	 * 
-	 * @return url the url of the citation.
+	 * @return url the url of this citation.
 	 */
 	public UrlRef getUrl() {
 		return url;
 	}
 
 	/**
-	 * Sets the url of the citation.
+	 * Sets the url of this citation.
 	 * 
-	 * @param url the url of the citation.
+	 * @param v the url to set for this citation.
 	 */
-	public void setUrl(UrlRef url) {
-		this.url = url;
+	public void setUrl(UrlRef v) {
+		url = v;
 	}
 
 	/**
-	 * Returns source for the citation (for GPML2013a Biopax).
+	 * Returns source for this citation (for GPML2013a Biopax).
 	 * 
 	 * @return title the title.
 	 */
@@ -116,16 +116,16 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Sets source for the citation (for GPML2013a Biopax).
+	 * Sets source for this citation (for GPML2013a Biopax).
 	 * 
-	 * @param title the title.
+	 * @param v the title.
 	 */
-	public void setTitle(String title) {
-		this.title = title;
+	public void setTitle(String v) {
+		title = v;
 	}
 
 	/**
-	 * Returns source for the citation (for GPML2013a Biopax).
+	 * Returns source for this citation (for GPML2013a Biopax).
 	 * 
 	 * @return source the source.
 	 */
@@ -134,16 +134,16 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Sets source for the citation (for GPML2013a Biopax).
+	 * Sets source for this citation (for GPML2013a Biopax).
 	 * 
-	 * @param source the source.
+	 * @param v the source.
 	 */
-	public void setSource(String source) {
-		this.source = source;
+	public void setSource(String v) {
+		source = v;
 	}
 
 	/**
-	 * Returns year for the citation (for GPML2013a Biopax).
+	 * Returns year for this citation (for GPML2013a Biopax).
 	 * 
 	 * @return year the year.
 	 */
@@ -152,16 +152,16 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Sets year for the citation (for GPML2013a Biopax).
+	 * Sets year for this citation (for GPML2013a Biopax).
 	 * 
-	 * @param year the year.
+	 * @param v the year.
 	 */
-	public void setYear(String year) {
-		this.year = year;
+	public void setYear(String v) {
+		year = v;
 	}
 
 	/**
-	 * Returns list of authors for the citation (for GPML2013a Biopax).
+	 * Returns list of authors for this citation (for GPML2013a Biopax).
 	 * 
 	 * @return authors the list of authors.
 	 */
@@ -170,7 +170,7 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Sets list of authors for the citation (for GPML2013a Biopax).
+	 * Sets list of authors for this citation (for GPML2013a Biopax).
 	 * 
 	 * @param authors the list of authors.
 	 */
@@ -198,7 +198,7 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given citationRef to citationRefs list of the citation. NB: This method
+	 * Adds the given citationRef to citationRefs list of this citation. NB: This method
 	 * is not used directly.
 	 * 
 	 * @param citationRef the given citationRef to add.

@@ -110,10 +110,10 @@ public abstract class PathwayElement {
 	/**
 	 * Sets the elementId of the pathway element.
 	 * 
-	 * @param elementId the unique pathway element identifier.
+	 * @param v the unique pathway element identifier.
 	 */
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
+	public void setElementId(String v) {
+		elementId = v;
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.ELEMENTID));
 	}
 

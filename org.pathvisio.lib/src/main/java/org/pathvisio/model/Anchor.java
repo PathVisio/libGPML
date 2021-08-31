@@ -65,13 +65,13 @@ public class Anchor extends GenericPoint implements LinkableTo {
 	 * Sets the proportional distance of an anchor along the line it belongs to,
 	 * between 0 and 1.
 	 * 
-	 * @param position the position of the anchor.
+	 * @param v the position of the anchor to set.
 	 */
-	public void setPosition(double position) {
-		if (position < 0 || position > 1) {
+	public void setPosition(double v) {
+		if (v < 0 || v > 1) {
 			throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
 		}
-		this.position = position;
+		position = v;
 	}
 
 	/**
@@ -91,12 +91,12 @@ public class Anchor extends GenericPoint implements LinkableTo {
 	/**
 	 * Sets the shapeType for given anchor pathway element.
 	 * 
-	 * @param shapeType the shape type of the anchor.
+	 * @param v the shape type of the anchor to set.
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
-	public void setShapeType(AnchorShapeType shapeType) {
-		if (this.shapeType != shapeType && shapeType != null) {
-			this.shapeType = shapeType;
+	public void setShapeType(AnchorShapeType v) {
+		if (shapeType != v && v != null) {
+			shapeType = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}
 	}

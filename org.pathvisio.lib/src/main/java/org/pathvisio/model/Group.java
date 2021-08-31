@@ -149,19 +149,19 @@ public class Group extends ShapedElement {
 	/**
 	 * Sets GroupType to the given groupType.
 	 * 
-	 * @param type the type of group, e.g. complex.
+	 * @param v the type to set for this group, e.g. complex.
 	 */
-	public void setType(GroupType type) {
-		if (this.type != type && type != null) {
-			this.type = type;
+	public void setType(GroupType v) {
+		if (type != v && v != null) {
+			type = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPTYPE));
 		}
 	}
 
 	/**
-	 * Returns the text of of the group.
+	 * Returns the text of of this group.
 	 * 
-	 * @return textLabel the text of of the group.
+	 * @return textLabel the text of of this group.
 	 * 
 	 */
 	public String getTextLabel() {
@@ -169,14 +169,14 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of of the shaped pathway element.
+	 * Sets the text of this shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the shaped pathway element.
+	 * @param v the text to set.
 	 */
-	public void setTextLabel(String input) {
-		String textLabel = (input == null) ? "" : input;
-		if (!Utils.stringEquals(this.textLabel, textLabel)) {
-			this.textLabel = textLabel;
+	public void setTextLabel(String v) {
+		String value = (v == null) ? "" : v;
+		if (!Utils.stringEquals(textLabel, value)) {
+			textLabel = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
@@ -184,19 +184,19 @@ public class Group extends ShapedElement {
 	/**
 	 * Returns the Xref for the group.
 	 * 
-	 * @return xref the xref of the group
+	 * @return xref the xref of this group
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
-	 * Sets the Xref for the group.
+	 * Sets the Xref for this group.
 	 * 
-	 * @param xref the xref of the group.
+	 * @param v the xref to set for this group.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}

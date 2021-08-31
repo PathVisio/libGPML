@@ -59,12 +59,12 @@ public class Coordinate {
 	/**
 	 * Sets x coordinate to given value.
 	 * 
-	 * @param x the coordinate value for x.
+	 * @param v the coordinate value to set for x.
 	 */
-	public void setX(double x) {
-		if (x < 0)
-			Logger.log.trace("Warning: negative x coordinate " + String.valueOf(x));
-		this.x = x;
+	public void setX(double v) {
+		if (v < 0)
+			Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
+		x = v;
 	}
 
 	/**
@@ -79,12 +79,12 @@ public class Coordinate {
 	/**
 	 * Sets y coordinate to given value.
 	 * 
-	 * @param y the coordinate value for y.
+	 * @param v the coordinate value to set for y.
 	 */
-	public void setY(double y) {
-		if (y < 0)
-			Logger.log.trace("Warning: negative y coordinate " + String.valueOf(y));
-		this.y = y;
+	public void setY(double v) {
+		if (v < 0)
+			Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
+		y = v;
 	}
 
 	/**

@@ -35,7 +35,7 @@ public class DataNode extends ShapedElement {
 	private DataNodeType type = DataNodeType.UNDEFINED;
 	private List<State> states;
 	private Xref xref; // optional
-	private Group aliasRef; // optional, the pathway element to which the data node refers to as an alias.
+	private Group aliasRef; // optional, the pathway element to which this data node refers to as an alias.
 
 	/**
 	 * 
@@ -44,11 +44,10 @@ public class DataNode extends ShapedElement {
 	 * datanode has aliasRef which refers to the elementId of a pathway element
 	 * (normally gpml:Group).
 	 * 
-	 * @param rotation  the rotation of shape in radians.
-	 * @param textLabel the text of the datanode.
+	 * @param textLabel the text of this datanode.
 	 * @param type      the type of datanode, e.g. complex.
 	 * @param xref      the data node Xref.
-	 * @param aliasRef  the group the data node alias refers to.
+	 * @param aliasRef  the group this data node alias refers to.
 	 */
 	public DataNode(String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
 		this.textLabel = textLabel;
@@ -81,9 +80,9 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Returns the text of of the datanode.
+	 * Returns the text of this datanode.
 	 * 
-	 * @return textLabel the text of of the datanode.
+	 * @return textLabel the text of this datanode.
 	 * 
 	 */
 	public String getTextLabel() {
@@ -91,61 +90,61 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of of the shaped pathway element.
+	 * Sets the text of this shaped pathway element.
 	 * 
-	 * @param textLabel the text of of the shaped pathway element.
+	 * @param v the text to set.
 	 */
-	public void setTextLabel(String input) {
-		String textLabel = (input == null) ? "" : input;
-		if (!Utils.stringEquals(this.textLabel, textLabel)) {
-			this.textLabel = textLabel;
+	public void setTextLabel(String v) {
+		String value = (v == null) ? "" : v;
+		if (!Utils.stringEquals(textLabel, value)) {
+			textLabel = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
 	/**
-	 * Returns the type of the datanode.
+	 * Returns the type of this datanode.
 	 * 
-	 * @return type the type of datanode, e.g. complex.
+	 * @return type the type of this datanode, e.g. complex.
 	 */
 	public DataNodeType getType() {
 		return type;
 	}
 
 	/**
-	 * Sets the type of the datanode.
+	 * Sets the type of this datanode, e.g. complex.
 	 * 
-	 * @param type the type of datanode, e.g. complex.
+	 * @param v the type to set for this datanode.
 	 */
-	public void setType(DataNodeType type) {
-		if (this.type != type && type != null) {
-			this.type = type;
+	public void setType(DataNodeType v) {
+		if (type != v && v != null) {
+			type = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.DATANODETYPE));
 		}
 	}
 
 	/**
-	 * Returns the Xref for the data node.
+	 * Returns the Xref for this datanode.
 	 * 
-	 * @return xref the xref of the data node.
+	 * @return xref the xref of this datanode.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
-	 * Sets the Xref for the data node.
+	 * Sets the Xref for this datanode.
 	 * 
-	 * @param xref the xref of the data node.
+	 * @param v the xref to set for this datanode.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 	/*
-	 * Returns the list of states of the data node.
+	 * Returns the list of states of this data node.
 	 * 
 	 * @return states the list of states.
 	 */
@@ -164,7 +163,7 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Adds given state to states list. Sets dataNode for the given state.
+	 * Adds given state to states list. Sets datanode for the given state.
 	 * 
 	 * @param state the state to be added.
 	 */
@@ -177,6 +176,8 @@ public class DataNode extends ShapedElement {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(state);
 		states.add(state);
+		//TODO 
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 	}
 
 	/**
@@ -191,6 +192,8 @@ public class DataNode extends ShapedElement {
 			getPathwayModel().removePathwayElement(state);
 		states.remove(state);
 		state.terminate();
+		//TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 	}
 
 	/**
@@ -223,26 +226,28 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Sets the group aliasRef to which the data node refers to as an alias. In
+	 * Sets the group aliasRef to which this data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of gpml:Group.
 	 * 
-	 * @param aliasRef the group to which the data node refers.
+	 * @param aliasRef the group to which this data node refers.
 	 */
-	public void setAliasRefTo(Group aliasRef) {
-		if (aliasRef != null) {
+	public void setAliasRefTo(Group v) {
+		//TODO 
+		if (aliasRef != v && v != null) {
 			unsetAliasRef(); // first unsets if necessary
-			setAliasRef(aliasRef);
-			getPathwayModel().addAlias(aliasRef, this);
+			setAliasRef(v);
+			getPathwayModel().addAlias(v, this);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 		}
 	}
 
 	/**
 	 * Sets the aliasRef for this data node.
 	 * 
-	 * @param aliasRef the given group to set.
+	 * @param v the given group to set.
 	 */
-	private void setAliasRef(Group aliasRef) {
-		this.aliasRef = aliasRef;
+	private void setAliasRef(Group v) {
+		aliasRef = v;
 	}
 
 	/**
@@ -250,8 +255,10 @@ public class DataNode extends ShapedElement {
 	 * pathway model.
 	 */
 	public void unsetAliasRef() {
-		if (hasAliasRef())
+		if (hasAliasRef()) {
 			getPathwayModel().removeAlias(getAliasRef(), this);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		}
 	}
 
 	/**

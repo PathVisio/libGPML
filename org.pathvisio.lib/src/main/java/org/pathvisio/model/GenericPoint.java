@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.util.Set;
-
 /**
  * Abstract class of generic point, extended by {@link LinePoint} and
  * {@link Anchor}.
@@ -71,10 +69,10 @@ public abstract class GenericPoint extends PathwayElement {
 	 * Sets the parent interaction or graphicalLine for this point. NB: This method
 	 * is not used directly.
 	 * 
-	 * @param lineElement the line element to set.
+	 * @param v the line element to set.
 	 */
-	private void setLineElement(LineElement lineElement) {
-		this.lineElement = lineElement;
+	private void setLineElement(LineElement v) {
+		lineElement = v;
 	}
 
 	/**
@@ -85,7 +83,5 @@ public abstract class GenericPoint extends PathwayElement {
 		if (hasLineElement())
 			setLineElement(null);
 	}
-	
-
 
 }
