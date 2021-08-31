@@ -43,9 +43,9 @@ public class Evidence extends PathwayElement {
 	 * NB: Manipulated the order of variables to overload constructor. This is not
 	 * best practice, however variable inheritance complicates use of a builder.
 	 * 
-	 * @param value the name, term, or text of the evidence.
-	 * @param xref  the evidence xref.
-	 * @param url   the url of the evidence.
+	 * @param value the name, term, or text of this evidence.
+	 * @param xref  this evidence xref.
+	 * @param url   the url of this evidence.
 	 */
 	public Evidence(String value, Xref xref, UrlRef url) {
 		super();
@@ -78,57 +78,57 @@ public class Evidence extends PathwayElement {
 	}
 
 	/**
-	 * Returns the Evidence Xref.
+	 * Returns this evidence Xref.
 	 * 
-	 * @return xref the evidence xref.
+	 * @return xref this evidence xref.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
-	 * Sets the Xref for the evidence.
+	 * Sets the Xref for this evidence.
 	 * 
-	 * @param xref the xref of the evidence.
+	 * @param v the xref of this evidence.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 	}
 
 	/**
-	 * Returns the name, term, or text of the evidence.
+	 * Returns the name, term, or text of this evidence.
 	 * 
-	 * @return value the name, term, or text of the evidence.
+	 * @return value the name, term, or text of this evidence.
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Sets the name, term, or text of the evidence.
+	 * Sets the name, term, or text of this evidence.
 	 * 
-	 * @param value the name, term, or text of the evidence.
+	 * @param v the name, term, or text of this evidence.
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public void setValue(String v) {
+		value = v;
 	}
 
 	/**
-	 * Returns the url of the evidence.
+	 * Returns the url of this evidence.
 	 * 
-	 * @return url the url of the evidence.
+	 * @return url the url of this evidence.
 	 */
 	public UrlRef getUrl() {
 		return url;
 	}
 
 	/**
-	 * Sets the url of the evidence.
+	 * Sets the url of this evidence.
 	 * 
-	 * @param url the url of the evidence.
+	 * @param v the url of this evidence.
 	 */
-	public void setUrl(UrlRef url) {
-		this.url = url;
+	public void setUrl(UrlRef v) {
+		url = v;
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class Evidence extends PathwayElement {
 	/**
 	 * Check whether evidenceRefs has the given evidenceRef.
 	 * 
-	 * @param evidenceRef the evidenceRef to look for.
+	 * @param evidenceRef this evidenceRef to look for.
 	 * @return true if has evidenceRef, false otherwise.
 	 */
 	public boolean hasEvidenceRef(EvidenceRef evidenceRef) {
@@ -151,7 +151,7 @@ public class Evidence extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given evidenceRef to evidenceRefs list of the evidence. NB: This
+	 * Adds the given evidenceRef to evidenceRefs list of this evidence. NB: This
 	 * method is not used directly.
 	 * 
 	 * @param evidenceRef the given evidenceRef to add.
@@ -164,7 +164,7 @@ public class Evidence extends PathwayElement {
 	}
 
 	/**
-	 * Removes the given evidenceRef from evidenceRefs list of the evidence. If
+	 * Removes the given evidenceRef from evidenceRefs list of this evidence. If
 	 * evidenceRefs becomes empty, this evidence is removed from the pathway model
 	 * because it is no longer referenced/used. NB: This method is not used
 	 * directly.
@@ -185,7 +185,7 @@ public class Evidence extends PathwayElement {
 	}
 
 	/**
-	 * Removes all evidenceRefs from evidenceRefs list of the evidence.
+	 * Removes all evidenceRefs from evidenceRefs list of this evidence.
 	 */
 	public void removeEvidenceRefs() {
 		for (int i = 0; i < evidenceRefs.size(); i++) {

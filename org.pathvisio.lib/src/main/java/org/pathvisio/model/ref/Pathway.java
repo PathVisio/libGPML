@@ -89,7 +89,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		 * Public constructor with required attribute name as parameter. //TODO actually
 		 * required?
 		 * 
-		 * @param title           the title of the pathway.
+		 * @param title           the title of this pathway.
 		 * @param boardWidth      together with...
 		 * @param boardHeight     define the drawing size.
 		 * @param backgroundColor the background color of the drawing, default #ffffff
@@ -112,73 +112,73 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		 * Sets description and returns this builder object. Description is the textual
 		 * description for this pathway.
 		 * 
-		 * @param description the description of the pathway.
-		 * @return the PathwayBuilder object.
+		 * @param v the description of this pathway.
+		 * @return this pathwayBuilder object.
 		 */
-		public PathwayBuilder setDescription(String description) {
-			this.description = description;
+		public PathwayBuilder setDescription(String v) {
+			description = v;
 			return this;
 		}
 
 		/**
 		 * Sets organism and returns this builder object. Organism is the scientific
-		 * name (e.g., Homo sapiens) of the species being described by the pathway.
+		 * name (e.g., Homo sapiens) of the species being described by this pathway.
 		 * 
-		 * @param organism the organism of the pathway.
-		 * @return the PathwayBuilder object.
+		 * @param v the organism of this pathway.
+		 * @return this pathwayBuilder object.
 		 */
-		public PathwayBuilder setOrganism(String organism) {
-			this.organism = organism;
+		public PathwayBuilder setOrganism(String v) {
+			organism = v;
 			return this;
 		}
 
 		/**
-		 * Sets source and returns this builder object. The source of the pathway, e.g.
+		 * Sets source and returns this builder object. The source of this pathway, e.g.
 		 * WikiPathways, KEGG, Cytoscape.
 		 * 
-		 * @param source the source of the pathway.
-		 * @return the PathwayBuilder object.
+		 * @param v the source of this pathway.
+		 * @return this pathwayBuilder object.
 		 */
-		public PathwayBuilder setSource(String source) {
-			this.source = source;
+		public PathwayBuilder setSource(String v) {
+			source = v;
 			return this;
 		}
 
 		/**
 		 * Sets version and returns this builder object.
 		 * 
-		 * @param version the version of the pathway.
-		 * @return the PathwayBuilder object.
+		 * @param v the version of this pathway.
+		 * @return this pathwayBuilder object.
 		 */
-		public PathwayBuilder setVersion(String version) {
-			this.version = version;
+		public PathwayBuilder setVersion(String v) {
+			version = v;
 			return this;
 		}
 
 		/**
 		 * Sets license and returns this builder object.
 		 * 
-		 * @param license the license of the pathway.
-		 * @return the PathwayBuilder object.
+		 * @param v the license of this pathway.
+		 * @return this pathwayBuilder object.
 		 */
-		public PathwayBuilder setLicense(String license) {
-			this.license = license;
+		public PathwayBuilder setLicense(String v) {
+			license = v;
 			return this;
 		}
 
 		/**
 		 * Sets xref and returns this builder object.
 		 * 
-		 * @param xref the xref of the pathway.
-		 * @return the PathwayBuilder object.
+		 * @param v the xref of this pathway.
+		 * @return this pathwayBuilder object.
 		 */
-		public PathwayBuilder setXref(Xref xref) {
-			this.xref = xref;
+		public PathwayBuilder setXref(Xref v) {
+			xref = v;
 			return this;
 		}
 
 		/**
-		 * Calls the private constructor in the Pathway class and passes builder object
+		 * Calls the private constructor in this pathway class and passes builder object
 		 * itself as the parameter to this private constructor.
 		 * 
 		 * @return the created Pathway object.
@@ -192,7 +192,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 * Private constructor for Pathway which takes PathwayBuilder object as its
 	 * argument.
 	 * 
-	 * @param builder the PathwayBuilder object.
+	 * @param builder this pathwayBuilder object.
 	 */
 	private Pathway(PathwayBuilder builder) {
 		this.title = builder.title;
@@ -214,7 +214,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Returns the title or name of the pathway.
+	 * Returns the title or name of this pathway.
 	 * 
 	 * @return title the title.
 	 */
@@ -223,16 +223,16 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the title or name of the pathway.
+	 * Sets the title or name of this pathway.
 	 * 
-	 * @param title the title.
+	 * @param v the title to set. 
 	 */
-	public void setTitle(String title) {
-		if (title == null) {
+	public void setTitle(String v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (this.title != title) {
-			this.title = title;
+		if (title != v) {
+			title = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TITLE));
 		}
 	}
@@ -250,13 +250,13 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	/**
 	 * Sets the board width.
 	 * 
-	 * @param boardWidth the board width
+	 * @param v the board width to set. 
 	 */
-	public void setBoardWidth(double boardWidth) {
-		if (boardWidth < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardWidth);
+	public void setBoardWidth(double v) {
+		if (v < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + v);
 		} else {
-			this.boardWidth = boardWidth;
+			boardWidth = v;
 		}
 	}
 
@@ -273,18 +273,18 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	/**
 	 * Sets the board height.
 	 * 
-	 * @param boardHeight the board height
+	 * @param v the board height to set. 
 	 */
-	public void setBoardHeight(double boardHeight) {
-		if (boardHeight < 0) {
-			throw new IllegalArgumentException("Tried to set dimension < 0: " + boardHeight);
+	public void setBoardHeight(double v) {
+		if (v < 0) {
+			throw new IllegalArgumentException("Tried to set dimension < 0: " + v);
 		} else {
-			this.boardHeight = boardHeight;
+			boardHeight = v;
 		}
 	}
 
 	/**
-	 * Returns the background color of the pathway.
+	 * Returns the background color of this pathway.
 	 * 
 	 * @return backgroundColor the background color.
 	 */
@@ -296,16 +296,16 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the background color of the pathway.
+	 * Sets the background color of this pathway.
 	 * 
-	 * @param backgroundColor the background color.
+	 * @param v the background color to set.
 	 */
-	public void setBackgroundColor(Color backgroundColor) {
-		this.backgroundColor = backgroundColor;
+	public void setBackgroundColor(Color v) {
+		backgroundColor = v;
 	}
 
 	/**
-	 * Returns the list of authors for the pathway model.
+	 * Returns the list of authors for this pathway model.
 	 * 
 	 * @return authors the list of authors.
 	 */
@@ -608,7 +608,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Returns the description of the pathway.
+	 * Returns the description of this pathway.
 	 * 
 	 * @return description the description.
 	 */
@@ -617,20 +617,20 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the description of the pathway.
+	 * Sets the description of this pathway.
 	 * 
-	 * @param description the description.
+	 * @param v the description to set.
 	 */
-	public void setDescription(String description) {
-		if (description == null) {
+	public void setDescription(String v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		} else
-			this.description = description;
+			description = v;
 	}
 
 	/**
-	 * Returns the organism of the pathway. Organism is the scientific name (e.g.,
-	 * Homo sapiens) of the species being described by the pathway.
+	 * Returns the organism of this pathway. Organism is the scientific name (e.g.,
+	 * Homo sapiens) of the species being described by this pathway.
 	 * 
 	 * @return organism the organism.
 	 */
@@ -639,23 +639,23 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the organism of the pathway. Organism is the scientific name (e.g., Homo
-	 * sapiens) of the species being described by the pathway.
+	 * Sets the organism of this pathway. Organism is the scientific name (e.g., Homo
+	 * sapiens) of the species being described by this pathway.
 	 * 
-	 * @param organism the organism.
+	 * @param v the organism to set. 
 	 */
-	public void setOrganism(String organism) {
-		if (organism == null) {
+	public void setOrganism(String v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (!Utils.stringEquals(this.organism, organism)) {
-			this.organism = organism;
+		if (!Utils.stringEquals(organism, v)) {
+			organism = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
 		}
 	}
 
 	/**
-	 * Returns the source of the pathway, e.g. WikiPathways, KEGG, Cytoscape.
+	 * Returns the source of this pathway, e.g. WikiPathways, KEGG, Cytoscape.
 	 * 
 	 * @return source the source.
 	 */
@@ -664,19 +664,19 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the source of the pathway, e.g. WikiPathways, KEGG, Cytoscape.
+	 * Sets the source of this pathway, e.g. WikiPathways, KEGG, Cytoscape.
 	 * 
-	 * @param source the source.
+	 * @param v the source to set.
 	 */
-	public void setSource(String source) {
-		if (source == null) {
+	public void setSource(String v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		} else
-			this.source = source;
+			source = v;
 	}
 
 	/**
-	 * Returns the version of the pathway.
+	 * Returns the version of this pathway.
 	 * 
 	 * @return version the version
 	 */
@@ -685,22 +685,22 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the version of the pathway.
+	 * Sets the version of this pathway.
 	 * 
-	 * @param version the version.
+	 * @param v the version to set.
 	 */
-	public void setVersion(String version) {
-		if (version == null) {
+	public void setVersion(String v) {
+		if (v == null) {
 			throw new IllegalArgumentException();
 		}
-		if (this.version != version) {
-			this.version = version;
+		if (version != v) {
+			version = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
 		}
 	}
 
 	/**
-	 * Returns the license of the pathway.
+	 * Returns the license of this pathway.
 	 * 
 	 * @return license the license.
 	 */
@@ -709,30 +709,30 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the license of the pathway.
+	 * Sets the license of this pathway.
 	 * 
-	 * @param license the license.
+	 * @param v the license to set.
 	 */
-	public void setLicense(String license) {
-		this.license = license;
+	public void setLicense(String v) {
+		license = v;
 	}
 
 	/**
-	 * Returns the Xref for the pathway.
+	 * Returns the Xref for this pathway.
 	 * 
-	 * @return xref the xref of the pathway.
+	 * @return xref the xref of this pathway.
 	 */
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
-	 * Sets the Xref for the pathway.
+	 * Sets the Xref for this pathway.
 	 * 
-	 * @param xref the xref of the pathway.
+	 * @param v the xref to set for this pathway.
 	 */
-	public void setXref(Xref xref) {
-		this.xref = xref;
+	public void setXref(Xref v) {
+		xref = v;
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.IDENTIFIER));
 	}
 

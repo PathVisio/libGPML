@@ -27,13 +27,13 @@ package org.pathvisio.model.ref;
 public class Comment {
 
 	private String source; // optional
-	private String commentText; //required 
+	private String commentText; // required
 
 	/**
 	 * Instantiates a Comment with source and commentText.
 	 * 
-	 * @param source the source of the comment.
-	 * @param commentText   the text of the comment, between Comment tags in GPML.
+	 * @param source      the source of this comment.
+	 * @param commentText the text of the comment, between Comment tags in GPML.
 	 */
 	public Comment(String source, String commentText) {
 		this.source = source;
@@ -43,51 +43,50 @@ public class Comment {
 	/**
 	 * Instantiates a Comment with just commentText.
 	 * 
-	 * @param commentText the text of the comment, between Comment tags in GPML.
+	 * @param commentText the text of this comment, between Comment tags in GPML.
 	 */
 	public Comment(String commentText) {
 		this.commentText = commentText;
 	}
-	
 
 	/**
-	 * Returns the source of the Comment.
+	 * Returns the source of this Comment.
 	 * 
-	 * @return source the source of the comment.
+	 * @return source the source of this comment.
 	 */
 	public String getSource() {
 		return source;
 	}
 
 	/**
-	 * Sets the source of the Comment.
+	 * Sets the source of this Comment.
 	 * 
-	 * @param source the source of the comment.
+	 * @param v the source of this comment.
 	 */
-	public void setSource(String source) {
-		if (source != null) {
-			this.source = source;
+	public void setSource(String v) {
+		if (v != null) {
+			source = v;
 			// changed();
 		}
 	}
 
 	/**
-	 * Returns the text of the Comment.
+	 * Returns the text of this Comment.
 	 * 
-	 * @return commentText the text of the comment.
+	 * @return commentText the text of this comment.
 	 */
 	public String getCommentText() {
 		return commentText;
 	}
 
 	/**
-	 * Sets the text of the Comment.
+	 * Sets the text of this Comment.
 	 * 
-	 * @param commentText the text of the comment.
+	 * @param v the text of this comment.
 	 */
-	public void setCommentText(String commentText) {
-		if (commentText != null) {
-			this.commentText = commentText;
+	public void setCommentText(String v) {
+		if (v != null) {
+			commentText = v;
 		}
 	}
 

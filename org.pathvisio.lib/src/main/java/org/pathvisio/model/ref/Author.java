@@ -54,42 +54,42 @@ public class Author {
 		/**
 		 * Public constructor with required attribute name as parameter.
 		 * 
-		 * @param name the name of this author.
+		 * @param v the name of this author.
 		 */
-		public AuthorBuilder(String name) {
-			this.name = name;
+		public AuthorBuilder(String v) {
+			name = v;
 		}
 
 		/**
 		 * Sets username and returns this builder object.
 		 * 
-		 * @param username the username of this author.
+		 * @param v the username of this author.
 		 * @return the AuthorBuilder object.
 		 */
-		public AuthorBuilder setUsername(String username) {
-			this.username = username;
+		public AuthorBuilder setUsername(String v) {
+			username = v;
 			return this;
 		}
 
 		/**
 		 * Sets authorship order and returns this builder object.
 		 * 
-		 * @param order the authorship order of this author.
+		 * @param v the authorship order of this author.
 		 * @return the AuthorBuilder object.
 		 */
-		public AuthorBuilder setOrder(int order) {
-			this.order = order;
+		public AuthorBuilder setOrder(int v) {
+			order = v;
 			return this;
 		}
 
 		/**
 		 * Sets xref and returns this builder object.
 		 * 
-		 * @param xref the orcid number of this author.
+		 * @param v the orcid number of this author.
 		 * @return the AuthorBuilder object.
 		 */
-		public AuthorBuilder setXref(Xref xref) {
-			this.xref = xref;
+		public AuthorBuilder setXref(Xref v) {
+			xref = v;
 			return this;
 		}
 
@@ -129,10 +129,10 @@ public class Author {
 	/**
 	 * Sets the name of this author.
 	 * 
-	 * @param name the name of this author.
+	 * @param v the name of this author.
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String v) {
+		name = v;
 	}
 
 	/**

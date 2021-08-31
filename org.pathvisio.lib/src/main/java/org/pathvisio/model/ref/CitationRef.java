@@ -82,10 +82,10 @@ public class CitationRef implements Annotatable {
 	/**
 	 * Sets the source citation for this citationRef.
 	 * 
-	 * @param citation the given source citation to set.
+	 * @param v the given source citation to set.
 	 */
-	private void setCitation(Citation citation) {
-		this.citation = citation;
+	private void setCitation(Citation v) {
+		citation = v;
 	}
 
 	/**
@@ -139,10 +139,10 @@ public class CitationRef implements Annotatable {
 	 * Sets the target pathway, pathway element, or annotationRef {@link Citable} to
 	 * which the annotationRef belongs.
 	 * 
-	 * @param citable the given target citable to set.
+	 * @param v the given target citable to set.
 	 */
-	private void setCitable(Citable citable) {
-		this.citable = citable;
+	private void setCitable(Citable v) {
+		citable = v;
 	}
 
 	/**

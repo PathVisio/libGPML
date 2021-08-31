@@ -74,10 +74,10 @@ public class EvidenceRef {
 	/**
 	 * Sets the source evidence for this evidenceRef.
 	 * 
-	 * @param evidence the given source evidence to set.
+	 * @param v the given source evidence to set.
 	 */
-	private void setEvidence(Evidence evidence) {
-		this.evidence = evidence;
+	private void setEvidence(Evidence v) {
+		evidence = v;
 	}
 
 	/**
@@ -132,10 +132,10 @@ public class EvidenceRef {
 	 * Sets the target pathway, pathway element, or evidenceRef {@link Evidenceable}
 	 * to which the evidenceRef belongs.
 	 * 
-	 * @param evidenceable the given target evidenceable to set.
+	 * @param v the given target evidenceable to set.
 	 */
-	private void setEvidenceable(Evidenceable evidenceable) {
-		this.evidenceable = evidenceable;
+	private void setEvidenceable(Evidenceable v) {
+		evidenceable = v;
 	}
 
 	/**

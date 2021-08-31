@@ -44,10 +44,10 @@ public class UrlRef {
 	/**
 	 * Sets the url link for a web address.
 	 * 
-	 * @param link the url link.
+	 * @param v the url link.
 	 */
-	public void setLink(String link) {
-		this.link = link;
+	public void setLink(String v) {
+		link = v;
 	}
 
 	/**
@@ -60,12 +60,12 @@ public class UrlRef {
 	}
 
 	/**
-	 * Sets the description for a url link.
+	 * Sets the description for this url link.
 	 * 
-	 * @param description the description for a url link.
+	 * @param v the description for a url link.
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(String v) {
+		description = v;
 	}
 
 }
