@@ -37,9 +37,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public abstract class ShapedElement extends ElementInfo implements LinkableTo, Groupable {
-
-	private Group groupRef; // optional, the parent group to which a pathway element belongs.
+public abstract class ShapedElement extends ElementInfo implements LinkableTo {
 
 	// rect properties
 	private Coordinate centerXY;
@@ -61,7 +59,6 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 	private double borderWidth = 1.0; // TODO: type?
 	private Color fillColor = Color.decode("#ffffff"); // white TODO: Transparent if Label
 	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
-	private int zOrder; // optional
 	private double rotation = 0; // optional, in radians
 
 	/**
@@ -549,26 +546,7 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 		}
 	}
 
-	/**
-	 * Returns the z-order of this shaped pathway element.
-	 * 
-	 * @return zOrder the order of this shaped pathway element.
-	 */
-	public int getZOrder() {
-		return zOrder;
-	}
 
-	/**
-	 * Sets the z-order of this shaped pathway element.
-	 * 
-	 * @param v the order of this shaped pathway element.
-	 */
-	public void setZOrder(int v) {
-		if (zOrder != v) {
-			this.zOrder = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
-		}
-	}
 
 	/**
 	 * Returns the rotation of this shaped pathway element.
@@ -592,67 +570,7 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo, G
 		}
 	}
 
-	/**
-	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
-	 * the elementId (formerly groupId) of the parent gpml:Group.
-	 * 
-	 * @return groupRef the parent group of this pathway element.
-	 */
-	public Group getGroupRef() {
-		return groupRef;
-	}
 
-	/**
-	 * Checks whether this pathway element belongs to a group.
-	 *
-	 * @return true if and only if the group of this pathway element is effective.
-	 */
-	public boolean hasGroupRef() {
-		return getGroupRef() != null;
-	}
-
-	/**
-	 * Verifies if given parent group is new and valid. Sets the parent group of this
-	 * pathway element. Adds this pathway element to the the pathwayElements list of
-	 * the new parent group. If there is an old parent group, this pathway element
-	 * is removed from its pathwayElements list.
-	 * 
-	 * @param v the new parent group to set.
-	 */
-	public void setGroupRefTo(Group v) {
-		if (v == null)
-			throw new IllegalArgumentException("Invalid group.");
-		if (groupRef != v) {
-			unsetGroupRef(); // first unsets if necessary
-			setGroupRef(v);
-			if (!v.hasPathwayElement(this))
-				v.addPathwayElement(this);
-		}
-	}
-
-	/**
-	 * Sets the parent group for this pathway element.
-	 * 
-	 * @param v the given group to set.
-	 */
-	private void setGroupRef(Group v) {
-		// TODO
-		groupRef = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
-	}
-
-	/**
-	 * Unsets the parent group, if any, from this pathway element.
-	 */
-	public void unsetGroupRef() {
-		if (hasGroupRef()) {
-			Group groupRef = getGroupRef();
-			setGroupRef(null);
-			if (groupRef.hasPathwayElement(this))
-				groupRef.removePathwayElement(this);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
-		}
-	}
 
 	/**
 	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes

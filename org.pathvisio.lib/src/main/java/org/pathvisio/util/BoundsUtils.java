@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.pathvisio.model.*;
 import org.pathvisio.model.graphics.Coordinate;
+import org.pathvisio.model.ref.ElementInfo;
 import org.pathvisio.model.type.*;
 
 /**
@@ -48,7 +49,7 @@ public class BoundsUtils {
 	public static Rectangle2D calculateGroupBounds(Group group) {
 		double margin = getMargin(group.getType());
 		Rectangle2D bounds = null;
-		for (Groupable pathwayElement : group.getPathwayElements()) {
+		for (ElementInfo pathwayElement : group.getPathwayElements()) {
 			if (bounds == null) {
 				if (pathwayElement instanceof ShapedElement)
 					bounds = getShapedElementBounds((ShapedElement) pathwayElement);

@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.model.Group;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.props.StaticProperty;
 
@@ -46,6 +47,14 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	private List<AnnotationRef> annotationRefs;
 	private List<CitationRef> citationRefs;
 	private List<EvidenceRef> evidenceRefs;
+
+	/**
+	 * ElementInfo subclasses are {@link ShapedElement} and {@link LineElement}.
+	 * Both pathway element subclasses have the optional properties groupRef and
+	 * zOrder.
+	 */
+	private Group groupRef; // optional, the parent group to which a pathway element belongs.
+	private int zOrder; // optional
 
 	/**
 	 * Instantiates a pathway element with meta data information.
@@ -320,6 +329,90 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	public void removeEvidenceRefs() {
 		for (EvidenceRef evidenceRef : evidenceRefs) {
 			removeEvidenceRef(evidenceRef);
+		}
+	}
+	
+
+	/**
+	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
+	 * the elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of this pathway element.
+	 */
+	public Group getGroupRef() {
+		return groupRef;
+	}
+
+	/**
+	 * Checks whether this pathway element belongs to a group.
+	 *
+	 * @return true if and only if the group of this pathway element is effective.
+	 */
+	public boolean hasGroupRef() {
+		return getGroupRef() != null;
+	}
+
+	/**
+	 * Verifies if given parent group is new and valid. Sets the parent group of
+	 * this pathway element. Adds this pathway element to the the pathwayElements
+	 * list of the new parent group. If there is an old parent group, this pathway
+	 * element is removed from its pathwayElements list.
+	 * 
+	 * @param v the new parent group to set.
+	 */
+	public void setGroupRefTo(Group v) {
+		if (v == null)
+			throw new IllegalArgumentException("Invalid group.");
+		if (groupRef != v) {
+			unsetGroupRef(); // first unsets if necessary
+			setGroupRef(v);
+			if (!v.hasPathwayElement(this))
+				v.addPathwayElement(this);
+		}
+	}
+
+	/**
+	 * Sets the parent group for this pathway element.
+	 * 
+	 * @param v the given group to set.
+	 */
+	private void setGroupRef(Group v) {
+		// TODO
+		groupRef = v;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+	}
+
+	/**
+	 * Unsets the parent group, if any, from this pathway element.
+	 */
+	public void unsetGroupRef() {
+		if (hasGroupRef()) {
+			Group groupRef = getGroupRef();
+			setGroupRef(null);
+			if (groupRef.hasPathwayElement(this))
+				groupRef.removePathwayElement(this);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+		}
+	}
+
+	/**
+	 * Returns the z-order of this pathway element.
+	 * 
+	 * @return zOrder the order of this pathway element.
+	 */
+	public int getZOrder() {
+		return zOrder;
+	}
+
+	/**
+	 * Sets the z-order of this pathway element.
+	 * 
+	 * @param v the order of this pathway element.
+	 */
+	public void setZOrder(int v) {
+		if (zOrder != v) {
+			zOrder = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
 		}
 	}
 

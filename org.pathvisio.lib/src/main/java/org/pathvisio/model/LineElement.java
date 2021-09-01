@@ -32,18 +32,16 @@ import org.pathvisio.props.StaticProperty;
  * 
  * @author finterly
  */
-public abstract class LineElement extends ElementInfo implements Groupable {
+public abstract class LineElement extends ElementInfo {
 
 	private List<LinePoint> linePoints; // minimum 2
 	private List<Anchor> anchors;
-	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 
 	// line style properties
 	private Color lineColor = Color.decode("#000000"); // black
 	private LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
 	private double lineWidth = 1.0; // 1.0
 	private ConnectorType connectorType = ConnectorType.STRAIGHT; // straight, elbow, curved...
-	private int zOrder; // optional
 
 	/**
 	 * Instantiates a line pathway element. Property groupRef is to be set by
@@ -69,12 +67,13 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Sets line points
+	 * Sets line points, only if linePoints list is empty.
 	 * 
-	 * @param points
+	 * @param points the list of points to set.
 	 */
 	public void setLinePoints(List<LinePoint> points) {
-		if (points != null) {
+		// TODO only allow setLinePoints if empty???
+		if (linePoints.isEmpty() && points != null) {
 			if (points.size() < 2) {
 				throw new IllegalArgumentException("Points array should at least have two elements");
 			}
@@ -84,7 +83,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Checks whether points has the given point.
+	 * Checks whether linePoints has the given point.
 	 * 
 	 * @param point the point to look for.
 	 * @return true if has point, false otherwise.
@@ -94,9 +93,9 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Adds given point to points list. Sets lineElement for the given point.
+	 * Adds given point to linePoints list. Sets lineElement for the given point.
 	 * 
-	 * @param point the point to be added.
+	 * @param point the linePoint to be added.
 	 */
 	public void addLinePoint(LinePoint point) {
 		assert (point != null);
@@ -112,10 +111,21 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Removes given point from the points list. Point ceases to exist and is
+	 * Adds all given points to the end of linePoints list.
+	 * 
+	 * @param points the list of points to add.
+	 */
+	public void addLinePoints(List<LinePoint> points) {
+		for (int i = 0; i < points.size(); i++) {
+			addLinePoint(points.get(i));
+		}
+	}
+
+	/**
+	 * Removes given point from the linePoints list. Point ceases to exist and is
 	 * terminated.
 	 * 
-	 * @param point the point to be removed.
+	 * @param point the linePoint to be removed.
 	 */
 	public void removeLinePoint(LinePoint point) {
 		assert (point != null && hasLinePoint(point));
@@ -126,7 +136,7 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	}
 
 	/**
-	 * Removes all points from the points list.
+	 * Removes all linePoints from the linePoints list.
 	 */
 	public void removeLinePoints() {
 		for (int i = 0; i < linePoints.size(); i++) {
@@ -221,68 +231,6 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 	public void removeAnchors() {
 		for (int i = 0; i < anchors.size(); i++) {
 			removeAnchor(anchors.get(i));
-		}
-	}
-
-	/**
-	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
-	 * the elementId (formerly groupId) of the parent gpml:Group.
-	 * 
-	 * @return groupRef the parent group of this pathway element.
-	 */
-	public Group getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Checks whether this pathway element belongs to a group.
-	 *
-	 * @return true if and only if the group of this pathway element is effective.
-	 */
-	public boolean hasGroupRef() {
-		return getGroupRef() != null;
-	}
-
-	/**
-	 * Verifies if given parent group is new and valid. Sets the parent group of the
-	 * pathway element. Adds this pathway element to the the pathwayElements list of
-	 * the new parent group. If there is an old parent group, this pathway element
-	 * is removed from its pathwayElements list.
-	 * 
-	 * @param groupRef the new parent group to set.
-	 */
-	public void setGroupRefTo(Group groupRef) {
-		if (groupRef == null)
-			throw new IllegalArgumentException("Invalid group.");
-		if (this.groupRef != groupRef) {
-			unsetGroupRef(); // first unsets if necessary
-			setGroupRef(groupRef);
-			if (!groupRef.hasPathwayElement(this))
-				groupRef.addPathwayElement(this);
-		}
-	}
-
-	/**
-	 * Sets the parent group for this pathway element.
-	 * 
-	 * @param v the given group to set.
-	 */
-	private void setGroupRef(Group v) {
-		// TODO
-		groupRef = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
-	}
-
-	/**
-	 * Unsets the parent group, if any, from this pathway element.
-	 */
-	public void unsetGroupRef() {
-		if (hasGroupRef()) {
-			Group groupRef = getGroupRef();
-			setGroupRef(null);
-			if (groupRef.hasPathwayElement(this))
-				groupRef.removePathwayElement(this);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 		}
 	}
 
@@ -403,27 +351,6 @@ public abstract class LineElement extends ElementInfo implements Groupable {
 		if (connectorType != v) {
 			connectorType = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CONNECTORTYPE));
-		}
-	}
-
-	/**
-	 * Returns the order of a line.
-	 * 
-	 * @return zOrder the order of a line.
-	 */
-	public int getZOrder() {
-		return zOrder;
-	}
-
-	/**
-	 * Sets the order of a line.
-	 * 
-	 * @param v the order of a line.
-	 */
-	public void setZOrder(int v) {
-		if (zOrder != v) {
-			zOrder = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
 		}
 	}
 

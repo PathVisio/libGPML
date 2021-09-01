@@ -188,7 +188,7 @@ public class Author {
 	public void setXref(Xref v) {
 		xref = v;
 		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+//		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 }
