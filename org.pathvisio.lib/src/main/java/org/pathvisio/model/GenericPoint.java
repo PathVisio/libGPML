@@ -22,7 +22,7 @@ package org.pathvisio.model;
  * 
  * @author unknown, finterly
  */
-public abstract class GenericPoint extends PathwayElement {
+public abstract class GenericPoint extends PathwayObject {
 
 	private LineElement lineElement; // is set when line adds point
 

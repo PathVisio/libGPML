@@ -21,18 +21,18 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayObject;
 
 /**
  * This class stores information for a Citation.
  * 
  * @author finterly
  */
-public class Citation extends PathwayElement {
+public class Citation extends PathwayObject {
 
 	/** One or both xref and/or Url link is required */
 	private Xref xref;
-	private UrlRef url;
+	private String urlLink;
 	/** Optional attributes for GPML2013a Biopax */
 	private String title;
 	private String source;
@@ -47,10 +47,10 @@ public class Citation extends PathwayElement {
 	 * @param xref the citation xref.
 	 * @param url  the url link and description (optional) for a web address.
 	 */
-	public Citation(Xref xref, UrlRef url) {
+	public Citation(Xref xref, String urlLink) {
 		super();
 		this.xref = xref;
-		this.url = url;
+		this.urlLink = urlLink;
 		this.citationRefs = new ArrayList<CitationRef>();
 	}
 
@@ -58,8 +58,8 @@ public class Citation extends PathwayElement {
 	 * Instantiates a Citation pathway element given all possible parameters except
 	 * xref. A citation much have either xref or url, or both.
 	 */
-	public Citation(UrlRef url) {
-		this(null, url);
+	public Citation(String urlLink) {
+		this(null, urlLink);
 	}
 
 	/**
@@ -89,21 +89,21 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Returns the url of this citation.
+	 * Returns the url link for a web address.
 	 * 
-	 * @return url the url of this citation.
+	 * @return urlLink the url link.
 	 */
-	public UrlRef getUrl() {
-		return url;
+	public String getUrlLink() {
+		return urlLink;
 	}
 
 	/**
-	 * Sets the url of this citation.
+	 * Sets the url link for a web address.
 	 * 
-	 * @param v the url to set for this citation.
+	 * @param v the url link.
 	 */
-	public void setUrl(UrlRef v) {
-		url = v;
+	public void setUrlLink(String v) {
+		urlLink = v;
 	}
 
 	/**
@@ -198,8 +198,8 @@ public class Citation extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given citationRef to citationRefs list of this citation. NB: This method
-	 * is not used directly.
+	 * Adds the given citationRef to citationRefs list of this citation. NB: This
+	 * method is not used directly.
 	 * 
 	 * @param citationRef the given citationRef to add.
 	 */
@@ -213,8 +213,8 @@ public class Citation extends PathwayElement {
 	/**
 	 * Removes the given citationRef from citationRefs list of the citation. If
 	 * citationRefs becomes empty, this citation is removed from the pathway model
-	 * because it is no longer referenced/used. NB: This method
-	 * is not used directly.
+	 * because it is no longer referenced/used. NB: This method is not used
+	 * directly.
 	 * 
 	 * @param citationRef the given citationRef to remove.
 	 */
@@ -270,17 +270,9 @@ public class Citation extends PathwayElement {
 			if (!Objects.equals(xref.getDataSource(), citation.getXref().getDataSource()))
 				return false;
 		}
-		// checks if url link and description are equivalent
-		if (url != null && citation.getUrl() == null)
+		// checks if url link property equivalent
+		if (!Objects.equals(urlLink, citation.getUrlLink()))
 			return false;
-		if (url == null && citation.getUrl() != null)
-			return false;
-		if (url != null && citation.getUrl() != null) {
-			if (!Objects.equals(url.getLink(), citation.getUrl().getLink()))
-				return false;
-			if (!Objects.equals(url.getDescription(), citation.getUrl().getDescription()))
-				return false;
-		}
 		// checks if citation has the same citationRefs
 		if (!Objects.equals(citationRefs, citation.getCitationRefs()))
 			return false;

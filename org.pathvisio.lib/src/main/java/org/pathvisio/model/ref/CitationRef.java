@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * This class stores information for a CitationRef with source {@link Citation},
  * target {@link Citable}, and a list of {@link AnnotationRef}. The Citable
- * target can be a {@link Pathway}, pathway element {@link ElementInfo}, or
+ * target can be a {@link Pathway}, pathway element {@link PathwayElement}, or
  * annotationRef {@link AnnotationRef}. In gpml:CitationRef, the attribute
  * elementRef refers to the elementId of the source gpml:Citation.
  * 

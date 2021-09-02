@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * Interface for classes which can hold a {@link List} of {@link CitationRef}.
- * These classes include {@link Pathway}, {@link ElementInfo}, and
+ * These classes include {@link Pathway}, {@link PathwayElement}, and
  * {@link AnnotationRef}.
  * 
  * @author finterly

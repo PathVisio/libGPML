@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.GroupType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -37,7 +37,7 @@ public class Group extends ShapedElement {
 	private String textLabel; // optional
 	private Xref xref; // optional
 	/* list of pathway elements which belong to the group. */
-	private List<ElementInfo> pathwayElements; // should have at least one pathway element
+	private List<Groupable> pathwayElements; // should have at least one pathway element
 
 	/**
 	 * Instantiates a Group given all possible parameters.
@@ -51,7 +51,7 @@ public class Group extends ShapedElement {
 		this.type = type;
 		this.textLabel = textLabel;
 		this.xref = xref;
-		this.pathwayElements = new ArrayList<ElementInfo>();
+		this.pathwayElements = new ArrayList<Groupable>();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @return pathwayElements the list of pathway elements belonging to the group.
 	 */
-	public List<ElementInfo> getPathwayElements() {
+	public List<Groupable> getPathwayElements() {
 		return pathwayElements;
 	}
 
@@ -90,7 +90,7 @@ public class Group extends ShapedElement {
 	 * @param pathwayElement the pathway element to look for.
 	 * @return true if has pathwayElement, false otherwise.
 	 */
-	public boolean hasPathwayElement(ElementInfo pathwayElement) {
+	public boolean hasPathwayElement(Groupable pathwayElement) {
 		return pathwayElements.contains(pathwayElement);
 	}
 
@@ -101,7 +101,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
-	public void addPathwayElement(ElementInfo pathwayElement) {
+	public void addPathwayElement(Groupable pathwayElement) {
 		assert (pathwayElement != null);
 		// set groupRef for pathway element if necessary
 		if (pathwayElement.getGroupRef() == null || pathwayElement.getGroupRef() != this)
@@ -119,7 +119,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @param pathwayElement the given pathwayElement to remove.
 	 */
-	public void removePathwayElement(ElementInfo pathwayElement) {
+	public void removePathwayElement(Groupable pathwayElement) {
 		assert (pathwayElement != null);
 		// unset groupRef for pathway element if necessary
 		if (pathwayElement.getGroupRef() == this)

@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.events;
 
-import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayObject;
 
 /**
  * Used to notify listeners of changes to the model, i.e a Pathway or
@@ -42,9 +42,9 @@ public class PathwayEvent {
 	 */
 	public static final int RESIZED = 4;
 
-	private PathwayElement affectedData;
+	private PathwayObject affectedData;
 
-	public PathwayElement getAffectedData() {
+	public PathwayObject getAffectedData() {
 		return affectedData;
 	}
 
@@ -54,7 +54,7 @@ public class PathwayEvent {
 		return type;
 	}
 
-	public PathwayEvent(PathwayElement object, int t) {
+	public PathwayEvent(PathwayObject object, int t) {
 		affectedData = object;
 		type = t;
 	}

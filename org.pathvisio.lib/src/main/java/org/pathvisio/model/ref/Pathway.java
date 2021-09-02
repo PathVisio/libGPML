@@ -20,18 +20,16 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.events.PathwayElementListener;
-import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
 /**
- * This class stores metadata for a Pathway.
+ * This class stores metadata for a Pathway. Pathway is treated as a
+ * {@link PathwayElement} for simplicity of listeners and implementation.
  * 
  * Because of multiple optional parameters, a builder pattern is implemented for
  * Pathway. Example of how a Pathway object can be created:
@@ -42,18 +40,16 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class Pathway implements Annotatable, Citable, Evidenceable {
+public class Pathway extends PathwayElement {
 
 	private String title;
 	private double boardWidth;
 	private double boardHeight;
 	private Color backgroundColor;
 	private List<Author> authors;
-	private List<Comment> comments;
-	private Map<String, String> dynamicProperties;
-	private List<AnnotationRef> annotationRefs;
-	private List<CitationRef> citationRefs;
-	private List<EvidenceRef> evidenceRefs;
+
+	// TODO check if builder and stuff works correctly...
+
 	private String description;
 	private String organism;
 	private String source;
@@ -73,11 +69,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		private double boardHeight = 0;
 		private Color backgroundColor = Color.decode("#ffffff");
 		private List<Author> authors;
-		private List<Comment> comments;
-		private Map<String, String> dynamicProperties;
-		private List<AnnotationRef> annotationRefs;
-		private List<CitationRef> citationRefs;
-		private List<EvidenceRef> evidenceRefs;
 		private String description; // optional
 		private String organism; // optional
 		private String source; // optional
@@ -101,11 +92,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 			this.boardHeight = boardHeight;
 			this.backgroundColor = backgroundColor;
 			this.authors = new ArrayList<Author>();
-			this.comments = new ArrayList<Comment>(); // 0 to unbounded
-			this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
-			this.annotationRefs = new ArrayList<AnnotationRef>(); // 0 to unbounded
-			this.citationRefs = new ArrayList<CitationRef>(); // 0 to unbounded
-			this.evidenceRefs = new ArrayList<EvidenceRef>(); // 0 to unbounded
 		}
 
 		/**
@@ -200,11 +186,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		this.boardHeight = builder.boardHeight;
 		this.backgroundColor = builder.backgroundColor;
 		this.authors = builder.authors;
-		this.comments = builder.comments;
-		this.dynamicProperties = builder.dynamicProperties;
-		this.annotationRefs = builder.annotationRefs;
-		this.citationRefs = builder.citationRefs;
-		this.evidenceRefs = builder.evidenceRefs;
 		this.description = builder.description;
 		this.organism = builder.organism;
 		this.source = builder.source;
@@ -225,7 +206,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	/**
 	 * Sets the title or name of this pathway.
 	 * 
-	 * @param v the title to set. 
+	 * @param v the title to set.
 	 */
 	public void setTitle(String v) {
 		if (v == null) {
@@ -233,7 +214,8 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		}
 		if (title != v) {
 			title = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TITLE));
+			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
+			// StaticProperty.TITLE));
 		}
 	}
 
@@ -250,7 +232,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	/**
 	 * Sets the board width.
 	 * 
-	 * @param v the board width to set. 
+	 * @param v the board width to set.
 	 */
 	public void setBoardWidth(double v) {
 		if (v < 0) {
@@ -273,7 +255,7 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	/**
 	 * Sets the board height.
 	 * 
-	 * @param v the board height to set. 
+	 * @param v the board height to set.
 	 */
 	public void setBoardHeight(double v) {
 		if (v < 0) {
@@ -332,282 +314,6 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Returns the list of comments.
-	 * 
-	 * @return comments the list of comments.
-	 */
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	/**
-	 * Adds given comment to comments list.
-	 * 
-	 * @param comment the comment to be added.
-	 */
-	public void addComment(Comment comment) {
-		comments.add(comment);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
-	}
-
-	/**
-	 * Removes given comment from comments list.
-	 * 
-	 * @param comment the comment to be removed.
-	 */
-	public void removeComment(Comment comment) {
-		comments.remove(comment);
-	}
-
-	/**
-	 * TODO Finds the first comment with a specific source.
-	 * 
-	 * @param source the source of the comment to be found.
-	 * @return the comment content with a given source.
-	 */
-	public String findComment(String source) {
-		for (Comment comment : comments) {
-			if (source.equals(comment.getSource())) {
-				return comment.getCommentText();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the map of dynamic properties.
-	 * 
-	 * @return dynamicProperties the dynamic properties map
-	 */
-	public Map<String, String> getDynamicProperties() {
-		return dynamicProperties;
-	}
-
-	/**
-	 * Returns a set of all dynamic property keys.
-	 * 
-	 * @return a set of all dynamic property keys.
-	 */
-	public Set<String> getDynamicPropertyKeys() {
-		return dynamicProperties.keySet();
-	}
-
-	/**
-	 * Returns a dynamic property string value.
-	 * 
-	 * @param key the key of a key value pair.
-	 * @return the value or dynamic property.
-	 */
-	public String getDynamicProperty(String key) {
-		return dynamicProperties.get(key);
-	}
-
-	/**
-	 * Sets a dynamic property. Setting to null means removing this dynamic property
-	 * altogether.
-	 * 
-	 * @param key   the key of a key value pair.
-	 * @param value the value of a key value pair.
-	 */
-	public void setDynamicProperty(String key, String value) {
-		if (value == null)
-			dynamicProperties.remove(key);
-		else
-			dynamicProperties.put(key, value);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, key));
-	}
-
-	/**
-	 * Returns the list of annotation references.
-	 * 
-	 * @return annotationRefs the list of annotation references, an empty list if no
-	 *         properties are defined.
-	 */
-	@Override
-	public List<AnnotationRef> getAnnotationRefs() {
-		return annotationRefs;
-	}
-
-	/**
-	 * Checks whether annotationRefs has the given annotationRef. *
-	 * 
-	 * @param annotationRef the annotationRef to look for.
-	 * @return true if has annotationRef, false otherwise.
-	 */
-	@Override
-	public boolean hasAnnotationRef(AnnotationRef annotationRef) {
-		return annotationRefs.contains(annotationRef);
-	}
-
-	/**
-	 * Adds given annotationRef to annotationRefs list. Sets annotable for the given
-	 * annotationRef.
-	 * 
-	 * @param annotationRef the annotationRef to be added.
-	 */
-	@Override
-	public void addAnnotationRef(AnnotationRef annotationRef) {
-		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
-			annotationRef.setAnnotatableTo(this);
-			assert (annotationRef.getAnnotatable() == this);
-			annotationRefs.add(annotationRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
-		}
-	}
-
-	/**
-	 * Removes given annotationRef from annotationRefs list. The annotationRef
-	 * ceases to exist and is terminated.
-	 * 
-	 * @param annotationRef the annotationRef to be removed.
-	 */
-	@Override
-	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		if (annotationRef != null && hasAnnotationRef(annotationRef)) {
-			annotationRefs.remove(annotationRef);
-			annotationRef.terminate();
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
-		}
-	}
-
-	/**
-	 * Removes all annotationRefs from annotationRefs list.
-	 */
-	@Override
-	public void removeAnnotationRefs() {
-		for (int i = 0; i < annotationRefs.size(); i++) {
-			removeAnnotationRef(annotationRefs.get(i));
-		}
-	}
-
-	/**
-	 * Returns the list of citation references.
-	 * 
-	 * @return citationRefs the list of citations referenced, an empty list if no
-	 *         properties are defined.
-	 */
-	@Override
-	public List<CitationRef> getCitationRefs() {
-		return citationRefs;
-	}
-
-	/**
-	 * Checks whether citationRefs has the given citationRef.
-	 * 
-	 * @param citationRef the citationRef to look for.
-	 * @return true if has citationRef, false otherwise.
-	 */
-	@Override
-	public boolean hasCitationRef(CitationRef citationRef) {
-		return citationRefs.contains(citationRef);
-	}
-
-	/**
-	 * Adds given citationRef to citationRefs list. Sets citable for the given
-	 * citationRef.
-	 * 
-	 * @param citationRef the citationRef to be added.
-	 */
-	@Override
-	public void addCitationRef(CitationRef citationRef) {
-		if (citationRef != null && !hasCitationRef(citationRef)) {
-			citationRef.setCitableTo(this);
-			assert (citationRef.getCitable() == this);
-			citationRefs.add(citationRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
-
-		}
-	}
-
-	/**
-	 * Removes given citationRef from citationRefs list. The citationRef ceases to
-	 * exist and is terminated.
-	 * 
-	 * @param citationRef the citationRef to be removed.
-	 */
-	@Override
-	public void removeCitationRef(CitationRef citationRef) {
-		if (citationRef != null && hasCitationRef(citationRef)) {
-			citationRefs.remove(citationRef);
-			citationRef.terminate();
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
-		}
-	}
-
-	/**
-	 * Removes all citationRef from citationRefs list.
-	 */
-	@Override
-	public void removeCitationRefs() {
-		for (int i = 0; i < citationRefs.size(); i++) {
-			removeCitationRef(citationRefs.get(i));
-		}
-	}
-
-	/**
-	 * Returns the list of evidence references.
-	 * 
-	 * @return evidenceRefs the list of evidences referenced, an empty list if no
-	 *         properties are defined.
-	 */
-	@Override
-	public List<EvidenceRef> getEvidenceRefs() {
-		return evidenceRefs;
-	}
-
-	/**
-	 * Checks whether evidenceRefs has the given evidenceRef.
-	 * 
-	 * @param evidenceRef the evidenceRef to look for.
-	 * @return true if has evidenceRef, false otherwise.
-	 */
-	@Override
-	public boolean hasEvidenceRef(EvidenceRef evidenceRef) {
-		return evidenceRefs.contains(evidenceRef);
-	}
-
-	/**
-	 * Adds given evidenceRef to evidenceRefs list. Sets evidenceable for the given
-	 * evidenceRef.
-	 * 
-	 * @param evidenceRef the evidenceRef to be added.
-	 */
-	@Override
-	public void addEvidenceRef(EvidenceRef evidenceRef) {
-		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
-			evidenceRef.setEvidenceableTo(this);
-			assert (evidenceRef.getEvidenceable() == this);
-			evidenceRefs.add(evidenceRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
-		}
-	}
-
-	/**
-	 * Removes given evidenceRef from evidenceRefs list. The evidenceRef ceases to
-	 * exist and is terminated.
-	 * 
-	 * @param evidenceRef the evidenceRef to be removed.
-	 */
-	@Override
-	public void removeEvidenceRef(EvidenceRef evidenceRef) {
-		if (evidenceRef != null && hasEvidenceRef(evidenceRef)) {
-			evidenceRefs.remove(evidenceRef);
-			evidenceRef.terminate();
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
-		}
-	}
-
-	/**
-	 * Removes all evidenceRefs from evidenceRefs list.
-	 */
-	@Override
-	public void removeEvidenceRefs() {
-		for (EvidenceRef evidenceRef : evidenceRefs) {
-			removeEvidenceRef(evidenceRef);
-		}
-	}
-
-	/**
 	 * Returns the description of this pathway.
 	 * 
 	 * @return description the description.
@@ -639,10 +345,10 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	}
 
 	/**
-	 * Sets the organism of this pathway. Organism is the scientific name (e.g., Homo
-	 * sapiens) of the species being described by this pathway.
+	 * Sets the organism of this pathway. Organism is the scientific name (e.g.,
+	 * Homo sapiens) of the species being described by this pathway.
 	 * 
-	 * @param v the organism to set. 
+	 * @param v the organism to set.
 	 */
 	public void setOrganism(String v) {
 		if (v == null) {
@@ -650,7 +356,8 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		}
 		if (!Utils.stringEquals(organism, v)) {
 			organism = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
+			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
+			// StaticProperty.ORGANISM));
 		}
 	}
 
@@ -695,7 +402,8 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 		}
 		if (version != v) {
 			version = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
+			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
+			// StaticProperty.VERSION));
 		}
 	}
 
@@ -733,7 +441,8 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 	 */
 	public void setXref(Xref v) {
 		xref = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.IDENTIFIER));
+		// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
+		// StaticProperty.IDENTIFIER));
 	}
 
 	// TODO....
@@ -763,11 +472,21 @@ public class Pathway implements Annotatable, Citable, Evidenceable {
 			noFire -= 1;
 			return;
 		}
-		if (pathwayModel != null)
-			pathwayModel.childModified(e);
+//		if (pathwayModel != null)
+//			pathwayModel.childModified(e);
 		for (PathwayElementListener g : listeners) {
 			g.gmmlObjectModified(e);
 		}
+	}
+
+	/**
+	 * Terminates this pathway element. The pathway model, if any, is unset from
+	 * this pathway element. Links to all annotationRefs, citationRefs, and
+	 * evidenceRefs are removed from this data node.
+	 */
+	@Override
+	public void terminate() {
+		// Is pathway allowed to be terminated?
 	}
 
 }

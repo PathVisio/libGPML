@@ -40,7 +40,7 @@ import org.pathvisio.model.ref.Author;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Comment;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Pathway;
@@ -816,7 +816,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes elementId {@link PathwayElement} property information.
+	 * Writes elementId {@link PathwayObject} property information.
 	 * 
 	 * @param elementId the elementId.
 	 * @param e         the parent element.
@@ -877,14 +877,14 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes elementId, comment group {comment, dynamic property, annotationRef,
-	 * citationRef) and evidenceRef {@link ElementInfo} information for datanodes,
+	 * citationRef) and evidenceRef {@link PathwayElement} information for datanodes,
 	 * interactions, graphicalLines, labels, shapes, and group.
 	 * 
 	 * @param elementInfo the pathway element.
 	 * @param e           the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void writeElementInfo(PathwayElement elementInfo, Element e) throws ConverterException {
 		writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);
 		writeDynamicProperties(elementInfo.getDynamicProperties(), e);

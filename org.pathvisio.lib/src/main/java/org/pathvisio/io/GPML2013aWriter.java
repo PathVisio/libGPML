@@ -42,7 +42,7 @@ import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Comment;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
@@ -302,7 +302,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes BiopaxRef information from {@link ElementInfo#getCitationRef()} for
+	 * Writes BiopaxRef information from {@link PathwayElement#getCitationRef()} for
 	 * pathway or pathway element. BiopaxRefs are equivalent to citationRefs in
 	 * GPML2013a.
 	 * 
@@ -733,7 +733,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes gpml:Biopax bp:OpenControlledVocabulary {@link Annotation}
 	 * information. Because it is not possible to write {@link AnnotationRef} for
-	 * {@link PathwayElement} in GPML2013a, the State annotationRef information is
+	 * {@link PathwayObject} in GPML2013a, the State annotationRef information is
 	 * written as {@link Comment} in {@link #writeStateAnnotationRefsAsComment()}.
 	 * We avoid writing annotation information if it is for a state
 	 * annotationRef/comment since it cannot be properly linked to a state pathway
@@ -838,7 +838,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes elementId {@link PathwayElement} property information.
+	 * Writes elementId {@link PathwayObject} property information.
 	 * 
 	 * @param elementId the elementId.
 	 * @param e         the parent element.
@@ -918,7 +918,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes elementId, comment group {comment, dynamic property, annotationRef,
-	 * citationRef) and evidenceRef {@link ElementInfo} information for datanodes,
+	 * citationRef) and evidenceRef {@link PathwayElement} information for datanodes,
 	 * interactions, graphicalLines, labels, shapes, and group.
 	 * 
 	 * NB: writing of dynamic properties (gpml:Attribute) requires special handling
@@ -930,7 +930,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e           the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writeElementInfo(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void writeElementInfo(PathwayElement elementInfo, Element e) throws ConverterException {
 		if (elementInfo.getClass() != Group.class)
 			writeElementId(elementInfo.getElementId(), e);
 		writeComments(elementInfo.getComments(), e);

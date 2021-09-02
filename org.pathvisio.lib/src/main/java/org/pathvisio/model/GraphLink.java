@@ -16,12 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.Set;
 
 import org.pathvisio.util.Utils;
-import org.pathvisio.model.PathwayModel;
 
 /**
  * This class only contains static methods and should not be instantiated.

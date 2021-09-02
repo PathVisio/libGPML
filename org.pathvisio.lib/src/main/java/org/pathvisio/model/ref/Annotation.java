@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayObject;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
 
@@ -31,12 +31,12 @@ import org.pathvisio.props.StaticProperty;
  * 
  * @author finterly
  */
-public class Annotation extends PathwayElement {
+public class Annotation extends PathwayObject {
 
 	private String value;
 	private AnnotationType type;
 	private Xref xref; // optional
-	private UrlRef url; // optional
+	private String urlLink; // optional
 	private List<AnnotationRef> annotationRefs; // annotationRefs with this annotation as source
 
 	/**
@@ -48,20 +48,20 @@ public class Annotation extends PathwayElement {
 	 * @param xref  the annotation xref.
 	 * @param url   the url of the annotation.
 	 */
-	public Annotation(String value, AnnotationType type, Xref xref, UrlRef url) {
+	public Annotation(String value, AnnotationType type, Xref xref, String urlLink) {
 		super();
 		this.value = value;
 		this.type = type;
 		this.xref = xref;
-		this.url = url;
+		this.urlLink = urlLink;
 		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
 	/**
 	 * Instantiates an Annotation given all possible parameters except xref.
 	 */
-	public Annotation(String value, AnnotationType type, UrlRef url) {
-		this(value, type, null, url);
+	public Annotation(String value, AnnotationType type, String urlLink) {
+		this(value, type, null, urlLink);
 	}
 
 	/**
@@ -118,24 +118,6 @@ public class Annotation extends PathwayElement {
 	}
 
 	/**
-	 * Returns the url of this annotation.
-	 * 
-	 * @return url the url of this annotation.
-	 */
-	public UrlRef getUrl() {
-		return url;
-	}
-
-	/**
-	 * Sets the url of this annotation.
-	 * 
-	 * @param url the url to set for this annotation.
-	 */
-	public void setUrl(UrlRef v) {
-		url = v;
-	}
-
-	/**
 	 * Returns the Annotation Xref.
 	 * 
 	 * @return xref the annotation xref.
@@ -151,6 +133,24 @@ public class Annotation extends PathwayElement {
 	 */
 	public void setXref(Xref v) {
 		xref = v;
+	}
+
+	/**
+	 * Returns the url link for a web address.
+	 * 
+	 * @return urlLink the url link.
+	 */
+	public String getUrlLink() {
+		return urlLink;
+	}
+
+	/**
+	 * Sets the url link for a web address.
+	 * 
+	 * @param v the url link.
+	 */
+	public void setUrlLink(String v) {
+		urlLink = v;
 	}
 
 	/**
@@ -253,17 +253,9 @@ public class Annotation extends PathwayElement {
 			if (xref.getDataSource().equals(annotation.getXref().getDataSource()))
 				return false;
 		}
-		// checks if url link and description are equivalent
-		if (url != null && annotation.getUrl() == null)
+		// checks if url link property equivalent
+		if (!Objects.equals(urlLink, annotation.getUrlLink()))
 			return false;
-		if (url == null && annotation.getUrl() != null)
-			return false;
-		if (url != null && annotation.getUrl() != null) {
-			if (!Objects.equals(url.getLink(), annotation.getUrl().getLink()))
-				return false;
-			if (!Objects.equals(url.getDescription(), annotation.getUrl().getDescription()))
-				return false;
-		}
 		// checks if annotation has the same annotationRefs
 		if (!Objects.equals(annotationRefs, annotation.getAnnotationRefs()))
 			return false;

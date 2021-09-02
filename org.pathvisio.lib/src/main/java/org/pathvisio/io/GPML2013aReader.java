@@ -42,7 +42,7 @@ import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Comment;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.model.type.*;
@@ -1254,7 +1254,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads comment and biopaxref {@link ElementInfo} information, for pathway
+	 * Reads comment and biopaxref {@link PathwayElement} information, for pathway
 	 * element from element. Dynamic properties read by
 	 * {@link #readLineDynamicProperties} , {@link #readShapedDynamicProperties} ,
 	 * {@link #readStateDynamicProperties}.
@@ -1271,7 +1271,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
-	protected void readElementInfo(PathwayModel pathwayModel, ElementInfo elementInfo, Element e,
+	protected void readElementInfo(PathwayModel pathwayModel, PathwayElement elementInfo, Element e,
 			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		readComments(elementInfo, e);
 		readBiopaxRefs(pathwayModel, elementInfo, e, biopaxIdToNew, duplicateToBiopaxId);
@@ -1284,7 +1284,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e           the jdom pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void readComments(PathwayElement elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
 			String source = getAttr("Comment", "Source", cmt);
 			String commentText = cmt.getText();
@@ -1302,7 +1302,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads BiopaxRef information to {@link ElementInfo#addCitationRef} information
+	 * Reads BiopaxRef information to {@link PathwayElement#addCitationRef} information
 	 * for pathway element from element. NB: BiopaxRef is also an attribute in the
 	 * GPML2013a schema but was never implemented.
 	 * 
@@ -1313,7 +1313,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 *                            biopax/citation id.
 	 * @throws ConverterException
 	 */
-	protected void readBiopaxRefs(PathwayModel pathwayModel, ElementInfo elementInfo, Element e,
+	protected void readBiopaxRefs(PathwayModel pathwayModel, PathwayElement elementInfo, Element e,
 			Map<String, String> biopaxIdToNew, Map<String, String> duplicateToBiopaxId) throws ConverterException {
 		for (Element bpRef : e.getChildren("BiopaxRef", e.getNamespace())) {
 			String biopaxRef = bpRef.getText();
@@ -1338,7 +1338,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information for
 	 * shaped pathway elements. If dynamic property codes for DoubleLineProperty or
 	 * CellularComponentProperty, updates/overrides borderStyle or shapeType.
 	 * Otherwise, sets dynamic property.
@@ -1366,7 +1366,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information for
 	 * state pathway element. If dynamic property codes for DoubleLineProperty or
 	 * CellularComponentProperty, updates/overrides borderStyle or shapeType.
 	 * Otherwise, sets dynamic property.
@@ -1393,7 +1393,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information for
 	 * interaction or graphicalLine pathway element. If dynamic property codes for
 	 * DoubleLineProperty, updates lineStyle. Otherwise, sets dynamic property.
 	 * 

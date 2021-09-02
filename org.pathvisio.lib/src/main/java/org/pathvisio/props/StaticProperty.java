@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
- * Copyright 2006-2019 BiGCaT Bioinformatics
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -31,19 +31,17 @@ import java.util.Map;
 public enum StaticProperty implements Property {
 
 	// pathway
-	TITLE("title", "title", StaticPropertyType.STRING, 134),
+	TITLE("title", "Title", StaticPropertyType.STRING, 134),
 	ORGANISM("organism", "organism", StaticPropertyType.ORGANISM, 135),
 	SOURCE("source", "source", StaticPropertyType.STRING, 136),
 	VERSION("version", "version", StaticPropertyType.STRING, 137),
 	LICENSE("license", "license", StaticPropertyType.STRING, 142),
 
 	// TODO xref: pathway, author, datanode, state, interaction, group  
-	IDENTIFIER("identifier", "identifier", StaticPropertyType.IDENTIFIER, 122),
-	DATASOURCE("dataSource", "dataSource", StaticPropertyType.DATASOURCE, 123),
 	XREF("xref", "xref", StaticPropertyType.XREF, 123),
 
 	// author
-	NAME("name", "author name", StaticPropertyType.STRING, 138),
+	NAME("name", "Author name", StaticPropertyType.STRING, 138),
 	USERNAME("username", "username", StaticPropertyType.STRING, 138),
 	ORDER("order", "order", StaticPropertyType.INTEGER, 138),
 

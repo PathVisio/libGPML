@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.props.StaticProperty;
@@ -32,8 +32,9 @@ import org.pathvisio.props.StaticProperty;
  * 
  * @author finterly
  */
-public abstract class LineElement extends ElementInfo {
+public abstract class LineElement extends PathwayElement implements Groupable {
 
+	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 	private List<LinePoint> linePoints; // minimum 2
 	private List<Anchor> anchors;
 
@@ -42,6 +43,7 @@ public abstract class LineElement extends ElementInfo {
 	private LineStyleType lineStyle = LineStyleType.SOLID; // solid, dashed, or double
 	private double lineWidth = 1.0; // 1.0
 	private ConnectorType connectorType = ConnectorType.STRAIGHT; // straight, elbow, curved...
+	private int zOrder; // optional
 
 	/**
 	 * Instantiates a line pathway element. Property groupRef is to be set by
@@ -55,6 +57,72 @@ public abstract class LineElement extends ElementInfo {
 		super();
 		this.linePoints = new ArrayList<LinePoint>(); // should have at least two points
 		this.anchors = new ArrayList<Anchor>();
+	}
+
+	/**
+	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
+	 * the elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of this pathway element.
+	 */
+	@Override 
+	public Group getGroupRef() {
+		return groupRef;
+	}
+
+	/**
+	 * Checks whether this pathway element belongs to a group.
+	 *
+	 * @return true if and only if the group of this pathway element is effective.
+	 */
+	@Override 
+	public boolean hasGroupRef() {
+		return getGroupRef() != null;
+	}
+
+	/**
+	 * Verifies if given parent group is new and valid. Sets the parent group of
+	 * this pathway element. Adds this pathway element to the the pathwayElements
+	 * list of the new parent group. If there is an old parent group, this pathway
+	 * element is removed from its pathwayElements list.
+	 * 
+	 * @param v the new parent group to set.
+	 */
+	@Override 
+	public void setGroupRefTo(Group v) {
+		if (v == null)
+			throw new IllegalArgumentException("Invalid group.");
+		if (groupRef != v) {
+			unsetGroupRef(); // first unsets if necessary
+			setGroupRef(v);
+			if (!v.hasPathwayElement(this))
+				v.addPathwayElement(this);
+		}
+	}
+
+	/**
+	 * Sets the parent group for this pathway element.
+	 * 
+	 * @param v the given group to set.
+	 */
+	private void setGroupRef(Group v) {
+		// TODO
+		groupRef = v;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+	}
+
+	/**
+	 * Unsets the parent group, if any, from this pathway element.
+	 */
+	@Override 
+	public void unsetGroupRef() {
+		if (hasGroupRef()) {
+			Group groupRef = getGroupRef();
+			setGroupRef(null);
+			if (groupRef.hasPathwayElement(this))
+				groupRef.removePathwayElement(this);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+		}
 	}
 
 	/**
@@ -351,6 +419,27 @@ public abstract class LineElement extends ElementInfo {
 		if (connectorType != v) {
 			connectorType = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CONNECTORTYPE));
+		}
+	}
+
+	/**
+	 * Returns the z-order of this pathway element.
+	 * 
+	 * @return zOrder the order of this pathway element.
+	 */
+	public int getZOrder() {
+		return zOrder;
+	}
+
+	/**
+	 * Sets the z-order of this pathway element.
+	 * 
+	 * @param v the order of this pathway element.
+	 */
+	public void setZOrder(int v) {
+		if (zOrder != v) {
+			zOrder = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
 		}
 	}
 

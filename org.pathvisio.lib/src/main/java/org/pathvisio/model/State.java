@@ -25,7 +25,7 @@ import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.*;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;

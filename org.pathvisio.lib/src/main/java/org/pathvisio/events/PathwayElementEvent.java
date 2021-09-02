@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.events;
 
-import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayObject;
 import org.pathvisio.props.Property;
 
 /**
@@ -37,21 +37,21 @@ import org.pathvisio.props.Property;
  * @author Mark Woon
  */
 public final class PathwayElementEvent {
-	private final PathwayElement pwElement;
+	private final PathwayObject pwElement;
 	private final Object property;
 	private final boolean coordinateChange;
 
 	//TODO public for now
-	public static PathwayElementEvent createSinglePropertyEvent(PathwayElement pwe, Object property) {
+	public static PathwayElementEvent createSinglePropertyEvent(PathwayObject pwe, Object property) {
 		return new PathwayElementEvent(pwe, property, false);
 	}
 	
 	//TODO public for now
-	public static PathwayElementEvent createAllPropertiesEvent(PathwayElement pwe) {
+	public static PathwayElementEvent createAllPropertiesEvent(PathwayObject pwe) {
 		return new PathwayElementEvent(pwe, null, false);
 	}
 	//TODO public for now
-	public static PathwayElementEvent createCoordinatePropertyEvent(PathwayElement pwe) {
+	public static PathwayElementEvent createCoordinatePropertyEvent(PathwayObject pwe) {
 		return new PathwayElementEvent(pwe, null, true);
 	}
 	
@@ -62,7 +62,7 @@ public final class PathwayElementEvent {
 	 * @param prop the Property on the element that's been modified
 	 * @param coordinateChange Flag to indicate this event applies to a coordinate change.
 	 */
-	private PathwayElementEvent(PathwayElement elem, Object prop, boolean coordinateChange) {
+	private PathwayElementEvent(PathwayObject elem, Object prop, boolean coordinateChange) {
 		pwElement = elem;
 		property = prop;
 		this.coordinateChange = coordinateChange;
@@ -78,7 +78,7 @@ public final class PathwayElementEvent {
 	/**
 	 * Gets the PathwayElement whose properties have been modified.
 	 */
-	public PathwayElement getModifiedPathwayElement() {
+	public PathwayObject getModifiedPathwayElement() {
 		return pwElement;
 	}
 

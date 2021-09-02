@@ -36,7 +36,7 @@ import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Comment;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Evidenceable;
@@ -372,7 +372,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads annotationRefs {@link ElementInfo#addAnnotationRef} information for an
+	 * Reads annotationRefs {@link PathwayElement#addAnnotationRef} information for an
 	 * annotatable from jdom element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -394,7 +394,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads citationRefs {@link ElementInfo#addCitationRef} information for a
+	 * Reads citationRefs {@link PathwayElement#addCitationRef} information for a
 	 * citable from jdom element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -416,7 +416,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads evidenceRef {@link ElementInfo#addEvidenceRef} information for an
+	 * Reads evidenceRef {@link PathwayElement#addEvidenceRef} information for an
 	 * evidenceable from jdom element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -817,14 +817,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads comment group (comment, dynamic property, annotationRef, citationRef)
-	 * and elementRef {@link ElementInfo} information, , for pathway element from
+	 * and elementRef {@link PathwayElement} information, , for pathway element from
 	 * element.
 	 * 
 	 * @param elementInfo the element info pathway element object.
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readElementInfo(PathwayModel pathwayModel, ElementInfo elementInfo, Element e)
+	protected void readElementInfo(PathwayModel pathwayModel, PathwayElement elementInfo, Element e)
 			throws ConverterException {
 		readComments(elementInfo, e);
 		readDynamicProperties(elementInfo, e);
@@ -840,7 +840,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readComments(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void readComments(PathwayElement elementInfo, Element e) throws ConverterException {
 		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
 			String commentText = cmt.getText();
@@ -858,14 +858,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads dynamic property {@link ElementInfo#setDynamicProperty} information for
+	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information for
 	 * pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object .
 	 * @param e           the pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readDynamicProperties(ElementInfo elementInfo, Element e) throws ConverterException {
+	protected void readDynamicProperties(PathwayElement elementInfo, Element e) throws ConverterException {
 		for (Element dp : e.getChildren("Property", e.getNamespace())) {
 			String key = dp.getAttributeValue("key");
 			String value = dp.getAttributeValue("value");

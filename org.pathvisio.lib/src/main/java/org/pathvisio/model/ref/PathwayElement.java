@@ -23,8 +23,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayObject;
 import org.pathvisio.props.StaticProperty;
 
 /**
@@ -35,7 +34,7 @@ import org.pathvisio.props.StaticProperty;
  * 
  * @author unknown, AP20070508, finterly
  */
-public abstract class ElementInfo extends PathwayElement implements Annotatable, Citable, Evidenceable { // PropertyChangeListener,
+public abstract class PathwayElement extends PathwayObject implements Annotatable, Citable, Evidenceable {
 
 	private List<Comment> comments;
 	/**
@@ -49,17 +48,9 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	private List<EvidenceRef> evidenceRefs;
 
 	/**
-	 * ElementInfo subclasses are {@link ShapedElement} and {@link LineElement}.
-	 * Both pathway element subclasses have the optional properties groupRef and
-	 * zOrder.
-	 */
-	private Group groupRef; // optional, the parent group to which a pathway element belongs.
-	private int zOrder; // optional
-
-	/**
 	 * Instantiates a pathway element with meta data information.
 	 */
-	public ElementInfo() {
+	public PathwayElement() {
 		super();
 		this.comments = new ArrayList<Comment>(); // 0 to unbounded
 		this.dynamicProperties = new TreeMap<String, String>(); // 0 to unbounded
@@ -96,6 +87,21 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 	public void removeComment(Comment comment) {
 		comments.remove(comment);
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
+	}
+
+	/**
+	 * TODO Finds the first comment with a specific source.
+	 * 
+	 * @param source the source of the comment to be found.
+	 * @return the comment content with a given source.
+	 */
+	public String findComment(String source) {
+		for (Comment comment : comments) {
+			if (source.equals(comment.getSource())) {
+				return comment.getCommentText();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -331,90 +337,6 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 			removeEvidenceRef(evidenceRef);
 		}
 	}
-	
-
-	/**
-	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
-	 * the elementId (formerly groupId) of the parent gpml:Group.
-	 * 
-	 * @return groupRef the parent group of this pathway element.
-	 */
-	public Group getGroupRef() {
-		return groupRef;
-	}
-
-	/**
-	 * Checks whether this pathway element belongs to a group.
-	 *
-	 * @return true if and only if the group of this pathway element is effective.
-	 */
-	public boolean hasGroupRef() {
-		return getGroupRef() != null;
-	}
-
-	/**
-	 * Verifies if given parent group is new and valid. Sets the parent group of
-	 * this pathway element. Adds this pathway element to the the pathwayElements
-	 * list of the new parent group. If there is an old parent group, this pathway
-	 * element is removed from its pathwayElements list.
-	 * 
-	 * @param v the new parent group to set.
-	 */
-	public void setGroupRefTo(Group v) {
-		if (v == null)
-			throw new IllegalArgumentException("Invalid group.");
-		if (groupRef != v) {
-			unsetGroupRef(); // first unsets if necessary
-			setGroupRef(v);
-			if (!v.hasPathwayElement(this))
-				v.addPathwayElement(this);
-		}
-	}
-
-	/**
-	 * Sets the parent group for this pathway element.
-	 * 
-	 * @param v the given group to set.
-	 */
-	private void setGroupRef(Group v) {
-		// TODO
-		groupRef = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
-	}
-
-	/**
-	 * Unsets the parent group, if any, from this pathway element.
-	 */
-	public void unsetGroupRef() {
-		if (hasGroupRef()) {
-			Group groupRef = getGroupRef();
-			setGroupRef(null);
-			if (groupRef.hasPathwayElement(this))
-				groupRef.removePathwayElement(this);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
-		}
-	}
-
-	/**
-	 * Returns the z-order of this pathway element.
-	 * 
-	 * @return zOrder the order of this pathway element.
-	 */
-	public int getZOrder() {
-		return zOrder;
-	}
-
-	/**
-	 * Sets the z-order of this pathway element.
-	 * 
-	 * @param v the order of this pathway element.
-	 */
-	public void setZOrder(int v) {
-		if (zOrder != v) {
-			zOrder = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
-		}
-	}
 
 	/**
 	 * Terminates this pathway element. The pathway model, if any, is unset from
@@ -427,5 +349,81 @@ public abstract class ElementInfo extends PathwayElement implements Annotatable,
 		removeCitationRefs();
 		removeEvidenceRefs();
 		unsetPathwayModel();
+	}
+
+	/**
+	 * This class stores all information relevant to a Comment. Comments can be
+	 * descriptions or arbitrary notes. Each comment has a source and a text.
+	 * Pathway elements (e.g. DataNode, State, Interaction, GraphicalLine, Label,
+	 * Shape, Group) can have zero or more comments with it.
+	 * 
+	 * @author unknown, finterly
+	 */
+	public class Comment {
+
+		private String source; // optional
+		private String commentText; // required
+
+		/**
+		 * Instantiates a Comment with source and commentText.
+		 * 
+		 * @param source      the source of this comment.
+		 * @param commentText the text of the comment, between Comment tags in GPML.
+		 */
+		public Comment(String source, String commentText) {
+			this.source = source;
+			this.commentText = commentText;
+		}
+
+		/**
+		 * Instantiates a Comment with just commentText.
+		 * 
+		 * @param commentText the text of this comment, between Comment tags in GPML.
+		 */
+		public Comment(String commentText) {
+			this.commentText = commentText;
+		}
+
+		/**
+		 * Returns the source of this Comment.
+		 * 
+		 * @return source the source of this comment.
+		 */
+		public String getSource() {
+			return source;
+		}
+
+		/**
+		 * Sets the source of this Comment.
+		 * 
+		 * @param v the source of this comment.
+		 */
+		public void setSource(String v) {
+			if (v != null) {
+				source = v;
+				// changed();
+			}
+		}
+
+		/**
+		 * Returns the text of this Comment.
+		 * 
+		 * @return commentText the text of this comment.
+		 */
+		public String getCommentText() {
+			return commentText;
+		}
+
+		/**
+		 * Sets the text of this Comment.
+		 * 
+		 * @param v the text of this comment.
+		 */
+		public void setCommentText(String v) {
+			if (v != null) {
+				commentText = v;
+			}
+		}
+
 	}
 }

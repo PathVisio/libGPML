@@ -59,9 +59,9 @@ public class PathwayModel {
 
 	private Pathway pathway; // pathway information
 	// for elementId to PathwayElement
-	private Map<String, PathwayElement> elementIdToPathwayElement;
+	private Map<String, PathwayObject> elementIdToPathwayElement; //TODO PathwayElement???? 
 	// for PathwayElement and all the LinePoints which point to it
-	private Map<LinkableTo, Set<LinkableFrom>> pathwayElementToLinePoints;
+	private Map<LinkableTo, Set<LinkableFrom>> elementRefToLinePoints;
 	// for Group aliasRef and all the DataNode aliases for it
 	private Map<Group, Set<DataNode>> aliasRefToAliases;
 	private List<DataNode> dataNodes; // contains states
@@ -82,8 +82,8 @@ public class PathwayModel {
 	 */
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
-		this.elementIdToPathwayElement = new HashMap<String, PathwayElement>();
-		this.pathwayElementToLinePoints = new HashMap<LinkableTo, Set<LinkableFrom>>();
+		this.elementIdToPathwayElement = new HashMap<String, PathwayObject>();
+		this.elementRefToLinePoints = new HashMap<LinkableTo, Set<LinkableFrom>>();
 		this.aliasRefToAliases = new HashMap<Group, Set<DataNode>>();
 		this.dataNodes = new ArrayList<DataNode>();
 		this.interactions = new ArrayList<Interaction>();
@@ -100,8 +100,7 @@ public class PathwayModel {
 	 * Initializes a pathway model object with {@link Pathway} default values.
 	 */
 	public PathwayModel() {
-		this(new Pathway.PathwayBuilder("Click to add title", 0, 0, Color.decode("#ffffff"))
-				.build());
+		this(new Pathway.PathwayBuilder("Click to add title", 0, 0, Color.decode("#ffffff")).build());
 	}
 
 	/**
@@ -137,7 +136,7 @@ public class PathwayModel {
 	 * @param elementId the given elementId key.
 	 * @return the PathwayElement for the given elementId key.
 	 */
-	public PathwayElement getPathwayElement(String elementId) {
+	public PathwayObject getPathwayElement(String elementId) {
 		return elementIdToPathwayElement.get(elementId);
 	}
 
@@ -147,8 +146,8 @@ public class PathwayModel {
 	 * @param elementId the given elementId key.
 	 * @return the PathwayElement for the given elementId key.
 	 */
-	public List<PathwayElement> getPathwayElements() {
-		List<PathwayElement> pathwayElements = new ArrayList<>(elementIdToPathwayElement.values());
+	public List<PathwayObject> getPathwayElements() {
+		List<PathwayObject> pathwayElements = new ArrayList<>(elementIdToPathwayElement.values());
 		return pathwayElements;
 	}
 
@@ -158,7 +157,7 @@ public class PathwayModel {
 	 * @param pathwayElement the pathway element to check for.
 	 * @return true if pathway model has given pathway element, false otherwise.
 	 */
-	public boolean hasPathwayElement(PathwayElement pathwayElement) {
+	public boolean hasPathwayElement(PathwayObject pathwayElement) {
 		return this.getPathwayElements().contains(pathwayElement);
 	}
 
@@ -181,7 +180,7 @@ public class PathwayModel {
 	 * @throws IllegalArgumentException if elementId or elementIdContainer are null.
 	 * @throws IllegalArgumentException if elementId is not unique.
 	 */
-	public void addElementId(String elementId, PathwayElement pathwayElement) {
+	public void addElementId(String elementId, PathwayObject pathwayElement) {
 		if (pathwayElement == null || elementId == null) {
 			throw new IllegalArgumentException("unique elementId can't be null");
 		}
@@ -234,7 +233,7 @@ public class PathwayModel {
 	 * {@link LinkableTo} pathway element.
 	 */
 	public Set<LinkableFrom> getReferringLinkableFroms(LinkableTo pathwayElement) {
-		Set<LinkableFrom> refs = pathwayElementToLinePoints.get(pathwayElement);
+		Set<LinkableFrom> refs = elementRefToLinePoints.get(pathwayElement);
 		if (refs != null) {
 			// create defensive copy to prevent problems with ConcurrentModification.
 			return new HashSet<LinkableFrom>(refs);
@@ -243,30 +242,29 @@ public class PathwayModel {
 		}
 	}
 
-//	/**
-//	 * Register a link from a graph id to a graph ref
-//	 * 
-//	 * @param id     The graph id
-//	 * @param target The target GraphRefContainer
-//	 */
-//	public void addGraphRef(String id, GraphRefContainer target) {
-//		Utils.multimapPut(graphRefs, id, target);
-//	}
-//
-//	/**
-//	 * Remove a reference to another Id.
-//	 * 
-//	 * @param id
-//	 * @param target
-//	 */
-//	void removeGraphRef(String id, GraphRefContainer target) {
-//		if (!graphRefs.containsKey(id))
-//			throw new IllegalArgumentException();
-//
-//		graphRefs.get(id).remove(target);
-//		if (graphRefs.get(id).size() == 0)
-//			graphRefs.remove(id);
-//	}
+	/**
+	 * Register a link from a elementRef to a linePoint(s) //TODO check if correct
+	 * 
+	 * @param elementRef the pathway element which can be linked to.
+	 * @param linePoint  the linePoint with given elementRef.
+	 */
+	public void addElementRef(LinkableTo elementRef, LinePoint linePoint) {
+		Utils.multimapPut(elementRefToLinePoints, elementRef, linePoint);
+	}
+
+	/**
+	 * Removes a linePoint linked to a elementRef. //TODO check if correct
+	 * 
+	 * @param elementRef the pathway element which is linked to linePoint.
+	 * @param linePoint  the linePoint with given elementRef.
+	 */
+	void removeElementRef(LinkableTo elementRef, LinePoint linePoint) {
+		if (!elementRefToLinePoints.containsKey(elementRef))
+			throw new IllegalArgumentException();
+		elementRefToLinePoints.get(elementRef).remove(linePoint);
+		if (elementRefToLinePoints.get(elementRef).size() == 0)
+			elementRefToLinePoints.remove(elementRef);
+	}
 //
 //	/**
 //	 * Returns the Group to which a data node refers to. For example, when a
@@ -708,7 +706,7 @@ public class PathwayModel {
 	 * 
 	 * @param pathwayElement the pathway element to add.
 	 */
-	public void addPathwayElement(PathwayElement pathwayElement) {
+	public void addPathwayElement(PathwayObject pathwayElement) {
 		assert (pathwayElement != null);
 		pathwayElement.setPathwayModelTo(this);
 		assert (pathwayElement.getPathwayModel() == this);
@@ -725,7 +723,7 @@ public class PathwayModel {
 	 * 
 	 * @param pathwayElement the pathway element to remove.
 	 */
-	public void removePathwayElement(PathwayElement pathwayElement) {
+	public void removePathwayElement(PathwayObject pathwayElement) {
 		assert (pathwayElement != null);
 		assert (hasPathwayElement(pathwayElement));
 		removeElementId(pathwayElement.getElementId());
@@ -733,19 +731,18 @@ public class PathwayModel {
 	}
 
 	/**
-	 * TODO 
+	 * TODO
 	 * 
 	 * removes object sets parent of object to null fires PathwayEvent.DELETED event
 	 * <i>before</i> removal of the object
 	 * 
-	 * TODO was forceRemove??? 
-	 * removes object, regardless whether the object may be removed or not sets
-	 * parent of object to null fires PathwayEvent.DELETED event <i>before</i>
-	 * removal of the object
+	 * TODO was forceRemove??? removes object, regardless whether the object may be
+	 * removed or not sets parent of object to null fires PathwayEvent.DELETED event
+	 * <i>before</i> removal of the object
 	 *
 	 * @param o the object to remove
 	 */
-	public void remove(PathwayElement pathwayElement) {
+	public void remove(PathwayObject pathwayElement) {
 		assert (pathwayElement.getPathwayModel() == this); // can only remove direct child objects
 		if (pathwayElement.getClass() == DataNode.class) {
 			removeDataNode((DataNode) pathwayElement);
@@ -777,11 +774,10 @@ public class PathwayModel {
 			LineElement lineElement = ((LinePoint) pathwayElement).getLineElement();
 			lineElement.removeLinePoint((LinePoint) pathwayElement);
 		}
-		// Citation...Anchor..Annotation...????? 		
-		fireObjectModifiedEvent(new PathwayEvent(pathwayElement, PathwayEvent.DELETED)); //TODO 
+		// Citation...Anchor..Annotation...?????
+		fireObjectModifiedEvent(new PathwayEvent(pathwayElement, PathwayEvent.DELETED)); // TODO
 
 	}
-	
 
 	/**
 	 * Returns the Xref of all DataNodes in this pathway as a List.
@@ -957,7 +953,7 @@ public class PathwayModel {
 		markChanged();
 		if (e.isCoordinateChange()) {
 
-			PathwayElement elt = e.getModifiedPathwayElement();
+			PathwayObject elt = e.getModifiedPathwayElement();
 
 //			if (elt.getClass() == LinkableTo.class) {
 //				for (LinkableFrom linePoints : getReferringLinkableFroms((LinkableTo) elt)) {

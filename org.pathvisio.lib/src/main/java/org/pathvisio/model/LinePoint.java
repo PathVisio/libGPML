@@ -56,9 +56,7 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 		super();
 		this.arrowHead = arrowHead;
 		this.xy = xy;
-		this.elementRef = elementRef;
-		this.relX = relX;
-		this.relY = relY;
+		linkTo(elementRef, relX, relY);
 	}
 
 	/**
@@ -138,15 +136,24 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 
 	/**
 	 * Sets the pathway element to which the point refers to. In GPML, this is
-	 * elementRef which refers to the elementId of a pathway element.
-	 * 
-	 * @param v the pathway element to which this point refers.
+	 * elementRef which refers to the elementId of a pathway element. If a
+	 * pathwayModel is set, this will automatically deregister the previously held
+	 * elementRef and register the new elementRef as necessary
+	 *
+	 * @param v reference to set.
 	 */
 	public void setElementRef(LinkableTo v) {
-		// TODO WEIRD LOGIC
-		// TODO: check that new graphRef exists and that it points to a DataNode
-		if (!(elementRef == null ? v == null : elementRef.equals(v))) {
+		if (elementRef != v) {
+			if (getPathwayModel() != null) {
+				if (elementRef != null) {
+					getPathwayModel().removeElementRef(elementRef, this);
+				}
+				if (v != null) {
+					getPathwayModel().addElementRef(v, this);
+				}
+			}
 			elementRef = v;
+			// TODO????
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ELEMENTREF));
 		}
 	}
@@ -219,7 +226,7 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * @param pathwayElement the linkableTo pathway element to link to.
 	 */
 	public void linkTo(LinkableTo pathwayElement) {
-//		Point2D rel = idc.toRelativeCoordinate(toPoint2D());
+//		Point2D rel = pathwayElement.toRelativeCoordinate(toPoint2D());
 		linkTo(pathwayElement, relX, relY);
 	}
 

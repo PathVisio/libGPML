@@ -23,7 +23,7 @@ import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.graphics.Coordinate;
-import org.pathvisio.model.ref.ElementInfo;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
@@ -37,8 +37,9 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public abstract class ShapedElement extends ElementInfo implements LinkableTo {
+public abstract class ShapedElement extends PathwayElement implements LinkableTo, Groupable {
 
+	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 	// rect properties
 	private Coordinate centerXY;
 	private double width = 1.0;
@@ -59,6 +60,7 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo {
 	private double borderWidth = 1.0; // TODO: type?
 	private Color fillColor = Color.decode("#ffffff"); // white TODO: Transparent if Label
 	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
+	private int zOrder; // optional
 	private double rotation = 0; // optional, in radians
 
 	/**
@@ -87,6 +89,72 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo {
 	 * @param v the the text to set for this shaped pathway element.
 	 */
 	public abstract void setTextLabel(String v);
+
+	/**
+	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
+	 * the elementId (formerly groupId) of the parent gpml:Group.
+	 * 
+	 * @return groupRef the parent group of this pathway element.
+	 */
+	@Override 
+	public Group getGroupRef() {
+		return groupRef;
+	}
+
+	/**
+	 * Checks whether this pathway element belongs to a group.
+	 *
+	 * @return true if and only if the group of this pathway element is effective.
+	 */
+	@Override 
+	public boolean hasGroupRef() {
+		return getGroupRef() != null;
+	}
+
+	/**
+	 * Verifies if given parent group is new and valid. Sets the parent group of
+	 * this pathway element. Adds this pathway element to the the pathwayElements
+	 * list of the new parent group. If there is an old parent group, this pathway
+	 * element is removed from its pathwayElements list.
+	 * 
+	 * @param v the new parent group to set.
+	 */
+	@Override 
+	public void setGroupRefTo(Group v) {
+		if (v == null)
+			throw new IllegalArgumentException("Invalid group.");
+		if (groupRef != v) {
+			unsetGroupRef(); // first unsets if necessary
+			setGroupRef(v);
+			if (!v.hasPathwayElement(this))
+				v.addPathwayElement(this);
+		}
+	}
+
+	/**
+	 * Sets the parent group for this pathway element.
+	 * 
+	 * @param v the given group to set.
+	 */
+	private void setGroupRef(Group v) {
+		// TODO
+		groupRef = v;
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+	}
+
+	/**
+	 * Unsets the parent group, if any, from this pathway element.
+	 */
+	@Override 
+	public void unsetGroupRef() {
+		if (hasGroupRef()) {
+			Group groupRef = getGroupRef();
+			setGroupRef(null);
+			if (groupRef.hasPathwayElement(this))
+				groupRef.removePathwayElement(this);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+		}
+	}
 
 	/**
 	 * Returns the center x and y coordinate of an object.
@@ -480,8 +548,8 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo {
 	}
 
 	/**
-	 * Returns the color used to paint the area of this shaped pathway element., not including its
-	 * border.
+	 * Returns the color used to paint the area of this shaped pathway element., not
+	 * including its border.
 	 * 
 	 * @return fillColor the fill color of this shaped pathway element.
 	 */
@@ -494,7 +562,8 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo {
 	}
 
 	/**
-	 * Sets the color used to paint the area of this shaped pathway element, not including its border.
+	 * Sets the color used to paint the area of this shaped pathway element, not
+	 * including its border.
 	 * 
 	 * @param v the fill color of this shaped pathway element.
 	 * @throws IllegalArgumentException if fillColor null.
@@ -546,7 +615,26 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo {
 		}
 	}
 
+	/**
+	 * Returns the z-order of this pathway element.
+	 * 
+	 * @return zOrder the order of this pathway element.
+	 */
+	public int getZOrder() {
+		return zOrder;
+	}
 
+	/**
+	 * Sets the z-order of this pathway element.
+	 * 
+	 * @param v the order of this pathway element.
+	 */
+	public void setZOrder(int v) {
+		if (zOrder != v) {
+			zOrder = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
+		}
+	}
 
 	/**
 	 * Returns the rotation of this shaped pathway element.
@@ -569,8 +657,6 @@ public abstract class ShapedElement extends ElementInfo implements LinkableTo {
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
-
-
 
 	/**
 	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes

@@ -21,18 +21,18 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayObject;
 
 /**
  * This class stores information for an Evidence.
  * 
  * @author finterly
  */
-public class Evidence extends PathwayElement {
+public class Evidence extends PathwayObject {
 
 	private String value; // optional
 	private Xref xref;
-	private UrlRef url; // optional
+	private String urlLink; // optional
 	/** evidenceRefs with this evidence as source */
 	private List<EvidenceRef> evidenceRefs;
 
@@ -47,11 +47,11 @@ public class Evidence extends PathwayElement {
 	 * @param xref  this evidence xref.
 	 * @param url   the url of this evidence.
 	 */
-	public Evidence(String value, Xref xref, UrlRef url) {
+	public Evidence(String value, Xref xref, String url) {
 		super();
 		this.value = value;
 		this.xref = xref;
-		this.url = url;
+		this.urlLink = url;
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
 
 	}
@@ -59,7 +59,7 @@ public class Evidence extends PathwayElement {
 	/**
 	 * Instantiates an Evidence given all possible parameters except value.
 	 */
-	public Evidence(Xref xref, UrlRef url) {
+	public Evidence(Xref xref, String url) {
 		this(null, xref, url);
 	}
 
@@ -75,24 +75,6 @@ public class Evidence extends PathwayElement {
 	 */
 	public Evidence(Xref xref) {
 		this(null, xref, null);
-	}
-
-	/**
-	 * Returns this evidence Xref.
-	 * 
-	 * @return xref this evidence xref.
-	 */
-	public Xref getXref() {
-		return xref;
-	}
-
-	/**
-	 * Sets the Xref for this evidence.
-	 * 
-	 * @param v the xref of this evidence.
-	 */
-	public void setXref(Xref v) {
-		xref = v;
 	}
 
 	/**
@@ -114,21 +96,39 @@ public class Evidence extends PathwayElement {
 	}
 
 	/**
-	 * Returns the url of this evidence.
+	 * Returns this evidence Xref.
 	 * 
-	 * @return url the url of this evidence.
+	 * @return xref this evidence xref.
 	 */
-	public UrlRef getUrl() {
-		return url;
+	public Xref getXref() {
+		return xref;
 	}
 
 	/**
-	 * Sets the url of this evidence.
+	 * Sets the Xref for this evidence.
 	 * 
-	 * @param v the url of this evidence.
+	 * @param v the xref of this evidence.
 	 */
-	public void setUrl(UrlRef v) {
-		url = v;
+	public void setXref(Xref v) {
+		xref = v;
+	}
+
+	/**
+	 * Returns the url link for a web address.
+	 * 
+	 * @return urlLink the url link.
+	 */
+	public String getUrlLink() {
+		return urlLink;
+	}
+
+	/**
+	 * Sets the url link for a web address.
+	 * 
+	 * @param v the url link.
+	 */
+	public void setUrlLink(String v) {
+		urlLink = v;
 	}
 
 	/**
@@ -223,17 +223,9 @@ public class Evidence extends PathwayElement {
 			if (!Objects.equals(xref.getDataSource(), evidence.getXref().getDataSource()))
 				return false;
 		}
-		// checks if url link and description are equivalent
-		if (url != null && evidence.getUrl() == null)
+		// checks if url link property equivalent
+		if (!Objects.equals(urlLink, evidence.getUrlLink()))
 			return false;
-		if (url == null && evidence.getUrl() != null)
-			return false;
-		if (url != null && evidence.getUrl() != null) {
-			if (!Objects.equals(url.getLink(), evidence.getUrl().getLink()))
-				return false;
-			if (!Objects.equals(url.getDescription(), evidence.getUrl().getDescription()))
-				return false;
-		}
 		// checks if value is equivalent
 		if (!Objects.equals(value, evidence.getValue()))
 			return false;

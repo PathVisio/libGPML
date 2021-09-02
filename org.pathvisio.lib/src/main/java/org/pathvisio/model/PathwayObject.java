@@ -32,7 +32,7 @@ import org.pathvisio.props.StaticProperty;
  * 
  * @author finterly
  */
-public abstract class PathwayElement {
+public abstract class PathwayObject {
 
 	/* parent pathway model: may be null (e.g. when object is in clipboard) */
 	private PathwayModel pathwayModel;
@@ -42,7 +42,7 @@ public abstract class PathwayElement {
 	 * Instantiates a pathway element. Parent pathway model and elementId are set
 	 * through {@link PathwayModel} add pathway element methods. elementId.
 	 */
-	public PathwayElement() {
+	public PathwayObject() {
 	}
 
 	/**
@@ -114,7 +114,7 @@ public abstract class PathwayElement {
 	 */
 	public void setElementId(String v) {
 		elementId = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.ELEMENTID));
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayObject.this, StaticProperty.ELEMENTID));
 	}
 
 	/**
