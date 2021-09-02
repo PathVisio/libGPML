@@ -4,9 +4,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-import org.pathvisio.model.*;
-import org.pathvisio.model.ref.PathwayElement;
-import org.pathvisio.model.type.*;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.Groupable;
+import org.pathvisio.model.LineElement;
+import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.Shape;
+import org.pathvisio.model.ShapedElement;
+import org.pathvisio.model.type.GroupType;
+
 
 /**
  * This utils class contains methods for calculating rectangular bounds

@@ -18,9 +18,14 @@ package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.model.GraphLink.LinkableFrom;
+import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.StateType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -169,14 +174,13 @@ public class DataNode extends ShapedElement {
 	 */
 	public void addState(State state) {
 		assert (state != null);
-		state.setDataNodeTo(this);
 		assert (state.getDataNode() == this);
 		assert !hasState(state);
 		// add state to same pathway model as data node if applicable
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayElement(state);
 		states.add(state);
-		//TODO 
+		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 	}
 
@@ -192,7 +196,7 @@ public class DataNode extends ShapedElement {
 			getPathwayModel().removePathwayElement(state);
 		states.remove(state);
 		state.terminate();
-		//TODO
+		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 	}
 
@@ -232,7 +236,7 @@ public class DataNode extends ShapedElement {
 	 * @param aliasRef the group to which this data node refers.
 	 */
 	public void setAliasRefTo(Group v) {
-		//TODO 
+		// TODO
 		if (aliasRef != v && v != null) {
 			unsetAliasRef(); // first unsets if necessary
 			setAliasRef(v);
@@ -304,6 +308,205 @@ public class DataNode extends ShapedElement {
 		removeEvidenceRefs();
 		unsetGroupRef();
 		unsetPathwayModel();
+	}
+
+	/**
+	 * This class stores all information relevant to a State pathway element.
+	 * 
+	 * @author finterly
+	 */
+	public class State extends ShapedElement implements LinkableTo {
+
+		private String textLabel;
+		private StateType type;
+		private double relX;
+		private double relY;
+		private Xref xref; // optional
+
+		/**
+		 * Instantiates a State pathway element given all possible parameters.
+		 * 
+		 * @param textLabel the text label of the state.
+		 * @param type      the type of the state, e.g. protein modification.
+		 * @param relX      the relative x coordinates on the parent object, where 0,0
+		 *                  is at the center of the object and 1,1 at the bottom-right
+		 *                  corner of the object.
+		 * @param relY      the relative y coordinates on the parent object, where 0,0
+		 *                  is at the center of the object and 1,1 at the bottom-right
+		 *                  corner of the object.
+		 * @param xref      the state xref.
+		 */
+		private State(String textLabel, StateType type, double relX, double relY, Xref xref) {
+			super();
+			this.textLabel = textLabel;
+			this.type = type;
+			this.relX = relX;
+			this.relY = relY;
+			this.xref = xref;
+		}
+
+		/**
+		 * Instantiates a State pathway element given all possible parameters except
+		 * xref.
+		 */
+		private State(String textLabel, StateType type, double relX, double relY) {
+			this(textLabel, type, relX, relY, null);
+		}
+
+		/**
+		 * Returns the parent data node to which the state belongs.
+		 * 
+		 * NB: prior to GPML2021, elementRef was used to refer to the elementId of
+		 * parent data node.
+		 * 
+		 * @return dataNode the parent data node of the state.
+		 */
+		public DataNode getDataNode() {
+			return DataNode.this;
+		}
+
+		/**
+		 * Returns the pathway model for this pathway element.
+		 * 
+		 * @return pathwayModel the parent pathway model.
+		 */
+		@Override
+		public PathwayModel getPathwayModel() {
+			return DataNode.this.getPathwayModel();
+		}
+
+		/**
+		 * Returns the text of of this state.
+		 * 
+		 * @return textLabel the text of of this state.
+		 * 
+		 */
+		public String getTextLabel() {
+			return textLabel;
+		}
+
+		/**
+		 * Sets the text of of this shaped pathway element.
+		 * 
+		 * @param v the text to set for this shaped pathway element.
+		 */
+		public void setTextLabel(String v) {
+			String value = (v == null) ? "" : v;
+			if (!Utils.stringEquals(textLabel, value)) {
+				textLabel = value;
+				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+			}
+		}
+
+		/**
+		 * Returns the type of this state.
+		 * 
+		 * @return type the type of this state, e.g. complex.
+		 */
+		public StateType getType() {
+			return type;
+		}
+
+		/**
+		 * Sets the type of this state.
+		 * 
+		 * @param v the type of this state, e.g. complex.
+		 */
+		public void setType(StateType v) {
+			if (type != v && v != null) {
+				type = v;
+				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.STATETYPE));
+			}
+		}
+
+		/**
+		 * Returns the relative x coordinate. When the given state is linked to a data
+		 * node, relX and relY are the relative coordinates on the data node, where 0,0
+		 * is at the center of the data node and 1,1 at the bottom right corner of the
+		 * data node.
+		 * 
+		 * @return relX the relative x coordinate.
+		 */
+		public double getRelX() {
+			return relX;
+		}
+
+		/**
+		 * Sets the relative x coordinate. When the given state is linked to a data
+		 * node, relX and relY are the relative coordinates on the data node, where 0,0
+		 * is at the center of the data node and 1,1 at the bottom right corner of the
+		 * data node.
+		 * 
+		 * @param relX the relative x coordinate.
+		 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
+		 */
+		public void setRelX(double v) {
+			if (Math.abs(v) <= 1.0) {
+				relX = v;
+				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			} else {
+				throw new IllegalArgumentException("relX " + v + " should be between -1.0 and 1.0");
+			}
+		}
+
+		/**
+		 * Returns the relative y coordinate. When the given state is linked to a data
+		 * node, relX and relY are the relative coordinates on the data node, where 0,0
+		 * is at the center of the data node and 1,1 at the bottom right corner of the
+		 * data node.
+		 * 
+		 * @return relY the relative y coordinate.
+		 */
+		public double getRelY() {
+			return relY;
+		}
+
+		/**
+		 * Sets the relative y coordinate. When the given state is linked to a data
+		 * node, relX and relY are the relative coordinates on the data node, where 0,0
+		 * is at the center of the data node and 1,1 at the bottom right corner of the
+		 * data node.
+		 * 
+		 * @param v the relative y coordinate.
+		 */
+		public void setRelY(double v) {
+			if (Math.abs(v) <= 1.0) {
+				relY = v;
+				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			} else {
+				throw new IllegalArgumentException("relY " + v + " should be between -1.0 and 1.0");
+			}
+		}
+
+		/**
+		 * Returns the Xref for this state.
+		 * 
+		 * @return xref the xref of this state.
+		 */
+		public Xref getXref() {
+			return xref;
+		}
+
+		/**
+		 * Sets the Xref for this state.
+		 * 
+		 * @param v the xref of this state.
+		 */
+		public void setXref(Xref v) {
+			xref = v;
+			// TODO
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
+
+		/**
+		 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
+		 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
+		 */
+		@Override
+		public Set<LinkableFrom> getLinkableFroms() {
+			return GraphLink.getReferences(this, getPathwayModel());
+		}
+
 	}
 
 }

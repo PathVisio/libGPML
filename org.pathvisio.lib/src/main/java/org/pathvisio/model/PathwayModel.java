@@ -38,6 +38,9 @@ import org.pathvisio.io.*;
 
 import java.io.Reader;
 
+import org.pathvisio.model.DataNode.State;
+import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.ref.Annotation;
