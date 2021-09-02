@@ -255,17 +255,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e        the parent element.
 	 * @param required if true, xref is a required property.
 	 */
-	protected void writeUrl(UrlRef url, Element e) {
-		if (url != null) {
-			String link = url.getLink();
-			String description = url.getDescription();
-			if (link != null && !link.equals("")) {
-				Element u = new Element("Url", e.getNamespace());
-				u.setAttribute("link", link);
-				if (description != null && !description.equals(""))
-					u.setAttribute("description", description);
-				e.addContent(u);
-			}
+	protected void writeUrl(String urlLink, Element e) {
+		if (urlLink != null) {
+			Element u = new Element("Url", e.getNamespace());
+			u.setAttribute("link", urlLink);
+			e.addContent(u);
 		}
 	}
 
@@ -746,7 +740,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				annt.setAttribute("value", annotation.getValue());
 				annt.setAttribute("type", annotation.getType().getName());
 				writeXref(annotation.getXref(), annt, false);
-				writeUrl(annotation.getUrl(), annt);
+				writeUrl(annotation.getUrlLink(), annt);
 				if (annt != null)
 					anntList.add(annt);
 			}
@@ -774,7 +768,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				Element cit = new Element("Citation", root.getNamespace());
 				writeElementId(citation.getElementId(), cit);
 				writeXref(citation.getXref(), cit, false);
-				writeUrl(citation.getUrl(), cit);
+				writeUrl(citation.getUrlLink(), cit);
 				if (cit != null)
 					citList.add(cit);
 			}
@@ -802,7 +796,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				Element evid = new Element("Evidence", root.getNamespace());
 				writeElementId(evidence.getElementId(), evid);
 				writeXref(evidence.getXref(), evid, true);
-				writeUrl(evidence.getUrl(), evid);
+				writeUrl(evidence.getUrlLink(), evid);
 				if (evidence.getValue() != null)
 					evid.setAttribute("value", evidence.getValue());
 				if (evid != null)
@@ -877,8 +871,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes elementId, comment group {comment, dynamic property, annotationRef,
-	 * citationRef) and evidenceRef {@link PathwayElement} information for datanodes,
-	 * interactions, graphicalLines, labels, shapes, and group.
+	 * citationRef) and evidenceRef {@link PathwayElement} information for
+	 * datanodes, interactions, graphicalLines, labels, shapes, and group.
 	 * 
 	 * @param elementInfo the pathway element.
 	 * @param e           the parent element.
@@ -902,8 +896,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void writeRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		if (shapedElement.getClass() != State.class) {
-			gfx.setAttribute("centerX", Double.toString(shapedElement.getCenterXY().getX()));
-			gfx.setAttribute("centerY", Double.toString(shapedElement.getCenterXY().getY()));
+			gfx.setAttribute("centerX", Double.toString(shapedElement.getCenterX()));
+			gfx.setAttribute("centerY", Double.toString(shapedElement.getCenterY()));
 		}
 		gfx.setAttribute("width", Double.toString(shapedElement.getWidth()));
 		gfx.setAttribute("height", Double.toString(shapedElement.getHeight()));

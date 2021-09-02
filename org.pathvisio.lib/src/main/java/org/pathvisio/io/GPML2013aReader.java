@@ -36,15 +36,13 @@ import org.jdom2.Namespace;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.graphics.*;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.Comment;
 import org.pathvisio.model.ref.PathwayElement;
+import org.pathvisio.model.ref.PathwayElement.Comment;
 import org.pathvisio.model.ref.Pathway;
-import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.BoundsUtils;
@@ -145,8 +143,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void calculateGroupRectProperty(List<Group> groups) {
 		for (Group group : groups) {
 			Rectangle2D bounds = BoundsUtils.calculateGroupBounds(group);
-			Coordinate centerXY = new Coordinate(bounds.getCenterX(), bounds.getCenterY());
-			group.setCenterXY(centerXY);
+			group.setCenterX(bounds.getCenterX());
+			group.setCenterY(bounds.getCenterY());
 			group.setWidth(bounds.getWidth());
 			group.setHeight(bounds.getHeight());
 		}
@@ -381,7 +379,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				citation.setSource(source);
 				// if source is an url, also set as citation url
 				if (source.startsWith("http") || source.startsWith("www"))
-					citation.setUrl(new UrlRef(source));
+					citation.setUrlLink(source);
 			}
 			if (year != null && !year.equals(""))
 				citation.setYear(year);
@@ -471,10 +469,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			// comment must have text
 			if (commentText != null && !commentText.equals("")) {
-				Comment comment = new Comment(commentText);
+				pathwayModel.getPathway().addComment(new Comment(commentText, source));				
 				if (source != null && !source.equals(""))
-					comment.setSource(source);
-				pathwayModel.getPathway().addComment(new Comment(source, commentText));
+					comment.setSource(source); //TODO 
 			}
 		}
 	}

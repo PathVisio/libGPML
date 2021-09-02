@@ -173,21 +173,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Url, or both.
 	 * 
 	 * @param e the element.
-	 * @return xref the new xref or null if no or invalid xref information.
+	 * @return urlLink the link for the url. 
 	 * @throws ConverterException
 	 */
-	protected UrlRef readUrl(Element e) throws ConverterException {
+	protected String readUrl(Element e) throws ConverterException {
 		Element u = e.getChild("Url", e.getNamespace());
 		if (u != null) {
-			String link = u.getAttributeValue("link");
-			String description = u.getAttributeValue("description");
-			if (link != null && !link.equals("")) {
-				UrlRef url = new UrlRef(link);
-				// sets optional description
-				if (description != null && !description.equals(""))
-					url.setDescription(description);
-				return url;
-			}
+			String urlLink = u.getAttributeValue("link");
+			return urlLink;
 		}
 		return null;
 	}
@@ -240,11 +233,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				annotation.setElementId(elementId);
 				// sets optional properties
 				Xref xref = readXref(annt);
-				UrlRef url = readUrl(annt);
+				String urlLink = readUrl(annt);
 				if (xref != null)
 					annotation.setXref(xref);
-				if (url != null)
-					annotation.setUrl(url);
+				if (urlLink != null && !urlLink.equals(""))
+					annotation.setUrlLink(urlLink);
 				if (annotation != null)
 					pathwayModel.addAnnotation(annotation);
 			}
@@ -265,19 +258,19 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
 				String elementId = cit.getAttributeValue("elementId");
 				Xref xref = readXref(cit);
-				UrlRef url = readUrl(cit);
+				String urlLink = readUrl(cit);
 				// citation has xref, and maybe also url
 				if (xref != null) {
 					Citation citation = new Citation(xref);
 					citation.setElementId(elementId);
-					if (url != null)
-						citation.setUrl(url);
+					if (urlLink != null && !urlLink.equals(""))
+						citation.setUrlLink(urlLink);
 					if (citation != null)
 						pathwayModel.addCitation(citation);
 				} else {
 					// citation has url
-					if (url != null) {
-						Citation citation = new Citation(url);
+					if (urlLink != null) {
+						Citation citation = new Citation(urlLink);
 						pathwayModel.addCitation(citation);
 					}
 				}
@@ -303,11 +296,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				evidence.setElementId(elementId);
 				// sets optional properties
 				String value = evid.getAttributeValue("value");
-				UrlRef url = readUrl(evid);
+				String urlLink = readUrl(evid);
 				if (value != null)
 					evidence.setValue(value);
-				if (url != null)
-					evidence.setUrl(url);
+				if (urlLink != null && !urlLink.equals(""))
+					evidence.setUrlLink(urlLink);
 				pathwayModel.addEvidence(evidence);
 			}
 		}
@@ -372,8 +365,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads annotationRefs {@link PathwayElement#addAnnotationRef} information for an
-	 * annotatable from jdom element.
+	 * Reads annotationRefs {@link PathwayElement#addAnnotationRef} information for
+	 * an annotatable from jdom element.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param annotatable  the target pathway, pathway element, or citationRef for
@@ -731,9 +724,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 			String elementId = pt.getAttributeValue("elementId");
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT));
-			Coordinate xy = new Coordinate(Double.parseDouble(pt.getAttributeValue("x").trim()),
-					Double.parseDouble(pt.getAttributeValue("y").trim()));
-			LinePoint point = new LinePoint(arrowHead, xy);
+			double x = Double.parseDouble(pt.getAttributeValue("x").trim());
+			double y = Double.parseDouble(pt.getAttributeValue("y").trim());
+			LinePoint point = new LinePoint(arrowHead, x, y);
 			point.setElementId(elementId);
 			// adds point to lineElement (elementRef, relX, and relY read later)
 			lineElement.addLinePoint(point);
@@ -858,8 +851,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information for
-	 * pathway element from element.
+	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information
+	 * for pathway element from element.
 	 * 
 	 * @param elementInfo the element info pathway element object .
 	 * @param e           the pathway element element.
@@ -885,8 +878,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (shapedElement.getClass() != State.class) {
 			double centerX = Double.parseDouble(gfx.getAttributeValue("centerX").trim());
 			double centerY = Double.parseDouble(gfx.getAttributeValue("centerY").trim());
-			Coordinate CenterXY  = new Coordinate(centerX, centerY);
-			shapedElement.setCenterXY(CenterXY);
+			shapedElement.setCenterX(centerX);
+			shapedElement.setCenterY(centerY);
+
 		}
 		double width = Double.parseDouble(gfx.getAttributeValue("width").trim());
 		double height = Double.parseDouble(gfx.getAttributeValue("height").trim());

@@ -43,7 +43,6 @@ import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
-import org.pathvisio.model.ref.Comment;
 import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.type.*;
 import org.pathvisio.util.ColorUtils;

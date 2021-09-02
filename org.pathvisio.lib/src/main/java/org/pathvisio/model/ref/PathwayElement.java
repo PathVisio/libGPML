@@ -79,6 +79,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
 	}
 
+	public void addComment(String commentText, String source) {
+		addComment(new Comment(commentText, source));
+	}
+
 	/**
 	 * Removes given comment from comments list.
 	 * 

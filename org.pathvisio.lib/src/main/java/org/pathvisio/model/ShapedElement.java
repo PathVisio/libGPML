@@ -191,7 +191,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * 
 	 * @param v the middle of an object in the y direction to set.
 	 */
-	public void setY(double v) {
+	public void setCenterY(double v) {
 		if (v < 0)
 			Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
 		centerY = v;

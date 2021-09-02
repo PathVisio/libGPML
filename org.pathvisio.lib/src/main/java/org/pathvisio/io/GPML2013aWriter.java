@@ -41,7 +41,7 @@ import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.Comment;
+import org.pathvisio.model.ref.PathwayElement.Comment;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.type.*;
@@ -777,7 +777,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				bp.addContent(ocv);
 			}
 			// warnings for conversion GPML2021 to GPML2013a
-			if (annotation.getUrl() != null) {
+			if (annotation.getUrlLink() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Annotation " + annotation.getElementId()
 						+ " url and elementId info lost.");
 			}
@@ -811,7 +811,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			if (pubxf != null)
 				bp.addContent(pubxf);
 			// warnings for conversion GPML2021 to GPML2013a
-			if (citation.getUrl() != null) {
+			if (citation.getUrlLink() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Citation " + citation.getElementId()
 						+ " url info lost.");
 			}
@@ -1029,8 +1029,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		if (shapedElement.getClass() != State.class) {
-			setAttr(base + ".Graphics", "CenterX", gfx, Double.toString(shapedElement.getCenterXY().getX()));
-			setAttr(base + ".Graphics", "CenterY", gfx, Double.toString(shapedElement.getCenterXY().getY()));
+			setAttr(base + ".Graphics", "CenterX", gfx, Double.toString(shapedElement.getCenterX()));
+			setAttr(base + ".Graphics", "CenterY", gfx, Double.toString(shapedElement.getCenterX()));
 		}
 		setAttr(base + ".Graphics", "Width", gfx, Double.toString(shapedElement.getWidth()));
 		setAttr(base + ".Graphics", "Height", gfx, Double.toString(shapedElement.getHeight()));
