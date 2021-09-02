@@ -22,7 +22,6 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.type.ArrowHeadType;
 import org.pathvisio.props.StaticProperty;
 
@@ -36,7 +35,8 @@ import org.pathvisio.props.StaticProperty;
 public class LinePoint extends GenericPoint implements LinkableFrom {
 
 	private ArrowHeadType arrowHead;
-	private Coordinate xy;
+	private double x;
+	private double y;
 	private LinkableTo elementRef; // optional, the pathway element to which the point refers.
 	private double relX; // optional
 	private double relY; // optional
@@ -52,10 +52,11 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * @param relX       the relative x coordinate.
 	 * @param relY       the relative x coordinate.
 	 */
-	public LinePoint(ArrowHeadType arrowHead, Coordinate xy, LinkableTo elementRef, double relX, double relY) {
+	public LinePoint(ArrowHeadType arrowHead, double x, double y, LinkableTo elementRef, double relX, double relY) {
 		super();
 		this.arrowHead = arrowHead;
-		this.xy = xy;
+		this.x = x;
+		this.y = y;
 		linkTo(elementRef, relX, relY);
 	}
 
@@ -66,10 +67,11 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	 * @param arrowHead the arrowhead property of the point (line by default).
 	 * @param xy        the xy coordinate position of the point.
 	 */
-	public LinePoint(ArrowHeadType arrowHead, Coordinate xy) {
+	public LinePoint(ArrowHeadType arrowHead, double x, double y) {
 		super();
 		this.arrowHead = arrowHead;
-		this.xy = xy;
+		this.x = x;
+		this.y = y;
 	}
 
 	/**
@@ -102,26 +104,48 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 	}
 
 	/**
-	 * Returns the xy coordinate position of the point.
+	 * Returns x coordinate value.
 	 * 
-	 * @return xy the xy coordinate position of the point.
+	 * @return x the coordinate value for x.
 	 */
-	public Coordinate getXY() {
-		return xy;
+	public double getX() {
+		return x;
 	}
 
 	/**
-	 * Sets the xy coordinate position of this point.
+	 * Sets x coordinate to given value.
 	 * 
-	 * @param xy the xy coordinate position of this point.
+	 * @param v the coordinate value to set for x.
 	 */
-	public void setXY(Coordinate v) {
-		xy = v;
+	public void setX(double v) {
+		if (v < 0)
+			Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
+		x = v;
+	}
+
+	/**
+	 * Returns y coordinate value.
+	 * 
+	 * @return y the coordinate value for y.
+	 */
+	public double getY() {
+		return y;
+	}
+
+	/**
+	 * Sets y coordinate to given value.
+	 * 
+	 * @param v the coordinate value to set for y.
+	 */
+	public void setY(double v) {
+		if (v < 0)
+			Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
+		y = v;
 	}
 
 	// TODO
 	public Point2D toPoint2D() {
-		return new Point2D.Double(xy.getX(), xy.getY());
+		return new Point2D.Double(getX(), getY());
 	}
 
 	/**
@@ -275,23 +299,23 @@ public class LinePoint extends GenericPoint implements LinkableFrom {
 
 	// TODO
 	public void moveBy(double deltaX, double deltaY) {
-		double x = xy.getX() + deltaX;
-		double y = xy.getY() + deltaY;
-		xy.setX(x);
-		xy.setY(y);
+		double x = getX() + deltaX;
+		double y = getY() + deltaY;
+		setX(x);
+		setY(y);
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
 	// TODO
 	public void moveTo(double x, double y) {
-		xy.setX(x);
-		xy.setY(y);
+		setX(x);
+		setY(y);
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
 	// TODO weird
 	public void moveTo(LinePoint linePoint) {
-		xy = linePoint.getXY();
+//		xy = linePoint.getXY(); TODO 
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 

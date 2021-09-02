@@ -5,7 +5,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import org.pathvisio.model.*;
-import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.*;
 
@@ -87,8 +86,8 @@ public class BoundsUtils {
 			centerX = bounds.getCenterX();
 			centerY = bounds.getCenterY();
 		} else {
-			centerX = shapedElement.getCenterXY().getX();
-			centerY = shapedElement.getCenterXY().getY();
+			centerX = shapedElement.getCenterX();
+			centerY = shapedElement.getCenterY();
 		}
 		double width = shapedElement.getWidth();
 		double height = shapedElement.getHeight();
@@ -115,10 +114,10 @@ public class BoundsUtils {
 		List<LinePoint> points = lineElement.getLinePoints();
 		LinePoint point1 = points.get(0); // first point
 		LinePoint point2 = points.get(points.size() - 1); // last point
-		double x1 = point1.getXY().getX();
-		double x2 = point2.getXY().getX();
-		double y1 = point1.getXY().getY();
-		double y2 = point2.getXY().getY();
+		double x1 = point1.getX();
+		double x2 = point2.getX();
+		double y1 = point1.getY();
+		double y2 = point2.getY();
 		double topY = Math.min(y1, y2);
 		double leftX = Math.min(x1, x2);
 		double width = Math.max(x1, x2) - leftX;

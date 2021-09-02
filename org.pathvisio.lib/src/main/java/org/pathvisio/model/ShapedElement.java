@@ -19,10 +19,10 @@ package org.pathvisio.model;
 import java.awt.Color;
 import java.util.Set;
 
+import org.pathvisio.debug.Logger;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.LineStyleType;
@@ -41,7 +41,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 	// rect properties
-	private Coordinate centerXY;
+	private double centerX;
+	private double centerY;
 	private double width = 1.0;
 	private double height = 1.0;
 	// font properties
@@ -96,7 +97,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * 
 	 * @return groupRef the parent group of this pathway element.
 	 */
-	@Override 
+	@Override
 	public Group getGroupRef() {
 		return groupRef;
 	}
@@ -106,7 +107,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 *
 	 * @return true if and only if the group of this pathway element is effective.
 	 */
-	@Override 
+	@Override
 	public boolean hasGroupRef() {
 		return getGroupRef() != null;
 	}
@@ -119,7 +120,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * 
 	 * @param v the new parent group to set.
 	 */
-	@Override 
+	@Override
 	public void setGroupRefTo(Group v) {
 		if (v == null)
 			throw new IllegalArgumentException("Invalid group.");
@@ -145,7 +146,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Unsets the parent group, if any, from this pathway element.
 	 */
-	@Override 
+	@Override
 	public void unsetGroupRef() {
 		if (hasGroupRef()) {
 			Group groupRef = getGroupRef();
@@ -157,25 +158,43 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	}
 
 	/**
-	 * Returns the center x and y coordinate of an object.
+	 * Returns the center x coordinate for this shaped pathway element.
 	 * 
-	 * @return centerXY the middle of an object in the x and y direction.
+	 * @return centerX the middle of an object in the x direction.
 	 */
-	public Coordinate getCenterXY() {
-		return centerXY;
+	public double getCenterX() {
+		return centerX;
 	}
 
 	/**
-	 * Sets the center x and y coordinate for this shaped pathway element.
+	 * Sets the center x coordinate for this shaped pathway element.
 	 * 
-	 * @param v the middle in the x and y direction to set for this shaped pathway
-	 *          element.
+	 * @param v the middle of an object in the x direction to set.
 	 */
-	public void setCenterXY(Coordinate v) {
-		if (centerXY != v) {
-			centerXY = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
-		}
+	public void setCenterX(double v) {
+		if (v < 0)
+			Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
+		centerX = v;
+	}
+
+	/**
+	 * Returns the center y coordinate for this shaped pathway element.
+	 * 
+	 * @return centerY the middle of an object in the y direction.
+	 */
+	public double getCenterY() {
+		return centerY;
+	}
+
+	/**
+	 * Sets the center y coordinate for this shaped pathway element.
+	 * 
+	 * @param v the middle of an object in the y direction to set.
+	 */
+	public void setY(double v) {
+		if (v < 0)
+			Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
+		centerY = v;
 	}
 
 	/**

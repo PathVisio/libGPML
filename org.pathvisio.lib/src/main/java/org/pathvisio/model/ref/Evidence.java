@@ -40,8 +40,7 @@ public class Evidence extends PathwayObject {
 	 * Instantiates an Evidence pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, xref, and url.
 	 * 
-	 * NB: Manipulated the order of variables to overload constructor. This is not
-	 * best practice, however variable inheritance complicates use of a builder.
+	 * NB: Manipulated the order of variables to overload constructor.
 	 * 
 	 * @param value the name, term, or text of this evidence.
 	 * @param xref  this evidence xref.
@@ -212,6 +211,9 @@ public class Evidence extends PathwayObject {
 	 * @return true if evidences have equal properties, false otherwise.
 	 */
 	public boolean equalsEvidence(Evidence evidence) {
+		// checks if value is equivalent
+		if (!Objects.equals(value, evidence.getValue()))
+			return false;
 		// checks if xref is equivalent
 		if (xref != null && evidence.getXref() == null)
 			return false;
@@ -225,9 +227,6 @@ public class Evidence extends PathwayObject {
 		}
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, evidence.getUrlLink()))
-			return false;
-		// checks if value is equivalent
-		if (!Objects.equals(value, evidence.getValue()))
 			return false;
 		// checks if evidence has the same evidenceRefs
 		if (!Objects.equals(evidenceRefs, evidence.getEvidenceRefs()))

@@ -22,7 +22,7 @@ public class TestCitation extends TestCase {
 
 		assert (p1.getCitations().isEmpty());
 
-		Citation c1 = new Citation(new UrlRef(null, null));
+		Citation c1 = new Citation("urlLink");
 		Annotation a1 = new Annotation("a1", null);
 		p1.addCitation(c1);
 		p1.addAnnotation(a1);

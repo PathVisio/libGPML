@@ -23,7 +23,7 @@ public class TestAnnotation extends TestCase {
 		assert (p1.getAnnotations().isEmpty());
 
 		Annotation a1 = new Annotation("value", AnnotationType.ONTOLOGY);
-		Citation c1 = new Citation(new UrlRef(null, null));
+		Citation c1 = new Citation("urlLink");
 		p1.addAnnotation(a1);
 		p1.addCitation(c1);
 		AnnotationRef ar1 = new AnnotationRef(a1);

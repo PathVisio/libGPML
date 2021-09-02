@@ -40,7 +40,6 @@ import java.io.Reader;
 
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.graphics.Coordinate;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.Evidence;
