@@ -41,7 +41,7 @@ public class TestAnnotation extends TestCase {
 
 		assertEquals(ar1.getAnnotatable(), d1);
 		assertEquals(ar1.getAnnotation(), a1);
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 
 //		 a1.removeAnnotationRef(ar1);
 		ar1.unsetAnnotation();
@@ -51,7 +51,7 @@ public class TestAnnotation extends TestCase {
 		assertNull(ar1.getAnnotation());
 		System.out.println("DataNode has AnnotationRef " + d1.getAnnotationRefs());
 		System.out.println("Annotation has AnnotationRef " + a1.getAnnotationRefs());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 	}
 
 	/**
@@ -68,8 +68,8 @@ public class TestAnnotation extends TestCase {
 		// annotation a2 contains duplicate information and is not added
 		Annotation annotationExisting2 = p2.addAnnotation(a2);
 		assertEquals(annotationExisting2, a1);
-		assertTrue(p2.getPathwayElements().contains(a1));
-		assertFalse(p2.getPathwayElements().contains(a2));
+		assertTrue(p2.getPathwayObjects().contains(a1));
+		assertFalse(p2.getPathwayObjects().contains(a2));
 		assertTrue(p2.getAnnotations().contains(a1));
 		assertFalse(p2.getAnnotations().contains(a2));
 	}

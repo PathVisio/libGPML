@@ -365,18 +365,20 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	public class Comment {
 
-		private String source; // optional
 		private String commentText; // required
+		private String source; // optional
 
 		/**
-		 * Instantiates a Comment with source and commentText.
+		 * Instantiates a Comment with commentText and source.
 		 * 
-		 * @param source      the source of this comment.
 		 * @param commentText the text of the comment, between Comment tags in GPML.
+		 * @param source      the source of this comment.
+		 * 
 		 */
-		public Comment(String source, String commentText) {
-			this.source = source;
-			this.commentText = commentText;
+		public Comment(String commentText, String source) {
+			setCommentText(commentText);
+			setSource(source);
+
 		}
 
 		/**
@@ -385,7 +387,27 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param commentText the text of this comment, between Comment tags in GPML.
 		 */
 		public Comment(String commentText) {
-			this.commentText = commentText;
+			this(commentText, null);
+		}
+
+		/**
+		 * Returns the text of this Comment.
+		 * 
+		 * @return commentText the text of this comment.
+		 */
+		public String getCommentText() {
+			return commentText;
+		}
+
+		/**
+		 * Sets the text of this Comment.
+		 * 
+		 * @param v the text of this comment.
+		 */
+		public void setCommentText(String v) {
+			if (v != null) {
+				commentText = v;
+			}
 		}
 
 		/**
@@ -406,26 +428,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			if (v != null) {
 				source = v;
 				// changed();
-			}
-		}
-
-		/**
-		 * Returns the text of this Comment.
-		 * 
-		 * @return commentText the text of this comment.
-		 */
-		public String getCommentText() {
-			return commentText;
-		}
-
-		/**
-		 * Sets the text of this Comment.
-		 * 
-		 * @param v the text of this comment.
-		 */
-		public void setCommentText(String v) {
-			if (v != null) {
-				commentText = v;
 			}
 		}
 

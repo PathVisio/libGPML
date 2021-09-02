@@ -47,7 +47,7 @@ public class TestReadWriteGPML2021NewFeatures2 extends TestCase {
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 
-		System.out.println(pathwayModel.getPathwayElements());
+		System.out.println(pathwayModel.getPathwayObjects());
 		System.out.println(pathwayModel.getAnnotations());
 		System.out.println(pathwayModel.getCitations());
 		

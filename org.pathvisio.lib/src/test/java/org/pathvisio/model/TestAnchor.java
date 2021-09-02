@@ -16,9 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.Anchor;
 import org.pathvisio.model.Interaction;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.ref.Author;
 import org.pathvisio.model.type.AnchorShapeType;
 
 import junit.framework.TestCase;
@@ -48,9 +48,9 @@ public class TestAnchor extends TestCase {
 		// add to pathway model
 		p1.addInteraction(i1);
 		System.out.println("Interaction elementId is " + i1.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains DataNodes " + p1.getInteractions());
-		assertTrue(p1.getPathwayElements().contains(i1));
+		assertTrue(p1.getPathwayObjects().contains(i1));
 		assertTrue(p1.getInteractions().contains(i1));
 		assertEquals(i1.getPathwayModel(), p1);
 
@@ -66,16 +66,16 @@ public class TestAnchor extends TestCase {
 		assertEquals(a1.getPathwayModel(), p1);
 		System.out.println("Anchor elementId is " + a1.getElementId());
 		System.out.println("Interaction contains Anchors " + i1.getAnchors());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 
 		// remove anchor
 		i1.removeAnchor(a1);
 		System.out.println("Interaction contains Anchors " + i1.getAnchors());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 
 		// remove line element
 		p1.removeInteraction(i1);
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains Interactions " + p1.getInteractions());
 	}
 
@@ -113,17 +113,17 @@ public class TestAnchor extends TestCase {
 		p2.addInteraction(i2);
 		System.out.println("Interaction elementId is " + i2.getElementId());
 		System.out.println("Anchor elementId is " + a2.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
 		System.out.println("PathwayModel contains Interactions " + p2.getDataNodes());
 
 		// remove anchor
 		i2.removeAnchor(a2);
 		System.out.println("DataNode contains Anchors " + i2.getAnchors());
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
 
 		// remove interaction
 		p2.removeInteraction(i2);
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
 		System.out.println("PathwayModel contains Interactions " + p2.getDataNodes());
 	}
 }

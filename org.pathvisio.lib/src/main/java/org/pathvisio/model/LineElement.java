@@ -173,16 +173,48 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	 * @param point the linePoint to be added.
 	 */
 	public void addLinePoint(LinePoint point) {
-		assert (point != null);
-//		point.setLineElementTo(this); // TODO
-		assert (point.getLineElement() == this);
-		assert !hasLinePoint(point);
-		// add point to same pathway model as line if applicable
+		if (point != null && !hasLinePoint(point)) {
+			assert (point.getLineElement() == this);
+			// add point to same pathway model as line if applicable TODO
+			if (getPathwayModel() != null)
+				getPathwayModel().addPathwayObject(point);
+			linePoints.add(point);
+			// TODO
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
+	}
+
+	/**
+	 * Adds given point to linePoints list. Sets lineElement for the given point.
+	 * 
+	 * @param point the linePoint to be added.
+	 */
+	public LinePoint addLinePoint(String elementId, ArrowHeadType arrowHead, double x, double y) {
+		LinePoint point = new LinePoint(arrowHead, x, y);
+		point.setElementId(elementId);
+		// add point to same pathway model as line if applicable TODO
 		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayElement(point);
+			getPathwayModel().addPathwayObject(point);
 		linePoints.add(point);
 		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		return point;
+	}
+
+	/**
+	 * Adds given point to linePoints list. Sets lineElement for the given point.
+	 * 
+	 * @param point the linePoint to be added.
+	 */
+	public LinePoint addLinePoint(ArrowHeadType arrowHead, double x, double y) {
+		LinePoint point = new LinePoint(arrowHead, x, y);
+		// add point to same pathway model as line if applicable TODO
+		if (getPathwayModel() != null)
+			getPathwayModel().addPathwayObject(point);
+		linePoints.add(point);
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		return point;
 	}
 
 	/**
@@ -205,7 +237,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	public void removeLinePoint(LinePoint point) {
 		assert (point != null && hasLinePoint(point));
 		if (getPathwayModel() != null)
-			getPathwayModel().removePathwayElement(point);
+			getPathwayModel().removePathwayObject(point);
 		linePoints.remove(point);
 		point.terminate();
 	}
@@ -267,21 +299,44 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Adds given anchor to anchors list. Sets lineElement for the given anchor.
+	 * Add a new anchor to this line at the given position with anchorShapeType
+	 * property. TODO for read/write
 	 * 
-	 * @param anchor the anchor to be added.
+	 * @param elementId
+	 * @param position        the relative position on the line, between 0 (start)
+	 *                        to 1 (end).
+	 * @param anchorShapeType the shape type of the anchor.
+	 * @return
 	 */
-	public void addAnchor(Anchor anchor) {
-		assert (anchor != null);
-//		anchor.setLineElementTo(this); // TODO
-		assert (anchor.getLineElement() == this);
-		assert !hasAnchor(anchor);
-		// add anchor to same pathway model as line if applicable
+	public Anchor addAnchor(String elementId, double position, AnchorShapeType anchorShapeType) {
+		Anchor anchor = new Anchor(position, anchorShapeType);
+		anchor.setElementId(elementId);
+		// add anchor to same pathway model as line if applicable TODO
 		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayElement(anchor);
+			getPathwayModel().addPathwayObject(anchor);
 		anchors.add(anchor);
 		// No anchor property, use LINESTYLE as dummy property to force redraw on line
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+		return anchor;
+	}
+
+	/**
+	 * Add a new anchor to this line at the given position with anchorShapeType
+	 * property.
+	 * 
+	 * @param position        the relative position on the line, between 0 (start)
+	 *                        to 1 (end).
+	 * @param anchorShapeType the shape type of the anchor.
+	 */
+	public Anchor addAnchor(double position, AnchorShapeType anchorShapeType) {
+		Anchor anchor = new Anchor(position, anchorShapeType);
+		// add anchor to same pathway model as line if applicable TODO
+		if (getPathwayModel() != null)
+			getPathwayModel().addPathwayObject(anchor);
+		anchors.add(anchor);
+		// No anchor property, use LINESTYLE as dummy property to force redraw on line
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+		return anchor;
 	}
 
 	/**
@@ -293,7 +348,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	public void removeAnchor(Anchor anchor) {
 		assert (anchor != null && hasAnchor(anchor));
 		if (getPathwayModel() != null)
-			getPathwayModel().removePathwayElement(anchor);
+			getPathwayModel().removePathwayObject(anchor);
 		anchors.remove(anchor);
 		anchor.terminate();
 		// No anchor property, use LINESTYLE as dummy property to force redraw on line
@@ -464,9 +519,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		setPathwayModel(pathwayModel);
 		// if line element has points and anchors, also add them to pathway model TODO
 		for (LinePoint point : linePoints) // TODO
-			pathwayModel.addPathwayElement(point);
+			pathwayModel.addPathwayObject(point);
 		for (Anchor anchor : anchors) // TODO
-			pathwayModel.addPathwayElement(anchor);
+			pathwayModel.addPathwayObject(anchor);
 	}
 
 	/**
@@ -511,7 +566,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		/**
 		 * Constructor for a generic point.
 		 */
-		public GenericPoint() { // TODO
+		public GenericPoint() {
 			super();
 		}
 
@@ -563,7 +618,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param relX       the relative x coordinate.
 		 * @param relY       the relative x coordinate.
 		 */
-		public LinePoint(ArrowHeadType arrowHead, double x, double y, LinkableTo elementRef, double relX, double relY) {
+		private LinePoint(ArrowHeadType arrowHead, double x, double y, LinkableTo elementRef, double relX,
+				double relY) {
 			super();
 			this.arrowHead = arrowHead;
 			this.x = x;
@@ -578,7 +634,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param arrowHead the arrowhead property of the point (line by default).
 		 * @param xy        the xy coordinate position of the point.
 		 */
-		public LinePoint(ArrowHeadType arrowHead, double x, double y) {
+		private LinePoint(ArrowHeadType arrowHead, double x, double y) {
 			super();
 			this.arrowHead = arrowHead;
 			this.x = x;
@@ -857,11 +913,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 *                  belongs to.
 		 * @param shapeType the visual representation of an anchor.
 		 */
-		public Anchor(double position, AnchorShapeType shapeType) {
+		private Anchor(double position, AnchorShapeType shapeType) {
 			super();
-			if (position < 0 || position > 1) {
-				throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
-			}
 			setPosition(position); // must be valid
 			setShapeType(shapeType);
 		}
@@ -884,7 +937,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 */
 		public void setPosition(double v) {
 			if (v < 0 || v > 1) {
-				throw new IllegalArgumentException("Invalid position value '" + position + "' must be between 0 and 1");
+				throw new IllegalArgumentException("Invalid position value '" + v + "' must be between 0 and 1");
 			}
 			position = v;
 		}
@@ -910,11 +963,13 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @throws IllegalArgumentException if shapeType null.
 		 */
 		public void setShapeType(AnchorShapeType v) {
-			if (shapeType != v && v != null) {
+			if (v == null) {
+				shapeType = AnchorShapeType.SQUARE;
+			} // TODO
+			if (shapeType != v)
 				shapeType = v;
-				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
-			}
+			fireObjectModifiedEvent(
+					PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}
 
 		/**

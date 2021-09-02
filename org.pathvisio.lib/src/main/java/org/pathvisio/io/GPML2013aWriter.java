@@ -36,7 +36,10 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
+import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.LineElement.Anchor;
+import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
@@ -550,8 +553,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element pt = new Element("Point", gfx.getNamespace());
 			writeElementId(point.getElementId(), pt);
 			String base = ((Element) gfx.getParent()).getName();
-			setAttr(base + ".Graphics.Point", "X", pt, Double.toString(point.getXY().getX()));
-			setAttr(base + ".Graphics.Point", "Y", pt, Double.toString(point.getXY().getY()));
+			setAttr(base + ".Graphics.Point", "X", pt, Double.toString(point.getX()));
+			setAttr(base + ".Graphics.Point", "Y", pt, Double.toString(point.getY()));
 			// sets optional properties elementRef, relX, and relY
 			if (writePointElementRef(point.getElementRef(), pt)) {
 				setAttr(base + ".Graphics.Point", "RelX", pt, Double.toString(point.getRelX()));

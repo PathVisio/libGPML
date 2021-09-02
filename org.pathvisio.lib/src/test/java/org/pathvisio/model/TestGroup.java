@@ -31,9 +31,9 @@ public class TestGroup extends TestCase {
 		// add to pathway model
 		p1.addGroup(g1);
 		System.out.println("Group elementId is " + g1.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains Groups " + p1.getGroups());
-		assertTrue(p1.getPathwayElements().contains(g1));
+		assertTrue(p1.getPathwayObjects().contains(g1));
 		assertTrue(p1.getGroups().contains(g1));
 		assertEquals(g1.getPathwayModel(), p1);
 
@@ -44,9 +44,9 @@ public class TestGroup extends TestCase {
 		// add to pathway model
 		p1.addDataNode(d1);
 		System.out.println("DataNode elementId is " + d1.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains DataNodes " + p1.getDataNodes());
-		assertTrue(p1.getPathwayElements().contains(d1));
+		assertTrue(p1.getPathwayObjects().contains(d1));
 		assertTrue(p1.getDataNodes().contains(d1));
 		assertEquals(d1.getPathwayModel(), p1);
 		assertNull(d1.getGroupRef());
@@ -65,7 +65,7 @@ public class TestGroup extends TestCase {
 		g1.removePathwayElement(d1);
 		System.out.println("Group contains PathwayElements " + g1.getPathwayElements());
 		assertNull(d1.getGroupRef());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 	}
 
 	/**
@@ -86,9 +86,9 @@ public class TestGroup extends TestCase {
 		// add to pathway model
 		p1.addGroup(g1);
 		System.out.println("Group elementId is " + g1.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains Groups " + p1.getGroups());
-		assertTrue(p1.getPathwayElements().contains(g1));
+		assertTrue(p1.getPathwayObjects().contains(g1));
 		assertTrue(p1.getGroups().contains(g1));
 		assertEquals(g1.getPathwayModel(), p1);
 
@@ -99,9 +99,9 @@ public class TestGroup extends TestCase {
 		// add to pathway model
 		p1.addDataNode(d1);
 		System.out.println("DataNode elementId is " + d1.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains DataNodes " + p1.getDataNodes());
-		assertTrue(p1.getPathwayElements().contains(d1));
+		assertTrue(p1.getPathwayObjects().contains(d1));
 		assertTrue(p1.getDataNodes().contains(d1));
 		assertEquals(d1.getPathwayModel(), p1);
 		assertNull(d1.getGroupRef());
@@ -120,7 +120,7 @@ public class TestGroup extends TestCase {
 		d1.unsetGroupRef();
 		System.out.println("Group contains PathwayElements " + g1.getPathwayElements());
 		assertNull(d1.getGroupRef());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class TestGroup extends TestCase {
 		// add to pathway model
 		p1.addGroup(g1);
 		p1.addGroup(g2);
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains Groups " + p1.getGroups());
 
 		// create a data node
@@ -162,7 +162,7 @@ public class TestGroup extends TestCase {
 //		d1.unsetGroupRef();
 		System.out.println("Group 1 contains PathwayElements " + g1.getPathwayElements());
 		System.out.println("Group 2 contains PathwayElements " + g2.getPathwayElements());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 	}
 
 }

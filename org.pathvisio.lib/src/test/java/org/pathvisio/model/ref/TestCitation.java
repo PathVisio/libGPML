@@ -42,7 +42,7 @@ public class TestCitation extends TestCase {
 		
 		assertEquals(cr1.getCitable(), d1);
 		assertEquals(cr1.getCitation(), c1);
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 
 //		 c1.removeCitationRef(cr1);
 		 cr1.unsetCitation();
@@ -52,7 +52,7 @@ public class TestCitation extends TestCase {
 		assertNull(cr1.getCitation());
 		System.out.println("DataNode has CitationRef " + d1.getCitationRefs());
 		System.out.println("Citation has CitationRef " + c1.getCitationRefs());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 
 	}
 	

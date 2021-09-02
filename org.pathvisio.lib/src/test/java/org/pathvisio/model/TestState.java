@@ -43,9 +43,9 @@ public class TestState extends TestCase {
 		// add to pathway model
 		p1.addDataNode(d1);
 		System.out.println("DataNode elementId is " + d1.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains DataNodes " + p1.getDataNodes());
-		assertTrue(p1.getPathwayElements().contains(d1));
+		assertTrue(p1.getPathwayObjects().contains(d1));
 		assertTrue(p1.getDataNodes().contains(d1));
 		assertEquals(d1.getPathwayModel(), p1);
 
@@ -61,16 +61,16 @@ public class TestState extends TestCase {
 		assertEquals(st1.getPathwayModel(), p1);
 		System.out.println("State elementId is " + st1.getElementId());
 		System.out.println("DataNode contains States " + d1.getStates());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 
 		// remove state
 		d1.removeState(st1);
 		System.out.println("DataNode contains States " + d1.getStates());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 
 		// remove data node
 		p1.removeDataNode(d1);
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
 		System.out.println("PathwayModel contains DataNodes " + p1.getDataNodes());
 	}
 
@@ -107,17 +107,17 @@ public class TestState extends TestCase {
 		p2.addDataNode(d2);
 		System.out.println("DataNode elementId is " + d2.getElementId());
 		System.out.println("State elementId is " + st2.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
 		System.out.println("PathwayModel contains DataNodes " + p2.getDataNodes());
 
 		// remove state
 		d2.removeState(st2);
 		System.out.println("DataNode contains States " + d2.getStates());
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
 
 		// remove data node
 		p2.removeDataNode(d2);
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayElements());
+		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
 		System.out.println("PathwayModel contains DataNodes " + p2.getDataNodes());
 	}
 }

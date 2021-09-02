@@ -61,7 +61,7 @@ public class PathwayModel {
 
 	private Pathway pathway; // pathway information
 	// for elementId to PathwayElement
-	private Map<String, PathwayObject> elementIdToPathwayElement; //TODO PathwayElement???? 
+	private Map<String, PathwayObject> elementIdToPathwayObject; //TODO PathwayElement???? 
 	// for PathwayElement and all the LinePoints which point to it
 	private Map<LinkableTo, Set<LinkableFrom>> elementRefToLinePoints;
 	// for Group aliasRef and all the DataNode aliases for it
@@ -84,7 +84,7 @@ public class PathwayModel {
 	 */
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
-		this.elementIdToPathwayElement = new HashMap<String, PathwayObject>();
+		this.elementIdToPathwayObject = new HashMap<String, PathwayObject>();
 		this.elementRefToLinePoints = new HashMap<LinkableTo, Set<LinkableFrom>>();
 		this.aliasRefToAliases = new HashMap<Group, Set<DataNode>>();
 		this.dataNodes = new ArrayList<DataNode>();
@@ -129,7 +129,7 @@ public class PathwayModel {
 	 * @return a unique elementId.
 	 */
 	public String getUniqueElementId() {
-		return getUniqueId(elementIdToPathwayElement.keySet());
+		return getUniqueId(elementIdToPathwayObject.keySet());
 	}
 
 	/**
@@ -138,69 +138,69 @@ public class PathwayModel {
 	 * @param elementId the given elementId key.
 	 * @return the PathwayElement for the given elementId key.
 	 */
-	public PathwayObject getPathwayElement(String elementId) {
-		return elementIdToPathwayElement.get(elementId);
+	public PathwayObject getPathwayObject(String elementId) {
+		return elementIdToPathwayObject.get(elementId);
 	}
 
 	/**
-	 * Returns all PathwayElement for the pathway model.
+	 * Returns all pathway objects for the pathway model.
 	 * 
 	 * @param elementId the given elementId key.
-	 * @return the PathwayElement for the given elementId key.
+	 * @return the pathway object for the given elementId key.
 	 */
-	public List<PathwayObject> getPathwayElements() {
-		List<PathwayObject> pathwayElements = new ArrayList<>(elementIdToPathwayElement.values());
-		return pathwayElements;
+	public List<PathwayObject> getPathwayObjects() {
+		List<PathwayObject> pathwayObjects = new ArrayList<>(elementIdToPathwayObject.values());
+		return pathwayObjects;
 	}
 
 	/**
-	 * Checks if the pathway model has the given pathway element.
+	 * Checks if the pathway model has the given pathway object.
 	 * 
-	 * @param pathwayElement the pathway element to check for.
-	 * @return true if pathway model has given pathway element, false otherwise.
+	 * @param pathwayObject the pathway object to check for.
+	 * @return true if pathway model has given pathway object, false otherwise.
 	 */
-	public boolean hasPathwayElement(PathwayObject pathwayElement) {
-		return this.getPathwayElements().contains(pathwayElement);
+	public boolean hasPathwayObject(PathwayObject pathwayObject) {
+		return this.getPathwayObjects().contains(pathwayObject);
 	}
 
 	/**
 	 * Returns a set view of String elementId keys from the
-	 * elementIdToPathwayElements hash map.
+	 * elementIdToPathwayObject hash map.
 	 * 
 	 * @return a list of elementId keys.
 	 */
 	public Set<String> getElementIds() {
-		return elementIdToPathwayElement.keySet();
+		return elementIdToPathwayObject.keySet();
 	}
 
 	/**
-	 * Adds mapping of elementId key to PathwayElement value in the
-	 * elementIdToPathwayElement hash map.
+	 * Adds mapping of elementId key to PathwayObject value in the
+	 * elementIdToPathwayObject hash map.
 	 * 
 	 * @param elementId      the elementId
-	 * @param pathwayElement the PathwayElement
+	 * @param pathwayObject  the pathway object
 	 * @throws IllegalArgumentException if elementId or elementIdContainer are null.
 	 * @throws IllegalArgumentException if elementId is not unique.
 	 */
-	public void addElementId(String elementId, PathwayObject pathwayElement) {
-		if (pathwayElement == null || elementId == null) {
+	public void addElementId(String elementId, PathwayObject pathwayObject) {
+		if (pathwayObject == null || elementId == null) {
 			throw new IllegalArgumentException("unique elementId can't be null");
 		}
-		if (elementIdToPathwayElement.containsKey(elementId)) {
-			System.out.println(elementIdToPathwayElement);
+		if (elementIdToPathwayObject.containsKey(elementId)) {
+			System.out.println(elementIdToPathwayObject);
 			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
 		}
-		elementIdToPathwayElement.put(elementId, pathwayElement);
+		elementIdToPathwayObject.put(elementId, pathwayObject);
 	}
 
 	/**
-	 * Removes the mapping of given elementId key from the elementIdToPathwayElement
+	 * Removes the mapping of given elementId key from the elementIdToPathwayObject
 	 * hash map. TODO public?
 	 * 
 	 * @param elementId the elementId key.
 	 */
 	public void removeElementId(String elementId) {
-		elementIdToPathwayElement.remove(elementId);
+		elementIdToPathwayObject.remove(elementId);
 	}
 
 	/**
@@ -348,24 +348,24 @@ public class PathwayModel {
 
 	/**
 	 * Adds the given dataNode to dataNodes list. Sets pathwayModel and elementId,
-	 * and maps to elementIdToPathwayElement.
+	 * and maps to elementIdToPathwayObject.
 	 * 
 	 * @param dataNode the data node to be added.
 	 */
 	public void addDataNode(DataNode dataNode) {
-		addPathwayElement(dataNode);
+		addPathwayObject(dataNode);
 		dataNodes.add(dataNode);
 	}
 
 	/**
-	 * Removes the given dataNode from dataNodes list and elementIdToPathwayElement
+	 * Removes the given dataNode from dataNodes list and elementIdToPathwayObject
 	 * map.
 	 * 
 	 * @param dataNode the data node to be removed.
 	 */
 	public void removeDataNode(DataNode dataNode) {
 		dataNodes.remove(dataNode);
-		removePathwayElement(dataNode);
+		removePathwayObject(dataNode);
 	}
 
 	/**
@@ -379,24 +379,24 @@ public class PathwayModel {
 
 	/**
 	 * Adds the given interaction to interactions list. Sets pathwayModel and
-	 * elementId, and maps to elementIdToPathwayElement.
+	 * elementId, and maps to elementIdToPathwayObject.
 	 * 
 	 * @param interaction the interaction to be added.
 	 */
 	public void addInteraction(Interaction interaction) {
-		addPathwayElement(interaction);
+		addPathwayObject(interaction);
 		interactions.add(interaction);
 	}
 
 	/**
 	 * Removes the given interaction from interactions list and
-	 * elementIdToPathwayElement map..
+	 * elementIdToPathwayObject map..
 	 * 
 	 * @param interaction the interaction to be removed.
 	 */
 	public void removeInteraction(Interaction interaction) {
 		interactions.remove(interaction);
-		removePathwayElement(interaction);
+		removePathwayObject(interaction);
 
 	}
 
@@ -411,24 +411,24 @@ public class PathwayModel {
 
 	/**
 	 * Adds the given graphicalLine to graphicalLines list. Sets pathwayModel and
-	 * elementId, and maps to elementIdToPathwayElement.
+	 * elementId, and maps to elementIdToPathwayObject.
 	 * 
 	 * @param graphicalLine the graphicalLine to be added.
 	 */
 	public void addGraphicalLine(GraphicalLine graphicalLine) {
-		addPathwayElement(graphicalLine);
+		addPathwayObject(graphicalLine);
 		graphicalLines.add(graphicalLine);
 	}
 
 	/**
 	 * Removes the given graphicalLine from graphicalLines list and
-	 * elementIdToPathwayElement map..
+	 * elementIdToPathwayObject map..
 	 * 
 	 * @param graphicalLine the graphicalLine to be removed.
 	 */
 	public void removeGraphicalLine(GraphicalLine graphicalLine) {
 		graphicalLines.remove(graphicalLine);
-		removePathwayElement(graphicalLine);
+		removePathwayObject(graphicalLine);
 
 	}
 
@@ -443,23 +443,23 @@ public class PathwayModel {
 
 	/**
 	 * Adds the given label to labels list. Sets pathwayModel and elementId, and
-	 * maps to elementIdToPathwayElement.
+	 * maps to elementIdToPathwayObject.
 	 * 
 	 * @param label the label to be added.
 	 */
 	public void addLabel(Label label) {
-		addPathwayElement(label);
+		addPathwayObject(label);
 		labels.add(label);
 	}
 
 	/**
-	 * Removes the given label from labels list and elementIdToPathwayElement map.
+	 * Removes the given label from labels list and elementIdToPathwayObject map.
 	 * 
 	 * @param label the label to be removed.
 	 */
 	public void removeLabel(Label label) {
 		labels.remove(label);
-		removePathwayElement(label);
+		removePathwayObject(label);
 
 	}
 
@@ -474,23 +474,23 @@ public class PathwayModel {
 
 	/**
 	 * Adds the given shape to shapes list.Sets pathwayModel and elementId, and maps
-	 * to elementIdToPathwayElement.
+	 * to elementIdToPathwayObject.
 	 * 
 	 * @param shape the shape to be added.
 	 */
 	public void addShape(Shape shape) {
-		addPathwayElement(shape);
+		addPathwayObject(shape);
 		shapes.add(shape);
 	}
 
 	/**
-	 * Removes the given shape from shapes list and elementIdToPathwayElement map.
+	 * Removes the given shape from shapes list and elementIdToPathwayObject map.
 	 * 
 	 * @param shape the shape to be removed.
 	 */
 	public void removeShape(Shape shape) {
 		shapes.remove(shape);
-		removePathwayElement(shape);
+		removePathwayObject(shape);
 
 	}
 
@@ -505,23 +505,23 @@ public class PathwayModel {
 
 	/**
 	 * Adds the given group to groups list. Sets pathwayModel and elementId, and
-	 * maps to elementIdToPathwayElement.
+	 * maps to elementIdToPathwayObject.
 	 * 
 	 * @param group the group to be added.
 	 */
 	public void addGroup(Group group) {
-		addPathwayElement(group);
+		addPathwayObject(group);
 		groups.add(group);
 	}
 
 	/**
-	 * Removes the given group from groups list and elementIdToPathwayElement map.
+	 * Removes the given group from groups list and elementIdToPathwayObject map.
 	 * 
 	 * @param group the group to be removed.
 	 */
 	public void removeGroup(Group group) {
 		groups.remove(group);
-		removePathwayElement(group);
+		removePathwayObject(group);
 	}
 
 	/**
@@ -537,7 +537,7 @@ public class PathwayModel {
 	 * Adds given annotation to annotations list. If there is an annotation with
 	 * equivalent properties in the pathway model, the given annotation is not added
 	 * and the equivalent annotation is returned. Also sets pathwayModel and
-	 * elementId, and maps to elementIdToPathwayElement.
+	 * elementId, and maps to elementIdToPathwayObject.
 	 * 
 	 * @param annotation the new annotation to be added.
 	 * @return annotation the new annotation or annotationExisting the existing
@@ -549,7 +549,7 @@ public class PathwayModel {
 			Logger.log.trace("Duplicate annotation is not added to pathway model.");
 			return annotationExisting;
 		} else {
-			addPathwayElement(annotation);
+			addPathwayObject(annotation);
 			annotations.add(annotation);
 			return annotation;
 		}
@@ -574,14 +574,14 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes given annotation from annotations list and elementIdToPathwayElement
+	 * Removes given annotation from annotations list and elementIdToPathwayObject
 	 * map.
 	 * 
 	 * @param annotation the annotation to be removed.
 	 */
 	public void removeAnnotation(Annotation annotation) {
 		annotations.remove(annotation);
-		removePathwayElement(annotation);
+		removePathwayObject(annotation);
 	}
 
 	/**
@@ -597,7 +597,7 @@ public class PathwayModel {
 	 * Adds given citation to citations list. If there is an citation with
 	 * equivalent properties in the pathway model, the given citation is not added
 	 * and the equivalent citation is returned. Also sets pathwayModel and
-	 * elementId, and maps to elementIdToPathwayElement.
+	 * elementId, and maps to elementIdToPathwayObject.
 	 * 
 	 * @param citation the new citation to be added.
 	 * @return citation the new citation or citationExisting the existing equivalent
@@ -609,7 +609,7 @@ public class PathwayModel {
 			Logger.log.trace("Duplicate citation is not added to pathway model.");
 			return citationExisting;
 		} else {
-			addPathwayElement(citation);
+			addPathwayObject(citation);
 			citations.add(citation);
 			return citation;
 		}
@@ -634,13 +634,13 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes given citation from citations list and elementIdToPathwayElement map.
+	 * Removes given citation from citations list and elementIdToPathwayObject map.
 	 * 
 	 * @param citation the citation to be removed.
 	 */
 	public void removeCitation(Citation citation) {
 		citations.remove(citation);// TODO
-		removePathwayElement(citation);
+		removePathwayObject(citation);
 	}
 
 	/**
@@ -656,7 +656,7 @@ public class PathwayModel {
 	 * Adds given evidence to evidences. If there is an evidence with equivalent
 	 * properties in the pathway model, the given evidence is not added and the
 	 * equivalent evidence is returned. Also sets pathwayModel and elementId, and
-	 * maps to elementIdToPathwayElement.
+	 * maps to elementIdToPathwayObject.
 	 * 
 	 * @param evidence the evidence to be added.
 	 */
@@ -666,7 +666,7 @@ public class PathwayModel {
 			Logger.log.trace("Duplicate evidence is not added to pathway model.");
 			return evidenceExisting;
 		} else {
-			addPathwayElement(evidence);
+			addPathwayObject(evidence);
 			evidences.add(evidence);
 			return evidence;
 		}
@@ -691,45 +691,45 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes given evidence from evidences list and elementIdToPathwayElement map.
+	 * Removes given evidence from evidences list and elementIdToPathwayObject map.
 	 * 
 	 * @param evidence the evidence to be removed.
 	 */
 	public void removeEvidence(Evidence evidence) {
 		evidences.remove(evidence);
-		removePathwayElement(evidence);
+		removePathwayObject(evidence);
 	}
 
 	/**
-	 * Adds the given pathway element to pathway model. Sets pathwayModel for the
-	 * given pathway element. Sets an unique elementId for given pathway element if
-	 * not already set. Corresponding elementId and given pathway element are added
-	 * to elementIdToPathwayElement map.
+	 * Adds the given pathway object to pathway model. Sets pathwayModel for the
+	 * given pathway object. Sets an unique elementId for given pathway object if
+	 * not already set. Corresponding elementId and given pathway object are added
+	 * to elementIdToPathwayObject map.
 	 * 
-	 * @param pathwayElement the pathway element to add.
+	 * @param pathwayObject the pathway element to add.
 	 */
-	public void addPathwayElement(PathwayObject pathwayElement) {
-		assert (pathwayElement != null);
-		pathwayElement.setPathwayModelTo(this);
-		assert (pathwayElement.getPathwayModel() == this);
-		String elementId = pathwayElement.getElementId();
+	public void addPathwayObject(PathwayObject pathwayObject) {
+		assert (pathwayObject != null);
+		pathwayObject.setPathwayModelTo(this);
+		assert (pathwayObject.getPathwayModel() == this);
+		String elementId = pathwayObject.getElementId();
 		if (elementId == null)
-			pathwayElement.setGeneratedElementId();
-		addElementId(pathwayElement.getElementId(), pathwayElement); // TODO
+			pathwayObject.setGeneratedElementId();
+		addElementId(pathwayObject.getElementId(), pathwayObject); // TODO
 	}
 
 	/**
-	 * Removes the given pathway element from pathway model and
-	 * elementIdToPathwayElement map. The pathway element is terminated in the
+	 * Removes the given pathway object from pathway model and
+	 * elementIdToPathwayObject map. The pathway object is terminated in the
 	 * process.
 	 * 
-	 * @param pathwayElement the pathway element to remove.
+	 * @param pathwayObject the pathway object to remove.
 	 */
-	public void removePathwayElement(PathwayObject pathwayElement) {
-		assert (pathwayElement != null);
-		assert (hasPathwayElement(pathwayElement));
-		removeElementId(pathwayElement.getElementId());
-		pathwayElement.terminate(); // TODO
+	public void removePathwayObject(PathwayObject pathwayObject) {
+		assert (pathwayObject != null);
+		assert (hasPathwayObject(pathwayObject));
+		removeElementId(pathwayObject.getElementId());
+		pathwayObject.terminate(); // TODO
 	}
 
 	/**

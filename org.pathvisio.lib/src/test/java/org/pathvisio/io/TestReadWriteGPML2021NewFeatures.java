@@ -82,15 +82,15 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		 * Customize graphics features, change shapeType of virus to customized shape
 		 * "virus".
 		 */
-		Shape virus = (Shape) pathwayModel.getPathwayElement("f2086");
+		Shape virus = (Shape) pathwayModel.getPathwayObject("f2086");
 		ShapeType virusShape = ShapeType.register("virus");
 		virus.setShapeType(virusShape);
 
 		/**
 		 * Customize graphics features of group. Change shapeTypes to triangle,
 		 */
-		Group group1 = (Group) pathwayModel.getPathwayElement("grp001");
-		Group group2 = (Group) pathwayModel.getPathwayElement("grp002");
+		Group group1 = (Group) pathwayModel.getPathwayObject("grp001");
+		Group group2 = (Group) pathwayModel.getPathwayObject("grp002");
 		group1.setBorderColor(ColorUtils.stringToColor("Purple"));
 		// orange --> black (default) since it is not in color map
 		group2.setBorderColor(ColorUtils.stringToColor("orange"));
@@ -99,7 +99,7 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		 * Create data node with type alias with elementRef to groups grp001 using base
 		 * template (alias001)
 		 */
-		DataNode alias1 = (DataNode) pathwayModel.getPathwayElement("alias001");
+		DataNode alias1 = (DataNode) pathwayModel.getPathwayObject("alias001");
 		alias1.setType(DataNodeType.ALIAS);
 		alias1.setAliasRefTo(group1);
 
@@ -107,7 +107,7 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		 * Create nested groups. We nest group grp002 inside grp001 by adding alias002
 		 * data node to grp001.
 		 */
-		DataNode alias2 = (DataNode) pathwayModel.getPathwayElement("alias002");
+		DataNode alias2 = (DataNode) pathwayModel.getPathwayObject("alias002");
 		alias2.setType(DataNodeType.ALIAS);
 		alias2.setAliasRefTo(group2);
 //		alias2.setGroupRef(group1);

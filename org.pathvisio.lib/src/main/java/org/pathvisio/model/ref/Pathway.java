@@ -25,6 +25,7 @@ import java.util.Set;
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.events.PathwayElementListener;
+import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
 /**
@@ -41,15 +42,15 @@ import org.pathvisio.util.Utils;
  * @author finterly
  */
 public class Pathway extends PathwayElement {
+	// TODO check if builder and stuff works correctly...
 
+	// required properties
 	private String title;
 	private double boardWidth;
 	private double boardHeight;
 	private Color backgroundColor;
 	private List<Author> authors;
-
-	// TODO check if builder and stuff works correctly...
-
+	// optional properties
 	private String description;
 	private String organism;
 	private String source;
@@ -487,6 +488,114 @@ public class Pathway extends PathwayElement {
 	@Override
 	public void terminate() {
 		// Is pathway allowed to be terminated?
+	}
+
+	/**
+	 * This class stores information for an Author. An Author must have name and
+	 * optionally username, order, and Xref.
+	 * 
+	 * @author finterly
+	 */
+	public class Author {
+
+		private String name;
+		private String username;
+		private int order;
+		private Xref xref;
+
+		/**
+		 * Instantiates an author with all possible properties.
+		 * 
+		 */
+		private Author(String name, String username, int order, Xref xref) {
+			this.name = name;
+			this.username = username;
+			this.order = order;
+			this.xref = xref;
+		}
+
+		/**
+		 * Instantiates an author with only required property: name.
+		 * 
+		 * @param name
+		 */
+		private Author(String name) {
+			this(name, null, 0, null);
+		}
+
+		/**
+		 * Returns the name of this author.
+		 * 
+		 * @return name the name of this author.
+		 */
+		public String getName() {
+			return name;
+		}
+
+		/**
+		 * Sets the name of this author.
+		 * 
+		 * @param v the name of this author.
+		 */
+		public void setName(String v) {
+			name = v;
+		}
+
+		/**
+		 * Returns the username of this author.
+		 * 
+		 * @return username the username of this author.
+		 */
+		public String getUsername() {
+			return username;
+		}
+
+		/**
+		 * Sets the username of this author.
+		 * 
+		 * @param v the username of this author.
+		 */
+		public void setUsername(String v) {
+			username = v;
+		}
+
+		/**
+		 * Returns the authorship order of this author.
+		 * 
+		 * @return order the authorship order.
+		 */
+		public int getOrder() {
+			return order;
+		}
+
+		/**
+		 * Sets the authorship order of this author.
+		 *
+		 * @param v the authorship order.
+		 */
+		public void setOrder(int v) {
+			order = v;
+		}
+
+		/**
+		 * Returns the Xref for the author.
+		 * 
+		 * @return xref the xref of the author.
+		 */
+		public Xref getXref() {
+			return xref;
+		}
+
+		/**
+		 * Sets the Xref for the author.
+		 * 
+		 * @param v the xref of the author.
+		 */
+		public void setXref(Xref v) {
+			xref = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.XREF));
+		}
+
 	}
 
 }

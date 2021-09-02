@@ -33,18 +33,20 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.*;
+import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.LineElement.Anchor;
+import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Author;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.Comment;
+import org.pathvisio.model.ref.PathwayElement.Comment;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Pathway;
-import org.pathvisio.model.ref.UrlRef;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -580,8 +582,8 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element pt = new Element("Point", wyps.getNamespace());
 			writeElementId(point.getElementId(), pt);
 			pt.setAttribute("arrowHead", point.getArrowHead().getName());
-			pt.setAttribute("x", Double.toString(point.getXY().getX()));
-			pt.setAttribute("y", Double.toString(point.getXY().getY()));
+			pt.setAttribute("x", Double.toString(point.getX()));
+			pt.setAttribute("y", Double.toString(point.getY()));
 			if (writeElementRef(point.getElementRef(), pt)) {
 				pt.setAttribute("relX", Double.toString(point.getRelX()));
 				pt.setAttribute("relY", Double.toString(point.getRelY()));

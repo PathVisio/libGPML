@@ -24,6 +24,7 @@ import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.props.StaticProperty;
@@ -178,10 +179,54 @@ public class DataNode extends ShapedElement {
 		assert !hasState(state);
 		// add state to same pathway model as data node if applicable
 		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayElement(state);
+			getPathwayModel().addPathwayObject(state);
 		states.add(state);
 		// TODO
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+	}
+
+	/**
+	 * Instantiates a state with the given properties. Adds new state to states list
+	 * and pathway model.
+	 * 
+	 * @param elementId
+	 * @param textLabel
+	 * @param stateType
+	 * @param relX
+	 * @param relY
+	 * @return
+	 */
+	public State addState(String elementId, String textLabel, StateType stateType, double relX, double relY) {
+		State state = new State(textLabel, stateType, relX, relY);
+		state.setElementId(elementId);
+		// add state to same pathway model as data node if applicable
+		if (getPathwayModel() != null)
+			getPathwayModel().addPathwayObject(state);
+		states.add(state);
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		return state;
+	}
+	
+	/**
+	 * Instantiates a state with the given properties. Adds new state to states list
+	 * and pathway model.
+	 * 
+	 * @param textLabel
+	 * @param stateType
+	 * @param relX
+	 * @param relY
+	 * @return
+	 */
+	public State addState(String textLabel, StateType stateType, double relX, double relY) {
+		State state = new State(textLabel, stateType, relX, relY);
+		// add state to same pathway model as data node if applicable
+		if (getPathwayModel() != null)
+			getPathwayModel().addPathwayObject(state);
+		states.add(state);
+		// TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		return state;
 	}
 
 	/**
@@ -193,7 +238,7 @@ public class DataNode extends ShapedElement {
 	public void removeState(State state) {
 		assert (state != null && hasState(state));
 		if (getPathwayModel() != null)
-			getPathwayModel().removePathwayElement(state);
+			getPathwayModel().removePathwayObject(state);
 		states.remove(state);
 		state.terminate();
 		// TODO
@@ -279,7 +324,7 @@ public class DataNode extends ShapedElement {
 		setPathwayModel(pathwayModel);
 		// if data node has states, also add states to pathway model TODO
 		for (State state : states)
-			pathwayModel.addPathwayElement(state);
+			pathwayModel.addPathwayObject(state);
 	}
 
 	/**
