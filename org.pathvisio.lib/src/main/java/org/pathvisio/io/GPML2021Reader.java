@@ -32,7 +32,7 @@ import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.ref.Annotatable;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
-import org.pathvisio.model.ref.Author;
+import org.pathvisio.model.ref.Pathway.Author;
 import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
@@ -197,7 +197,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (aus != null) {
 			for (Element au : aus.getChildren("Author", aus.getNamespace())) {
 				String name = au.getAttributeValue("name");
-				Author author = new Author.AuthorBuilder(name).build();
+				Author author = pathway.new Author(name);
 				// sets optional properties
 				String username = au.getAttributeValue("username");
 				String order = au.getAttributeValue("order");

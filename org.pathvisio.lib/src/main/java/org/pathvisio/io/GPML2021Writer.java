@@ -39,7 +39,7 @@ import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
-import org.pathvisio.model.ref.Author;
+import org.pathvisio.model.ref.Pathway.Author;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.PathwayElement.Comment;

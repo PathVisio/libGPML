@@ -481,9 +481,9 @@ public class Pathway extends PathwayElement {
 	}
 
 	/**
-	 * Terminates this pathway element. The pathway model, if any, is unset from
-	 * this pathway element. Links to all annotationRefs, citationRefs, and
-	 * evidenceRefs are removed from this data node.
+	 * Terminates this pathway. The pathway model, if any, is unset from this
+	 * pathway. Links to all annotationRefs, citationRefs, and evidenceRefs are
+	 * removed from this data node.
 	 */
 	@Override
 	public void terminate() {
@@ -507,7 +507,7 @@ public class Pathway extends PathwayElement {
 		 * Instantiates an author with all possible properties.
 		 * 
 		 */
-		private Author(String name, String username, int order, Xref xref) {
+		public Author(String name, String username, int order, Xref xref) {
 			this.name = name;
 			this.username = username;
 			this.order = order;
@@ -519,7 +519,7 @@ public class Pathway extends PathwayElement {
 		 * 
 		 * @param name
 		 */
-		private Author(String name) {
+		public Author(String name) {
 			this(name, null, 0, null);
 		}
 

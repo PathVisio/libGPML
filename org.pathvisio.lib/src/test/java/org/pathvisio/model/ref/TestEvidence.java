@@ -19,14 +19,15 @@ public class TestEvidence extends TestCase {
 		
 		Shape shape = new Shape();
 		
-		double centerX = shape.getCenterXY().getX();
+		double centerX = shape.getCenterX();
 		
 		System.out.println(centerX);
 		
-		shape.getCenterXY().setX(2);
-		
+		shape.setCenterX(2);
+		shape.setCenterY(2);
+
 		System.out.println(centerX);
-		System.out.println(shape.getCenterXY().getX());
+		System.out.println(shape.getCenterX());
 
 
 	}

@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.pathvisio.model.DataNode.State;
+
 import junit.framework.TestCase;
 
 /**
@@ -50,13 +52,11 @@ public class TestState extends TestCase {
 		assertEquals(d1.getPathwayModel(), p1);
 
 		// create a state
-		State st1 = new State("st1", null, 0, 0);
+		State st1 = d1.addState("st1", null, 0, 0);
 		assertNull(st1.getElementId());
 		assertNull(st1.getDataNode());
 		assertNull(st1.getPathwayModel());
 		assertTrue(d1.getStates().isEmpty());
-		// add state to data node (which also adds to pathway model)
-		d1.addState(st1);
 		assertEquals(st1.getDataNode(), d1);
 		assertEquals(st1.getPathwayModel(), p1);
 		System.out.println("State elementId is " + st1.getElementId());
@@ -90,13 +90,12 @@ public class TestState extends TestCase {
 		assertNull(d2.getPathwayModel());
 
 		// create a state
-		State st2 = new State("st2", null, 0, 0);
+		State st2 = d2.addState("st2", null, 0, 0);
 		assertNull(st2.getElementId());
 		assertNull(st2.getDataNode());
 		assertNull(st2.getPathwayModel());
 		assertTrue(d2.getStates().isEmpty());
 		// add state to data node
-		d2.addState(st2);
 		assertNull(st2.getElementId());
 		assertNull(st2.getPathwayModel());
 		assertEquals(st2.getDataNode(), d2);

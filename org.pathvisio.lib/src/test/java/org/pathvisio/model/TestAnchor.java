@@ -17,8 +17,8 @@
 package org.pathvisio.model;
 
 import org.pathvisio.model.Interaction;
+import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.ref.Author;
 import org.pathvisio.model.type.AnchorShapeType;
 
 import junit.framework.TestCase;
@@ -55,13 +55,12 @@ public class TestAnchor extends TestCase {
 		assertEquals(i1.getPathwayModel(), p1);
 
 		// create a anchor
-		Anchor a1 = new Anchor(0, AnchorShapeType.SQUARE);
+		Anchor a1 = i1.addAnchor(0, AnchorShapeType.SQUARE);
 		assertNull(a1.getElementId());
 		assertNull(a1.getLineElement());
 		assertNull(a1.getPathwayModel());
 		assertTrue(i1.getAnchors().isEmpty());
 		// add state to data node (which also adds to pathway model)
-		i1.addAnchor(a1);
 		assertEquals(a1.getLineElement(), i1);
 		assertEquals(a1.getPathwayModel(), p1);
 		System.out.println("Anchor elementId is " + a1.getElementId());
@@ -96,13 +95,12 @@ public class TestAnchor extends TestCase {
 		assertNull(i2.getPathwayModel());
 
 		// create a anchor
-		Anchor a2 = new Anchor(0, AnchorShapeType.SQUARE);
+		Anchor a2 = i2.addAnchor(0, AnchorShapeType.SQUARE);
 		assertNull(a2.getElementId());
 		assertNull(a2.getLineElement());
 		assertNull(a2.getPathwayModel());
 		assertTrue(i2.getAnchors().isEmpty());
 		// add anchor to interaction
-		i2.addAnchor(a2);
 		assertNull(a2.getElementId());
 		assertNull(a2.getPathwayModel());
 		assertEquals(a2.getLineElement(), i2);

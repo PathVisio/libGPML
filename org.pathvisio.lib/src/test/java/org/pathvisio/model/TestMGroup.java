@@ -40,8 +40,8 @@ public class TestMGroup extends TestCase {
 
 		assertNotNull(group.getElementId());
 
-		node.getCenterXY().setX(120);
-		node.getCenterXY().setY(20);
+		node.setCenterX(120);
+		node.setCenterY(20);
 		node.setWidth(20);
 		node.setHeight(20);
 
