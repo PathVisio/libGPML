@@ -61,7 +61,7 @@ public class PathwayModel {
 
 	private Pathway pathway; // pathway information
 	// for elementId to PathwayElement
-	private Map<String, PathwayObject> elementIdToPathwayObject; //TODO PathwayElement???? 
+	private Map<String, PathwayObject> elementIdToPathwayObject; // TODO PathwayElement????
 	// for PathwayElement and all the LinePoints which point to it
 	private Map<LinkableTo, Set<LinkableFrom>> elementRefToLinePoints;
 	// for Group aliasRef and all the DataNode aliases for it
@@ -120,7 +120,9 @@ public class PathwayModel {
 	 * @param pathway the pathway meta information.
 	 */
 	public void setPathway(Pathway pathway) {
-		this.pathway = pathway;
+		if (pathway == null) {
+			this.pathway = pathway;
+		}
 	}
 
 	/**
@@ -164,8 +166,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Returns a set view of String elementId keys from the
-	 * elementIdToPathwayObject hash map.
+	 * Returns a set view of String elementId keys from the elementIdToPathwayObject
+	 * hash map.
 	 * 
 	 * @return a list of elementId keys.
 	 */
@@ -177,8 +179,8 @@ public class PathwayModel {
 	 * Adds mapping of elementId key to PathwayObject value in the
 	 * elementIdToPathwayObject hash map.
 	 * 
-	 * @param elementId      the elementId
-	 * @param pathwayObject  the pathway object
+	 * @param elementId     the elementId
+	 * @param pathwayObject the pathway object
 	 * @throws IllegalArgumentException if elementId or elementIdContainer are null.
 	 * @throws IllegalArgumentException if elementId is not unique.
 	 */
@@ -709,6 +711,10 @@ public class PathwayModel {
 	 * @param pathwayObject the pathway element to add.
 	 */
 	public void addPathwayObject(PathwayObject pathwayObject) {
+		// do not add pathway object if Pathway TODO 
+		if (pathwayObject.getClass() == Pathway.class) {
+			throw new IllegalArgumentException("Pathway cannot be added as a pathwayObject");
+		}
 		assert (pathwayObject != null);
 		pathwayObject.setPathwayModelTo(this);
 		assert (pathwayObject.getPathwayModel() == this);
