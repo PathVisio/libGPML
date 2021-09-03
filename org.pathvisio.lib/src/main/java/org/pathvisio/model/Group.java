@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.GroupType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -197,9 +196,11 @@ public class Group extends ShapedElement {
 	 * @param v the xref to set for this group.
 	 */
 	public void setXref(Xref v) {
-		xref = v;
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		if (v != null) {
+			xref = v;
+			// TODO
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
 	}
 
 	/**

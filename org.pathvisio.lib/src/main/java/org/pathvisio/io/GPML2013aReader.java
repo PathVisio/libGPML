@@ -34,21 +34,39 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.*;
+import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.GraphicalLine;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.Interaction;
+import org.pathvisio.model.Label;
+import org.pathvisio.model.LineElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.Shape;
+import org.pathvisio.model.ShapedElement;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
+import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.PathwayElement.Comment;
-import org.pathvisio.model.ref.Pathway;
-import org.pathvisio.model.type.*;
-import org.pathvisio.util.ColorUtils;
+import org.pathvisio.model.type.AnchorShapeType;
+import org.pathvisio.model.type.AnnotationType;
+import org.pathvisio.model.type.ArrowHeadType;
+import org.pathvisio.model.type.ConnectorType;
+import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.GroupType;
+import org.pathvisio.model.type.HAlignType;
+import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.ShapeType;
+import org.pathvisio.model.type.StateType;
+import org.pathvisio.model.type.VAlignType;
 import org.pathvisio.util.BoundsUtils;
+import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
 /**
@@ -313,9 +331,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String[] biopaxIdDb = biopaxIdDbStr.split(":"); // splits "ID" into Id and Database
 			String biopaxDb = biopaxIdDb[0]; // e.g. PW
 			String biopaxId = biopaxIdDb[1]; // e.g 0000650
-			Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
-			if (xref != null)
-				annotation.setXref(xref);
+			annotation.setXref(XrefUtils.createXref(biopaxId, biopaxDb));
 			// adds annotation to pathway model and annotationRef to pathway
 			Annotation annotationExisting = pathwayModel.addAnnotation(annotation);
 			pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotationExisting));
@@ -365,19 +381,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = new Citation(xref);
 			citation.setElementId(elementId);
 			// sets optional properties
-			String title = readPubxfInfo(pubxf.getChildren("TITLE", BIOPAX_NAMESPACE));
+			citation.setTitle(readPubxfInfo(pubxf.getChildren("TITLE", BIOPAX_NAMESPACE)));
 			String source = readPubxfInfo(pubxf.getChildren("SOURCE", BIOPAX_NAMESPACE));
-			String year = readPubxfInfo(pubxf.getChildren("YEAR", BIOPAX_NAMESPACE));
-			if (title != null && !title.equals(""))
-				citation.setTitle(title);
-			if (source != null && !source.equals("")) {
-				citation.setSource(source);
-				// if source is an url, also set as citation url
-				if (source.startsWith("http") || source.startsWith("www"))
-					citation.setUrlLink(source);
+			citation.setSource(source);
+			// if source is an url, also set as citation urlLink
+			if (source.startsWith("http") || source.startsWith("www")) {
+				citation.setUrlLink(source);
 			}
-			if (year != null && !year.equals(""))
-				citation.setYear(year);
+			citation.setYear(readPubxfInfo(pubxf.getChildren("YEAR", BIOPAX_NAMESPACE)));
 			List<String> authors = new ArrayList<String>();
 			for (Element au : pubxf.getChildren("AUTHORS", BIOPAX_NAMESPACE)) {
 				String author = au.getText();
@@ -779,9 +790,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			readShapedElement(pathwayModel, dataNode, dn, biopaxIdToNew, duplicateToBiopaxId);
 			// sets optional properties
 			readGroupRef(pathwayModel, dataNode, dn, groupIdToNew);
-			Xref xref = readXref(dn);
-			if (xref != null)
-				dataNode.setXref(xref);
+			dataNode.setXref(readXref(dn));
 			// adds data node to pathway model
 			pathwayModel.addDataNode(dataNode);
 		}
@@ -831,9 +840,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				state.setBorderStyle(LineStyleType.DOUBLE);
 			}
 			// sets optional properties
-			Xref xref = readXref(st);
-			if (xref != null)
-				state.setXref(xref);
+			state.setXref(readXref(st));
 			// adds state to parent data node of pathway model
 			dataNode.addState(state);
 			state.setZOrder(dataNode.getZOrder() + 1);
@@ -897,9 +904,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					// if sitegrpid, set xref and add to state
 					if (key.equalsIgnoreCase(SITEGRPID)) {
 						String identifier = annotationsMap.get(SITEGRPID);
-						xref = XrefUtils.createXref(identifier, SITEGRPID_DB);
-						if (xref != null)
-							state.setXref(xref);
+						state.setXref(XrefUtils.createXref(identifier, SITEGRPID_DB));
 						continue;
 					}
 					// if ptm, add as SBO annotation
@@ -926,8 +931,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					AnnotationType type = AnnotationType.register(key);
 					Annotation annotation = new Annotation(value, type);
 					annotation.setElementId(elementId);
-					if (xref != null)
-						annotation.setXref(xref);
+					annotation.setXref(xref);
 					// returns existing annotation in pathway model if applicable
 					annotation = pathwayModel.addAnnotation(annotation);
 					AnnotationRef annotationRef = new AnnotationRef(annotation);
@@ -975,9 +979,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			readLineElement(pathwayModel, interaction, ia, elementIdSet, biopaxIdToNew, duplicateToBiopaxId,
 					groupIdToNew);
 			// sets optional properties
-			Xref xref = readXref(ia);
-			if (xref != null)
-				interaction.setXref(xref);
+			interaction.setXref(readXref(ia));
 			// adds interaction to pathway model
 			pathwayModel.addInteraction(interaction);
 		}

@@ -62,9 +62,11 @@ public class Interaction extends LineElement {
 	 * @param v the xref to set for this interaction.
 	 */
 	public void setXref(Xref v) {
-		xref = v;
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		if (v != null) {
+			xref = v;
+			// TODO
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
 	}
 
 }

@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayObject;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for an Evidence.
@@ -91,7 +94,9 @@ public class Evidence extends PathwayObject {
 	 * @param v the name, term, or text of this evidence.
 	 */
 	public void setValue(String v) {
-		value = v;
+		if (v != null && Utils.stringEquals(value, v)) {
+			value = v;
+		}
 	}
 
 	/**
@@ -109,7 +114,10 @@ public class Evidence extends PathwayObject {
 	 * @param v the xref of this evidence.
 	 */
 	public void setXref(Xref v) {
-		xref = v;
+		if (v != null) {
+			xref = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
 	}
 
 	/**
@@ -127,7 +135,9 @@ public class Evidence extends PathwayObject {
 	 * @param v the url link.
 	 */
 	public void setUrlLink(String v) {
-		urlLink = v;
+		if (v != null && !v.equals("") && !Utils.stringEquals(urlLink, v)) {
+			urlLink = v;
+		}
 	}
 
 	/**

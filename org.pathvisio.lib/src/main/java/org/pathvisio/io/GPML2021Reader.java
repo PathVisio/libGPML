@@ -25,24 +25,42 @@ import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.pathvisio.model.*;
+import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.GraphicalLine;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.Interaction;
+import org.pathvisio.model.Label;
+import org.pathvisio.model.LineElement;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.Shape;
+import org.pathvisio.model.ShapedElement;
 import org.pathvisio.model.ref.Annotatable;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
-import org.pathvisio.model.ref.Pathway.Author;
 import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.PathwayElement.Comment;
-import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Evidenceable;
 import org.pathvisio.model.ref.Pathway;
-import org.pathvisio.model.type.*;
+import org.pathvisio.model.ref.Pathway.Author;
+import org.pathvisio.model.ref.PathwayElement;
+import org.pathvisio.model.ref.PathwayElement.Comment;
+import org.pathvisio.model.type.AnchorShapeType;
+import org.pathvisio.model.type.AnnotationType;
+import org.pathvisio.model.type.ArrowHeadType;
+import org.pathvisio.model.type.ConnectorType;
+import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.GroupType;
+import org.pathvisio.model.type.HAlignType;
+import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.ShapeType;
+import org.pathvisio.model.type.StateType;
+import org.pathvisio.model.type.VAlignType;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -122,15 +140,13 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, backgroundColor).build();
 		readAuthors(pathway, root);
 		// sets optional properties
-		Xref xref = readXref(root);
 		Element desc = root.getChild("Description", root.getNamespace());
 		if (desc != null) {
 			String description = desc.getText();
 			if (description != null)
 				pathway.setDescription(description);
 		}
-		if (xref != null)
-			pathway.setXref(xref);
+		pathway.setXref(readXref(root));
 		pathway.setOrganism(root.getAttributeValue("organism"));
 		pathway.setSource(root.getAttributeValue("source"));
 		pathway.setVersion(root.getAttributeValue("version"));
@@ -192,12 +208,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Author author = pathway.new Author(name);
 				// sets optional properties
 				String order = au.getAttributeValue("order");
-				Xref xref = readXref(au);
 				author.setUsername(au.getAttributeValue("username"));
 				if (order != null)
 					author.setOrder(Integer.parseInt(order.trim()));
-				if (xref != null)
-					author.setXref(xref);
+				author.setXref(readXref(au));
 				if (author != null)
 					pathway.addAuthor(author);
 			}
@@ -222,12 +236,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Annotation annotation = new Annotation(value, type);
 				annotation.setElementId(elementId);
 				// sets optional properties
-				Xref xref = readXref(annt);
-				String urlLink = readUrl(annt);
-				if (xref != null)
-					annotation.setXref(xref);
-				if (urlLink != null && !urlLink.equals(""))
-					annotation.setUrlLink(urlLink);
+				annotation.setXref(readXref(annt));
+				annotation.setUrlLink(readUrl(annt));
 				if (annotation != null)
 					pathwayModel.addAnnotation(annotation);
 			}
@@ -253,8 +263,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (xref != null) {
 					Citation citation = new Citation(xref);
 					citation.setElementId(elementId);
-					if (urlLink != null && !urlLink.equals(""))
-						citation.setUrlLink(urlLink);
+					citation.setUrlLink(readUrl(cit));
 					if (citation != null)
 						pathwayModel.addCitation(citation);
 				} else {
@@ -285,12 +294,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Evidence evidence = new Evidence(xref);
 				evidence.setElementId(elementId);
 				// sets optional properties
-				String value = evid.getAttributeValue("value");
-				String urlLink = readUrl(evid);
-				if (value != null)
-					evidence.setValue(value);
-				if (urlLink != null && !urlLink.equals(""))
-					evidence.setUrlLink(urlLink);
+				evidence.setValue(evid.getAttributeValue("value"));
+				evidence.setUrlLink(readUrl(evid));
 				pathwayModel.addEvidence(evidence);
 			}
 		}
@@ -437,9 +442,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				readElementInfo(pathwayModel, group, grp);
 				// sets optional properties
 				String textLabel = grp.getAttributeValue("textLabel");
-				Xref xref = readXref(grp);
-				if (xref != null)
-					group.setXref(xref);
+				group.setXref(readXref(grp));
 				if (textLabel != null)
 					group.setTextLabel(textLabel);
 				pathwayModel.addGroup(group);
@@ -561,13 +564,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// sets optional properties
 				String rotationStr = gfx.getAttributeValue("rotation");
 				String groupRef = dn.getAttributeValue("groupRef");
-				Xref xref = readXref(dn);
+				dataNode.setXref(readXref(dn));
 				if (rotationStr != null)
 					dataNode.setRotation(Double.parseDouble(rotationStr.trim()));
 				if (groupRef != null && !groupRef.equals(""))
 					dataNode.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
-				if (xref != null)
-					dataNode.setXref(xref);
 				// adds dataNode to pathwayModel
 				pathwayModel.addDataNode(dataNode);
 			}
@@ -603,9 +604,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String rotationStr = gfx.getAttributeValue("rotation");
 				if (rotationStr != null)
 					state.setRotation(Double.parseDouble(rotationStr.trim()));
-				Xref xref = readXref(st);
-				if (xref != null)
-					state.setXref(xref);
+				state.setXref(readXref(st));
 				dataNode.addState(state);
 				state.setZOrder(dataNode.getZOrder() + 1);
 
@@ -636,9 +635,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// reads comment group
 				readLineElement(pathwayModel, interaction, ia);
 				// sets optional properties
-				Xref xref = readXref(ia);
-				if (xref != null)
-					interaction.setXref(xref);
+				interaction.setXref(readXref(ia));
 
 			}
 		}

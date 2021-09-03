@@ -25,6 +25,7 @@ import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayObject;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for an Annotation.
@@ -132,7 +133,10 @@ public class Annotation extends PathwayObject {
 	 * @param v the xref to set for this annotation.
 	 */
 	public void setXref(Xref v) {
-		xref = v;
+		if (v != null) {
+			xref = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
 	}
 
 	/**
@@ -150,7 +154,9 @@ public class Annotation extends PathwayObject {
 	 * @param v the url link.
 	 */
 	public void setUrlLink(String v) {
-		urlLink = v;
+		if (v != null && !v.equals("") && !Utils.stringEquals(urlLink, v)) {
+			urlLink = v;
+		}
 	}
 
 	/**

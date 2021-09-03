@@ -477,7 +477,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	 * govern layout of Graphical Lines and Interactions. PathVisio (Java): Line
 	 * Type and GPML: ConnectorType e.g. Curved, Elbow, Straight
 	 * 
-	 * @param connectorType the layout of a line.
+	 * @param v the layout of a line.
 	 * @throws IllegalArgumentException if ConnectorType null.
 	 */
 	public void setConnectorType(ConnectorType v) {

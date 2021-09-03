@@ -160,7 +160,9 @@ public class Pathway extends PathwayElement {
 		 * @return this pathwayBuilder object.
 		 */
 		public PathwayBuilder setXref(Xref v) {
-			xref = v;
+			if (v != null) {
+				xref = v;
+			}
 			return this;
 		}
 
@@ -435,8 +437,10 @@ public class Pathway extends PathwayElement {
 	 * @param v the xref to set for this pathway.
 	 */
 	public void setXref(Xref v) {
-		xref = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		if (v != null) {
+			xref = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
 	}
 
 	// TODO....
@@ -601,8 +605,11 @@ public class Pathway extends PathwayElement {
 		 * @param v the xref of the author.
 		 */
 		public void setXref(Xref v) {
-			xref = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.XREF));
+			if (v != null) {
+				xref = v;
+				fireObjectModifiedEvent(
+						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.XREF));
+			}
 		}
 
 	}

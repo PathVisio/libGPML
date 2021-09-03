@@ -143,9 +143,11 @@ public class DataNode extends ShapedElement {
 	 * @param v the xref to set for this datanode.
 	 */
 	public void setXref(Xref v) {
-		xref = v;
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		if (v != null) {
+			xref = v;
+			// TODO
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
 	}
 
 	/*
@@ -537,14 +539,17 @@ public class DataNode extends ShapedElement {
 		 * @param v the xref of this state.
 		 */
 		public void setXref(Xref v) {
-			xref = v;
-			// TODO
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			if (v != null) {
+				xref = v;
+				// TODO
+				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			}
 		}
 
 		/**
 		 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
-		 * for {@link LineElement.LinePoint}, for this {@link LinkableTo} pathway element.
+		 * for {@link LineElement.LinePoint}, for this {@link LinkableTo} pathway
+		 * element.
 		 */
 		@Override
 		public Set<LinkableFrom> getLinkableFroms() {

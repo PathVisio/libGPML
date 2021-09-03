@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
+import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayObject;
+import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for a Citation.
@@ -85,7 +88,10 @@ public class Citation extends PathwayObject {
 	 * @param v the xref of this citation.
 	 */
 	public void setXref(Xref v) {
-		xref = v;
+		if (v != null) {
+			xref = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+		}
 	}
 
 	/**
@@ -103,7 +109,9 @@ public class Citation extends PathwayObject {
 	 * @param v the url link.
 	 */
 	public void setUrlLink(String v) {
-		urlLink = v;
+		if (v != null && !v.equals("") && !Utils.stringEquals(urlLink, v)) {
+			urlLink = v;
+		}
 	}
 
 	/**
@@ -121,7 +129,9 @@ public class Citation extends PathwayObject {
 	 * @param v the title.
 	 */
 	public void setTitle(String v) {
-		title = v;
+		if (v != null && !v.equals("") && !Utils.stringEquals(title, v)) {
+			title = v;
+		}
 	}
 
 	/**
@@ -139,7 +149,9 @@ public class Citation extends PathwayObject {
 	 * @param v the source.
 	 */
 	public void setSource(String v) {
-		source = v;
+		if (v != null && !v.equals("") && !Utils.stringEquals(source, v)) {
+			source = v;
+		}
 	}
 
 	/**
@@ -157,7 +169,9 @@ public class Citation extends PathwayObject {
 	 * @param v the year.
 	 */
 	public void setYear(String v) {
-		year = v;
+		if (v != null && !v.equals("") && !Utils.stringEquals(year, v)) {
+			year = v;
+		}
 	}
 
 	/**
