@@ -47,6 +47,7 @@ import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.Pathway;
+import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.util.Utils;
 
 /**
@@ -290,7 +291,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds mapping of aliasRef to data node alias in the aliasRefToAliases hash map.
+	 * Adds mapping of aliasRef to data node alias in the aliasRefToAliases hash
+	 * map.
 	 * 
 	 * @param aliasRef the group for which a dataNode alias refers.
 	 * @param alias    the datanode which has an aliasRef.
@@ -308,7 +310,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Removes the given aliasRef and alias from aliasRefToAliases of this pathway model. 
+	 * Removes the given aliasRef and alias from aliasRefToAliases of this pathway
+	 * model.
 	 * 
 	 * @param aliasRef the group for which a dataNode alias refers.
 	 * @param alias    the datanode which has an aliasRef.
@@ -611,14 +614,18 @@ public class PathwayModel {
 	 *         citation.
 	 */
 	public Citation addCitation(Citation citation) {
-		Citation citationExisting = hasEqualCitation(citation);
-		if (citationExisting != null) {
-			Logger.log.trace("Duplicate citation is not added to pathway model.");
-			return citationExisting;
+		if (citation != null) {
+			Citation citationExisting = hasEqualCitation(citation);
+			if (citationExisting != null) {
+				Logger.log.trace("Duplicate citation is not added to pathway model.");
+				return citationExisting;
+			} else {
+				addPathwayObject(citation);
+				citations.add(citation);
+				return citation;
+			}
 		} else {
-			addPathwayObject(citation);
-			citations.add(citation);
-			return citation;
+			return null;
 		}
 	}
 
@@ -965,24 +972,22 @@ public class PathwayModel {
 	void childModified(PathwayElementEvent e) {
 		markChanged();
 		if (e.isCoordinateChange()) {
-
+			//TODO
 			PathwayObject elt = e.getModifiedPathwayElement();
+			if (elt instanceof LinkableTo) {
+				for (LinkableFrom refc : getReferringLinkableFroms((LinkableTo) elt)) {
+					refc.refeeChanged();
+				}
+			}
+			if (elt instanceof Groupable) {
+				Group group = ((Groupable) elt).getGroupRef();
+				if (group != null) {
+					// identify group object and notify model change to trigger view update
+					group.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(group));
+				}
+			}
 
-//			if (elt.getClass() == LinkableTo.class) {
-//				for (LinkableFrom linePoints : getReferringLinkableFroms((LinkableTo) elt)) {
-			// refc.refeeChanged();
-
-//					elt.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(elt));
-//					// TODO looks ok?
-//				}
-//			}
-//			String ref = elt.getGroupRef();
-//			if (ref != null && getGroupById(ref) != null) {
-//				// identify group object and notify model change to trigger view update
-//				PathwayElement group = getGroupById(ref);
-//				group.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(group));
-//			}
-//			checkMBoardSize(e.getModifiedPathwayElement());
+			getPathway().checkMBoardSize((PathwayElement) e.getModifiedPathwayElement());
 		}
 	}
 

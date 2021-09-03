@@ -135,7 +135,7 @@ public class Evidence extends PathwayObject {
 	 * @param v the url link.
 	 */
 	public void setUrlLink(String v) {
-		if (v != null && !v.equals("") && !Utils.stringEquals(urlLink, v)) {
+		if (v != null && !Utils.stringEquals(urlLink, v)) {
 			urlLink = v;
 		}
 	}

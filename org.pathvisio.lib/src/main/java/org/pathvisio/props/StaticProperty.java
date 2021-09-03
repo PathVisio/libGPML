@@ -79,7 +79,7 @@ public enum StaticProperty implements Property {
 	HALIGN("hAlign", "hAlign", StaticPropertyType.HALIGNTYPE, 134),
 
 	// shape style props
-	BORDERCOLOR("borderColor", "borderColor", StaticPropertyType.COLOR, 202),
+	BORDERCOLOR("borderColor", "borderColor", StaticPropertyType.COLOR, 203),
 	BORDERSTYLE("borderStyle", "borderStyle", StaticPropertyType.LINESTYLETYPE, 120),
 	BORDERWIDTH("borderWidth", "borderWidth", StaticPropertyType.DOUBLE, 120),
 	FILLCOLOR("fillColor", "fillColor", StaticPropertyType.COLOR, 211),
