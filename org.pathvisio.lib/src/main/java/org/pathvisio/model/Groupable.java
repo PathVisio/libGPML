@@ -46,7 +46,7 @@ public interface Groupable {
 	 * the new parent group. If there is an old parent group, this pathway element
 	 * is removed from its pathwayElements list.
 	 * 
-	 * @param groupRefNew the new parent group to set.
+	 * @param groupRef the new parent group to set.
 	 */
 	public void setGroupRefTo(Group groupRef);
 

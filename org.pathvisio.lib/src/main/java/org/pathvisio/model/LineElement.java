@@ -187,7 +187,11 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	/**
 	 * Adds given point to linePoints list. Sets lineElement for the given point.
 	 * 
-	 * @param point the linePoint to be added.
+	 * @param elementId the pathway object id.
+	 * @param arrowHead the type of arrowhead.
+	 * @param x         the x coordinate of point.
+	 * @param y         the y coordinate of the point.
+	 * @return point the line point instantiated and added to this line.
 	 */
 	public LinePoint addLinePoint(String elementId, ArrowHeadType arrowHead, double x, double y) {
 		LinePoint point = new LinePoint(arrowHead, x, y);
@@ -204,7 +208,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	/**
 	 * Adds given point to linePoints list. Sets lineElement for the given point.
 	 * 
-	 * @param point the linePoint to be added.
+	 * @param arrowHead the type of arrowhead.
+	 * @param x         the x coordinate of point.
+	 * @param y         the y coordinate of the point.
 	 */
 	public LinePoint addLinePoint(ArrowHeadType arrowHead, double x, double y) {
 		LinePoint point = new LinePoint(arrowHead, x, y);
@@ -380,7 +386,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	/**
 	 * Sets the color of a line.
 	 * 
-	 * @param lineColor the color of a line.
+	 * @param v the color of a line.
 	 * @throws IllegalArgumentException if color null.
 	 */
 	public void setLineColor(Color v) {
@@ -438,7 +444,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	/**
 	 * Sets the pixel value for the width of a line.
 	 * 
-	 * @param lineWidth the width of a line.
+	 * @param v the width of a line.
 	 * @throws IllegalArgumentException if lineWidth is a negative value.
 	 */
 	public void setLineWidth(double v) {
@@ -613,7 +619,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * 
 		 * @param arrowHead  the glyph at the ends of lines, intermediate points have
 		 *                   arrowhead type "line" by default.
-		 * @param xy         the xy coordinate position of the point.
+		 * @param x          the x coordinate position of the point.
+		 * @param y          the y coordinate position of the point.
 		 * @param elementRef the pathway element to which the point refers.
 		 * @param relX       the relative x coordinate.
 		 * @param relY       the relative x coordinate.
@@ -622,8 +629,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 				double relY) {
 			super();
 			this.arrowHead = arrowHead;
-			this.x = x;
-			this.y = y;
+			setX(x);
+			setY(y);
 			linkTo(elementRef, relX, relY);
 		}
 
@@ -632,13 +639,11 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * element.
 		 * 
 		 * @param arrowHead the arrowhead property of the point (line by default).
-		 * @param xy        the xy coordinate position of the point.
+		 * @param x         the x coordinate position of the point.
+		 * @param y         the y coordinate position of the point.
 		 */
 		private LinePoint(ArrowHeadType arrowHead, double x, double y) {
-			super();
-			this.arrowHead = arrowHead;
-			this.x = x;
-			this.y = y;
+			this(arrowHead, x, y, null, 0, 0);
 		}
 
 		/**
@@ -686,9 +691,13 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param v the coordinate value to set for x.
 		 */
 		public void setX(double v) {
-			if (v < 0)
+			if (v < 0) {
 				Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
-			x = v;
+			}
+			if (x != v) {
+				x = v;
+				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(LineElement.this));
+			}
 		}
 
 		/**
@@ -706,9 +715,13 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param v the coordinate value to set for y.
 		 */
 		public void setY(double v) {
-			if (v < 0)
+			if (v < 0) {
 				Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
-			y = v;
+			}
+			if (y != v) {
+				y = v;
+				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(LineElement.this));
+			}
 		}
 
 		// TODO
@@ -939,7 +952,10 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			if (v < 0 || v > 1) {
 				throw new IllegalArgumentException("Invalid position value '" + v + "' must be between 0 and 1");
 			}
-			position = v;
+			if (position != v) {
+				position = v;
+				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(LineElement.this));
+			}
 		}
 
 		/**
@@ -966,8 +982,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			if (v == null) {
 				shapeType = AnchorShapeType.SQUARE;
 			} // TODO
-			if (shapeType != v)
+			if (shapeType != v) {
 				shapeType = v;
+			}
 			fireObjectModifiedEvent(
 					PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}

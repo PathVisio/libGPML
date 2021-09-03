@@ -19,30 +19,30 @@ package org.pathvisio.model;
 import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventListener;
-import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
 import org.bridgedb.Xref;
-import org.pathvisio.debug.*;
+import org.pathvisio.debug.Logger;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.events.PathwayEvent;
 import org.pathvisio.events.PathwayListener;
-import org.pathvisio.io.*;
-
-import java.io.Reader;
-
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.DataNode.State;
-import org.pathvisio.model.LineElement.LinePoint;
-import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.LineElement.Anchor;
+import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.Evidence;
@@ -147,8 +147,7 @@ public class PathwayModel {
 	/**
 	 * Returns all pathway objects for the pathway model.
 	 * 
-	 * @param elementId the given elementId key.
-	 * @return the pathway object for the given elementId key.
+	 * @return pathwayObjects the pathway objects for this pathway model.
 	 */
 	public List<PathwayObject> getPathwayObjects() {
 		List<PathwayObject> pathwayObjects = new ArrayList<>(elementIdToPathwayObject.values());
@@ -233,8 +232,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Returns all {@link LinkableFrom} {@link LinePoints} that refer to a
-	 * {@link LinkableTo} pathway element.
+	 * Returns all {@link LinkableFrom} {@link LineElement.LinePoints} that refer to
+	 * a {@link LinkableTo} pathway element.
 	 */
 	public Set<LinkableFrom> getReferringLinkableFroms(LinkableTo pathwayElement) {
 		Set<LinkableFrom> refs = elementRefToLinePoints.get(pathwayElement);
@@ -291,10 +290,10 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Adds mapping of elementRef to data node in the elementRefToDataNode hash map.
+	 * Adds mapping of aliasRef to data node alias in the aliasRefToAliases hash map.
 	 * 
-	 * @param elementRef the pathway element to which a dataNode refers.
-	 * @param dataNode   the datanode which has a elementRef.
+	 * @param aliasRef the group for which a dataNode alias refers.
+	 * @param alias    the datanode which has an aliasRef.
 	 * @throws IllegalArgumentException if elementRef or dataNode are null.
 	 */
 	public void addAlias(Group aliasRef, DataNode alias) {
@@ -308,6 +307,12 @@ public class PathwayModel {
 		aliases.add(alias);
 	}
 
+	/**
+	 * Removes the given aliasRef and alias from aliasRefToAliases of this pathway model. 
+	 * 
+	 * @param aliasRef the group for which a dataNode alias refers.
+	 * @param alias    the datanode which has an aliasRef.
+	 */
 	public void removeAlias(Group aliasRef, DataNode alias) {
 		if (alias == null || aliasRef == null)
 			throw new IllegalArgumentException("AliasRef and alias must be valid.");
@@ -326,7 +331,7 @@ public class PathwayModel {
 	 * Removes the mapping of given elementRef key from the elementRefToDataNode
 	 * hash map. TODO public?
 	 * 
-	 * @param elementRef the elementRef key.
+	 * @param aliasRef the aliasRef key.
 	 */
 	public void removeAliasRef(Group aliasRef) {
 		assert (hasAliasRef(aliasRef));
@@ -711,7 +716,7 @@ public class PathwayModel {
 	 * @param pathwayObject the pathway element to add.
 	 */
 	public void addPathwayObject(PathwayObject pathwayObject) {
-		// do not add pathway object if Pathway TODO 
+		// do not add pathway object if Pathway TODO
 		if (pathwayObject.getClass() == Pathway.class) {
 			throw new IllegalArgumentException("Pathway cannot be added as a pathwayObject");
 		}
@@ -748,42 +753,42 @@ public class PathwayModel {
 	 * removed or not sets parent of object to null fires PathwayEvent.DELETED event
 	 * <i>before</i> removal of the object
 	 *
-	 * @param o the object to remove
+	 * @param pathwayObject the object to remove
 	 */
-	public void remove(PathwayObject pathwayElement) {
-		assert (pathwayElement.getPathwayModel() == this); // can only remove direct child objects
-		if (pathwayElement.getClass() == DataNode.class) {
-			removeDataNode((DataNode) pathwayElement);
+	public void remove(PathwayObject pathwayObject) {
+		assert (pathwayObject.getPathwayModel() == this); // can only remove direct child objects
+		if (pathwayObject.getClass() == DataNode.class) {
+			removeDataNode((DataNode) pathwayObject);
 		}
-		if (pathwayElement.getClass() == State.class) {
-			DataNode dataNode = ((State) pathwayElement).getDataNode();
-			dataNode.removeState((State) pathwayElement);
+		if (pathwayObject.getClass() == State.class) {
+			DataNode dataNode = ((State) pathwayObject).getDataNode();
+			dataNode.removeState((State) pathwayObject);
 		}
-		if (pathwayElement.getClass() == Interaction.class) {
-			removeInteraction((Interaction) pathwayElement);
+		if (pathwayObject.getClass() == Interaction.class) {
+			removeInteraction((Interaction) pathwayObject);
 		}
-		if (pathwayElement.getClass() == GraphicalLine.class) {
-			removeGraphicalLine((GraphicalLine) pathwayElement);
+		if (pathwayObject.getClass() == GraphicalLine.class) {
+			removeGraphicalLine((GraphicalLine) pathwayObject);
 		}
-		if (pathwayElement.getClass() == Label.class) {
-			removeLabel((Label) pathwayElement);
+		if (pathwayObject.getClass() == Label.class) {
+			removeLabel((Label) pathwayObject);
 		}
-		if (pathwayElement.getClass() == Shape.class) {
-			removeShape((Shape) pathwayElement);
+		if (pathwayObject.getClass() == Shape.class) {
+			removeShape((Shape) pathwayObject);
 		}
-		if (pathwayElement.getClass() == Group.class) {
-			removeGroup((Group) pathwayElement);
+		if (pathwayObject.getClass() == Group.class) {
+			removeGroup((Group) pathwayObject);
 		}
-		if (pathwayElement.getClass() == Anchor.class) {
-			LineElement lineElement = ((Anchor) pathwayElement).getLineElement();
-			lineElement.removeAnchor((Anchor) pathwayElement);
+		if (pathwayObject.getClass() == Anchor.class) {
+			LineElement lineElement = ((Anchor) pathwayObject).getLineElement();
+			lineElement.removeAnchor((Anchor) pathwayObject);
 		}
-		if (pathwayElement.getClass() == LinePoint.class) {
-			LineElement lineElement = ((LinePoint) pathwayElement).getLineElement();
-			lineElement.removeLinePoint((LinePoint) pathwayElement);
+		if (pathwayObject.getClass() == LinePoint.class) {
+			LineElement lineElement = ((LinePoint) pathwayObject).getLineElement();
+			lineElement.removeLinePoint((LinePoint) pathwayObject);
 		}
 		// Citation...Anchor..Annotation...?????
-		fireObjectModifiedEvent(new PathwayEvent(pathwayElement, PathwayEvent.DELETED)); // TODO
+		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED)); // TODO
 
 	}
 

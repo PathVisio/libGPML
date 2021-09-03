@@ -28,11 +28,11 @@ public interface PathwayExporter extends PathwayIO {
 	/**
 	 * Export the given pathway to the file
 	 * 
-	 * @param file    The file to export to
-	 * @param pathway The pathway to export
+	 * @param file         the file to export to
+	 * @param pathwayModel the pathwayModel to export
 	 * @throws ConverterException when there is a fatal conversion problem.
 	 *                            Implementations should only throw in case there is
-	 *                            a non-recoverable error. Ohterwise, it should emit
+	 *                            a non-recoverable error. Otherwise, it should emit
 	 *                            a warning.
 	 */
 	public void doExport(File file, PathwayModel pathwayModel) throws ConverterException;
@@ -40,12 +40,12 @@ public interface PathwayExporter extends PathwayIO {
 	/**
 	 * Export the given pathway to the file
 	 * 
-	 * @param file    The file to export to
-	 * @param pathway The pathway to export
+	 * @param file         the file to export to
+	 * @param pathwayModel the pathwayModel to export
 	 * @param zoom
 	 * @throws ConverterException when there is a fatal conversion problem.
 	 *                            Implementations should only throw in case there is
-	 *                            a non-recoverable error. Ohterwise, it should emit
+	 *                            a non-recoverable error. Otherwise, it should emit
 	 *                            a warning.
 	 */
 	public void doExport(File file, PathwayModel pathwayModel, int zoom) throws ConverterException;

@@ -140,21 +140,33 @@ public abstract class PathwayObject {
 	 */
 	int noFire = 0;
 
+	/**
+	 * @param times
+	 */
 	public void dontFireEvents(int times) {
 		noFire = times;
 	}
 
 	private Set<PathwayElementListener> listeners = new HashSet<PathwayElementListener>();
 
+	/**
+	 * @param v
+	 */
 	public void addListener(PathwayElementListener v) {
 		if (!listeners.contains(v))
 			listeners.add(v);
 	}
 
+	/**
+	 * @param v
+	 */
 	public void removeListener(PathwayElementListener v) {
 		listeners.remove(v);
 	}
 
+	/**
+	 * @param e
+	 */
 	public void fireObjectModifiedEvent(PathwayElementEvent e) {
 		if (noFire > 0) {
 			noFire -= 1;

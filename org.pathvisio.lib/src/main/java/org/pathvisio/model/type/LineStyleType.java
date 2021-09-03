@@ -25,9 +25,8 @@ import org.pathvisio.debug.Logger;
 
 /**
  * This class contains extensible enum for lineStyle or borderStyle property.
- * Line style can be either solid, dashed or double. Used for lineStyle
- * {@link org.pathvisio.model.graphics.LineStyleProperty} and borderStyle
- * {@link org.pathvisio.model.graphics.ShapeStyleProperty}.
+ * Line style can be either solid, dashed or double. Used for lineStyle of
+ * {@link LineElement} or borderStyle of {@link ShapedElement}.
  * 
  * @author unknown, finterly
  */

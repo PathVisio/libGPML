@@ -28,9 +28,9 @@ public abstract class GraphLink {
 
 	/**
 	 * PathwayElements which can be referred to must implement this interface.
-	 * {@link DataNode}, {@link State}, {@link Anchor}, {@link Label},
+	 * {@link DataNode}, {@link DataNode.State}, {@link LineElement.Anchor}, {@link Label},
 	 * {@link Shape}, and {@link Group} can all be referred to by a end
-	 * {@link LinePoint}.
+	 * {@link LineElement.LinePoint}.
 	 * 
 	 */
 	public interface LinkableTo {
@@ -49,7 +49,7 @@ public abstract class GraphLink {
 //		String setGeneratedGraphId();
 
 		/**
-		 * Returns {@link LinkableFrom}s {@link LinePoints} for this pathway element.
+		 * Returns {@link LinkableFrom}s {@link LineElement.LinePoint} for this pathway element.
 		 * 
 		 * @return the LinkableFrom line points.
 		 */
@@ -78,7 +78,7 @@ public abstract class GraphLink {
 
 	/**
 	 * Classes which want to refer *to* a {@link LinkableTo} PathwayElement must
-	 * implement this interface. At this time that only goes for {@link LinePoint}.
+	 * implement this interface. At this time that only goes for {@link LineElement.LinePoint}.
 	 */
 	public interface LinkableFrom {
 

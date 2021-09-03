@@ -37,15 +37,15 @@ public interface PathwayImporter extends PathwayIO {
 	 * to be valid, so no complex validation is required. For naive implementations,
 	 * it's always OK to simply return "true".
 	 * 
-	 * @param f: the file to check
-	 * @returns true if the file appears superficially to be of the correct file
-	 *          type.
+	 * @param file the file to check
+	 * @return true if the file appears superficially to be of the correct file
+	 *         type.
 	 */
-	public boolean isCorrectType(File f);
+	public boolean isCorrectType(File file);
 
 	/**
-	 * @param File that contains pathway information
-	 * @returns the result of the import, a fresh Pathway instance
+	 * @param file that contains pathway information
+	 * @return the result of the import, a fresh Pathway instance
 	 * @throws ConverterException if the input file could not be read or parsed, or
 	 *                            doesn't contain correct pathway information.
 	 */

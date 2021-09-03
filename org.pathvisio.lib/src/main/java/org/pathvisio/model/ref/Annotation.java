@@ -43,10 +43,10 @@ public class Annotation extends PathwayObject {
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.
 	 * 
-	 * @param value the name, term, or text of the annotation.
-	 * @param type  the type of the annotation, e.g. ontology.
-	 * @param xref  the annotation xref.
-	 * @param url   the url of the annotation.
+	 * @param value   the name, term, or text of the annotation.
+	 * @param type    the type of the annotation, e.g. ontology.
+	 * @param xref    the annotation xref.
+	 * @param urlLink the url link of the annotation.
 	 */
 	public Annotation(String value, AnnotationType type, Xref xref, String urlLink) {
 		super();

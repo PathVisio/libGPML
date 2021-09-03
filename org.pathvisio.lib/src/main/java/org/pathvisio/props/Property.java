@@ -29,7 +29,7 @@ public interface Property {
 	String getId();
 
 	/**
-	 * @returns Name of property, used e.g. as row header in the properties table.
+	 * @return the name of property, used e.g. as row header in the properties table.
 	 */
 	String getName();
 

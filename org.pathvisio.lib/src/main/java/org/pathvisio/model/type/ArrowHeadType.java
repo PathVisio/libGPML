@@ -25,7 +25,7 @@ import org.pathvisio.debug.Logger;
 
 /**
  * This class contains extensible enum pattern for different arrow head types. A
- * Line in PathVisio has two endings {@link LinePoint} that each can have a
+ * Line in PathVisio has two endings {@link LineElement.LinePoint} that each can have a
  * different arrow head.
  * 
  * NB: previously named LineType.

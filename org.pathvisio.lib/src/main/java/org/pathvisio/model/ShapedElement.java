@@ -33,7 +33,7 @@ import org.pathvisio.util.Utils;
 
 /**
  * This class stores information for shaped pathway element {@link DataNode},
- * {@link State}, {@link Label}, {@link Shape}, and {@link Group}.
+ * {@link DataNode.State}, {@link Label}, {@link Shape}, and {@link Group}.
  * 
  * @author finterly
  */
@@ -77,7 +77,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns text label for shaped pathway elements. Text labels are required for
-	 * {@link DataNode}, {@link State} and {@link Label}; and optional for
+	 * {@link DataNode}, {@link DataNode.State} and {@link Label}; and optional for
 	 * {@link Shape} and {@link Group}.
 	 * 
 	 * @return the text of of the shaped pathway element.
@@ -234,7 +234,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Sets the height of this shaped pathway element.
 	 * 
-	 * @param height the height to set for this shaped pathway element.
+	 * @param v the height to set for this shaped pathway element.
 	 * @throws IllegalArgumentException if height is a negative value.
 	 */
 	public void setHeight(double v) {
@@ -292,7 +292,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * Sets the name of the set of printable text characters to be used for
 	 * visualization, e.g., Arial.
 	 * 
-	 * @param fontName the name of the font.
+	 * @param v the name of the font.
 	 * @throws IllegalArgumentException if given fontName is null.
 	 */
 	public void setFontName(String v) {
@@ -418,7 +418,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Sets point value for the size of the font.
 	 * 
-	 * @param fontSize the value for the size of the font.
+	 * @param v the value for the size of the font.
 	 * @throws IllegalArgumentException if fontSize is a negative value.
 	 */
 	public void setFontSize(int v) {
@@ -451,7 +451,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * @param v the horizontal alignment value of displayed text.
 	 */
 	public void setHAlign(HAlignType v) {
-		if (hAlign != v) {
+		if (v != null && hAlign != v) {
 			hAlign = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HALIGN));
 		}
@@ -477,7 +477,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * 
 	 */
 	public void setVAlign(VAlignType v) {
-		if (vAlign != v) {
+		if (v != null && vAlign != v) {
 			vAlign = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VALIGN));
 		}
@@ -667,7 +667,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Sets the rotation of this shaped pathway element.
 	 * 
-	 * @param rotation the rotation of this shaped pathway element.
+	 * @param v the rotation of this shaped pathway element.
 	 */
 	public void setRotation(Double v) {
 		if (rotation != v) {
@@ -679,7 +679,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
-	 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
+	 * for {@link LineElement.LinePoint}, for this {@link LinkableTo} pathway element.
 	 */
 	@Override
 	public Set<LinkableFrom> getLinkableFroms() {

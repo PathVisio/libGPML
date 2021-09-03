@@ -24,7 +24,6 @@ import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.props.StaticProperty;
@@ -181,8 +180,8 @@ public class DataNode extends ShapedElement {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayObject(state);
 		states.add(state);
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 	}
 
 	/**
@@ -203,11 +202,11 @@ public class DataNode extends ShapedElement {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayObject(state);
 		states.add(state);
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 		return state;
 	}
-	
+
 	/**
 	 * Instantiates a state with the given properties. Adds new state to states list
 	 * and pathway model.
@@ -224,8 +223,8 @@ public class DataNode extends ShapedElement {
 		if (getPathwayModel() != null)
 			getPathwayModel().addPathwayObject(state);
 		states.add(state);
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 		return state;
 	}
 
@@ -241,8 +240,8 @@ public class DataNode extends ShapedElement {
 			getPathwayModel().removePathwayObject(state);
 		states.remove(state);
 		state.terminate();
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 	}
 
 	/**
@@ -482,7 +481,7 @@ public class DataNode extends ShapedElement {
 		 * is at the center of the data node and 1,1 at the bottom right corner of the
 		 * data node.
 		 * 
-		 * @param relX the relative x coordinate.
+		 * @param v the relative x coordinate.
 		 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 		 */
 		public void setRelX(double v) {
@@ -545,7 +544,7 @@ public class DataNode extends ShapedElement {
 
 		/**
 		 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
-		 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
+		 * for {@link LineElement.LinePoint}, for this {@link LinkableTo} pathway element.
 		 */
 		@Override
 		public Set<LinkableFrom> getLinkableFroms() {

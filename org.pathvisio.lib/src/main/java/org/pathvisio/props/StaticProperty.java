@@ -41,9 +41,10 @@ public enum StaticProperty implements Property {
 	XREF("xref", "xref", StaticPropertyType.XREF, 123),
 
 	// author
-	NAME("name", "Author name", StaticPropertyType.STRING, 138),
-	USERNAME("username", "username", StaticPropertyType.STRING, 138),
-	ORDER("order", "order", StaticPropertyType.INTEGER, 138),
+	AUTHOR("author", "Author", StaticPropertyType.STRING, 138),
+	NAME("name", "Author name", StaticPropertyType.STRING, 138), //TODO 
+	USERNAME("username", "username", StaticPropertyType.STRING, 138), //TODO 
+	ORDER("order", "order", StaticPropertyType.INTEGER, 138), //TODO 
 
 	// pathway graphics
 	BOARDWIDTH("boardWidth", "Board Width", StaticPropertyType.DOUBLE, 143, true, true, false),

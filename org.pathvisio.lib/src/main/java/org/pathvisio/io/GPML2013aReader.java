@@ -197,18 +197,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		// instantiates pathway, default backgroundColor is ffffff (white)
 		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff")).build();
 		// sets optional properties
-		String organism = getAttr("Pathway", "Organism", root);
-		String source = getAttr("Pathway", "Data-Source", root);
-		String version = getAttr("Pathway", "Version", root);
-		String license = getAttr("Pathway", "License", root);
-		if (organism != null)
-			pathway.setOrganism(organism);
-		if (source != null)
-			pathway.setSource(source);
-		if (version != null)
-			pathway.setVersion(version);
-		if (license != null)
-			pathway.setLicense(license);
+		pathway.setOrganism(getAttr("Pathway", "Organism", root));
+		pathway.setSource(getAttr("Pathway", "Data-Source", root));
+		pathway.setVersion(getAttr("Pathway", "Version", root));
+		pathway.setLicense(getAttr("Pathway", "License", root));
 		// sets optional dynamic properties
 		String author = getAttr("Pathway", "Author", root);
 		String maintainer = getAttr("Pathway", "Maintainer", root);

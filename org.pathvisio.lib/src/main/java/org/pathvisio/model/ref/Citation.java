@@ -44,8 +44,8 @@ public class Citation extends PathwayObject {
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters.
 	 * 
-	 * @param xref the citation xref.
-	 * @param url  the url link and description (optional) for a web address.
+	 * @param xref    the citation xref.
+	 * @param urlLink the url link and description (optional) for a web address.
 	 */
 	public Citation(Xref xref, String urlLink) {
 		super();

@@ -84,7 +84,7 @@ public class Label extends ShapedElement {
 	/**
 	 * Sets the hyperlink for this Label.
 	 * 
-	 * @param href the hyperlink reference to a url.
+	 * @param v the hyperlink reference to a url.
 	 */
 	public void setHref(String v) {
 		String value = (v == null) ? "" : v;

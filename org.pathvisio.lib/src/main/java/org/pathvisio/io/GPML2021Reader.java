@@ -129,20 +129,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			if (description != null)
 				pathway.setDescription(description);
 		}
-		String organism = root.getAttributeValue("organism");
-		String source = root.getAttributeValue("source");
-		String version = root.getAttributeValue("version");
-		String license = root.getAttributeValue("license");
 		if (xref != null)
 			pathway.setXref(xref);
-		if (organism != null)
-			pathway.setOrganism(organism);
-		if (source != null)
-			pathway.setSource(source);
-		if (version != null)
-			pathway.setVersion(version);
-		if (license != null)
-			pathway.setLicense(license);
+		pathway.setOrganism(root.getAttributeValue("organism"));
+		pathway.setSource(root.getAttributeValue("source"));
+		pathway.setVersion(root.getAttributeValue("version"));
+		pathway.setLicense(root.getAttributeValue("license"));
 		return pathway;
 	}
 
@@ -199,11 +191,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String name = au.getAttributeValue("name");
 				Author author = pathway.new Author(name);
 				// sets optional properties
-				String username = au.getAttributeValue("username");
 				String order = au.getAttributeValue("order");
 				Xref xref = readXref(au);
-				if (username != null)
-					author.setUsername(username);
+				author.setUsername(au.getAttributeValue("username"));
 				if (order != null)
 					author.setOrder(Integer.parseInt(order.trim()));
 				if (xref != null)
@@ -802,7 +792,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * element.
 	 * 
 	 * @param pathwayElement the element info pathway element object.
-	 * @param e           the pathway element element.
+	 * @param e              the pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readElementInfo(PathwayModel pathwayModel, PathwayElement pathwayElement, Element e)
@@ -818,7 +808,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads comment {@link Comment} information for pathway element from element.
 	 * 
 	 * @param pathwayElement the element info pathway element object.
-	 * @param e           the pathway element element.
+	 * @param e              the pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readComments(PathwayElement pathwayElement, Element e) throws ConverterException {
@@ -837,7 +827,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * for pathway element from element.
 	 * 
 	 * @param pathwayElement the element info pathway element object .
-	 * @param e           the pathway element element.
+	 * @param e              the pathway element element.
 	 * @throws ConverterException
 	 */
 	protected void readDynamicProperties(PathwayElement pathwayElement, Element e) throws ConverterException {

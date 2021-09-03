@@ -25,10 +25,6 @@ public class GraphicalLine extends LineElement {
 
 	/**
 	 * Instantiates a GraphicalLine pathway element given all possible parameters.
-	 * 
-	 * @param pathwayModel      the parent pathway model.
-	 * @param elementId         the unique pathway element identifier.
-	 * @param lineStyleProperty the line style properties, e.g. lineColor.
 	 */
 	public GraphicalLine() {
 		super();

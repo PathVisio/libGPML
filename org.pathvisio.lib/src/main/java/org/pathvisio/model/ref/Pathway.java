@@ -215,8 +215,7 @@ public class Pathway extends PathwayElement {
 		}
 		if (title != v) {
 			title = v;
-			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
-			// StaticProperty.TITLE));
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TITLE));
 		}
 	}
 
@@ -352,13 +351,9 @@ public class Pathway extends PathwayElement {
 	 * @param v the organism to set.
 	 */
 	public void setOrganism(String v) {
-		if (v == null) {
-			throw new IllegalArgumentException();
-		}
 		if (!Utils.stringEquals(organism, v)) {
 			organism = v;
-			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
-			// StaticProperty.ORGANISM));
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
 		}
 	}
 
@@ -377,10 +372,10 @@ public class Pathway extends PathwayElement {
 	 * @param v the source to set.
 	 */
 	public void setSource(String v) {
-		if (v == null) {
-			throw new IllegalArgumentException();
-		} else
+		if (!Utils.stringEquals(source, v)) {
 			source = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SOURCE));
+		}
 	}
 
 	/**
@@ -398,13 +393,9 @@ public class Pathway extends PathwayElement {
 	 * @param v the version to set.
 	 */
 	public void setVersion(String v) {
-		if (v == null) {
-			throw new IllegalArgumentException();
-		}
-		if (version != v) {
+		if (!Utils.stringEquals(version, v)) {
 			version = v;
-			// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
-			// StaticProperty.VERSION));
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
 		}
 	}
 
@@ -423,7 +414,10 @@ public class Pathway extends PathwayElement {
 	 * @param v the license to set.
 	 */
 	public void setLicense(String v) {
-		license = v;
+		if (!Utils.stringEquals(license, v)) {
+			license = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LICENSE));
+		}
 	}
 
 	/**
@@ -442,8 +436,7 @@ public class Pathway extends PathwayElement {
 	 */
 	public void setXref(Xref v) {
 		xref = v;
-		// fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this,
-		// StaticProperty.IDENTIFIER));
+		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 	// TODO....
@@ -506,6 +499,10 @@ public class Pathway extends PathwayElement {
 		/**
 		 * Instantiates an author with all possible properties.
 		 * 
+		 * @param name     the author name.
+		 * @param username the author username.
+		 * @param order    the author order.
+		 * @param xref     the author orcid id.
 		 */
 		public Author(String name, String username, int order, Xref xref) {
 			this.name = name;
@@ -517,7 +514,7 @@ public class Pathway extends PathwayElement {
 		/**
 		 * Instantiates an author with only required property: name.
 		 * 
-		 * @param name
+		 * @param name the author name.
 		 */
 		public Author(String name) {
 			this(name, null, 0, null);
@@ -538,7 +535,11 @@ public class Pathway extends PathwayElement {
 		 * @param v the name of this author.
 		 */
 		public void setName(String v) {
-			name = v;
+			if (!Utils.stringEquals(name, v)) {
+				name = v;
+				fireObjectModifiedEvent(
+						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
+			}
 		}
 
 		/**
@@ -556,7 +557,11 @@ public class Pathway extends PathwayElement {
 		 * @param v the username of this author.
 		 */
 		public void setUsername(String v) {
-			username = v;
+			if (!Utils.stringEquals(username, v)) {
+				username = v;
+				fireObjectModifiedEvent(
+						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
+			}
 		}
 
 		/**
@@ -574,7 +579,11 @@ public class Pathway extends PathwayElement {
 		 * @param v the authorship order.
 		 */
 		public void setOrder(int v) {
-			order = v;
+			if (order != v) {
+				order = v;
+				fireObjectModifiedEvent(
+						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
+			}
 		}
 
 		/**

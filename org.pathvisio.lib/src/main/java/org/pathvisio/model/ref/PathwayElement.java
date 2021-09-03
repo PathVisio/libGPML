@@ -405,8 +405,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param v the text of this comment.
 		 */
 		public void setCommentText(String v) {
-			if (v != null) {
+			if (v != null && !commentText.equals(v)) {
 				commentText = v;
+				fireObjectModifiedEvent(
+						PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
 			}
 		}
 
@@ -417,6 +419,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		public String getSource() {
 			return source;
+			
 		}
 
 		/**
@@ -425,9 +428,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param v the source of this comment.
 		 */
 		public void setSource(String v) {
-			if (v != null) {
+			if (v != null && !source.equals(v)) {
 				source = v;
-				// changed();
+				fireObjectModifiedEvent(
+						PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
 			}
 		}
 
