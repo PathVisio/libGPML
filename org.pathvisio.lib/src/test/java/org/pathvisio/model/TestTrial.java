@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestGroup2 extends TestCase {
+public class TestTrial extends TestCase {
 
 	/**
 	 * Create a {@link Group} and add to pathway model. Create {@link DataNode} and
@@ -17,7 +17,7 @@ public class TestGroup2 extends TestCase {
 	 * {@link Group#addPathwayElement()} and {@link Group#removePathwayElement()}.
 	 */
 	public static void testGroupAddRemove() {
-		
+			
 		System.out.println("TEST 1");
 
 		// create a pathway model
@@ -28,9 +28,9 @@ public class TestGroup2 extends TestCase {
 		assertNull(g1.getElementId());
 		assertNull(g1.getPathwayModel());
 		g1.setBorderColor(Color.white);
-//		g1.setElementId("tempID");
+		p1.addGroup(g1);
+		g1.setElementId("tempID");
 		// add to pathway model
-//		p1.addGroup(g1);
 	}
 
 }
