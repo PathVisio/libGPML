@@ -18,6 +18,7 @@ package org.pathvisio.model;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -582,8 +583,123 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	// ================================================================================
-	// GenericPoint Class
+	// Bounds Methods
 	// ================================================================================
+	/**
+	 * Returns the rectangular bounds of the given line pathway elements. This
+	 * method simply calls {@link #getBounds()} because lines do not have property
+	 * rotation.
+	 * 
+	 * @return the rectangular bounds for this line pathway element.
+	 */
+	@Override
+	public Rectangle2D getRotatedBounds() {
+		return getBounds();
+	}
+
+	/**
+	 * Calculates and returns the rectangular bounds for given line pathway element.
+	 * The bounds for a line is calculated from its ends points (first and last).
+	 * 
+	 * @return the rectangular bounds for this line pathway element.
+	 */
+	@Override
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(getLeft(), getTop(), getWidth(), getHeight());
+	}
+
+	/**
+	 * Returns the left x coordinate of the bounding box around (start, end) the
+	 * line pathway element.
+	 */
+	public double getLeft() {
+		double start = getStartLinePoint().getX();
+		double end = getEndLinePoint().getX();
+		return Math.min(start, end);
+	}
+
+	/**
+	 * Returns the top y coordinate of the bounding box around (start, end) the line
+	 * pathway element.
+	 */
+	public double getTop() {
+		double start = getStartLinePoint().getY();
+		double end = getEndLinePoint().getY();
+		return Math.min(start, end);
+	}
+
+	/**
+	 * Returns the width of the bounding box around (start, end) the line pathway
+	 * element.
+	 */
+	public double getWidth() {
+		double start = getStartLinePoint().getX();
+		double end = getEndLinePoint().getX();
+		return Math.abs(start - end);
+	}
+
+	/**
+	 * Returns the height of the bounding box around (start, end) the line pathway
+	 * element.
+	 */
+	public double getHeight() {
+		double start = getStartLinePoint().getY();
+		double end = getEndLinePoint().getY();
+		return Math.abs(start - end);
+	}
+
+	/**
+	 * Returns the center x coordinate of the bounding box around (start, end) the
+	 * line pathway element.
+	 */
+	public double getCenterX() {
+		double start = getStartLinePoint().getX();
+		double end = getEndLinePoint().getX();
+		return start + (end - start) / 2;
+	}
+
+	/**
+	 * Returns the center y coordinate of the bounding box around (start, end) the
+	 * line pathway element.
+	 */
+	public double getCenterY() {
+		double start = getStartLinePoint().getY();
+		double end = getEndLinePoint().getY();
+		return start + (end - start) / 2;
+	}
+
+	/**
+	 * Check if the connector may cross this point Optionally, returns a shape that
+	 * defines the boundaries of the area around this point that the connector may
+	 * not cross. This method can be used for advanced connectors that route along
+	 * other objects on the drawing
+	 * 
+	 * @return A shape that defines the boundaries of the area around this point
+	 *         that the connector may not cross. Returning null is allowed for
+	 *         implementing classes.
+	 */
+	public Rectangle2D mayCross(Point2D point) { // TODO was Shape before...
+		PathwayModel pathwayModel = getPathwayModel();
+		Rectangle2D rect = null;
+		if (pathwayModel != null) {
+			for (PathwayObject e : pathwayModel.getPathwayObjects()) { // TODO Object or Elements?
+				if (e.getClass() == Shape.class || e.getClass() == DataNode.class || e.getClass() == Label.class) {
+					Rectangle2D b = ((ShapedElement) e).getBounds(); // TODO okay???
+					if (b.contains(point)) {
+						if (rect == null)
+							rect = b;
+						else
+							rect.add(b);
+					}
+				}
+			}
+		}
+		return rect;
+	}
+
+// ================================================================================
+// GenericPoint Class
+// ================================================================================
 	/**
 	 * Abstract class of generic point, extended by {@link LinePoint} and
 	 * {@link Anchor}.
@@ -620,9 +736,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 
 	}
 
-	// ================================================================================
-	// LinePoint Class
-	// ================================================================================
+// ================================================================================
+// LinePoint Class
+// ================================================================================
 	/**
 	 * This class stores information for a Point pathway element. This class is
 	 * named LinePoint to avoid name conflict with awt.Point in downstream
@@ -669,7 +785,10 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param y         the y coordinate position of the point.
 		 */
 		private LinePoint(ArrowHeadType arrowHead, double x, double y) {
-			this(arrowHead, x, y, null, 0, 0);
+			super();
+			this.arrowHead = arrowHead;
+			setX(x);
+			setY(y);
 		}
 
 		/**
@@ -857,7 +976,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param pathwayElement the linkableTo pathway element to link to.
 		 */
 		public void linkTo(LinkableTo pathwayElement) {
-//			Point2D rel = pathwayElement.toRelativeCoordinate(toPoint2D());
+			// Point2D rel = pathwayElement.toRelativeCoordinate(toPoint2D());
 			linkTo(pathwayElement, relX, relY);
 		}
 
@@ -876,8 +995,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		public void unlink() {
 			if (elementRef != null) {
 				if (getPathwayModel() != null) {
-//					Point2D abs = getAbsolute();
-//					moveTo(abs.getX(), abs.getY());
+					// Point2D abs = getAbsolute();
+					// moveTo(abs.getX(), abs.getY());
 				}
 				// relativeSet = false;
 				setElementRef(null);
@@ -889,20 +1008,21 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		// TODO
 		public void setRelativePosition(double rx, double ry) {
 			moveTo(rx, ry);
-//			relativeSet = true; TODO 
+			// relativeSet = true; TODO
 		}
 
-//		private boolean relativeSet; TODO 
+		// private boolean relativeSet; TODO
 
-//		/**
-//		 * Helper method for converting older GPML files without relative coordinates. TODO
-//		 * 
-//		 * @return true if {@link #setRelativePosition(double, double)} was called to
-//		 *         set the relative coordinates, false if not.
-//		 */
-//		protected boolean relativeSet() {
-//			return relativeSet;
-//		}
+		// /**
+		// * Helper method for converting older GPML files without relative coordinates.
+		// TODO
+		// *
+		// * @return true if {@link #setRelativePosition(double, double)} was called to
+		// * set the relative coordinates, false if not.
+		// */
+		// protected boolean relativeSet() {
+		// return relativeSet;
+		// }
 
 		// TODO
 		public void moveBy(double deltaX, double deltaY) {
@@ -922,7 +1042,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 
 		// TODO weird
 		public void moveTo(LinePoint linePoint) {
-//			xy = linePoint.getXY(); TODO 
+			// xy = linePoint.getXY(); TODO
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 
@@ -934,9 +1054,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 
 	}
 
-	// ================================================================================
-	// Anchor Class
-	// ================================================================================
+// ================================================================================
+// Anchor Class
+// ================================================================================
 	/**
 	 * This class stores information for an Anchor pathway element. Anchor element
 	 * is a connection point on a graphical line or an interaction.

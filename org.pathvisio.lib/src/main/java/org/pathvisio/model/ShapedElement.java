@@ -17,6 +17,8 @@
 package org.pathvisio.model;
 
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import org.pathvisio.debug.Logger;
@@ -64,7 +66,6 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	private int zOrder; // optional
 	private double rotation = 0; // optional, in radians
 
-	
 	// ================================================================================
 	// Constructors
 	// ================================================================================
@@ -79,7 +80,6 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		super();
 	}
 
-	
 	// ================================================================================
 	// Accessors
 	// ================================================================================
@@ -693,9 +693,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
-	
+
 	// ================================================================================
-	// Other Methods 
+	// Inherited Methods
 	// ================================================================================
 	/**
 	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
@@ -706,7 +706,6 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public Set<LinkableFrom> getLinkableFroms() {
 		return GraphLink.getReferences(this, getPathwayModel());
 	}
-
 
 	/**
 	 * Terminates this pathway element. The pathway model, if any, is unset from
@@ -721,5 +720,53 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		unsetGroupRef();
 		unsetPathwayModel();
 	}
+
+	// ================================================================================
+	// Bounds Methods
+	// ================================================================================
+	/**
+	 * Returns the rectangular bounds of the object after rotation is applied.
+	 * 
+	 * @return the rectangular bounds for this shaped pathway element with rotation
+	 *         taken into account.
+	 */
+	@Override
+	public Rectangle2D getRotatedBounds() {
+		Rectangle2D bounds = getBounds();
+		AffineTransform t = new AffineTransform();
+		t.rotate(getRotation(), getCenterX(), getCenterY());
+		bounds = t.createTransformedShape(bounds).getBounds2D();
+		return bounds;
+	}
+
+	/**
+	 * Get the rectangular bounds of the object without rotation taken into account.
+	 * 
+	 * @return the rectangular bounds for this shaped pathway element.
+	 */
+	@Override
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(getLeft(), getTop(), getWidth(), getHeight());
+	}
+
+	// starty for shapes
+	public double getTop() {
+		return centerY - height / 2;
+	}
+
+//	public void setTop(double v) {
+//		centerY = v + height / 2;
+//		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+//	}
+
+	// startx for shapes
+	public double getLeft() {
+		return centerX - width / 2;
+	}
+
+//	public void setLeft(double v) {
+//		centerX = v + width / 2;
+//		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+//	}
 
 }

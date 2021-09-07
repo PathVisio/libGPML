@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,6 +171,7 @@ public class Group extends ShapedElement {
 	 * @return textLabel the text of of this group.
 	 * 
 	 */
+	@Override
 	public String getTextLabel() {
 		return textLabel;
 	}
@@ -179,6 +181,7 @@ public class Group extends ShapedElement {
 	 * 
 	 * @param v the text to set.
 	 */
+	@Override
 	public void setTextLabel(String v) {
 		String value = (v == null) ? "" : v;
 		if (!Utils.stringEquals(textLabel, value)) {
@@ -221,6 +224,85 @@ public class Group extends ShapedElement {
 		removeEvidenceRefs();
 		removePathwayElements();
 		unsetPathwayModel();
+	}
+
+	// ================================================================================
+	// Bounds Methods
+	// ================================================================================
+	/**
+	 * Default margins for group bounding-box in GPML2013a. Makes the bounds
+	 * slightly larger than the summed bounds of the containing elements.
+	 */
+	public static final double DEFAULT_M_MARGIN = 8;
+	public static final double COMPLEX_M_MARGIN = 12;
+
+	/**
+	 * Returns margin for group bounding-box around contained elements depending on
+	 * group type, as specified in GPML2013a.
+	 * 
+	 * @param type the type of the group.
+	 * @return
+	 */
+	public static double getMargin(GroupType type) {
+		if (type == GroupType.COMPLEX) {
+			return COMPLEX_M_MARGIN;
+		} else {
+			return DEFAULT_M_MARGIN;
+		}
+	}
+
+	/**
+	 * Iterates over all group elements to find the total rectangular bounds, taking
+	 * into account rotation of the nested elements
+	 * 
+	 * @return the rectangular bounds for this group with rotation taken into
+	 *         account.
+	 */
+	@Override
+	public Rectangle2D getRotatedBounds() {
+		Rectangle2D bounds = null;
+		for (Groupable e : pathwayElements) {
+			if (e == this)
+				continue; // To prevent recursion error
+			if (bounds == null)
+				bounds = e.getRotatedBounds();
+			else
+				bounds.add(e.getRotatedBounds());
+		}
+		if (bounds != null) {
+			double margin = getMargin(type);
+			return new Rectangle2D.Double(bounds.getX() - margin, bounds.getY() - margin,
+					bounds.getWidth() + 2 * margin, bounds.getHeight() + 2 * margin);
+		} else {
+			return new Rectangle2D.Double();
+		}
+	}
+
+	/**
+	 * Iterates over all group elements to find the total rectangular bounds. Note:
+	 * doesn't include rotation of the nested elements. If you want to include
+	 * rotation, use {@link #getRotatedBounds()} instead.
+	 * 
+	 * @return the rectangular bounds for this group.
+	 */
+	@Override
+	public Rectangle2D getBounds() {
+		Rectangle2D bounds = null;
+		for (Groupable e : pathwayElements) {
+			if (e == this)
+				continue; // To prevent recursion error
+			if (bounds == null)
+				bounds = e.getBounds();
+			else
+				bounds.add(e.getBounds());
+		}
+		if (bounds != null) {
+			double margin = getMargin(type);
+			return new Rectangle2D.Double(bounds.getX() - margin, bounds.getY() - margin,
+					bounds.getWidth() + 2 * margin, bounds.getHeight() + 2 * margin);
+		} else {
+			return new Rectangle2D.Double();
+		}
 	}
 
 }

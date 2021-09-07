@@ -17,6 +17,8 @@
 
 package org.pathvisio.model;
 
+import java.awt.geom.Rectangle2D;
+
 /**
  * Interface for classes which can belong in a {@link Group}. These classes
  * include {@link DataNode}, {@link GraphicalLine}, {@link Label},
@@ -66,4 +68,14 @@ public interface Groupable {
 	 * Terminates the pathway element.
 	 */
 	public void terminate();
+
+	/**
+	 * Returns the rectangular bounds of the object after rotation is applied.
+	 */
+	public Rectangle2D getRotatedBounds();
+
+	/**
+	 * Get the rectangular bounds of the object without rotation taken into account.
+	 */
+	public Rectangle2D getBounds();
 }

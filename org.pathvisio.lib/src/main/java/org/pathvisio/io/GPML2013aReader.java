@@ -65,7 +65,6 @@ import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.model.type.VAlignType;
-import org.pathvisio.util.BoundsUtils;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -163,7 +162,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void calculateGroupRectProperty(List<Group> groups) {
 		for (Group group : groups) {
-			Rectangle2D bounds = BoundsUtils.calculateGroupBounds(group);
+			Rectangle2D bounds = group.getRotatedBounds(); //TODO 
 			group.setCenterX(bounds.getCenterX());
 			group.setCenterY(bounds.getCenterY());
 			group.setWidth(bounds.getWidth());

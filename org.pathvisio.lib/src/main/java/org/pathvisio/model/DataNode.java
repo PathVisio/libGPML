@@ -63,6 +63,7 @@ public class DataNode extends ShapedElement {
 		this.states = new ArrayList<State>();
 		this.xref = xref;
 		setAliasRefTo(aliasRef);
+		System.out.println("Constructor1");
 	}
 
 	/**
@@ -70,6 +71,8 @@ public class DataNode extends ShapedElement {
 	 */
 	public DataNode(String textLabel, DataNodeType type, Group aliasRef) {
 		this(textLabel, type, null, aliasRef);
+		System.out.println("Constructor2");
+
 	}
 
 	/**
@@ -77,6 +80,7 @@ public class DataNode extends ShapedElement {
 	 */
 	public DataNode(String textLabel, DataNodeType type, Xref xref) {
 		this(textLabel, type, xref, null);
+		System.out.println("Constructor3");
 	}
 
 	/**
@@ -85,6 +89,8 @@ public class DataNode extends ShapedElement {
 	 */
 	public DataNode(String textLabel, DataNodeType type) {
 		this(textLabel, type, null, null);
+		System.out.println("Constructor4");
+
 	}
 
 	// ================================================================================
