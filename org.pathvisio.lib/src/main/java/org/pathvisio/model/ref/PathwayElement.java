@@ -47,6 +47,9 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	private List<CitationRef> citationRefs;
 	private List<EvidenceRef> evidenceRefs;
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a pathway element with meta data information.
 	 */
@@ -58,6 +61,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		this.citationRefs = new ArrayList<CitationRef>(); // 0 to unbounded
 		this.evidenceRefs = new ArrayList<EvidenceRef>(); // 0 to unbounded
 	}
+
+	// ================================================================================
+	// Comment and DynamicProperty Methods
+	// ================================================================================
 
 	/*
 	 * Returns the list of comments.
@@ -152,6 +159,9 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 
 	}
 
+	// ================================================================================
+	// AnnotationRef, CitationRef and EvidenceRef Methods
+	// ================================================================================
 	/**
 	 * Returns the list of annotation references.
 	 * 
@@ -355,6 +365,9 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		unsetPathwayModel();
 	}
 
+	// ================================================================================
+	// Comment Class
+	// ================================================================================
 	/**
 	 * This class stores all information relevant to a Comment. Comments can be
 	 * descriptions or arbitrary notes. Each comment has a source and a text.
@@ -419,7 +432,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		public String getSource() {
 			return source;
-			
+
 		}
 
 		/**

@@ -29,6 +29,9 @@ public class Interaction extends LineElement {
 
 	private Xref xref; // optional
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates an Interaction pathway element given all possible parameters.
 	 * 
@@ -46,7 +49,10 @@ public class Interaction extends LineElement {
 	public Interaction() {
 		this(null);
 	}
-
+	
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the Xref for this interaction.
 	 * 

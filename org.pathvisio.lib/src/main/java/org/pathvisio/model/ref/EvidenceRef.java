@@ -27,6 +27,9 @@ public class EvidenceRef {
 	private Evidence evidence; // source evidence, elementRef in GPML
 	private Evidenceable evidenceable; // target pathway, pathway element, or evidenceRef
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates an EvidenceRef given source {@link Evidence} and initializes
 	 * evidenceRefs lists.
@@ -37,6 +40,9 @@ public class EvidenceRef {
 		this.setEvidenceTo(evidence);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the evidence referenced.
 	 * 

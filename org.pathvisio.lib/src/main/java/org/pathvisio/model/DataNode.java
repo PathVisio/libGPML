@@ -42,6 +42,9 @@ public class DataNode extends ShapedElement {
 	private Xref xref; // optional
 	private Group aliasRef; // optional, the pathway element to which this data node refers to as an alias.
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * 
 	 * Instantiates a Data Node pathway element given all possible parameters. The
@@ -84,6 +87,9 @@ public class DataNode extends ShapedElement {
 		this(textLabel, type, null, null);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the text of this datanode.
 	 * 
@@ -150,6 +156,9 @@ public class DataNode extends ShapedElement {
 		}
 	}
 
+	// ================================================================================
+	// State Methods
+	// ================================================================================
 	/*
 	 * Returns the list of states of this data node.
 	 * 
@@ -255,6 +264,9 @@ public class DataNode extends ShapedElement {
 		}
 	}
 
+	// ================================================================================
+	// AliasRef Methods
+	// ================================================================================
 	/**
 	 * Returns the pathway element to which the data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of a pathway element
@@ -311,12 +323,16 @@ public class DataNode extends ShapedElement {
 		}
 	}
 
+	// ================================================================================
+	// Inherited Methods
+	// ================================================================================
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
 	 * model adds this pathway element. This method is not used directly.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
+	@Override
 	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		if (pathwayModel == null)
 			throw new IllegalArgumentException("Invalid pathway model.");
@@ -333,6 +349,7 @@ public class DataNode extends ShapedElement {
 	 * element no longer belongs to a pathway model. NB: This method is not used
 	 * directly.
 	 */
+	@Override 
 	protected void unsetPathwayModel() {
 		if (hasPathwayModel()) {
 			setPathwayModel(null);
@@ -356,12 +373,15 @@ public class DataNode extends ShapedElement {
 		unsetPathwayModel();
 	}
 
+	// ================================================================================
+	// State Class
+	// ================================================================================
 	/**
 	 * This class stores all information relevant to a State pathway element.
 	 * 
 	 * @author finterly
 	 */
-	public class State extends ShapedElement implements LinkableTo {
+	public class State extends ShapedElement {
 
 		private String textLabel;
 		private StateType type;
@@ -369,6 +389,9 @@ public class DataNode extends ShapedElement {
 		private double relY;
 		private Xref xref; // optional
 
+		// ================================================================================
+		// Constructors
+		// ================================================================================
 		/**
 		 * Instantiates a State pathway element given all possible parameters.
 		 * 
@@ -399,6 +422,9 @@ public class DataNode extends ShapedElement {
 			this(textLabel, type, relX, relY, null);
 		}
 
+		// ================================================================================
+		// Accessors
+		// ================================================================================
 		/**
 		 * Returns the parent data node to which the state belongs.
 		 * 

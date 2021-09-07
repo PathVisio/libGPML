@@ -52,6 +52,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	private ConnectorType connectorType = ConnectorType.STRAIGHT; // straight, elbow, curved...
 	private int zOrder; // optional
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a line pathway element. Property groupRef is to be set by
 	 * {@link #setGroupRefTo(Group)}. In GPML, groupRef refers to the elementId
@@ -66,6 +69,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		this.anchors = new ArrayList<Anchor>();
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
@@ -132,6 +138,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		}
 	}
 
+	// ================================================================================
+	// LinePoint Methods
+	// ================================================================================
 	/**
 	 * Get the points for this line.
 	 * 
@@ -285,6 +294,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		getEndLinePoint().moveTo(linePoint);
 	}
 
+	// ================================================================================
+	// Anchor Methods
+	// ================================================================================
 	/**
 	 * Get the anchors for this line.
 	 * 
@@ -370,6 +382,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		}
 	}
 
+	// ================================================================================
+	// Line Style Graphics Properties
+	// ================================================================================
 	/**
 	 * Returns the color of a line.
 	 * 
@@ -511,12 +526,16 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		}
 	}
 
+	// ================================================================================
+	// Inherited Methods
+	// ================================================================================
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
 	 * model adds this pathway element. This method is not used directly.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
+	@Override
 	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		if (pathwayModel == null)
 			throw new IllegalArgumentException("Invalid pathway model.");
@@ -535,6 +554,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	 * element no longer belongs to a pathway model. NB: This method is not used
 	 * directly.
 	 */
+	@Override
 	protected void unsetPathwayModel() {
 		if (hasPathwayModel()) {
 			setPathwayModel(null);
@@ -561,6 +581,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		unsetPathwayModel();
 	}
 
+	// ================================================================================
+	// GenericPoint Class
+	// ================================================================================
 	/**
 	 * Abstract class of generic point, extended by {@link LinePoint} and
 	 * {@link Anchor}.
@@ -597,6 +620,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 
 	}
 
+	// ================================================================================
+	// LinePoint Class
+	// ================================================================================
 	/**
 	 * This class stores information for a Point pathway element. This class is
 	 * named LinePoint to avoid name conflict with awt.Point in downstream
@@ -908,6 +934,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 
 	}
 
+	// ================================================================================
+	// Anchor Class
+	// ================================================================================
 	/**
 	 * This class stores information for an Anchor pathway element. Anchor element
 	 * is a connection point on a graphical line or an interaction.

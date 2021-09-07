@@ -77,6 +77,9 @@ public class PathwayModel {
 	private List<Citation> citations;
 	private List<Evidence> evidences;
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Initializes a pathway model object with {@link Pathway} information.
 	 * 
@@ -106,6 +109,9 @@ public class PathwayModel {
 		this(new Pathway.PathwayBuilder("Click to add title", 0, 0, Color.decode("#ffffff")).build());
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the pathway object containing metadata, e.g. title, organism...
 	 * 
@@ -126,6 +132,9 @@ public class PathwayModel {
 		}
 	}
 
+	// ================================================================================
+	// ElementIdToPathwayObject Map Methods
+	// ================================================================================
 	/**
 	 * Returns a unique elementId.
 	 * 
@@ -232,6 +241,9 @@ public class PathwayModel {
 		return result;
 	}
 
+	// ================================================================================
+	// ElementRefToLinePoints Map Methods
+	// ================================================================================
 	/**
 	 * Returns all {@link LinkableFrom} {@link LineElement.LinePoints} that refer to
 	 * a {@link LinkableTo} pathway element.
@@ -269,7 +281,10 @@ public class PathwayModel {
 		if (elementRefToLinePoints.get(elementRef).size() == 0)
 			elementRefToLinePoints.remove(elementRef);
 	}
-//
+
+	// ================================================================================
+	// AliasRefToAliases Map Methods
+	// ================================================================================
 //	/**
 //	 * Returns the Group to which a data node refers to. For example, when a
 //	 * DataNode has type="alias" it may be an alias for a Group pathway element. To
@@ -347,6 +362,9 @@ public class PathwayModel {
 		aliasRefToAliases.remove(aliasRef);
 	}
 
+	// ================================================================================
+	// PathwayElement List Methods
+	// ================================================================================
 	/**
 	 * Returns the list of data node pathway elements.
 	 * 
@@ -534,6 +552,9 @@ public class PathwayModel {
 		removePathwayObject(group);
 	}
 
+	// ================================================================================
+	// PathwayObject List Methods
+	// ================================================================================
 	/**
 	 * Returns the list of annotations.
 	 * 
@@ -714,6 +735,9 @@ public class PathwayModel {
 		removePathwayObject(evidence);
 	}
 
+	// ================================================================================
+	// General PathwayObject Methods
+	// ================================================================================
 	/**
 	 * Adds the given pathway object to pathway model. Sets pathwayModel for the
 	 * given pathway object. Sets an unique elementId for given pathway object if
@@ -799,6 +823,9 @@ public class PathwayModel {
 
 	}
 
+	// ================================================================================
+	// Xref Methods
+	// ================================================================================
 	/**
 	 * Returns the Xref of all DataNodes in this pathway as a List.
 	 * 
@@ -864,6 +891,9 @@ public class PathwayModel {
 		return result;
 	}
 
+	// ================================================================================
+	// Read Write Methods
+	// ================================================================================
 	private File sourceFile = null;
 
 	/**
@@ -926,10 +956,9 @@ public class PathwayModel {
 //	}
 //
 
-	/**
-	 * Listener methods
-	 * 
-	 */
+	// ================================================================================
+	// FireEvent and Listener Methods
+	// ================================================================================
 	private boolean changed = true;
 
 	/**
@@ -972,7 +1001,7 @@ public class PathwayModel {
 	void childModified(PathwayElementEvent e) {
 		markChanged();
 		if (e.isCoordinateChange()) {
-			//TODO
+			// TODO
 			PathwayObject elt = e.getModifiedPathwayElement();
 			if (elt instanceof LinkableTo) {
 				for (LinkableFrom refc : getReferringLinkableFroms((LinkableTo) elt)) {

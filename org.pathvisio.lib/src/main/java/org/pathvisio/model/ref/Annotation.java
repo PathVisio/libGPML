@@ -40,6 +40,9 @@ public class Annotation extends PathwayObject {
 	private String urlLink; // optional
 	private List<AnnotationRef> annotationRefs; // annotationRefs with this annotation as source
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.
@@ -79,6 +82,9 @@ public class Annotation extends PathwayObject {
 		this(value, type, null, null);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the name, term, or text of this annotation.
 	 * 

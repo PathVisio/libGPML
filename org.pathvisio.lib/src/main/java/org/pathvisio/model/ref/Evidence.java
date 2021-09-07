@@ -39,6 +39,9 @@ public class Evidence extends PathwayObject {
 	/** evidenceRefs with this evidence as source */
 	private List<EvidenceRef> evidenceRefs;
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates an Evidence pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, xref, and url.
@@ -79,6 +82,9 @@ public class Evidence extends PathwayObject {
 		this(null, xref, null);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the name, term, or text of this evidence.
 	 * 

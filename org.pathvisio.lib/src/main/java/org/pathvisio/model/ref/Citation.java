@@ -44,6 +44,9 @@ public class Citation extends PathwayObject {
 	/** citationRefs with this citation as source */
 	private List<CitationRef> citationRefs;
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a Citation pathway element given all possible parameters.
 	 * 
@@ -73,6 +76,9 @@ public class Citation extends PathwayObject {
 		this(xref, null);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns this Citation Xref.
 	 * 

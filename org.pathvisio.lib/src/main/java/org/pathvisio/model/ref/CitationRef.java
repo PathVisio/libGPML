@@ -34,6 +34,9 @@ public class CitationRef implements Annotatable {
 	private Citable citable; // target pathway, pathway element, or annotationRef
 	private List<AnnotationRef> annotationRefs; // 0 to unbounded
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates an CitationRef given source {@link Citation} and initializes
 	 * annotationRefs lists.
@@ -45,6 +48,9 @@ public class CitationRef implements Annotatable {
 		this.annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the citation referenced.
 	 * 
@@ -157,6 +163,9 @@ public class CitationRef implements Annotatable {
 		}
 	}
 
+	// ================================================================================
+	// AnnotationRef Methods
+	// ================================================================================
 	/**
 	 * Returns the list of annotation references.
 	 * 

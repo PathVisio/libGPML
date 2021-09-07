@@ -36,6 +36,9 @@ public class AnnotationRef implements Citable, Evidenceable {
 	private List<CitationRef> citationRefs; // 0 to unbounded
 	private List<EvidenceRef> evidenceRefs; // 0 to unbounded
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates an AnnotationRef given source {@link Annotation} and initializes
 	 * citationRefs and evidenceRefs lists.
@@ -48,6 +51,9 @@ public class AnnotationRef implements Citable, Evidenceable {
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the annotation referenced.
 	 * 
@@ -163,6 +169,9 @@ public class AnnotationRef implements Citable, Evidenceable {
 		}
 	}
 
+	// ================================================================================
+	// CitationRef Methods
+	// ================================================================================
 	/**
 	 * Returns the list of citation references.
 	 * 
@@ -223,6 +232,9 @@ public class AnnotationRef implements Citable, Evidenceable {
 		}
 	}
 
+	// ================================================================================
+	// EvidenceRef Methods
+	// ================================================================================
 	/**
 	 * Returns the list of evidence references.
 	 * 

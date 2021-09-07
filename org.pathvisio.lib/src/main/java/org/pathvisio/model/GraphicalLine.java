@@ -23,6 +23,9 @@ package org.pathvisio.model;
  */
 public class GraphicalLine extends LineElement {
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a GraphicalLine pathway element given all possible parameters.
 	 */

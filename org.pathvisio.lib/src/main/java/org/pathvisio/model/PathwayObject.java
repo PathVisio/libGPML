@@ -38,6 +38,9 @@ public abstract class PathwayObject {
 	private PathwayModel pathwayModel;
 	private String elementId;
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a pathway element. Parent pathway model and elementId are set
 	 * through {@link PathwayModel} add pathway element methods. elementId.
@@ -45,6 +48,9 @@ public abstract class PathwayObject {
 	public PathwayObject() {
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the pathway model for this pathway element.
 	 * 
@@ -114,7 +120,8 @@ public abstract class PathwayObject {
 	 */
 	public void setElementId(String v) {
 		elementId = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayObject.this, StaticProperty.ELEMENTID));
+		fireObjectModifiedEvent(
+				PathwayElementEvent.createSinglePropertyEvent(PathwayObject.this, StaticProperty.ELEMENTID));
 	}
 
 	/**
@@ -135,9 +142,9 @@ public abstract class PathwayObject {
 		this.elementId = null;
 	}
 
-	/**
-	 * Fire and Listener methods below TODO
-	 */
+	// ================================================================================
+	// FireEvent and Listener Methods
+	// ================================================================================
 	int noFire = 0;
 
 	/**

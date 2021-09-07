@@ -59,6 +59,9 @@ public class Pathway extends PathwayElement {
 	private String license;
 	private Xref xref;
 
+	// ================================================================================
+	// PathwayBuilder and Constructors
+	// ================================================================================
 	/**
 	 * This builder class builds an Pathway object step-by-step.
 	 * 
@@ -198,6 +201,9 @@ public class Pathway extends PathwayElement {
 		this.xref = builder.xref;
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the title or name of this pathway.
 	 * 
@@ -274,12 +280,12 @@ public class Pathway extends PathwayElement {
 	 * 
 	 * @param elm The element to check the board size for
 	 */
-	public void checkMBoardSize(PathwayElement e) { //TODO was protected 
+	public void checkMBoardSize(PathwayElement e) { // TODO was protected
 		final int BORDER_SIZE = 30;
 		double mw = boardWidth;
 		double mh = boardHeight;
 
-		if (e instanceof LineElement) { //TODO 
+		if (e instanceof LineElement) { // TODO
 //			mw = Math.max(mw, BORDER_SIZE + Math.max(e.getMStartX(), e.getMEndX()));
 //			mh = Math.max(mh, BORDER_SIZE + Math.max(e.getMStartY(), e.getMEndY()));
 		} else {
@@ -474,9 +480,9 @@ public class Pathway extends PathwayElement {
 
 	// TODO....
 
-	/**
-	 * Fire and Listener methods below TODO
-	 */
+	// ================================================================================
+	// FireEvent and Listener Methods
+	// ================================================================================
 	int noFire = 0;
 
 	public void dontFireEvents(int times) {
@@ -516,6 +522,9 @@ public class Pathway extends PathwayElement {
 		// Is pathway allowed to be terminated?
 	}
 
+	// ================================================================================
+	// Author Class
+	// ================================================================================
 	/**
 	 * This class stores information for an Author. An Author must have name and
 	 * optionally username, order, and Xref.

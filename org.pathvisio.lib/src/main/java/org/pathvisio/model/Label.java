@@ -30,6 +30,9 @@ public class Label extends ShapedElement {
 	private String textLabel;
 	private String href; // optional
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a Label pathway element given all possible parameters.
 	 * 
@@ -48,7 +51,10 @@ public class Label extends ShapedElement {
 	public Label(String textLabel) {
 		this(textLabel, null);
 	}
-
+	
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the text of of the label.
 	 * 

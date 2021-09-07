@@ -25,7 +25,7 @@ import org.pathvisio.model.PathwayObject;
 /**
  * Static properties for ObjectTypes, linked in {@link PathwayObject}.
  * 
- * // TODO Can Tag and name just be the same??? // TODO FIX NUMBERS
+ * // TODO Tag name must be unique...Does it matter what numbers? 
  * 
  * @author unknown, finterly
  */
@@ -145,6 +145,10 @@ public enum StaticProperty implements Property {
 	private boolean hidden;
 	private int order;
 
+	
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	private StaticProperty(String aTag, String aName, StaticPropertyType aType, int anOrder, boolean aIsCoordinate,
 			boolean aIsAdvanced, boolean isHidden) {
 		tag = aTag;
@@ -161,6 +165,9 @@ public enum StaticProperty implements Property {
 		this(aTag, aDesc, aType, anOrder, false, false, false);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * @return Name of GPML attribute related to this property.
 	 */
@@ -216,7 +223,9 @@ public enum StaticProperty implements Property {
 		return result;
 	}
 
-	// -- Property methods --//
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
 
 	public String getId() {
 		return "core." + tag;

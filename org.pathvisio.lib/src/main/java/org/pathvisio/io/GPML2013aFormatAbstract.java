@@ -34,6 +34,8 @@ import javax.xml.validation.ValidatorHandler;
 
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+import org.bridgedb.DataSource;
+import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -42,19 +44,18 @@ import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
+import org.pathvisio.model.DataNode;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.ref.Annotation;
+import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.ArrowHeadType;
+import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.ref.Annotation;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.MiscUtils;
 import org.xml.sax.SAXException;
-import org.bridgedb.DataSource;
-import org.bridgedb.Xref;
 
 /**
  * Abstract class for GPML2013a format. Contains static properties
@@ -97,6 +98,9 @@ public abstract class GPML2013aFormatAbstract {
 		return nsGPML;
 	}
 
+	// ================================================================================
+	// Static Variables
+	// ================================================================================
 	/**
 	 * In GPML2013a, specific {@link Namespace} are defined for Biopax elements.
 	 */

@@ -38,6 +38,9 @@ public class Group extends ShapedElement {
 	/* list of pathway elements which belong to the group. */
 	private List<Groupable> pathwayElements; // should have at least one pathway element
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a Group given all possible parameters.
 	 * 
@@ -74,6 +77,9 @@ public class Group extends ShapedElement {
 		this(type, null, null);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns the list of pathway element members of the group.
 	 * 

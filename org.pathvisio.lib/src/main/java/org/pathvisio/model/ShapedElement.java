@@ -64,6 +64,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	private int zOrder; // optional
 	private double rotation = 0; // optional, in radians
 
+	
+	// ================================================================================
+	// Constructors
+	// ================================================================================
 	/**
 	 * Instantiates a shaped pathway element. Property groupRef is to be set by
 	 * {@link #setGroupRefTo(Group)}. In GPML, groupRef refers to the elementId
@@ -75,6 +79,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		super();
 	}
 
+	
+	// ================================================================================
+	// Accessors
+	// ================================================================================
 	/**
 	 * Returns text label for shaped pathway elements. Text labels are required for
 	 * {@link DataNode}, {@link DataNode.State} and {@link Label}; and optional for
@@ -157,6 +165,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 	}
 
+	// ================================================================================
+	// Rect Graphics Properties
+	// ================================================================================
 	/**
 	 * Returns the center x coordinate for this shaped pathway element.
 	 * 
@@ -247,6 +258,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 	}
 
+	// ================================================================================
+	// Font Graphics Properties
+	// ================================================================================
 	/**
 	 * Returns the color of text for this shaped pathway element..
 	 * 
@@ -483,6 +497,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 	}
 
+	// ================================================================================
+	// Shape Style Graphics Properties
+	// ================================================================================
 	/**
 	 * Returns the border color of this shaped pathway element.
 	 * 
@@ -676,15 +693,20 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
-
+	
+	// ================================================================================
+	// Other Methods 
+	// ================================================================================
 	/**
 	 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
-	 * for {@link LineElement.LinePoint}, for this {@link LinkableTo} pathway element.
+	 * for {@link LineElement.LinePoint}, for this {@link LinkableTo} pathway
+	 * element.
 	 */
 	@Override
 	public Set<LinkableFrom> getLinkableFroms() {
 		return GraphLink.getReferences(this, getPathwayModel());
 	}
+
 
 	/**
 	 * Terminates this pathway element. The pathway model, if any, is unset from
