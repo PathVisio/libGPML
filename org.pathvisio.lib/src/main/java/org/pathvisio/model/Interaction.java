@@ -74,5 +74,33 @@ public class Interaction extends LineElement {
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
+	
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(Interaction src) { //TODO
+		super.copyValuesFrom(src);
+		xref = src.xref;
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public Interaction copy() {
+		Interaction result = new Interaction(); //TODO 
+		result.copyValuesFrom(this);
+		return result;
+	}
 
 }

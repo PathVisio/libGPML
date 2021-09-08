@@ -523,6 +523,46 @@ public class Pathway extends PathwayElement {
 	}
 
 	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(Pathway src) {
+		super.copyValuesFrom(src);
+		title = src.title;
+		boardWidth = src.boardWidth;
+		boardHeight = src.boardHeight;
+		backgroundColor = src.backgroundColor;
+		authors = new ArrayList<Author>();
+		for (Author a : src.authors) {
+			addAuthor(a);
+		} // TODO
+		organism = src.organism;
+		source = src.source;
+		version = src.version;
+		license = src.license;
+		xref = src.xref;
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public Pathway copy() {
+		Pathway result = new Pathway(null); // TODO
+		result.copyValuesFrom(this);
+		return result;
+	}
+
+	// ================================================================================
 	// Author Class
 	// ================================================================================
 	/**

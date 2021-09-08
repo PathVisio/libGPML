@@ -239,6 +239,9 @@ public class Annotation extends PathwayObject {
 		unsetPathwayModel();
 	}
 
+	// ================================================================================
+	// Equals Methods
+	// ================================================================================
 	/**
 	 * Checks all properties of given annotations to determine whether they are
 	 * equal.
@@ -272,6 +275,41 @@ public class Annotation extends PathwayObject {
 		if (!Objects.equals(annotationRefs, annotation.getAnnotationRefs()))
 			return false;
 		return true;
+	}
+	
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(Annotation src) { //TODO
+//		super.copyValuesFrom(src);
+		value = src.value;
+		type = src.type;
+		xref = src.xref;
+		urlLink = src.urlLink;
+		annotationRefs = new ArrayList<AnnotationRef>();
+		for (AnnotationRef a : src.annotationRefs) { // TODO????
+			addAnnotationRef(a);
+		}
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public Annotation copy() {
+		Annotation result = new Annotation(value, type); //TODO 
+		result.copyValuesFrom(this);
+		return result;
 	}
 
 }

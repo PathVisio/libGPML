@@ -218,6 +218,9 @@ public class Evidence extends PathwayObject {
 		unsetPathwayModel();
 	}
 
+	// ================================================================================
+	// Equals Methods
+	// ================================================================================
 	/**
 	 * Checks all properties of given evidences to determine whether they are equal.
 	 * 
@@ -248,6 +251,40 @@ public class Evidence extends PathwayObject {
 		if (!Objects.equals(evidenceRefs, evidence.getEvidenceRefs()))
 			return false;
 		return true;
+	}
+	
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(Evidence src) { // TODO
+//		super.copyValuesFrom(src);
+		value = src.value;
+		xref = src.xref;
+		urlLink = src.urlLink;
+		evidenceRefs = new ArrayList<EvidenceRef>();
+		for (EvidenceRef e : src.evidenceRefs) { // TODO????
+			addEvidenceRef(e);
+		}
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public Evidence copy() {
+		Evidence result = new Evidence(xref); //TODO 
+		result.copyValuesFrom(this);
+		return result;
 	}
 
 }

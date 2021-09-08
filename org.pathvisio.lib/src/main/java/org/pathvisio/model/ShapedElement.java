@@ -725,7 +725,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// Bounds Methods
 	// ================================================================================
 	/**
-	 * Returns the rectangular bounds of the object after rotation is applied.
+	 * Returns the rectangular bounds of this shaped pathway element after rotation
+	 * is applied.
 	 * 
 	 * @return the rectangular bounds for this shaped pathway element with rotation
 	 *         taken into account.
@@ -740,7 +741,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	}
 
 	/**
-	 * Get the rectangular bounds of the object without rotation taken into account.
+	 * Returns the rectangular bounds of this shaped pathway element without
+	 * rotation taken into account.
 	 * 
 	 * @return the rectangular bounds for this shaped pathway element.
 	 */
@@ -749,24 +751,85 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		return new Rectangle2D.Double(getLeft(), getTop(), getWidth(), getHeight());
 	}
 
-	// starty for shapes
-	public double getTop() {
-		return centerY - height / 2;
-	}
-
-//	public void setTop(double v) {
-//		centerY = v + height / 2;
-//		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
-//	}
-
-	// startx for shapes
+	/**
+	 * Returns the left x coordinate of the bounding box around (start, end) this
+	 * shaped pathway element.
+	 */
 	public double getLeft() {
 		return centerX - width / 2;
 	}
 
-//	public void setLeft(double v) {
-//		centerX = v + width / 2;
-//		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
-//	}
+	/**
+	 * Sets the center x coordinate given the left x coordinate of the bounding box
+	 * around (start, end) this shaped pathway element.
+	 * 
+	 * @param v the left coordinate.
+	 */
+	public void setLeft(double v) {
+		centerX = v + width / 2;
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+	}
+
+	/**
+	 * Returns the top y coordinate of the bounding box around (start, end) this
+	 * shaped pathway element.
+	 */
+	public double getTop() {
+		return centerY - height / 2;
+	}
+
+	/**
+	 * Sets the center y coordinate given the top y coordinate of the bounding box
+	 * around (start, end) this shaped pathway element.
+	 * 
+	 * @param v the y top coordinate.
+	 */
+	public void setTop(double v) {
+		centerY = v + height / 2;
+		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+	}
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(ShapedElement src) {
+		super.copyValuesFrom(src); 
+		groupRef = src.groupRef;
+		centerX = src.centerX;
+		centerY = src.centerY;
+		width = src.width;
+		height = src.height;
+		textColor = src.textColor;
+		fontName = src.fontName;
+		fontWeight = src.fontWeight;
+		fontStyle = src.fontStyle;
+		fontDecoration = src.fontDecoration;
+		fontStrikethru = src.fontStrikethru;
+		fontSize = src.fontSize;
+		hAlign = src.hAlign;
+		vAlign = src.vAlign;
+		borderColor = src.borderColor;
+		borderStyle = src.borderStyle;
+		borderWidth = src.borderWidth;
+		fillColor = src.fillColor;
+		shapeType = src.shapeType;
+		zOrder = src.zOrder;
+		rotation = src.rotation;
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public abstract ShapedElement copy();
 
 }

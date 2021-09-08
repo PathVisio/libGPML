@@ -186,4 +186,24 @@ public abstract class PathwayObject {
 		}
 	}
 
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+//	/**
+//	 * Note: doesn't change parent, only fields TODO 
+//	 *
+//	 * Used by UndoAction.
+//	 *
+//	 * @param src the source pathway object 
+//	 */
+//	public abstract void copyValuesFrom(PathwayObject src);
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public abstract PathwayObject copy();
+
 }

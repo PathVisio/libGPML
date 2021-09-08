@@ -773,6 +773,43 @@ public class PathwayModel {
 		removeElementId(pathwayObject.getElementId());
 		pathwayObject.terminate(); // TODO
 	}
+	
+	/**
+	 * TODO 
+	 * 
+	 * Add a PathwayElement to this Pathway.
+	 * takes care of setting parent and removing from possible previous
+	 * parent.
+	 *
+	 * fires PathwayEvent.ADDED event <i>after</i> addition of the object
+	 *
+	 * @param o The object to add
+	 */
+	public void add(PathwayObject pathwayObject) {
+		assert (pathwayObject.getPathwayModel() == this); // can only remove direct child objects
+		if (pathwayObject.getClass() == DataNode.class) {
+			addDataNode((DataNode) pathwayObject);
+		}
+		if (pathwayObject.getClass() == Interaction.class) {
+			addInteraction((Interaction) pathwayObject);
+		}
+		if (pathwayObject.getClass() == GraphicalLine.class) {
+			addGraphicalLine((GraphicalLine) pathwayObject);
+		}
+		if (pathwayObject.getClass() == Label.class) {
+			addLabel((Label) pathwayObject);
+		}
+		if (pathwayObject.getClass() == Shape.class) {
+			addShape((Shape) pathwayObject);
+		}
+		if (pathwayObject.getClass() == Group.class) {
+			addGroup((Group) pathwayObject);
+		}
+		// Citation...Anchor..Annotation...?????
+		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED)); // TODO
+
+	}
+
 
 	/**
 	 * TODO
@@ -888,6 +925,25 @@ public class PathwayModel {
 				result.add(groupXref);
 			}
 		}
+		return result;
+	}
+
+	// ================================================================================
+	// Clone Methods
+	// ================================================================================
+	public PathwayModel clone() {
+		PathwayModel result = new PathwayModel(null); // TODO
+		for (PathwayObject pe : getPathwayObjects()) {
+			result.add(pe.copy()); //TODO 
+		}
+		result.changed = changed;
+		if (sourceFile != null) {
+			result.sourceFile = new File(sourceFile.getAbsolutePath());
+		}
+		// do not copy status flag listeners
+//		for(StatusFlagListener l : statusFlagListeners) {
+//			result.addStatusFlagListener(l);
+//		}
 		return result;
 	}
 

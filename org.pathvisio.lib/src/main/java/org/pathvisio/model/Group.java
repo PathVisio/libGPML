@@ -304,5 +304,36 @@ public class Group extends ShapedElement {
 			return new Rectangle2D.Double();
 		}
 	}
+	
+	
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(Group src) { //TODO
+		super.copyValuesFrom(src);
+		textLabel = src.textLabel;
+		type = src.type;
+		xref = src.xref;
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public Group copy() {
+		Group result = new Group(type); //TODO 
+		result.copyValuesFrom(this);
+		return result;
+	}
 
 }

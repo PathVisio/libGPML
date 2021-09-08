@@ -355,7 +355,7 @@ public class DataNode extends ShapedElement {
 	 * element no longer belongs to a pathway model. NB: This method is not used
 	 * directly.
 	 */
-	@Override 
+	@Override
 	protected void unsetPathwayModel() {
 		if (hasPathwayModel()) {
 			setPathwayModel(null);
@@ -377,6 +377,41 @@ public class DataNode extends ShapedElement {
 		removeEvidenceRefs();
 		unsetGroupRef();
 		unsetPathwayModel();
+	}
+
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(DataNode src) {
+		super.copyValuesFrom(src);
+		textLabel = src.textLabel;
+		type = src.type;
+		states = new ArrayList<State>();
+		for (State s : src.states) { // TODO????
+			addState(s); //TODO 
+		}
+		xref = src.xref;
+		aliasRef = src.aliasRef;
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public DataNode copy() {
+		DataNode result = new DataNode(textLabel, type);
+		result.copyValuesFrom(this);
+		return result;
 	}
 
 	// ================================================================================
@@ -586,6 +621,38 @@ public class DataNode extends ShapedElement {
 		@Override
 		public Set<LinkableFrom> getLinkableFroms() {
 			return GraphLink.getReferences(this, getPathwayModel());
+		}
+		
+		// ================================================================================
+		// Copy Methods
+		// ================================================================================
+		/**
+		 * Note: doesn't change parent, only fields
+		 *
+		 * Used by UndoAction.
+		 *
+		 * @param src
+		 */
+		public void copyValuesFrom(State src) { //TODO
+			super.copyValuesFrom(src);
+			textLabel = src.textLabel;
+			type = src.type;
+			relX = src.relX;
+			relY = src.relY;
+			xref = src.xref;
+			fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		}
+
+		/**
+		 * Copy Object. The object will not be part of the same Pathway object, it's
+		 * parent will be set to null.
+		 *
+		 * No events will be sent to the parent of the original.
+		 */
+		public State copy() {
+			State result = new State(textLabel, type, relX, relX); //TODO 
+			result.copyValuesFrom(this);
+			return result;
 		}
 
 	}

@@ -586,8 +586,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	// Bounds Methods
 	// ================================================================================
 	/**
-	 * Returns the rectangular bounds of the given line pathway elements. This
-	 * method simply calls {@link #getBounds()} because lines do not have property
+	 * Returns the rectangular bounds of this line pathway elements. This method
+	 * simply calls {@link #getBounds()} because lines do not have property
 	 * rotation.
 	 * 
 	 * @return the rectangular bounds for this line pathway element.
@@ -598,8 +598,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Calculates and returns the rectangular bounds for given line pathway element.
-	 * The bounds for a line is calculated from its ends points (first and last).
+	 * Returns the rectangular bounds for this line pathway element. The bounds for
+	 * a line is calculated from its ends points (first and last).
 	 * 
 	 * @return the rectangular bounds for this line pathway element.
 	 */
@@ -609,7 +609,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Returns the left x coordinate of the bounding box around (start, end) the
+	 * Returns the left x coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
 	public double getLeft() {
@@ -619,8 +619,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Returns the top y coordinate of the bounding box around (start, end) the line
-	 * pathway element.
+	 * Returns the top y coordinate of the bounding box around (start, end) this
+	 * line pathway element.
 	 */
 	public double getTop() {
 		double start = getStartLinePoint().getY();
@@ -629,7 +629,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Returns the width of the bounding box around (start, end) the line pathway
+	 * Returns the width of the bounding box around (start, end) this line pathway
 	 * element.
 	 */
 	public double getWidth() {
@@ -639,7 +639,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Returns the height of the bounding box around (start, end) the line pathway
+	 * Returns the height of the bounding box around (start, end) this line pathway
 	 * element.
 	 */
 	public double getHeight() {
@@ -649,7 +649,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Returns the center x coordinate of the bounding box around (start, end) the
+	 * Returns the center x coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
 	public double getCenterX() {
@@ -659,7 +659,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Returns the center y coordinate of the bounding box around (start, end) the
+	 * Returns the center y coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
 	public double getCenterY() {
@@ -697,6 +697,42 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		return rect;
 	}
 
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(LineElement src) { // TODO
+		super.copyValuesFrom(src);
+		groupRef = src.groupRef;
+		linePoints = new ArrayList<LinePoint>();
+		for (LinePoint p : src.linePoints) {
+			linePoints.add(p);
+		}
+		anchors = new ArrayList<Anchor>();
+		for (Anchor a : src.anchors) {
+			anchors.add(a);
+		}
+		lineColor = src.lineColor;
+		lineWidth = src.lineWidth;
+		connectorType = src.connectorType;
+		zOrder = src.zOrder;
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public abstract LineElement copy();
+
 // ================================================================================
 // GenericPoint Class
 // ================================================================================
@@ -706,8 +742,11 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	 * 
 	 * @author unknown, finterly
 	 */
-	public abstract class GenericPoint extends PathwayObject {
+	public abstract class GenericPoint extends PathwayObject implements Cloneable { // TODO
 
+		// ================================================================================
+		// Constructors
+		// ================================================================================
 		/**
 		 * Constructor for a generic point.
 		 */
@@ -715,6 +754,19 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			super();
 		}
 
+		// ================================================================================
+		// Clone Methods
+		// ================================================================================
+		public Object clone() throws CloneNotSupportedException {
+			GenericPoint p = (GenericPoint) super.clone(); // TODO
+			if (getElementId() != null)
+				p.setElementId(getElementId()); // TODO????
+			return p;
+		}
+
+		// ================================================================================
+		// Accessors
+		// ================================================================================
 		/**
 		 * Returns the parent interaction or graphicalLine for this point.
 		 * 
@@ -755,6 +807,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		private double relX; // optional
 		private double relY; // optional
 
+		// ================================================================================
+		// Constructors
+		// ================================================================================
 		/**
 		 * Instantiates a Point pathway element, with reference to another pathway
 		 * element.
@@ -791,6 +846,19 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			setY(y);
 		}
 
+		// ================================================================================
+		// Clone Methods
+		// ================================================================================
+		public Object clone() throws CloneNotSupportedException {
+			LinePoint p = (LinePoint) super.clone();
+			if (elementRef != null)
+				p.elementRef = elementRef;
+			return p;
+		}
+
+		// ================================================================================
+		// Accessors
+		// ================================================================================
 		/**
 		 * Returns the arrowHead property of the point. Arrowhead specifies the glyph at
 		 * the ends of graphical lines and interactions. Intermediate points have
@@ -969,6 +1037,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			}
 		}
 
+		// ================================================================================
+		// Point Methods
+		// ================================================================================
 		/**
 		 * Link to an object. Current absolute coordinates will be converted to relative
 		 * coordinates based on the object to link to. TODO
@@ -1050,6 +1121,12 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			// called whenever the object being referred to has changed.
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this)); // TODO this or
 																								// lineElement?
+		}
+
+		@Override
+		public PathwayObject copy() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}
@@ -1145,6 +1222,12 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		@Override
 		public Set<LinkableFrom> getLinkableFroms() {
 			return GraphLink.getReferences(this, getPathwayModel());
+		}
+
+		@Override
+		public PathwayObject copy() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

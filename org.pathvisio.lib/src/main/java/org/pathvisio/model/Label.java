@@ -51,7 +51,7 @@ public class Label extends ShapedElement {
 	public Label(String textLabel) {
 		this(textLabel, null);
 	}
-	
+
 	// ================================================================================
 	// Accessors
 	// ================================================================================
@@ -98,6 +98,35 @@ public class Label extends ShapedElement {
 			href = value;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
 		}
+	}
+
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(Label src) { // TODO
+		super.copyValuesFrom(src);
+		textLabel = src.textLabel;
+		href = src.href;
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public Label copy() {
+		Label result = new Label(textLabel); // TODO
+		result.copyValuesFrom(this);
+		return result;
 	}
 
 }

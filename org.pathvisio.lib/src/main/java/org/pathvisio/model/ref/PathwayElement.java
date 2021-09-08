@@ -366,6 +366,41 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(PathwayElement src) {
+		dynamicProperties = new TreeMap<String, String>(src.dynamicProperties); // create copy
+		comments = new ArrayList<Comment>();
+		for (Comment c : src.comments) {
+			try {
+				comments.add((Comment) c.clone());
+			} catch (CloneNotSupportedException e) {
+				assert (false);
+				/* not going to happen */
+			}
+		}
+		annotationRefs = new ArrayList<AnnotationRef>(); //TODO add??? 
+		citationRefs = new ArrayList<CitationRef>(); //TODO add???
+		evidenceRefs = new ArrayList<EvidenceRef>(); //TODO add??? 
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public abstract PathwayElement copy();
+
+	// ================================================================================
 	// Comment Class
 	// ================================================================================
 	/**
@@ -376,11 +411,14 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * 
 	 * @author unknown, finterly
 	 */
-	public class Comment {
+	public class Comment implements Cloneable { // TODO clone???
 
 		private String commentText; // required
 		private String source; // optional
 
+		// ================================================================================
+		// Constructors
+		// ================================================================================
 		/**
 		 * Instantiates a Comment with commentText and source.
 		 * 
@@ -391,9 +429,18 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		public Comment(String commentText, String source) {
 			setCommentText(commentText);
 			setSource(source);
-
 		}
 
+		// ================================================================================
+		// Clone Methods
+		// ================================================================================
+		public Object clone() throws CloneNotSupportedException {
+			return super.clone();
+		}
+
+		// ================================================================================
+		// Accessors
+		// ================================================================================
 		/**
 		 * Instantiates a Comment with just commentText.
 		 * 

@@ -270,6 +270,9 @@ public class Citation extends PathwayObject {
 		unsetPathwayModel();
 	}
 
+	// ================================================================================
+	// Equals Methods
+	// ================================================================================
 	/**
 	 * Checks all properties of given citations to determine whether they are equal.
 	 * 
@@ -306,6 +309,46 @@ public class Citation extends PathwayObject {
 		if (!Objects.equals(authors, citation.getAuthors()))
 			return false;
 		return true;
+	}
+
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(Citation src) { // TODO
+//		super.copyValuesFrom(src);
+		xref = src.xref;
+		urlLink = src.urlLink;
+		title = src.title;
+		source = src.source;
+		year = src.year;
+		authors = new ArrayList<String>();
+		for (String a : src.authors) {
+			authors.add(a);
+		} //TODO 
+		citationRefs = new ArrayList<CitationRef>();
+		for (CitationRef c : src.citationRefs) { // TODO????
+			addCitationRef(c);
+		}
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public Citation copy() {
+		Citation result = new Citation(xref); // TODO
+		result.copyValuesFrom(this);
+		return result;
 	}
 
 }

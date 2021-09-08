@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.model.DataNode.State;
+
 /**
  * This class stores information for GraphicalLine pathway element.
  * 
@@ -31,6 +34,33 @@ public class GraphicalLine extends LineElement {
 	 */
 	public GraphicalLine() {
 		super();
+	}
+	
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 *
+	 * @param src
+	 */
+	public void copyValuesFrom(State src) { //TODO
+		super.copyValuesFrom(src);
+		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	public GraphicalLine copy() {
+		GraphicalLine result = new GraphicalLine(); //TODO 
+		result.copyValuesFrom(this);
+		return result;
 	}
 
 }
