@@ -17,6 +17,7 @@
 package org.pathvisio.io;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.pathvisio.model.Group;
 import org.pathvisio.model.Interaction;
 import org.pathvisio.model.Label;
 import org.pathvisio.model.LineElement;
+import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.Shape;
@@ -44,7 +46,6 @@ import org.pathvisio.model.ref.Citable;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
-import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Evidenceable;
 import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.Pathway.Author;
@@ -365,10 +366,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			throws ConverterException {
 		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
 			Annotation annotation = (Annotation) pathwayModel.getPathwayObject(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = new AnnotationRef(annotation);
+			AnnotationRef annotationRef = annotatable.addAnnotationRef(annotation);
 			readCitationRefs(pathwayModel, annotationRef, anntRef);
 			readEvidenceRefs(pathwayModel, annotationRef, anntRef);
-			annotatable.addAnnotationRef(annotationRef);
 		}
 	}
 
@@ -387,9 +387,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			Citation citation = (Citation) pathwayModel.getPathwayObject(citRef.getAttributeValue("elementRef"));
 			if (citation != null) {
 				// create new citationRef for citation reference
-				CitationRef citationRef = new CitationRef(citation);
+				CitationRef citationRef = citable.addCitationRef(citation);
 				readAnnotationRefs(pathwayModel, citationRef, citRef);
-				citable.addCitationRef(citationRef);
 			}
 		}
 	}
@@ -409,9 +408,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
 			Evidence evidence = (Evidence) pathwayModel.getPathwayObject(evidRef.getAttributeValue("elementRef"));
 			if (evidence != null) {
-				// create new evidenceRef for evidence referenced
-				EvidenceRef evidenceRef = new EvidenceRef(evidence);
-				evidenceable.addEvidenceRef(evidenceRef);
+				evidenceable.addEvidenceRef(evidence);
 			}
 		}
 	}
@@ -429,15 +426,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
 				String elementId = grp.getAttributeValue("elementId");
 				GroupType type = GroupType.register(grp.getAttributeValue("type", GROUPTYPE_DEFAULT));
-				Element gfx = grp.getChild("Graphics", grp.getNamespace());
 				Group group = new Group(type);
 				group.setElementId(elementId);
-				// read graphics
-				readRectProperty(group, gfx);
-				readFontProperty(group, gfx);
-				readShapeStyleProperty(group, gfx);
-				// reads comment group, evidenceRefs
-				readElementInfo(pathwayModel, group, grp);
+				// reads graphics and comment group props
+				readShapedElement(pathwayModel, group, grp);
 				// sets optional properties
 				group.setXref(readXref(grp));
 				group.setTextLabel(grp.getAttributeValue("textLabel"));
@@ -471,19 +463,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			for (Element lb : lbs.getChildren("Label", lbs.getNamespace())) {
 				String elementId = lb.getAttributeValue("elementId");
 				String textLabel = lb.getAttributeValue("textLabel");
-				Element gfx = lb.getChild("Graphics", lb.getNamespace());
 				Label label = new Label(textLabel);
 				label.setElementId(elementId);
-				// read graphics
-				readRectProperty(label, gfx);
-				readFontProperty(label, gfx);
-				readShapeStyleProperty(label, gfx);
-				// reads comment group, evidenceRefs
-				readElementInfo(pathwayModel, label, lb);
+				// reads graphics and comment group props
+				readShapedElement(pathwayModel, label, lb);
 				// sets optional properties
-				String rotationStr = gfx.getAttributeValue("rotation");
-				if (rotationStr != null)
-					label.setRotation(Double.parseDouble(rotationStr.trim()));
 				label.setHref(lb.getAttributeValue("href"));
 				String groupRef = lb.getAttributeValue("groupRef");
 				if (groupRef != null && !groupRef.equals(""))
@@ -505,19 +489,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (shps != null) {
 			for (Element shp : shps.getChildren("Shape", shps.getNamespace())) {
 				String elementId = shp.getAttributeValue("elementId");
-				Element gfx = shp.getChild("Graphics", shp.getNamespace());
 				Shape shape = new Shape();
 				shape.setElementId(elementId);
-				// read graphics
-				readRectProperty(shape, gfx);
-				readFontProperty(shape, gfx);
-				readShapeStyleProperty(shape, gfx);
-				// reads comment group, evidenceRefs
-				readElementInfo(pathwayModel, shape, shp);
+				// reads graphics and comment group props
+				readShapedElement(pathwayModel, shape, shp);
 				// sets optional properties
-				String rotationStr = gfx.getAttributeValue("rotation");
-				if (rotationStr != null)
-					shape.setRotation(Double.parseDouble(rotationStr.trim()));
 				shape.setTextLabel(shp.getAttributeValue("textLabel"));
 				String groupRef = shp.getAttributeValue("groupRef");
 				if (groupRef != null && !groupRef.equals(""))
@@ -540,25 +516,17 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (dns != null) {
 			for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
 				String elementId = dn.getAttributeValue("elementId");
-				Element gfx = dn.getChild("Graphics", dn.getNamespace());
 				String textLabel = dn.getAttributeValue("textLabel");
 				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT));
 				DataNode dataNode = new DataNode(textLabel, type);
 				dataNode.setElementId(elementId);
-				// read graphics
-				readRectProperty(dataNode, gfx);
-				readFontProperty(dataNode, gfx);
-				readShapeStyleProperty(dataNode, gfx);
-				// reads comment group, evidenceRefs
-				readElementInfo(pathwayModel, dataNode, dn);
+				// reads graphics and comment group props
+				readShapedElement(pathwayModel, dataNode, dn);
 				// reads states
 				readStates(pathwayModel, dataNode, dn);
 				// sets optional properties
 				dataNode.setXref(readXref(dn));
-				String rotationStr = gfx.getAttributeValue("rotation");
 				String groupRef = dn.getAttributeValue("groupRef");
-				if (rotationStr != null)
-					dataNode.setRotation(Double.parseDouble(rotationStr.trim()));
 				if (groupRef != null && !groupRef.equals(""))
 					dataNode.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
 				// adds dataNode to pathwayModel
@@ -585,23 +553,34 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				double relX = Double.parseDouble(gfx.getAttributeValue("relX").trim());
 				double relY = Double.parseDouble(gfx.getAttributeValue("relY").trim());
 				// sets zOrder based on parent data node TODO
-				State state = dataNode.addState(elementId, textLabel, type, relX, relY);
-				// read graphics
-				readRectProperty(state, gfx);
-				readFontProperty(state, gfx);
-				readShapeStyleProperty(state, gfx);
-				// reads comment group, evidenceRefs
-				readElementInfo(pathwayModel, state, st);
+				State state = dataNode.addState(textLabel, type, relX, relY);
+				state.setElementId(elementId);
+				// reads graphics and comment group props
+				readShapedElement(pathwayModel, state, st);
 				// sets optional properties
-				String rotationStr = gfx.getAttributeValue("rotation");
-				if (rotationStr != null)
-					state.setRotation(Double.parseDouble(rotationStr.trim()));
 				state.setXref(readXref(st));
-				dataNode.addState(state);
 				state.setZOrder(dataNode.getZOrder() + 1);
-
 			}
 		}
+	}
+
+	/**
+	 * Reads common properties for shaped pathway elements {@link ShapedElement}.
+	 * 
+	 * @param pathwayModel  the pathway model.
+	 * @param shapedElement the shaped pathway element.
+	 * @param se            the jdom (shaped) pathway element element.
+	 * @throws ConverterException
+	 */
+	protected void readShapedElement(PathwayModel pathwayModel, ShapedElement shapedElement, Element se)
+			throws ConverterException {
+		Element gfx = se.getChild("Graphics", se.getNamespace());
+		// reads graphics properties
+		readRectProperty(shapedElement, gfx);
+		readFontProperty(shapedElement, gfx);
+		readShapeStyleProperty(shapedElement, gfx);
+		// reads comment group, evidenceRefs
+		readElementInfo(pathwayModel, shapedElement, se);
 	}
 
 	/**
@@ -617,18 +596,15 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (ias != null) {
 			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
 				String elementId = ia.getAttributeValue("elementId");
-				Element gfx = ia.getChild("Graphics", ia.getNamespace());
 				Interaction interaction = new Interaction();
-				readLineStyleProperty(interaction, gfx);
 				interaction.setElementId(elementId);
 				// add interaction to pathwayModel
 				if (interaction != null)
 					pathwayModel.addInteraction(interaction);
-				// reads comment group
+				// reads graphics, comment group, points, and anchors
 				readLineElement(pathwayModel, interaction, ia);
 				// sets optional properties
 				interaction.setXref(readXref(ia));
-
 			}
 		}
 	}
@@ -646,14 +622,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (glns != null) {
 			for (Element gln : glns.getChildren("GraphicalLine", glns.getNamespace())) {
 				String elementId = gln.getAttributeValue("elementId");
-				Element gfx = gln.getChild("Graphics", gln.getNamespace());
 				GraphicalLine graphicalLine = new GraphicalLine();
-				readLineStyleProperty(graphicalLine, gfx);
 				graphicalLine.setElementId(elementId);
 				// add graphicalLine to pathwayModel
 				pathwayModel.addGraphicalLine(graphicalLine);
+				// reads graphics, comment group, points, and anchors
 				readLineElement(pathwayModel, graphicalLine, gln);
-
 			}
 		}
 	}
@@ -668,7 +642,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void readLineElement(PathwayModel pathwayModel, LineElement lineElement, Element ln)
 			throws ConverterException {
-		readElementInfo(pathwayModel, lineElement, ln); // comment group and evidenceRef
+		// reads graphics
+		Element gfx = ln.getChild("Graphics", ln.getNamespace());
+		readLineStyleProperty(lineElement, gfx);
+		// reads comment group
+		readElementInfo(pathwayModel, lineElement, ln);
+		// reads points and anchors
 		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
 		readPoints(pathwayModel, lineElement, wyps);
 		// checks if line has at least 2 point
@@ -692,13 +671,22 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	protected void readPoints(PathwayModel pathwayModel, LineElement lineElement, Element wyps)
 			throws ConverterException {
+		List<LinePoint> ptList = new ArrayList<LinePoint>();
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 			String elementId = pt.getAttributeValue("elementId");
 			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT));
 			double x = Double.parseDouble(pt.getAttributeValue("x").trim());
 			double y = Double.parseDouble(pt.getAttributeValue("y").trim());
-			// instantiates and add point to line and pathway model
-			lineElement.addLinePoint(elementId, arrowHead, x, y);
+			LinePoint point = lineElement.new LinePoint(arrowHead, x, y);
+			point.setElementId(elementId);
+			ptList.add(point);
+		}
+		// adds points if at least 2 points, otherwise throw error
+		if (ptList.size() >= 2) {
+			lineElement.addLinePoints(ptList);
+		} else {
+			throw new ConverterException(lineElement.getClass().getSimpleName() + lineElement.getElementId()
+					+ " must have at least 2 points.");
 		}
 	}
 
@@ -716,7 +704,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			double position = Double.parseDouble(an.getAttributeValue("position"));
 			AnchorShapeType shapeType = AnchorShapeType
 					.register(an.getAttributeValue("shapeType", ANCHORSHAPETYPE_DEFAULT));
-			lineElement.addAnchor(elementId, position, shapeType);
+			Anchor anchor = lineElement.addAnchor(position, shapeType);
+			anchor.setElementId(elementId);
 		}
 	}
 

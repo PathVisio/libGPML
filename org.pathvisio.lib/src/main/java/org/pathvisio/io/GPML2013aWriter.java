@@ -35,19 +35,30 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.*;
+import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.GraphicalLine;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.Interaction;
+import org.pathvisio.model.Label;
+import org.pathvisio.model.LineElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.PathwayObject;
+import org.pathvisio.model.Shape;
+import org.pathvisio.model.ShapedElement;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.PathwayElement.Comment;
-import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Pathway;
-import org.pathvisio.model.type.*;
+import org.pathvisio.model.ref.PathwayElement;
+import org.pathvisio.model.ref.PathwayElement.Comment;
+import org.pathvisio.model.type.ArrowHeadType;
+import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -355,8 +366,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeDataNodes(List<DataNode> dataNodes, Element root) throws ConverterException {
 		for (DataNode dataNode : dataNodes) {
-			if (dataNode == null)
-				continue;
 			Element dn = new Element("DataNode", root.getNamespace());
 			setAttr("DataNode", "TextLabel", dn, dataNode.getTextLabel());
 			writeShapedElement(dataNode, dn);
@@ -388,8 +397,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (DataNode dataNode : dataNodes) {
 			List<State> states = dataNode.getStates();
 			for (State state : states) {
-				if (state == null)
-					continue;
 				Element st = new Element("State", root.getNamespace());
 				// NB: StateType was not fully implemented in GPML2013a
 				String typeStr = state.getType().getName();
@@ -485,8 +492,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeInteractions(List<Interaction> interactions, Element root) throws ConverterException {
 		for (Interaction interaction : interactions) {
-			if (interaction == null)
-				continue;
 			Element ia = new Element("Interaction", root.getNamespace());
 			writeLineElement(interaction, ia);
 			writeXref(interaction.getXref(), ia, true);
@@ -505,8 +510,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeGraphicalLines(List<GraphicalLine> graphicalLines, Element root) throws ConverterException {
 		for (GraphicalLine graphicalLine : graphicalLines) {
-			if (graphicalLine == null)
-				continue;
 			Element gln = new Element("GraphicalLine", root.getNamespace());
 			writeLineElement(graphicalLine, gln);
 			if (gln != null) {
@@ -548,8 +551,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writePoints(List<LinePoint> points, Element gfx) throws ConverterException {
 		List<Element> ptList = new ArrayList<Element>();
 		for (LinePoint point : points) {
-			if (point == null)
-				continue;
 			Element pt = new Element("Point", gfx.getNamespace());
 			writeElementId(point.getElementId(), pt);
 			String base = ((Element) gfx.getParent()).getName();
@@ -584,8 +585,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (!anchors.isEmpty()) {
 			List<Element> anList = new ArrayList<Element>();
 			for (Anchor anchor : anchors) {
-				if (anchor == null)
-					continue;
 				Element an = new Element("Anchor", gfx.getNamespace());
 				String base = ((Element) gfx.getParent()).getName();
 				setAttr(base + ".Graphics.Anchor", "Position", an, Double.toString(anchor.getPosition()));
@@ -610,8 +609,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeLabels(List<Label> labels, Element root) throws ConverterException {
 		for (Label label : labels) {
-			if (label == null)
-				continue;
 			Element lb = new Element("Label", root.getNamespace());
 			setAttr("Label", "TextLabel", lb, label.getTextLabel());
 			writeShapedElement(label, lb);
@@ -633,8 +630,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeShapes(List<Shape> shapes, Element root) throws ConverterException {
 		for (Shape shape : shapes) {
-			if (shape == null)
-				continue;
 			Element shp = new Element("Shape", root.getNamespace());
 			if (shape.getTextLabel() != null)
 				setAttr("Shape", "TextLabel", shp, shape.getTextLabel());
@@ -661,8 +656,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeGroups(List<Group> groups, Element root) throws ConverterException {
 		for (Group group : groups) {
-			if (group == null)
-				continue;
 			Element grp = new Element("Group", root.getNamespace());
 			setAttr("Group", "GroupId", grp, group.getElementId());
 			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID));
@@ -749,8 +742,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp)
 			throws ConverterException {
 		for (Annotation annotation : pathwayModel.getAnnotations()) {
-			if (annotation == null)
-				continue;
 			String type = annotation.getType().getName();
 			// for GPML2013a, we only write annotations with annotationsRefs on the pathway
 			boolean hasPathwayAnnotation = false;
@@ -796,8 +787,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void writeBiopaxPublicationXref(List<Citation> citations, Element bp) throws ConverterException {
 		for (Citation citation : citations) {
-			if (citation == null)
-				continue;
 			Element pubxf = new Element("PublicationXref", BIOPAX_NAMESPACE);
 			pubxf.setAttribute("id", citation.getElementId(), RDF_NAMESPACE);
 			List<String> authors = citation.getAuthors();

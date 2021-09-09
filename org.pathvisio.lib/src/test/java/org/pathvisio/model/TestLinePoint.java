@@ -16,9 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.model.Interaction;
 import org.pathvisio.model.LineElement.LinePoint;
-import org.pathvisio.model.PathwayModel;
 
 import junit.framework.TestCase;
 
@@ -54,7 +52,7 @@ public class TestLinePoint extends TestCase {
 		assertEquals(i1.getPathwayModel(), p1);
 
 		// create a point
-		LinePoint pt1 = i1.addLinePoint(null, null, 0, 0);
+		LinePoint pt1 = i1.addLinePoint(null, 0, 0);
 		assertNull(pt1.getElementId());
 		assertNull(pt1.getLineElement());
 		assertNull(pt1.getPathwayModel());
@@ -94,7 +92,7 @@ public class TestLinePoint extends TestCase {
 		assertNull(i2.getPathwayModel());
 
 		// create a point
-		LinePoint pt2 = i2.addLinePoint(null, null, 0, 0);
+		LinePoint pt2 = i2.addLinePoint(null, 0, 0);
 		assertNull(pt2.getElementId());
 		assertNull(pt2.getLineElement());
 		assertNull(pt2.getPathwayModel());

@@ -25,6 +25,7 @@ import java.util.TreeMap;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayObject;
 import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * Abstract class of pathway elements which are part of a pathway, have an
@@ -82,12 +83,30 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	public void addComment(Comment comment) {
 		comments.add(comment);
-		// TODO Change source/comment text?
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
 	}
 
-	public void addComment(String commentText, String source) {
-		addComment(new Comment(commentText, source));
+	/**
+	 * TODO
+	 * 
+	 * @param commentText
+	 * @param source
+	 */
+	public Comment addComment(String commentText, String source) {
+		Comment comment = new Comment(commentText, source);
+		addComment(comment);
+		return comment;
+	}
+
+	/**
+	 * TODO
+	 * 
+	 * @param commentText
+	 */
+	public Comment addComment(String commentText) {
+		Comment comment = new Comment(commentText);
+		addComment(comment);
+		return comment;
 	}
 
 	/**
@@ -201,6 +220,19 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
+	 * Creates and adds an annotationRef to annotationRefs list. Calls
+	 * {@link #addAnnotationRef(AnnotationRef annotationRef)}.
+	 * 
+	 * @param annotation the annotation for annotationRef.
+	 */
+	@Override
+	public AnnotationRef addAnnotationRef(Annotation annotation) {
+		AnnotationRef annotationRef = new AnnotationRef(annotation);
+		addAnnotationRef(annotationRef);
+		return annotationRef;
+	}
+
+	/**
 	 * Removes given annotationRef from annotationRefs list. The annotationRef
 	 * ceases to exist and is terminated.
 	 * 
@@ -260,8 +292,20 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			assert (citationRef.getCitable() == this);
 			citationRefs.add(citationRef);
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
-
 		}
+	}
+
+	/**
+	 * Creates and adds an citationRef to citationRefs list. Calls
+	 * {@link #addCitationRef(CitationRef citationRef)}.
+	 * 
+	 * @param citation the citation for citationRef.
+	 */
+	@Override
+	public CitationRef addCitationRef(Citation citation) {
+		CitationRef citationRef = new CitationRef(citation);
+		addCitationRef(citationRef);
+		return citationRef;
 	}
 
 	/**
@@ -328,6 +372,19 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
+	 * Creates and adds an evidenceRef to evidenceRefs list. Calls
+	 * {@link #addEvidenceRef(EvidenceRef evidenceRef)}.
+	 * 
+	 * @param evidenceRef the evidenceRef for evidenceRef.
+	 */
+	@Override
+	public EvidenceRef addEvidenceRef(Evidence evidence) {
+		EvidenceRef evidenceRef = new EvidenceRef(evidence);
+		addEvidenceRef(evidenceRef);
+		return evidenceRef;
+	}
+
+	/**
 	 * Removes given evidenceRef from evidenceRefs list. The evidenceRef ceases to
 	 * exist and is terminated.
 	 * 
@@ -386,9 +443,9 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				/* not going to happen */
 			}
 		}
-		annotationRefs = new ArrayList<AnnotationRef>(); //TODO add??? 
-		citationRefs = new ArrayList<CitationRef>(); //TODO add???
-		evidenceRefs = new ArrayList<EvidenceRef>(); //TODO add??? 
+		annotationRefs = new ArrayList<AnnotationRef>(); // TODO add???
+		citationRefs = new ArrayList<CitationRef>(); // TODO add???
+		evidenceRefs = new ArrayList<EvidenceRef>(); // TODO add???
 		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
 	}
 
@@ -465,7 +522,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param v the text of this comment.
 		 */
 		public void setCommentText(String v) {
-			if (v != null && !commentText.equals(v)) {
+			if (v != null && !Utils.stringEquals(commentText, v)) {
 				commentText = v;
 				fireObjectModifiedEvent(
 						PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
@@ -488,7 +545,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param v the source of this comment.
 		 */
 		public void setSource(String v) {
-			if (v != null && !source.equals(v)) {
+			if (v != null && !Utils.stringEquals(source, v)) {
 				source = v;
 				fireObjectModifiedEvent(
 						PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));

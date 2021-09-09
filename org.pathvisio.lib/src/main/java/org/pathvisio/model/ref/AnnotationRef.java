@@ -210,6 +210,19 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
+	 * Creates and adds an citationRef to citationRefs list. Calls
+	 * {@link #addCitationRef(CitationRef citationRef)}.
+	 * 
+	 * @param citation the citation for citationRef.
+	 */
+	@Override
+	public CitationRef addCitationRef(Citation citation) {
+		CitationRef citationRef = new CitationRef(citation);
+		addCitationRef(citationRef);
+		return citationRef;
+	}
+
+	/**
 	 * Removes given citationRef from citationRefs list. The citationRef ceases to
 	 * exist and is terminated.
 	 * 
@@ -270,6 +283,19 @@ public class AnnotationRef implements Citable, Evidenceable {
 		assert (evidenceRef.getEvidenceable() == this);
 		assert !hasEvidenceRef(evidenceRef);
 		evidenceRefs.add(evidenceRef);
+	}
+
+	/**
+	 * Creates and adds an evidenceRef to evidenceRefs list. Calls
+	 * {@link #addEvidenceRef(EvidenceRef evidenceRef)}.
+	 * 
+	 * @param evidenceRef the evidenceRef for evidenceRef.
+	 */
+	@Override
+	public EvidenceRef addEvidenceRef(Evidence evidence) {
+		EvidenceRef evidenceRef = new EvidenceRef(evidence);
+		addEvidenceRef(evidenceRef);
+		return evidenceRef;
 	}
 
 	/**

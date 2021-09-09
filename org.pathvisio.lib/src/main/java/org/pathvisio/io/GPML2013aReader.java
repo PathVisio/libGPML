@@ -162,7 +162,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 */
 	protected void calculateGroupRectProperty(List<Group> groups) {
 		for (Group group : groups) {
-			Rectangle2D bounds = group.getRotatedBounds(); //TODO 
+			Rectangle2D bounds = group.getRotatedBounds(); // TODO
 			group.setCenterX(bounds.getCenterX());
 			group.setCenterY(bounds.getCenterY());
 			group.setWidth(bounds.getWidth());
@@ -384,8 +384,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String source = readPubxfInfo(pubxf.getChildren("SOURCE", BIOPAX_NAMESPACE));
 			citation.setSource(source);
 			// if source is an url, also set as citation urlLink
-			if (source.startsWith("http") || source.startsWith("www")) {
-				citation.setUrlLink(source);
+			if (source != null) {
+				if (source.startsWith("http") || source.startsWith("www")) {
+					citation.setUrlLink(source);
+				}
 			}
 			citation.setYear(readPubxfInfo(pubxf.getChildren("YEAR", BIOPAX_NAMESPACE)));
 			List<String> authors = new ArrayList<String>();
@@ -823,7 +825,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayObject(elementRef);
 			// instantiates state
-			State state = dataNode.addState(elementId, textLabel, type, relX, relY);
+			State state = dataNode.addState(textLabel, type, relX, relY);
+			state.setElementId(elementId);
 			// set graphics props. No font properties in GPML2013a, set default values
 			readRectProperty(state, gfx);
 			readShapeStyleProperty(state, gfx);
@@ -970,17 +973,15 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId("Interaction", ia, elementIdSet);
 			// adds elementId to lineList
 			lineList.add(elementId);
-			// instantiates interaction
+			// instantiates interaction and adds to pathway model
 			Interaction interaction = new Interaction();
 			interaction.setElementId(elementId);
-			// reads comments, biopaxRefs/citationRefs, dynamic properties
-			// graphics, anchors, groupRef
+			pathwayModel.addInteraction(interaction);
+			// reads line properties
 			readLineElement(pathwayModel, interaction, ia, elementIdSet, biopaxIdToNew, duplicateToBiopaxId,
 					groupIdToNew);
 			// sets optional properties
 			interaction.setXref(readXref(ia));
-			// adds interaction to pathway model
-			pathwayModel.addInteraction(interaction);
 		}
 	}
 
@@ -1007,15 +1008,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId("GraphicalLine", gln, elementIdSet);
 			// adds elementId to lineList
 			lineList.add(elementId);
-			// instantiates graphical line
+			// instantiates graphical line and adds to pathway model 
 			GraphicalLine graphicalLine = new GraphicalLine();
 			graphicalLine.setElementId(elementId);
-			// reads comments, biopaxRefs/citationRefs, dynamic properties
-			// graphics, anchors, groupRef
+			pathwayModel.addGraphicalLine(graphicalLine);
+			// reads line properties
 			readLineElement(pathwayModel, graphicalLine, gln, elementIdSet, biopaxIdToNew, duplicateToBiopaxId,
 					groupIdToNew);
-			// adds graphical line to pathway model
-			pathwayModel.addGraphicalLine(graphicalLine);
 		}
 	}
 
@@ -1074,7 +1073,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
 			AnchorShapeType shapeType = AnchorShapeType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			// adds anchor to line pathway element and pathway model
-			lineElement.addAnchor(elementId, position, shapeType);
+			Anchor anchor = lineElement.addAnchor(position, shapeType);
+			anchor.setElementId(elementId);
 		}
 	}
 
@@ -1099,30 +1099,35 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readPoints(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
 			Map<String, String> groupIdToNew, List<String> lineList) throws ConverterException {
 		// reads points for interactions, and then graphical lines
-		List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
+		List<String> lineType = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
 		// initiates lineList index
 		int lineListIndex = 0;
-		for (int i = 0; i < lnElementName.size(); i++) {
-			for (Element ln : root.getChildren(lnElementName.get(i), root.getNamespace())) {
+		for (int i = 0; i < lineType.size(); i++) {
+			for (Element ln : root.getChildren(lineType.get(i), root.getNamespace())) {
 				String base = ln.getName();
 				// retrieve line pathway element by its graphId
-				String lineElementId = getAttr(lnElementName.get(i), "GraphId", ln);
+				String lineElementId = getAttr(lineType.get(i), "GraphId", ln);
 				LineElement lineElement = (LineElement) pathwayModel.getPathwayObject(lineElementId);
 				// if line graphId null, retrieve line object by its order stored to lineList
 				if (lineElementId == null && lineElement == null)
 					lineElement = (LineElement) pathwayModel.getPathwayObject(lineList.get(lineListIndex));
 				Element gfx = ln.getChild("Graphics", ln.getNamespace());
+				// instantiate points list
+				List<LinePoint> ptList = new ArrayList<LinePoint>();
 				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-					String elementId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
+					String ptId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
 					String arrowHeadStr = getAttr(base + ".Graphics.Point", "ArrowHead", pt);
 					ArrowHeadType arrowHead = getInteractionPanelType(arrowHeadStr);
-					if (arrowHead == null)
+					if (arrowHead == null) {
 						arrowHead = ArrowHeadType.register(arrowHeadStr);
+					}
 					// TODO Sub types added to Annotations while converting...
 					double x = Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim());
 					double y = Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim());
-					// instantiates and adds point to line and pathway model
-					LinePoint point = lineElement.addLinePoint(elementId, arrowHead, x, y);
+					// instantiates and adds point
+					LinePoint point = lineElement.new LinePoint(arrowHead, x, y);
+					point.setElementId(ptId);
+					ptList.add(point);
 					// sets optional point parameters
 					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
 					if (elementRefStr != null && !elementRefStr.equals("")) {
@@ -1144,10 +1149,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						}
 					}
 				}
-				// checks line pathway element has at least 2 points
-				if (lineElement.getLinePoints().size() < 2)
-					throw new ConverterException(lnElementName.get(i) + lineElement.getElementId() + " has "
-							+ lineElement.getLinePoints().size() + " point(s),  must have at least 2.");
+				// adds list of points to lineElement if at least 2 points
+				if (ptList.size() >= 2) {
+					lineElement.addLinePoints(ptList);
+				} else {
+					throw new ConverterException(
+							lineType.get(i) + lineElement.getElementId() + " must have at least 2 points.");
+				}
 				lineListIndex += 1;
 			}
 		}
@@ -1407,16 +1415,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		String base = ((Element) gfx.getParent()).getName();
 		// if not state
 		if (shapedElement.getClass() != State.class) {
-			double centerX = Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx).trim());
-			double centerY = Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx).trim());
-			shapedElement.setCenterX(centerX);
-			shapedElement.setCenterY(centerY);
+			shapedElement.setCenterX(Double.parseDouble(getAttr(base + ".Graphics", "CenterX", gfx).trim()));
+			shapedElement.setCenterY(Double.parseDouble(getAttr(base + ".Graphics", "CenterY", gfx).trim()));
 
 		}
-		double width = Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx).trim());
-		double height = Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx).trim());
-		shapedElement.setWidth(width);
-		shapedElement.setHeight(height);
+		shapedElement.setWidth(Double.parseDouble(getAttr(base + ".Graphics", "Width", gfx).trim()));
+		shapedElement.setHeight(Double.parseDouble(getAttr(base + ".Graphics", "Height", gfx).trim()));
 	}
 
 	/**

@@ -152,7 +152,8 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Unsets the citable, if any, from this citationRef. NB: This method is not used directly.
+	 * Unsets the citable, if any, from this citationRef. NB: This method is not
+	 * used directly.
 	 */
 	protected void unsetCitable() {
 		if (hasCitable()) {
@@ -201,6 +202,19 @@ public class CitationRef implements Annotatable {
 		assert (annotationRef.getAnnotatable() == this);
 		assert !hasAnnotationRef(annotationRef);
 		annotationRefs.add(annotationRef);
+	}
+
+	/**
+	 * Creates and adds an annotationRef to annotationRefs list. Calls
+	 * {@link #addAnnotationRef(AnnotationRef annotationRef)}.
+	 * 
+	 * @param annotation the annotation for annotationRef.
+	 */
+	@Override
+	public AnnotationRef addAnnotationRef(Annotation annotation) {
+		AnnotationRef annotationRef = new AnnotationRef(annotation);
+		addAnnotationRef(annotationRef);
+		return annotationRef;
 	}
 
 	/**

@@ -341,6 +341,28 @@ public class Pathway extends PathwayElement {
 	}
 
 	/**
+	 * Adds the given author to authors list. TODO
+	 * 
+	 * @param author the author to add.
+	 */
+	public Author addAuthor(String name) {
+		Author author = new Author(name);
+		addAuthor(author);
+		return author;
+	}
+
+	/**
+	 * Adds the given author to authors list. TODO
+	 * 
+	 * @param author the author to add.
+	 */
+	public Author addAuthor(String name, String username, int order, Xref xref) {
+		Author author = new Author(name, username, order, xref);
+		addAuthor(author);
+		return author;
+	}
+
+	/**
 	 * Removes the given author from authors list.
 	 * 
 	 * @param author the author to remove.

@@ -32,21 +32,30 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.*;
+import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.GraphicalLine;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.Interaction;
+import org.pathvisio.model.Label;
+import org.pathvisio.model.LineElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.PathwayObject;
+import org.pathvisio.model.Shape;
+import org.pathvisio.model.ShapedElement;
 import org.pathvisio.model.ref.Annotation;
 import org.pathvisio.model.ref.AnnotationRef;
-import org.pathvisio.model.ref.Pathway.Author;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.CitationRef;
-import org.pathvisio.model.ref.PathwayElement.Comment;
-import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.Evidence;
 import org.pathvisio.model.ref.EvidenceRef;
 import org.pathvisio.model.ref.Pathway;
+import org.pathvisio.model.ref.Pathway.Author;
+import org.pathvisio.model.ref.PathwayElement;
+import org.pathvisio.model.ref.PathwayElement.Comment;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -277,8 +286,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element aus = new Element("Authors", root.getNamespace());
 			List<Element> auList = new ArrayList<Element>();
 			for (Author author : authors) {
-				if (author == null)
-					continue;
 				Element au = new Element("Author", root.getNamespace());
 				au.setAttribute("name", author.getName());
 				// sets optional properties
@@ -423,16 +430,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element dns = new Element("DataNodes", root.getNamespace());
 			List<Element> dnList = new ArrayList<Element>();
 			for (DataNode dataNode : dataNodes) {
-				if (dataNode == null)
-					continue;
 				Element dn = new Element("DataNode", root.getNamespace());
 				writeXref(dataNode.getXref(), dn, false);
 				writeStates(dataNode.getStates(), dn);
 				writeShapedElement(dataNode, dn);
-				Element gfx = dn.getChild("Graphics", dn.getNamespace());
-				double rotation = dataNode.getRotation();
-				if (rotation != 0)
-					gfx.setAttribute("rotation", Double.toString(rotation));
+				// write jdom attributes
 				dn.setAttribute("textLabel", dataNode.getTextLabel());
 				dn.setAttribute("type", dataNode.getType().getName());
 				writeGroupRef(dataNode.getGroupRef(), dn);
@@ -460,27 +462,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element sts = new Element("States", dn.getNamespace());
 			List<Element> stList = new ArrayList<Element>();
 			for (State state : states) {
-				if (state == null)
-					continue;
 				Element st = new Element("State", dn.getNamespace());
 				writeXref(state.getXref(), st, false);
-
-				Element gfx = new Element("Graphics", st.getNamespace());
-				st.addContent(gfx);
-				gfx.setAttribute("relX", Double.toString(state.getRelX()));
-				gfx.setAttribute("relY", Double.toString(state.getRelY()));
-				gfx.setAttribute("width", Double.toString(state.getWidth()));
-				gfx.setAttribute("height", Double.toString(state.getHeight()));
-				writeFontProperty(state, gfx);
-				// writes all shape style properties except zOrder
-				writeShapeStyleProperty(state, gfx, false);
-				double rotation = state.getRotation();
-				if (rotation != 0)
-					gfx.setAttribute("rotation", Double.toString(rotation));
-				writeElementInfo(state, st);
+				writeShapedElement(state, st);
+				// write jdom attributes
 				st.setAttribute("textLabel", state.getTextLabel() == null ? "" : state.getTextLabel());
 				st.setAttribute("type", state.getType().getName());
-
 				if (st != null) {
 					stList.add(st);
 				}
@@ -504,8 +491,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element ias = new Element("Interactions", root.getNamespace());
 			List<Element> iaList = new ArrayList<Element>();
 			for (Interaction interaction : interactions) {
-				if (interaction == null)
-					continue;
 				Element ia = new Element("Interaction", root.getNamespace());
 				writeXref(interaction.getXref(), ia, false);
 				writeLineElement(interaction, ia);
@@ -532,8 +517,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element glns = new Element("GraphicalLines", root.getNamespace());
 			List<Element> glnList = new ArrayList<Element>();
 			for (GraphicalLine graphicalLine : graphicalLines) {
-				if (graphicalLine == null)
-					continue;
 				Element gln = new Element("GraphicalLine", root.getNamespace());
 				writeLineElement(graphicalLine, gln);
 				if (gln != null) {
@@ -577,8 +560,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected void writePoints(List<LinePoint> points, Element wyps) throws ConverterException {
 		List<Element> ptList = new ArrayList<Element>();
 		for (LinePoint point : points) {
-			if (point == null)
-				continue;
 			Element pt = new Element("Point", wyps.getNamespace());
 			writeElementId(point.getElementId(), pt);
 			pt.setAttribute("arrowHead", point.getArrowHead().getName());
@@ -606,8 +587,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		if (!anchors.isEmpty()) {
 			List<Element> anList = new ArrayList<Element>();
 			for (Anchor anchor : anchors) {
-				if (anchor == null)
-					continue;
 				Element an = new Element("Anchor", wyps.getNamespace());
 				writeElementId(anchor.getElementId(), an);
 				an.setAttribute("position", Double.toString(anchor.getPosition()));
@@ -634,14 +613,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element lbs = new Element("Labels", root.getNamespace());
 			List<Element> lbList = new ArrayList<Element>();
 			for (Label label : labels) {
-				if (label == null)
-					continue;
 				Element lb = new Element("Label", root.getNamespace());
 				writeShapedElement(label, lb);
-				Element gfx = lb.getChild("Graphics", lb.getNamespace());
-				double rotation = label.getRotation();
-				if (rotation != 0)
-					gfx.setAttribute("rotation", Double.toString(rotation));
+				// write jdom attributes
 				lb.setAttribute("textLabel", label.getTextLabel());
 				if (label.getHref() != null)
 					lb.setAttribute("href", label.getHref());
@@ -669,17 +643,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element shps = new Element("Shapes", root.getNamespace());
 			List<Element> shpList = new ArrayList<Element>();
 			for (Shape shape : shapes) {
-				if (shape == null)
-					continue;
 				Element shp = new Element("Shape", root.getNamespace());
 				writeShapedElement(shape, shp);
+				// write jdom attributes
 				if (shape.getTextLabel() != null)
 					shp.setAttribute("textLabel", shape.getTextLabel());
 				writeGroupRef(shape.getGroupRef(), shp);
-				Element gfx = shp.getChild("Graphics", shp.getNamespace());
-				double rotation = shape.getRotation();
-				if (rotation != 0)
-					gfx.setAttribute("rotation", Double.toString(rotation));
 				if (shp != null) {
 					shpList.add(shp);
 				}
@@ -703,11 +672,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element grps = new Element("Groups", root.getNamespace());
 			List<Element> grpList = new ArrayList<Element>();
 			for (Group group : groups) {
-				if (group == null)
-					continue;
 				Element grp = new Element("Group", root.getNamespace());
 				writeXref(group.getXref(), grp, false);
 				writeShapedElement(group, grp);
+				//write jdom attributes 
 				if (group.getTextLabel() != null)
 					grp.setAttribute("textLabel", group.getTextLabel());
 				grp.setAttribute("type", group.getType().getName());
@@ -735,8 +703,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element annts = new Element("Annotations", root.getNamespace());
 			List<Element> anntList = new ArrayList<Element>();
 			for (Annotation annotation : annotations) {
-				if (annotation == null)
-					continue;
 				Element annt = new Element("Annotation", root.getNamespace());
 				writeElementId(annotation.getElementId(), annt);
 				annt.setAttribute("value", annotation.getValue());
@@ -765,8 +731,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element cits = new Element("Citations", root.getNamespace());
 			List<Element> citList = new ArrayList<Element>();
 			for (Citation citation : citations) {
-				if (citation == null)
-					continue;
 				Element cit = new Element("Citation", root.getNamespace());
 				writeElementId(citation.getElementId(), cit);
 				writeXref(citation.getXref(), cit, false);
@@ -793,8 +757,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element evids = new Element("Evidences", root.getNamespace());
 			List<Element> evidList = new ArrayList<Element>();
 			for (Evidence evidence : evidences) {
-				if (evidence == null)
-					continue;
 				Element evid = new Element("Evidence", root.getNamespace());
 				writeElementId(evidence.getElementId(), evid);
 				writeXref(evidence.getXref(), evid, true);
@@ -874,7 +836,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Writes elementId, comment group {comment, dynamic property, annotationRef,
 	 * citationRef) and evidenceRef {@link PathwayElement} information for
-	 * datanodes, interactions, graphicalLines, labels, shapes, and group.
 	 * 
 	 * @param elementInfo the pathway element.
 	 * @param e           the parent element.
@@ -897,7 +858,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	protected void writeRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
-		if (shapedElement.getClass() != State.class) {
+		if (shapedElement.getClass() == State.class) {
+			gfx.setAttribute("relX", Double.toString(((State) shapedElement).getRelX()));
+			gfx.setAttribute("relY", Double.toString(((State) shapedElement).getRelY()));
+		} else {
 			gfx.setAttribute("centerX", Double.toString(shapedElement.getCenterX()));
 			gfx.setAttribute("centerY", Double.toString(shapedElement.getCenterY()));
 		}
@@ -940,6 +904,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		gfx.setAttribute("shapeType", shapedElement.getShapeType().getName());
 		if (writeZOrder)
 			gfx.setAttribute("zOrder", String.valueOf(shapedElement.getZOrder()));
+		double rotation = shapedElement.getRotation();
+		if (rotation != 0)
+			gfx.setAttribute("rotation", Double.toString(rotation));
 	}
 
 	/**

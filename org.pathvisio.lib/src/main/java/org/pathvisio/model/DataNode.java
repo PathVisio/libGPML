@@ -205,29 +205,6 @@ public class DataNode extends ShapedElement {
 	 * Instantiates a state with the given properties. Adds new state to states list
 	 * and pathway model.
 	 * 
-	 * @param elementId
-	 * @param textLabel
-	 * @param stateType
-	 * @param relX
-	 * @param relY
-	 * @return
-	 */
-	public State addState(String elementId, String textLabel, StateType stateType, double relX, double relY) {
-		State state = new State(textLabel, stateType, relX, relY);
-		state.setElementId(elementId);
-		// add state to same pathway model as data node if applicable
-		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayObject(state);
-		states.add(state);
-		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
-		return state;
-	}
-
-	/**
-	 * Instantiates a state with the given properties. Adds new state to states list
-	 * and pathway model.
-	 * 
 	 * @param textLabel
 	 * @param stateType
 	 * @param relX
@@ -236,12 +213,7 @@ public class DataNode extends ShapedElement {
 	 */
 	public State addState(String textLabel, StateType stateType, double relX, double relY) {
 		State state = new State(textLabel, stateType, relX, relY);
-		// add state to same pathway model as data node if applicable
-		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayObject(state);
-		states.add(state);
-		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
+		addState(state);
 		return state;
 	}
 
@@ -395,7 +367,7 @@ public class DataNode extends ShapedElement {
 		type = src.type;
 		states = new ArrayList<State>();
 		for (State s : src.states) { // TODO????
-			addState(s); //TODO 
+			addState(s); // TODO
 		}
 		xref = src.xref;
 		aliasRef = src.aliasRef;
@@ -622,7 +594,7 @@ public class DataNode extends ShapedElement {
 		public Set<LinkableFrom> getLinkableFroms() {
 			return GraphLink.getReferences(this, getPathwayModel());
 		}
-		
+
 		// ================================================================================
 		// Copy Methods
 		// ================================================================================
@@ -633,7 +605,7 @@ public class DataNode extends ShapedElement {
 		 *
 		 * @param src
 		 */
-		public void copyValuesFrom(State src) { //TODO
+		public void copyValuesFrom(State src) { // TODO
 			super.copyValuesFrom(src);
 			textLabel = src.textLabel;
 			type = src.type;
@@ -650,7 +622,7 @@ public class DataNode extends ShapedElement {
 		 * No events will be sent to the parent of the original.
 		 */
 		public State copy() {
-			State result = new State(textLabel, type, relX, relX); //TODO 
+			State result = new State(textLabel, type, relX, relX); // TODO
 			result.copyValuesFrom(this);
 			return result;
 		}

@@ -115,7 +115,7 @@ public class Group extends ShapedElement {
 		// add pathway element to this group
 		if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement))
 			pathwayElements.add(pathwayElement);
-
+		//TODO recalculate size 
 	}
 
 	/**
@@ -133,6 +133,7 @@ public class Group extends ShapedElement {
 		// remove pathway element from this group
 		if (pathwayElement.getGroupRef() == null && hasPathwayElement(pathwayElement))
 			pathwayElements.remove(pathwayElement);
+		//TODO recalculate size 
 	}
 
 	/**

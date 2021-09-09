@@ -35,6 +35,14 @@ public interface Evidenceable {
 	public void addEvidenceRef(EvidenceRef evidenceRef);
 
 	/**
+	 * Creates and adds an evidenceRef to evidenceRefs list. Calls
+	 * {@link #addEvidenceRef(EvidenceRef evidenceRef)}.
+	 * 
+	 * @param evidenceRef the evidenceRef for evidenceRef.
+	 */
+	public EvidenceRef addEvidenceRef(Evidence evidence);
+
+	/**
 	 * Removes given evidenceRef from evidenceRefs list.
 	 * 
 	 * @param evidenceRef the evidenceRef to be removed.

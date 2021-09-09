@@ -197,39 +197,13 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	/**
 	 * Adds given point to linePoints list. Sets lineElement for the given point.
 	 * 
-	 * @param elementId the pathway object id.
-	 * @param arrowHead the type of arrowhead.
-	 * @param x         the x coordinate of point.
-	 * @param y         the y coordinate of the point.
-	 * @return point the line point instantiated and added to this line.
-	 */
-	public LinePoint addLinePoint(String elementId, ArrowHeadType arrowHead, double x, double y) {
-		LinePoint point = new LinePoint(arrowHead, x, y);
-		point.setElementId(elementId);
-		// add point to same pathway model as line if applicable TODO
-		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayObject(point);
-		linePoints.add(point);
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
-		return point;
-	}
-
-	/**
-	 * Adds given point to linePoints list. Sets lineElement for the given point.
-	 * 
 	 * @param arrowHead the type of arrowhead.
 	 * @param x         the x coordinate of point.
 	 * @param y         the y coordinate of the point.
 	 */
 	public LinePoint addLinePoint(ArrowHeadType arrowHead, double x, double y) {
 		LinePoint point = new LinePoint(arrowHead, x, y);
-		// add point to same pathway model as line if applicable TODO
-		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayObject(point);
-		linePoints.add(point);
-		// TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		addLinePoint(point);
 		return point;
 	}
 
@@ -318,25 +292,21 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Add a new anchor to this line at the given position with anchorShapeType
-	 * property. TODO for read/write
+	 * Adds given point to linePoints list. Sets lineElement for the given point.
 	 * 
-	 * @param elementId
-	 * @param position        the relative position on the line, between 0 (start)
-	 *                        to 1 (end).
-	 * @param anchorShapeType the shape type of the anchor.
-	 * @return
+	 * @param point the linePoint to be added.
 	 */
-	public Anchor addAnchor(String elementId, double position, AnchorShapeType anchorShapeType) {
-		Anchor anchor = new Anchor(position, anchorShapeType);
-		anchor.setElementId(elementId);
-		// add anchor to same pathway model as line if applicable TODO
-		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayObject(anchor);
-		anchors.add(anchor);
-		// No anchor property, use LINESTYLE as dummy property to force redraw on line
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
-		return anchor;
+	public void addAnchor(Anchor anchor) {
+		if (anchor != null && !hasAnchor(anchor)) {
+			assert (anchor.getLineElement() == this);
+			// add anchor to same pathway model as line if applicable TODO
+			if (getPathwayModel() != null)
+				getPathwayModel().addPathwayObject(anchor);
+			anchors.add(anchor);
+			// No anchor property, use LINESTYLE as dummy property to force redraw on line
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+
+		}
 	}
 
 	/**
@@ -349,12 +319,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	 */
 	public Anchor addAnchor(double position, AnchorShapeType anchorShapeType) {
 		Anchor anchor = new Anchor(position, anchorShapeType);
-		// add anchor to same pathway model as line if applicable TODO
-		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayObject(anchor);
-		anchors.add(anchor);
-		// No anchor property, use LINESTYLE as dummy property to force redraw on line
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+		addAnchor(anchor);
 		return anchor;
 	}
 
@@ -822,8 +787,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param relX       the relative x coordinate.
 		 * @param relY       the relative x coordinate.
 		 */
-		private LinePoint(ArrowHeadType arrowHead, double x, double y, LinkableTo elementRef, double relX,
-				double relY) {
+		public LinePoint(ArrowHeadType arrowHead, double x, double y, LinkableTo elementRef, double relX, double relY) {
 			super();
 			this.arrowHead = arrowHead;
 			setX(x);
@@ -839,7 +803,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param x         the x coordinate position of the point.
 		 * @param y         the y coordinate position of the point.
 		 */
-		private LinePoint(ArrowHeadType arrowHead, double x, double y) {
+		public LinePoint(ArrowHeadType arrowHead, double x, double y) {
 			super();
 			this.arrowHead = arrowHead;
 			setX(x);

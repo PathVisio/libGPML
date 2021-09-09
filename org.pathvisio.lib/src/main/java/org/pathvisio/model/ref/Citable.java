@@ -35,6 +35,14 @@ public interface Citable {
 	public void addCitationRef(CitationRef citationRef);
 
 	/**
+	 * Creates and adds an citationRefs to citationRefs list. Calls
+	 * {@link #addCitationRef(CitationRef citationRef)};
+	 * 
+	 * @param citation the citation for citationRef.
+	 */
+	public CitationRef addCitationRef(Citation citation);
+
+	/**
 	 * Removes given citationRef from citationRefs list.
 	 * 
 	 * @param citationRef the citationRef to be removed.
@@ -45,8 +53,9 @@ public interface Citable {
 	 * Removes all citationRefs from citationRefs list.
 	 */
 	public void removeCitationRefs();
-	
-	// TODO addCitation(); 
-	// add citation. Take the citation, and creates citationRef, and links everything
+
+	// TODO addCitation();
+	// add citation. Take the citation, and creates citationRef, and links
+	// everything
 
 }

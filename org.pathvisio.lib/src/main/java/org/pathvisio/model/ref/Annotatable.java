@@ -23,7 +23,7 @@ public interface Annotatable {
 	 * Check whether this annotatable has the given annotationRef.
 	 * 
 	 * @param annotationRef the annotationRef to look for.
-	 * @return true if has annotationRef, false otherwise. 
+	 * @return true if has annotationRef, false otherwise.
 	 */
 	public boolean hasAnnotationRef(AnnotationRef annotationRef);
 
@@ -33,6 +33,14 @@ public interface Annotatable {
 	 * @param annotationRef the annotationRef to be added.
 	 */
 	public void addAnnotationRef(AnnotationRef annotationRef);
+
+	/**
+	 * Creates and adds an annotationRef to annotationRefs list. Calls
+	 * {@link #addAnnotationRef(AnnotationRef annotationRef)}.
+	 * 
+	 * @param annotation the annotation for annotationRef.
+	 */
+	public AnnotationRef addAnnotationRef(Annotation annotation);
 
 	/**
 	 * Removes given annotationRef from annotationRefs list.
