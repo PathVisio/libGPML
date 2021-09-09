@@ -183,9 +183,13 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * @param v the middle of an object in the x direction to set.
 	 */
 	public void setCenterX(double v) {
-		if (v < 0)
-			Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
-		centerX = v;
+		if (centerX != v) {
+			if (v < 0) {
+				Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
+			}
+			centerX = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -203,9 +207,13 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * @param v the middle of an object in the y direction to set.
 	 */
 	public void setCenterY(double v) {
-		if (v < 0)
-			Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
-		centerY = v;
+		if (centerY != v) {
+			if (v < 0) {
+				Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
+			}
+			centerY = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
 	}
 
 	/**
@@ -788,6 +796,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		centerY = v + height / 2;
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
+
 	// ================================================================================
 	// Copy Methods
 	// ================================================================================
@@ -799,7 +808,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * @param src
 	 */
 	public void copyValuesFrom(ShapedElement src) {
-		super.copyValuesFrom(src); 
+		super.copyValuesFrom(src);
 		groupRef = src.groupRef;
 		centerX = src.centerX;
 		centerY = src.centerY;

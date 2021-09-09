@@ -63,7 +63,6 @@ public class DataNode extends ShapedElement {
 		this.states = new ArrayList<State>();
 		this.xref = xref;
 		setAliasRefTo(aliasRef);
-		System.out.println("Constructor1");
 	}
 
 	/**
@@ -71,7 +70,6 @@ public class DataNode extends ShapedElement {
 	 */
 	public DataNode(String textLabel, DataNodeType type, Group aliasRef) {
 		this(textLabel, type, null, aliasRef);
-		System.out.println("Constructor2");
 
 	}
 
@@ -80,7 +78,6 @@ public class DataNode extends ShapedElement {
 	 */
 	public DataNode(String textLabel, DataNodeType type, Xref xref) {
 		this(textLabel, type, xref, null);
-		System.out.println("Constructor3");
 	}
 
 	/**
@@ -89,8 +86,6 @@ public class DataNode extends ShapedElement {
 	 */
 	public DataNode(String textLabel, DataNodeType type) {
 		this(textLabel, type, null, null);
-		System.out.println("Constructor4");
-
 	}
 
 	// ================================================================================
@@ -217,6 +212,24 @@ public class DataNode extends ShapedElement {
 		return state;
 	}
 
+	
+	/**
+	 * Instantiates a state with the given properties. Adds new state to states list
+	 * and pathway model.
+	 * 
+	 * @param elementId 
+	 * @param textLabel
+	 * @param stateType
+	 * @param relX
+	 * @param relY
+	 * @return
+	 */
+	public State addState(String elementId, String textLabel, StateType stateType, double relX, double relY) {
+		State state = new State(textLabel, stateType, relX, relY);
+		state.setElementId(elementId);
+		addState(state);
+		return state;
+	}
 	/**
 	 * Removes given state from states list. State ceases to exist and is
 	 * terminated.

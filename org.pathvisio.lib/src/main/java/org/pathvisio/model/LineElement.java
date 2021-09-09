@@ -196,6 +196,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 
 	/**
 	 * Adds given point to linePoints list. Sets lineElement for the given point.
+	 * Calls {@link #addLinePoint(LinePoint point)}.
 	 * 
 	 * @param arrowHead the type of arrowhead.
 	 * @param x         the x coordinate of point.
@@ -203,6 +204,23 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	 */
 	public LinePoint addLinePoint(ArrowHeadType arrowHead, double x, double y) {
 		LinePoint point = new LinePoint(arrowHead, x, y);
+		addLinePoint(point);
+		return point;
+	}
+
+	/**
+	 * Creates and adds a new point to this line. LinePoint elementId is set
+	 * immediately after creation. This method is used when reading gpml. Calls
+	 * {@link #addLinePoint(LinePoint point)}.
+	 * 
+	 * @param elementId the elementId to set for created point.
+	 * @param arrowHead the type of arrowhead.
+	 * @param x         the x coordinate of point.
+	 * @param y         the y coordinate of the point.
+	 */
+	public LinePoint addLinePoint(String elementId, ArrowHeadType arrowHead, double x, double y) {
+		LinePoint point = new LinePoint(arrowHead, x, y);
+		point.setElementId(elementId);
 		addLinePoint(point);
 		return point;
 	}
@@ -310,8 +328,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	/**
-	 * Add a new anchor to this line at the given position with anchorShapeType
-	 * property.
+	 * Adds a new anchor to this line at the given position with anchorShapeType
+	 * property. Calls {@link #addAnchor(Anchor anchor)}.
 	 * 
 	 * @param position        the relative position on the line, between 0 (start)
 	 *                        to 1 (end).
@@ -319,6 +337,24 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	 */
 	public Anchor addAnchor(double position, AnchorShapeType anchorShapeType) {
 		Anchor anchor = new Anchor(position, anchorShapeType);
+		addAnchor(anchor);
+		return anchor;
+	}
+
+	/**
+	 * Creates and adds a new anchor to this line at the given position with
+	 * anchorShapeType property. Anchor elementId is set immediately after creation.
+	 * This method is used when reading gpml.Calls
+	 * {@link #addAnchor(Anchor anchor)}.
+	 * 
+	 * @param elementId       the elementId to set for created anchor.
+	 * @param position        the relative position on the line, between 0 (start)
+	 *                        to 1 (end).
+	 * @param anchorShapeType the shape type of the anchor.
+	 */
+	public Anchor addAnchor(String elementId, double position, AnchorShapeType anchorShapeType) {
+		Anchor anchor = new Anchor(position, anchorShapeType);
+		anchor.setElementId(elementId);
 		addAnchor(anchor);
 		return anchor;
 	}
@@ -749,6 +785,23 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		@Override
 		public PathwayModel getPathwayModel() {
 			return LineElement.this.getPathwayModel();
+		}
+
+		/**
+		 * Sets the pathway model for this pathway element. NB: Only set when a pathway
+		 * model adds this pathway element. This method is not used directly. The point
+		 * or anchor should always have the same pathwayModel as the line it belongs to.
+		 * 
+		 * @param pathwayModel the parent pathway model.
+		 */
+		@Override
+		protected void setPathwayModelTo(PathwayModel pathwayModel)
+				throws IllegalArgumentException, IllegalStateException {
+			if (pathwayModel == null)
+				throw new IllegalArgumentException("Invalid pathway model.");
+			if (pathwayModel == getPathwayModel()) {
+				setPathwayModel(pathwayModel);
+			}
 		}
 
 	}

@@ -35,7 +35,7 @@ import org.pathvisio.props.StaticProperty;
 public abstract class PathwayObject {
 
 	/* parent pathway model: may be null (e.g. when object is in clipboard) */
-	private PathwayModel pathwayModel;
+	protected PathwayModel pathwayModel; //TODO protected? 
 	private String elementId;
 
 	// ================================================================================

@@ -25,7 +25,6 @@ import java.util.Set;
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.events.PathwayElementListener;
-import org.pathvisio.model.LineElement;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -271,31 +270,6 @@ public class Pathway extends PathwayElement {
 			throw new IllegalArgumentException("Tried to set dimension < 0: " + v);
 		} else {
 			boardHeight = v;
-		}
-	}
-
-	/**
-	 * Checks whether the board size is still large enough for the given
-	 * {@link PathwayElement} and increases the size if not
-	 * 
-	 * @param elm The element to check the board size for
-	 */
-	public void checkMBoardSize(PathwayElement e) { // TODO was protected
-		final int BORDER_SIZE = 30;
-		double mw = boardWidth;
-		double mh = boardHeight;
-
-		if (e instanceof LineElement) { // TODO
-//			mw = Math.max(mw, BORDER_SIZE + Math.max(e.getMStartX(), e.getMEndX()));
-//			mh = Math.max(mh, BORDER_SIZE + Math.max(e.getMStartY(), e.getMEndY()));
-		} else {
-//			mw = Math.max(mw, BORDER_SIZE + e.getMLeft() + e.getMWidth());
-//			mh = Math.max(mh, BORDER_SIZE + e.getMTop() + e.getMHeight());
-		}
-		if (Math.abs(boardWidth - mw) + Math.abs(boardHeight - mh) > 0.01) {
-			boardWidth = mw;
-			boardWidth = mh;
-//			fireObjectModifiedEvent(new PathwayEvent(this, PathwayEvent.RESIZED));
 		}
 	}
 

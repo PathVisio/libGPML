@@ -773,13 +773,12 @@ public class PathwayModel {
 		removeElementId(pathwayObject.getElementId());
 		pathwayObject.terminate(); // TODO
 	}
-	
+
 	/**
-	 * TODO 
+	 * TODO
 	 * 
-	 * Add a PathwayElement to this Pathway.
-	 * takes care of setting parent and removing from possible previous
-	 * parent.
+	 * Add a PathwayElement to this Pathway. takes care of setting parent and
+	 * removing from possible previous parent.
 	 *
 	 * fires PathwayEvent.ADDED event <i>after</i> addition of the object
 	 *
@@ -809,7 +808,6 @@ public class PathwayModel {
 		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED)); // TODO
 
 	}
-
 
 	/**
 	 * TODO
@@ -934,7 +932,7 @@ public class PathwayModel {
 	public PathwayModel clone() {
 		PathwayModel result = new PathwayModel(null); // TODO
 		for (PathwayObject pe : getPathwayObjects()) {
-			result.add(pe.copy()); //TODO 
+			result.add(pe.copy()); // TODO
 		}
 		result.changed = changed;
 		if (sourceFile != null) {
@@ -1071,8 +1069,33 @@ public class PathwayModel {
 					group.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(group));
 				}
 			}
+			checkMBoardSize(e.getModifiedPathwayElement());
+		}
+	}
 
-			getPathway().checkMBoardSize((PathwayElement) e.getModifiedPathwayElement());
+	/**
+	 * Checks whether the board size is still large enough for the given
+	 * {@link PathwayElement} and increases the size if not
+	 * 
+	 * @param elm The element to check the board size for
+	 */
+	public void checkMBoardSize(PathwayObject e) { // TODO was protected
+		final int BORDER_SIZE = 30;
+		double mw = getPathway().getBoardWidth();
+		double mh = getPathway().getBoardHeight();
+		if (e instanceof LineElement) { // TODO
+			mw = Math.max(mw, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePoint().getX(),
+					((LineElement) e).getEndLinePoint().getX()));
+			mh = Math.max(mh, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePoint().getY(),
+					((LineElement) e).getEndLinePoint().getY()));
+		} else if (e instanceof ShapedElement) { //TODO 
+			mw = Math.max(mw, BORDER_SIZE + ((ShapedElement) e).getLeft() + ((ShapedElement) e).getWidth());
+			mh = Math.max(mh, BORDER_SIZE + ((ShapedElement) e).getTop() + ((ShapedElement) e).getHeight());
+		}
+		if (Math.abs(getPathway().getBoardWidth() - mw) + Math.abs(getPathway().getBoardHeight() - mh) > 0.01) {
+			getPathway().setBoardWidth(mw);
+			getPathway().setBoardHeight(mh);
+			fireObjectModifiedEvent(new PathwayEvent(getPathway(), PathwayEvent.RESIZED));
 		}
 	}
 

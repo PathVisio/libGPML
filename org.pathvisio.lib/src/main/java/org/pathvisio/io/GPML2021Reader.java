@@ -553,8 +553,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				double relX = Double.parseDouble(gfx.getAttributeValue("relX").trim());
 				double relY = Double.parseDouble(gfx.getAttributeValue("relY").trim());
 				// sets zOrder based on parent data node TODO
-				State state = dataNode.addState(textLabel, type, relX, relY);
-				state.setElementId(elementId);
+				State state = dataNode.addState(elementId, textLabel, type, relX, relY);
 				// reads graphics and comment group props
 				readShapedElement(pathwayModel, state, st);
 				// sets optional properties
@@ -704,8 +703,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			double position = Double.parseDouble(an.getAttributeValue("position"));
 			AnchorShapeType shapeType = AnchorShapeType
 					.register(an.getAttributeValue("shapeType", ANCHORSHAPETYPE_DEFAULT));
-			Anchor anchor = lineElement.addAnchor(position, shapeType);
-			anchor.setElementId(elementId);
+			lineElement.addAnchor(elementId, position, shapeType);
 		}
 	}
 

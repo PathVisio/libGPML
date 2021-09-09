@@ -825,8 +825,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayObject(elementRef);
 			// instantiates state
-			State state = dataNode.addState(textLabel, type, relX, relY);
-			state.setElementId(elementId);
+			State state = dataNode.addState(elementId, textLabel, type, relX, relY);
 			// set graphics props. No font properties in GPML2013a, set default values
 			readRectProperty(state, gfx);
 			readShapeStyleProperty(state, gfx);
@@ -1073,8 +1072,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
 			AnchorShapeType shapeType = AnchorShapeType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
 			// adds anchor to line pathway element and pathway model
-			Anchor anchor = lineElement.addAnchor(position, shapeType);
-			anchor.setElementId(elementId);
+			lineElement.addAnchor(elementId, position, shapeType);
 		}
 	}
 
