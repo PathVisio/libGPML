@@ -121,7 +121,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 		Set<String> elementIdSet = new HashSet<String>(); // all elementIds
 		Map<String, String> biopaxIdToNew = new HashMap<String, String>(); // biopax ids and new unique elementIds
-		Map<String, String> duplicateToBiopaxId = new HashMap<String, String>(); // duplicate biopaxIds
+		Map<String, String> duplicateToBiopaxId = new HashMap<String, String>(); // ids of biopax with duplicate info
 		Map<String, String> groupIdToNew = new HashMap<String, String>(); // groupIds and new unique elementIds
 		List<String> lineList = new ArrayList<String>(); // ordered list of line pathway element elementIds
 		readAllElementIds(pathwayModel, root, elementIdSet);// reads all elementIds and stores in set
@@ -1490,11 +1490,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads line style property information. Jdom handles
-	 * schema default values.
+	 * Reads line style property information. Jdom handles schema default values.
 	 * 
-	 * @param lineElement the line pathway element. 
-	 * @param gfx the jdom graphics element.
+	 * @param lineElement the line pathway element.
+	 * @param gfx         the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {

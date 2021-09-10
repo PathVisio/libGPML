@@ -19,7 +19,6 @@ import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.pathvisio.io.ConverterException;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.ref.Citation;
 import org.pathvisio.util.XrefUtils;
 
@@ -40,7 +39,7 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 		final Namespace BIOPAX_NAMESPACE = Namespace.getNamespace("bp",
 				"http://www.biopax.org/release/biopax-level3.owl#");
 		final Namespace RDF_NAMESPACE = Namespace.getNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		
+
 		DataSourceTxt.init();
 
 		// Gets all organism directories
@@ -66,14 +65,14 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 			for (int j = 0; j < listOfFiles.length; j++) {
 				File file = listOfFiles[j];
 				if (file.isFile()) {
-					System.out.println(file.getName());
+//					System.out.println(file.getName());
 					assertTrue(file.exists());
 					try {
 						SAXBuilder builder = new SAXBuilder();
 						Document readDoc = builder.build(file);
 						Element root = readDoc.getRootElement();
 
-						PathwayModel pathwayModel = new PathwayModel();
+//						PathwayModel pathwayModel = new PathwayModel();
 						Set<String> elementIds = new HashSet<String>();
 						Set<Citation> biopaxes = new HashSet<Citation>();
 						Set<String> duplicates = new HashSet<String>();
@@ -107,7 +106,9 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 								Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 								// instantiates citation
 								Citation citation = new Citation(xref);
-								pathwayModel.addCitation(citation);
+								citation.setElementId(elementId);
+//								pathwayModel.addCitation(citation);
+
 								// sets optional properties
 								String title = null;
 								for (Element pubxfElement : bp.getChildren("TITLE", BIOPAX_NAMESPACE)) {
@@ -118,6 +119,7 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 										continue;
 									}
 								}
+								citation.setTitle(title);
 								String source = null;
 								for (Element pubxfElement : bp.getChildren("SOURCE", BIOPAX_NAMESPACE)) {
 									if (source == null || source.equals("")) {
@@ -127,6 +129,7 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 										continue;
 									}
 								}
+								citation.setSource(title);
 								String year = null;
 								for (Element pubxfElement : bp.getChildren("YEAR", BIOPAX_NAMESPACE)) {
 									if (year == null || year.equals("")) {
@@ -136,6 +139,7 @@ public class FindBiopaxDuplicateInformation extends TestCase {
 										continue;
 									}
 								}
+								citation.setYear(title);
 								List<String> authors = new ArrayList<String>();
 								for (Element au : bp.getChildren("AUTHORS", BIOPAX_NAMESPACE)) {
 									String author = au.getText();
