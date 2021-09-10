@@ -569,6 +569,25 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		getEndLinePoint().setY(v);
 	}
 
+	// TODO are these methods necessary?
+	public ArrowHeadType getStartLineType() {
+		ArrowHeadType startLineType = getStartLinePoint().getArrowHead();
+		return startLineType == null ? ArrowHeadType.UNDIRECTED : startLineType;
+	}
+
+	public ArrowHeadType getEndLineType() {
+		ArrowHeadType endLineType = getEndLinePoint().getArrowHead();
+		return endLineType == null ? ArrowHeadType.UNDIRECTED : endLineType;
+	}
+
+	public void setStartLineType(ArrowHeadType value) {
+		getStartLinePoint().setArrowHead(value);
+	}
+
+	public void setEndLineType(ArrowHeadType value) {
+		getEndLinePoint().setArrowHead(value);
+	}
+	
 	// ================================================================================
 	// Point2D Methods
 	// ================================================================================

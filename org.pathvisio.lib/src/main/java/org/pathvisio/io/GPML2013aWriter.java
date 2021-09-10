@@ -316,7 +316,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes BiopaxRef information from {@link PathwayElement#getCitationRef()} for
+	 * Writes BiopaxRef information from {@link PathwayElement#getCitationRefs} for
 	 * pathway or pathway element. BiopaxRefs are equivalent to citationRefs in
 	 * GPML2013a.
 	 * 
@@ -337,7 +337,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes dynamic property information for pathway or pathway element.
-	 * {@link PathwayElement#getDynamicProperty()}.
+	 * {@link PathwayElement#getDynamicProperty}.
 	 * 
 	 * @param pathway the pathway.
 	 * @param root    the jdom root element.
@@ -729,7 +729,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * Writes gpml:Biopax bp:OpenControlledVocabulary {@link Annotation}
 	 * information. Because it is not possible to write {@link AnnotationRef} for
 	 * {@link PathwayObject} in GPML2013a, the State annotationRef information is
-	 * written as {@link Comment} in {@link #convertStateRefToComments()}. We avoid
+	 * written as {@link Comment} in {@link #convertStateRefToComments}. We avoid
 	 * writing annotation information if it is for a state annotationRef/comment
 	 * since it cannot be properly linked to a state pathway element and is
 	 * duplicate information.
@@ -914,8 +914,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * NB: writing of dynamic properties (gpml:Attribute) requires special handling
 	 * of DoubleLineProperty and CellularComponentProperty for shaped, state, or
-	 * line pathway elements. {@link #writeLineDynamicProperties()} ,
-	 * {@link #writeShapedOrStateDynamicProperties()}
+	 * line pathway elements. {@link #writeLineDynamicProperties} ,
+	 * {@link #writeShapedOrStateDynamicProperties}
 	 * 
 	 * @param elementInfo the pathway element.
 	 * @param e           the parent element.
@@ -1074,7 +1074,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * fillColor are written separately to preserve the order of properties in
 	 * GPML2013a.
 	 * 
-	 * @param shaped element the shaped pathway element.
+	 * @param shapedElement the shaped pathway element.
 	 * @param gfx    the parent graphics element.
 	 * @throws ConverterException
 	 */

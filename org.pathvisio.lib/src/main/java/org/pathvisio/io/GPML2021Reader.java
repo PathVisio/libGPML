@@ -867,7 +867,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads shape style property information. Jdom handles schema default values.
 	 * 
 	 * @param shapedElement the shaped pathway element.
-	 * @return the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected void readShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -896,7 +895,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads line style property information. Jdom handles schema default values.
 	 * 
 	 * @param lineElement the line pathway element.
-	 * @return the lineStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected void readLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {

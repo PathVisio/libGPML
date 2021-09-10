@@ -332,7 +332,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes dynamic property information for pathway or pathway element.
-	 * {@link PathwayElement#getDynamicProperty()}
+	 * {@link PathwayElement#getDynamicProperty}
 	 * 
 	 * @param dynamicProperties the list of dynamic properties.
 	 * @param e                 the parent element.

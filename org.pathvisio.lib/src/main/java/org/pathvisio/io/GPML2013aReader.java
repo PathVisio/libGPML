@@ -640,7 +640,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * GroupPainterRegistry.java.
 	 * 
 	 * @param type the group type.
-	 * @return the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected void readGroupShapeStyleProperty(Group group, GroupType type) throws ConverterException {
@@ -1080,7 +1079,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * NB: points refer to a group by its GraphId not GroupId(essentially
 	 * elementId). If the pathway element referenced by a point is a group, we must
 	 * search for the group by its GraphId {@link Group#getDynamicProperty}, instead
-	 * of using {@link PathwayModel#getPathwayObject()} which retrieves groups by
+	 * of using {@link PathwayModel#getPathwayObject} which retrieves groups by
 	 * their elementId.
 	 * 
 	 * @param pathwayModel the pathway model.

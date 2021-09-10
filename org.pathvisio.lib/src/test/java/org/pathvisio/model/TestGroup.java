@@ -1,9 +1,5 @@
 package org.pathvisio.model;
 
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.PathwayModel;
-
 import junit.framework.TestCase;
 
 /**
@@ -16,7 +12,7 @@ public class TestGroup extends TestCase {
 	/**
 	 * Create a {@link Group} and add to pathway model. Create {@link DataNode} and
 	 * add to pathway model. Add DataNode to Group using
-	 * {@link Group#addPathwayElement()} and {@link Group#removePathwayElement()}.
+	 * {@link Group#addPathwayElement} and {@link Group#removePathwayElement}.
 	 */
 	public static void testGroupAddRemove() {
 		System.out.println("TEST 1");
@@ -71,7 +67,7 @@ public class TestGroup extends TestCase {
 	/**
 	 * Create a {@link Group} and add to pathway model. Create {@link DataNode} and
 	 * add to pathway model. Add DataNode to Group using
-	 * {@link Groupable#setGroupRefTo()} and {@link Groupable#unsetGroupRef()}.
+	 * {@link Groupable#setGroupRefTo} and {@link Groupable#unsetGroupRef}.
 	 */
 	public static void testGroupableSetUnset() {
 		System.out.println("TEST 2");
