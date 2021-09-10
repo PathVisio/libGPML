@@ -89,7 +89,7 @@ We welcome contributions to libGPML!  Please read our [contribution guidelines](
 License
 -------
 
-libGPML is available for free under the terms of the 
+libGPML is available for free under the terms of the [Apache License, Version 2.0](LICENSE).
 
 
 Authors and history
