@@ -18,6 +18,7 @@ package org.pathvisio.model;
 
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
@@ -795,6 +796,42 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setTop(double v) {
 		centerY = v + height / 2;
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+	}
+
+	public Point2D toAbsoluteCoordinate(Point2D p) {
+		double x = p.getX();
+		double y = p.getY();
+		Rectangle2D bounds = getRotatedBounds();
+		// Scale
+		if (bounds.getWidth() != 0)
+			x *= bounds.getWidth() / 2;
+		if (bounds.getHeight() != 0)
+			y *= bounds.getHeight() / 2;
+		// Translate
+		x += bounds.getCenterX();
+		y += bounds.getCenterY();
+		return new Point2D.Double(x, y);
+	}
+
+	/**
+	 * @param mp a point in absolute model coordinates
+	 * @returns the same point relative to the bounding box of this pathway element:
+	 *          -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
+	 *          corner, and 0,0 meaning the center.
+	 */
+	public Point2D toRelativeCoordinate(Point2D mp) {
+		double relX = mp.getX();
+		double relY = mp.getY();
+		Rectangle2D bounds = getRotatedBounds();
+		// Translate
+		relX -= bounds.getCenterX();
+		relY -= bounds.getCenterY();
+		// Scalebounds.getCenterX();
+		if (relX != 0 && bounds.getWidth() != 0)
+			relX /= bounds.getWidth() / 2;
+		if (relY != 0 && bounds.getHeight() != 0)
+			relY /= bounds.getHeight() / 2;
+		return new Point2D.Double(relX, relY);
 	}
 
 	// ================================================================================

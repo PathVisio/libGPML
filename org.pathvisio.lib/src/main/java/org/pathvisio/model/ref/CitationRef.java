@@ -22,9 +22,9 @@ import java.util.List;
 /**
  * This class stores information for a CitationRef with source {@link Citation},
  * target {@link Citable}, and a list of {@link AnnotationRef}. The Citable
- * target can be a {@link Pathway}, pathway element {@link PathwayElement}, or
- * annotationRef {@link AnnotationRef}. In gpml:CitationRef, the attribute
- * elementRef refers to the elementId of the source gpml:Citation.
+ * target can be a {@link PathwayElement}, or {@link AnnotationRef}. In
+ * gpml:CitationRef, the attribute elementRef refers to the elementId of the
+ * source gpml:Citation.
  * 
  * @author finterly
  */
@@ -43,9 +43,9 @@ public class CitationRef implements Annotatable {
 	 * 
 	 * @param citation the source citation this CitationRef refers to.
 	 */
-	public CitationRef(Citation citation) {
+	protected CitationRef(Citation citation) {
 		setCitationTo(citation);
-		this.annotationRefs = new ArrayList<AnnotationRef>();
+		annotationRefs = new ArrayList<AnnotationRef>();
 	}
 
 	// ================================================================================
@@ -190,30 +190,21 @@ public class CitationRef implements Annotatable {
 	}
 
 	/**
-	 * Adds given annotationRef to annotationRefs list. Sets annotable for the given
-	 * annotationRef.
-	 * 
-	 * @param annotationRef the annotationRef to be added.
-	 */
-	@Override
-	public void addAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null);
-		annotationRef.setAnnotatableTo(this);
-		assert (annotationRef.getAnnotatable() == this);
-		assert !hasAnnotationRef(annotationRef);
-		annotationRefs.add(annotationRef);
-	}
-
-	/**
-	 * Creates and adds an annotationRef to annotationRefs list. Calls
-	 * {@link #addAnnotationRef(AnnotationRef annotationRef)}.
+	 * Creates and adds an annotationRef to annotationRefs list.Sets annotable for
+	 * the given annotationRef.
 	 * 
 	 * @param annotation the annotation for annotationRef.
 	 */
 	@Override
 	public AnnotationRef addAnnotationRef(Annotation annotation) {
 		AnnotationRef annotationRef = new AnnotationRef(annotation);
-		addAnnotationRef(annotationRef);
+		// adds annotationRef
+		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
+			annotationRef.setAnnotatableTo(this);
+			assert (annotationRef.getAnnotatable() == this);
+			annotationRefs.add(annotationRef);
+//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(getCitable(), StaticProperty.ANNOTATIONREF));
+		}
 		return annotationRef;
 	}
 

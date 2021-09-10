@@ -28,15 +28,7 @@ public interface Annotatable {
 	public boolean hasAnnotationRef(AnnotationRef annotationRef);
 
 	/**
-	 * Adds given annotationRef to annotationRefs list.
-	 * 
-	 * @param annotationRef the annotationRef to be added.
-	 */
-	public void addAnnotationRef(AnnotationRef annotationRef);
-
-	/**
-	 * Creates and adds an annotationRef to annotationRefs list. Calls
-	 * {@link #addAnnotationRef(AnnotationRef annotationRef)}.
+	 * Creates and adds an annotationRef to annotationRefs list.
 	 * 
 	 * @param annotation the annotation for annotationRef.
 	 */

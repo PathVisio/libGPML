@@ -205,7 +205,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		if (aus != null) {
 			for (Element au : aus.getChildren("Author", aus.getNamespace())) {
 				String name = au.getAttributeValue("name");
-				Author author = pathway.new Author(name);
+				Author author = pathway.addAuthor(name);
 				// sets optional properties
 				String order = au.getAttributeValue("order");
 				author.setUsername(au.getAttributeValue("username"));

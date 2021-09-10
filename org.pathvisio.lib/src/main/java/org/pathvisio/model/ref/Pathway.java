@@ -326,17 +326,6 @@ public class Pathway extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given author to authors list. TODO
-	 * 
-	 * @param author the author to add.
-	 */
-	public Author addAuthor(String name, String username, int order, Xref xref) {
-		Author author = new Author(name, username, order, xref);
-		addAuthor(author);
-		return author;
-	}
-
-	/**
 	 * Removes the given author from authors list.
 	 * 
 	 * @param author the author to remove.
@@ -570,32 +559,18 @@ public class Pathway extends PathwayElement {
 	public class Author {
 
 		private String name;
-		private String username;
-		private int order;
-		private Xref xref;
+		private String username; // optional
+		private int order;// optional
+		private Xref xref;// optional
 
 		/**
-		 * Instantiates an author with all possible properties.
-		 * 
-		 * @param name     the author name.
-		 * @param username the author username.
-		 * @param order    the author order.
-		 * @param xref     the author orcid id.
-		 */
-		public Author(String name, String username, int order, Xref xref) {
-			this.name = name;
-			this.username = username;
-			this.order = order;
-			this.xref = xref;
-		}
-
-		/**
-		 * Instantiates an author with only required property: name.
+		 * Instantiates an author with only required property. Use set methods for
+		 * optional properties.
 		 * 
 		 * @param name the author name.
 		 */
-		public Author(String name) {
-			this(name, null, 0, null);
+		private Author(String name) {
+			this.name = name;
 		}
 
 		/**

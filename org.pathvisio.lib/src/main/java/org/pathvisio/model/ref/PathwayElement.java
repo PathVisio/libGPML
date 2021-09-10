@@ -204,31 +204,21 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
-	 * Adds given annotationRef to annotationRefs list. Sets annotable for the given
-	 * annotationRef.
-	 * 
-	 * @param annotationRef the annotationRef to be added.
-	 */
-	@Override
-	public void addAnnotationRef(AnnotationRef annotationRef) {
-		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
-			annotationRef.setAnnotatableTo(this);
-			assert (annotationRef.getAnnotatable() == this);
-			annotationRefs.add(annotationRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
-		}
-	}
-
-	/**
-	 * Creates and adds an annotationRef to annotationRefs list. Calls
-	 * {@link #addAnnotationRef(AnnotationRef annotationRef)}.
+	 * Creates and adds an annotationRef to annotationRefs list. Sets annotable for
+	 * the given annotationRef.
 	 * 
 	 * @param annotation the annotation for annotationRef.
 	 */
 	@Override
 	public AnnotationRef addAnnotationRef(Annotation annotation) {
 		AnnotationRef annotationRef = new AnnotationRef(annotation);
-		addAnnotationRef(annotationRef);
+		// adds annotationRef
+		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
+			annotationRef.setAnnotatableTo(this);
+			assert (annotationRef.getAnnotatable() == this);
+			annotationRefs.add(annotationRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
+		}
 		return annotationRef;
 	}
 
@@ -280,31 +270,21 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
-	 * Adds given citationRef to citationRefs list. Sets citable for the given
-	 * citationRef.
-	 * 
-	 * @param citationRef the citationRef to be added.
-	 */
-	@Override
-	public void addCitationRef(CitationRef citationRef) {
-		if (citationRef != null && !hasCitationRef(citationRef)) {
-			citationRef.setCitableTo(this);
-			assert (citationRef.getCitable() == this);
-			citationRefs.add(citationRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
-		}
-	}
-
-	/**
-	 * Creates and adds an citationRef to citationRefs list. Calls
-	 * {@link #addCitationRef(CitationRef citationRef)}.
+	 * Creates and adds an citationRef to citationRefs list. Sets citable for the
+	 * given citationRef.
 	 * 
 	 * @param citation the citation for citationRef.
 	 */
 	@Override
 	public CitationRef addCitationRef(Citation citation) {
 		CitationRef citationRef = new CitationRef(citation);
-		addCitationRef(citationRef);
+		// adds citationRef
+		if (citationRef != null && !hasCitationRef(citationRef)) {
+			citationRef.setCitableTo(this);
+			assert (citationRef.getCitable() == this);
+			citationRefs.add(citationRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+		}
 		return citationRef;
 	}
 
@@ -356,31 +336,23 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
-	 * Adds given evidenceRef to evidenceRefs list. Sets evidenceable for the given
-	 * evidenceRef.
+	 * Creates and adds an evidenceRef to evidenceRefs list. Sets evidenceable for
+	 * the given evidenceRef.
 	 * 
-	 * @param evidenceRef the evidenceRef to be added.
+	 * @param evidenceRef the evidenceRef for evidenceRef.
 	 */
 	@Override
-	public void addEvidenceRef(EvidenceRef evidenceRef) {
+	public EvidenceRef addEvidenceRef(Evidence evidence) {
+		// Check if evidence already exists.... //TODO
+		// TODO create evidence
+		EvidenceRef evidenceRef = new EvidenceRef(evidence);
+		// adds evidenceRef
 		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
 			evidenceRef.setEvidenceableTo(this);
 			assert (evidenceRef.getEvidenceable() == this);
 			evidenceRefs.add(evidenceRef);
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
 		}
-	}
-
-	/**
-	 * Creates and adds an evidenceRef to evidenceRefs list. Calls
-	 * {@link #addEvidenceRef(EvidenceRef evidenceRef)}.
-	 * 
-	 * @param evidenceRef the evidenceRef for evidenceRef.
-	 */
-	@Override
-	public EvidenceRef addEvidenceRef(Evidence evidence) {
-		EvidenceRef evidenceRef = new EvidenceRef(evidence);
-		addEvidenceRef(evidenceRef);
 		return evidenceRef;
 	}
 

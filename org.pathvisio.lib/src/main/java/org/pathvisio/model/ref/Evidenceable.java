@@ -4,8 +4,7 @@ import java.util.List;
 
 /**
  * Interface for classes which can hold a {@link List} of {@link EvidenceRef}.
- * These classes include {@link Pathway}, {@link PathwayElement}, and
- * {@link AnnotationRef}.
+ * These classes include {@link PathwayElement} and {@link AnnotationRef}.
  * 
  * @author finterly
  */
@@ -28,15 +27,7 @@ public interface Evidenceable {
 	public boolean hasEvidenceRef(EvidenceRef evidenceRef);
 
 	/**
-	 * Adds given evidenceRef to evidenceRefs list.
-	 * 
-	 * @param evidenceRef the evidenceRef to be added.
-	 */
-	public void addEvidenceRef(EvidenceRef evidenceRef);
-
-	/**
-	 * Creates and adds an evidenceRef to evidenceRefs list. Calls
-	 * {@link #addEvidenceRef(EvidenceRef evidenceRef)}.
+	 * Creates and adds an evidenceRef to evidenceRefs list.
 	 * 
 	 * @param evidenceRef the evidenceRef for evidenceRef.
 	 */

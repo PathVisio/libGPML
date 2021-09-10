@@ -28,15 +28,7 @@ public interface Citable {
 	public boolean hasCitationRef(CitationRef citationRef);
 
 	/**
-	 * Adds given citationRef to citationRefs list.
-	 * 
-	 * @param citationRef the citationRef to be added.
-	 */
-	public void addCitationRef(CitationRef citationRef);
-
-	/**
-	 * Creates and adds an citationRefs to citationRefs list. Calls
-	 * {@link #addCitationRef(CitationRef citationRef)};
+	 * Creates and adds an citationRefs to citationRefs list.
 	 * 
 	 * @param citation the citation for citationRef.
 	 */

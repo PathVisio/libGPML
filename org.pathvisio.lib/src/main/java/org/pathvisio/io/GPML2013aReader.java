@@ -333,7 +333,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			annotation.setXref(XrefUtils.createXref(biopaxId, biopaxDb));
 			// adds annotation to pathway model and annotationRef to pathway
 			Annotation annotationExisting = pathwayModel.addAnnotation(annotation);
-			pathwayModel.getPathway().addAnnotationRef(new AnnotationRef(annotationExisting));
+			pathwayModel.getPathway().addAnnotationRef(annotationExisting);
 		}
 	}
 
@@ -507,9 +507,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = (Citation) pathwayModel.getPathwayObject(biopaxRef);
 			// if citation is valid, create citationRef and add to pathway model
 			if (citation != null) {
-				CitationRef citationRef = new CitationRef(citation);
-				if (citationRef != null)
-					pathwayModel.getPathway().addCitationRef(citationRef);
+				CitationRef citationRef = pathwayModel.getPathway().addCitationRef(citation);
 			} else {
 				Logger.log.trace("Warning: biopaxRef " + biopaxRef
 						+ " refers to invalid Biopax PublicationXref, biopaxRef is not created.");
@@ -935,8 +933,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					annotation.setXref(xref);
 					// returns existing annotation in pathway model if applicable
 					annotation = pathwayModel.addAnnotation(annotation);
-					AnnotationRef annotationRef = new AnnotationRef(annotation);
-					state.addAnnotationRef(annotationRef);
+					state.addAnnotationRef(annotation);
 				}
 				// add comment to list to be removed after creating annotation and annotationRef
 				commentsToRemove.add(comment);
@@ -1149,7 +1146,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				}
 				// adds list of points to lineElement if at least 2 points
 				if (ptList.size() >= 2) {
-					lineElement.addLinePoints(ptList);
+					lineElement.addLinePoints(ptList); //add points directly and check afterwards
 				} else {
 					throw new ConverterException(
 							lineType.get(i) + lineElement.getElementId() + " must have at least 2 points.");
@@ -1313,8 +1310,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = (Citation) pathwayModel.getPathwayObject(biopaxRef);
 			// if citation valid, create citationRef and add to pathway model.
 			if (citation != null) {
-				CitationRef citationRef = new CitationRef(citation);
-				pathwayElement.addCitationRef(citationRef);
+				CitationRef citationRef = pathwayElement.addCitationRef(citation);
 			} else {
 				Logger.log.trace("Warning: biopaxRef " + biopaxRef
 						+ " refers to invalid Biopax PublicationXref, biopaxRef is not created.");

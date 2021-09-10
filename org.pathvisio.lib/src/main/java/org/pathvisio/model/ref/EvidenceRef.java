@@ -18,7 +18,7 @@ package org.pathvisio.model.ref;
 
 /**
  * This class stores information for a EvidenceRef which references an
- * {@link Evidence}.
+ * {@link Evidence}. 
  * 
  * @author finterly
  */
@@ -36,8 +36,8 @@ public class EvidenceRef {
 	 * 
 	 * @param evidence the source evidence this EvidenceRef refers to.
 	 */
-	public EvidenceRef(Evidence evidence) {
-		this.setEvidenceTo(evidence);
+	protected EvidenceRef(Evidence evidence) {
+		setEvidenceTo(evidence);
 	}
 
 	// ================================================================================

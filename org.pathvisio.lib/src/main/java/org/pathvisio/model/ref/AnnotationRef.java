@@ -23,9 +23,8 @@ import java.util.List;
  * This class stores information for an AnnotationRef with source
  * {@link Annotation}, target {@link Annotatable}, and a list of
  * {@link CitationRef} and/or {@link EvidenceRef}. The Annotatable target can be
- * a {@link Pathway}, pathway element {@link PathwayElement}, or annotationRef
- * {@link CitationRef}. In gpml:AnnotationRef, the attribute elementRef refers
- * to the elementId of the source gpml:Annotation.
+ * a {@link PathwayElement}, or {@link CitationRef}. In gpml:AnnotationRef, the
+ * attribute elementRef refers to the elementId of the source gpml:Annotation.
  * 
  * @author finterly
  */
@@ -195,30 +194,21 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
-	 * Adds given citationRef to citationRefs list. Sets citable for the given
-	 * citationRef.
-	 * 
-	 * @param citationRef the citationRef to be added.
-	 */
-	@Override
-	public void addCitationRef(CitationRef citationRef) {
-		assert (citationRef != null);
-		citationRef.setCitableTo(this);
-		assert (citationRef.getCitable() == this);
-		assert !hasCitationRef(citationRef);
-		citationRefs.add(citationRef);
-	}
-
-	/**
-	 * Creates and adds an citationRef to citationRefs list. Calls
-	 * {@link #addCitationRef(CitationRef citationRef)}.
+	 * Creates and adds an citationRef to citationRefs list. Sets citable for the
+	 * given citationRef.
 	 * 
 	 * @param citation the citation for citationRef.
 	 */
 	@Override
 	public CitationRef addCitationRef(Citation citation) {
 		CitationRef citationRef = new CitationRef(citation);
-		addCitationRef(citationRef);
+		// adds citationRef TODO
+		if (citationRef != null && !hasCitationRef(citationRef)) {
+			citationRef.setCitableTo(this);
+			assert (citationRef.getCitable() == this);
+			citationRefs.add(citationRef);
+//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+		}
 		return citationRef;
 	}
 
@@ -271,30 +261,23 @@ public class AnnotationRef implements Citable, Evidenceable {
 	}
 
 	/**
-	 * Adds given evidenceRef to evidenceRefs list. Sets evidenceable for the given
-	 * evidenceRef.
-	 * 
-	 * @param evidenceRef the evidenceRef to be added.
-	 */
-	@Override
-	public void addEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null);
-		evidenceRef.setEvidenceableTo(this);
-		assert (evidenceRef.getEvidenceable() == this);
-		assert !hasEvidenceRef(evidenceRef);
-		evidenceRefs.add(evidenceRef);
-	}
-
-	/**
-	 * Creates and adds an evidenceRef to evidenceRefs list. Calls
-	 * {@link #addEvidenceRef(EvidenceRef evidenceRef)}.
+	 * Creates and adds an evidenceRef to evidenceRefs list. Sets evidenceable for
+	 * the given evidenceRef.
 	 * 
 	 * @param evidenceRef the evidenceRef for evidenceRef.
 	 */
 	@Override
 	public EvidenceRef addEvidenceRef(Evidence evidence) {
+		// Check if evidence already exists.... //TODO
+		// TODO create evidence
 		EvidenceRef evidenceRef = new EvidenceRef(evidence);
-		addEvidenceRef(evidenceRef);
+		// adds evidenceRef
+		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
+			evidenceRef.setEvidenceableTo(this);
+			assert (evidenceRef.getEvidenceable() == this);
+			evidenceRefs.add(evidenceRef);
+//			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
+		}
 		return evidenceRef;
 	}
 

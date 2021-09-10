@@ -27,12 +27,18 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.connector.ConnectorRestrictions;
+import org.pathvisio.model.connector.ConnectorShape;
+import org.pathvisio.model.connector.ConnectorShape.WayPoint;
+import org.pathvisio.model.connector.ConnectorShapeFactory;
+import org.pathvisio.model.connector.ElbowConnectorShape;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.AnchorShapeType;
 import org.pathvisio.model.type.ArrowHeadType;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.props.StaticProperty;
+import org.pathvisio.util.Utils;
 
 /**
  * This abstract class stores information for a Line pathway element, e.g.
@@ -40,7 +46,7 @@ import org.pathvisio.props.StaticProperty;
  * 
  * @author finterly
  */
-public abstract class LineElement extends PathwayElement implements Groupable {
+public abstract class LineElement extends PathwayElement implements Groupable, ConnectorRestrictions {
 
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 	private List<LinePoint> linePoints; // minimum 2
@@ -259,6 +265,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		}
 	}
 
+	// ================================================================================
+	// Start and End LinePoint Methods
+	// ================================================================================
 	/**
 	 * Returns the start (first) point of points list. TODO necessary method?
 	 * 
@@ -285,6 +294,38 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	// TODO weird
 	public void setEndLinePoint(LinePoint linePoint) {
 		getEndLinePoint().moveTo(linePoint);
+	}
+
+	public double getStartLinePointX() {
+		return getStartLinePoint().getX();
+	}
+
+	public void setStartLinePointX(double v) {
+		getStartLinePoint().setX(v);
+	}
+
+	public double getStartLinePointY() {
+		return getStartLinePoint().getY();
+	}
+
+	public void setStartLinePointY(double v) {
+		getStartLinePoint().setY(v);
+	}
+
+	public double getEndLinePointX() {
+		return getEndLinePoint().getX();
+	}
+
+	public void setEndLinePointX(double v) {
+		getEndLinePoint().setX(v);
+	}
+
+	public double getEndLinePointY() {
+		return getEndLinePoint().getY();
+	}
+
+	public void setEndLinePointY(double v) {
+		getEndLinePoint().setY(v);
 	}
 
 	// ================================================================================
@@ -584,6 +625,28 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 	}
 
 	// ================================================================================
+	// MLINE METHODS
+	// ================================================================================
+	ConnectorShape shape;
+
+	/**
+	 * the Connector Shape for this line - the connector shape can calculate a Shape
+	 * based on the connector type (straight, elbow or curved) and possibly way
+	 * points
+	 */
+	public ConnectorShape getConnectorShape() {
+		String type = getConnectorType().getName();
+
+		// Recreate the ConnectorShape when it's null or when the type
+		// doesn't match the implementing class
+		if (shape == null || !shape.getClass().equals(ConnectorShapeFactory.getImplementingClass(type))) {
+			shape = ConnectorShapeFactory.createConnectorShape(getConnectorType().getName());
+			shape.recalculateShape(this);
+		}
+		return shape;
+	}
+
+	// ================================================================================
 	// Bounds Methods
 	// ================================================================================
 	/**
@@ -667,6 +730,310 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		double start = getStartLinePoint().getY();
 		double end = getEndLinePoint().getY();
 		return start + (end - start) / 2;
+	}
+
+	/**
+	 * Sets the position of the top side of the rectangular bounds of the line
+	 */
+	public void setTop(double v) {
+		if (getDirectionY() > 0) {
+			setStartLinePointY(v);
+		} else {
+			setEndLinePointY(v);
+		}
+	}
+
+	/**
+	 * Sets the position of the left side of the rectangular bounds of the line
+	 */
+	public void setLeft(double v) {
+		if (getDirectionX() > 0) {
+			setStartLinePointX(v);
+		} else {
+			setEndLinePointX(v);
+		}
+	}
+
+	/**
+	 * Sets the x position of the center of the line. This makes the line move as a
+	 * whole
+	 */
+	public void setCenterX(double v) {
+		double dx = v - getCenterX();
+		setStartLinePointX(getStartLinePointX() + dx);
+		setEndLinePointX(getEndLinePointX() + dx);
+	}
+
+	/**
+	 * Sets the y position of the center of the line. This makes the line move as a
+	 * whole.
+	 */
+	public void setCenterY(double v) {
+		double dy = v - getCenterY();
+		setStartLinePointY(getStartLinePointY() + dy);
+		setEndLinePointY(getEndLinePointY() + dy);
+	}
+
+	/** returns the sign of end.x - start.x */
+	private int getDirectionX() {
+		return (int) Math.signum(getEndLinePointX() - getStartLinePointX());
+	}
+
+	/** returns the sign of end.y - start.y */
+	private int getDirectionY() {
+		return (int) Math.signum(getEndLinePointY() - getStartLinePointY());
+	}
+
+	/** converts start point from MPoint to Point2D */
+	public Point2D getStartPoint2D() {
+		return getStartLinePoint().toPoint2D();
+	}
+
+	/** converts end point from MPoint to Point2D */
+	public Point2D getEndPoint2D() {
+		return getEndLinePoint().toPoint2D();
+	}
+
+	/** converts all points from MPoint to Point2D */
+	public List<Point2D> getPoint2Ds() {
+		List<Point2D> pts = new ArrayList<Point2D>();
+		for (LinePoint p : linePoints) {
+			pts.add(p.toPoint2D());
+		}
+		return pts;
+	}
+
+	// ================================================================================
+	// Start and End Methods
+	// ================================================================================
+
+	/**
+	 * Returns the element that the start of this line is connected to. Returns null
+	 * if there isn't any.
+	 */
+	private LinkableTo getStartElement() {
+		return getStartLinePoint().getElementRef();
+	}
+
+	/**
+	 * Returns the element that the end of this line is connected to. Returns null
+	 * if there isn't any.
+	 */
+	private LinkableTo getEndElement() {
+		return getEndLinePoint().getElementRef();
+
+	}
+
+	// ================================================================================
+	// ConnectorShape Methods
+	// ================================================================================
+
+	/**
+	 * Calculate on which side of a PathwayElement (SIDE_NORTH, SIDE_EAST,
+	 * SIDE_SOUTH or SIDE_WEST) the start of this line is connected to.
+	 *
+	 * If the start is not connected to anything, returns SIDE_WEST
+	 */
+	public int getStartSide() {
+		int side = SIDE_WEST;
+
+		LinkableTo e = getStartElement();
+		if (e != null) {
+			if (e instanceof PathwayElement) {
+				side = getSide(getStartLinePoint().getRelX(), getStartLinePoint().getRelY());
+			} else if (e instanceof Anchor) {
+				side = getAttachedLineDirection((Anchor) e);
+			}
+		}
+		return side;
+	}
+
+	/**
+	 * Calculate on which side of a PathwayElement (SIDE_NORTH, SIDE_EAST,
+	 * SIDE_SOUTH or SIDE_WEST) the end of this line is connected to.
+	 *
+	 * If the end is not connected to anything, returns SIDE_EAST
+	 */
+	public int getEndSide() {
+		int side = SIDE_EAST;
+
+		LinkableTo e = getEndElement();
+		if (e != null) {
+			if (e instanceof PathwayElement) {
+				side = getSide(getEndLinePoint().getRelX(), getEndLinePoint().getRelY());
+			} else if (e instanceof Anchor) {
+				side = getAttachedLineDirection((Anchor) e);
+			}
+		}
+		return side;
+	}
+
+	private int getAttachedLineDirection(Anchor anchor) {
+		int side;
+		double pos = anchor.getPosition();
+		LineElement attLine = anchor.getLineElement();
+		if (attLine.getConnectorShape() instanceof ElbowConnectorShape) {
+			ConnectorShape.Segment attSeg = findAnchorSegment(attLine, pos);
+			int orientationX = Utils.getDirectionX(attSeg.getMStart(), attSeg.getMEnd());
+			int orientationY = Utils.getDirectionY(attSeg.getMStart(), attSeg.getMEnd());
+			side = getSide(orientationY, orientationX);
+		} else {
+			side = getOppositeSide(
+					getSide(getEndLinePointX(), getEndLinePointY(), getStartLinePointX(), getStartLinePointY()));
+			if (attLine.almostPerfectAlignment(side)) {
+				side = getClockwisePerpendicularSide(side);
+			}
+		}
+		return side;
+	}
+
+	private ConnectorShape.Segment findAnchorSegment(LineElement attLine, double pos) {
+		ConnectorShape.Segment[] segments = attLine.getConnectorShape().getSegments();
+		Double totLength = 0.0;
+		ConnectorShape.Segment attSeg = null;
+		for (ConnectorShape.Segment segment : segments) {
+			totLength = totLength + segment.getMLength();
+		}
+		Double currPos;
+		Double segSum = 0.0;
+		for (ConnectorShape.Segment segment : segments) {
+			segSum = segSum + segment.getMLength();
+			currPos = segSum / totLength;
+			attSeg = segment;
+			if (currPos > pos) {
+				break;
+			}
+		}
+		return attSeg;
+	}
+
+	/**
+	 * Check if either the line segment has less than or equal to 10 degree
+	 * alignment with the side passed
+	 * 
+	 * @param startLine
+	 * @param endLine
+	 * @return true if <= 10 degree alignment else false
+	 */
+	private boolean almostPerfectAlignment(int side) {
+		int MAXOFFSET = 30; /*
+							 * cutoff point where we see a shallow angle still as either horizontal or
+							 * vertical
+							 */
+		// X axis
+		if ((side == SIDE_EAST) || (side == SIDE_WEST)) {
+			double angleDegree = (180 / Math.PI)
+					* Math.atan2(Math.abs(getStartPoint2D().getY() - getEndPoint2D().getY()),
+							Math.abs(getStartPoint2D().getX() - getEndPoint2D().getX()));
+			if (angleDegree <= MAXOFFSET)
+				return true;
+		} else {// north south or Y axis
+			double angleDegree = (180 / Math.PI)
+					* Math.atan2(Math.abs(getStartPoint2D().getX() - getEndPoint2D().getX()),
+							Math.abs(getStartPoint2D().getY() - getEndPoint2D().getY()));
+			if (angleDegree <= MAXOFFSET)
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the Perpendicular for a SIDE_* constant (e.g. SIDE_EAST <->
+	 * SIDE_WEST)
+	 */
+	private int getClockwisePerpendicularSide(int side) {
+		switch (side) {
+		case SIDE_EAST:
+			return SIDE_SOUTH;
+		case SIDE_WEST:
+			return SIDE_NORTH;
+		case SIDE_NORTH:
+			return SIDE_EAST;
+		case SIDE_SOUTH:
+			return SIDE_WEST;
+		}
+		return -1;
+	}
+
+	public void adjustWayPointPreferences(WayPoint[] waypoints) {
+		List<LinePoint> mpoints = linePoints;
+		for (int i = 0; i < waypoints.length; i++) {
+			WayPoint wp = waypoints[i];
+			LinePoint mp = mpoints.get(i + 1);
+			if (mp.getX() != wp.getX() || mp.getY() != wp.getY()) {
+				dontFireEvents(1);
+				mp.moveTo(wp.getX(), wp.getY());
+			}
+		}
+	}
+
+	public void resetWayPointPreferences() {
+		List<LinePoint> mps = linePoints;
+		while (mps.size() > 2) {
+			mps.remove(mps.size() - 2);
+		}
+	}
+
+	/**
+	 * Get the preferred waypoints, to which the connector must draw it's path. The
+	 * waypoints returned by this method are preferences and the connector shape may
+	 * decide not to use them if they are invalid.
+	 */
+	public WayPoint[] getWayPointPreferences() {
+		List<LinePoint> pts = linePoints;
+		WayPoint[] wps = new WayPoint[pts.size() - 2];
+		for (int i = 0; i < wps.length; i++) {
+			wps[i] = new WayPoint(pts.get(i + 1).toPoint2D());
+		}
+		return wps;
+	}
+
+	/**
+	 * Get the side of the given pathway element to which the x and y coordinates
+	 * connect
+	 * 
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @param e The element to find the side of
+	 * @return One of the SIDE_* constants
+	 */
+	private static int getSide(double x, double y, double cx, double cy) {
+		return getSide(x - cx, y - cy);
+	}
+
+	private static int getSide(double relX, double relY) {
+		int direction = 0;
+		if (Math.abs(relX) > Math.abs(relY)) {
+			if (relX > 0) {
+				direction = SIDE_EAST;
+			} else {
+				direction = SIDE_WEST;
+			}
+		} else {
+			if (relY > 0) {
+				direction = SIDE_SOUTH;
+			} else {
+				direction = SIDE_NORTH;
+			}
+		}
+		return direction;
+	}
+
+	/**
+	 * Returns the opposite for a SIDE_* constant (e.g. SIDE_EAST <-> SIDE_WEST)
+	 */
+	private int getOppositeSide(int side) {
+		switch (side) {
+		case SIDE_EAST:
+			return SIDE_WEST;
+		case SIDE_WEST:
+			return SIDE_EAST;
+		case SIDE_NORTH:
+			return SIDE_SOUTH;
+		case SIDE_SOUTH:
+			return SIDE_NORTH;
+		}
+		return -1;
 	}
 
 	/**
@@ -864,16 +1231,6 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		}
 
 		// ================================================================================
-		// Clone Methods
-		// ================================================================================
-		public Object clone() throws CloneNotSupportedException {
-			LinePoint p = (LinePoint) super.clone();
-			if (elementRef != null)
-				p.elementRef = elementRef;
-			return p;
-		}
-
-		// ================================================================================
 		// Accessors
 		// ================================================================================
 		/**
@@ -952,11 +1309,6 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 				y = v;
 				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
-		}
-
-		// TODO
-		public Point2D toPoint2D() {
-			return new Point2D.Double(getX(), getY());
 		}
 
 		/**
@@ -1055,8 +1407,26 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		}
 
 		// ================================================================================
-		// Point Methods
+		// Point Link Methods
 		// ================================================================================
+
+		private boolean relativeSet; // TODO
+
+		// TODO
+		public Point2D toPoint2D() {
+			return new Point2D.Double(getX(), getY());
+		}
+
+		// TODO
+		public Point2D toAbsoluteCoordinate(Point2D p) {
+			return new Point2D.Double(p.getX() + getX(), p.getY() + getY());
+		}
+
+		// TODO
+		public Point2D toRelativeCoordinate(Point2D p) {
+			return new Point2D.Double(p.getX() - getX(), p.getY() - getY());
+		}
+
 		/**
 		 * Link to an object. Current absolute coordinates will be converted to relative
 		 * coordinates based on the object to link to. TODO
@@ -1064,8 +1434,8 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 * @param pathwayElement the linkableTo pathway element to link to.
 		 */
 		public void linkTo(LinkableTo pathwayElement) {
-			// Point2D rel = pathwayElement.toRelativeCoordinate(toPoint2D());
-			linkTo(pathwayElement, relX, relY);
+			Point2D rel = pathwayElement.toRelativeCoordinate(toPoint2D());
+			linkTo(pathwayElement, rel.getX(), rel.getY());
 		}
 
 		/**
@@ -1073,7 +1443,7 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		 */
 		public void linkTo(LinkableTo pathwayElement, double relX, double relY) {
 			setElementRef(pathwayElement);
-			setRelativePosition(relX, relY);
+			setRelXY(relX, relY);
 		}
 
 		/**
@@ -1088,36 +1458,34 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 				}
 				// relativeSet = false;
 				setElementRef(null);
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this)); // TODO this or
-																									// lineElement????
+				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 			}
 		}
 
+		// ================================================================================
+		// Point Move Methods
+		// ================================================================================
+
 		// TODO
-		public void setRelativePosition(double rx, double ry) {
-			moveTo(rx, ry);
-			// relativeSet = true; TODO
+		/**
+		 * Sets relX and relY for this point. When the given point is linked to a
+		 * pathway element, relX and relY are the relative coordinates on the element,
+		 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
+		 * of the object. TODO was named set RelativePosition
+		 * 
+		 * @param relX the relative x coordinate.
+		 * @param relY the relative y coordinate.
+		 */
+		public void setRelXY(double relX, double relY) {
+			setRelX(relX);
+			setRelY(relY);
+			relativeSet = true;
 		}
-
-		// private boolean relativeSet; TODO
-
-		// /**
-		// * Helper method for converting older GPML files without relative coordinates.
-		// TODO
-		// *
-		// * @return true if {@link #setRelativePosition(double, double)} was called to
-		// * set the relative coordinates, false if not.
-		// */
-		// protected boolean relativeSet() {
-		// return relativeSet;
-		// }
 
 		// TODO
 		public void moveBy(double deltaX, double deltaY) {
-			double x = getX() + deltaX;
-			double y = getY() + deltaY;
-			setX(x);
-			setY(y);
+			setX(x + deltaX);
+			setY(y + deltaY);
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 
@@ -1130,14 +1498,34 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 
 		// TODO weird
 		public void moveTo(LinePoint linePoint) {
-			// xy = linePoint.getXY(); TODO
+			setX(linePoint.getX());
+			setY(linePoint.getY());
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 
 		public void refeeChanged() {
 			// called whenever the object being referred to has changed.
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this)); // TODO this or
-																								// lineElement?
+			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		}
+
+		// /**
+		// * Helper method for converting older GPML files without relative coordinates.
+		// *
+		// * @return true if {@link #setRelativePosition(double, double)} was called to
+		// * set the relative coordinates, false if not.
+		// */
+		// protected boolean relativeSet() {
+		// return relativeSet;
+		// }
+
+		// ================================================================================
+		// Clone Methods
+		// ================================================================================
+		public Object clone() throws CloneNotSupportedException {
+			LinePoint p = (LinePoint) super.clone();
+			if (elementRef != null)
+				p.elementRef = elementRef;
+			return p;
 		}
 
 		@Override
@@ -1162,6 +1550,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 		private double position;
 		private AnchorShapeType shapeType = AnchorShapeType.NONE;
 
+		// ================================================================================
+		// Constructors
+		// ================================================================================
 		/**
 		 * Instantiates an Anchor pathway element.
 		 * 
@@ -1175,6 +1566,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			setShapeType(shapeType);
 		}
 
+		// ================================================================================
+		// Accessors
+		// ================================================================================
 		/**
 		 * Returns the proportional distance of an anchor along the line it belongs to,
 		 * between 0 and 1.
@@ -1232,6 +1626,9 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 					PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}
 
+		// ================================================================================
+		// Inherited Methods
+		// ================================================================================
 		/**
 		 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
 		 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.
@@ -1241,6 +1638,21 @@ public abstract class LineElement extends PathwayElement implements Groupable {
 			return GraphLink.getReferences(this, getPathwayModel());
 		}
 
+		@Override
+		public Point2D toAbsoluteCoordinate(Point2D p) {
+			Point2D l = getLineElement().getConnectorShape().fromLineCoordinate(getPosition());
+			return new Point2D.Double(p.getX() + l.getX(), p.getY() + l.getY());
+		}
+
+		@Override
+		public Point2D toRelativeCoordinate(Point2D p) {
+			Point2D l = getLineElement().getConnectorShape().fromLineCoordinate(getPosition());
+			return new Point2D.Double(p.getX() - l.getX(), p.getY() - l.getY());
+		}
+
+		// ================================================================================
+		// Clone Methods
+		// ================================================================================
 		@Override
 		public PathwayObject copy() {
 			// TODO Auto-generated method stub

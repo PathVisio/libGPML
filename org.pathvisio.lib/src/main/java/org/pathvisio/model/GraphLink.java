@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.Set;
 
@@ -26,12 +27,14 @@ import org.pathvisio.util.Utils;
  */
 public abstract class GraphLink {
 
+	// ================================================================================
+	// LinkableTo Class
+	// ================================================================================
 	/**
 	 * PathwayElements which can be referred to must implement this interface.
-	 * {@link DataNode}, {@link DataNode.State}, {@link LineElement.Anchor}, {@link Label},
-	 * {@link Shape}, and {@link Group} can all be referred to by a end
-	 * {@link LineElement.LinePoint}.
-	 * 
+	 * {@link DataNode}, {@link DataNode.State}, {@link LineElement.Anchor},
+	 * {@link Label}, {@link Shape}, and {@link Group} can all be referred to by a
+	 * end {@link LineElement.LinePoint}.
 	 */
 	public interface LinkableTo {
 
@@ -49,36 +52,32 @@ public abstract class GraphLink {
 //		String setGeneratedGraphId();
 
 		/**
-		 * Returns {@link LinkableFrom}s {@link LineElement.LinePoint} for this pathway element.
+		 * Returns {@link LinkableFrom}s {@link LineElement.LinePoint} for this pathway
+		 * element.
 		 * 
 		 * @return the LinkableFrom line points.
 		 */
 		Set<LinkableFrom> getLinkableFroms();
-		
-		
-		
 
-//		/**
-//		 * return the parent Gmmldata Object, needed for maintaining a consistent list
-//		 * of graphId's
-//		 */
-//		PathwayModel getPathwayModel();
+		/**
+		 * Convert a point to shape coordinates (relative to the bounds of the
+		 * GraphIdContainer)
+		 */
+		Point2D toRelativeCoordinate(Point2D p);
 
-//		/**
-//		 * Convert a point to shape coordinates (relative to the bounds of the
-//		 * GraphIdContainer)
-//		 */
-//		Point2D toRelativeCoordinate(Point2D p);
-//
-//		/**
-//		 * Convert a point to pathway coordinates (relative to the pathway)
-//		 */
-//		Point2D toAbsoluteCoordinate(Point2D p);
+		/**
+		 * Convert a point to pathway coordinates (relative to the pathway)
+		 */
+		Point2D toAbsoluteCoordinate(Point2D p);
 	}
 
+	// ================================================================================
+	// LinkableFrom Class
+	// ================================================================================
 	/**
 	 * Classes which want to refer *to* a {@link LinkableTo} PathwayElement must
-	 * implement this interface. At this time that only goes for {@link LineElement.LinePoint}.
+	 * implement this interface. At this time that only goes for
+	 * {@link LineElement.LinePoint}.
 	 */
 	public interface LinkableFrom {
 
@@ -122,12 +121,6 @@ public abstract class GraphLink {
 		 */
 		void unlink();
 
-//		/**
-//		 * return the parent Pathway object, needed for maintaining a consistent list of
-//		 * graphId's
-//		 */
-//		PathwayModel getPathwayModel();
-
 		/**
 		 * Called whenever the object being referred to changes coordinates.
 		 */
@@ -136,7 +129,7 @@ public abstract class GraphLink {
 
 	/**
 	 * Return a list of GraphRefContainers (i.e. points) referring to a certain
-	 * LinkableTo pathway element.
+	 * LinkableTo pathway element. TODO
 	 *
 	 * @param pathwayElement the LinkableTo.
 	 * @param pathwayModel   the pathway model.

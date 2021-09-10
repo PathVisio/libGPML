@@ -212,12 +212,11 @@ public class DataNode extends ShapedElement {
 		return state;
 	}
 
-	
 	/**
-	 * Instantiates a state with the given properties. Adds new state to states list
-	 * and pathway model.
+	 * Instantiates a state with the given properties including elementId. Adds new
+	 * state to states list and pathway model. //TODO 
 	 * 
-	 * @param elementId 
+	 * @param elementId
 	 * @param textLabel
 	 * @param stateType
 	 * @param relX
@@ -230,6 +229,7 @@ public class DataNode extends ShapedElement {
 		addState(state);
 		return state;
 	}
+
 	/**
 	 * Removes given state from states list. State ceases to exist and is
 	 * terminated.
