@@ -449,13 +449,14 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		// Constructors
 		// ================================================================================
 		/**
-		 * Instantiates a Comment with commentText and source.
+		 * Instantiates a Comment with commentText and source. This private constructor
+		 * is called by {@link #addComment(String commentText, String source)}.
 		 * 
 		 * @param commentText the text of the comment, between Comment tags in GPML.
 		 * @param source      the source of this comment.
 		 * 
 		 */
-		public Comment(String commentText, String source) {
+		private Comment(String commentText, String source) {
 			setCommentText(commentText);
 			setSource(source);
 		}
@@ -531,10 +532,9 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	/**
 	 * This class stores information for an AnnotationRef with source
 	 * {@link Annotation}, target {@link Annotatable}, and a list of
-	 * {@link CitationRef} and/or {@link EvidenceRef}. The Annotatable target can
-	 * be a {@link PathwayElement}, or {@link CitationRef}. In gpml:AnnotationRef,
-	 * the attribute elementRef refers to the elementId of the source
-	 * gpml:Annotation.
+	 * {@link CitationRef} and/or {@link EvidenceRef}. The Annotatable target can be
+	 * a {@link PathwayElement}, or {@link CitationRef}. In gpml:AnnotationRef, the
+	 * attribute elementRef refers to the elementId of the source gpml:Annotation.
 	 * 
 	 * @author finterly
 	 */
@@ -843,10 +843,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		private Citation citation; // source citation, elementRef in GPML
 		private Citable citable; // target pathway, pathway element, or annotationRef
 		private List<AnnotationRef> annotationRefs; // 0 to unbounded
-		
-		//Special temporary method 
+
+		// Special temporary method
 		public PathwayElement getTop() {
-			return PathwayElement.this; 
+			return PathwayElement.this;
 		}
 
 		// ================================================================================

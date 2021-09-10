@@ -563,9 +563,13 @@ public class Pathway extends PathwayElement {
 		private int order;// optional
 		private Xref xref;// optional
 
+		// ================================================================================
+		// Constructors
+		// ================================================================================
 		/**
 		 * Instantiates an author with only required property. Use set methods for
-		 * optional properties.
+		 * optional author properties. This private constructor is called by
+		 * {@link #addAuthor(String name)}.
 		 * 
 		 * @param name the author name.
 		 */
@@ -573,6 +577,9 @@ public class Pathway extends PathwayElement {
 			this.name = name;
 		}
 
+		// ================================================================================
+		// Accessors
+		// ================================================================================
 		/**
 		 * Returns the name of this author.
 		 * 
