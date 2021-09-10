@@ -258,13 +258,11 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes url {@link UrlRef} information to new element. Url is optional for
-	 * Annotations and Evidences. For Citations, either Xref and/or Url are
-	 * required.
+	 * Writes url link information to new element. Url is optional for Annotations
+	 * and Evidences. For Citations, either Xref and/or Url are required.
 	 * 
-	 * @param xref     the xref of the pathway or pathway element.
-	 * @param e        the parent element.
-	 * @param required if true, xref is a required property.
+	 * @param urlLink the url link.
+	 * @param e       the jdom element.
 	 */
 	protected void writeUrl(String urlLink, Element e) {
 		if (urlLink != null) {
@@ -334,7 +332,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Writes dynamic property information for pathway or pathway element.
-	 * {@link Pathway#getDynamicProperty() , ElementInfo#getDynamicProperty()}
+	 * {@link PathwayElement#getDynamicProperty()}
 	 * 
 	 * @param dynamicProperties the list of dynamic properties.
 	 * @param e                 the parent element.
@@ -821,7 +819,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * shapes, or groups.
 	 * 
 	 * @param shapedElement the datanode, label, shape, or group.
-	 * @param e             the shape element.
+	 * @param se            the shape jdom element.
 	 * @throws ConverterException
 	 */
 	protected void writeShapedElement(ShapedElement shapedElement, Element se) throws ConverterException {
@@ -851,10 +849,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes rect property {@link RectProperty} information.
+	 * Writes rect property information.
 	 * 
-	 * @param rectProp the rectproperties.
-	 * @param gfx      the parent graphics element.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -870,10 +868,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes font property {@link FontProperty} information.
+	 * Writes font property information.
 	 * 
-	 * @param fontProp the font properties.
-	 * @param gfx      the parent graphics element.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -889,10 +887,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes shape style property {@link ShapeStyleProperty} information.
+	 * Writes shape style property information.
 	 * 
-	 * @param shapeProp the shape style properties.
-	 * @param gfx       the parent graphics element.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx, boolean writeZOrder)
@@ -910,10 +908,10 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Writes line style property {@link LineStyleProperty} information.
+	 * Writes line style property information.
 	 * 
-	 * @param lineProp the line style properties.
-	 * @param gfx      the parent graphics element.
+	 * @param lineElement the line pathway element.
+	 * @param gfx         the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {

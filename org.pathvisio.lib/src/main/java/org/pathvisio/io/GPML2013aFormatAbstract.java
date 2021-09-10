@@ -706,7 +706,7 @@ public abstract class GPML2013aFormatAbstract {
 	 * @param tag  used for lookup in the defaults table.
 	 * @param name used for lookup in the defaults table.
 	 * @param el   jdom element to get the attribute from.
-	 * @throws ConverterException if {@link getAttributeInfo} does not contain a
+	 * @throws ConverterException if {@link #getAttributeInfo} does not contain a
 	 *                            mapping for the specified key.
 	 */
 	protected String getAttr(String tag, String name, Element el) throws ConverterException {

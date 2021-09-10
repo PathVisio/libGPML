@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
+import org.pathvisio.model.LineElement;
+import org.pathvisio.model.ShapedElement;
 
 /**
  * This class contains extensible enum for lineStyle or borderStyle property.

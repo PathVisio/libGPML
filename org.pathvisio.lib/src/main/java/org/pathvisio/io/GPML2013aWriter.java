@@ -337,10 +337,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes dynamic property information for pathway or pathway element.
-	 * {@link Pathway#getDynamicProperty() , ElementInfo#getDynamicProperty()}
+	 * {@link PathwayElement#getDynamicProperty()}.
 	 * 
-	 * @param dynamicProperties the list of dynamic properties.
-	 * @param e                 the parent element.
+	 * @param pathway the pathway.
+	 * @param root    the jdom root element.
 	 * @throws ConverterException
 	 */
 	protected void writePathwayDynamicProperties(Pathway pathway, Element root) throws ConverterException {
@@ -389,8 +389,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes state {@link State} information.
 	 * 
-	 * @param dataNode the parent dataNode.
-	 * @param root     the root element.
+	 * @param dataNodes the parent dataNode.
+	 * @param root      the root element.
 	 * @throws ConverterException
 	 */
 	protected void writeStates(List<DataNode> dataNodes, Element root) throws ConverterException {
@@ -578,7 +578,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * Writes anchor {@link Anchor} information.
 	 * 
 	 * @param anchors the list of anchors.
-	 * @param wyps    the parent element.
+	 * @param gfx     the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeAnchors(List<Anchor> anchors, Element gfx) throws ConverterException {
@@ -674,10 +674,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes the infobox x and y coordinate {@link Pathway#getInfoBox()}
-	 * information.
+	 * Writes the infobox x and y coordinate information.
 	 * 
-	 * @param infoBox the infobox xy coordinates.
+	 * @param pathway the pathway.
 	 * @param root    the root element.
 	 */
 	protected void writeInfoBox(Pathway pathway, Element root) {
@@ -730,13 +729,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * Writes gpml:Biopax bp:OpenControlledVocabulary {@link Annotation}
 	 * information. Because it is not possible to write {@link AnnotationRef} for
 	 * {@link PathwayObject} in GPML2013a, the State annotationRef information is
-	 * written as {@link Comment} in {@link #writeStateAnnotationRefsAsComment()}.
-	 * We avoid writing annotation information if it is for a state
-	 * annotationRef/comment since it cannot be properly linked to a state pathway
-	 * element and is duplicate information.
+	 * written as {@link Comment} in {@link #convertStateRefToComments()}. We avoid
+	 * writing annotation information if it is for a state annotationRef/comment
+	 * since it cannot be properly linked to a state pathway element and is
+	 * duplicate information.
 	 * 
-	 * @param annotations the list of annotations.
-	 * @param root        the root element.
+	 * @param pathwayModel the pathway model.
+	 * @param bp           the jdom biopax element.
 	 * @throws ConverterException
 	 */
 	protected void writeBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp)
@@ -782,7 +781,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * Writes gpml:Biopax bp:PublicationXref {@link Citation} information.
 	 * 
 	 * @param citations the list of citations.
-	 * @param root      the root element.
+	 * @param bp        the jdom biopax element.
 	 * @throws ConverterException
 	 */
 	protected void writeBiopaxPublicationXref(List<Citation> citations, Element bp) throws ConverterException {
@@ -847,11 +846,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param groupRef the groupRef.
 	 * @param e        the parent element.
 	 */
-	protected void writeGroupRef(Group grpRf, Element e) {
-		if (grpRf != null) {
-			String groupRef = grpRf.getElementId();
-			if (groupRef != null && !groupRef.equals(""))
-				e.setAttribute("GroupRef", groupRef);
+	protected void writeGroupRef(Group groupRef, Element e) {
+		if (groupRef != null) {
+			String groupRefStr = groupRef.getElementId();
+			if (groupRefStr != null && !groupRefStr.equals(""))
+				e.setAttribute("GroupRef", groupRefStr);
 		}
 	}
 
@@ -910,8 +909,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes elementId, comment group {comment, dynamic property, annotationRef,
-	 * citationRef) and evidenceRef {@link PathwayElement} information for datanodes,
-	 * interactions, graphicalLines, labels, shapes, and group.
+	 * citationRef) and evidenceRef {@link PathwayElement} information for
+	 * datanodes, interactions, graphicalLines, labels, shapes, and group.
 	 * 
 	 * NB: writing of dynamic properties (gpml:Attribute) requires special handling
 	 * of DoubleLineProperty and CellularComponentProperty for shaped, state, or
@@ -943,7 +942,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * they were not yet defined in the GPML2013a schema/enum classes.
 	 * 
 	 * @param dynamicProperties the list of dynamic properties.
-	 * @param shapeProp         the shape style properties.
+	 * @param shapedElement     the shaped pathway element.
 	 * @param se                the jdom shaped pathway element element.
 	 * @throws ConverterException
 	 */
@@ -987,7 +986,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * not yet defined in the GPML2013a schema/enum classes.
 	 * 
 	 * @param dynamicProperties the list of dynamic properties.
-	 * @param lineProp          line style properties.
+	 * @param lineElement       the line pathway element.
 	 * @param ln                the jdom line pathway element element.
 	 * @throws ConverterException
 	 */
@@ -1012,10 +1011,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes rect property {@link RectProperty} information.
+	 * Writes rect property information.
 	 * 
-	 * @param rectProp the rectproperties.
-	 * @param gfx      the parent graphics element.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1029,16 +1028,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes color property information for pathway elements with shape style
-	 * properties {@link FontProperty}. This method is not used by line pathway
-	 * elements.
+	 * Writes color property information for shaped pathway elements. This method is
+	 * not used by line pathway elements.
 	 * 
 	 * NB: In GPML2013a, there is only color (textColor and borderColor are the same
 	 * color unless shapeType is "None" in which case there is no border). Color is
 	 * written separately to preserve the original order of properties in GPML2013a.
 	 * 
-	 * @param fontProp the font properties.
-	 * @param gfx      the parent graphics element.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeColor(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1048,10 +1046,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes font property {@link FontProperty} information, except color.
+	 * Writes font property information, except color.
 	 * 
-	 * @param fontProp the font properties.
-	 * @param gfx      the parent graphics element.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeFontProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1068,16 +1066,16 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes shape style property {@link ShapeStyleProperty} information, except
-	 * borderColor, zOrder, and fillColor. These properties are written separately
-	 * to preserve the original order of properties in GPML2013a.
+	 * Writes shape style property information, except borderColor, zOrder, and
+	 * fillColor. These properties are written separately to preserve the original
+	 * order of properties in GPML2013a.
 	 * 
 	 * NB: borderColor is not set, Color is set solely by textColor. zOrder and
 	 * fillColor are written separately to preserve the order of properties in
 	 * GPML2013a.
 	 * 
-	 * @param shapeProp the shape style properties.
-	 * @param gfx       the parent graphics element.
+	 * @param shaped element the shaped pathway element.
+	 * @param gfx    the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1105,9 +1103,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes line style property {@link LineStyleProperty} information.
+	 * Writes line style property information.
 	 * 
-	 * @param lineProp the line style properties.
+	 * @param lineElement the line pathway element. 
 	 * @param gfx      the parent graphics element.
 	 * @throws ConverterException
 	 */

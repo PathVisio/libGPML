@@ -834,9 +834,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * Check if either the line segment has less than or equal to 10 degree
 	 * alignment with the side passed
 	 * 
-	 * @param startLine
-	 * @param endLine
-	 * @return true if <= 10 degree alignment else false
+	 * @param side
+	 * @return true if less or equal to 10 degree alignment else false
 	 */
 	private boolean almostPerfectAlignment(int side) {
 		int MAXOFFSET = 30; /*
@@ -861,8 +860,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Returns the Perpendicular for a SIDE_* constant (e.g. SIDE_EAST <->
-	 * SIDE_WEST)
+	 * Returns the Perpendicular for a SIDE_* constant (e.g. SIDE_EAST, SIDE_WEST)
 	 */
 	private int getClockwisePerpendicularSide(int side) {
 		switch (side) {
@@ -915,9 +913,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * Get the side of the given pathway element to which the x and y coordinates
 	 * connect
 	 * 
-	 * @param x The x coordinate
-	 * @param y The y coordinate
-	 * @param e The element to find the side of
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param cx
+	 * @param cy // e The element to find the side of
 	 * @return One of the SIDE_* constants
 	 */
 	private static int getSide(double x, double y, double cx, double cy) {
@@ -943,7 +942,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Returns the opposite for a SIDE_* constant (e.g. SIDE_EAST <-> SIDE_WEST)
+	 * Returns the opposite for a SIDE_* constant (e.g. SIDE_EAST, SIDE_WEST)
 	 */
 	private int getOppositeSide(int side) {
 		switch (side) {

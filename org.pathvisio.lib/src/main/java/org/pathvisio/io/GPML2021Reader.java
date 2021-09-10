@@ -176,9 +176,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads Url {@link UrlRef} information from element. Url is optional for
-	 * Annotations, Citations, and Evidences. Citations must have either Xref or
-	 * Url, or both.
+	 * Reads Url link information from element. Url is optional for Annotations,
+	 * Citations, and Evidences. Citations must have either Xref or Url, or both.
 	 * 
 	 * @param e the element.
 	 * @return urlLink the link for the url.
@@ -196,8 +195,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads author {@link Author} information for pathway from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathway the pathway.
+	 * @param root    the root element.
 	 * @throws ConverterException
 	 */
 	protected void readAuthors(Pathway pathway, Element root) throws ConverterException {
@@ -321,8 +320,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads comment {@link Comment} information for pathway from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathway the pathway.
+	 * @param root    the root element.
 	 * @throws ConverterException
 	 */
 	protected void readPathwayComments(Pathway pathway, Element root) throws ConverterException {
@@ -340,8 +339,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads dynamic property {@link Pathway#setDynamicProperty} information for
 	 * pathway from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathway the pathway.
+	 * @param root    the root element.
 	 * @throws ConverterException
 	 */
 	protected void readPathwayDynamicProperties(Pathway pathway, Element root) throws ConverterException {
@@ -708,7 +707,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads elementRef {@link DataNode#setElementRef} for pathway model datanodes.
+	 * Reads elementRef {@link DataNode#setAliasRef} for pathway model datanodes.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -815,11 +814,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads rect property {@link RectProperty} information. Jdom handles schema
-	 * default values.
+	 * Reads rect property information. Jdom handles schema default values.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the rectProperty object.
+	 * @param shapedElement the shaped pathway element.
 	 * @throws ConverterException
 	 */
 	protected void readRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -837,11 +834,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads font property {@link FontProperty} information. Jdom handles schema
-	 * default values.
+	 * Reads font property information. Jdom handles schema default values.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the fontProperty object.
+	 * @param shapedElement the shaped pathway element.
 	 * @throws ConverterException
 	 */
 	protected void readFontProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -869,11 +864,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads shape style property {@link ShapeStyleProperty} information. Jdom
-	 * handles schema default values.
+	 * Reads shape style property information. Jdom handles schema default values.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the shapeStyleProperty object.
+	 * @param shapedElement the shaped pathway element.
+	 * @return the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected void readShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -899,11 +893,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads line style property {@link LineStyleProperty} information. Jdom handles
-	 * schema default values.
+	 * Reads line style property information. Jdom handles schema default values.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the lineStyleProperty object.
+	 * @param lineElement the line pathway element.
+	 * @return the lineStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected void readLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {

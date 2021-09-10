@@ -641,11 +641,11 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		}
 
 		/**
-		 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
-		 * for this annotationRef. NB: Annotatable is only set when an Annotatable adds
-		 * an AnnotationRef. This method is not used directly.
+		 * Sets the target pathway element or citationRef {@link Annotatable} for this
+		 * annotationRef. NB: Annotatable is only set when an Annotatable adds an
+		 * AnnotationRef. This method is not used directly.
 		 * 
-		 * @param citable the given target citable to set.
+		 * @param annotatable the given target annotatable to set.
 		 */
 		protected void setAnnotatableTo(Annotatable annotatable) {
 			if (annotatable == null)

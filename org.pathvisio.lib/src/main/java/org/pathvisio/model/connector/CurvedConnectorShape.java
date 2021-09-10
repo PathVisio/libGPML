@@ -21,8 +21,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
 /**
- * Implements a curved connector that draws curved lines between the
- * segments.
+ * Implements a curved connector that draws curved lines between the segments.
  * 
  * @author thomas
  *
@@ -72,13 +71,13 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	}
 
 	/**
-	 * Also calculates curvedSegments and curve.
+	 * Also calculates curvedSegments and curve. See calculateCurvedSegments. See
+	 * calculateCurve.
 	 * 
 	 * @param restrictions the connector restrictions.
 	 * @param waypoints    the waypoint array.
 	 * @return curveLow the segment array.
-	 * @see calculateCurvedSegments.
-	 * @see calculateCurve.
+	 * 
 	 */
 	protected Segment[] calculateSegments(ConnectorRestrictions restrictions, WayPoint[] waypoints) {
 		elbowSegments = super.calculateSegments(restrictions, waypoints);
@@ -154,7 +153,7 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	 * @param p1 The first helper coordinate
 	 * @param p2 The second helper coordinate
 	 * @param p3 The end coordinate
-	 * @param t  The relative position in the curve (0 <= t <= 1)
+	 * @param t  The relative position in the curve (value between 0 and 1)
 	 * @return The coordinate on the curve for t
 	 */
 	private double bezier(double p0, double p1, double p2, double p3, double t) {
@@ -162,10 +161,10 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	}
 
 	/**
-	 * Function for the base to the exponent power. 
+	 * Function for the base to the exponent power.
 	 *
 	 * @param a the base.
-	 * @param b the exponent. 
+	 * @param b the exponent.
 	 * @return the base to the exponent power.
 	 */
 	private double pow(double a, double b) {
@@ -204,11 +203,11 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	public Point2D fromLineCoordinate(double l) {
 		return super.fromLineCoordinate(l, curveHigh);
 	}
-	
+
 	/**
 	 * 
 	 * @param waypoints the waypoint array.
-	 * @param segements the segment array.
+	 * @param segments the segment array.
 	 * @return ...
 	 */
 	protected WayPoint[] wayPointsToCenter(WayPoint[] waypoints, Segment[] segments) {

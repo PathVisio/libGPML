@@ -45,7 +45,7 @@ public enum VAlignType {
 	/**
 	 * Constructor to initialize the state of enum types.
 	 * 
-	 * @param gpmlName the string.
+	 * @param name the string.
 	 */
 	private VAlignType(String name) {
 		this.name = name;

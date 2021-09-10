@@ -419,8 +419,7 @@ public class DataNode extends ShapedElement {
 		// Constructors
 		// ================================================================================
 		/**
-		 * Instantiates a State pathway element given all possible parameters. This
-		 * private constructor is accessed by {@link DataNode#addState()}.
+		 * Instantiates a State pathway element given all possible parameters.
 		 * 
 		 * @param textLabel the text label of the state.
 		 * @param type      the type of the state, e.g. protein modification.
@@ -443,7 +442,8 @@ public class DataNode extends ShapedElement {
 
 		/**
 		 * Instantiates a State pathway element given all possible parameters except
-		 * xref. This private constructor is accessed by {@link DataNode#addState()}.
+		 * xref. This private constructor is accessed by
+		 * {@link DataNode#addState(String textLabel, StateType stateType, double relX, double relY)}. 
 		 */
 		private State(String textLabel, StateType type, double relX, double relY) {
 			this(textLabel, type, relX, relY, null);

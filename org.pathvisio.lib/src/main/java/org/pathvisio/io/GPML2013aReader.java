@@ -153,10 +153,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Calculates and sets rect properties (centerX, centerY, width, height) for
-	 * groups after pathwayElements {@link List} is filled.
-	 * {@link #GroupRectProperty#calculateGroupBounds} Iterates over all group
-	 * pathway element members to find the total rectangular bounds, taking into
-	 * account rotation of the nested elements.
+	 * groups after pathwayElements {@link List} is filled. Method
+	 * {@link Group#getRotatedBounds()} Iterates over all group pathway element
+	 * members to find the total rectangular bounds, taking into account rotation of
+	 * the nested elements.
 	 * 
 	 * @param groups the list of groups.
 	 */
@@ -238,10 +238,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads the infobox x and y coordinate {@link Pathway#setInfoBox} information.
+	 * Reads the infobox x and y coordinate information. NB: Infobox is removed in
+	 * GPML2021, as the info box is always located in the top left corner (0,0).
 	 * 
-	 * @param root the root element.
-	 * @return the infoBox as coordinates.
+	 * @param pathway the pathway.
+	 * @param root    the root element.
 	 */
 	protected void readInfoBox(Pathway pathway, Element root) {
 		Element ifbx = root.getChild("InfoBox", root.getNamespace());
@@ -259,7 +260,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * 
 	 * @param pathway the pathway.
 	 * @param root    the root element.
-	 * @return the infoBox as coordinates.
 	 */
 	protected void readLegend(Pathway pathway, Element root) {
 		Element lgd = root.getChild("Legend", root.getNamespace());
@@ -636,12 +636,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads default shape style property for type of group. In 2013a, group
-	 * graphics was hard coded for each group type in GroupPainterRegistry.java.
-	 * {@link Group#setShapeStyleProperty}. Hover fillColor implemented in view.
+	 * Reads default shape style property for type of group as defined in 2013a in
+	 * GroupPainterRegistry.java.
 	 * 
 	 * @param type the group type.
-	 * @returns the shapeStyleProperty object.
+	 * @return the shapeStyleProperty object.
 	 * @throws ConverterException
 	 */
 	protected void readGroupShapeStyleProperty(Group group, GroupType type) throws ConverterException {
@@ -1004,7 +1003,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			String elementId = readElementId("GraphicalLine", gln, elementIdSet);
 			// adds elementId to lineList
 			lineList.add(elementId);
-			// instantiates graphical line and adds to pathway model 
+			// instantiates graphical line and adds to pathway model
 			GraphicalLine graphicalLine = new GraphicalLine();
 			graphicalLine.setElementId(elementId);
 			pathwayModel.addGraphicalLine(graphicalLine);
@@ -1081,7 +1080,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * NB: points refer to a group by its GraphId not GroupId(essentially
 	 * elementId). If the pathway element referenced by a point is a group, we must
 	 * search for the group by its GraphId {@link Group#getDynamicProperty}, instead
-	 * of using {@link PathwayModel#getPathwayElement()} which retrieves groups by
+	 * of using {@link PathwayModel#getPathwayObject()} which retrieves groups by
 	 * their elementId.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -1146,7 +1145,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				}
 				// adds list of points to lineElement if at least 2 points
 				if (ptList.size() >= 2) {
-					lineElement.addLinePoints(ptList); //add points directly and check afterwards
+					lineElement.addLinePoints(ptList); // add points directly and check afterwards
 				} else {
 					throw new ConverterException(
 							lineType.get(i) + lineElement.getElementId() + " must have at least 2 points.");
@@ -1398,11 +1397,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads rect property {@link RectProperty} information. Jdom handles schema
-	 * default values.
+	 * Reads rect property information. Jdom handles schema default values.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the rectProperty object.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1418,11 +1416,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads font property {@link FontProperty} information. Jdom handles schema
-	 * default values.
+	 * Reads font property information. Jdom handles schema default values.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the fontProperty object.
+	 * @param shapedElement the shaped pathwayElement.
+	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readFontProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1449,17 +1446,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads shape style property {@link ShapeStyleProperty} information. Jdom
-	 * handles schema default values. If shape type is a key in
-	 * {@link GPML2013aFormatAbstract#DEPRECATED_MAP}, replaces deprecated shape
-	 * type with newer value.
+	 * Reads shape style property information. Jdom handles schema default values.
+	 * If shape type is a key in {@link GPML2013aFormatAbstract#DEPRECATED_MAP},
+	 * replaces deprecated shape type with newer value.
 	 * 
 	 * NB: If pathway element has dynamic property key CellularComponentProperty,
 	 * shape type is again replaced, this time with the dynamic property value in
 	 * {@link #readShapedDynamicProperties} or {@link #readStateDynamicProperties}.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the shapeStyleProperty object.
+	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1495,11 +1491,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads line style property {@link LineStyleProperty} information. Jdom handles
+	 * Reads line style property information. Jdom handles
 	 * schema default values.
 	 * 
-	 * @param gfx the parent graphics element.
-	 * @returns the lineStyleProperty object.
+	 * @param lineElement the line pathway element. 
+	 * @param gfx the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {

@@ -41,6 +41,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
  *
  */
 public class RootElementFinder {
+	
+	/**
+	 * @author unknown
+	 *
+	 */
 	static class RootElementHandler extends DefaultHandler {
 		private String rootQName = null;
 		private String rootUri = null;

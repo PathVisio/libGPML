@@ -80,8 +80,7 @@ public class ShapeType {
 	 * The constructor is private. ShapeType cannot be directly instantiated. Use
 	 * create() method to instantiate ShapeType.
 	 * 
-	 * @param name the string key of this ShapeType.
-	 * @param isResizeable if true object is resizeable. 
+	 * @param name the string key of this ShapeType. // isResizeable if true object is resizeable. 
 	 * @throws NullPointerException if name is null.
 	 */
 	private ShapeType(String name) {
