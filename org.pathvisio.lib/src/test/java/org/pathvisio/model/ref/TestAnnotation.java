@@ -2,6 +2,7 @@ package org.pathvisio.model.ref;
 
 import org.pathvisio.model.DataNode;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
 
 import junit.framework.TestCase;
@@ -21,20 +22,19 @@ public class TestAnnotation extends TestCase {
 		PathwayModel p1 = new PathwayModel();
 
 		assert (p1.getAnnotations().isEmpty());
+		DataNode d1 = new DataNode("d1", null);
 
 		Annotation a1 = new Annotation("value", AnnotationType.ONTOLOGY);
 		Citation c1 = new Citation("urlLink");
 		p1.addAnnotation(a1);
 		p1.addCitation(c1);
-		AnnotationRef ar1 = new AnnotationRef(a1);
+		AnnotationRef ar1 = d1.addAnnotationRef(a1);
 		ar1.addCitationRef(c1);
 		System.out.println("Annotation has AnnotationRefs " + a1.getAnnotationRefs());
 		System.out.println("Citation has CitationRefs " + c1.getCitationRefs());
 		System.out.println("AnnotationRef has CitationRefs " + ar1.getCitationRefs());
 
 		// data node has annotationRef which has a citationRef
-		DataNode d1 = new DataNode("d1", null);
-		d1.addAnnotationRef(a1);
 		System.out.println("DataNode has AnnotationRefs " + d1.getAnnotationRefs());
 
 		assertEquals(ar1.getAnnotatable(), d1);

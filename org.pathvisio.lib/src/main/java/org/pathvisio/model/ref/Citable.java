@@ -2,6 +2,9 @@ package org.pathvisio.model.ref;
 
 import java.util.List;
 
+import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
+import org.pathvisio.model.ref.PathwayElement.CitationRef;
+
 /**
  * Interface for classes which can hold a {@link List} of {@link CitationRef}.
  * These classes include {@link Pathway}, {@link PathwayElement}, and

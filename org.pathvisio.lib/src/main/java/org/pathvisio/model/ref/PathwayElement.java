@@ -524,6 +524,694 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			}
 		}
 	}
-	
-	
+
+	// ================================================================================
+	// AnnotationRef Class
+	// ================================================================================
+	/**
+	 * This class stores information for an AnnotationRef with source
+	 * {@link Annotation}, target {@link Annotatable}, and a list of
+	 * {@link CitationRef} and/or {@link EvidenceRef}. The Annotatable target can
+	 * be a {@link PathwayElement}, or {@link CitationRef}. In gpml:AnnotationRef,
+	 * the attribute elementRef refers to the elementId of the source
+	 * gpml:Annotation.
+	 * 
+	 * @author finterly
+	 */
+	public class AnnotationRef implements Citable, Evidenceable {
+
+		private Annotation annotation; // source annotation, elementRef in GPML
+		private Annotatable annotatable; // target pathway, pathway element, or citationRef
+		private List<CitationRef> citationRefs; // 0 to unbounded
+		private List<EvidenceRef> evidenceRefs; // 0 to unbounded
+
+		// ================================================================================
+		// Constructors
+		// ================================================================================
+		/**
+		 * Instantiates an AnnotationRef given source {@link Annotation} and initializes
+		 * citationRefs and evidenceRefs lists.
+		 * 
+		 * @param annotation the source annotation this AnnotationRef refers to.
+		 */
+		public AnnotationRef(Annotation annotation) {
+			setAnnotationTo(annotation);
+			this.citationRefs = new ArrayList<CitationRef>();
+			this.evidenceRefs = new ArrayList<EvidenceRef>();
+		}
+
+		// ================================================================================
+		// Accessors
+		// ================================================================================
+		/**
+		 * Returns the annotation referenced.
+		 * 
+		 * @return annotation the annotation referenced.
+		 */
+		public Annotation getAnnotation() {
+			return annotation;
+		}
+
+		/**
+		 * Checks whether this annotationRef has a source annotation.
+		 *
+		 * @return true if and only if the annotation of this annotationRef is
+		 *         effective.
+		 */
+		public boolean hasAnnotation() {
+			return getAnnotation() != null;
+		}
+
+		/**
+		 * Sets the source annotation for this annotationRef. Adds this annotationRef to
+		 * the source annotation.
+		 * 
+		 * @param annotation the given source annotation to set.
+		 */
+		public void setAnnotationTo(Annotation annotation) {
+			if (annotation == null)
+				throw new IllegalArgumentException("Invalid annotation.");
+			if (hasAnnotation())
+				throw new IllegalStateException("AnnotationRef already has a source annotation.");
+			setAnnotation(annotation);
+			if (!annotation.hasAnnotationRef(this))
+				annotation.addAnnotationRef(this);
+		}
+
+		/**
+		 * Sets the source annotation for this annotationRef.
+		 * 
+		 * @param v the given source annotation to set.
+		 */
+		private void setAnnotation(Annotation v) {
+			annotation = v;
+		}
+
+		/**
+		 * Unsets the annotation, if any, from this annotationRef. Removes this
+		 * annotationRef from the source annotation.
+		 */
+		public void unsetAnnotation() {
+			if (hasAnnotation()) {
+				Annotation annotation = getAnnotation();
+				setAnnotation(null);
+				if (annotation.hasAnnotationRef(this))
+					annotation.removeAnnotationRef(this);
+			}
+		}
+
+		/**
+		 * Returns the target pathway, pathway element, or citationRef
+		 * {@link Annotatable} for this annotationRef.
+		 * 
+		 * @return annotatable the target of the annotationRef.
+		 */
+		public Annotatable getAnnotatable() {
+			return annotatable;
+		}
+
+		/**
+		 * Checks whether this annotationRef has a target annotatable.
+		 *
+		 * @return true if and only if the annotatable of this annotationRef is
+		 *         effective.
+		 */
+		public boolean hasAnnotatable() {
+			return getAnnotatable() != null;
+		}
+
+		/**
+		 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
+		 * for this annotationRef. NB: Annotatable is only set when an Annotatable adds
+		 * an AnnotationRef. This method is not used directly.
+		 * 
+		 * @param citable the given target citable to set.
+		 */
+		protected void setAnnotatableTo(Annotatable annotatable) {
+			if (annotatable == null)
+				throw new IllegalArgumentException("Invalid annotatable.");
+			if (hasAnnotatable())
+				throw new IllegalStateException("AnnotationRef already has a target annotatable.");
+			setAnnotatable(annotatable);
+		}
+
+		/**
+		 * Sets the target pathway, pathway element, or citationRef {@link Annotatable}
+		 * for this annotationRef.
+		 * 
+		 * @param v the given target annotatable to set.
+		 */
+		private void setAnnotatable(Annotatable v) {
+			annotatable = v;
+		}
+
+		/**
+		 * Unsets the annotatable, if any, from this annotationRef. NB: This method is
+		 * not used directly.
+		 */
+		protected void unsetAnnotatable() {
+			if (hasAnnotatable()) {
+				Annotatable annotatable = getAnnotatable();
+				setAnnotatable(null);
+				if (annotatable.hasAnnotationRef(this))
+					annotatable.removeAnnotationRef(this);
+			}
+		}
+
+		// ================================================================================
+		// CitationRef Methods
+		// ================================================================================
+		/**
+		 * Returns the list of citation references.
+		 * 
+		 * @return citationRefs the list of citations referenced, an empty list if no
+		 *         properties are defined.
+		 */
+		@Override
+		public List<CitationRef> getCitationRefs() {
+			return citationRefs;
+		}
+
+		/**
+		 * Checks whether citationRefs has the given citationRef.
+		 * 
+		 * @param citationRef the citationRef to look for.
+		 * @return true if has citationRef, false otherwise.
+		 */
+		@Override
+		public boolean hasCitationRef(CitationRef citationRef) {
+			return citationRefs.contains(citationRef);
+		}
+
+		/**
+		 * Creates and adds an citationRef to citationRefs list. Sets citable for the
+		 * given citationRef.
+		 * 
+		 * @param citation the citation for citationRef.
+		 */
+		@Override
+		public CitationRef addCitationRef(Citation citation) {
+			CitationRef citationRef = new CitationRef(citation);
+			// adds citationRef TODO
+			if (citationRef != null && !hasCitationRef(citationRef)) {
+				citationRef.setCitableTo(this);
+				assert (citationRef.getCitable() == this);
+				citationRefs.add(citationRef);
+//				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+			}
+			return citationRef;
+		}
+
+		/**
+		 * Removes given citationRef from citationRefs list. The citationRef ceases to
+		 * exist and is terminated.
+		 * 
+		 * @param citationRef the citationRef to be removed.
+		 */
+		@Override
+		public void removeCitationRef(CitationRef citationRef) {
+			assert (citationRef != null && hasCitationRef(citationRef));
+			citationRefs.remove(citationRef);
+			citationRef.terminate();
+		}
+
+		/**
+		 * Removes all citationRef from citationRefs list.
+		 */
+		@Override
+		public void removeCitationRefs() {
+			for (int i = 0; i < citationRefs.size(); i++) {
+				removeCitationRef(citationRefs.get(i));
+			}
+		}
+
+		// ================================================================================
+		// EvidenceRef Methods
+		// ================================================================================
+		/**
+		 * Returns the list of evidence references.
+		 * 
+		 * @return evidenceRefs the list of evidences referenced, an empty list if no
+		 *         properties are defined.
+		 */
+		@Override
+		public List<EvidenceRef> getEvidenceRefs() {
+			return evidenceRefs;
+		}
+
+		/**
+		 * Checks whether citationRefs has the given citationRef.
+		 * 
+		 * @param evidenceRef the evidenceRef to look for.
+		 * @return true if has evidenceRef, false otherwise.
+		 */
+		@Override
+		public boolean hasEvidenceRef(EvidenceRef evidenceRef) {
+			return evidenceRefs.contains(evidenceRef);
+		}
+
+		/**
+		 * Creates and adds an evidenceRef to evidenceRefs list. Sets evidenceable for
+		 * the given evidenceRef.
+		 * 
+		 * @param evidenceRef the evidenceRef for evidenceRef.
+		 */
+		@Override
+		public EvidenceRef addEvidenceRef(Evidence evidence) {
+			// Check if evidence already exists.... //TODO
+			// TODO create evidence
+			EvidenceRef evidenceRef = new EvidenceRef(evidence);
+			// adds evidenceRef
+			if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
+				evidenceRef.setEvidenceableTo(this);
+				assert (evidenceRef.getEvidenceable() == this);
+				evidenceRefs.add(evidenceRef);
+//				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
+			}
+			return evidenceRef;
+		}
+
+		/**
+		 * Removes given evidenceRef from evidenceRefs list. The evidenceRef ceases to
+		 * exist and is terminated.
+		 * 
+		 * @param evidenceRef the evidenceRef to be removed.
+		 */
+		@Override
+		public void removeEvidenceRef(EvidenceRef evidenceRef) {
+			assert (evidenceRef != null && hasEvidenceRef(evidenceRef));
+			evidenceRefs.remove(evidenceRef);
+			evidenceRef.terminate();
+		}
+
+		/**
+		 * Removes all evidenceRef from citationRefs list.
+		 */
+		@Override
+		public void removeEvidenceRefs() {
+			for (int i = 0; i < evidenceRefs.size(); i++) {
+				removeEvidenceRef(evidenceRefs.get(i));
+			}
+		}
+
+		/**
+		 * Terminates this annotationRef. The annotation and annotatable, if any, are
+		 * unset from this annotationRef.
+		 */
+		public void terminate() {
+			removeCitationRefs();
+			removeEvidenceRefs();
+			unsetAnnotation();
+			unsetAnnotatable();
+		}
+	}
+
+	// ================================================================================
+	// CitationRef Class
+	// ================================================================================
+	/**
+	 * This class stores information for a CitationRef with source {@link Citation},
+	 * target {@link Citable}, and a list of {@link AnnotationRef}. The Citable
+	 * target can be a {@link PathwayElement}, or {@link AnnotationRef}. In
+	 * gpml:CitationRef, the attribute elementRef refers to the elementId of the
+	 * source gpml:Citation.
+	 * 
+	 * @author finterly
+	 */
+	public class CitationRef implements Annotatable {
+
+		private Citation citation; // source citation, elementRef in GPML
+		private Citable citable; // target pathway, pathway element, or annotationRef
+		private List<AnnotationRef> annotationRefs; // 0 to unbounded
+		
+		//Special temporary method 
+		public PathwayElement getTop() {
+			return PathwayElement.this; 
+		}
+
+		// ================================================================================
+		// Constructors
+		// ================================================================================
+		/**
+		 * Instantiates an CitationRef given source {@link Citation} and initializes
+		 * annotationRefs lists.
+		 * 
+		 * @param citation the source citation this CitationRef refers to.
+		 */
+		protected CitationRef(Citation citation) {
+			setCitationTo(citation);
+			annotationRefs = new ArrayList<AnnotationRef>();
+		}
+
+		// ================================================================================
+		// Accessors
+		// ================================================================================
+		/**
+		 * Returns the citation referenced.
+		 * 
+		 * @return citation the citation referenced.
+		 */
+		public Citation getCitation() {
+			return citation;
+		}
+
+		/**
+		 * Checks whether this citationRef has a source citation.
+		 *
+		 * @return true if and only if the citation of this citationRef is effective.
+		 */
+		public boolean hasCitation() {
+			return getCitation() != null;
+		}
+
+		/**
+		 * Sets the source citation for this citationRef. Adds this citationRef to the
+		 * source citation.
+		 * 
+		 * @param citation the given source citation to set.
+		 */
+		public void setCitationTo(Citation citation) {
+			if (citation == null)
+				throw new IllegalArgumentException("Invalid citation.");
+			if (hasCitation())
+				throw new IllegalStateException("CitationRef already has a source citation.");
+			setCitation(citation);
+			if (!citation.hasCitationRef(this))
+				citation.addCitationRef(this);
+		}
+
+		/**
+		 * Sets the source citation for this citationRef.
+		 * 
+		 * @param v the given source citation to set.
+		 */
+		private void setCitation(Citation v) {
+			citation = v;
+		}
+
+		/**
+		 * Unsets the citation, if any, from this citationRef. Removes this citationRef
+		 * from the source citation.
+		 */
+		public void unsetCitation() {
+			if (hasCitation()) {
+				Citation citation = getCitation();
+				setCitation(null);
+				if (citation.hasCitationRef(this))
+					citation.removeCitationRef(this);
+			}
+		}
+
+		/**
+		 * Returns the target pathway, pathway element, or annotationRef {@link Citable}
+		 * for this citationRef.
+		 * 
+		 * @return citable the target of the citationRef.
+		 */
+		public Citable getCitable() {
+			return citable;
+		}
+
+		/**
+		 * Checks whether this citationRef has a target citable.
+		 *
+		 * @return true if and only if the citable of this citationRef is effective.
+		 */
+		public boolean hasCitable() {
+			return getCitable() != null;
+		}
+
+		/**
+		 * Sets the target pathway, pathway element, or annotationRef {@link Citable}
+		 * for this annotationRef. NB: Citable is only set when an Citable adds a
+		 * CitationRef. This method is not used directly.
+		 * 
+		 * @param citable the given target citable to set.
+		 */
+		protected void setCitableTo(Citable citable) {
+			if (citable == null)
+				throw new IllegalArgumentException("Invalid citable.");
+			if (hasCitable())
+				throw new IllegalStateException("CitationRef already has a target citable.");
+			setCitable(citable);
+		}
+
+		/**
+		 * Sets the target pathway, pathway element, or annotationRef {@link Citable} to
+		 * which the annotationRef belongs.
+		 * 
+		 * @param v the given target citable to set.
+		 */
+		private void setCitable(Citable v) {
+			citable = v;
+		}
+
+		/**
+		 * Unsets the citable, if any, from this citationRef. NB: This method is not
+		 * used directly.
+		 */
+		protected void unsetCitable() {
+			if (hasCitable()) {
+				Citable citable = getCitable();
+				setCitable(null);
+				if (citable.hasCitationRef(this))
+					citable.removeCitationRef(this);
+			}
+		}
+
+		// ================================================================================
+		// AnnotationRef Methods
+		// ================================================================================
+		/**
+		 * Returns the list of annotation references.
+		 * 
+		 * @return annotationRefs the list of annotations referenced, an empty list if
+		 *         no properties are defined.
+		 */
+		@Override
+		public List<AnnotationRef> getAnnotationRefs() {
+			return annotationRefs;
+		}
+
+		/**
+		 * Checks whether annotationRefs has the given annotationRef.
+		 * 
+		 * @param annotationRef the annotationRef to look for.
+		 * @return true if has annotationRef, false otherwise.
+		 */
+		@Override
+		public boolean hasAnnotationRef(AnnotationRef annotationRef) {
+			return annotationRefs.contains(annotationRef);
+		}
+
+		/**
+		 * Creates and adds an annotationRef to annotationRefs list.Sets annotable for
+		 * the given annotationRef.
+		 * 
+		 * @param annotation the annotation for annotationRef.
+		 */
+		@Override
+		public AnnotationRef addAnnotationRef(Annotation annotation) {
+			AnnotationRef annotationRef = new AnnotationRef(annotation);
+			// adds annotationRef
+			if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
+				annotationRef.setAnnotatableTo(this);
+				assert (annotationRef.getAnnotatable() == this);
+				annotationRefs.add(annotationRef);
+				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this,
+						StaticProperty.ANNOTATIONREF));
+			}
+			return annotationRef;
+		}
+
+		/**
+		 * Removes given annotationRef from annotationRefs list. The annotationRef
+		 * ceases to exist and is terminated.
+		 * 
+		 * @param annotationRef the annotationRef to be removed.
+		 */
+		@Override
+		public void removeAnnotationRef(AnnotationRef annotationRef) {
+			assert (annotationRef != null && hasAnnotationRef(annotationRef));
+			annotationRefs.remove(annotationRef);
+			annotationRef.terminate();
+		}
+
+		/**
+		 * Removes all annotationRefs from annotationRefs list.
+		 */
+		@Override
+		public void removeAnnotationRefs() {
+			for (int i = 0; i < annotationRefs.size(); i++) {
+				removeAnnotationRef(annotationRefs.get(i));
+			}
+		}
+
+		/**
+		 * Terminates this citationRef. The citation and citable, if any, are unset from
+		 * this citationRef. Links to all annotationRefs are removed from this
+		 * citationRef.
+		 */
+		public void terminate() {
+			removeAnnotationRefs();
+			unsetCitation();
+			unsetCitable();
+		}
+	}
+
+	// ================================================================================
+	// EvidenceRef Class
+	// ================================================================================
+	/**
+	 * This class stores information for a EvidenceRef which references an
+	 * {@link Evidence}.
+	 * 
+	 * @author finterly
+	 */
+	public class EvidenceRef {
+
+		private Evidence evidence; // source evidence, elementRef in GPML
+		private Evidenceable evidenceable; // target pathway, pathway element, or evidenceRef
+
+		// ================================================================================
+		// Constructors
+		// ================================================================================
+		/**
+		 * Instantiates an EvidenceRef given source {@link Evidence} and initializes
+		 * evidenceRefs lists.
+		 * 
+		 * @param evidence the source evidence this EvidenceRef refers to.
+		 */
+		protected EvidenceRef(Evidence evidence) {
+			setEvidenceTo(evidence);
+		}
+
+		// ================================================================================
+		// Accessors
+		// ================================================================================
+		/**
+		 * Returns the evidence referenced.
+		 * 
+		 * @return evidence the evidence referenced.
+		 */
+		public Evidence getEvidence() {
+			return evidence;
+		}
+
+		/**
+		 * Checks whether this evidenceRef has a source evidence.
+		 *
+		 * @return true if and only if the evidence of this evidenceRef is effective.
+		 */
+		public boolean hasEvidence() {
+			return getEvidence() != null;
+		}
+
+		/**
+		 * Sets the source evidence for this evidenceRef. Adds this evidencRef to the
+		 * source evidence.
+		 * 
+		 * @param evidence the given source evidence to set.
+		 */
+		public void setEvidenceTo(Evidence evidence) {
+			if (evidence == null)
+				throw new IllegalArgumentException("Invalid evidence.");
+			if (hasEvidence())
+				throw new IllegalStateException("EvidenceRef already has a source citation.");
+			setEvidence(evidence);
+			if (!evidence.hasEvidenceRef(this))
+				evidence.addEvidenceRef(this);
+		}
+
+		/**
+		 * Sets the source evidence for this evidenceRef.
+		 * 
+		 * @param v the given source evidence to set.
+		 */
+		private void setEvidence(Evidence v) {
+			evidence = v;
+		}
+
+		/**
+		 * Unsets the evidence, if any, from this evidenceRef. Removes this evidenceRef
+		 * from the source evidence.
+		 */
+		public void unsetEvidence() {
+			if (hasEvidence()) {
+				Evidence evidence = getEvidence();
+				setEvidence(null);
+				if (evidence.hasEvidenceRef(this))
+					evidence.removeEvidenceRef(this);
+			}
+		}
+
+		/**
+		 * Returns the target pathway, pathway element, or evidenceRef
+		 * {@link Evidenceable} for this evidenceRef.
+		 * 
+		 * @return evidenceable the target of the evidenceRef.
+		 */
+		public Evidenceable getEvidenceable() {
+			return evidenceable;
+		}
+
+		/**
+		 * Checks whether this evidenceRef has a target evidenceable.
+		 *
+		 * @return true if and only if the evidenceable of this evidenceRef is
+		 *         effective.
+		 */
+		public boolean hasEvidenceable() {
+			return getEvidenceable() != null;
+		}
+
+		/**
+		 * Sets the target pathway, pathway element, or evidenceRef {@link Evidenceable}
+		 * for this evidenceRef. NB: Evidenceable is only set when an Evidenceable adds
+		 * a EvidenceRef. This method is not used directly.
+		 * 
+		 * @param evidenceable the given target evidenceable to set.
+		 */
+		protected void setEvidenceableTo(Evidenceable evidenceable) {
+			if (evidenceable == null)
+				throw new IllegalArgumentException("Invalid evidenceable.");
+			if (hasEvidenceable())
+				throw new IllegalStateException("EvidenceRef already has a target evidenceable.");
+			setEvidenceable(evidenceable);
+		}
+
+		/**
+		 * Sets the target pathway, pathway element, or evidenceRef {@link Evidenceable}
+		 * to which the evidenceRef belongs.
+		 * 
+		 * @param v the given target evidenceable to set.
+		 */
+		private void setEvidenceable(Evidenceable v) {
+			evidenceable = v;
+		}
+
+		/**
+		 * Unsets the evidenceable, if any, from this evidenceRef. NB: This method is
+		 * not used directly.
+		 */
+		protected void unsetEvidenceable() {
+			if (hasEvidenceable()) {
+				Evidenceable evidenceable = getEvidenceable();
+				setEvidenceable(null);
+				if (evidenceable.hasEvidenceRef(this))
+					evidenceable.removeEvidenceRef(this);
+			}
+		}
+
+		/**
+		 * Terminates this evidenceRef. The evidence and evidenceable, if any, are unset
+		 * from this evidenceRef. Links to all evidenceRefs are removed from this
+		 * evidenceRef.
+		 */
+		public void terminate() {
+			unsetEvidence();
+			unsetEvidenceable();
+		}
+	}
+
 }

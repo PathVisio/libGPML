@@ -23,8 +23,10 @@ import java.util.Objects;
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayObject;
+import org.pathvisio.model.ref.PathwayElement.CitationRef;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
+
 
 /**
  * This class stores information for a Citation.

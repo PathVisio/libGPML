@@ -3,6 +3,7 @@ package org.pathvisio.model.ref;
 
 import org.pathvisio.model.DataNode;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.ref.PathwayElement.CitationRef;
 
 import junit.framework.TestCase;
 

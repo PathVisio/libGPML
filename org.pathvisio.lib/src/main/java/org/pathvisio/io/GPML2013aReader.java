@@ -48,11 +48,11 @@ import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.Shape;
 import org.pathvisio.model.ShapedElement;
 import org.pathvisio.model.ref.Annotation;
-import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.PathwayElement;
+import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
+import org.pathvisio.model.ref.PathwayElement.CitationRef;
 import org.pathvisio.model.ref.PathwayElement.Comment;
 import org.pathvisio.model.type.AnchorShapeType;
 import org.pathvisio.model.type.AnnotationType;
@@ -507,7 +507,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = (Citation) pathwayModel.getPathwayObject(biopaxRef);
 			// if citation is valid, create citationRef and add to pathway model
 			if (citation != null) {
-				CitationRef citationRef = pathwayModel.getPathway().addCitationRef(citation);
+				pathwayModel.getPathway().addCitationRef(citation);
 			} else {
 				Logger.log.trace("Warning: biopaxRef " + biopaxRef
 						+ " refers to invalid Biopax PublicationXref, biopaxRef is not created.");

@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.PathwayObject;
+import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
