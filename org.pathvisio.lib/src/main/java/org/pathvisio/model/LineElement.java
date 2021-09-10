@@ -288,9 +288,9 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Adds given point to linePoints list. Sets lineElement for the given point.
+	 * Adds given anchor to anchors list. Sets lineElement for the given anchor.
 	 * 
-	 * @param point the linePoint to be added.
+	 * @param anchor the anchor to be added.
 	 */
 	public void addAnchor(Anchor anchor) {
 		if (anchor != null && !hasAnchor(anchor)) {

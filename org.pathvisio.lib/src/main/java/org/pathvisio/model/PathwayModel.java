@@ -245,7 +245,7 @@ public class PathwayModel {
 	// ElementRefToLinePoints Map Methods
 	// ================================================================================
 	/**
-	 * Returns all {@link LinkableFrom} {@link LineElement.LinePoints} that refer to
+	 * Returns all {@link LinkableFrom} {@link LineElement.LinePoint} that refer to
 	 * a {@link LinkableTo} pathway element.
 	 */
 	public Set<LinkableFrom> getReferringLinkableFroms(LinkableTo pathwayElement) {
@@ -782,7 +782,7 @@ public class PathwayModel {
 	 *
 	 * fires PathwayEvent.ADDED event <i>after</i> addition of the object
 	 *
-	 * @param o The object to add
+	 * @param pathwayObject The object to add
 	 */
 	public void add(PathwayObject pathwayObject) {
 		assert (pathwayObject.getPathwayModel() == this); // can only remove direct child objects
@@ -1077,7 +1077,7 @@ public class PathwayModel {
 	 * Checks whether the board size is still large enough for the given
 	 * {@link PathwayElement} and increases the size if not
 	 * 
-	 * @param elm The element to check the board size for
+	 * @param e The element to check the board size for
 	 */
 	public void checkMBoardSize(PathwayObject e) { // TODO was protected
 		final int BORDER_SIZE = 30;

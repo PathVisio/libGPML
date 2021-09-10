@@ -32,7 +32,7 @@ public interface Evidenceable {
 	/**
 	 * Creates and adds an evidenceRef to evidenceRefs list.
 	 * 
-	 * @param evidenceRef the evidenceRef for evidenceRef.
+	 * @param evidence the evidenceRef for evidenceRef.
 	 */
 	public EvidenceRef addEvidenceRef(Evidence evidence);
 

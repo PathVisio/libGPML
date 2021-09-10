@@ -30,7 +30,8 @@ import org.pathvisio.debug.Logger;
  */
 public class ConnectorType {
 
-	private static Map<String, ConnectorType> nameToConnectorType = new TreeMap<String, ConnectorType>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String, ConnectorType> nameToConnectorType = new TreeMap<String, ConnectorType>(
+			String.CASE_INSENSITIVE_ORDER);
 
 	public static final ConnectorType STRAIGHT = new ConnectorType("Straight"); // DEFAULT
 	public static final ConnectorType ELBOW = new ConnectorType("Elbow");
@@ -56,8 +57,8 @@ public class ConnectorType {
 
 	/**
 	 * Returns a ConnectorType from a given name. If the ConnectorType doesn't exist
-	 * yet, it is created to extend the enum. The method makes sure that the
-	 * same object is not added twice.
+	 * yet, it is created to extend the enum. The method makes sure that the same
+	 * object is not added twice.
 	 * 
 	 * @param name the string key.
 	 * @return the ConnectorType for given name or new ConnectorType if name does
@@ -67,8 +68,8 @@ public class ConnectorType {
 		if (nameToConnectorType.containsKey(name)) {
 			return nameToConnectorType.get(name);
 		} else
-			Logger.log.trace("Registered connector type " + name); 
-			return new ConnectorType(name);
+			Logger.log.trace("Registered connector type " + name);
+		return new ConnectorType(name);
 	}
 
 	/**
@@ -123,6 +124,7 @@ public class ConnectorType {
 	/**
 	 * Compares string representations of given ConnectorType lexicographically.
 	 * 
+	 * @param connectorType
 	 * @return positive number (integer difference of character value) if first
 	 *         string is lexicographically greater than second string, negative
 	 *         number if first string is less than second string lexicographically,

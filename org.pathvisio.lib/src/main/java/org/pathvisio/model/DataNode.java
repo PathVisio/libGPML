@@ -282,7 +282,7 @@ public class DataNode extends ShapedElement {
 	 * Sets the group aliasRef to which this data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of gpml:Group.
 	 * 
-	 * @param aliasRef the group to which this data node refers.
+	 * @param v the group to which this data node refers.
 	 */
 	public void setAliasRefTo(Group v) {
 		// TODO

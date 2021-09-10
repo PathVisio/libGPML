@@ -42,7 +42,7 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	}
 
 	/**
-	 * @param segements the segment array.
+	 * @param segments the segment array.
 	 * @return path the Shape.
 	 */
 	public Shape calculateShape(Segment[] segments) {

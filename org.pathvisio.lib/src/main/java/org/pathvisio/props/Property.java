@@ -24,28 +24,28 @@ package org.pathvisio.props;
 public interface Property {
 
 	/**
-	 * Gets the Id for this property.  Ids must be unique.
+	 * Gets the Id for this property. Ids must be unique.
 	 */
 	String getId();
 
 	/**
-	 * @return the name of property, used e.g. as row header in the properties table.
+	 * @return the name of property, used e.g. as row header in the properties
+	 *         table.
 	 */
 	String getName();
 
 	/**
-	 * Description of property, used e.g. as tooltip text when mousing over
-	 * the properties table. Descriptions are optional.
-	 * @returns description. May return null.
+	 * Description of property, used e.g. as tooltip text when mousing over the
+	 * properties table. Descriptions are optional.
+	 * 
+	 * @return description. May return null.
 	 */
 	String getDescription();
-
 
 	/**
 	 * Gets the data type for this property.
 	 */
 	PropertyType getType();
-
 
 	/**
 	 * Gets whether this property has accepts values.

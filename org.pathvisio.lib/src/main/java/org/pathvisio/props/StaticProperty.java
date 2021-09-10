@@ -25,7 +25,7 @@ import org.pathvisio.model.PathwayObject;
 /**
  * Static properties for ObjectTypes, linked in {@link PathwayObject}.
  * 
- * // TODO Tag name must be unique...Does it matter what numbers? 
+ * // TODO Tag name must be unique...Does it matter what numbers?
  * 
  * @author unknown, finterly
  */
@@ -99,16 +99,17 @@ public enum StaticProperty implements Property {
 	// shaped pathway elements: datanode, state, label, shape, group
 	TEXTLABEL("textLabel", "Text Label", StaticPropertyType.STRING, 160),
 
-	// types: anchor, annotation, linepoint, datanode, state, group //TODO TAG NAMES??? 
-	ANCHORSHAPETYPE("anchorShapeType", "Anchor Shape Type", StaticPropertyType.ANCHORSHAPETYPE, 161), 
-	ANNOTATIONTYPE("annotationType", "Annotation Type", StaticPropertyType.ANNOTATIONTYPE, 162), 
+	// types: anchor, annotation, linepoint, datanode, state, group //TODO TAG
+	// NAMES???
+	ANCHORSHAPETYPE("anchorShapeType", "Anchor Shape Type", StaticPropertyType.ANCHORSHAPETYPE, 161),
+	ANNOTATIONTYPE("annotationType", "Annotation Type", StaticPropertyType.ANNOTATIONTYPE, 162),
 	ARROWHEADTYPE("arrowHead", "ArrowHead Type", StaticPropertyType.ARROWHEADTYPE, 163),
-	DATANODETYPE("dataNodeType", "DataNode Type", StaticPropertyType.DATANODETYPE, 164), 
+	DATANODETYPE("dataNodeType", "DataNode Type", StaticPropertyType.DATANODETYPE, 164),
 	STATETYPE("stateType", "State Type", StaticPropertyType.STATETYPE, 165),
 	GROUPTYPE("groupType", "Group Type", StaticPropertyType.GROUPTYPE, 166),
 
 	// datanode
-	ALIASREF("aliasRef", "Alias Reference", StaticPropertyType.STRING, 167, false, true, false), 
+	ALIASREF("aliasRef", "Alias Reference", StaticPropertyType.STRING, 167, false, true, false),
 
 	// state
 	RELX("relX", "Relative X", StaticPropertyType.DOUBLE, 168, true, false, false),
@@ -145,7 +146,6 @@ public enum StaticProperty implements Property {
 	private boolean hidden;
 	private int order;
 
-	
 	// ================================================================================
 	// Constructors
 	// ================================================================================
@@ -231,15 +231,15 @@ public enum StaticProperty implements Property {
 		return "core." + tag;
 	}
 
-	/** @{inheritDoc} */
+	/** inheritDoc */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * inheritDoc
 	 * 
-	 *               Used to be desc()
+	 * Used to be desc()
 	 * 
 	 */
 	public String getDescription() {

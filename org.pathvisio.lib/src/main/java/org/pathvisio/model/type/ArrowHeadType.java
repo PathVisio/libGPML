@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
+import org.pathvisio.model.LineElement;
 
 /**
  * This class contains extensible enum pattern for different arrow head types. A

@@ -315,9 +315,9 @@ public class Pathway extends PathwayElement {
 	}
 
 	/**
-	 * Adds the given author to authors list. TODO
+	 * Creates and adds an author to authors list. TODO
 	 * 
-	 * @param author the author to add.
+	 * @param name the name of author.
 	 */
 	public Author addAuthor(String name) {
 		Author author = new Author(name);

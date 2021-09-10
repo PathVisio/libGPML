@@ -339,7 +339,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * Creates and adds an evidenceRef to evidenceRefs list. Sets evidenceable for
 	 * the given evidenceRef.
 	 * 
-	 * @param evidenceRef the evidenceRef for evidenceRef.
+	 * @param evidence the evidenceRef for evidenceRef.
 	 */
 	@Override
 	public EvidenceRef addEvidenceRef(Evidence evidence) {
@@ -774,7 +774,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * Creates and adds an evidenceRef to evidenceRefs list. Sets evidenceable for
 		 * the given evidenceRef.
 		 * 
-		 * @param evidenceRef the evidenceRef for evidenceRef.
+		 * @param evidence the evidence for evidenceRef.
 		 */
 		@Override
 		public EvidenceRef addEvidenceRef(Evidence evidence) {

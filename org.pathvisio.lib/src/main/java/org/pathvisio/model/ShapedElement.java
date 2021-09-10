@@ -815,7 +815,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * @param mp a point in absolute model coordinates
-	 * @returns the same point relative to the bounding box of this pathway element:
+	 * @return the same point relative to the bounding box of this pathway element:
 	 *          -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
 	 *          corner, and 0,0 meaning the center.
 	 */
