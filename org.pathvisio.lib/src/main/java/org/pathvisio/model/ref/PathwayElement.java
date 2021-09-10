@@ -523,6 +523,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 						PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
 			}
 		}
-
 	}
+	
+	
 }

@@ -27,16 +27,14 @@ public class TestAnnotation extends TestCase {
 		p1.addAnnotation(a1);
 		p1.addCitation(c1);
 		AnnotationRef ar1 = new AnnotationRef(a1);
-		CitationRef cr1 = new CitationRef(c1);
-		ar1.addCitationRef(cr1);
+		ar1.addCitationRef(c1);
 		System.out.println("Annotation has AnnotationRefs " + a1.getAnnotationRefs());
 		System.out.println("Citation has CitationRefs " + c1.getCitationRefs());
 		System.out.println("AnnotationRef has CitationRefs " + ar1.getCitationRefs());
 
 		// data node has annotationRef which has a citationRef
 		DataNode d1 = new DataNode("d1", null);
-		p1.addDataNode(d1);
-		d1.addAnnotationRef(ar1);
+		d1.addAnnotationRef(a1);
 		System.out.println("DataNode has AnnotationRefs " + d1.getAnnotationRefs());
 
 		assertEquals(ar1.getAnnotatable(), d1);

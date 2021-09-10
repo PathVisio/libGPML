@@ -266,69 +266,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	// ================================================================================
-	// Start and End LinePoint Methods
-	// ================================================================================
-	/**
-	 * Returns the start (first) point of points list. TODO necessary method?
-	 * 
-	 * @return the first point of points list.
-	 */
-	public LinePoint getStartLinePoint() {
-		return linePoints.get(0);
-	}
-
-	// TODO weird
-	public void setStartLinePoint(LinePoint linePoint) {
-		getStartLinePoint().moveTo(linePoint);
-	}
-
-	/**
-	 * Returns the end (last) point of points list. TODO necessary method?
-	 * 
-	 * @return the last point of points list.
-	 */
-	public LinePoint getEndLinePoint() {
-		return linePoints.get(linePoints.size() - 1);
-	}
-
-	// TODO weird
-	public void setEndLinePoint(LinePoint linePoint) {
-		getEndLinePoint().moveTo(linePoint);
-	}
-
-	public double getStartLinePointX() {
-		return getStartLinePoint().getX();
-	}
-
-	public void setStartLinePointX(double v) {
-		getStartLinePoint().setX(v);
-	}
-
-	public double getStartLinePointY() {
-		return getStartLinePoint().getY();
-	}
-
-	public void setStartLinePointY(double v) {
-		getStartLinePoint().setY(v);
-	}
-
-	public double getEndLinePointX() {
-		return getEndLinePoint().getX();
-	}
-
-	public void setEndLinePointX(double v) {
-		getEndLinePoint().setX(v);
-	}
-
-	public double getEndLinePointY() {
-		return getEndLinePoint().getY();
-	}
-
-	public void setEndLinePointY(double v) {
-		getEndLinePoint().setY(v);
-	}
-
-	// ================================================================================
 	// Anchor Methods
 	// ================================================================================
 	/**
@@ -570,80 +507,88 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	// ================================================================================
-	// Inherited Methods
+	// Start and End LinePoint Methods
 	// ================================================================================
 	/**
-	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
-	 * model adds this pathway element. This method is not used directly.
+	 * Returns the start (first) point of points list. TODO necessary method?
 	 * 
-	 * @param pathwayModel the parent pathway model.
+	 * @return the first point of points list.
 	 */
-	@Override
-	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
-		if (pathwayModel == null)
-			throw new IllegalArgumentException("Invalid pathway model.");
-		if (hasPathwayModel())
-			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
-		setPathwayModel(pathwayModel);
-		// if line element has points and anchors, also add them to pathway model TODO
-		for (LinePoint point : linePoints) // TODO
-			pathwayModel.addPathwayObject(point);
-		for (Anchor anchor : anchors) // TODO
-			pathwayModel.addPathwayObject(anchor);
+	public LinePoint getStartLinePoint() {
+		return linePoints.get(0);
+	}
+
+	// TODO weird
+	public void setStartLinePoint(LinePoint linePoint) {
+		getStartLinePoint().moveTo(linePoint);
 	}
 
 	/**
-	 * Unsets the pathway model, if any, from this pathway element. The pathway
-	 * element no longer belongs to a pathway model. NB: This method is not used
-	 * directly.
+	 * Returns the end (last) point of points list. TODO necessary method?
+	 * 
+	 * @return the last point of points list.
 	 */
-	@Override
-	protected void unsetPathwayModel() {
-		if (hasPathwayModel()) {
-			setPathwayModel(null);
-			for (LinePoint point : linePoints) // TODO
-				point.setPathwayModel(null);
-			for (Anchor anchor : anchors) // TODO
-				anchor.setPathwayModel(null);
-		}
+	public LinePoint getEndLinePoint() {
+		return linePoints.get(linePoints.size() - 1);
 	}
 
-	/**
-	 * Terminates this LineElement. The pathway model, if any, is unset from this
-	 * anchor.Links to all annotationRefs, citationRefs, and evidenceRefs are
-	 * removed from this data node.
-	 */
-	@Override
-	public void terminate() {
-		removeLinePoints();
-		removeAnchors();
-		removeAnnotationRefs();
-		removeCitationRefs();
-		removeEvidenceRefs();
-		unsetGroupRef();
-		unsetPathwayModel();
+	// TODO weird
+	public void setEndLinePoint(LinePoint linePoint) {
+		getEndLinePoint().moveTo(linePoint);
+	}
+
+	public double getStartLinePointX() {
+		return getStartLinePoint().getX();
+	}
+
+	public void setStartLinePointX(double v) {
+		getStartLinePoint().setX(v);
+	}
+
+	public double getStartLinePointY() {
+		return getStartLinePoint().getY();
+	}
+
+	public void setStartLinePointY(double v) {
+		getStartLinePoint().setY(v);
+	}
+
+	public double getEndLinePointX() {
+		return getEndLinePoint().getX();
+	}
+
+	public void setEndLinePointX(double v) {
+		getEndLinePoint().setX(v);
+	}
+
+	public double getEndLinePointY() {
+		return getEndLinePoint().getY();
+	}
+
+	public void setEndLinePointY(double v) {
+		getEndLinePoint().setY(v);
 	}
 
 	// ================================================================================
-	// MLINE METHODS
+	// Point2D Methods
 	// ================================================================================
-	ConnectorShape shape;
+	/** converts start point from MPoint to Point2D */
+	public Point2D getStartPoint2D() {
+		return getStartLinePoint().toPoint2D();
+	}
 
-	/**
-	 * the Connector Shape for this line - the connector shape can calculate a Shape
-	 * based on the connector type (straight, elbow or curved) and possibly way
-	 * points
-	 */
-	public ConnectorShape getConnectorShape() {
-		String type = getConnectorType().getName();
+	/** converts end point from MPoint to Point2D */
+	public Point2D getEndPoint2D() {
+		return getEndLinePoint().toPoint2D();
+	}
 
-		// Recreate the ConnectorShape when it's null or when the type
-		// doesn't match the implementing class
-		if (shape == null || !shape.getClass().equals(ConnectorShapeFactory.getImplementingClass(type))) {
-			shape = ConnectorShapeFactory.createConnectorShape(getConnectorType().getName());
-			shape.recalculateShape(this);
+	/** converts all points from MPoint to Point2D */
+	public List<Point2D> getPoint2Ds() {
+		List<Point2D> pts = new ArrayList<Point2D>();
+		for (LinePoint p : linePoints) {
+			pts.add(p.toPoint2D());
 		}
-		return shape;
+		return pts;
 	}
 
 	// ================================================================================
@@ -784,49 +729,27 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		return (int) Math.signum(getEndLinePointY() - getStartLinePointY());
 	}
 
-	/** converts start point from MPoint to Point2D */
-	public Point2D getStartPoint2D() {
-		return getStartLinePoint().toPoint2D();
-	}
+	// ================================================================================
+	// Connector Methods
+	// ================================================================================
+	ConnectorShape shape;
 
-	/** converts end point from MPoint to Point2D */
-	public Point2D getEndPoint2D() {
-		return getEndLinePoint().toPoint2D();
-	}
+	/**
+	 * the Connector Shape for this line - the connector shape can calculate a Shape
+	 * based on the connector type (straight, elbow or curved) and possibly way
+	 * points
+	 */
+	public ConnectorShape getConnectorShape() {
+		String type = getConnectorType().getName();
 
-	/** converts all points from MPoint to Point2D */
-	public List<Point2D> getPoint2Ds() {
-		List<Point2D> pts = new ArrayList<Point2D>();
-		for (LinePoint p : linePoints) {
-			pts.add(p.toPoint2D());
+		// Recreate the ConnectorShape when it's null or when the type
+		// doesn't match the implementing class
+		if (shape == null || !shape.getClass().equals(ConnectorShapeFactory.getImplementingClass(type))) {
+			shape = ConnectorShapeFactory.createConnectorShape(getConnectorType().getName());
+			shape.recalculateShape(this);
 		}
-		return pts;
+		return shape;
 	}
-
-	// ================================================================================
-	// Start and End Methods
-	// ================================================================================
-
-	/**
-	 * Returns the element that the start of this line is connected to. Returns null
-	 * if there isn't any.
-	 */
-	private LinkableTo getStartElement() {
-		return getStartLinePoint().getElementRef();
-	}
-
-	/**
-	 * Returns the element that the end of this line is connected to. Returns null
-	 * if there isn't any.
-	 */
-	private LinkableTo getEndElement() {
-		return getEndLinePoint().getElementRef();
-
-	}
-
-	// ================================================================================
-	// ConnectorShape Methods
-	// ================================================================================
 
 	/**
 	 * Calculate on which side of a PathwayElement (SIDE_NORTH, SIDE_EAST,
@@ -837,7 +760,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public int getStartSide() {
 		int side = SIDE_WEST;
 
-		LinkableTo e = getStartElement();
+		LinkableTo e = getStartLinePoint().getElementRef();
 		if (e != null) {
 			if (e instanceof PathwayElement) {
 				side = getSide(getStartLinePoint().getRelX(), getStartLinePoint().getRelY());
@@ -857,7 +780,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public int getEndSide() {
 		int side = SIDE_EAST;
 
-		LinkableTo e = getEndElement();
+		LinkableTo e = getEndLinePoint().getElementRef();
 		if (e != null) {
 			if (e instanceof PathwayElement) {
 				side = getSide(getEndLinePoint().getRelX(), getEndLinePoint().getRelY());
@@ -1063,6 +986,61 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 		}
 		return rect;
+	}
+
+	// ================================================================================
+	// Inherited Methods
+	// ================================================================================
+	/**
+	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
+	 * model adds this pathway element. This method is not used directly.
+	 * 
+	 * @param pathwayModel the parent pathway model.
+	 */
+	@Override
+	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
+		if (pathwayModel == null)
+			throw new IllegalArgumentException("Invalid pathway model.");
+		if (hasPathwayModel())
+			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
+		setPathwayModel(pathwayModel);
+		// if line element has points and anchors, also add them to pathway model TODO
+		for (LinePoint point : linePoints) // TODO
+			pathwayModel.addPathwayObject(point);
+		for (Anchor anchor : anchors) // TODO
+			pathwayModel.addPathwayObject(anchor);
+	}
+
+	/**
+	 * Unsets the pathway model, if any, from this pathway element. The pathway
+	 * element no longer belongs to a pathway model. NB: This method is not used
+	 * directly.
+	 */
+	@Override
+	protected void unsetPathwayModel() {
+		if (hasPathwayModel()) {
+			setPathwayModel(null);
+			for (LinePoint point : linePoints) // TODO
+				point.setPathwayModel(null);
+			for (Anchor anchor : anchors) // TODO
+				anchor.setPathwayModel(null);
+		}
+	}
+
+	/**
+	 * Terminates this LineElement. The pathway model, if any, is unset from this
+	 * anchor.Links to all annotationRefs, citationRefs, and evidenceRefs are
+	 * removed from this data node.
+	 */
+	@Override
+	public void terminate() {
+		removeLinePoints();
+		removeAnchors();
+		removeAnnotationRefs();
+		removeCitationRefs();
+		removeEvidenceRefs();
+		unsetGroupRef();
+		unsetPathwayModel();
 	}
 
 	// ================================================================================
@@ -1412,6 +1390,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 
 		private boolean relativeSet; // TODO
 
+		private Point2D getAbsolute() {
+			return elementRef.toAbsoluteCoordinate(new Point2D.Double(getRelX(), getRelY()));
+		}
+
 		// TODO
 		public Point2D toPoint2D() {
 			return new Point2D.Double(getX(), getY());
@@ -1453,10 +1435,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		public void unlink() {
 			if (elementRef != null) {
 				if (getPathwayModel() != null) {
-					// Point2D abs = getAbsolute();
-					// moveTo(abs.getX(), abs.getY());
+					Point2D abs = getAbsolute();
+					moveTo(abs.getX(), abs.getY());
 				}
-				// relativeSet = false;
+				relativeSet = false;
 				setElementRef(null);
 				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 			}

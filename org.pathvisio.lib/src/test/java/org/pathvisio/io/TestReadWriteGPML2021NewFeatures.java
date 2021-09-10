@@ -20,13 +20,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.pathvisio.model.*;
+import org.pathvisio.model.DataNode;
+import org.pathvisio.model.Group;
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.Shape;
 import org.pathvisio.model.ref.AnnotationRef;
 import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.ref.CitationRef;
 import org.pathvisio.model.ref.Evidence;
-import org.pathvisio.model.ref.EvidenceRef;
-import org.pathvisio.model.type.*;
+import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -65,18 +67,17 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		pathwayModel.addEvidence(evidence1);
 		pathwayModel.addEvidence(evidence2);
 		// adds evidenceRef to pathway
-		pathwayModel.getPathway().addEvidenceRef(new EvidenceRef(evidence1));
+		pathwayModel.getPathway().addEvidenceRef(evidence1);
 
 		/*
 		 * Add citation and evidence to Annotation
 		 */
 		AnnotationRef annotationRef1 = pathwayModel.getPathway().getAnnotationRefs().get(0);
 		// adds evidenceRef to annotationRef
-		annotationRef1.addEvidenceRef(new EvidenceRef(evidence2));
+		annotationRef1.addEvidenceRef(evidence2);
 		// adds citation b9d pathwayModel to annotationRef as citationRef
 		Citation citation1 = pathwayModel.getCitations().get(2);
-		CitationRef citationRef1 = new CitationRef(citation1);
-		annotationRef1.addCitationRef(citationRef1);
+		annotationRef1.addCitationRef(citation1);
 
 		/**
 		 * Customize graphics features, change shapeType of virus to customized shape
