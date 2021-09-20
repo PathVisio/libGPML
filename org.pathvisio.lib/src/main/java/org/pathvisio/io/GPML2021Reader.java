@@ -114,8 +114,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readDataNodes(pathwayModel, root);
 		readInteractions(pathwayModel, root);
 		readGraphicalLines(pathwayModel, root);
-		// reads elementRefs last
-		readDataNodeElementRef(pathwayModel, root);
+		// reads aliasRefs and elementRefs last
+		readDataNodeAliasRef(pathwayModel, root);
 		readPointElementRef(pathwayModel, root);
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
@@ -705,16 +705,16 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads elementRef {@link DataNode#setAliasRef} for pathway model datanodes.
+	 * Reads aliasRef {@link DataNode#setAliasRef} for pathway model datanodes.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readDataNodeElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readDataNodeAliasRef(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element dns = root.getChild("DataNodes", root.getNamespace());
 		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
-			String aliasRefStr = dn.getAttributeValue("elementRef");
+			String aliasRefStr = dn.getAttributeValue("aliasRef");
 			if (aliasRefStr != null && !aliasRefStr.equals("")) {
 				Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
 				if (aliasRef != null) {

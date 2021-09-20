@@ -436,7 +436,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				dn.setAttribute("textLabel", dataNode.getTextLabel());
 				dn.setAttribute("type", dataNode.getType().getName());
 				writeGroupRef(dataNode.getGroupRef(), dn);
-				writeElementRef(dataNode.getAliasRef(), dn);
+				writeAliasRef(dataNode.getAliasRef(), dn);
 				if (dn != null) {
 					dnList.add(dn);
 				}
@@ -445,6 +445,21 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				dns.addContent(dnList);
 				root.addContent(dns);
 			}
+		}
+	}
+
+	/**
+	 * Writes aliasRef property information for a data node. Used in
+	 * {@link #writeDataNodes}.
+	 * 
+	 * @param aliasRef the group for which data node is an alias.
+	 * @param e        the parent jdom element.
+	 */
+	protected void writeAliasRef(Group aliasRef, Element e) {
+		if (aliasRef != null) {
+			String aliasRefStr = aliasRef.getElementId();
+			if (aliasRefStr != null && !aliasRefStr.equals(""))
+				e.setAttribute("aliasRef", aliasRefStr);
 		}
 	}
 
@@ -572,6 +587,24 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		}
 		if (ptList != null && ptList.isEmpty() == false)
 			wyps.addContent(ptList);
+	}
+
+	/**
+	 * Writes elementRef property information. Returns boolean if elementRef is
+	 * written. Used in {@link #writePoints}.
+	 * 
+	 * @param elementRef the elementRef.
+	 * @param e          the parent jdom element.
+	 * @return true if elementRef exists and is successfully written.
+	 */
+	protected boolean writeElementRef(LinkableTo elementRef, Element e) {
+		if (elementRef != null) {
+			String elementRefStr = elementRef.getElementId();
+			if (elementRefStr != null && !elementRefStr.equals(""))
+				e.setAttribute("elementRef", elementRefStr);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -780,24 +813,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected void writeElementId(String elementId, Element e) {
 		if (elementId != null && !elementId.equals(""))
 			e.setAttribute("elementId", elementId);
-	}
-
-	/**
-	 * Writes elementRef property information. Returns boolean if elementRef is
-	 * written. Used in {@link #writeDataNodes} and {@link #writePoints}.
-	 * 
-	 * @param elementRef the elementRef.
-	 * @param e          the parent element.
-	 * @return true if elementRef exists and is successfully written.
-	 */
-	protected boolean writeElementRef(LinkableTo elementRef, Element e) {
-		if (elementRef != null) {
-			String elementRefStr = elementRef.getElementId();
-			if (elementRefStr != null && !elementRefStr.equals(""))
-				e.setAttribute("elementRef", elementRefStr);
-			return true;
-		}
-		return false;
 	}
 
 	/**
