@@ -587,7 +587,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void setEndLineType(ArrowHeadType value) {
 		getEndLinePoint().setArrowHead(value);
 	}
-	
+
 	// ================================================================================
 	// Point2D Methods
 	// ================================================================================
@@ -932,8 +932,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * Get the side of the given pathway element to which the x and y coordinates
 	 * connect
 	 * 
-	 * @param x the x coordinate
-	 * @param y the y coordinate
+	 * @param x  the x coordinate
+	 * @param y  the y coordinate
 	 * @param cx
 	 * @param cy // e The element to find the side of
 	 * @return One of the SIDE_* constants
@@ -1140,6 +1140,9 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			return LineElement.this;
 		}
 
+		// ================================================================================
+		// Inherited Methods
+		// ================================================================================
 		/**
 		 * Returns the pathway model for this pathway element.
 		 * 

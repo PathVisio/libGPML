@@ -443,7 +443,7 @@ public class DataNode extends ShapedElement {
 		/**
 		 * Instantiates a State pathway element given all possible parameters except
 		 * xref. This private constructor is accessed by
-		 * {@link DataNode#addState(String textLabel, StateType stateType, double relX, double relY)}. 
+		 * {@link DataNode#addState(String textLabel, StateType stateType, double relX, double relY)}.
 		 */
 		private State(String textLabel, StateType type, double relX, double relY) {
 			this(textLabel, type, relX, relY, null);
@@ -462,16 +462,6 @@ public class DataNode extends ShapedElement {
 		 */
 		public DataNode getDataNode() {
 			return DataNode.this;
-		}
-
-		/**
-		 * Returns the pathway model for this pathway element.
-		 * 
-		 * @return pathwayModel the parent pathway model.
-		 */
-		@Override
-		public PathwayModel getPathwayModel() {
-			return DataNode.this.getPathwayModel();
 		}
 
 		/**
@@ -596,6 +586,36 @@ public class DataNode extends ShapedElement {
 				xref = v;
 				// TODO
 				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			}
+		}
+
+		// ================================================================================
+		// Inherited Methods
+		// ================================================================================
+		/**
+		 * Returns the pathway model for this pathway element.
+		 * 
+		 * @return pathwayModel the parent pathway model.
+		 */
+		@Override
+		public PathwayModel getPathwayModel() {
+			return DataNode.this.getPathwayModel();
+		}
+
+		/**
+		 * Sets the pathway model for this pathway element. NB: Only set when a pathway
+		 * model adds this pathway element. This method is not used directly. The point
+		 * or anchor should always have the same pathwayModel as the line it belongs to.
+		 * 
+		 * @param pathwayModel the parent pathway model.
+		 */
+		@Override
+		protected void setPathwayModelTo(PathwayModel pathwayModel)
+				throws IllegalArgumentException, IllegalStateException {
+			if (pathwayModel == null)
+				throw new IllegalArgumentException("Invalid pathway model.");
+			if (pathwayModel == getPathwayModel()) {
+				setPathwayModel(pathwayModel);
 			}
 		}
 

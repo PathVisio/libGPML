@@ -19,7 +19,8 @@ package org.pathvisio.io;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import org.pathvisio.model.*;
+
+import org.pathvisio.model.PathwayModel;
 
 import junit.framework.TestCase;
 
@@ -42,7 +43,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 
 		// file to be read
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource("WP1140.gpml");
+				.getResource("groups.gpml.xml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());

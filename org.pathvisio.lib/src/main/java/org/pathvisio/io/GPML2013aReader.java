@@ -52,7 +52,6 @@ import org.pathvisio.model.ref.Citation;
 import org.pathvisio.model.ref.Pathway;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
-import org.pathvisio.model.ref.PathwayElement.CitationRef;
 import org.pathvisio.model.ref.PathwayElement.Comment;
 import org.pathvisio.model.type.AnchorShapeType;
 import org.pathvisio.model.type.AnnotationType;
@@ -126,8 +125,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		List<String> lineList = new ArrayList<String>(); // ordered list of line pathway element elementIds
 		readAllElementIds(pathwayModel, root, elementIdSet);// reads all elementIds and stores in set
 		// reads pathway meta data
-		Pathway pathway = readPathway(root);
-		pathwayModel.setPathway(pathway);
+		readPathway(pathwayModel.getPathway(), root);
 		// reads biopax, equivalent to annotations and citations
 		readBiopax(pathwayModel, root, elementIdSet, biopaxIdToNew, duplicateToBiopaxId);
 		// reads pathway comments, biopaxRefs, dynamic properties
@@ -206,13 +204,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @return pathway the pathway object.
 	 * @throws ConverterException
 	 */
-	protected Pathway readPathway(Element root) throws ConverterException {
-		String title = getAttr("Pathway", "Name", root);
+	protected Pathway readPathway(Pathway pathway, Element root) throws ConverterException {
+		pathway.setTitle(getAttr("Pathway", "Name", root));
 		Element gfx = root.getChild("Graphics", root.getNamespace());
-		double boardWidth = Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx).trim());
-		double boardHeight = Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx).trim());
-		// instantiates pathway, default backgroundColor is ffffff (white)
-		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, Color.decode("#ffffff")).build();
+		pathway.setBoardWidth(Double.parseDouble(getAttr("Pathway.Graphics", "BoardWidth", gfx).trim()));
+		pathway.setBoardHeight(Double.parseDouble(getAttr("Pathway.Graphics", "BoardHeight", gfx).trim()));
 		// sets optional properties
 		pathway.setOrganism(getAttr("Pathway", "Organism", root));
 		pathway.setSource(getAttr("Pathway", "Data-Source", root));
@@ -820,11 +816,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// finds parent datanode from state elementRef
 			String elementRef = getAttr("State", "GraphRef", st);
 			DataNode dataNode = (DataNode) pathwayModel.getPathwayObject(elementRef);
-			// instantiates state
+			// instantiates state and adds state
 			State state = dataNode.addState(elementId, textLabel, type, relX, relY);
 			// set graphics props. No font properties in GPML2013a, set default values
 			readRectProperty(state, gfx);
 			readShapeStyleProperty(state, gfx);
+			state.setZOrder(dataNode.getZOrder() + 1);
 			// sets textColor to same color as borderColor
 			state.setTextColor(state.getBorderColor());
 			// reads comments, biopaxRefs/citationRefs, dynamic properties
@@ -838,9 +835,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			// sets optional properties
 			state.setXref(readXref(st));
-			// adds state to parent data node of pathway model
-			dataNode.addState(state);
-			state.setZOrder(dataNode.getZOrder() + 1);
 
 		}
 	}
@@ -873,6 +867,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// isAnnt true if at least one annotation type present after parsing
 			boolean isAnnotation = false;
 			String commentText = comment.getCommentText();
+			System.out.println(commentText);
+			System.out.println(state.getElementId());
+
 			Map<String, String> annotationsMap = new LinkedHashMap<String, String>();
 			// parse information to map if state commentText contains "=" or ";"
 			if (commentText.contains("=") || commentText.contains(";")) {
@@ -1276,7 +1273,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// comment must have text
 			if (commentText != null && !commentText.equals("")) {
 				// instantiates and adds comment to pathway element
-				pathwayElement.addComment(source, commentText);
+				pathwayElement.addComment(commentText, source);
 			}
 		}
 	}
@@ -1308,7 +1305,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			Citation citation = (Citation) pathwayModel.getPathwayObject(biopaxRef);
 			// if citation valid, create citationRef and add to pathway model.
 			if (citation != null) {
-				CitationRef citationRef = pathwayElement.addCitationRef(citation);
+				pathwayElement.addCitationRef(citation);
 			} else {
 				Logger.log.trace("Warning: biopaxRef " + biopaxRef
 						+ " refers to invalid Biopax PublicationXref, biopaxRef is not created.");
@@ -1480,8 +1477,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		shapedElement.setFillColor(fillColor);
 		shapedElement.setShapeType(shapeType);
 		String zOrder = getAttr(base + ".Graphics", "ZOrder", gfx);
-		if (zOrder != null)
+		if (zOrder != null) {
 			shapedElement.setZOrder(Integer.parseInt(zOrder.trim()));
+		}
 		// set rotation if shape
 		if (shapedElement.getClass() == Shape.class) {
 			double rotation = Double.parseDouble(getAttr("Shape.Graphics", "Rotation", gfx).trim());

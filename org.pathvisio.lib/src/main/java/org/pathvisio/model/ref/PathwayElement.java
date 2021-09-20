@@ -526,6 +526,27 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		}
 	}
 
+	/**
+	 * Abstract class of {@link AnnotationRef}, {@link CitationRef}, and
+	 * {@link EvidenceRef}.
+	 * 
+	 * @author finterly
+	 *
+	 */
+	public abstract class Ref {
+
+		/**
+		 * Returns the top target pathway element {@link PathwayElement} for a
+		 * {@link AnnotationRef}, {@link CitationRef}, or {@link EvidenceRef}.
+		 * 
+		 * @return the top target pathway element of the ref.
+		 */
+		public PathwayElement getTopPathwayElement() {
+			return PathwayElement.this;
+		}
+
+	}
+
 	// ================================================================================
 	// AnnotationRef Class
 	// ================================================================================
@@ -538,7 +559,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * 
 	 * @author finterly
 	 */
-	public class AnnotationRef implements Citable, Evidenceable {
+	public class AnnotationRef extends Ref implements Citable, Evidenceable {
 
 		private Annotation annotation; // source annotation, elementRef in GPML
 		private Annotatable annotatable; // target pathway, pathway element, or citationRef
@@ -838,16 +859,11 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * 
 	 * @author finterly
 	 */
-	public class CitationRef implements Annotatable {
+	public class CitationRef extends Ref implements Annotatable {
 
 		private Citation citation; // source citation, elementRef in GPML
 		private Citable citable; // target pathway, pathway element, or annotationRef
 		private List<AnnotationRef> annotationRefs; // 0 to unbounded
-
-		// Special temporary method
-		public PathwayElement getTop() {
-			return PathwayElement.this;
-		}
 
 		// ================================================================================
 		// Constructors
@@ -1068,7 +1084,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * 
 	 * @author finterly
 	 */
-	public class EvidenceRef {
+	public class EvidenceRef extends Ref {
 
 		private Evidence evidence; // source evidence, elementRef in GPML
 		private Evidenceable evidenceable; // target pathway, pathway element, or evidenceRef

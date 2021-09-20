@@ -43,8 +43,8 @@ public class TestAnnotationRef extends TestCase {
 
 		System.out.println(cr2.getCitable());
 		System.out.println(cr2.getCitation());
-		System.out.println(cr2.getTop());
-		System.out.println(cr1.getTop());
+		System.out.println(cr2.getTopPathwayElement());
+		System.out.println(cr1.getTopPathwayElement());
 		System.out.println(ar1.getAnnotatable());
 
 		// instantiate dataNode
@@ -57,8 +57,8 @@ public class TestAnnotationRef extends TestCase {
 		CitationRef cr4 = ar3.addCitationRef(c2);
 		System.out.println(cr3.getCitable());
 		System.out.println(cr3.getCitation());
-		System.out.println(cr3.getTop());
-		System.out.println(cr4.getTop());
+		System.out.println(cr3.getTopPathwayElement());
+		System.out.println(cr4.getTopPathwayElement());
 		System.out.println(ar3.getAnnotatable());
 //	
 //		DataNode d1 = new DataNode("d1", null);

@@ -100,8 +100,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @throws ConverterException
 	 */
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Pathway pathway = readPathway(root);
-		pathwayModel.setPathway(pathway);
+		readPathway(pathwayModel.getPathway(), root);
 		// reads before annotationRef, citationRef, evidenceRef
 		readAnnotations(pathwayModel, root);
 		readCitations(pathwayModel, root);
@@ -131,14 +130,13 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @return pathway the pathway object.
 	 * @throws ConverterException
 	 */
-	protected Pathway readPathway(Element root) throws ConverterException {
-		String title = root.getAttributeValue("title");
+	protected Pathway readPathway(Pathway pathway, Element root) throws ConverterException {
+		pathway.setTitle(root.getAttributeValue("title"));
 		Element gfx = root.getChild("Graphics", root.getNamespace());
-		double boardWidth = Double.parseDouble(gfx.getAttributeValue("boardWidth").trim());
-		double boardHeight = Double.parseDouble(gfx.getAttributeValue("boardHeight").trim());
-		Color backgroundColor = ColorUtils
-				.stringToColor(gfx.getAttributeValue("backgroundColor", BACKGROUNDCOLOR_DEFAULT));
-		Pathway pathway = new Pathway.PathwayBuilder(title, boardWidth, boardHeight, backgroundColor).build();
+		pathway.setBoardWidth(Double.parseDouble(gfx.getAttributeValue("boardWidth").trim()));
+		pathway.setBoardHeight( Double.parseDouble(gfx.getAttributeValue("boardHeight").trim()));
+		pathway.setBackgroundColor(ColorUtils
+				.stringToColor(gfx.getAttributeValue("backgroundColor", BACKGROUNDCOLOR_DEFAULT)));
 		readAuthors(pathway, root);
 		// sets optional properties
 		Element desc = root.getChild("Description", root.getNamespace());

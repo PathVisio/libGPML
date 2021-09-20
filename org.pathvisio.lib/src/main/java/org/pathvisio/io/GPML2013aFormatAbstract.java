@@ -134,8 +134,9 @@ public abstract class GPML2013aFormatAbstract {
 	 * {@link GPML2013aWriter#writePathwayDynamicProperties} and GPML2021
 	 * {@link GPML2021Writer#writeDynamicProperties}.
 	 */
-	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(Arrays.asList(PATHWAY_AUTHOR, PATHWAY_MAINTAINER,
-			PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, LEGEND_CENTER_X, LEGEND_CENTER_Y, GROUP_GRAPHID));
+	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(
+			Arrays.asList(PATHWAY_AUTHOR, PATHWAY_MAINTAINER, PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, INFOBOX_CENTER_X,
+					INFOBOX_CENTER_Y, LEGEND_CENTER_X, LEGEND_CENTER_Y, GROUP_GRAPHID));
 
 	/**
 	 * In GPML2013a, {@link Pathway} description is written as a
