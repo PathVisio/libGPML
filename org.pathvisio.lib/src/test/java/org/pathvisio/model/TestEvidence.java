@@ -1,6 +1,7 @@
-package org.pathvisio.model.ref;
+package org.pathvisio.model;
 
 
+import org.pathvisio.model.Annotation;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.type.AnnotationType;
 

@@ -1,8 +1,8 @@
-package org.pathvisio.model.ref;
+package org.pathvisio.model;
 
 import org.pathvisio.model.DataNode;
 import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
+import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
 
 import junit.framework.TestCase;
