@@ -1,59 +1,35 @@
 package org.pathvisio.model.ref;
 
-
-import org.pathvisio.model.DataNode;
 import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.ref.PathwayElement.CitationRef;
+import org.pathvisio.model.type.AnnotationType;
 
 import junit.framework.TestCase;
 
 /**
- * For testing Citation methods 
+ * For testing Citation methods
  * 
  * @author finterly
  */
 public class TestCitation extends TestCase {
 
 	/**
-	 * Test for adding Citation and CitationRef to pathway model
+	 * Tests for when citation with duplicate information is added to pathway
+	 * model.
 	 */
-	public static void testCitation() {
-
-		PathwayModel p1 = new PathwayModel();
-
-		assert (p1.getCitations().isEmpty());
-
-		Citation c1 = new Citation("urlLink");
-		Annotation a1 = new Annotation("a1", null);
-		p1.addCitation(c1);
-		p1.addAnnotation(a1);
-		System.out.println("Citation has CitationRefs " + c1.getCitationRefs());
-		System.out.println("Citation has CitationRefs " + c1.getCitationRefs());
-		
-		// data node has annotationRef which has a citationRef
-		DataNode d1 = new DataNode("d1", null);
-		p1.addDataNode(d1);
-		CitationRef cr1 = d1.addCitationRef(c1); 
-		cr1.addAnnotationRef(a1);
-		System.out.println("DataNode has CitationRefs " + d1.getCitationRefs());
-		System.out.println("CitationRef has AnnotationRefs " + cr1.getAnnotationRefs());
-
-		
-		assertEquals(cr1.getCitable(), d1);
-		assertEquals(cr1.getCitation(), c1);
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-
-//		 c1.removeCitationRef(cr1);
-		 cr1.unsetCitation();
-//		 d1.removeCitationRef(cr1);
-		
-		assertNull(cr1.getCitable());
-		assertNull(cr1.getCitation());
-		System.out.println("DataNode has CitationRef " + d1.getCitationRefs());
-		System.out.println("Citation has CitationRef " + c1.getCitationRefs());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-
+	public static void testDuplicateCitation() {
+		PathwayModel p2 = new PathwayModel();
+		assert (p2.getAnnotations().isEmpty());
+		Annotation a1 = new Annotation("value", AnnotationType.ONTOLOGY);
+		Annotation a2 = new Annotation("value", AnnotationType.ONTOLOGY);
+		Annotation annotationExisting = p2.addAnnotation(a1);
+		assertEquals(annotationExisting, a1);
+		// annotation a2 contains duplicate information and is not added
+		Annotation annotationExisting2 = p2.addAnnotation(a2);
+		assertEquals(annotationExisting2, a1);
+		assertTrue(p2.getPathwayObjects().contains(a1));
+		assertFalse(p2.getPathwayObjects().contains(a2));
+		assertTrue(p2.getAnnotations().contains(a1));
+		assertFalse(p2.getAnnotations().contains(a2));
 	}
-	
-	
+
 }

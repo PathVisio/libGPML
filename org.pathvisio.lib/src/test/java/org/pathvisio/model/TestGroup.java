@@ -144,12 +144,12 @@ public class TestGroup extends TestCase {
 		DataNode d1 = new DataNode("d1", null);
 		p1.addDataNode(d1);
 
-		// add data node to group 1 
+		// add data node to group 1
 //		d1.setGroupRefTo(g1);
 		g1.addPathwayElement(d1);
 		assertEquals(d1.getGroupRef(), g1);
 
-		// add data node to group 2 
+		// add data node to group 2
 //		d1.setGroupRefTo(g2);
 		g2.addPathwayElement(d1);
 		assertEquals(d1.getGroupRef(), g2);
@@ -159,6 +159,61 @@ public class TestGroup extends TestCase {
 		System.out.println("Group 1 contains PathwayElements " + g1.getPathwayElements());
 		System.out.println("Group 2 contains PathwayElements " + g2.getPathwayElements());
 		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
+	}
+
+	/**
+	 * Check that when a line points to the group, it stays at the same position
+	 * when the group disappears. Test for regression of bug #1058
+	 * 
+	 * @author unknown, finterly
+	 */
+	public void testUngroup() {
+		PathwayModel pwy = new PathwayModel();
+		Interaction line = new Interaction(null);
+
+		Group group = new Group(null);
+		DataNode node = new DataNode("d1", null);
+		pwy.addInteraction(line);
+		pwy.addDataNode(node);
+		pwy.addGroup(group);
+
+		assertNotNull(group.getElementId());
+
+		node.setCenterX(120);
+		node.setCenterY(20);
+		node.setWidth(20);
+		node.setHeight(20);
+
+		assertEquals(0, group.getPathwayElements().size());
+
+		// add node to group
+		node.setGroupRefTo(group);
+
+		// check that now it's really part of group
+		assertEquals(1, group.getPathwayElements().size());
+		assertTrue(group.getPathwayElements().contains(node));
+
+		line.setEndLinePointX(group.getCenterX());
+		line.setEndLinePointY(group.getTop());
+
+		line.getEndLinePoint().setElementRef(group);
+		assertEquals(line.getEndLinePoint().getElementRef(), group);
+
+		assertEquals(8.0, group.getMargin());
+
+		assertEquals(120.0, line.getEndLinePointX(), 0.01);
+		assertEquals(2.0, line.getEndLinePointY(), 0.01);
+
+		// ungroup
+		pwy.remove(group);
+
+		// check that line points at same position
+		assertEquals(120.0, line.getEndLinePointX());
+		assertEquals(2.0, line.getEndLinePointY());
+
+		assertNull(line.getEndLinePoint().getElementRef());
+		assertNull(node.getGroupRef());
+
 	}
 
 }

@@ -1,35 +1,36 @@
 package org.pathvisio.model.ref;
 
 
-import org.pathvisio.model.Shape;
+import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.type.AnnotationType;
 
 import junit.framework.TestCase;
 
 /**
- * For testing Citation methods 
+ * For testing Evidence methods 
  * 
  * @author finterly
  */
 public class TestEvidence extends TestCase {
 
 	/**
-	 * Test for adding Citation and CitationRef to pathway model
+	 * Tests for when evidence with duplicate information is added to pathway
+	 * model.
 	 */
-	public static void testCitation() {
-		
-		Shape shape = new Shape();
-		
-		double centerX = shape.getCenterX();
-		
-		System.out.println(centerX);
-		
-		shape.setCenterX(2);
-		shape.setCenterY(2);
-
-		System.out.println(centerX);
-		System.out.println(shape.getCenterX());
-
-
+	public static void testDuplicateEvidence() {
+		PathwayModel p2 = new PathwayModel();
+		assert (p2.getAnnotations().isEmpty());
+		Annotation a1 = new Annotation("value", AnnotationType.ONTOLOGY);
+		Annotation a2 = new Annotation("value", AnnotationType.ONTOLOGY);
+		Annotation annotationExisting = p2.addAnnotation(a1);
+		assertEquals(annotationExisting, a1);
+		// annotation a2 contains duplicate information and is not added
+		Annotation annotationExisting2 = p2.addAnnotation(a2);
+		assertEquals(annotationExisting2, a1);
+		assertTrue(p2.getPathwayObjects().contains(a1));
+		assertFalse(p2.getPathwayObjects().contains(a2));
+		assertTrue(p2.getAnnotations().contains(a1));
+		assertFalse(p2.getAnnotations().contains(a2));
 	}
 	
 	
