@@ -55,7 +55,7 @@ public class Evidence extends PathwayObject {
 	protected Evidence(String value, Xref xref, String urlLink) {
 		super();
 		this.value = value;
-		setXref(xref);
+		setXref(xref); // must be valid
 		this.urlLink = urlLink;
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
 	}

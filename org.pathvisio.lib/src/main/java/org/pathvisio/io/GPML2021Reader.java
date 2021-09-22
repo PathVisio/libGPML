@@ -20,37 +20,40 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
+import org.pathvisio.model.Annotation;
+import org.pathvisio.model.Citation;
 import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DataNode.State;
+import org.pathvisio.model.Evidence;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.GraphicalLine;
 import org.pathvisio.model.Group;
+import org.pathvisio.model.Info.Annotatable;
+import org.pathvisio.model.Info.Citable;
+import org.pathvisio.model.Info.Evidenceable;
 import org.pathvisio.model.Interaction;
 import org.pathvisio.model.Label;
 import org.pathvisio.model.LineElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.Pathway;
+import org.pathvisio.model.Pathway.Author;
+import org.pathvisio.model.PathwayElement;
+import org.pathvisio.model.PathwayElement.AnnotationRef;
+import org.pathvisio.model.PathwayElement.CitationRef;
+import org.pathvisio.model.PathwayElement.Comment;
+import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.Shape;
 import org.pathvisio.model.ShapedElement;
-import org.pathvisio.model.ref.Annotatable;
-import org.pathvisio.model.ref.Annotation;
-import org.pathvisio.model.ref.Citable;
-import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.ref.Evidence;
-import org.pathvisio.model.ref.Evidenceable;
-import org.pathvisio.model.ref.Pathway;
-import org.pathvisio.model.ref.Pathway.Author;
-import org.pathvisio.model.ref.PathwayElement;
-import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
-import org.pathvisio.model.ref.PathwayElement.CitationRef;
-import org.pathvisio.model.ref.PathwayElement.Comment;
 import org.pathvisio.model.type.AnchorShapeType;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.model.type.ArrowHeadType;
@@ -101,19 +104,18 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 */
 	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 		readPathway(pathwayModel.getPathway(), root);
-		// reads before annotationRef, citationRef, evidenceRef
-		readAnnotations(pathwayModel, root);
-		readCitations(pathwayModel, root);
-		readEvidences(pathwayModel, root);
+		// reads annotation/citation/evidence ref info into a map
+		Map<String, Element> refIdToJdomElement = new HashMap<String, Element>();
+		readInfoMap(pathwayModel, root, refIdToJdomElement);
 		// reads pathway info
-		readPathwayInfo(pathwayModel, root);
+		readCommentGroup(pathwayModel, pathwayModel.getPathway(), root, refIdToJdomElement);
 		// reads groups first
-		readGroups(pathwayModel, root);
-		readLabels(pathwayModel, root);
-		readShapes(pathwayModel, root);
-		readDataNodes(pathwayModel, root);
-		readInteractions(pathwayModel, root);
-		readGraphicalLines(pathwayModel, root);
+		readGroups(pathwayModel, root, refIdToJdomElement);
+		readLabels(pathwayModel, root, refIdToJdomElement);
+		readShapes(pathwayModel, root, refIdToJdomElement);
+		readDataNodes(pathwayModel, root, refIdToJdomElement);
+		readInteractions(pathwayModel, root, refIdToJdomElement);
+		readGraphicalLines(pathwayModel, root, refIdToJdomElement);
 		// reads aliasRefs and elementRefs last
 		readDataNodeAliasRef(pathwayModel, root);
 		readPointElementRef(pathwayModel, root);
@@ -134,9 +136,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		pathway.setTitle(root.getAttributeValue("title"));
 		Element gfx = root.getChild("Graphics", root.getNamespace());
 		pathway.setBoardWidth(Double.parseDouble(gfx.getAttributeValue("boardWidth").trim()));
-		pathway.setBoardHeight( Double.parseDouble(gfx.getAttributeValue("boardHeight").trim()));
-		pathway.setBackgroundColor(ColorUtils
-				.stringToColor(gfx.getAttributeValue("backgroundColor", BACKGROUNDCOLOR_DEFAULT)));
+		pathway.setBoardHeight(Double.parseDouble(gfx.getAttributeValue("boardHeight").trim()));
+		pathway.setBackgroundColor(
+				ColorUtils.stringToColor(gfx.getAttributeValue("backgroundColor", BACKGROUNDCOLOR_DEFAULT)));
 		readAuthors(pathway, root);
 		// sets optional properties
 		Element desc = root.getChild("Description", root.getNamespace());
@@ -214,199 +216,197 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		}
 	}
 
+	// TODO
 	/**
-	 * Reads annotation {@link Annotation} information for pathway model from root
-	 * element.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel
+	 * @param root
+	 * @param refIdToJdomElement
 	 * @throws ConverterException
 	 */
-	protected void readAnnotations(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element annts = root.getChild("Annotations", root.getNamespace());
-		if (annts != null) {
-			for (Element annt : annts.getChildren("Annotation", annts.getNamespace())) {
+	protected void readInfoMap(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+			throws ConverterException {
+		List<String> refType = Collections.unmodifiableList(Arrays.asList("Annotation", "Citation", "Evidence"));
+		for (int i = 0; i < refType.size(); i++) {
+			Element refs = root.getChild(refType.get(i) + "s", root.getNamespace());
+			for (Element ref : refs.getChildren(refType.get(i), root.getNamespace())) {
+				String elementId = ref.getAttributeValue("elementId");
+				refIdToJdomElement.put(elementId, ref);
+			}
+		}
+	}
+
+	/**
+	 * Reads {@link Annotation} and {@link AnnotationRef} information for an
+	 * {@link Annotatable}. TODO
+	 * 
+	 * @param pathwayModel       the pathway model.
+	 * @param annotatable        the pathway object which can have annotation.
+	 * @param e                  the jdom element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element
+	 *                           (annotation, citation, or evidence).
+	 * @throws ConverterException
+	 */
+	protected void readAnnotationRefs(PathwayModel pathwayModel, Annotatable annotatable, Element e,
+			Map<String, Element> refIdToJdomElement) throws ConverterException {
+		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
+			String elementRef = anntRef.getAttributeValue("elementRef");
+			// if annotation already added, create and add annotationRef
+			Annotation annotation = (Annotation) pathwayModel.getPathwayObject(elementRef);
+			if (annotation != null) {
+				AnnotationRef annotationRef = annotatable.addAnnotation(annotation);
+				readCitationRefs(pathwayModel, annotationRef, anntRef, refIdToJdomElement);
+				readEvidenceRefs(pathwayModel, annotationRef, anntRef, refIdToJdomElement);
+			}
+			// else if map contains refId, create and add annotation and annotationRef
+			else if (refIdToJdomElement.containsKey(elementRef)) {
+				Element annt = refIdToJdomElement.get(elementRef);
 				String elementId = annt.getAttributeValue("elementId");
 				String value = annt.getAttributeValue("value");
 				AnnotationType type = AnnotationType.register(annt.getAttributeValue("type", ANNOTATIONTYPE_DEFAULT));
-				Annotation annotation = new Annotation(value, type);
-				annotation.setElementId(elementId);
-				// sets optional properties
-				annotation.setXref(readXref(annt));
-				annotation.setUrlLink(readUrl(annt));
-				if (annotation != null)
-					pathwayModel.addAnnotation(annotation);
+				Xref xref = readXref(annt);
+				String urlLink = readUrl(annt);
+				// annotation must have value and type, xref and urlLink optional
+				if (xref != null || urlLink != null) {
+					AnnotationRef annotationRef = annotatable.addAnnotation(elementId, value, type, xref, urlLink);
+					readCitationRefs(pathwayModel, annotationRef, anntRef, refIdToJdomElement);
+					readEvidenceRefs(pathwayModel, annotationRef, anntRef, refIdToJdomElement);
+				}
+			}
+			// else invalid annotation and annotationRef
+			else {
+				throw new ConverterException("AnnotationRef refers to non-existent Annotation " + elementRef);
 			}
 		}
 	}
 
 	/**
-	 * Reads citation {@link Citation} information for pathway model from root
-	 * element. A citation much have either xref or url, or both.
+	 * Reads {@link Citation} and {@link CitationRef} information for a
+	 * {@link Citable}. TODO
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param citable            the pathway object which can have citation.
+	 * @param e                  the jdom element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element
+	 *                           (annotation, citation, or evidence).
 	 * @throws ConverterException
 	 */
-	protected void readCitations(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element cits = root.getChild("Citations", root.getNamespace());
-		if (cits != null) {
-			for (Element cit : cits.getChildren("Citation", cits.getNamespace())) {
+	protected void readCitationRefs(PathwayModel pathwayModel, Citable citable, Element e,
+			Map<String, Element> refIdToJdomElement) throws ConverterException {
+		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
+			String elementRef = citRef.getAttributeValue("elementRef");
+			// if citation already added, create and add citationRef
+			Citation citation = (Citation) pathwayModel.getPathwayObject(elementRef);
+			if (citation != null) {
+				CitationRef citationRef = citable.addCitation(citation);
+				readAnnotationRefs(pathwayModel, citationRef, citRef, refIdToJdomElement);
+			}
+			// else if map contains refId, create and add citation and citationRef
+			else if (refIdToJdomElement.containsKey(elementRef)) {
+				Element cit = refIdToJdomElement.get(elementRef);
 				String elementId = cit.getAttributeValue("elementId");
 				Xref xref = readXref(cit);
 				String urlLink = readUrl(cit);
-				// citation has xref, and maybe also url
-				if (xref != null) {
-					Citation citation = new Citation(xref);
-					citation.setElementId(elementId);
-					citation.setUrlLink(readUrl(cit));
-					if (citation != null)
-						pathwayModel.addCitation(citation);
-				} else {
-					// citation has url
-					if (urlLink != null) {
-						Citation citation = new Citation(urlLink);
-						pathwayModel.addCitation(citation);
-					}
+				// citation must have xref or urlLink
+				if (xref != null || urlLink != null) {
+					CitationRef citationRef = citable.addCitation(elementId, xref, urlLink);
+					readAnnotationRefs(pathwayModel, citationRef, citRef, refIdToJdomElement);
 				}
 			}
-		}
-	}
-
-	/**
-	 * Reads evidence {@link Evidence} information for pathway model from root
-	 * element.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
-	 * @throws ConverterException
-	 */
-	protected void readEvidences(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element evids = root.getChild("Evidences", root.getNamespace());
-		if (evids != null) {
-			for (Element evid : evids.getChildren("Evidence", evids.getNamespace())) {
-				String elementId = evid.getAttributeValue("elementId");
-				Xref xref = readXref(evid);
-				Evidence evidence = new Evidence(xref);
-				evidence.setElementId(elementId);
-				// sets optional properties
-				evidence.setValue(evid.getAttributeValue("value"));
-				evidence.setUrlLink(readUrl(evid));
-				pathwayModel.addEvidence(evidence);
+			// else invalid citation and citationRef
+			else {
+				throw new ConverterException("CitationRef refers to non-existent Citation " + elementRef);
 			}
 		}
 	}
 
 	/**
-	 * Reads comment group (comment, dynamic property, annotationRef, citationRef)
-	 * and evidencRef information {@link PathwayModel} for pathway model from root
-	 * element.
+	 * Reads {@link Evidence} and {@link EvidenceRef} information for an
+	 * {@link Evidenceable}. TODO
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param evidenceable       the pathway object which can have evidence.
+	 * @param e                  the jdom element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element
+	 *                           (annotation, citation, or evidence).
 	 * @throws ConverterException
 	 */
-	protected void readPathwayInfo(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Pathway pathway = pathwayModel.getPathway();
-		readPathwayComments(pathway, root);
-		readPathwayDynamicProperties(pathway, root);
-		readAnnotationRefs(pathwayModel, pathway, root);
-		readCitationRefs(pathwayModel, pathway, root);
-		readEvidenceRefs(pathwayModel, pathway, root);
+	protected void readEvidenceRefs(PathwayModel pathwayModel, Evidenceable evidenceable, Element e,
+			Map<String, Element> refIdToJdomElement) throws ConverterException {
+		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
+			String elementRef = evidRef.getAttributeValue("elementRef");
+			// if evidence already added, create and add evidenceRef
+			Evidence evidence = (Evidence) pathwayModel.getPathwayObject(elementRef);
+			if (evidence != null) {
+				evidenceable.addEvidence(evidence);
+			}
+			// else if map contains refId, create and add evidence and evidenceRef
+			else if (refIdToJdomElement.containsKey(elementRef)) {
+				Element evid = refIdToJdomElement.get(elementRef);
+				String elementId = evid.getAttributeValue("elementId");
+				Xref xref = readXref(evid);
+				String urlLink = readUrl(evid);
+				String value = evid.getAttributeValue("value");
+				// evidence must have xref, value and urlLink optional
+				if (xref != null || urlLink != null) {
+					evidenceable.addEvidence(elementId, value, xref, urlLink);
+				}
+			}
+			// else invalid evidence and evidenceRef
+			else {
+				throw new ConverterException("EvidenceRef refers to non-existent Evidence " + elementRef);
+			}
+		}
 	}
 
 	/**
-	 * Reads comment {@link Comment} information for pathway from root element.
+	 * Reads comment group (comment, dynamic property, annotationRef, citationRef,
+	 * evidenceRef) information for {@link PathwayElement} from jdom element.
 	 * 
-	 * @param pathway the pathway.
-	 * @param root    the root element.
+	 * @param pathwayElement the element info pathway element object.
+	 * @param e              the jdom element to read.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayComments(Pathway pathway, Element root) throws ConverterException {
-		for (Element cmt : root.getChildren("Comment", root.getNamespace())) {
+	protected void readCommentGroup(PathwayModel pathwayModel, PathwayElement pathwayElement, Element e,
+			Map<String, Element> refIdToJdomElement) throws ConverterException {
+		readComments(pathwayElement, e);
+		readDynamicProperties(pathwayElement, e);
+		readAnnotationRefs(pathwayModel, pathwayElement, e, refIdToJdomElement);
+		readCitationRefs(pathwayModel, pathwayElement, e, refIdToJdomElement);
+		readEvidenceRefs(pathwayModel, pathwayElement, e, refIdToJdomElement);
+	}
+
+	/**
+	 * Reads comment {@link Comment} information for pathway element from jdom
+	 * element.
+	 * 
+	 * @param pathwayElement the pathway element.
+	 * @param e              the jdom element to read from.
+	 * @throws ConverterException
+	 */
+	protected void readComments(PathwayElement pathwayElement, Element e) throws ConverterException {
+		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
 			String source = cmt.getAttributeValue("source");
 			String commentText = cmt.getText();
 			// comment must have text
 			if (commentText != null && !commentText.equals("")) {
-				pathway.addComment(source, commentText);
+				pathwayElement.addComment(commentText, source);
 			}
 		}
 	}
 
 	/**
-	 * Reads dynamic property {@link Pathway#setDynamicProperty} information for
-	 * pathway from root element.
+	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information
+	 * for pathway element from jdom element.
 	 * 
-	 * @param pathway the pathway.
-	 * @param root    the root element.
+	 * @param pathwayElement the the pathway element.
+	 * @param e              the jdom element to read from.
 	 * @throws ConverterException
 	 */
-	protected void readPathwayDynamicProperties(Pathway pathway, Element root) throws ConverterException {
-		for (Element dp : root.getChildren("Property", root.getNamespace())) {
+	protected void readDynamicProperties(PathwayElement pathwayElement, Element e) throws ConverterException {
+		for (Element dp : e.getChildren("Property", e.getNamespace())) {
 			String key = dp.getAttributeValue("key");
 			String value = dp.getAttributeValue("value");
-			pathway.setDynamicProperty(key, value);
-		}
-	}
-
-	/**
-	 * Reads annotationRefs {@link PathwayElement#addAnnotationRef} information for
-	 * an annotatable from jdom element.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param annotatable  the target pathway, pathway element, or citationRef for
-	 *                     annotationRefs.
-	 * @param e            the jdom element.
-	 * @throws ConverterException
-	 */
-	protected void readAnnotationRefs(PathwayModel pathwayModel, Annotatable annotatable, Element e)
-			throws ConverterException {
-		for (Element anntRef : e.getChildren("AnnotationRef", e.getNamespace())) {
-			Annotation annotation = (Annotation) pathwayModel.getPathwayObject(anntRef.getAttributeValue("elementRef"));
-			AnnotationRef annotationRef = annotatable.addAnnotationRef(annotation);
-			readCitationRefs(pathwayModel, annotationRef, anntRef);
-			readEvidenceRefs(pathwayModel, annotationRef, anntRef);
-		}
-	}
-
-	/**
-	 * Reads citationRefs {@link PathwayElement#addCitationRef} information for a
-	 * citable from jdom element.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param citable      the target pathway, pathway element, or annotationRef for
-	 *                     citationRefs.
-	 * @param e            the jdom element.
-	 * @throws ConverterException
-	 */
-	protected void readCitationRefs(PathwayModel pathwayModel, Citable citable, Element e) throws ConverterException {
-		for (Element citRef : e.getChildren("CitationRef", e.getNamespace())) {
-			Citation citation = (Citation) pathwayModel.getPathwayObject(citRef.getAttributeValue("elementRef"));
-			if (citation != null) {
-				// create new citationRef for citation reference
-				CitationRef citationRef = citable.addCitationRef(citation);
-				readAnnotationRefs(pathwayModel, citationRef, citRef);
-			}
-		}
-	}
-
-	/**
-	 * Reads evidenceRef {@link PathwayElement#addEvidenceRef} information for an
-	 * evidenceable from jdom element.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param evidenceable the target pathway, pathway element, or annotationRef for
-	 *                     evidenceRefs.
-	 * @param e            the jdom element.
-	 * @throws ConverterException
-	 */
-	protected void readEvidenceRefs(PathwayModel pathwayModel, Evidenceable evidenceable, Element e)
-			throws ConverterException {
-		for (Element evidRef : e.getChildren("EvidenceRef", e.getNamespace())) {
-			Evidence evidence = (Evidence) pathwayModel.getPathwayObject(evidRef.getAttributeValue("elementRef"));
-			if (evidence != null) {
-				evidenceable.addEvidenceRef(evidence);
-			}
+			pathwayElement.setDynamicProperty(key, value);
 		}
 	}
 
@@ -417,7 +417,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readGroups(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readGroups(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+			throws ConverterException {
 		Element grps = root.getChild("Groups", root.getNamespace());
 		if (grps != null) {
 			for (Element grp : grps.getChildren("Group", grps.getNamespace())) {
@@ -426,7 +427,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Group group = new Group(type);
 				group.setElementId(elementId);
 				// reads graphics and comment group props
-				readShapedElement(pathwayModel, group, grp);
+				readShapedElement(pathwayModel, group, grp, refIdToJdomElement);
 				// sets optional properties
 				group.setXref(readXref(grp));
 				group.setTextLabel(grp.getAttributeValue("textLabel"));
@@ -454,7 +455,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readLabels(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readLabels(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+			throws ConverterException {
 		Element lbs = root.getChild("Labels", root.getNamespace());
 		if (lbs != null) {
 			for (Element lb : lbs.getChildren("Label", lbs.getNamespace())) {
@@ -463,7 +465,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Label label = new Label(textLabel);
 				label.setElementId(elementId);
 				// reads graphics and comment group props
-				readShapedElement(pathwayModel, label, lb);
+				readShapedElement(pathwayModel, label, lb, refIdToJdomElement);
 				// sets optional properties
 				label.setHref(lb.getAttributeValue("href"));
 				String groupRef = lb.getAttributeValue("groupRef");
@@ -481,7 +483,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readShapes(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readShapes(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+			throws ConverterException {
 		Element shps = root.getChild("Shapes", root.getNamespace());
 		if (shps != null) {
 			for (Element shp : shps.getChildren("Shape", shps.getNamespace())) {
@@ -489,7 +492,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Shape shape = new Shape();
 				shape.setElementId(elementId);
 				// reads graphics and comment group props
-				readShapedElement(pathwayModel, shape, shp);
+				readShapedElement(pathwayModel, shape, shp, refIdToJdomElement);
 				// sets optional properties
 				shape.setTextLabel(shp.getAttributeValue("textLabel"));
 				String groupRef = shp.getAttributeValue("groupRef");
@@ -508,7 +511,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readDataNodes(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readDataNodes(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+			throws ConverterException {
 		Element dns = root.getChild("DataNodes", root.getNamespace());
 		if (dns != null) {
 			for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
@@ -518,9 +522,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				DataNode dataNode = new DataNode(textLabel, type);
 				dataNode.setElementId(elementId);
 				// reads graphics and comment group props
-				readShapedElement(pathwayModel, dataNode, dn);
+				readShapedElement(pathwayModel, dataNode, dn, refIdToJdomElement);
 				// reads states
-				readStates(pathwayModel, dataNode, dn);
+				readStates(pathwayModel, dataNode, dn, refIdToJdomElement);
 				// sets optional properties
 				dataNode.setXref(readXref(dn));
 				String groupRef = dn.getAttributeValue("groupRef");
@@ -539,7 +543,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param dn       the data node element.
 	 * @throws ConverterException
 	 */
-	protected void readStates(PathwayModel pathwayModel, DataNode dataNode, Element dn) throws ConverterException {
+	protected void readStates(PathwayModel pathwayModel, DataNode dataNode, Element dn,
+			Map<String, Element> refIdToJdomElement) throws ConverterException {
 		Element sts = dn.getChild("States", dn.getNamespace());
 		if (sts != null) {
 			for (Element st : sts.getChildren("State", sts.getNamespace())) {
@@ -552,7 +557,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// sets zOrder based on parent data node TODO
 				State state = dataNode.addState(elementId, textLabel, type, relX, relY);
 				// reads graphics and comment group props
-				readShapedElement(pathwayModel, state, st);
+				readShapedElement(pathwayModel, state, st, refIdToJdomElement);
 				// sets optional properties
 				state.setXref(readXref(st));
 				state.setZOrder(dataNode.getZOrder() + 1);
@@ -568,15 +573,15 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param se            the jdom (shaped) pathway element element.
 	 * @throws ConverterException
 	 */
-	protected void readShapedElement(PathwayModel pathwayModel, ShapedElement shapedElement, Element se)
-			throws ConverterException {
+	protected void readShapedElement(PathwayModel pathwayModel, ShapedElement shapedElement, Element se,
+			Map<String, Element> refIdToJdomElement) throws ConverterException {
 		Element gfx = se.getChild("Graphics", se.getNamespace());
 		// reads graphics properties
 		readRectProperty(shapedElement, gfx);
 		readFontProperty(shapedElement, gfx);
 		readShapeStyleProperty(shapedElement, gfx);
 		// reads comment group, evidenceRefs
-		readElementInfo(pathwayModel, shapedElement, se);
+		readCommentGroup(pathwayModel, shapedElement, se, refIdToJdomElement);
 	}
 
 	/**
@@ -587,7 +592,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readInteractions(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readInteractions(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+			throws ConverterException {
 		Element ias = root.getChild("Interactions", root.getNamespace());
 		if (ias != null) {
 			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
@@ -598,7 +604,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				if (interaction != null)
 					pathwayModel.addInteraction(interaction);
 				// reads graphics, comment group, points, and anchors
-				readLineElement(pathwayModel, interaction, ia);
+				readLineElement(pathwayModel, interaction, ia, refIdToJdomElement);
 				// sets optional properties
 				interaction.setXref(readXref(ia));
 			}
@@ -613,7 +619,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param root         the root element.
 	 * @throws ConverterException
 	 */
-	protected void readGraphicalLines(PathwayModel pathwayModel, Element root) throws ConverterException {
+	protected void readGraphicalLines(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+			throws ConverterException {
 		Element glns = root.getChild("GraphicalLines", root.getNamespace());
 		if (glns != null) {
 			for (Element gln : glns.getChildren("GraphicalLine", glns.getNamespace())) {
@@ -623,7 +630,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// add graphicalLine to pathwayModel
 				pathwayModel.addGraphicalLine(graphicalLine);
 				// reads graphics, comment group, points, and anchors
-				readLineElement(pathwayModel, graphicalLine, gln);
+				readLineElement(pathwayModel, graphicalLine, gln, refIdToJdomElement);
 			}
 		}
 	}
@@ -636,13 +643,13 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param ln          the line element.
 	 * @throws ConverterException
 	 */
-	protected void readLineElement(PathwayModel pathwayModel, LineElement lineElement, Element ln)
-			throws ConverterException {
+	protected void readLineElement(PathwayModel pathwayModel, LineElement lineElement, Element ln,
+			Map<String, Element> refIdToJdomElement) throws ConverterException {
 		// reads graphics
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
 		readLineStyleProperty(lineElement, gfx);
 		// reads comment group
-		readElementInfo(pathwayModel, lineElement, ln);
+		readCommentGroup(pathwayModel, lineElement, ln, refIdToJdomElement);
 		// reads points and anchors
 		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
 		readPoints(pathwayModel, lineElement, wyps);
@@ -756,58 +763,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * Reads comment group (comment, dynamic property, annotationRef, citationRef)
-	 * and elementRef {@link PathwayElement} information, , for pathway element from
-	 * element.
-	 * 
-	 * @param pathwayElement the element info pathway element object.
-	 * @param e              the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readElementInfo(PathwayModel pathwayModel, PathwayElement pathwayElement, Element e)
-			throws ConverterException {
-		readComments(pathwayElement, e);
-		readDynamicProperties(pathwayElement, e);
-		readAnnotationRefs(pathwayModel, pathwayElement, e);
-		readCitationRefs(pathwayModel, pathwayElement, e);
-		readEvidenceRefs(pathwayModel, pathwayElement, e);
-	}
-
-	/**
-	 * Reads comment {@link Comment} information for pathway element from element.
-	 * 
-	 * @param pathwayElement the element info pathway element object.
-	 * @param e              the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readComments(PathwayElement pathwayElement, Element e) throws ConverterException {
-		for (Element cmt : e.getChildren("Comment", e.getNamespace())) {
-			String source = cmt.getAttributeValue("source");
-			String commentText = cmt.getText();
-			// comment must have text
-			if (commentText != null && !commentText.equals("")) {
-				pathwayElement.addComment(commentText, source);
-			}
-		}
-	}
-
-	/**
-	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information
-	 * for pathway element from element.
-	 * 
-	 * @param pathwayElement the element info pathway element object .
-	 * @param e              the pathway element element.
-	 * @throws ConverterException
-	 */
-	protected void readDynamicProperties(PathwayElement pathwayElement, Element e) throws ConverterException {
-		for (Element dp : e.getChildren("Property", e.getNamespace())) {
-			String key = dp.getAttributeValue("key");
-			String value = dp.getAttributeValue("value");
-			pathwayElement.setDynamicProperty(key, value);
 		}
 	}
 

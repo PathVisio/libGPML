@@ -24,6 +24,9 @@ import java.util.TreeMap;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.model.Info.Annotatable;
+import org.pathvisio.model.Info.Citable;
+import org.pathvisio.model.Info.Evidenceable;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -201,7 +204,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * @param annotation the annotation for annotationRef.
 	 */
 	@Override
-	public AnnotationRef addAnnotationRef(Annotation annotation) {
+	public AnnotationRef addAnnotation(Annotation annotation) {
 		AnnotationRef annotationRef = new AnnotationRef(annotation);
 		// adds annotationRef
 		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
@@ -217,7 +220,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * Creates a annotation with given properties, and adds annotation to pathway
 	 * model. Creates a annotationRef for annotation, and adds to annotationRefs
 	 * list for this annotatable. Calls
-	 * {@link #addAnnotationRef(Annotation annotation)}.
+	 * {@link #addAnnotation(Annotation annotation)}.
 	 * 
 	 * @param value   the name, term, or text of the annotation.
 	 * @param type    the type of the annotation, e.g. ontology.
@@ -232,14 +235,14 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			annotation = pathwayModel.addAnnotation(annotation);
 		}
 		// creates and adds annotationRef
-		return addAnnotationRef(annotation);
+		return addAnnotation(annotation);
 	}
 
 	/**
 	 * Creates a annotation with given properties, and adds annotation to pathway
 	 * model. Creates a annotationRef for annotation, and adds to annotationRefs
 	 * list for this annotatable. Sets elementId for annotation. This method is used
-	 * when reading gpml. Calls {@link #addAnnotationRef(Annotation annotation)}.
+	 * when reading gpml. Calls {@link #addAnnotation(Annotation annotation)}.
 	 * 
 	 * @param elementId the elementId to set.
 	 * @param value     the name, term, or text of the annotation.
@@ -256,7 +259,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			annotation = pathwayModel.addAnnotation(annotation);
 		}
 		// creates and adds annotationRef
-		return addAnnotationRef(annotation);
+		return addAnnotation(annotation);
 	}
 
 	/**
@@ -313,7 +316,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * @param citation the citation for citationRef.
 	 */
 	@Override
-	public CitationRef addCitationRef(Citation citation) {
+	public CitationRef addCitation(Citation citation) {
 		CitationRef citationRef = new CitationRef(citation);
 		// adds citationRef
 		if (citationRef != null && !hasCitationRef(citationRef)) {
@@ -342,7 +345,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			citation = pathwayModel.addCitation(citation);
 		}
 		// creates and adds citationRef
-		return addCitationRef(citation);
+		return addCitation(citation);
 	}
 
 	// TODO
@@ -365,7 +368,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		if (pathwayModel != null)
 			citation = pathwayModel.addCitation(citation);
 		// creates and adds citationRef
-		return addCitationRef(citation);
+		return addCitation(citation);
 	}
 
 	/**
@@ -422,7 +425,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * @param evidence the evidenceRef for evidenceRef.
 	 */
 	@Override
-	public EvidenceRef addEvidenceRef(Evidence evidence) {
+	public EvidenceRef addEvidence(Evidence evidence) {
 		// Check if evidence already exists.... //TODO
 		// TODO create evidence
 		EvidenceRef evidenceRef = new EvidenceRef(evidence);
@@ -453,7 +456,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		if (pathwayModel != null)
 			evidence = pathwayModel.addEvidence(evidence);
 		// creates and adds evidenceRef
-		return addEvidenceRef(evidence);
+		return addEvidence(evidence);
 	}
 
 	// TODO
@@ -477,7 +480,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		if (pathwayModel != null)
 			evidence = pathwayModel.addEvidence(evidence);
 		// creates and adds evidenceRef
-		return addEvidenceRef(evidence);
+		return addEvidence(evidence);
 	}
 
 	/**
@@ -649,13 +652,13 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * @author finterly
 	 *
 	 */
-	public abstract class Ref {
+	public abstract class InfoRef {
 
 		/**
 		 * Returns the top target pathway element {@link PathwayElement} for a
 		 * {@link AnnotationRef}, {@link CitationRef}, or {@link EvidenceRef}.
 		 * 
-		 * @return the top target pathway element of the ref.
+		 * @return the top target pathway element of the infoRef.
 		 */
 		public PathwayElement getTopPathwayElement() {
 			return PathwayElement.this;
@@ -675,7 +678,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * 
 	 * @author finterly
 	 */
-	public class AnnotationRef extends Ref implements Citable, Evidenceable {
+	public class AnnotationRef extends InfoRef implements Citable, Evidenceable {
 
 		private Annotation annotation; // source annotation, elementRef in GPML
 		private Annotatable annotatable; // target pathway, pathway element, or citationRef
@@ -847,7 +850,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param citation the citation for citationRef.
 		 */
 		@Override
-		public CitationRef addCitationRef(Citation citation) {
+		public CitationRef addCitation(Citation citation) {
 			CitationRef citationRef = new CitationRef(citation);
 			// adds citationRef TODO
 			if (citationRef != null && !hasCitationRef(citationRef)) {
@@ -875,7 +878,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			if (pathwayModel != null)
 				pathwayModel.addCitation(citation);
 			// creates and adds citationRef
-			return addCitationRef(citation);
+			return addCitation(citation);
 		}
 
 		// TODO
@@ -898,7 +901,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			if (pathwayModel != null)
 				pathwayModel.addCitation(citation);
 			// creates and adds citationRef
-			return addCitationRef(citation);
+			return addCitation(citation);
 		}
 
 		/**
@@ -956,7 +959,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param evidence the evidence for evidenceRef.
 		 */
 		@Override
-		public EvidenceRef addEvidenceRef(Evidence evidence) {
+		public EvidenceRef addEvidence(Evidence evidence) {
 			// Check if evidence already exists.... //TODO
 			EvidenceRef evidenceRef = new EvidenceRef(evidence);
 			// adds evidenceRef
@@ -986,7 +989,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			if (pathwayModel != null)
 				evidence = pathwayModel.addEvidence(evidence);
 			// creates and adds evidenceRef
-			return addEvidenceRef(evidence);
+			return addEvidence(evidence);
 		}
 
 		// TODO
@@ -1010,7 +1013,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			if (pathwayModel != null)
 				evidence = pathwayModel.addEvidence(evidence);
 			// creates and adds evidenceRef
-			return addEvidenceRef(evidence);
+			return addEvidence(evidence);
 		}
 
 		/**
@@ -1060,7 +1063,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * 
 	 * @author finterly
 	 */
-	public class CitationRef extends Ref implements Annotatable {
+	public class CitationRef extends InfoRef implements Annotatable {
 
 		private Citation citation; // source citation, elementRef in GPML
 		private Citable citable; // target pathway, pathway element, or annotationRef
@@ -1112,8 +1115,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				throw new IllegalArgumentException("Invalid citation.");
 			if (hasCitation())
 				throw new IllegalStateException("CitationRef already has a source citation.");
-			Citation citationExisting = pathwayModel.hasEqualCitation(citation); // TODO
-			setCitation(citationExisting);
+			setCitation(citation);
 			if (!citation.hasCitationRef(this))
 				citation.addCitationRef(this);
 		}
@@ -1229,7 +1231,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param annotation the annotation for annotationRef.
 		 */
 		@Override
-		public AnnotationRef addAnnotationRef(Annotation annotation) {
+		public AnnotationRef addAnnotation(Annotation annotation) {
 			AnnotationRef annotationRef = new AnnotationRef(annotation);
 			// adds annotationRef
 			if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
@@ -1246,7 +1248,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * Creates a annotation with given properties, and adds annotation to pathway
 		 * model. Creates a annotationRef for annotation, and adds to annotationRefs
 		 * list for this annotatable. Calls
-		 * {@link #addAnnotationRef(Annotation annotation)}.
+		 * {@link #addAnnotation(Annotation annotation)}.
 		 * 
 		 * @param value   the name, term, or text of the annotation.
 		 * @param type    the type of the annotation, e.g. ontology.
@@ -1261,14 +1263,14 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				annotation = pathwayModel.addAnnotation(annotation);
 			}
 			// creates and adds annotationRef
-			return addAnnotationRef(annotation);
+			return addAnnotation(annotation);
 		}
 
 		/**
 		 * Creates a annotation with given properties, and adds annotation to pathway
 		 * model. Creates a annotationRef for annotation, and adds to annotationRefs
 		 * list for this annotatable. Sets elementId for annotation. This method is used
-		 * when reading gpml. Calls {@link #addAnnotationRef(Annotation annotation)}.
+		 * when reading gpml. Calls {@link #addAnnotation(Annotation annotation)}.
 		 * 
 		 * @param elementId the elementId to set.
 		 * @param value     the name, term, or text of the annotation.
@@ -1286,7 +1288,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				annotation = pathwayModel.addAnnotation(annotation);
 			}
 			// creates and adds annotationRef
-			return addAnnotationRef(annotation);
+			return addAnnotation(annotation);
 		}
 
 		/**
@@ -1333,7 +1335,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * 
 	 * @author finterly
 	 */
-	public class EvidenceRef extends Ref {
+	public class EvidenceRef extends InfoRef {
 
 		private Evidence evidence; // source evidence, elementRef in GPML
 		private Evidenceable evidenceable; // target pathway, pathway element, or evidenceRef

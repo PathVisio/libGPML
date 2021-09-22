@@ -20,13 +20,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.pathvisio.model.Citation;
 import org.pathvisio.model.DataNode;
 import org.pathvisio.model.Group;
+import org.pathvisio.model.PathwayElement.AnnotationRef;
+import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.Shape;
-import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.ref.Evidence;
-import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
+import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;
@@ -57,27 +58,18 @@ public class TestReadWriteGPML2021NewFeatures extends TestCase {
 		PathwayModel pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
 
-		/*
-		 * Create and add evidences. Creates evidenceRef1 and adds to pathwayModel.
-		 * Creates evidenceRef2 and adds to first annotationRef of pathway.
-		 */
-		Evidence evidence1 = new Evidence("evidence 1", XrefUtils.createXref("0000001", "pubmed"));
-		Evidence evidence2 = new Evidence("evidence 1", XrefUtils.createXref("0000002", "pubmed"));
-		// adds evidence to pathway model
-		pathwayModel.addEvidence(evidence1);
-		pathwayModel.addEvidence(evidence2);
-		// adds evidenceRef to pathway
-		pathwayModel.getPathway().addEvidenceRef(evidence1);
+		EvidenceRef er1 = pathwayModel.getPathway().addEvidence(null, XrefUtils.createXref("0000001", "pubmed"), null);
 
 		/*
 		 * Add citation and evidence to Annotation
 		 */
-		AnnotationRef annotationRef1 = pathwayModel.getPathway().getAnnotationRefs().get(0);
-		// adds evidenceRef to annotationRef
-		annotationRef1.addEvidenceRef(evidence2);
+		AnnotationRef annotationRef1 = pathwayModel.getPathway().addAnnotation("value", AnnotationType.UNDEFINED, null,
+				null);
+		EvidenceRef er2 = annotationRef1.addEvidence(null, XrefUtils.createXref("0000001", "pubmed"), null);
+
 		// adds citation b9d pathwayModel to annotationRef as citationRef
 		Citation citation1 = pathwayModel.getCitations().get(2);
-		annotationRef1.addCitationRef(citation1);
+		annotationRef1.addCitation(citation1);
 
 		/**
 		 * Customize graphics features, change shapeType of virus to customized shape

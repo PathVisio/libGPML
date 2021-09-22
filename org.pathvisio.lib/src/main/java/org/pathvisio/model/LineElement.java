@@ -33,7 +33,6 @@ import org.pathvisio.model.connector.ConnectorShape;
 import org.pathvisio.model.connector.ConnectorShape.WayPoint;
 import org.pathvisio.model.connector.ConnectorShapeFactory;
 import org.pathvisio.model.connector.ElbowConnectorShape;
-import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.AnchorShapeType;
 import org.pathvisio.model.type.ArrowHeadType;
 import org.pathvisio.model.type.ConnectorType;

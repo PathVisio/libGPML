@@ -54,8 +54,8 @@ public class Annotation extends PathwayObject {
 	 */
 	protected Annotation(String value, AnnotationType type, Xref xref, String urlLink) {
 		super();
-		setValue(value);
-		setType(type);
+		setValue(value); // must be valid
+		setType(type);// must be valid
 		this.xref = xref;
 		this.urlLink = urlLink;
 		this.annotationRefs = new ArrayList<AnnotationRef>();

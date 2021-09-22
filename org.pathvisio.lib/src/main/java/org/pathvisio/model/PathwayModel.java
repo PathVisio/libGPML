@@ -43,11 +43,6 @@ import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
-import org.pathvisio.model.ref.Annotation;
-import org.pathvisio.model.ref.Citation;
-import org.pathvisio.model.ref.Evidence;
-import org.pathvisio.model.ref.Pathway;
-import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.util.Utils;
 
 /**
@@ -115,21 +110,13 @@ public class PathwayModel {
 	/**
 	 * Returns the pathway object containing metadata, e.g. title, organism...
 	 * 
+	 * NB: Pathway cannot be set. There is no setPathway() method. Modify pathway
+	 * information with its accessors (e.g. setTitle(), setOrganism(),..).
+	 * 
 	 * @return pathway the pathway meta information.
 	 */
 	public Pathway getPathway() {
 		return pathway;
-	}
-
-	/**
-	 * Sets the pathway object containing metadata, e.g. title, organism...
-	 * 
-	 * @param pathway the pathway meta information.
-	 */
-	public void setPathway(Pathway pathway) {
-		if (pathway == null) {
-			this.pathway = pathway;
-		}
 	}
 
 	// ================================================================================
@@ -277,7 +264,7 @@ public class PathwayModel {
 	protected void removeElementRef(LinkableTo elementRef, LinkableFrom linePoint) {
 		if (!elementRefToLinePoints.containsKey(elementRef))
 			throw new IllegalArgumentException();
-		elementRefToLinePoints.get(elementRef).remove(linePoint); //TODO 
+		elementRefToLinePoints.get(elementRef).remove(linePoint); // TODO
 		if (elementRefToLinePoints.get(elementRef).size() == 0)
 			elementRefToLinePoints.remove(elementRef);
 	}
@@ -574,7 +561,7 @@ public class PathwayModel {
 	 * @return annotation the new annotation or annotationExisting the existing
 	 *         equivalent annotation.
 	 */
-	public Annotation addAnnotation(Annotation annotation) {
+	protected Annotation addAnnotation(Annotation annotation) {
 		Annotation annotationExisting = hasEqualAnnotation(annotation);
 		if (annotationExisting != null) {
 			Logger.log.trace("Duplicate annotation is not added to pathway model.");
@@ -593,7 +580,7 @@ public class PathwayModel {
 	 * @return annotationExisting the existing equivalent annotation, or null if no
 	 *         equivalent annotation exists for given citation.
 	 */
-	public Annotation hasEqualAnnotation(Annotation annotation) {
+	private Annotation hasEqualAnnotation(Annotation annotation) {
 		for (Annotation annotationExisting : annotations) {
 			if (annotation.equalsAnnotation(annotationExisting)) {
 				Logger.log.trace("New annotation is equivalent to existing annotation "
@@ -634,7 +621,7 @@ public class PathwayModel {
 	 * @return citation the new citation or citationExisting the existing equivalent
 	 *         citation.
 	 */
-	public Citation addCitation(Citation citation) {
+	protected Citation addCitation(Citation citation) {
 		if (citation != null) {
 			Citation citationExisting = hasEqualCitation(citation);
 			if (citationExisting != null) {
@@ -657,7 +644,7 @@ public class PathwayModel {
 	 * @return citationExisting the existing equivalent citation, or null if no
 	 *         equivalent citation exists for given citation.
 	 */
-	public Citation hasEqualCitation(Citation citation) {
+	private Citation hasEqualCitation(Citation citation) {
 		for (Citation citationExisting : citations) {
 			if (citation.equalsCitation(citationExisting)) {
 				Logger.log.trace(
@@ -695,7 +682,7 @@ public class PathwayModel {
 	 * 
 	 * @param evidence the evidence to be added.
 	 */
-	public Evidence addEvidence(Evidence evidence) {
+	protected Evidence addEvidence(Evidence evidence) {
 		Evidence evidenceExisting = hasEqualEvidence(evidence);
 		if (evidenceExisting != null) {
 			Logger.log.trace("Duplicate evidence is not added to pathway model.");
@@ -714,7 +701,7 @@ public class PathwayModel {
 	 * @return evidenceExisting the existing equivalent citation, or null if no
 	 *         equivalent citation exists for given citation.
 	 */
-	public Evidence hasEqualEvidence(Evidence evidence) {
+	private Evidence hasEqualEvidence(Evidence evidence) {
 		for (Evidence evidenceExisting : evidences) {
 			if (evidence.equalsEvidence(evidenceExisting)) {
 				Logger.log.trace(

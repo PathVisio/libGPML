@@ -27,7 +27,6 @@ import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.LineElement.LinePoint;
-import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
