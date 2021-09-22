@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.ref;
+package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.PathwayObject;
+import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -87,24 +88,14 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
-	 * TODO
+	 * Creates a comment with given properties and adds to comments list. Calls
+	 * {@link #addComment(Comment comment)}.
 	 * 
-	 * @param commentText
-	 * @param source
+	 * @param commentText the text of the comment, between Comment tags in GPML.
+	 * @param source      the source of this comment.
 	 */
 	public Comment addComment(String commentText, String source) {
 		Comment comment = new Comment(commentText, source);
-		addComment(comment);
-		return comment;
-	}
-
-	/**
-	 * TODO
-	 * 
-	 * @param commentText
-	 */
-	public Comment addComment(String commentText) {
-		Comment comment = new Comment(commentText);
 		addComment(comment);
 		return comment;
 	}
@@ -193,7 +184,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
-	 * Checks whether annotationRefs has the given annotationRef. *
+	 * Checks whether annotationRefs has the given annotationRef.
 	 * 
 	 * @param annotationRef the annotationRef to look for.
 	 * @return true if has annotationRef, false otherwise.
@@ -220,6 +211,52 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
 		}
 		return annotationRef;
+	}
+
+	/**
+	 * Creates a annotation with given properties, and adds annotation to pathway
+	 * model. Creates a annotationRef for annotation, and adds to annotationRefs
+	 * list for this annotatable. Calls
+	 * {@link #addAnnotationRef(Annotation annotation)}.
+	 * 
+	 * @param value   the name, term, or text of the annotation.
+	 * @param type    the type of the annotation, e.g. ontology.
+	 * @param xref    the annotation xref.
+	 * @param urlLink the url link of the annotation.
+	 */
+	@Override
+	public AnnotationRef addAnnotation(String value, AnnotationType type, Xref xref, String urlLink) {
+		Annotation annotation = new Annotation(value, type, xref, urlLink);
+		// add annotation to pathway model if applicable TODO
+		if (pathwayModel != null) {
+			annotation = pathwayModel.addAnnotation(annotation);
+		}
+		// creates and adds annotationRef
+		return addAnnotationRef(annotation);
+	}
+
+	/**
+	 * Creates a annotation with given properties, and adds annotation to pathway
+	 * model. Creates a annotationRef for annotation, and adds to annotationRefs
+	 * list for this annotatable. Sets elementId for annotation. This method is used
+	 * when reading gpml. Calls {@link #addAnnotationRef(Annotation annotation)}.
+	 * 
+	 * @param elementId the elementId to set.
+	 * @param value     the name, term, or text of the annotation.
+	 * @param type      the type of the annotation, e.g. ontology.
+	 * @param xref      the annotation xref.
+	 * @param urlLink   the url link of the annotation.
+	 */
+	@Override
+	public AnnotationRef addAnnotation(String elementId, String value, AnnotationType type, Xref xref, String urlLink) {
+		Annotation annotation = new Annotation(value, type, xref, urlLink);
+		annotation.setElementId(elementId);
+		// add annotation to pathway model if applicable TODO
+		if (pathwayModel != null) {
+			annotation = pathwayModel.addAnnotation(annotation);
+		}
+		// creates and adds annotationRef
+		return addAnnotationRef(annotation);
 	}
 
 	/**
@@ -286,6 +323,49 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
 		}
 		return citationRef;
+	}
+
+	// TODO
+	/**
+	 * Creates a citation with given xref and urlLink, and adds citation to pathway
+	 * model. Creates a citationRef for citation, and adds to citationRefs list for
+	 * this citable.Calls {@link #addCitation(Citation citation)}.
+	 * 
+	 * @param xref    the citation xref.
+	 * @param urlLink the url link and description (optional) for a web address.
+	 */
+	@Override
+	public CitationRef addCitation(Xref xref, String urlLink) {
+		Citation citation = new Citation(xref, urlLink);
+		// add citation to pathway model if applicable TODO
+		if (pathwayModel != null) {
+			citation = pathwayModel.addCitation(citation);
+		}
+		// creates and adds citationRef
+		return addCitationRef(citation);
+	}
+
+	// TODO
+	/**
+	 * Creates a citation with given xref and urlLink, and adds citation to pathway
+	 * model. Creates a citationRef for citation, and adds to citationRefs list for
+	 * this citable. Sets elementId for citation. This method is used when reading
+	 * gpml. Calls {@link #addCitation(Citation citation)}.
+	 * 
+	 * @param elementId the elementId to set.
+	 * @param xref      the citation xref.
+	 * @param urlLink   the url link and description (optional) for a web address.
+	 */
+	@Override
+	public CitationRef addCitation(String elementId, Xref xref, String urlLink) {
+		Citation citation = new Citation(xref, urlLink);
+		// set elementId
+		citation.setElementId(elementId);
+		// add citation to pathway model if applicable TODO
+		if (pathwayModel != null)
+			citation = pathwayModel.addCitation(citation);
+		// creates and adds citationRef
+		return addCitationRef(citation);
 	}
 
 	/**
@@ -356,6 +436,50 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		return evidenceRef;
 	}
 
+	// TODO
+	/**
+	 * Creates an evidence with given properties, and adds evidence to pathway
+	 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
+	 * this evidenceable. Calls {@link #addEvidence(Evidence evidence)}.
+	 * 
+	 * @param value   the name, term, or text of the evidence.
+	 * @param xref    the evidence xref.
+	 * @param urlLink the url link and description (optional) for a web address.
+	 */
+	@Override
+	public EvidenceRef addEvidence(String value, Xref xref, String urlLink) {
+		Evidence evidence = new Evidence(value, xref, urlLink);
+		// add evidence to pathway model if applicable TODO
+		if (pathwayModel != null)
+			evidence = pathwayModel.addEvidence(evidence);
+		// creates and adds evidenceRef
+		return addEvidenceRef(evidence);
+	}
+
+	// TODO
+	/**
+	 * Creates an evidence with given properties, and adds evidence to pathway
+	 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
+	 * this evidenceable. Sets elementId for evidence. This method is used when
+	 * reading gpml. Calls {@link #addEvidence(Evidence evidence)}.
+	 * 
+	 * @param elementId the elementId to set.
+	 * @param value     the name, term, or text of the evidence.
+	 * @param xref      the evidence xref.
+	 * @param urlLink   the url link and description (optional) for a web address.
+	 */
+	@Override
+	public EvidenceRef addEvidence(String elementId, String value, Xref xref, String urlLink) {
+		Evidence evidence = new Evidence(value, xref, urlLink);
+		// set elementId
+		evidence.setElementId(elementId);
+		// add evidence to pathway model if applicable TODO
+		if (pathwayModel != null)
+			evidence = pathwayModel.addEvidence(evidence);
+		// creates and adds evidenceRef
+		return addEvidenceRef(evidence);
+	}
+
 	/**
 	 * Removes given evidenceRef from evidenceRefs list. The evidenceRef ceases to
 	 * exist and is terminated.
@@ -391,7 +515,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();
-		unsetPathwayModel();
+		super.terminate();
 	}
 
 	// ================================================================================
@@ -471,14 +595,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		// ================================================================================
 		// Accessors
 		// ================================================================================
-		/**
-		 * Instantiates a Comment with just commentText.
-		 * 
-		 * @param commentText the text of this comment, between Comment tags in GPML.
-		 */
-		public Comment(String commentText) {
-			this(commentText, null);
-		}
 
 		/**
 		 * Returns the text of this Comment.
@@ -743,6 +859,48 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			return citationRef;
 		}
 
+		// TODO
+		/**
+		 * Creates a citation with given xref and urlLink, and adds citation to pathway
+		 * model. Creates a citationRef for citation, and adds to citationRefs list for
+		 * this citable.
+		 * 
+		 * @param xref    the citation xref.
+		 * @param urlLink the url link and description (optional) for a web address.
+		 */
+		@Override
+		public CitationRef addCitation(Xref xref, String urlLink) {
+			Citation citation = new Citation(xref, urlLink);
+			// add citation to pathway model if applicable TODO
+			if (pathwayModel != null)
+				pathwayModel.addCitation(citation);
+			// creates and adds citationRef
+			return addCitationRef(citation);
+		}
+
+		// TODO
+		/**
+		 * Creates a citation with given xref and urlLink, and adds citation to pathway
+		 * model. Creates a citationRef for citation, and adds to citationRefs list for
+		 * this citable. Sets elementId for citation. This method is used when reading
+		 * gpml. Calls {@link #addCitation(Citation citation)}.
+		 * 
+		 * @param elementId the elementId to set.
+		 * @param xref      the citation xref.
+		 * @param urlLink   the url link and description (optional) for a web address.
+		 */
+		@Override
+		public CitationRef addCitation(String elementId, Xref xref, String urlLink) {
+			Citation citation = new Citation(xref, urlLink);
+			// set elementId
+			citation.setElementId(elementId);
+			// add citation to pathway model if applicable TODO
+			if (pathwayModel != null)
+				pathwayModel.addCitation(citation);
+			// creates and adds citationRef
+			return addCitationRef(citation);
+		}
+
 		/**
 		 * Removes given citationRef from citationRefs list. The citationRef ceases to
 		 * exist and is terminated.
@@ -800,7 +958,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		@Override
 		public EvidenceRef addEvidenceRef(Evidence evidence) {
 			// Check if evidence already exists.... //TODO
-			// TODO create evidence
 			EvidenceRef evidenceRef = new EvidenceRef(evidence);
 			// adds evidenceRef
 			if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
@@ -810,6 +967,50 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 //				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
 			}
 			return evidenceRef;
+		}
+
+		// TODO
+		/**
+		 * Creates an evidence with given properties, and adds evidence to pathway
+		 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
+		 * this evidenceable. Calls {@link #addEvidence(Evidence evidence)}.
+		 * 
+		 * @param value   the name, term, or text of the evidence.
+		 * @param xref    the evidence xref.
+		 * @param urlLink the url link and description (optional) for a web address.
+		 */
+		@Override
+		public EvidenceRef addEvidence(String value, Xref xref, String urlLink) {
+			Evidence evidence = new Evidence(value, xref, urlLink);
+			// add evidence to pathway model if applicable TODO
+			if (pathwayModel != null)
+				evidence = pathwayModel.addEvidence(evidence);
+			// creates and adds evidenceRef
+			return addEvidenceRef(evidence);
+		}
+
+		// TODO
+		/**
+		 * Creates an evidence with given properties, and adds evidence to pathway
+		 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
+		 * this evidenceable. Sets elementId for evidence. This method is used when
+		 * reading gpml. Calls {@link #addEvidence(Evidence evidence)}.
+		 * 
+		 * @param elementId the elementId to set.
+		 * @param value     the name, term, or text of the evidence.
+		 * @param xref      the evidence xref.
+		 * @param urlLink   the url link and description (optional) for a web address.
+		 */
+		@Override
+		public EvidenceRef addEvidence(String elementId, String value, Xref xref, String urlLink) {
+			Evidence evidence = new Evidence(value, xref, urlLink);
+			// set elementId
+			evidence.setElementId(elementId);
+			// add evidence to pathway model if applicable TODO
+			if (pathwayModel != null)
+				evidence = pathwayModel.addEvidence(evidence);
+			// creates and adds evidenceRef
+			return addEvidenceRef(evidence);
 		}
 
 		/**
@@ -911,7 +1112,8 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				throw new IllegalArgumentException("Invalid citation.");
 			if (hasCitation())
 				throw new IllegalStateException("CitationRef already has a source citation.");
-			setCitation(citation);
+			Citation citationExisting = pathwayModel.hasEqualCitation(citation); // TODO
+			setCitation(citationExisting);
 			if (!citation.hasCitationRef(this))
 				citation.addCitationRef(this);
 		}
@@ -1038,6 +1240,53 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 						StaticProperty.ANNOTATIONREF));
 			}
 			return annotationRef;
+		}
+
+		/**
+		 * Creates a annotation with given properties, and adds annotation to pathway
+		 * model. Creates a annotationRef for annotation, and adds to annotationRefs
+		 * list for this annotatable. Calls
+		 * {@link #addAnnotationRef(Annotation annotation)}.
+		 * 
+		 * @param value   the name, term, or text of the annotation.
+		 * @param type    the type of the annotation, e.g. ontology.
+		 * @param xref    the annotation xref.
+		 * @param urlLink the url link of the annotation.
+		 */
+		@Override
+		public AnnotationRef addAnnotation(String value, AnnotationType type, Xref xref, String urlLink) {
+			Annotation annotation = new Annotation(value, type, xref, urlLink);
+			// add annotation to pathway model if applicable TODO
+			if (pathwayModel != null) {
+				annotation = pathwayModel.addAnnotation(annotation);
+			}
+			// creates and adds annotationRef
+			return addAnnotationRef(annotation);
+		}
+
+		/**
+		 * Creates a annotation with given properties, and adds annotation to pathway
+		 * model. Creates a annotationRef for annotation, and adds to annotationRefs
+		 * list for this annotatable. Sets elementId for annotation. This method is used
+		 * when reading gpml. Calls {@link #addAnnotationRef(Annotation annotation)}.
+		 * 
+		 * @param elementId the elementId to set.
+		 * @param value     the name, term, or text of the annotation.
+		 * @param type      the type of the annotation, e.g. ontology.
+		 * @param xref      the annotation xref.
+		 * @param urlLink   the url link of the annotation.
+		 */
+		@Override
+		public AnnotationRef addAnnotation(String elementId, String value, AnnotationType type, Xref xref,
+				String urlLink) {
+			Annotation annotation = new Annotation(value, type, xref, urlLink);
+			annotation.setElementId(elementId);
+			// add annotation to pathway model if applicable TODO
+			if (pathwayModel != null) {
+				annotation = pathwayModel.addAnnotation(annotation);
+			}
+			// creates and adds annotationRef
+			return addAnnotationRef(annotation);
 		}
 
 		/**

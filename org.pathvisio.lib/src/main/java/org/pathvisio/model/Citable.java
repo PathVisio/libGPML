@@ -1,9 +1,10 @@
-package org.pathvisio.model.ref;
+package org.pathvisio.model;
 
 import java.util.List;
 
-import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
-import org.pathvisio.model.ref.PathwayElement.CitationRef;
+import org.bridgedb.Xref;
+import org.pathvisio.model.PathwayElement.AnnotationRef;
+import org.pathvisio.model.PathwayElement.CitationRef;
 
 /**
  * Interface for classes which can hold a {@link List} of {@link CitationRef}.
@@ -31,11 +32,34 @@ public interface Citable {
 	public boolean hasCitationRef(CitationRef citationRef);
 
 	/**
-	 * Creates and adds an citationRefs to citationRefs list.
+	 * Creates and adds a citationRefs to citationRefs list.
 	 * 
 	 * @param citation the citation for citationRef.
 	 */
 	public CitationRef addCitationRef(Citation citation);
+
+	/**
+	 * Creates a citation with given xref and urlLink, and adds citation to pathway
+	 * model. Creates a citationRef for citation, and adds to citationRefs list for
+	 * this citable. Calls {@link #addCitation(Citation citation)}.
+	 * 
+	 * @param xref    the citation xref.
+	 * @param urlLink the url link and description (optional) for a web address.
+	 */
+	public CitationRef addCitation(Xref xref, String urlLink);
+
+	// TODO
+	/**
+	 * Creates a citation with given xref and urlLink, and adds citation to pathway
+	 * model. Creates a citationRef for citation, and adds to citationRefs list for
+	 * this citable. Sets elementId for citation. This method is used when reading
+	 * gpml. Calls {@link #addCitation(Citation citation)}.
+	 * 
+	 * @param elementId the elementId to set.
+	 * @param xref      the citation xref.
+	 * @param urlLink   the url link and description (optional) for a web address.
+	 */
+	public CitationRef addCitation(String elementId, Xref xref, String urlLink);
 
 	/**
 	 * Removes given citationRef from citationRefs list.

@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.ref;
+package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,9 @@ import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.PathwayObject;
-import org.pathvisio.model.ref.PathwayElement.CitationRef;
+import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
-
 
 /**
  * This class stores information for a Citation.
@@ -50,32 +48,20 @@ public class Citation extends PathwayObject {
 	// Constructors
 	// ================================================================================
 	/**
-	 * Instantiates a Citation pathway element given all possible parameters.
+	 * Instantiates a Citation pathway element given all possible parameters. NB: A
+	 * citation much have either xref or url, or both.
 	 * 
 	 * @param xref    the citation xref.
 	 * @param urlLink the url link and description (optional) for a web address.
 	 */
-	public Citation(Xref xref, String urlLink) {
+	protected Citation(Xref xref, String urlLink) {
 		super();
+		if (xref == null && urlLink == null) {
+			throw new IllegalArgumentException("Citation must have valid xref or url, or both.");
+		}
 		this.xref = xref;
 		this.urlLink = urlLink;
 		this.citationRefs = new ArrayList<CitationRef>();
-	}
-
-	/**
-	 * Instantiates a Citation pathway element given all possible parameters except
-	 * xref. A citation much have either xref or url, or both.
-	 */
-	public Citation(String urlLink) {
-		this(null, urlLink);
-	}
-
-	/**
-	 * Instantiates a Citation pathway element given all possible parameters except
-	 * url. A citation much have either xref or url, or both.
-	 */
-	public Citation(Xref xref) {
-		this(xref, null);
 	}
 
 	// ================================================================================
@@ -269,14 +255,15 @@ public class Citation extends PathwayObject {
 	@Override
 	public void terminate() {
 		removeCitationRefs();
-		unsetPathwayModel();
+		super.terminate();
 	}
 
 	// ================================================================================
 	// Equals Methods
 	// ================================================================================
 	/**
-	 * Checks all properties of given citations to determine whether they are equal.
+	 * Compares this citation to the given citation. Checks all properties except
+	 * citationsRefs list to determine whether they are equal.
 	 * 
 	 * TODO
 	 * 
@@ -297,9 +284,6 @@ public class Citation extends PathwayObject {
 		}
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, citation.getUrlLink()))
-			return false;
-		// checks if citation has the same citationRefs
-		if (!Objects.equals(citationRefs, citation.getCitationRefs()))
 			return false;
 		// checks if optional GPML2013a properties are equivalent
 		if (!Objects.equals(title, citation.getTitle()))
@@ -333,7 +317,7 @@ public class Citation extends PathwayObject {
 		authors = new ArrayList<String>();
 		for (String a : src.authors) {
 			authors.add(a);
-		} //TODO 
+		} // TODO
 		citationRefs = new ArrayList<CitationRef>();
 		for (CitationRef c : src.citationRefs) { // TODO????
 			addCitationRef(c);
@@ -348,7 +332,7 @@ public class Citation extends PathwayObject {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Citation copy() {
-		Citation result = new Citation(xref); // TODO
+		Citation result = new Citation(xref, urlLink); // TODO
 		result.copyValuesFrom(this);
 		return result;
 	}

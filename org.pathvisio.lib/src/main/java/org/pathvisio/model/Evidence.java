@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.ref;
+package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,7 @@ import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.PathwayObject;
-import org.pathvisio.model.ref.PathwayElement.EvidenceRef;
+import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -49,38 +48,16 @@ public class Evidence extends PathwayObject {
 	 * 
 	 * NB: Manipulated the order of variables to overload constructor.
 	 * 
-	 * @param value the name, term, or text of this evidence.
-	 * @param xref  this evidence xref.
-	 * @param url   the url of this evidence.
+	 * @param value   the name, term, or text of this evidence.
+	 * @param xref    this evidence xref.
+	 * @param urlLink the url of this evidence.
 	 */
-	public Evidence(String value, Xref xref, String url) {
+	protected Evidence(String value, Xref xref, String urlLink) {
 		super();
 		this.value = value;
-		this.xref = xref;
-		this.urlLink = url;
+		setXref(xref);
+		this.urlLink = urlLink;
 		this.evidenceRefs = new ArrayList<EvidenceRef>();
-
-	}
-
-	/**
-	 * Instantiates an Evidence given all possible parameters except value.
-	 */
-	public Evidence(Xref xref, String url) {
-		this(null, xref, url);
-	}
-
-	/**
-	 * Instantiates an Evidence given all possible parameters except url.
-	 */
-	public Evidence(String value, Xref xref) {
-		this(value, xref, null);
-	}
-
-	/**
-	 * Instantiates an Evidence given all possible parameters except value and url.
-	 */
-	public Evidence(Xref xref) {
-		this(null, xref, null);
 	}
 
 	// ================================================================================
@@ -121,7 +98,10 @@ public class Evidence extends PathwayObject {
 	 * @param v the xref of this evidence.
 	 */
 	public void setXref(Xref v) {
-		if (v != null) {
+		if (xref == null) {
+			throw new IllegalArgumentException("Evidence must have valid xref.");
+		}
+		if (v != null || xref != v) {
 			xref = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
@@ -216,16 +196,15 @@ public class Evidence extends PathwayObject {
 	@Override
 	public void terminate() {
 		removeEvidenceRefs();
-		unsetPathwayModel();
+		super.terminate();
 	}
 
 	// ================================================================================
 	// Equals Methods
 	// ================================================================================
 	/**
-	 * Checks all properties of given evidences to determine whether they are equal.
-	 * 
-	 * TODO
+	 * Compares this evidence to the given evidence. Checks all properties except
+	 * evidenceRefs list to determine whether they are equal. * TODO
 	 * 
 	 * @param evidence the evidence to compare to.
 	 * @return true if evidences have equal properties, false otherwise.
@@ -248,12 +227,9 @@ public class Evidence extends PathwayObject {
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, evidence.getUrlLink()))
 			return false;
-		// checks if evidence has the same evidenceRefs
-		if (!Objects.equals(evidenceRefs, evidence.getEvidenceRefs()))
-			return false;
 		return true;
 	}
-	
+
 	// ================================================================================
 	// Copy Methods
 	// ================================================================================
@@ -283,7 +259,7 @@ public class Evidence extends PathwayObject {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Evidence copy() {
-		Evidence result = new Evidence(xref); //TODO 
+		Evidence result = new Evidence(value, xref, urlLink); // TODO
 		result.copyValuesFrom(this);
 		return result;
 	}

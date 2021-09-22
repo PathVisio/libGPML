@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.model.ref;
+package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,7 @@ import java.util.Objects;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.PathwayObject;
-import org.pathvisio.model.ref.PathwayElement.AnnotationRef;
+import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -36,7 +35,7 @@ import org.pathvisio.util.Utils;
 public class Annotation extends PathwayObject {
 
 	private String value;
-	private AnnotationType type;
+	private AnnotationType type = AnnotationType.UNDEFINED;
 	private Xref xref; // optional
 	private String urlLink; // optional
 	private List<AnnotationRef> annotationRefs; // annotationRefs with this annotation as source
@@ -53,34 +52,13 @@ public class Annotation extends PathwayObject {
 	 * @param xref    the annotation xref.
 	 * @param urlLink the url link of the annotation.
 	 */
-	public Annotation(String value, AnnotationType type, Xref xref, String urlLink) {
+	protected Annotation(String value, AnnotationType type, Xref xref, String urlLink) {
 		super();
-		this.value = value;
-		this.type = type;
+		setValue(value);
+		setType(type);
 		this.xref = xref;
 		this.urlLink = urlLink;
 		this.annotationRefs = new ArrayList<AnnotationRef>();
-	}
-
-	/**
-	 * Instantiates an Annotation given all possible parameters except xref.
-	 */
-	public Annotation(String value, AnnotationType type, String urlLink) {
-		this(value, type, null, urlLink);
-	}
-
-	/**
-	 * Instantiates an Annotation given all possible parameters except url.
-	 */
-	public Annotation(String value, AnnotationType type, Xref xref) {
-		this(value, type, xref, null);
-	}
-
-	/**
-	 * Instantiates an Annotation given all possible parameters except url and xref.
-	 */
-	public Annotation(String value, AnnotationType type) {
-		this(value, type, null, null);
 	}
 
 	// ================================================================================
@@ -101,7 +79,13 @@ public class Annotation extends PathwayObject {
 	 * @param v the name, term, or text of this annotation.
 	 */
 	public void setValue(String v) {
-		value = v;
+		if (v == null) { // TODO
+			throw new IllegalArgumentException("Value is a required field for Annotation.");
+		}
+		if (!Utils.stringEquals(value, v)) {
+			value = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+		}
 	}
 
 	/**
@@ -244,8 +228,8 @@ public class Annotation extends PathwayObject {
 	// Equals Methods
 	// ================================================================================
 	/**
-	 * Checks all properties of given annotations to determine whether they are
-	 * equal.
+	 * Compares this annotation to the given annotation. Checks all properties
+	 * except annotationsRefs list to determine whether they are equal.
 	 * 
 	 * TODO
 	 * 
@@ -272,12 +256,9 @@ public class Annotation extends PathwayObject {
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, annotation.getUrlLink()))
 			return false;
-		// checks if annotation has the same annotationRefs
-		if (!Objects.equals(annotationRefs, annotation.getAnnotationRefs()))
-			return false;
 		return true;
 	}
-	
+
 	// ================================================================================
 	// Copy Methods
 	// ================================================================================
@@ -288,7 +269,7 @@ public class Annotation extends PathwayObject {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(Annotation src) { //TODO
+	public void copyValuesFrom(Annotation src) { // TODO
 //		super.copyValuesFrom(src);
 		value = src.value;
 		type = src.type;
@@ -308,7 +289,7 @@ public class Annotation extends PathwayObject {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Annotation copy() {
-		Annotation result = new Annotation(value, type); //TODO 
+		Annotation result = new Annotation(value, type, xref, urlLink); // TODO
 		result.copyValuesFrom(this);
 		return result;
 	}
