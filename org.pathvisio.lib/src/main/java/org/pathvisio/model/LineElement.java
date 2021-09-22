@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -73,6 +74,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public LineElement() {
 		super();
 		this.linePoints = new ArrayList<LinePoint>(); // should have at least two points
+		this.linePoints = Arrays.asList(new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0),
+				new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0)); // TODO
 		this.anchors = new ArrayList<Anchor>();
 	}
 
@@ -637,23 +640,23 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Returns the left x coordinate of the bounding box around (start, end) this
+	 * Returns the center x coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
-	public double getLeft() {
+	public double getCenterX() {
 		double start = getStartLinePoint().getX();
 		double end = getEndLinePoint().getX();
-		return Math.min(start, end);
+		return start + (end - start) / 2;
 	}
 
 	/**
-	 * Returns the top y coordinate of the bounding box around (start, end) this
+	 * Returns the center y coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
-	public double getTop() {
+	public double getCenterY() {
 		double start = getStartLinePoint().getY();
 		double end = getEndLinePoint().getY();
-		return Math.min(start, end);
+		return start + (end - start) / 2;
 	}
 
 	/**
@@ -677,23 +680,43 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Returns the center x coordinate of the bounding box around (start, end) this
+	 * Returns the left x coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
-	public double getCenterX() {
+	public double getLeft() {
 		double start = getStartLinePoint().getX();
 		double end = getEndLinePoint().getX();
-		return start + (end - start) / 2;
+		return Math.min(start, end);
 	}
 
 	/**
-	 * Returns the center y coordinate of the bounding box around (start, end) this
+	 * Returns the top y coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
-	public double getCenterY() {
+	public double getTop() {
 		double start = getStartLinePoint().getY();
 		double end = getEndLinePoint().getY();
-		return start + (end - start) / 2;
+		return Math.min(start, end);
+	}
+
+	/**
+	 * Sets the x position of the center of the line. This makes the line move as a
+	 * whole
+	 */
+	public void setCenterX(double v) {
+		double dx = v - getCenterX();
+		setStartLinePointX(getStartLinePointX() + dx);
+		setEndLinePointX(getEndLinePointX() + dx);
+	}
+
+	/**
+	 * Sets the y position of the center of the line. This makes the line move as a
+	 * whole.
+	 */
+	public void setCenterY(double v) {
+		double dy = v - getCenterY();
+		setStartLinePointY(getStartLinePointY() + dy);
+		setEndLinePointY(getEndLinePointY() + dy);
 	}
 
 	/**
@@ -716,26 +739,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		} else {
 			setEndLinePointX(v);
 		}
-	}
-
-	/**
-	 * Sets the x position of the center of the line. This makes the line move as a
-	 * whole
-	 */
-	public void setCenterX(double v) {
-		double dx = v - getCenterX();
-		setStartLinePointX(getStartLinePointX() + dx);
-		setEndLinePointX(getEndLinePointX() + dx);
-	}
-
-	/**
-	 * Sets the y position of the center of the line. This makes the line move as a
-	 * whole.
-	 */
-	public void setCenterY(double v) {
-		double dy = v - getCenterY();
-		setStartLinePointY(getStartLinePointY() + dy);
-		setEndLinePointY(getEndLinePointY() + dy);
 	}
 
 	/** returns the sign of end.x - start.x */
@@ -1054,11 +1057,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void terminate() {
 		removeLinePoints();
 		removeAnchors();
-		removeAnnotationRefs();
-		removeCitationRefs();
-		removeEvidenceRefs();
-		unsetGroupRef();
-		unsetPathwayModel();
+		super.terminate();
 	}
 
 	// ================================================================================
@@ -1641,6 +1640,13 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			return GraphLink.getReferences(this, getPathwayModel());
 		}
 
+		// TODO
+		public void unsetAllLinkableFroms() {
+			for (LinkableFrom linePoint : getLinkableFroms()) {
+				pathwayModel.removeElementRef(this, linePoint);
+			}
+		}
+
 		@Override
 		public Point2D toAbsoluteCoordinate(Point2D p) {
 			Point2D l = getLineElement().getConnectorShape().fromLineCoordinate(getPosition());
@@ -1651,6 +1657,17 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		public Point2D toRelativeCoordinate(Point2D p) {
 			Point2D l = getLineElement().getConnectorShape().fromLineCoordinate(getPosition());
 			return new Point2D.Double(p.getX() - l.getX(), p.getY() - l.getY());
+		}
+
+		/**
+		 * Terminates this anchor element. The pathway model, if any, is unset from this
+		 * pathway element.
+		 */
+		@Override
+		public void terminate() {
+			unsetGroupRef();
+			unsetAllLinkableFroms(); // TODO unset as a LinkableTo
+			unsetPathwayModel();
 		}
 
 		// ================================================================================

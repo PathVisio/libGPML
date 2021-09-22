@@ -18,12 +18,9 @@ package org.pathvisio.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.GraphLink.LinkableFrom;
-import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.props.StaticProperty;
@@ -357,11 +354,7 @@ public class DataNode extends ShapedElement {
 	@Override
 	public void terminate() {
 		removeStates();
-		removeAnnotationRefs();
-		removeCitationRefs();
-		removeEvidenceRefs();
-		unsetGroupRef();
-		unsetPathwayModel();
+		super.terminate();
 	}
 
 	// ================================================================================
@@ -617,16 +610,6 @@ public class DataNode extends ShapedElement {
 			if (pathwayModel == getPathwayModel()) {
 				setPathwayModel(pathwayModel);
 			}
-		}
-
-		/**
-		 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
-		 * for {@link LineElement.LinePoint}, for this {@link LinkableTo} pathway
-		 * element.
-		 */
-		@Override
-		public Set<LinkableFrom> getLinkableFroms() {
-			return GraphLink.getReferences(this, getPathwayModel());
 		}
 
 		// ================================================================================

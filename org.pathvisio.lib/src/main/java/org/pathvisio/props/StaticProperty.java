@@ -123,7 +123,12 @@ public enum StaticProperty implements Property {
 	ORIENTATION("Orientation", "Orientation", StaticPropertyType.ORIENTATION, 172), // TODO????
 
 	// datanode, state, interaction, graphicalline, label, shape, group
-	GROUPREF("GroupRef", "GroupRef", StaticPropertyType.STRING, 173, false, true, false);
+	GROUPREF("GroupRef", "GroupRef", StaticPropertyType.STRING, 173, false, true, false),
+
+	// annotation, citation, evidence //TODO
+	ANNOTATION("Annotation", "Annotation", StaticPropertyType.ANNOTATION, 174, false, true, false),
+	CITATION("Citation", "Citation", StaticPropertyType.CITATION, 175, false, true, false),
+	EVIDENCE("Evidence", "Evidence", StaticPropertyType.EVIDENCE, 176, false, true, false);
 
 	// line
 //STARTX ("StartX", "Start X", StaticPropertyType.DOUBLE, 114, true, false, false),

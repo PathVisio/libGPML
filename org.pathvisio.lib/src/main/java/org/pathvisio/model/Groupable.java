@@ -78,4 +78,36 @@ public interface Groupable {
 	 * Get the rectangular bounds of the object without rotation taken into account.
 	 */
 	public Rectangle2D getBounds();
+
+	public double getCenterX();
+
+	public void setCenterX(double d);
+
+	public double getCenterY();
+
+	public void setCenterY(double d);
+
+	/**
+	 * NB: no setHeight() for Groupable because not applicable for line pathway
+	 * element. Lines can be positioned partially outside of a Group's border.
+	 * 
+	 * @return
+	 */
+	public double getHeight();
+
+	/**
+	 * NB: no setWidth() for Groupable because not applicable for line pathway
+	 * element.Lines can be positioned partially outside of a Group's border.
+	 * 
+	 * @return
+	 */
+	public double getWidth();
+
+	public double getLeft();
+
+	public void setLeft(double d);
+
+	public double getTop();
+
+	public void setTop(double d);
 }

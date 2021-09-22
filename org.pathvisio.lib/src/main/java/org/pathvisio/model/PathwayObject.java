@@ -138,7 +138,7 @@ public abstract class PathwayObject {
 	public void terminate() {
 		unsetPathwayModel();
 		// At this point we cannot use the method setElementId,
-		// because it does not accept null as a legal value.
+		// because it does not accept null as a legal value. TODO 
 		this.elementId = null;
 	}
 

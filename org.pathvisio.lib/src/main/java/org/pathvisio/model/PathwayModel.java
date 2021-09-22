@@ -264,7 +264,7 @@ public class PathwayModel {
 	 * @param elementRef the pathway element which can be linked to.
 	 * @param linePoint  the linePoint with given elementRef.
 	 */
-	public void addElementRef(LinkableTo elementRef, LinePoint linePoint) {
+	protected void addElementRef(LinkableTo elementRef, LinkableFrom linePoint) {
 		Utils.multimapPut(elementRefToLinePoints, elementRef, linePoint);
 	}
 
@@ -274,10 +274,10 @@ public class PathwayModel {
 	 * @param elementRef the pathway element which is linked to linePoint.
 	 * @param linePoint  the linePoint with given elementRef.
 	 */
-	void removeElementRef(LinkableTo elementRef, LinePoint linePoint) {
+	protected void removeElementRef(LinkableTo elementRef, LinkableFrom linePoint) {
 		if (!elementRefToLinePoints.containsKey(elementRef))
 			throw new IllegalArgumentException();
-		elementRefToLinePoints.get(elementRef).remove(linePoint);
+		elementRefToLinePoints.get(elementRef).remove(linePoint); //TODO 
 		if (elementRefToLinePoints.get(elementRef).size() == 0)
 			elementRefToLinePoints.remove(elementRef);
 	}
@@ -575,7 +575,7 @@ public class PathwayModel {
 	 *         equivalent annotation.
 	 */
 	public Annotation addAnnotation(Annotation annotation) {
-		Annotation annotationExisting = annotationExists(annotation);
+		Annotation annotationExisting = hasEqualAnnotation(annotation);
 		if (annotationExisting != null) {
 			Logger.log.trace("Duplicate annotation is not added to pathway model.");
 			return annotationExisting;
@@ -593,7 +593,7 @@ public class PathwayModel {
 	 * @return annotationExisting the existing equivalent annotation, or null if no
 	 *         equivalent annotation exists for given citation.
 	 */
-	public Annotation annotationExists(Annotation annotation) {
+	public Annotation hasEqualAnnotation(Annotation annotation) {
 		for (Annotation annotationExisting : annotations) {
 			if (annotation.equalsAnnotation(annotationExisting)) {
 				Logger.log.trace("New annotation is equivalent to existing annotation "
@@ -1088,7 +1088,7 @@ public class PathwayModel {
 					((LineElement) e).getEndLinePoint().getX()));
 			mh = Math.max(mh, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePoint().getY(),
 					((LineElement) e).getEndLinePoint().getY()));
-		} else if (e instanceof ShapedElement) { //TODO 
+		} else if (e instanceof ShapedElement) { // TODO
 			mw = Math.max(mw, BORDER_SIZE + ((ShapedElement) e).getLeft() + ((ShapedElement) e).getWidth());
 			mh = Math.max(mh, BORDER_SIZE + ((ShapedElement) e).getTop() + ((ShapedElement) e).getHeight());
 		}

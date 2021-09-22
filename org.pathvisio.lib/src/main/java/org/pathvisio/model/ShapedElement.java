@@ -26,6 +26,7 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.ref.PathwayElement;
 import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.LineStyleType;
@@ -716,6 +717,13 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		return GraphLink.getReferences(this, getPathwayModel());
 	}
 
+	// TODO
+	public void unsetAllLinkableFroms() {
+		for (LinkableFrom linePoint : getLinkableFroms()) {
+			((LinePoint) linePoint).setElementRef(null); //TODO 
+		}
+	}
+
 	/**
 	 * Terminates this pathway element. The pathway model, if any, is unset from
 	 * this pathway element. Links to all annotationRefs, citationRefs, and
@@ -727,7 +735,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		removeCitationRefs();
 		removeEvidenceRefs();// TODO
 		unsetGroupRef();
-		unsetPathwayModel();
+		unsetAllLinkableFroms(); // TODO unset as a LinkableTo
+		super.terminate();
 	}
 
 	// ================================================================================
@@ -816,8 +825,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * @param mp a point in absolute model coordinates
 	 * @return the same point relative to the bounding box of this pathway element:
-	 *          -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
-	 *          corner, and 0,0 meaning the center.
+	 *         -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
+	 *         corner, and 0,0 meaning the center.
 	 */
 	public Point2D toRelativeCoordinate(Point2D mp) {
 		double relX = mp.getX();

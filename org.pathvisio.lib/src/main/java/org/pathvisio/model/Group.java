@@ -115,7 +115,7 @@ public class Group extends ShapedElement {
 		// add pathway element to this group
 		if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement))
 			pathwayElements.add(pathwayElement);
-		//TODO recalculate size 
+		// TODO recalculate size
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class Group extends ShapedElement {
 		// remove pathway element from this group
 		if (pathwayElement.getGroupRef() == null && hasPathwayElement(pathwayElement))
 			pathwayElements.remove(pathwayElement);
-		//TODO recalculate size 
+		// TODO recalculate size
 	}
 
 	/**
@@ -220,11 +220,8 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	public void terminate() {
-		removeAnnotationRefs();
-		removeCitationRefs();
-		removeEvidenceRefs();
 		removePathwayElements();
-		unsetPathwayModel();
+		super.terminate();
 	}
 
 	// ================================================================================
@@ -241,14 +238,112 @@ public class Group extends ShapedElement {
 	 * Returns margin for group bounding-box around contained elements depending on
 	 * group type, as specified in GPML2013a.
 	 * 
-	 * @param type the type of the group.
-	 * @return
+	 * @return the margin for group.
 	 */
-	public static double getMargin(GroupType type) {
+	public double getMargin() {
 		if (type == GroupType.COMPLEX) {
 			return COMPLEX_M_MARGIN;
 		} else {
 			return DEFAULT_M_MARGIN;
+		}
+	}
+
+	/**
+	 * Center x of the group bounds
+	 */
+	@Override
+	public double getCenterX() {
+		return getBounds().getCenterX();
+	}
+
+	/**
+	 * Center y of the group bounds
+	 */
+	@Override
+	public double getCenterY() {
+		return getBounds().getCenterY();
+	}
+
+	/**
+	 * Width of the group bounds
+	 */
+	@Override
+	public double getWidth() {
+		return getBounds().getWidth();
+	}
+
+	/**
+	 * Height of the group bounds
+	 */
+	@Override
+	public double getHeight() {
+		return getBounds().getHeight();
+	}
+
+	/**
+	 * Left of the group bounds
+	 */
+	@Override
+	public double getLeft() {
+		return getBounds().getX();
+	}
+
+	/**
+	 * Top of the group bounds
+	 */
+	@Override
+	public double getTop() {
+		return getBounds().getY();
+	}
+
+	@Override
+	public void setCenterX(double v) {
+		double d = v - getBounds().getCenterX();
+		for (Groupable e : pathwayElements) {
+			e.setCenterX(e.getCenterX() + d);
+		}
+	}
+
+	@Override
+	public void setCenterY(double v) {
+		double d = v - getBounds().getCenterY();
+		for (Groupable e : pathwayElements) {
+			e.setCenterY(e.getCenterY() + d);
+		}
+	}
+
+	@Override
+	public void setWidth(double v) {
+		double d = v - getBounds().getWidth();
+		for (Groupable e : pathwayElements) {
+			if (e instanceof ShapedElement) {
+				((ShapedElement) e).setWidth(e.getWidth() + d);
+			}
+		}
+	}
+
+	@Override
+	public void setHeight(double v) {
+		double d = v - getBounds().getHeight();
+		for (Groupable e : pathwayElements) {
+			if (e instanceof ShapedElement) {
+			((ShapedElement) e).setHeight(e.getHeight() + d);}
+		}
+	}
+
+	@Override
+	public void setLeft(double v) {
+		double d = v - getBounds().getX();
+		for (Groupable e : pathwayElements) {
+			e.setLeft(e.getLeft() + d);
+		}
+	}
+
+	@Override
+	public void setTop(double v) {
+		double d = v - getBounds().getY();
+		for (Groupable e : pathwayElements) {
+			e.setTop(e.getTop() + d);
 		}
 	}
 
@@ -271,7 +366,7 @@ public class Group extends ShapedElement {
 				bounds.add(e.getRotatedBounds());
 		}
 		if (bounds != null) {
-			double margin = getMargin(type);
+			double margin = getMargin();
 			return new Rectangle2D.Double(bounds.getX() - margin, bounds.getY() - margin,
 					bounds.getWidth() + 2 * margin, bounds.getHeight() + 2 * margin);
 		} else {
@@ -298,15 +393,14 @@ public class Group extends ShapedElement {
 				bounds.add(e.getBounds());
 		}
 		if (bounds != null) {
-			double margin = getMargin(type);
+			double margin = getMargin();
 			return new Rectangle2D.Double(bounds.getX() - margin, bounds.getY() - margin,
 					bounds.getWidth() + 2 * margin, bounds.getHeight() + 2 * margin);
 		} else {
 			return new Rectangle2D.Double();
 		}
 	}
-	
-	
+
 	// ================================================================================
 	// Copy Methods
 	// ================================================================================
@@ -317,7 +411,7 @@ public class Group extends ShapedElement {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(Group src) { //TODO
+	public void copyValuesFrom(Group src) { // TODO
 		super.copyValuesFrom(src);
 		textLabel = src.textLabel;
 		type = src.type;
@@ -332,7 +426,7 @@ public class Group extends ShapedElement {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Group copy() {
-		Group result = new Group(type); //TODO 
+		Group result = new Group(type); // TODO
 		result.copyValuesFrom(this);
 		return result;
 	}

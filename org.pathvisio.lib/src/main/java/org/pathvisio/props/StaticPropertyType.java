@@ -53,7 +53,10 @@ public enum StaticPropertyType implements PropertyType {
 	CONNECTORTYPE,
 	
 	// types: anchor, annotation, linepoint, datanode, state, group
-	ANCHORSHAPETYPE, ANNOTATIONTYPE, ARROWHEADTYPE, DATANODETYPE, STATETYPE, GROUPTYPE;
+	ANCHORSHAPETYPE, ANNOTATIONTYPE, ARROWHEADTYPE, DATANODETYPE, STATETYPE, GROUPTYPE,
+	
+	//bibliography
+	ANNOTATION, CITATION, EVIDENCE;
 
 	private String id;
 
