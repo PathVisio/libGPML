@@ -121,8 +121,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Map<String, String> groupIdToNew = new HashMap<String, String>(); // map for groupIds to new unique elementIds
 		List<String> lineList = new ArrayList<String>(); // ordered id list for line pathway elements
 
-		readAllElementIds(pathwayModel, root, elementIdSet);// reads all elementIds and stores in set
-		readPublicationXrefMap(pathwayModel, root, elementIdSet, idToPublicationXref);
+		readAllElementIds(root, elementIdSet);// reads all elementIds and stores in set
+		readPublicationXrefMap(root, elementIdSet, idToPublicationXref);
 		// reads pathway information and comment group
 		readPathway(pathwayModel.getPathway(), root);
 		readCommentGroup(pathwayModel, pathwayModel.getPathway(), root, idToPublicationXref);
@@ -172,11 +172,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * missing. In order to assign unique new elementIds, we must first read all
 	 * elementIds from the Jdom document to store in elementIdSet.
 	 * 
-	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
 	 * @param elementIdSet the set of all elementIds.
 	 */
-	protected void readAllElementIds(PathwayModel pathwayModel, Element root, Set<String> elementIdSet) {
+	protected void readAllElementIds(Element root, Set<String> elementIdSet) {
 		List<Element> elements = root.getChildren();
 		for (Element e : elements) {
 			String graphId = e.getAttributeValue("GraphId");
@@ -319,13 +318,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * added to elementIdSet, and set for the PublicationXref
 	 * {@link PublicationXref#setElementId}.
 	 * 
-	 * @param pathwayModel        the pathway model.
 	 * @param root                the jdom root element.
 	 * @param elementIdSet        the set of all elementIds.
 	 * @param idToPublicationXref the map of id to biopax jdom element.
 	 * @throws ConverterException
 	 */
-	protected void readPublicationXrefMap(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
+	protected void readPublicationXrefMap(Element root, Set<String> elementIdSet,
 			Map<String, PublicationXref> idToPublicationXref) throws ConverterException {
 		Element bp = root.getChild("Biopax", root.getNamespace());
 		if (bp != null) {
@@ -359,13 +357,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * elements in the GPML2013a schema, but was never used/implemented.
 	 * <li>Biopax PublicationXref which do not have a BiopaxRef will not be read.
 	 * 
-	 * @param pathwayModel        the pathway model.
 	 * @param pathwayElement      the element info pathway element object.
 	 * @param e                   the jdom element.
 	 * @param idToPublicationXref the map of id to biopax jdom element.
 	 * @throws ConverterException
 	 */
-	protected void readPublicationXrefs(PathwayModel pathwayModel, PathwayElement pathwayElement, Element e,
+	protected void readPublicationXrefs(PathwayElement pathwayElement, Element e,
 			Map<String, PublicationXref> idToPublicationXref) throws ConverterException {
 		for (Element bpRef : e.getChildren("BiopaxRef", e.getNamespace())) {
 			String id = bpRef.getText();
@@ -453,7 +450,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readCommentGroup(PathwayModel pathwayModel, PathwayElement pathwayElement, Element e,
 			Map<String, PublicationXref> idToPublicationXref) throws ConverterException {
 		readComments(pathwayElement, e);
-		readPublicationXrefs(pathwayModel, pathwayElement, e, idToPublicationXref);
+		readPublicationXrefs(pathwayElement, e, idToPublicationXref);
 		readDynamicProperties(pathwayElement, e);
 	}
 
@@ -998,7 +995,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads line element {@link LineElement} information for interaction or
 	 * graphical line from jdom element.
 	 * 
-	 * NB: points are read in {@link #readPoints}
+	 * NB: points are read in {@link #readPoints}. GroupRef is read after points
+	 * {@link #readLineGroupRef}.
 	 * 
 	 * @param lineElement         the line pathway element.
 	 * @param ln                  the jdom line pathway element element.
@@ -1012,15 +1010,21 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	protected void readLineElement(PathwayModel pathwayModel, LineElement lineElement, Element ln,
 			Set<String> elementIdSet, Map<String, PublicationXref> idToPublicationXref,
 			Map<String, String> groupIdToNew) throws ConverterException {
-		String base = ln.getName();
 		// reads comment group
 		readCommentGroup(pathwayModel, lineElement, ln, idToPublicationXref);
 		// reads line style graphics
 		Element gfx = ln.getChild("Graphics", ln.getNamespace());
 		readLineStyleProperty(lineElement, gfx);
 		// reads anchors
-		readAnchors(pathwayModel, lineElement, gfx, elementIdSet);
-		// sets optional property groupRef
+		readAnchors(lineElement, gfx, elementIdSet);
+	}
+
+	/**
+	 * TODO
+	 */
+	protected void readLineGroupRef(PathwayModel pathwayModel, LineElement lineElement, Element ln,
+			Map<String, String> groupIdToNew) throws ConverterException {
+		String base = ln.getName();
 		String groupRefStr = getAttr(base, "GroupRef", ln);
 		if (groupRefStr != null && !groupRefStr.equals("")) {
 			// if groupIdToNew contains groupRef, sets groupRef to its new elementId
@@ -1040,8 +1044,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param elementIdSet the set of all elementIds.
 	 * @throws ConverterException
 	 */
-	protected void readAnchors(PathwayModel pathwayModel, LineElement lineElement, Element gfx,
-			Set<String> elementIdSet) throws ConverterException {
+	protected void readAnchors(LineElement lineElement, Element gfx, Set<String> elementIdSet)
+			throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
 			String elementId = readElementId(base + ".Graphics.Anchor", an, elementIdSet);
@@ -1123,13 +1127,11 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						}
 					}
 				}
-				// adds list of points to lineElement if at least 2 points
-				if (ptList.size() >= 2) {
-					lineElement.setLinePoints(ptList); // add points directly and check afterwards
-				} else {
-					throw new ConverterException(
-							lineType.get(i) + lineElement.getElementId() + " must have at least 2 points.");
-				}
+				// adds points to line
+				lineElement.setLinePoints(ptList);
+				// read groupRef for line
+				readLineGroupRef(pathwayModel, lineElement, ln, groupIdToNew);
+				// increment line list index
 				lineListIndex += 1;
 			}
 		}

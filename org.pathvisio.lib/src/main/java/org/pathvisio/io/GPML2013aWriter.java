@@ -155,10 +155,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		Document doc = new Document();
 		Element root = new Element("Pathway", getGpmlNamespace());
 		doc.setRootElement(root);
-
 		if (root != null) {
 			writePathwayInfo(pathwayModel, root);
-
 			writeDataNodes(pathwayModel.getDataNodes(), root);
 			writeStates(pathwayModel.getDataNodes(), root);
 			writeInteractions(pathwayModel.getInteractions(), root);
@@ -166,10 +164,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeLabels(pathwayModel.getLabels(), root);
 			writeShapes(pathwayModel.getShapes(), root);
 			writeGroups(pathwayModel.getGroups(), root);
-
 			writeInfoBox(pathwayModel.getPathway(), root);
 			writeLegend(pathwayModel.getPathway(), root);
-
 			writeBiopax(pathwayModel, root);
 		}
 		return doc;

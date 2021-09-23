@@ -106,7 +106,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readPathway(pathwayModel.getPathway(), root);
 		// reads annotation/citation/evidence ref info into a map
 		Map<String, Element> refIdToJdomElement = new HashMap<String, Element>();
-		readInfoMap(pathwayModel, root, refIdToJdomElement);
+		readInfoMap(root, refIdToJdomElement);
 		// reads pathway info
 		readCommentGroup(pathwayModel, pathwayModel.getPathway(), root, refIdToJdomElement);
 		// reads groups first
@@ -217,12 +217,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	// TODO
 	/**
-	 * @param pathwayModel
 	 * @param root
 	 * @param refIdToJdomElement
 	 * @throws ConverterException
 	 */
-	protected void readInfoMap(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
+	protected void readInfoMap(Element root, Map<String, Element> refIdToJdomElement)
 			throws ConverterException {
 		List<String> refType = Collections.unmodifiableList(Arrays.asList("Annotation", "Citation", "Evidence"));
 		for (int i = 0; i < refType.size(); i++) {
@@ -649,17 +648,15 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readCommentGroup(pathwayModel, lineElement, ln, refIdToJdomElement);
 		// reads points and anchors
 		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
-		readPoints(pathwayModel, lineElement, wyps);
+		readPoints(lineElement, wyps);
 		// checks if line has at least 2 point
 		if (lineElement.getLinePoints().size() < 2) {
 			throw new ConverterException("Line " + lineElement.getElementId() + " has "
 					+ lineElement.getLinePoints().size() + " point(s),  must have at least 2.");
 		}
-		readAnchors(pathwayModel, lineElement, wyps);
+		readAnchors(lineElement, wyps);
 		// sets optional properties
-		String groupRef = ln.getAttributeValue("groupRef");
-		if (groupRef != null && !groupRef.equals(""))
-			lineElement.setGroupRefTo((Group) lineElement.getPathwayModel().getPathwayObject(groupRef));
+		lineElement.setGroupRefTo((Group) pathwayModel.getPathwayObject(ln.getAttributeValue("groupRef")));
 	}
 
 	/**
@@ -669,7 +666,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param wyps        the waypoints element.
 	 * @throws ConverterException
 	 */
-	protected void readPoints(PathwayModel pathwayModel, LineElement lineElement, Element wyps)
+	protected void readPoints(LineElement lineElement, Element wyps)
 			throws ConverterException {
 		List<LinePoint> ptList = new ArrayList<LinePoint>();
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
@@ -681,13 +678,8 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			point.setElementId(elementId);
 			ptList.add(point);
 		}
-		// adds points if at least 2 points, otherwise throw error
-		if (ptList.size() >= 2) {
-			lineElement.setLinePoints(ptList);
-		} else {
-			throw new ConverterException(lineElement.getClass().getSimpleName() + lineElement.getElementId()
-					+ " must have at least 2 points.");
-		}
+		// adds points to line
+		lineElement.setLinePoints(ptList);
 	}
 
 	/**
@@ -697,7 +689,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param wyps        the waypoints element.
 	 * @throws ConverterException
 	 */
-	protected void readAnchors(PathwayModel pathwayModel, LineElement lineElement, Element wyps)
+	protected void readAnchors(LineElement lineElement, Element wyps)
 			throws ConverterException {
 		for (Element an : wyps.getChildren("Anchor", wyps.getNamespace())) {
 			String elementId = an.getAttributeValue("elementId");

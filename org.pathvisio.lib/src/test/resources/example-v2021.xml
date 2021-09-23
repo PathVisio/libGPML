@@ -47,7 +47,7 @@
 		</DataNode>
 	</DataNodes>
 	<Interactions>
-		<Interaction elementId="id3a44746">
+		<Interaction elementId="id3a44746" groupRef="bcdd3">
 			<Xref identifier="" dataSource=""/>
 			<Waypoints>
 				<Point elementId="p1" elementRef="bcdd3" x="311.5540089086858" y="131.93374164810686" relX="0.0" relY="1.0"/>
@@ -55,7 +55,7 @@
 			</Waypoints>
 			<Graphics zOrder="12288" lineWidth="1.0"/>
 		</Interaction>
-		<Interaction elementId="idd3dddaa3">
+		<Interaction elementId="idd3dddaa3" groupRef="bcdd3">
 			<Xref identifier="" dataSource=""/>
 			<Waypoints>
 				<Point elementId="p3" elementRef="f5660" x="266.0" y="176.0092973904516" relX="1.0" relY="0.0"/>

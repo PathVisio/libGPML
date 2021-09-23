@@ -166,8 +166,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void setLinePoints(List<LinePoint> points) {
 		if (points != null) {
 			if (points.size() < 2) {
-				throw new IllegalArgumentException("Points array should at least have two elements");
+				throw new IllegalArgumentException("Points array should at least have two elements for "
+						+ getClass().getSimpleName() + " " + getElementId());
 			}
+			removeLinePoints(); //TODO 
 			for (int i = 0; i < points.size(); i++) {
 				addLinePoint(points.get(i));
 			}
