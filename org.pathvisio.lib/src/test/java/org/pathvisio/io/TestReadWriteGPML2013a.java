@@ -42,8 +42,8 @@ public class TestReadWriteGPML2013a extends TestCase {
 	 */
 	public static void testReadWriteGPML2013a() throws IOException, ConverterException, SAXException {
 
-//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
-		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
 		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
 		
 		File[] listOfFiles = folderGPML2013a.listFiles(new FilenameFilter() {

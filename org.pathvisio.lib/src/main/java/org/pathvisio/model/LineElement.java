@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -73,8 +72,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public LineElement() {
 		super();
 		this.linePoints = new ArrayList<LinePoint>(); // should have at least two points
-		this.linePoints = Arrays.asList(new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0),
-				new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0)); // TODO
+//		this.linePoints = Arrays.asList(new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0),
+//				new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0)); // TODO
 		this.anchors = new ArrayList<Anchor>();
 	}
 
@@ -160,17 +159,18 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Sets line points, only if linePoints list is empty.
+	 * Sets linePoints to the given list of LinePoints. TODO Used when...
 	 * 
 	 * @param points the list of points to set.
 	 */
 	public void setLinePoints(List<LinePoint> points) {
-		// TODO only allow setLinePoints if empty???
-		if (linePoints.isEmpty() && points != null) {
+		if (points != null) {
 			if (points.size() < 2) {
 				throw new IllegalArgumentException("Points array should at least have two elements");
 			}
-			this.linePoints = points;
+			for (int i = 0; i < points.size(); i++) {
+				addLinePoint(points.get(i));
+			}
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
@@ -190,7 +190,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * 
 	 * @param point the linePoint to be added.
 	 */
-	public void addLinePoint(LinePoint point) {
+	private void addLinePoint(LinePoint point) {
 		if (point != null && !hasLinePoint(point)) {
 			assert (point.getLineElement() == this);
 			// add point to same pathway model as line if applicable TODO
@@ -198,7 +198,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 				getPathwayModel().addPathwayObject(point);
 			linePoints.add(point);
 			// TODO
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+//			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -231,17 +231,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		point.setElementId(elementId);
 		addLinePoint(point);
 		return point;
-	}
-
-	/**
-	 * Adds all given points to the end of linePoints list.
-	 * 
-	 * @param points the list of points to add.
-	 */
-	public void addLinePoints(List<LinePoint> points) {
-		for (int i = 0; i < points.size(); i++) {
-			addLinePoint(points.get(i));
-		}
 	}
 
 	/**
@@ -643,8 +632,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * line pathway element.
 	 */
 	public double getCenterX() {
-		double start = getStartLinePoint().getX();
-		double end = getEndLinePoint().getX();
+		double start = getStartLinePointX();
+		double end = getEndLinePointX();
 		return start + (end - start) / 2;
 	}
 
@@ -653,8 +642,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * line pathway element.
 	 */
 	public double getCenterY() {
-		double start = getStartLinePoint().getY();
-		double end = getEndLinePoint().getY();
+		double start = getStartLinePointY();
+		double end = getEndLinePointY();
 		return start + (end - start) / 2;
 	}
 
@@ -663,8 +652,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * element.
 	 */
 	public double getWidth() {
-		double start = getStartLinePoint().getX();
-		double end = getEndLinePoint().getX();
+		double start = getStartLinePointX();
+		double end = getEndLinePointX();
 		return Math.abs(start - end);
 	}
 
@@ -673,8 +662,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * element.
 	 */
 	public double getHeight() {
-		double start = getStartLinePoint().getY();
-		double end = getEndLinePoint().getY();
+		double start = getStartLinePointY();
+		double end = getEndLinePointY();
 		return Math.abs(start - end);
 	}
 
@@ -683,8 +672,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * line pathway element.
 	 */
 	public double getLeft() {
-		double start = getStartLinePoint().getX();
-		double end = getEndLinePoint().getX();
+		double start = getStartLinePointX();
+		double end = getEndLinePointX();
 		return Math.min(start, end);
 	}
 
@@ -693,8 +682,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * line pathway element.
 	 */
 	public double getTop() {
-		double start = getStartLinePoint().getY();
-		double end = getEndLinePoint().getY();
+		double start = getStartLinePointY();
+		double end = getEndLinePointY();
 		return Math.min(start, end);
 	}
 

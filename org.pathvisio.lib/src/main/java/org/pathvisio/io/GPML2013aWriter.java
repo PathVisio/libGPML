@@ -45,10 +45,10 @@ import org.pathvisio.model.Group;
 import org.pathvisio.model.Interaction;
 import org.pathvisio.model.Label;
 import org.pathvisio.model.LineElement;
-import org.pathvisio.model.Pathway;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.Pathway;
+import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.Comment;
@@ -683,8 +683,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		String centerX = pathway.getDynamicProperty(INFOBOX_CENTER_X);
 		String centerY = pathway.getDynamicProperty(INFOBOX_CENTER_Y);
 		Element ifb = new Element("InfoBox", root.getNamespace());
-		ifb.setAttribute("CenterX", centerX);
-		ifb.setAttribute("CenterY", centerY);
+		ifb.setAttribute("CenterX", centerX == null ? "0" : centerX);
+		ifb.setAttribute("CenterY", centerY == null ? "0" : centerY);
 		root.addContent(ifb);
 	}
 
@@ -1021,7 +1021,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		String base = ((Element) gfx.getParent()).getName();
 		if (shapedElement.getClass() != State.class) {
 			setAttr(base + ".Graphics", "CenterX", gfx, Double.toString(shapedElement.getCenterX()));
-			setAttr(base + ".Graphics", "CenterY", gfx, Double.toString(shapedElement.getCenterX()));
+			setAttr(base + ".Graphics", "CenterY", gfx, Double.toString(shapedElement.getCenterY()));
 		}
 		setAttr(base + ".Graphics", "Width", gfx, Double.toString(shapedElement.getWidth()));
 		setAttr(base + ".Graphics", "Height", gfx, Double.toString(shapedElement.getHeight()));
@@ -1075,7 +1075,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * GPML2013a.
 	 * 
 	 * @param shapedElement the shaped pathway element.
-	 * @param gfx    the parent graphics element.
+	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -1105,8 +1105,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes line style property information.
 	 * 
-	 * @param lineElement the line pathway element. 
-	 * @param gfx      the parent graphics element.
+	 * @param lineElement the line pathway element.
+	 * @param gfx         the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writeLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {

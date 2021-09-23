@@ -298,9 +298,11 @@ public class Group extends ShapedElement {
 
 	@Override
 	public void setCenterX(double v) {
+		System.out.println(v);
 		double d = v - getBounds().getCenterX();
+		System.out.println(d);
 		for (Groupable e : pathwayElements) {
-			e.setCenterX(e.getCenterX() + d);
+			e.setCenterX(e.getCenterX() + d); //TODO PROBLEM!
 		}
 	}
 
@@ -308,7 +310,7 @@ public class Group extends ShapedElement {
 	public void setCenterY(double v) {
 		double d = v - getBounds().getCenterY();
 		for (Groupable e : pathwayElements) {
-			e.setCenterY(e.getCenterY() + d);
+			e.setCenterY(e.getCenterY() + d);  //TODO PROBLEM! 
 		}
 	}
 
@@ -317,7 +319,7 @@ public class Group extends ShapedElement {
 		double d = v - getBounds().getWidth();
 		for (Groupable e : pathwayElements) {
 			if (e instanceof ShapedElement) {
-				((ShapedElement) e).setWidth(e.getWidth() + d);
+				((ShapedElement) e).setWidth(e.getWidth() + d);  ////TODO PROBLEM! 
 			}
 		}
 	}
@@ -327,7 +329,7 @@ public class Group extends ShapedElement {
 		double d = v - getBounds().getHeight();
 		for (Groupable e : pathwayElements) {
 			if (e instanceof ShapedElement) {
-			((ShapedElement) e).setHeight(e.getHeight() + d);}
+			((ShapedElement) e).setHeight(e.getHeight() + d);}  ////TODO PROBLEM! 
 		}
 	}
 
@@ -335,7 +337,7 @@ public class Group extends ShapedElement {
 	public void setLeft(double v) {
 		double d = v - getBounds().getX();
 		for (Groupable e : pathwayElements) {
-			e.setLeft(e.getLeft() + d);
+			e.setLeft(e.getLeft() + d);  ////TODO PROBLEM! 
 		}
 	}
 
@@ -343,7 +345,7 @@ public class Group extends ShapedElement {
 	public void setTop(double v) {
 		double d = v - getBounds().getY();
 		for (Groupable e : pathwayElements) {
-			e.setTop(e.getTop() + d);
+			e.setTop(e.getTop() + d);  ////TODO PROBLEM! 
 		}
 	}
 

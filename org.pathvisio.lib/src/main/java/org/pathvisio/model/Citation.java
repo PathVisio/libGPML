@@ -272,10 +272,12 @@ public class Citation extends PathwayObject {
 	 */
 	public boolean equalsCitation(Citation citation) {
 		// checks if xref is equivalent
-		if (xref != null && citation.getXref() == null)
+		if (xref != null && citation.getXref() == null) {
 			return false;
-		if (xref == null && citation.getXref() != null)
+		}
+		if (xref == null && citation.getXref() != null) {
 			return false;
+		}
 		if (xref != null && citation.getXref() != null) {
 			if (!Objects.equals(xref.getId(), citation.getXref().getId()))
 				return false;
@@ -285,15 +287,16 @@ public class Citation extends PathwayObject {
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, citation.getUrlLink()))
 			return false;
-		// checks if optional GPML2013a properties are equivalent
-		if (!Objects.equals(title, citation.getTitle()))
-			return false;
-		if (!Objects.equals(source, citation.getSource()))
-			return false;
-		if (!Objects.equals(year, citation.getYear()))
-			return false;
-		if (!Objects.equals(authors, citation.getAuthors()))
-			return false;
+		//TODO 
+//		// checks if optional GPML2013a properties are equivalent
+//		if (!Objects.equals(title, citation.getTitle()))
+//			return false;
+//		if (!Objects.equals(source, citation.getSource()))
+//			return false;
+//		if (!Objects.equals(year, citation.getYear()))
+//			return false;
+//		if (!Objects.equals(authors, citation.getAuthors()))
+//			return false;
 		return true;
 	}
 

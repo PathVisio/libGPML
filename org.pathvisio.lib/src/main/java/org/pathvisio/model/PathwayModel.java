@@ -83,6 +83,7 @@ public class PathwayModel {
 	 */
 	public PathwayModel(Pathway pathway) {
 		this.pathway = pathway;
+		pathway.setPathwayModelTo(this); // TODO
 		this.elementIdToPathwayObject = new HashMap<String, PathwayObject>();
 		this.elementRefToLinePoints = new HashMap<LinkableTo, Set<LinkableFrom>>();
 		this.aliasRefToAliases = new HashMap<Group, Set<DataNode>>();
@@ -185,7 +186,6 @@ public class PathwayModel {
 			throw new IllegalArgumentException("unique elementId can't be null");
 		}
 		if (elementIdToPathwayObject.containsKey(elementId)) {
-			System.out.println(elementIdToPathwayObject);
 			throw new IllegalArgumentException("elementId '" + elementId + "' is not unique");
 		}
 		elementIdToPathwayObject.put(elementId, pathwayObject);
@@ -564,7 +564,7 @@ public class PathwayModel {
 	protected Annotation addAnnotation(Annotation annotation) {
 		Annotation annotationExisting = hasEqualAnnotation(annotation);
 		if (annotationExisting != null) {
-			Logger.log.trace("Duplicate annotation is not added to pathway model.");
+			Logger.log.trace("Annotation not added, information equivalent to " + annotationExisting.getElementId());
 			return annotationExisting;
 		} else {
 			addPathwayObject(annotation);
@@ -583,8 +583,6 @@ public class PathwayModel {
 	private Annotation hasEqualAnnotation(Annotation annotation) {
 		for (Annotation annotationExisting : annotations) {
 			if (annotation.equalsAnnotation(annotationExisting)) {
-				Logger.log.trace("New annotation is equivalent to existing annotation "
-						+ annotationExisting.getElementId() + ".");
 				return annotationExisting;
 			}
 		}
@@ -625,7 +623,7 @@ public class PathwayModel {
 		if (citation != null) {
 			Citation citationExisting = hasEqualCitation(citation);
 			if (citationExisting != null) {
-				Logger.log.trace("Duplicate citation is not added to pathway model.");
+				Logger.log.trace("Citation not added, information equivalent to " + citationExisting.getElementId());
 				return citationExisting;
 			} else {
 				addPathwayObject(citation);
@@ -647,8 +645,6 @@ public class PathwayModel {
 	private Citation hasEqualCitation(Citation citation) {
 		for (Citation citationExisting : citations) {
 			if (citation.equalsCitation(citationExisting)) {
-				Logger.log.trace(
-						"New citation is equivalent to existing citation " + citationExisting.getElementId() + ".");
 				return citationExisting;
 			}
 		}
@@ -685,7 +681,7 @@ public class PathwayModel {
 	protected Evidence addEvidence(Evidence evidence) {
 		Evidence evidenceExisting = hasEqualEvidence(evidence);
 		if (evidenceExisting != null) {
-			Logger.log.trace("Duplicate evidence is not added to pathway model.");
+			Logger.log.trace("Evidence not added, information equivalent to " + evidenceExisting.getElementId());
 			return evidenceExisting;
 		} else {
 			addPathwayObject(evidence);
@@ -704,8 +700,6 @@ public class PathwayModel {
 	private Evidence hasEqualEvidence(Evidence evidence) {
 		for (Evidence evidenceExisting : evidences) {
 			if (evidence.equalsEvidence(evidenceExisting)) {
-				Logger.log.trace(
-						"New Evidence is equivalent to existing evidence " + evidenceExisting.getElementId() + ".");
 				return evidenceExisting;
 			}
 		}
@@ -1071,10 +1065,10 @@ public class PathwayModel {
 		double mw = getPathway().getBoardWidth();
 		double mh = getPathway().getBoardHeight();
 		if (e instanceof LineElement) { // TODO
-			mw = Math.max(mw, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePoint().getX(),
-					((LineElement) e).getEndLinePoint().getX()));
-			mh = Math.max(mh, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePoint().getY(),
-					((LineElement) e).getEndLinePoint().getY()));
+			mw = Math.max(mw, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePointX(),
+					((LineElement) e).getEndLinePointX()));
+			mh = Math.max(mh, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePointY(),
+					((LineElement) e).getEndLinePointY()));
 		} else if (e instanceof ShapedElement) { // TODO
 			mw = Math.max(mw, BORDER_SIZE + ((ShapedElement) e).getLeft() + ((ShapedElement) e).getWidth());
 			mh = Math.max(mh, BORDER_SIZE + ((ShapedElement) e).getTop() + ((ShapedElement) e).getHeight());
