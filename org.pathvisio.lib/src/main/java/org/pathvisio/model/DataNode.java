@@ -585,6 +585,17 @@ public class DataNode extends ShapedElement {
 		// ================================================================================
 		// Inherited Methods
 		// ================================================================================
+
+		/**
+		 * Returns the parent group of the dataNode of this state.
+		 * 
+		 * @return the parent group of this state and its parent dataNode.
+		 */
+		@Override
+		public Group getGroupRef() {
+			return DataNode.this.getGroupRef();
+		}
+
 		/**
 		 * Returns the pathway model for this pathway element.
 		 * 

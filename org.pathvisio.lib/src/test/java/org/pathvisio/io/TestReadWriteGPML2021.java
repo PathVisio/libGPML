@@ -32,45 +32,47 @@ import junit.framework.TestCase;
  */
 public class TestReadWriteGPML2021 extends TestCase {
 
-	
 	/**
-	 * For testing reading a directory of GPML2021 files and writing again to GPML2021
-	 * format. Assert output equivalent to input.
+	 * Tests reading and writing GPML2021 files.
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
 	 * @throws SAXException
 	 */
 	public static void testReadWriteGPML2021() throws IOException, ConverterException, SAXException {
-
+		// input
 		File folderGPML2021 = new File("C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021");
+		
+		// output
 		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2021";
-
+		
+//		File[] listOfFiles = folderGPML2021.listFiles();
+		// filter for gpml files
 		File[] listOfFiles = folderGPML2021.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(".gpml");
 			}
 		});
-		for (int i = 62; i < listOfFiles.length; i++) {
+		
+		//read in and write out
+		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File " + i + " : " + file.getName());
 				assertTrue(file.exists());
-				/* read xml to pathway model */
+				// read files
 				PathwayModel pathwayModel = new PathwayModel();
 				pathwayModel.readFromXml(file, true);
 
-				/* write pathway model to xml */
+				// write to specified directory
 				File outputFile = new File(outputDir, file.getName());
 				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, true);
 				System.out.println(outputFile);
 
-				/* write pathway model to xml (temp) */
+				// write to temp
 //				File tmp = File.createTempFile(file.getName() + "_testwrite", ".gpml");
 //				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
 //				System.out.println(tmp);
-
-				/* method to assert file is same? */
 
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());

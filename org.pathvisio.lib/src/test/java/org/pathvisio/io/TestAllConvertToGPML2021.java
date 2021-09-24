@@ -19,7 +19,6 @@ package org.pathvisio.io;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-
 import java.util.Arrays;
 
 import org.pathvisio.model.PathwayModel;
@@ -31,7 +30,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestConvertAllToGPML2021 extends TestCase {
+public class TestAllConvertToGPML2021 extends TestCase {
 
 	/**
 	 * For testing conversion GPML2013a to newer GPML2021. Reading a directory of
@@ -69,12 +68,12 @@ public class TestConvertAllToGPML2021 extends TestCase {
 					PathwayModel pathwayModel = new PathwayModel();
 					pathwayModel.readFromXml(file, true);
 
-//				/* write pathway model to xml */
-//				File outputFile = new File(outputDir, file.getName());
-//				GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, true);
-//				System.out.println(outputFile);
+//					/* write pathway model to specific folder */
+//					File outputFile = new File(outputDir, file.getName());
+//					GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, outputFile, true);
+//					System.out.println(outputFile);
 
-					/* write pathway model to xml */
+					/* write pathway model to temp */
 					File tmp = File.createTempFile(file.getName() + "_to2021", ".gpml");
 					GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
 					System.out.println(tmp);

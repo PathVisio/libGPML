@@ -221,8 +221,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param refIdToJdomElement
 	 * @throws ConverterException
 	 */
-	protected void readInfoMap(Element root, Map<String, Element> refIdToJdomElement)
-			throws ConverterException {
+	protected void readInfoMap(Element root, Map<String, Element> refIdToJdomElement) throws ConverterException {
 		List<String> refType = Collections.unmodifiableList(Arrays.asList("Annotation", "Citation", "Evidence"));
 		for (int i = 0; i < refType.size(); i++) {
 			Element refs = root.getChild(refType.get(i) + "s", root.getNamespace());
@@ -656,7 +655,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		}
 		readAnchors(lineElement, wyps);
 		// sets optional properties
-		lineElement.setGroupRefTo((Group) pathwayModel.getPathwayObject(ln.getAttributeValue("groupRef")));
+		String groupRef = ln.getAttributeValue("groupRef");
+		if (groupRef != null && !groupRef.equals(""))
+			lineElement.setGroupRefTo((Group) pathwayModel.getPathwayObject(ln.getAttributeValue("groupRef")));
 	}
 
 	/**
@@ -666,8 +667,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param wyps        the waypoints element.
 	 * @throws ConverterException
 	 */
-	protected void readPoints(LineElement lineElement, Element wyps)
-			throws ConverterException {
+	protected void readPoints(LineElement lineElement, Element wyps) throws ConverterException {
 		List<LinePoint> ptList = new ArrayList<LinePoint>();
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 			String elementId = pt.getAttributeValue("elementId");
@@ -689,8 +689,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param wyps        the waypoints element.
 	 * @throws ConverterException
 	 */
-	protected void readAnchors(LineElement lineElement, Element wyps)
-			throws ConverterException {
+	protected void readAnchors(LineElement lineElement, Element wyps) throws ConverterException {
 		for (Element an : wyps.getChildren("Anchor", wyps.getNamespace())) {
 			String elementId = an.getAttributeValue("elementId");
 			double position = Double.parseDouble(an.getAttributeValue("position"));

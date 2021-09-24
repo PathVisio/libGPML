@@ -33,8 +33,8 @@ import junit.framework.TestCase;
 public class TestSingleGPMLReadWrite extends TestCase {
 
 	/**
-	 * For testing reading and writing of a specific GPML2013a or GPML2021 file.
-	 * Useful for debugging and looking in detail at one particular example.
+	 * Tests reading and writing of a GPML2013a/GPML2021 file. For debugging and
+	 * looking in detail at one particular example.
 	 * 
 	 * @throws ConverterException
 	 * @throws IOException
@@ -42,7 +42,8 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	public static void testReadWriteGPML() throws IOException, ConverterException {
 
 		// file to be read
-		URL url = Thread.currentThread().getContextClassLoader().getResource("WP22_72098.gpml");
+//		URL url = Thread.currentThread().getContextClassLoader().getResource("Hs_Differentiation_Pathway_WP2848_107975.gpml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("temp.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
@@ -54,8 +55,8 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		File tmp = File.createTempFile("testwrite", ".gpml");
 
 		// choose here whether to write in GPML2013a or GPML2021 format
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}

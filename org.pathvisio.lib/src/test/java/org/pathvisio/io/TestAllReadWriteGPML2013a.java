@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestReadWriteAllGPML2013a extends TestCase {
+public class TestAllReadWriteGPML2013a extends TestCase {
 
 	/**
 	 * For testing reading a directory of GPML2013a files and writing again to

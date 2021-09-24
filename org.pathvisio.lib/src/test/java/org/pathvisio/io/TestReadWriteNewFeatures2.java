@@ -30,7 +30,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestReadWriteGPML2021NewFeatures2 extends TestCase {
+public class TestReadWriteNewFeatures2 extends TestCase {
 
 	/**
 	 * For testing GPML2021 new features. A base GPML2013a is read in and new

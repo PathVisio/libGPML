@@ -30,7 +30,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestReadWriteAllGPML2021 extends TestCase {
+public class TestAllReadWriteGPML2021 extends TestCase {
 
 	
 	/**

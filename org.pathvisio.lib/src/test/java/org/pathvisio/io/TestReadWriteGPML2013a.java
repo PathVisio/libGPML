@@ -33,8 +33,7 @@ import junit.framework.TestCase;
 public class TestReadWriteGPML2013a extends TestCase {
 
 	/**
-	 * For testing reading a directory of GPML2013a files and writing again to GPML2013a
-	 * format. Assert output equivalent to input.
+	 * Tests reading and writing GPML2013a files.
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
@@ -42,37 +41,39 @@ public class TestReadWriteGPML2013a extends TestCase {
 	 */
 	public static void testReadWriteGPML2013a() throws IOException, ConverterException, SAXException {
 
-		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
-//		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+		// input
+		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
+
+		// output
 		String outputDir = "C:/Users/p70073399/Documents/wikipathways_readwrite_GPML2013a";
 		
+		// filter for gpml files
 		File[] listOfFiles = folderGPML2013a.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(".gpml");
 			}
 		});
-
+		
+		//read in and write out
 		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {
 				System.out.println("File " + i + " : " + file.getName());
 				assertTrue(file.exists());
-				/* read xml to pathway model */
+				// read files
 				PathwayModel pathwayModel = new PathwayModel();
 				pathwayModel.readFromXml(file, true);
 
-				/* write pathway model to xml */
+				// write to specified directory
 				File outputFile = new File(outputDir, file.getName());
 				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, outputFile, true);
 				System.out.println(outputFile);
 
-				/* write pathway model to xml (temp) */
+				// write to temp
 //				File tmp = File.createTempFile(file.getName() + "_testwrite", ".gpml");
 //				GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, false);
 //				System.out.println(tmp);
-
-				/* method to assert file is same? */
-
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());
 			}

@@ -654,7 +654,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		for (Group group : groups) {
 			Element grp = new Element("Group", root.getNamespace());
 			setAttr("Group", "GroupId", grp, group.getElementId());
-			setAttr("Group", "GraphId", grp, group.getDynamicProperty(GROUP_GRAPHID));
+//			if (!group.getLinkableFroms().isEmpty()) //TODO 
+			setAttr("Group", "GraphId", grp, group.getElementId());
 			setAttr("Group", "Style", grp, group.getType().getName());
 			writeXref(group.getXref(), grp, false);
 			writeElementInfo(group, grp);
@@ -851,22 +852,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes point elementRef property information as GraphRef. When
-	 * {@link LinePoint} refers to {@link Group}, GraphRef refers to the group
-	 * GraphId rather than GroupId. This method is used only by {@link #writePoints}
+	 * Writes point elementRef property information as GraphRef. This method is used
+	 * only by {@link #writePoints}
 	 * 
 	 * @param elementRef the pathway element point refers to. .
 	 * @param pt         the jdom point element.
 	 * @return true if elementRef exists and is successfully written.
 	 */
 	protected boolean writePointElementRef(LinkableTo elementRef, Element pt) {
-		// if elementRef refers to a group, write group's graphId (not elementId)
-		if (elementRef != null && elementRef.getClass() == Group.class) {
-			String elementRefStr = ((Group) elementRef).getDynamicProperty(GROUP_GRAPHID);
-			if (elementRefStr != null && !elementRefStr.equals(""))
-				pt.setAttribute("GraphRef", elementRefStr);
-			return true;
-		}
 		if (elementRef != null) {
 			String elementRefStr = elementRef.getElementId();
 			if (elementRefStr != null && !elementRefStr.equals(""))
@@ -945,9 +938,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeShapedOrStateDynamicProperties(Map<String, String> dynamicProperties,
 			ShapedElement shapedElement, Element se) throws ConverterException {
 		for (String key : dynamicProperties.keySet()) {
-			// if key is for group graphId, do not write to GPML2013a
-			if (key == GROUP_GRAPHID)
-				continue;
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));

@@ -178,15 +178,14 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of this shaped pathway element.
+	 * Sets the text of this shaped pathway element. 
 	 * 
 	 * @param v the text to set.
 	 */
 	@Override
 	public void setTextLabel(String v) {
-		String value = (v == null) ? "" : v;
-		if (!Utils.stringEquals(textLabel, value)) {
-			textLabel = value;
+		if (v != null && !Utils.stringEquals(textLabel, v)) {
+			textLabel = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
@@ -253,7 +252,7 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	public double getCenterX() {
-		return getBounds().getCenterX();
+		return getRotatedBounds().getCenterX();
 	}
 
 	/**
@@ -261,7 +260,7 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	public double getCenterY() {
-		return getBounds().getCenterY();
+		return getRotatedBounds().getCenterY();
 	}
 
 	/**
@@ -269,7 +268,7 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	public double getWidth() {
-		return getBounds().getWidth();
+		return getRotatedBounds().getWidth();
 	}
 
 	/**
@@ -277,7 +276,7 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	public double getHeight() {
-		return getBounds().getHeight();
+		return getRotatedBounds().getHeight();
 	}
 
 	/**
@@ -285,7 +284,7 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	public double getLeft() {
-		return getBounds().getX();
+		return getRotatedBounds().getX();
 	}
 
 	/**
@@ -293,59 +292,58 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	public double getTop() {
-		return getBounds().getY();
+		return getRotatedBounds().getY();
 	}
 
 	@Override
 	public void setCenterX(double v) {
-		System.out.println(v);
-		double d = v - getBounds().getCenterX();
-		System.out.println(d);
+		double d = v - getRotatedBounds().getCenterX();
 		for (Groupable e : pathwayElements) {
-			e.setCenterX(e.getCenterX() + d); //TODO PROBLEM!
+			e.setCenterX(e.getCenterX() + d); // TODO PROBLEM!
 		}
 	}
 
 	@Override
 	public void setCenterY(double v) {
-		double d = v - getBounds().getCenterY();
+		double d = v - getRotatedBounds().getCenterY();
 		for (Groupable e : pathwayElements) {
-			e.setCenterY(e.getCenterY() + d);  //TODO PROBLEM! 
+			e.setCenterY(e.getCenterY() + d); // TODO PROBLEM!
 		}
 	}
 
 	@Override
 	public void setWidth(double v) {
-		double d = v - getBounds().getWidth();
+		double d = v - getRotatedBounds().getWidth();
 		for (Groupable e : pathwayElements) {
 			if (e instanceof ShapedElement) {
-				((ShapedElement) e).setWidth(e.getWidth() + d);  ////TODO PROBLEM! 
+				((ShapedElement) e).setWidth(e.getWidth() + d); //// TODO PROBLEM!
 			}
 		}
 	}
 
 	@Override
 	public void setHeight(double v) {
-		double d = v - getBounds().getHeight();
+		double d = v - getRotatedBounds().getHeight();
 		for (Groupable e : pathwayElements) {
 			if (e instanceof ShapedElement) {
-			((ShapedElement) e).setHeight(e.getHeight() + d);}  ////TODO PROBLEM! 
+				((ShapedElement) e).setHeight(e.getHeight() + d);
+			} //// TODO PROBLEM!
 		}
 	}
 
 	@Override
 	public void setLeft(double v) {
-		double d = v - getBounds().getX();
+		double d = v - getRotatedBounds().getX();
 		for (Groupable e : pathwayElements) {
-			e.setLeft(e.getLeft() + d);  ////TODO PROBLEM! 
+			e.setLeft(e.getLeft() + d); //// TODO PROBLEM!
 		}
 	}
 
 	@Override
 	public void setTop(double v) {
-		double d = v - getBounds().getY();
+		double d = v - getRotatedBounds().getY();
 		for (Groupable e : pathwayElements) {
-			e.setTop(e.getTop() + d);  ////TODO PROBLEM! 
+			e.setTop(e.getTop() + d); //// TODO PROBLEM!
 		}
 	}
 
