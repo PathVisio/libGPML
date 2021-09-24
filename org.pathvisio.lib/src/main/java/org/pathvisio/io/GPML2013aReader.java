@@ -325,8 +325,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * information.
 	 * 
 	 * NB: If biopax "id" is not unique, a new unique elementId (value) is assigned,
-	 * added to elementIdSet, and set for the PublicationXref
-	 * {@link PublicationXref#setElementId}.
+	 * added to elementIdSet.
 	 * 
 	 * @param root                the jdom root element.
 	 * @param elementIdSet        the set of all elementIds.
