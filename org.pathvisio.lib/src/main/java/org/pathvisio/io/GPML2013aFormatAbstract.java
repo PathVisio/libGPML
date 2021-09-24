@@ -245,8 +245,8 @@ public abstract class GPML2013aFormatAbstract {
 	/**
 	 * This {@link BidiMap} maps GPML2013a openControlledVocabulary Ontology types
 	 * to their {@link DataSource} Prefix for reading
-	 * {@link GPML2013aReader#readBiopaxOpenControlledVocabulary} and writing
-	 * {@link GPML2013aWriter#writeBiopaxOpenControlledVocabulary}.
+	 * {@link GPML2013aReader#readOpenControlledVocabulary} and writing
+	 * {@link GPML2013aWriter#writeOpenControlledVocabulary}.
 	 */
 	public static final BidiMap<String, String> OCV_ONTOLOGY_MAP = new DualHashBidiMap<>();
 	static {

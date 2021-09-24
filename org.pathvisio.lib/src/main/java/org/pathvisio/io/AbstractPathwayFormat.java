@@ -24,34 +24,33 @@ import org.pathvisio.events.PathwayExporter;
 import org.pathvisio.events.PathwayImporter;
 
 /**
- * base implementation of PathwayImporter and PathwayExporter warnings mechanism. 
+ * base implementation of PathwayImporter and PathwayExporter warnings
+ * mechanism.
  */
-public abstract class AbstractPathwayFormat implements PathwayImporter, PathwayExporter
-{
+public abstract class AbstractPathwayFormat implements PathwayImporter, PathwayExporter {
 	private List<String> warnings = new ArrayList<String>();
-	
-	protected void clearWarnings()
-	{
+
+	protected void clearWarnings() {
 		warnings.clear();
 	}
-	
+
 	/**
-	 * Can be used by overriding classes to add to the list of warnings. Don't forget to call {@link clearWarnings} at the start of conversion.
+	 * Can be used by overriding classes to add to the list of warnings. Don't
+	 * forget to call {@link clearWarnings} at the start of conversion.
+	 * 
+	 * @param warning
 	 */
-	protected void emitWarning (String warning)
-	{
-		warnings.add (warning);
+	protected void emitWarning(String warning) {
+		warnings.add(warning);
 	}
-	
+
 //	@Override TODO 
-	public boolean isCorrectType(File f)
-	{
+	public boolean isCorrectType(File f) {
 		return true;
 	}
 
 //	@Override TODO
-	public List<String> getWarnings()
-	{
+	public List<String> getWarnings() {
 		return warnings;
 	}
 

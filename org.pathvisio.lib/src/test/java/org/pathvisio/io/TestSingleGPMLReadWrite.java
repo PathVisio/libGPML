@@ -43,7 +43,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 
 		// file to be read
 //		URL url = Thread.currentThread().getContextClassLoader().getResource("Hs_Differentiation_Pathway_WP2848_107975.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("temp.gpml");
+		URL url = Thread.currentThread().getContextClassLoader().getResource("WP1140.gpml");
 
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
@@ -55,8 +55,8 @@ public class TestSingleGPMLReadWrite extends TestCase {
 		File tmp = File.createTempFile("testwrite", ".gpml");
 
 		// choose here whether to write in GPML2013a or GPML2021 format
-//		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 	}

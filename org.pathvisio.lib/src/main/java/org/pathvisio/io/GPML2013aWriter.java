@@ -704,8 +704,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes gpml:Biopax information openControlledVocabulary and PublicationXref.
-	 * {@link #writeBiopaxOpenControlledVocabulary} from {@link Annotation}, and
-	 * {@link #writeBiopaxPublicationXref} from {@link Citation}.
+	 * {@link #writeOpenControlledVocabulary} from {@link Annotation}, and
+	 * {@link #writePublicationXref} from {@link Citation}.
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @param root         the root element.
@@ -714,9 +714,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeBiopax(PathwayModel pathwayModel, Element root) throws ConverterException {
 		Element bp = new Element("Biopax", root.getNamespace());
 		// writes openControlledVocabulary, equivalent to annotation
-		writeBiopaxOpenControlledVocabulary(pathwayModel, bp);
+		writeOpenControlledVocabulary(pathwayModel, bp);
 		// writes publicationXref, equivalent to citation
-		writeBiopaxPublicationXref(pathwayModel.getCitations(), bp);
+		writePublicationXref(pathwayModel.getCitations(), bp);
 		if (!bp.getChildren().isEmpty()) {
 			root.addContent(bp);
 		}
@@ -735,7 +735,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param bp           the jdom biopax element.
 	 * @throws ConverterException
 	 */
-	protected void writeBiopaxOpenControlledVocabulary(PathwayModel pathwayModel, Element bp)
+	protected void writeOpenControlledVocabulary(PathwayModel pathwayModel, Element bp)
 			throws ConverterException {
 		for (Annotation annotation : pathwayModel.getAnnotations()) {
 			String type = annotation.getType().getName();
@@ -781,20 +781,20 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param bp        the jdom biopax element.
 	 * @throws ConverterException
 	 */
-	protected void writeBiopaxPublicationXref(List<Citation> citations, Element bp) throws ConverterException {
+	protected void writePublicationXref(List<Citation> citations, Element bp) throws ConverterException {
 		for (Citation citation : citations) {
 			Element pubxf = new Element("PublicationXref", BIOPAX_NAMESPACE);
 			pubxf.setAttribute("id", citation.getElementId(), RDF_NAMESPACE);
 			List<String> authors = citation.getAuthors();
-			writePubxfInfo(citation.getXref().getId(), "ID", pubxf);
-			writePubxfInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf);
-			writePubxfInfo(citation.getTitle(), "TITLE", pubxf);
-			writePubxfInfo(citation.getSource(), "SOURCE", pubxf);
-			writePubxfInfo(citation.getYear(), "YEAR", pubxf);
+			writePublicationXrefInfo(citation.getXref().getId(), "ID", pubxf);
+			writePublicationXrefInfo(citation.getXref().getDataSource().getFullName(), "DB", pubxf);
+			writePublicationXrefInfo(citation.getTitle(), "TITLE", pubxf);
+			writePublicationXrefInfo(citation.getSource(), "SOURCE", pubxf);
+			writePublicationXrefInfo(citation.getYear(), "YEAR", pubxf);
 			if (authors != null && !authors.isEmpty()) {
 				for (String author : authors)
 					if (author != null && !author.equals(""))
-						writePubxfInfo(author, "AUTHORS", pubxf);
+						writePublicationXrefInfo(author, "AUTHORS", pubxf);
 			}
 			if (pubxf != null)
 				bp.addContent(pubxf);
@@ -808,7 +808,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes Biopax PublicationXref information to PublicationXref element. NB: The
-	 * main purpose of this method is to make {@link #writeBiopaxPublicationXref}
+	 * main purpose of this method is to make {@link #writePublicationXref}
 	 * more concise. If property value is null, writes "".
 	 * 
 	 * @param propertyValue the value of the property.
@@ -816,7 +816,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param pubxf         the PublicationXref element.
 	 * @throws ConverterException
 	 */
-	protected void writePubxfInfo(String propertyValue, String elementName, Element pubxf) throws ConverterException {
+	protected void writePublicationXrefInfo(String propertyValue, String elementName, Element pubxf) throws ConverterException {
 		propertyValue = propertyValue == null ? "" : propertyValue;
 		Element e = new Element(elementName, BIOPAX_NAMESPACE);
 		e.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);

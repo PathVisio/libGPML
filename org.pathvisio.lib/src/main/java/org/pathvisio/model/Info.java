@@ -8,6 +8,11 @@ import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.model.type.AnnotationType;
 
+/**
+ * Interface for {@link Annotatable}, {@link Citable}, and {@link Evidenceable}.
+ * 
+ * @author finterly
+ */
 public interface Info {
 
 	/**
@@ -66,7 +71,8 @@ public interface Info {
 		 * @param xref      the annotation xref.
 		 * @param urlLink   the url link of the annotation.
 		 */
-		public AnnotationRef addAnnotation(String elementId, String value, AnnotationType type, Xref xref, String urlLink);
+		public AnnotationRef addAnnotation(String elementId, String value, AnnotationType type, Xref xref,
+				String urlLink);
 
 		/**
 		 * Removes given annotationRef from annotationRefs list.
@@ -80,7 +86,7 @@ public interface Info {
 		 */
 		public void removeAnnotationRefs();
 	}
-	
+
 	/**
 	 * Interface for classes which can hold a {@link List} of {@link CitationRef}.
 	 * These classes include {@link Pathway}, {@link PathwayElement}, and
@@ -153,7 +159,7 @@ public interface Info {
 		// everything
 
 	}
-	
+
 	/**
 	 * Interface for classes which can hold a {@link List} of {@link EvidenceRef}.
 	 * These classes include {@link PathwayElement} and {@link AnnotationRef}.
@@ -221,5 +227,5 @@ public interface Info {
 		 */
 		public void removeEvidenceRefs();
 	}
-	
+
 }

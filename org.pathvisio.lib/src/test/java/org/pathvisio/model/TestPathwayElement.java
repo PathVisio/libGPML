@@ -1,9 +1,5 @@
 package org.pathvisio.model;
 
-import org.pathvisio.model.Annotation;
-import org.pathvisio.model.Citation;
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.type.AnnotationType;
@@ -11,9 +7,7 @@ import org.pathvisio.model.type.AnnotationType;
 import junit.framework.TestCase;
 
 /**
- * Tests for PathwayElement class:
- * <li>Test for Comments
- * <li>Test for References
+ * Tests for PathwayElement class: Comments, References
  * 
  * 
  * @author finterly
