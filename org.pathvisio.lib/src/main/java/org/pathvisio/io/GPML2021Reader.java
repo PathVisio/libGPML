@@ -265,7 +265,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Xref xref = readXref(annt);
 				String urlLink = readUrl(annt);
 				// annotation must have value and type, xref and urlLink optional
-				if (xref != null || urlLink != null) {
+				if (value != null && type != null) {
 					AnnotationRef annotationRef = annotatable.addAnnotation(elementId, value, type, xref, urlLink);
 					readCitationRefs(pathwayModel, annotationRef, anntRef, refIdToJdomElement);
 					readEvidenceRefs(pathwayModel, annotationRef, anntRef, refIdToJdomElement);

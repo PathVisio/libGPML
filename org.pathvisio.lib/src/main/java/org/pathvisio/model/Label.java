@@ -93,9 +93,8 @@ public class Label extends ShapedElement {
 	 * @param v the hyperlink reference to a url.
 	 */
 	public void setHref(String v) {
-		String value = (v == null) ? "" : v;
-		if (!Utils.stringEquals(href, value)) {
-			href = value;
+		if (v != null && !Utils.stringEquals(href, v)) {
+			href = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
 		}
 	}

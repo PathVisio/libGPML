@@ -38,12 +38,13 @@ public class TestConvertToGPML2021 extends TestCase {
 	 */
 	public static void testConvertToGPML2021() throws IOException, ConverterException {
 		// input
-//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 		File folderGPML2013a = new File("C:/Users/p70073399/Documents/wikipathways-complete-gpml-Homo_sapiens");
+//		File folderGPML2013a = new File("src/test/resources/sampleGPML2013a");
 
 		// output
 		String outputDir = "C:/Users/p70073399/Documents/wikipathways-convert-to-GPML2021";
-		
+//		String outputDir = "C:/Users/p70073399/Documents/sampleGPML2021";
+
 		File[] listOfFiles = folderGPML2013a.listFiles();
 		// filter for gpml files
 //		File[] listOfFiles = folderGPML2013a.listFiles(new FilenameFilter() {
@@ -52,7 +53,7 @@ public class TestConvertToGPML2021 extends TestCase {
 //			}
 //		});
 
-		//read in and write out
+		// read in and write out
 		for (int i = 0; i < listOfFiles.length; i++) {
 			File file = listOfFiles[i];
 			if (file.isFile()) {

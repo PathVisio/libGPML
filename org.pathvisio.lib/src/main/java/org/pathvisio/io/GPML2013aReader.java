@@ -1318,50 +1318,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Local class to help with reading gpml:Group.
-	 * 
-	 * @author finterly
-	 */
-	public class GroupKey {
-
-		String groupId; // essentially elementId
-		String graphId; // the id line points refer to
-
-		public GroupKey(String groupId, String graphId) {
-			super();
-			this.groupId = groupId;
-			this.graphId = graphId;
-		}
-
-		public String getGroupId() {
-			return groupId;
-		}
-
-		public String getGraphId() {
-			return graphId;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (o != null && o instanceof GroupKey) {
-				GroupKey s = (GroupKey) o;
-				return groupId.equals(s.getGroupId()) && graphId.equals(s.getGraphId());
-			}
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			return groupId.hashCode() * 31 + graphId.hashCode();
-		}
-//	    @Override
-//	    public int hashCode() {
-//	        return (groupId + graphId).hashCode();
-//	    }
-
-	}
-
-	/**
 	 * Local class to help with reading gpml:Biopax:bp:PublicationXref.
 	 * 
 	 * @author finterly

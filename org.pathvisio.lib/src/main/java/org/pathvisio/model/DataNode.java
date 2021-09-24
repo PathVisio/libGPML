@@ -314,6 +314,9 @@ public class DataNode extends ShapedElement {
 	// ================================================================================
 	// Inherited Methods
 	// ================================================================================
+
+	//TODO state GroupRef???
+	
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
 	 * model adds this pathway element. This method is not used directly.
