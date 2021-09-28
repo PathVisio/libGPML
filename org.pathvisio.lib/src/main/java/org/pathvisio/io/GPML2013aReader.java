@@ -17,7 +17,6 @@
 package org.pathvisio.io;
 
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -151,27 +150,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readPoints(pathwayModel, root, elementIdSet, groupIdToGroup, graphIdToGroup, lineList);
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
-		calculateGroupRectProperty(pathwayModel.getGroups());
 		return pathwayModel;
-	}
-
-	/**
-	 * Calculates and sets rect properties (centerX, centerY, width, height) for
-	 * groups after pathwayElements {@link List} is filled. Method
-	 * {@link Group#getRotatedBounds()} Iterates over all group pathway element
-	 * members to find the total rectangular bounds, taking into account rotation of
-	 * the nested elements.
-	 * 
-	 * @param groups the list of groups.
-	 */
-	protected void calculateGroupRectProperty(List<Group> groups) {
-		for (Group group : groups) {
-			Rectangle2D bounds = group.getRotatedBounds(); // TODO
-			group.setCenterX(bounds.getCenterX());
-			group.setCenterY(bounds.getCenterY());
-			group.setWidth(bounds.getWidth());
-			group.setHeight(bounds.getHeight());
-		}
 	}
 
 	/**
@@ -1088,9 +1067,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						}
 						// sets elementRef, relX, and relY for this point
 						if (elementRef != null) {
-							point.setElementRef(elementRef);
-							point.setRelX(Double.parseDouble(pt.getAttributeValue("RelX").trim()));
-							point.setRelY(Double.parseDouble(pt.getAttributeValue("RelY").trim()));
+							double relX = Double.parseDouble(pt.getAttributeValue("RelX").trim());
+							double relY = Double.parseDouble(pt.getAttributeValue("RelY").trim());
+							point.linkTo(elementRef, relX, relY);
 						}
 					}
 				}

@@ -154,10 +154,6 @@ public interface Info {
 		 */
 		public void removeCitationRefs();
 
-		// TODO addCitation();
-		// add citation. Take the citation, and creates citationRef, and links
-		// everything
-
 	}
 
 	/**

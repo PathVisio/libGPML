@@ -48,7 +48,7 @@ import org.pathvisio.util.Utils;
 public abstract class LineElement extends PathwayElement implements Groupable, ConnectorRestrictions {
 
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
-	private List<LinePoint> linePoints; // minimum 2
+	private List<LinePoint> linePoints = new ArrayList<LinePoint>(); // minimum 2
 	private List<Anchor> anchors;
 
 	// line style properties
@@ -71,9 +71,9 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 */
 	public LineElement() {
 		super();
-		this.linePoints = new ArrayList<LinePoint>(); // should have at least two points
-//		this.linePoints = Arrays.asList(new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0),
-//				new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0)); // TODO
+		// TODO instantiate and set? Creates issue with elementId when reading
+//		setLinePoints(Arrays.asList(new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0),
+//				new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0)));
 		this.anchors = new ArrayList<Anchor>();
 	}
 
@@ -159,7 +159,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Sets linePoints to the given list of LinePoints. TODO Used when...
+	 * Sets linePoints to the given list of LinePoints. Removes old points
+	 * {@link removeLinePoints}, if any, then adds new points {@link addLinePoints}.
 	 * 
 	 * @param points the list of points to set.
 	 */
@@ -169,93 +170,38 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 				throw new IllegalArgumentException("Points array should at least have two elements for "
 						+ getClass().getSimpleName() + " " + getElementId());
 			}
-			removeLinePoints(); //TODO 
-			for (int i = 0; i < points.size(); i++) {
-				addLinePoint(points.get(i));
-			}
+			removeLinePoints(); // TODO manages linePoints in PathwayModel
+			addLinePoints(points);
 			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
 	/**
-	 * Checks whether linePoints has the given point.
+	 * Adds all given points to the linePoints list. Adds each point to the pathway
+	 * model {@link PathwayModel#addPathwayObject}.
 	 * 
-	 * @param point the point to look for.
-	 * @return true if has point, false otherwise.
+	 * @param points the points.
 	 */
-	public boolean hasLinePoint(LinePoint point) {
-		return linePoints.contains(point);
-	}
-
-	/**
-	 * Adds given point to linePoints list. Sets lineElement for the given point.
-	 * 
-	 * @param point the linePoint to be added.
-	 */
-	private void addLinePoint(LinePoint point) {
-		if (point != null && !hasLinePoint(point)) {
-			assert (point.getLineElement() == this);
-			// add point to same pathway model as line if applicable TODO
+	private void addLinePoints(List<LinePoint> points) {
+		for (int i = 0; i < points.size(); i++) {
+			LinePoint point = points.get(i);
+			assert (point != null && point.getLineElement() == this);
 			if (getPathwayModel() != null)
 				getPathwayModel().addPathwayObject(point);
 			linePoints.add(point);
-			// TODO
-//			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 		}
+
 	}
 
 	/**
-	 * Adds given point to linePoints list. Sets lineElement for the given point.
-	 * Calls {@link #addLinePoint(LinePoint point)}.
-	 * 
-	 * @param arrowHead the type of arrowhead.
-	 * @param x         the x coordinate of point.
-	 * @param y         the y coordinate of the point.
+	 * Removes all points from the linePoints list.
 	 */
-	public LinePoint addLinePoint(ArrowHeadType arrowHead, double x, double y) {
-		LinePoint point = new LinePoint(arrowHead, x, y);
-		addLinePoint(point);
-		return point;
-	}
-
-	/**
-	 * Creates and adds a new point to this line. LinePoint elementId is set
-	 * immediately after creation. This method is used when reading gpml. Calls
-	 * {@link #addLinePoint(LinePoint point)}.
-	 * 
-	 * @param elementId the elementId to set for created point.
-	 * @param arrowHead the type of arrowhead.
-	 * @param x         the x coordinate of point.
-	 * @param y         the y coordinate of the point.
-	 */
-	public LinePoint addLinePoint(String elementId, ArrowHeadType arrowHead, double x, double y) {
-		LinePoint point = new LinePoint(arrowHead, x, y);
-		point.setElementId(elementId);
-		addLinePoint(point);
-		return point;
-	}
-
-	/**
-	 * Removes given point from the linePoints list. Point ceases to exist and is
-	 * terminated.
-	 * 
-	 * @param point the linePoint to be removed.
-	 */
-	public void removeLinePoint(LinePoint point) {
-		assert (point != null && hasLinePoint(point));
-		if (getPathwayModel() != null)
-			getPathwayModel().removePathwayObject(point);
-		linePoints.remove(point);
-		point.terminate();
-	}
-
-	/**
-	 * Removes all linePoints from the linePoints list.
-	 */
-	public void removeLinePoints() {
-		for (int i = 0; i < linePoints.size(); i++) {
-			removeLinePoint(linePoints.get(i));
+	private void removeLinePoints() {
+		for (LinePoint linePoint : linePoints) {
+			if (getPathwayModel() != null)
+				getPathwayModel().removePathwayObject(linePoint);
 		}
+		linePoints.clear();
 	}
 
 	// ================================================================================
@@ -341,7 +287,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		if (getPathwayModel() != null)
 			getPathwayModel().removePathwayObject(anchor);
 		anchors.remove(anchor);
-		anchor.terminate();
 		// No anchor property, use LINESTYLE as dummy property to force redraw on line
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 	}
@@ -349,11 +294,14 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	/**
 	 * Removes all anchors from the anchors list.
 	 */
-	public void removeAnchors() {
-		for (int i = 0; i < anchors.size(); i++) {
-			removeAnchor(anchors.get(i));
+	private void removeAnchors() {
+		for (Anchor anchor : anchors) {
+			if (getPathwayModel() != null)
+				getPathwayModel().removePathwayObject(anchor);
 		}
+		anchors.clear();
 	}
+
 
 	// ================================================================================
 	// Line Style Graphics Properties
@@ -511,7 +459,11 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		return linePoints.get(0);
 	}
 
-	// TODO weird
+	/**
+	 * Sets start linePoint coordinates to the coordinates of the given linePoint.
+	 * 
+	 * @param linePoint
+	 */
 	public void setStartLinePoint(LinePoint linePoint) {
 		getStartLinePoint().moveTo(linePoint);
 	}
@@ -579,6 +531,23 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 
 	public void setEndLineType(ArrowHeadType value) {
 		getEndLinePoint().setArrowHead(value);
+	}
+
+	public LinkableTo getStartElementRef() {
+		return getStartLinePoint().getElementRef();
+	}
+
+	public void setStartElementRef(LinkableTo elementRef) {
+		getStartLinePoint().setElementRef(elementRef);
+	}
+
+	public LinkableTo getEndElementRef() {
+		return getEndLinePoint().getElementRef();
+	}
+
+	public void setEndElementRef(LinkableTo elementRef) {
+		getEndLinePoint().setElementRef(elementRef);
+
 	}
 
 	// ================================================================================
@@ -1017,25 +986,9 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		setPathwayModel(pathwayModel);
 		// if line element has points and anchors, also add them to pathway model TODO
 		for (LinePoint point : linePoints) // TODO
-			pathwayModel.addPathwayObject(point);
+			point.setPathwayModelTo(pathwayModel);
 		for (Anchor anchor : anchors) // TODO
-			pathwayModel.addPathwayObject(anchor);
-	}
-
-	/**
-	 * Unsets the pathway model, if any, from this pathway element. The pathway
-	 * element no longer belongs to a pathway model. NB: This method is not used
-	 * directly.
-	 */
-	@Override
-	protected void unsetPathwayModel() {
-		if (hasPathwayModel()) {
-			setPathwayModel(null);
-			for (LinePoint point : linePoints) // TODO
-				point.setPathwayModel(null);
-			for (Anchor anchor : anchors) // TODO
-				anchor.setPathwayModel(null);
-		}
+			anchor.setPathwayModelTo(pathwayModel);
 	}
 
 	/**
@@ -1044,7 +997,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * removed from this data node.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removeLinePoints();
 		removeAnchors();
 		super.terminate();
@@ -1063,14 +1016,25 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void copyValuesFrom(LineElement src) { // TODO
 		super.copyValuesFrom(src);
 		groupRef = src.groupRef;
-		linePoints = new ArrayList<LinePoint>();
-		for (LinePoint p : src.linePoints) {
-			linePoints.add(p);
+		List<LinePoint> points = new ArrayList<LinePoint>();
+		for (LinePoint pt : src.linePoints) {
+			LinePoint result = new LinePoint(null, 0, 0); // TODO
+			result.copyValuesFrom(pt);
+			points.add(result);
 		}
+		setLinePoints(points);
+//		for (LinePoint p : src.linePoints) {
+//			linePoints.add(p);
+//		}
 		anchors = new ArrayList<Anchor>();
 		for (Anchor a : src.anchors) {
-			anchors.add(a);
+			Anchor result = new Anchor(0, null); // TODO
+			result.copyValuesFrom(a);
+			addAnchor(result);
 		}
+//		for (Anchor a : src.anchors) {
+//		anchors.add(a);
+//	}
 		lineColor = src.lineColor;
 		lineWidth = src.lineWidth;
 		connectorType = src.connectorType;
@@ -1143,9 +1107,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 
 		/**
-		 * Sets the pathway model for this pathway element. NB: Only set when a pathway
-		 * model adds this pathway element. This method is not used directly. The point
-		 * or anchor should always have the same pathwayModel as the line it belongs to.
+		 * Sets the pathway model for this point.
+		 * 
+		 * NB: For line point, pathway model is set when instantiated. The point or
+		 * anchor should always have the same pathwayModel as the line it belongs to.
 		 * 
 		 * @param pathwayModel the parent pathway model.
 		 */
@@ -1183,29 +1148,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// ================================================================================
 		// Constructors
 		// ================================================================================
-		/**
-		 * Instantiates a Point pathway element, with reference to another pathway
-		 * element.
-		 * 
-		 * @param arrowHead  the glyph at the ends of lines, intermediate points have
-		 *                   arrowhead type "line" by default.
-		 * @param x          the x coordinate position of the point.
-		 * @param y          the y coordinate position of the point.
-		 * @param elementRef the pathway element to which the point refers.
-		 * @param relX       the relative x coordinate.
-		 * @param relY       the relative x coordinate.
-		 */
-		public LinePoint(ArrowHeadType arrowHead, double x, double y, LinkableTo elementRef, double relX, double relY) {
-			super();
-			this.arrowHead = arrowHead;
-			setX(x);
-			setY(y);
-			linkTo(elementRef, relX, relY);
-		}
 
 		/**
 		 * Instantiates a Point pathway element, with no reference to another pathway
-		 * element.
+		 * element. Method {@link #linkTo} to set elementRef, relX, relY.
 		 * 
 		 * @param arrowHead the arrowhead property of the point (line by default).
 		 * @param x         the x coordinate position of the point.
@@ -1317,7 +1263,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 *
 		 * @param v reference to set.
 		 */
-		public void setElementRef(LinkableTo v) {
+		private void setElementRef(LinkableTo v) {
 			if (elementRef != v) {
 				if (getPathwayModel() != null) {
 					if (elementRef != null) {
@@ -1354,7 +1300,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @param v the relative x coordinate.
 		 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 		 */
-		public void setRelX(double v) {
+		private void setRelX(double v) {
 			if (Math.abs(v) > 1.0) {
 				Logger.log.trace("Warning: relX absolute value of " + String.valueOf(v) + " greater than 1");
 			}
@@ -1384,7 +1330,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * 
 		 * @param v the relative y coordinate.
 		 */
-		public void setRelY(double v) {
+		private void setRelY(double v) {
 			if (Math.abs(v) > 1.0) {
 				Logger.log.trace("Warning: relY absolute value of " + String.valueOf(v) + " greater than 1");
 			}
@@ -1399,6 +1345,16 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// ================================================================================
 
 		private boolean relativeSet; // TODO
+
+//		/**
+//		 * Helper method for converting older GPML files without relative coordinates.
+//		 * 
+//		 * @return true if {@link #setRelativePosition(double, double)} was called to
+//		 *         set the relative coordinates, false if not.
+//		 */
+//		protected boolean relativeSet() {
+//			return relativeSet;
+//		}
 
 		private Point2D getAbsolute() {
 			return elementRef.toAbsoluteCoordinate(new Point2D.Double(getRelX(), getRelY()));
@@ -1444,10 +1400,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		public void unlink() {
 			if (elementRef != null) {
-				if (getPathwayModel() != null) {
-					Point2D abs = getAbsolute();
-					moveTo(abs.getX(), abs.getY());
-				}
+//				if (getPathwayModel() != null) { TODO 
+//					Point2D abs = getAbsolute();
+//					moveTo(abs.getX(), abs.getY());
+//				}
 				relativeSet = false;
 				setElementRef(null);
 				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
@@ -1518,6 +1474,23 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			if (elementRef != null)
 				p.elementRef = elementRef;
 			return p;
+		}
+
+		/**
+		 * Note: doesn't change parent, only fields
+		 *
+		 * Used by UndoAction.
+		 *
+		 * @param src
+		 */
+		public void copyValuesFrom(LinePoint src) { // TODO
+			arrowHead = src.arrowHead;
+			x = src.x;
+			y = src.y;
+			elementRef = src.elementRef;
+			relX = src.relX;
+			relY = src.relY;
+			fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
 		}
 
 		@Override
@@ -1654,15 +1627,27 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * pathway element.
 		 */
 		@Override
-		public void terminate() {
-			unsetGroupRef();
+		protected void terminate() {
 			unsetAllLinkableFroms(); // TODO unset as a LinkableTo
-			unsetPathwayModel();
+			super.terminate();
 		}
 
 		// ================================================================================
 		// Clone Methods
 		// ================================================================================
+		/**
+		 * Note: doesn't change parent, only fields
+		 *
+		 * Used by UndoAction.
+		 *
+		 * @param src
+		 */
+		public void copyValuesFrom(Anchor src) { // TODO
+			position = src.position;
+			shapeType = src.shapeType;
+			fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		}
+
 		@Override
 		public PathwayObject copy() {
 			// TODO Auto-generated method stub

@@ -197,14 +197,14 @@ public class DataNode extends ShapedElement {
 	 * Instantiates a state with the given properties. Adds new state to states list
 	 * and pathway model.
 	 * 
-	 * @param textLabel
-	 * @param stateType
-	 * @param relX
-	 * @param relY
-	 * @return
+	 * @param textLabel the text label of the state.
+	 * @param type      the type of the state, e.g. protein modification.
+	 * @param relX      the relative x coordinates.
+	 * @param relY      the relative y coordinates.
+	 * @return state the instantiated state.
 	 */
-	public State addState(String textLabel, StateType stateType, double relX, double relY) {
-		State state = new State(textLabel, stateType, relX, relY);
+	public State addState(String textLabel, StateType type, double relX, double relY) {
+		State state = new State(textLabel, type, relX, relY);
 		addState(state);
 		return state;
 	}
@@ -213,15 +213,15 @@ public class DataNode extends ShapedElement {
 	 * Instantiates a state with the given properties including elementId. Adds new
 	 * state to states list and pathway model. //TODO
 	 * 
-	 * @param elementId
-	 * @param textLabel
-	 * @param stateType
-	 * @param relX
-	 * @param relY
-	 * @return
+	 * @param elementId the elementId to set for the instantiated state.
+	 * @param textLabel the text label of the state.
+	 * @param type      the type of the state, e.g. protein modification.
+	 * @param relX      the relative x coordinates.
+	 * @param relY      the relative y coordinates.
+	 * @return state the instantiated state.
 	 */
-	public State addState(String elementId, String textLabel, StateType stateType, double relX, double relY) {
-		State state = new State(textLabel, stateType, relX, relY);
+	public State addState(String elementId, String textLabel, StateType type, double relX, double relY) {
+		State state = new State(textLabel, type, relX, relY);
 		state.setElementId(elementId);
 		addState(state);
 		return state;
@@ -234,22 +234,22 @@ public class DataNode extends ShapedElement {
 	 * @param state the state to be removed.
 	 */
 	public void removeState(State state) {
-		assert (state != null && hasState(state));
 		if (getPathwayModel() != null)
 			getPathwayModel().removePathwayObject(state);
 		states.remove(state);
-		state.terminate();
-		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
+		// No state property, use BORDERSTYLE as dummy property to force redraw
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 	}
 
 	/**
 	 * Removes all states from states list.
 	 */
-	public void removeStates() {
-		for (int i = 0; i < states.size(); i++) {
-			removeState(states.get(i));
+	private void removeStates() {
+		for (State state : states) {
+			if (getPathwayModel() != null)
+				getPathwayModel().removePathwayObject(state);
 		}
+		states.clear();
 	}
 
 	// ================================================================================
@@ -315,8 +315,8 @@ public class DataNode extends ShapedElement {
 	// Inherited Methods
 	// ================================================================================
 
-	//TODO state GroupRef???
-	
+	// TODO state GroupRef???
+
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
 	 * model adds this pathway element. This method is not used directly.
@@ -355,7 +355,7 @@ public class DataNode extends ShapedElement {
 	 * removed from this data node.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removeStates();
 		super.terminate();
 	}
@@ -375,8 +375,10 @@ public class DataNode extends ShapedElement {
 		textLabel = src.textLabel;
 		type = src.type;
 		states = new ArrayList<State>();
-		for (State s : src.states) { // TODO????
-			addState(s); // TODO
+		for (State s : src.states) {
+			State result = new State(null, null, 0, 0); // TODO
+			result.copyValuesFrom(s);
+			addState(result);
 		}
 		xref = src.xref;
 		aliasRef = src.aliasRef;
@@ -449,10 +451,15 @@ public class DataNode extends ShapedElement {
 		// Accessors
 		// ================================================================================
 		/**
-		 * Returns the parent data node to which the state belongs.
-		 * 
-		 * NB: prior to GPML2021, elementRef was used to refer to the elementId of
-		 * parent data node.
+		 * Returns the parent data node, outer class, to which the state belongs.
+		 * <p>
+		 * <ol>
+		 * NB:
+		 * <li>Returns the parent data node even if this state has been removed from the
+		 * data node states list.
+		 * <li>In GPML2013a, elementRef was used to refer to the elementId of parent
+		 * data node, thus linking state to parent data node.
+		 * </ol>
 		 * 
 		 * @return dataNode the parent data node of the state.
 		 */
@@ -600,7 +607,11 @@ public class DataNode extends ShapedElement {
 		}
 
 		/**
-		 * Returns the pathway model for this pathway element.
+		 * Returns the pathway model for the parent data node, the outer class of this
+		 * state.
+		 * 
+		 * NB: Returns pathway model of parent data node, even if this state has been
+		 * removed from the pathway model and data node states list.
 		 * 
 		 * @return pathwayModel the parent pathway model.
 		 */
@@ -625,6 +636,17 @@ public class DataNode extends ShapedElement {
 				setPathwayModel(pathwayModel);
 			}
 		}
+
+		// FROM MState
+//		@Override
+//		public void setParent(Pathway v) {
+//			if (parent != v) {
+//				super.setParent(v);
+//				if (parent != null && graphRef != null) {
+//					updateCoordinates();
+//				}
+//			}
+//		}
 
 		// ================================================================================
 		// Copy Methods
@@ -653,7 +675,7 @@ public class DataNode extends ShapedElement {
 		 * No events will be sent to the parent of the original.
 		 */
 		public State copy() {
-			State result = new State(textLabel, type, relX, relX); // TODO
+			State result = new State(textLabel, type, relX, relX); // TODO NEVER USED
 			result.copyValuesFrom(this);
 			return result;
 		}

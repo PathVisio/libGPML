@@ -126,21 +126,17 @@ public class Group extends ShapedElement {
 	 * @param pathwayElement the given pathwayElement to remove.
 	 */
 	public void removePathwayElement(Groupable pathwayElement) {
-		assert (pathwayElement != null);
-		// unset groupRef for pathway element if necessary
-		if (pathwayElement.getGroupRef() == this)
+		if (pathwayElement != null) {
 			pathwayElement.unsetGroupRef();
-		// remove pathway element from this group
-		if (pathwayElement.getGroupRef() == null && hasPathwayElement(pathwayElement))
 			pathwayElements.remove(pathwayElement);
-		// TODO recalculate size
+		}
 	}
 
 	/**
 	 * Removes all pathway elements from the pathwayElements list.
 	 */
 	public void removePathwayElements() {
-		for (int i = 0; i < pathwayElements.size(); i++) {
+		for (int i = pathwayElements.size() - 1; i >= 0; i--) {
 			removePathwayElement(pathwayElements.get(i));
 		}
 	}
@@ -178,7 +174,7 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Sets the text of this shaped pathway element. 
+	 * Sets the text of this shaped pathway element.
 	 * 
 	 * @param v the text to set.
 	 */
@@ -218,7 +214,7 @@ public class Group extends ShapedElement {
 	 * and evidenceRefs are removed from this group.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removePathwayElements();
 		super.terminate();
 	}

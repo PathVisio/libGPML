@@ -20,6 +20,7 @@ import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.Set;
 
+import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.util.Utils;
 
 /**
@@ -128,17 +129,19 @@ public abstract class GraphLink {
 	}
 
 	/**
-	 * Return a list of GraphRefContainers (i.e. points) referring to a certain
-	 * LinkableTo pathway element. TODO
+	 * Return a list of {@link LinkableFrom} {@link LinePoint}(s) referring to a
+	 * certain {@link LinkableTo} pathway element. TODO
 	 *
 	 * @param pathwayElement the LinkableTo.
 	 * @param pathwayModel   the pathway model.
 	 * @return
 	 */
 	public static Set<LinkableFrom> getReferences(LinkableTo pathwayElement, PathwayModel pathwayModel) {
-		if (pathwayModel == null || Utils.isEmpty(pathwayElement.getElementId()))
+		if (pathwayModel == null || Utils.isEmpty(pathwayElement.getElementId())) {
 			return Collections.emptySet();
-		else
+		} else {
 			return pathwayModel.getReferringLinkableFroms(pathwayElement);
+			
+		}
 	}
 }

@@ -135,7 +135,7 @@ public abstract class PathwayObject {
 	 * Terminates this pathway element. The pathway model, if any, is unset from
 	 * this pathway element. The elementId of this pathway element is changed.
 	 */
-	public void terminate() {
+	protected void terminate() {
 		unsetPathwayModel();
 		// At this point we cannot use the method setElementId,
 		// because it does not accept null as a legal value. TODO 

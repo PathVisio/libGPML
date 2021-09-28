@@ -64,10 +64,10 @@ public interface Groupable {
 	 */
 	public void unsetGroupRef();
 
-	/**
-	 * Terminates the pathway element.
-	 */
-	public void terminate();
+//	/**
+//	 * Terminates the pathway element.
+//	 */
+//	void terminate();
 
 	/**
 	 * Returns the rectangular bounds of the object after rotation is applied.

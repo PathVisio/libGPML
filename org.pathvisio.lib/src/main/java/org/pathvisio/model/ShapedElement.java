@@ -719,7 +719,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// TODO
 	public void unsetAllLinkableFroms() {
 		for (LinkableFrom linePoint : getLinkableFroms()) {
-			((LinePoint) linePoint).setElementRef(null); //TODO 
+			((LinePoint) linePoint).unlink(); //TODO 
 		}
 	}
 
@@ -729,7 +729,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * evidenceRefs are removed from this data node.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();// TODO
@@ -790,7 +790,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the top y coordinate of the bounding box around (start, end) this
 	 * shaped pathway element.
-	 */
+	 */ 
 	public double getTop() {
 		return centerY - height / 2;
 	}
@@ -806,6 +806,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
+	@Override 
 	public Point2D toAbsoluteCoordinate(Point2D p) {
 		double x = p.getX();
 		double y = p.getY();
@@ -820,7 +821,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		y += bounds.getCenterY();
 		return new Point2D.Double(x, y);
 	}
-
+	
 	/**
 	 * @param mp a point in absolute model coordinates
 	 * @return the same point relative to the bounding box of this pathway element:

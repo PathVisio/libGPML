@@ -192,25 +192,24 @@ public class Annotation extends PathwayObject {
 	 * @param annotationRef the given annotationRef to remove.
 	 */
 	protected void removeAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null);
-		Annotation annotation = annotationRef.getAnnotation();
-		// remove annotationRef from this annotation
-		if (annotation == this || annotation == null && hasAnnotationRef(annotationRef)) {
+		if (annotationRef != null) {
 			annotationRefs.remove(annotationRef);
 			annotationRef.terminate();
-		}
-		// remove this annotation from pathway model if empty!
-		if (annotationRefs.isEmpty()) {
-			getPathwayModel().removeAnnotation(this);
+			// if citationResf empty, remove this annotation from pathway model
+			if (annotationRefs.isEmpty()) {
+				getPathwayModel().removeAnnotation(this);
+			}
 		}
 	}
 
 	/**
-	 * Removes all annotationRefs from annotationRefs list of the citation.
+	 * Removes all annotationRefs from annotationRefs list.
 	 */
-	public void removeAnnotationRefs() {
-		for (int i = 0; i < annotationRefs.size(); i++) {
-			removeAnnotationRef(annotationRefs.get(i));
+	private void removeAnnotationRefs() {
+		for (int i = annotationRefs.size() - 1; i >= 0; i--) {
+			AnnotationRef ref = annotationRefs.get(i);
+			annotationRefs.remove(ref);
+			ref.terminate();
 		}
 	}
 
@@ -219,7 +218,7 @@ public class Annotation extends PathwayObject {
 	 * annotation. Links to all annotationRefs are removed from this annotation.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removeAnnotationRefs();
 		unsetPathwayModel();
 	}

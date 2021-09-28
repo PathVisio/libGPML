@@ -503,8 +503,8 @@ public class Pathway extends PathwayElement {
 	 * removed from this data node.
 	 */
 	@Override
-	public void terminate() {
-		// Is pathway allowed to be terminated?
+	protected void terminate() {
+		// Is pathway allowed to be terminated? TODO 
 	}
 
 	// ================================================================================

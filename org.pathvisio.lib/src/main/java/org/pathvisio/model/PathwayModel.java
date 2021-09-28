@@ -41,8 +41,6 @@ import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.LineElement.Anchor;
-import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.util.Utils;
 
 /**
@@ -756,7 +754,7 @@ public class PathwayModel {
 	}
 
 	/**
-	 * TODO
+	 * TODO IN PROGRESS 
 	 * 
 	 * Add a PathwayElement to this Pathway. takes care of setting parent and
 	 * removing from possible previous parent.
@@ -765,7 +763,7 @@ public class PathwayModel {
 	 *
 	 * @param pathwayObject The object to add
 	 */
-	public void add(PathwayObject pathwayObject) {
+	private void add(PathwayObject pathwayObject) {
 		assert (pathwayObject.getPathwayModel() == this); // can only remove direct child objects
 		if (pathwayObject.getClass() == DataNode.class) {
 			addDataNode((DataNode) pathwayObject);
@@ -825,14 +823,6 @@ public class PathwayModel {
 		}
 		if (pathwayObject.getClass() == Group.class) {
 			removeGroup((Group) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Anchor.class) {
-			LineElement lineElement = ((Anchor) pathwayObject).getLineElement();
-			lineElement.removeAnchor((Anchor) pathwayObject);
-		}
-		if (pathwayObject.getClass() == LinePoint.class) {
-			LineElement lineElement = ((LinePoint) pathwayObject).getLineElement();
-			lineElement.removeLinePoint((LinePoint) pathwayObject);
 		}
 		// Citation...Anchor..Annotation...?????
 		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED)); // TODO

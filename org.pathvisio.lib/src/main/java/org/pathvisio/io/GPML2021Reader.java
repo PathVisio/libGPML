@@ -743,9 +743,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 							if (elementRef != null) {
 								String elementId = pt.getAttributeValue("elementId");
 								LinePoint point = (LinePoint) pathwayModel.getPathwayObject(elementId);
-								point.setElementRef(elementRef);
-								point.setRelX(Double.parseDouble(pt.getAttributeValue("relX").trim()));
-								point.setRelY(Double.parseDouble(pt.getAttributeValue("relY").trim()));
+								double relX = Double.parseDouble(pt.getAttributeValue("RelX").trim());
+								double relY = Double.parseDouble(pt.getAttributeValue("RelY").trim());
+								point.linkTo(elementRef, relX, relY);
 							}
 						}
 					}

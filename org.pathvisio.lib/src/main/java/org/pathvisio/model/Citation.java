@@ -227,24 +227,24 @@ public class Citation extends PathwayObject {
 	 * @param citationRef the given citationRef to remove.
 	 */
 	protected void removeCitationRef(CitationRef citationRef) {
-		assert (citationRef != null);
-		Citation citation = citationRef.getCitation();
-		// remove citationRef from this citation
-		if (citation == this || citation == null && hasCitationRef(citationRef)) {
+		if (citationRef != null) {
 			citationRefs.remove(citationRef);
 			citationRef.terminate();
+			// if citationResf empty, remove this citation from pathway model
+			if (citationRefs.isEmpty()) {
+				getPathwayModel().removeCitation(this);
+			}
 		}
-		// remove this citation from pathway model if empty!
-		if (citationRefs.isEmpty())
-			getPathwayModel().removeCitation(this);
 	}
 
 	/**
-	 * Removes all citationRefs from citationRefs list of the citation.
+	 * Removes all citationRefs from citationRefs list.
 	 */
-	public void removeCitationRefs() {
-		for (int i = 0; i < citationRefs.size(); i++) {
-			removeCitationRef(citationRefs.get(i));
+	private void removeCitationRefs() {
+		for (int i = citationRefs.size() - 1; i >= 0; i--) {
+			CitationRef ref = citationRefs.get(i);
+			citationRefs.remove(ref);
+			ref.terminate();
 		}
 	}
 
@@ -253,7 +253,7 @@ public class Citation extends PathwayObject {
 	 * citationRef. Links to all citationRefs are removed from this citationRef.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removeCitationRefs();
 		super.terminate();
 	}
@@ -287,7 +287,7 @@ public class Citation extends PathwayObject {
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, citation.getUrlLink()))
 			return false;
-		//TODO 
+		// TODO
 //		// checks if optional GPML2013a properties are equivalent
 //		if (!Objects.equals(title, citation.getTitle()))
 //			return false;

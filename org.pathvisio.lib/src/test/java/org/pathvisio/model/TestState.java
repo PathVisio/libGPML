@@ -16,107 +16,75 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.pathvisio.model.DataNode.State;
 
 import junit.framework.TestCase;
 
 /**
  * Test for {@link State}.
+ * <p>
+ * <ol>
+ * NB:
+ * <li>For a state, getPathwayModel() is only null when outer class data node
+ * terminated
+ * <li>For a state, getDataNode() will always return outer class data node.
+ * </ol>
  * 
  * @author finterly
  */
 public class TestState extends TestCase {
 
-	/**
-	 * Create a DataNode, add DataNode to pathway model. Then create and add State
-	 * to DataNode.
-	 */
-	public static void testDataNodeThenState() {
-		System.out.println("TEST 1");
+	private PathwayModel p;
+	private DataNode d1;
+	private State st1;
+	private State st2;
+	private State st3;
 
-		// create a pathway model
-		PathwayModel p1 = new PathwayModel();
-		assertTrue(p1.getDataNodes().isEmpty());
+	@Before
+	public void setUp() throws Exception {
+		p = new PathwayModel();
+		d1 = new DataNode("d1", null);
+		p.addDataNode(d1);
+		assertTrue(p.hasPathwayObject(d1));
+		assertTrue(p.getDataNodes().contains(d1));
+		assertEquals(d1.getPathwayModel(), p);
 
-		// create a data node
-		DataNode d1 = new DataNode("d1", null);
-		assertNull(d1.getElementId());
-		assertNull(d1.getPathwayModel());
-		// add to pathway model
-		p1.addDataNode(d1);
-		System.out.println("DataNode elementId is " + d1.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-		System.out.println("PathwayModel contains DataNodes " + p1.getDataNodes());
-		assertTrue(p1.getPathwayObjects().contains(d1));
-		assertTrue(p1.getDataNodes().contains(d1));
-		assertEquals(d1.getPathwayModel(), p1);
-
-		// create a state
-		State st1 = d1.addState("st1", null, 0, 0);
-		assertNull(st1.getElementId());
-		assertNull(st1.getDataNode());
-		assertNull(st1.getPathwayModel());
-		assertTrue(d1.getStates().isEmpty());
+		// add states
+		st1 = d1.addState("st1", null, 0, 0);
+		st2 = d1.addState("st2", null, 0, 0);
+		st3 = d1.addState("st2", null, 0, 0);
+		assertTrue(d1.hasState(st1));
+		assertTrue(p.hasPathwayObject(st1));
 		assertEquals(st1.getDataNode(), d1);
-		assertEquals(st1.getPathwayModel(), p1);
-		System.out.println("State elementId is " + st1.getElementId());
-		System.out.println("DataNode contains States " + d1.getStates());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-
-		// remove state
-		d1.removeState(st1);
-		System.out.println("DataNode contains States " + d1.getStates());
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-
-		// remove data node
-		p1.removeDataNode(d1);
-		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-		System.out.println("PathwayModel contains DataNodes " + p1.getDataNodes());
+		assertEquals(st1.getPathwayModel(), p);
 	}
 
 	/**
-	 * Create a DataNode. Create and add State to DataNode. Add both to Pathway
-	 * model.
+	 * Tests removing a state.
+	 * 
 	 */
-	public static void testDataNodeState() {
-		System.out.println("TEST 2");
+	@Test
+	public void testRemoveState() {
+		d1.removeState(st3);
+		assertFalse(d1.hasState(st3));
+		assertFalse(p.hasPathwayObject(st3));
 
-		// create a pathway model
-		PathwayModel p2 = new PathwayModel();
-		assertTrue(p2.getDataNodes().isEmpty());
-		// create a data node
-		DataNode d2 = new DataNode("d2", null);
-		assertNull(d2.getElementId());
-		assertNull(d2.getPathwayModel());
-
-		// create a state
-		State st2 = d2.addState("st2", null, 0, 0);
-		assertNull(st2.getElementId());
-		assertNull(st2.getDataNode());
-		assertNull(st2.getPathwayModel());
-		assertTrue(d2.getStates().isEmpty());
-		// add state to data node
-		assertNull(st2.getElementId());
-		assertNull(st2.getPathwayModel());
-		assertEquals(st2.getDataNode(), d2);
-		assertNull(d2.getPathwayModel());
-		System.out.println("DataNode contains States " + d2.getStates());
-
-		// add data node to pathway model
-		p2.addDataNode(d2);
-		System.out.println("DataNode elementId is " + d2.getElementId());
-		System.out.println("State elementId is " + st2.getElementId());
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
-		System.out.println("PathwayModel contains DataNodes " + p2.getDataNodes());
-
-		// remove state
-		d2.removeState(st2);
-		System.out.println("DataNode contains States " + d2.getStates());
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
-
-		// remove data node
-		p2.removeDataNode(d2);
-		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
-		System.out.println("PathwayModel contains DataNodes " + p2.getDataNodes());
 	}
+
+	/**
+	 * Tests removing a data node and its effect on states.
+	 */
+	@Test
+	public void testRemoveDataNode() {
+		p.removeDataNode(d1);
+		assertTrue(d1.getStates().isEmpty());
+		assertTrue(p.getDataNodes().isEmpty());
+		assertTrue(p.getPathwayObjects().isEmpty());
+		assertNull(d1.getPathwayModel());
+		assertNull(st1.getPathwayModel());
+		assertNull(st2.getPathwayModel());
+	}
+
 }

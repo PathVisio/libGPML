@@ -270,7 +270,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public void removeAnnotationRef(AnnotationRef annotationRef) {
-		if (annotationRef != null && hasAnnotationRef(annotationRef)) {
+		if (annotationRef != null) {
 			annotationRefs.remove(annotationRef);
 			annotationRef.terminate();
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
@@ -282,7 +282,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public void removeAnnotationRefs() {
-		for (int i = 0; i < annotationRefs.size(); i++) {
+		for (int i = annotationRefs.size() - 1; i >= 0; i--) {
 			removeAnnotationRef(annotationRefs.get(i));
 		}
 	}
@@ -391,7 +391,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public void removeCitationRefs() {
-		for (int i = 0; i < citationRefs.size(); i++) {
+		for (int i = citationRefs.size() - 1; i >= 0; i--) {
 			removeCitationRef(citationRefs.get(i));
 		}
 	}
@@ -426,8 +426,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public EvidenceRef addEvidence(Evidence evidence) {
-		// Check if evidence already exists.... //TODO
-		// TODO create evidence
 		EvidenceRef evidenceRef = new EvidenceRef(evidence);
 		// adds evidenceRef
 		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
@@ -439,7 +437,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		return evidenceRef;
 	}
 
-	// TODO
 	/**
 	 * Creates an evidence with given properties, and adds evidence to pathway
 	 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
@@ -503,8 +500,8 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public void removeEvidenceRefs() {
-		for (EvidenceRef evidenceRef : evidenceRefs) {
-			removeEvidenceRef(evidenceRef);
+		for (int i = evidenceRefs.size() - 1; i >= 0; i--) {
+			removeEvidenceRef(evidenceRefs.get(i));
 		}
 	}
 
@@ -514,7 +511,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * evidenceRefs are removed from this data node.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removeAnnotationRefs();
 		removeCitationRefs();
 		removeEvidenceRefs();
@@ -658,6 +655,9 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * Returns the top target pathway element {@link PathwayElement} for a
 		 * {@link AnnotationRef}, {@link CitationRef}, or {@link EvidenceRef}.
 		 * 
+		 * NB: Returns the top pathway element, outer class, even if this ref has been
+		 * removed.
+		 * 
 		 * @return the top target pathway element of the infoRef.
 		 */
 		public PathwayElement getTopPathwayElement() {
@@ -751,7 +751,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * Unsets the annotation, if any, from this annotationRef. Removes this
 		 * annotationRef from the source annotation.
 		 */
-		public void unsetAnnotation() {
+		protected void unsetAnnotation() {
 			if (hasAnnotation()) {
 				Annotation annotation = getAnnotation();
 				setAnnotation(null);
@@ -912,9 +912,11 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public void removeCitationRef(CitationRef citationRef) {
-			assert (citationRef != null && hasCitationRef(citationRef));
-			citationRefs.remove(citationRef);
-			citationRef.terminate();
+			if (citationRef != null && hasCitationRef(citationRef)) {
+				citationRefs.remove(citationRef);
+				citationRef.terminate();
+//				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
+			}
 		}
 
 		/**
@@ -922,7 +924,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public void removeCitationRefs() {
-			for (int i = 0; i < citationRefs.size(); i++) {
+			for (int i = citationRefs.size() - 1; i >= 0; i--) {
 				removeCitationRef(citationRefs.get(i));
 			}
 		}
@@ -1024,17 +1026,20 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public void removeEvidenceRef(EvidenceRef evidenceRef) {
-			assert (evidenceRef != null && hasEvidenceRef(evidenceRef));
-			evidenceRefs.remove(evidenceRef);
-			evidenceRef.terminate();
+			if (evidenceRef != null && hasEvidenceRef(evidenceRef)) {
+				evidenceRefs.remove(evidenceRef);
+				evidenceRef.terminate();
+//				fireObjectModifiedEvent(
+//						PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCEREF));
+			}
 		}
 
 		/**
-		 * Removes all evidenceRef from citationRefs list.
+		 * Removes all evidenceRefs from evidenceRefs list.
 		 */
 		@Override
 		public void removeEvidenceRefs() {
-			for (int i = 0; i < evidenceRefs.size(); i++) {
+			for (int i = evidenceRefs.size() - 1; i >= 0; i--) {
 				removeEvidenceRef(evidenceRefs.get(i));
 			}
 		}
@@ -1043,7 +1048,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * Terminates this annotationRef. The annotation and annotatable, if any, are
 		 * unset from this annotationRef.
 		 */
-		public void terminate() {
+		protected void terminate() {
 			removeCitationRefs();
 			removeEvidenceRefs();
 			unsetAnnotation();
@@ -1299,9 +1304,12 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public void removeAnnotationRef(AnnotationRef annotationRef) {
-			assert (annotationRef != null && hasAnnotationRef(annotationRef));
-			annotationRefs.remove(annotationRef);
-			annotationRef.terminate();
+			if (annotationRef != null) {
+				annotationRefs.remove(annotationRef);
+				annotationRef.terminate();
+//				fireObjectModifiedEvent(
+//						PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
+			}
 		}
 
 		/**
@@ -1309,7 +1317,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public void removeAnnotationRefs() {
-			for (int i = 0; i < annotationRefs.size(); i++) {
+			for (int i = annotationRefs.size() - 1; i >= 0; i--) {
 				removeAnnotationRef(annotationRefs.get(i));
 			}
 		}
@@ -1319,7 +1327,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * this citationRef. Links to all annotationRefs are removed from this
 		 * citationRef.
 		 */
-		public void terminate() {
+		protected void terminate() {
 			removeAnnotationRefs();
 			unsetCitation();
 			unsetCitable();
@@ -1475,7 +1483,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * from this evidenceRef. Links to all evidenceRefs are removed from this
 		 * evidenceRef.
 		 */
-		public void terminate() {
+		protected void terminate() {
 			unsetEvidence();
 			unsetEvidenceable();
 		}

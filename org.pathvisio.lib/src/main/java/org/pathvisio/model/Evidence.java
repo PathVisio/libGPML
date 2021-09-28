@@ -98,7 +98,7 @@ public class Evidence extends PathwayObject {
 	 * @param v the xref of this evidence.
 	 */
 	public void setXref(Xref v) {
-		if (xref == null) {
+		if (v == null) {
 			throw new IllegalArgumentException("Evidence must have valid xref.");
 		}
 		if (v != null || xref != v) {
@@ -168,24 +168,24 @@ public class Evidence extends PathwayObject {
 	 * @param evidenceRef the given evidenceRef to remove.
 	 */
 	protected void removeEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null);
-		Evidence evidence = evidenceRef.getEvidence();
-		// remove citationRef from this citation
-		if (evidence == this || evidence == null && hasEvidenceRef(evidenceRef)) {
+		if (evidenceRef != null) {
 			evidenceRefs.remove(evidenceRef);
 			evidenceRef.terminate();
+			// if citationResf empty, remove this evidence from pathway model
+			if (evidenceRefs.isEmpty()) {
+				getPathwayModel().removeEvidence(this);
+			}
 		}
-		// remove this evidence from pathway model if empty!
-		if (evidenceRefs.isEmpty())
-			getPathwayModel().removeEvidence(this);
 	}
 
 	/**
-	 * Removes all evidenceRefs from evidenceRefs list of this evidence.
+	 * Removes all evidenceRefs from evidenceRefs list.
 	 */
-	public void removeEvidenceRefs() {
-		for (int i = 0; i < evidenceRefs.size(); i++) {
-			removeEvidenceRef(evidenceRefs.get(i));
+	private void removeEvidenceRefs() {
+		for (int i = evidenceRefs.size() - 1; i >= 0; i--) {
+			EvidenceRef ref = evidenceRefs.get(i);
+			evidenceRefs.remove(ref);
+			ref.terminate();
 		}
 	}
 
@@ -194,7 +194,7 @@ public class Evidence extends PathwayObject {
 	 * evidence. Links to all evidenceRefs are removed from this evidence.
 	 */
 	@Override
-	public void terminate() {
+	protected void terminate() {
 		removeEvidenceRefs();
 		super.terminate();
 	}

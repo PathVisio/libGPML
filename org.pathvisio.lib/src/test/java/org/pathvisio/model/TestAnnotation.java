@@ -1,7 +1,7 @@
 package org.pathvisio.model;
 
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.PathwayModel;
+import org.junit.Before;
+import org.junit.Test;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
 
@@ -14,31 +14,59 @@ import junit.framework.TestCase;
  */
 public class TestAnnotation extends TestCase {
 
+	private PathwayModel p;
+	private DataNode d1;
+	private AnnotationRef ar1;
+	private AnnotationRef ar2;
+	private Annotation a;
+	private Annotation a2;
+
+	/**
+	 * Two annotationRefs (same annotation) added to a data node. 
+	 */
+	@Before
+	public void setUp() {
+		p = new PathwayModel();
+		d1 = new DataNode("d1", null); 
+		p.addDataNode(d1); 
+		ar1 = d1.addAnnotation("value", AnnotationType.ONTOLOGY, null, null);
+		ar2 = d1.addAnnotation("value2", AnnotationType.ONTOLOGY, null, null);
+		a = ar1.getAnnotation();
+		a2 = ar2.getAnnotation();
+		
+		assertTrue(p.hasPathwayObject(a));
+		assertTrue(p.hasPathwayObject(a2));
+
+		assertTrue(d1.hasAnnotationRef(ar1));
+		assertTrue(d1.hasAnnotationRef(ar2));
+		assertEquals(ar1.getAnnotatable(), d1);
+		assertEquals(ar2.getAnnotatable(), d1);
+		assertTrue(a.hasAnnotationRef(ar1));
+		assertTrue(a2.hasAnnotationRef(ar2));
+	}
+
+	/**
+	 * Tests for removing annotation.
+	 */
+	@Test
+	public void testRemoveAnnotation() {
+		System.out.println(d1.getAnnotationRefs());
+		System.out.println(a.getAnnotationRefs());
+		p.removeAnnotation(a);		
+		assertTrue(a.getAnnotationRefs().isEmpty());
+		assertFalse(p.hasPathwayObject(a));
+		assertFalse(d1.hasAnnotationRef(ar1));
+		assertTrue(d1.hasAnnotationRef(ar2));
+	}
+
 	/**
 	 * Tests for when annotation with duplicate information is added to pathway
 	 * model.
 	 */
-	public static void testDuplicateAnnotation() {
-		PathwayModel p = new PathwayModel();
-		DataNode d1 = new DataNode("d1", null); // instantiate dataNode
-		p.addDataNode(d1); // add datanode to pathway model
-		AnnotationRef ar1 = d1.addAnnotation("value", AnnotationType.ONTOLOGY, null, null);
-		AnnotationRef ar2 = d1.addAnnotation("value", AnnotationType.ONTOLOGY, null, null);
-		System.out.println(ar1.getAnnotation());
-		System.out.println(ar2.getAnnotation());
-		System.out.println(p.getAnnotations());
-
-//		Annotation a1 = new Annotation("value", AnnotationType.ONTOLOGY);
-//		Annotation a2 = new Annotation("value", AnnotationType.ONTOLOGY);
-//		Annotation annotationExisting = p.addAnnotation(a1);
-//		assertEquals(annotationExisting, a1);
-//		// annotation a2 contains duplicate information and is not added
-//		Annotation annotationExisting2 = p.addAnnotation(a2);
-//		assertEquals(annotationExisting2, a1);
-//		assertTrue(p.getPathwayObjects().contains(a1));
-//		assertFalse(p.getPathwayObjects().contains(a2));
-//		assertTrue(p.getAnnotations().contains(a1));
-//		assertFalse(p.getAnnotations().contains(a2));
+	@Test
+	public void testDuplicateAnnotation() {
+		AnnotationRef ar3 = d1.addAnnotation("value", AnnotationType.ONTOLOGY, null, null);
+		assertEquals(ar1.getAnnotation(), ar3.getAnnotation());
 	}
 
 }

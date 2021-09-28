@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.pathvisio.model.PathwayModel;
 
 import junit.framework.TestCase;
@@ -32,32 +34,47 @@ import junit.framework.TestCase;
  */
 public class TestSingleGPMLReadWrite extends TestCase {
 
+	private PathwayModel pathwayModel;
+	private URL url = Thread.currentThread().getContextClassLoader().getResource("WP1140.gpml");
+
 	/**
-	 * Tests reading and writing of a GPML2013a/GPML2021 file. For debugging and
-	 * looking in detail at one particular example.
+	 * Reads a GPML2013a/GPML2021 file.
 	 * 
 	 * @throws ConverterException
 	 * @throws IOException
 	 */
-	public static void testReadWriteGPML() throws IOException, ConverterException {
-
-		// file to be read
-//		URL url = Thread.currentThread().getContextClassLoader().getResource("Hs_Differentiation_Pathway_WP2848_107975.gpml");
-		URL url = Thread.currentThread().getContextClassLoader().getResource("WP1140.gpml");
-
+	@Before
+	public void setUp() throws IOException, ConverterException {
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
-
-		PathwayModel pathwayModel = new PathwayModel();
+		pathwayModel = new PathwayModel();
 		pathwayModel.readFromXml(file, true);
-
-		// writes to temp
-		File tmp = File.createTempFile("testwrite", ".gpml");
-
-		// choose here whether to write in GPML2013a or GPML2021 format
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
-//		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
-		System.out.println(tmp);
-
 	}
+
+	/**
+	 * Writes pathway mode to a GPML2013a file.
+	 * 
+	 * @throws ConverterException
+	 * @throws IOException
+	 */
+	@Test
+	public void testWriteGPML2013a() throws IOException, ConverterException {
+		File tmp = File.createTempFile("testwriteGPML2013a_", ".gpml");
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		System.out.println(tmp);
+	}
+
+	/**
+	 * Writes pathway mode to a GPML2021 file.
+	 * 
+	 * @throws ConverterException
+	 * @throws IOException
+	 */
+	@Test
+	public void testWriteGPML2021() throws IOException, ConverterException {
+		File tmp = File.createTempFile("testwriteGPML2021a_", ".gpml");
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
+		System.out.println(tmp);
+	}
+
 }
