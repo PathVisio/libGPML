@@ -35,7 +35,8 @@ import junit.framework.TestCase;
 public class TestSingleGPMLReadWrite extends TestCase {
 
 	private PathwayModel pathwayModel;
-	private URL url = Thread.currentThread().getContextClassLoader().getResource("WP1140.gpml");
+	private String inputFile = "temp.gpml";
+	private URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
 
 	/**
 	 * Reads a GPML2013a/GPML2021 file.
@@ -59,7 +60,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	 */
 	@Test
 	public void testWriteGPML2013a() throws IOException, ConverterException {
-		File tmp = File.createTempFile("testwriteGPML2013a_", ".gpml");
+		File tmp = File.createTempFile(inputFile + "_testwriteGPML2013a_", ".gpml");
 		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 	}
@@ -72,7 +73,7 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	 */
 	@Test
 	public void testWriteGPML2021() throws IOException, ConverterException {
-		File tmp = File.createTempFile("testwriteGPML2021a_", ".gpml");
+		File tmp = File.createTempFile(inputFile + "_testwriteGPML2021a_", ".gpml");
 		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
 		System.out.println(tmp);
 	}

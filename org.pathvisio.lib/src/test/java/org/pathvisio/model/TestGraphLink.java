@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.model.GraphLink.LinkableFrom;
-import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.type.ArrowHeadType;
@@ -18,9 +16,8 @@ import junit.framework.TestCase;
  * For testing methods for elementRef:
  * <p>
  * <ol>
- * {@link LinkableTo} and {@link LinkableFrom}
- * <li>
- * <li>
+ * <li>linking point to shaped pathway element.
+ * <li>linking point to anchor or line pathway element.
  * </ol>
  * 
  * @author finterly
@@ -53,8 +50,8 @@ public class TestGraphLink extends TestCase {
 	/**
 	 * Tests linking of interaction i to datanodes d and d2.
 	 * <p>
-	 * <ol>
 	 * To look something like this:
+	 * <ol>
 	 * <li>.____. . .____.
 	 * <li>| d1 |___| d2 |
 	 * <li>|____| i |____|
@@ -91,8 +88,8 @@ public class TestGraphLink extends TestCase {
 	/**
 	 * Test linking of start of interaction i to anchor of interaction i2.
 	 * <p>
-	 * <ol>
 	 * To look something like this:
+	 * <ol>
 	 * <li>
 	 * <li>| _____
 	 * <li>|

@@ -78,8 +78,7 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Instantiates a DataNode given all possible parameters except xref and
-	 * aliasRef.
+	 * Instantiates a DataNode given all required parameters.
 	 */
 	public DataNode(String textLabel, DataNodeType type) {
 		this(textLabel, type, null, null);
@@ -279,12 +278,16 @@ public class DataNode extends ShapedElement {
 	 * Sets the group aliasRef to which this data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of gpml:Group.
 	 * 
+	 * NB: DataNode type must be "Alias".
+	 * 
 	 * @param v the group to which this data node refers.
 	 */
 	public void setAliasRefTo(Group v) {
-		// TODO
 		if (aliasRef != v && v != null) {
-			unsetAliasRef(); // first unsets if necessary
+			if (type != DataNodeType.ALIAS) {
+				throw new IllegalArgumentException("DataNode type must be Alias before setting aliasRef");
+			}
+			unsetAliasRef(); // unset aliasRef if necessary
 			setAliasRef(v);
 			getPathwayModel().addAlias(v, this);
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
@@ -453,8 +456,8 @@ public class DataNode extends ShapedElement {
 		/**
 		 * Returns the parent data node, outer class, to which the state belongs.
 		 * <p>
-		 * <ol>
 		 * NB:
+		 * <ol>
 		 * <li>Returns the parent data node even if this state has been removed from the
 		 * data node states list.
 		 * <li>In GPML2013a, elementRef was used to refer to the elementId of parent

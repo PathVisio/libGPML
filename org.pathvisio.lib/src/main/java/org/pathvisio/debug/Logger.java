@@ -40,13 +40,13 @@ public class Logger {
 	StopWatch logTimer;
 
 	/**
-	 * Constructor for Logger 
+	 * Constructor for Logger
 	 */
 	public Logger() {
 		logTimer = new StopWatch();
 		logTimer.start();
 	}
-	
+
 	/**
 	 * Returns print stream.
 	 * 

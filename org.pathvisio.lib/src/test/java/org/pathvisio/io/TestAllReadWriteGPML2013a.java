@@ -24,7 +24,6 @@ import java.util.Arrays;
 import org.pathvisio.model.PathwayModel;
 import org.xml.sax.SAXException;
 
-
 import junit.framework.TestCase;
 
 /**
@@ -36,13 +35,14 @@ public class TestAllReadWriteGPML2013a extends TestCase {
 
 	/**
 	 * For testing reading a directory of GPML2013a files and writing again to
-	 * GPML2013a format. 
+	 * GPML2013a format.
 	 * 
 	 * @throws IOException
 	 * @throws ConverterException
 	 * @throws SAXException
 	 */
 	public static void testReadWriteGPML2013a() throws IOException, ConverterException, SAXException {
+		long startTime = System.nanoTime();
 
 		// Gets all organism directories
 		File dirAllOrganisms = new File("C:/Users/p70073399/Documents/wikipathways-20210527-all-species/cache");
@@ -88,6 +88,8 @@ public class TestAllReadWriteGPML2013a extends TestCase {
 				}
 			}
 		}
-
+		long endTime = System.nanoTime();
+		long totalTime = endTime - startTime;
+		System.out.println(totalTime);
 	}
 }

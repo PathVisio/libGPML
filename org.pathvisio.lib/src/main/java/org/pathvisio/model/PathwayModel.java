@@ -270,23 +270,36 @@ public class PathwayModel {
 	// ================================================================================
 	// AliasRefToAliases Map Methods
 	// ================================================================================
-//	/**
-//	 * Returns the Group to which a data node refers to. For example, when a
-//	 * DataNode has type="alias" it may be an alias for a Group pathway element. To
-//	 * get elementRef for a dataNode use {@link DataNode#getAliasRef()}.
-//	 * 
-//	 * @param dataNode the dataNode which has elementRef
-//	 * @return pathway element to which dataNode elementRef refers.
-//	 */
-//	public PathwayElement getDataNodesFromGroup(DataNode dataNode) {
-//		return elementRefToDataNode.get(dataNode);
-//	}
+	/**
+	 * Returns the set of DataNode aliases for a Group aliasRef. When a DataNode has
+	 * type="alias" it may be an alias for a Group pathway element. To get aliasRef
+	 * for a dataNode use {@link DataNode#getAliasRef()}.
+	 * 
+	 * @param aliasRef the group which has datanode aliases.
+	 * @return the datanode aliases for the group aliasRef.
+	 */
+	public Set<DataNode> getAlias(Group aliasRef) {
+		return aliasRefToAliases.get(aliasRef);
+	}
 
-	public boolean hasAliasRef(Group aliasRef) {
+	/**
+	 * Returns true if pathway model has Group aliasRef.
+	 * 
+	 * @param aliasRef the group.
+	 * @return true if pathway model has aliasRef.
+	 */
+	protected boolean hasAliasRef(Group aliasRef) {
 		return aliasRefToAliases.containsKey(aliasRef);
 	}
 
-	public boolean hasAlias(Group aliasRef, DataNode alias) {
+	/**
+	 * Returns true if pathway model has DataNode alias and Group aliasRef.
+	 * 
+	 * @param aliasRef the group.
+	 * @param alias    the alias datanode.
+	 * @return true if pathway model has alias and aliasRef.
+	 */
+	protected boolean hasAlias(Group aliasRef, DataNode alias) {
 		return aliasRefToAliases.get(aliasRef).contains(alias);
 	}
 
@@ -298,7 +311,7 @@ public class PathwayModel {
 	 * @param alias    the datanode which has an aliasRef.
 	 * @throws IllegalArgumentException if elementRef or dataNode are null.
 	 */
-	public void addAlias(Group aliasRef, DataNode alias) {
+	protected void addAlias(Group aliasRef, DataNode alias) {
 		if (aliasRef == null || alias == null)
 			throw new IllegalArgumentException("AliasRef and alias must be valid.");
 		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
@@ -316,7 +329,7 @@ public class PathwayModel {
 	 * @param aliasRef the group for which a dataNode alias refers.
 	 * @param alias    the datanode which has an aliasRef.
 	 */
-	public void removeAlias(Group aliasRef, DataNode alias) {
+	protected void removeAlias(Group aliasRef, DataNode alias) {
 		if (alias == null || aliasRef == null)
 			throw new IllegalArgumentException("AliasRef and alias must be valid.");
 		assert (alias.getAliasRef() == aliasRef);
@@ -332,11 +345,11 @@ public class PathwayModel {
 
 	/**
 	 * Removes the mapping of given elementRef key from the elementRefToDataNode
-	 * hash map. TODO public?
+	 * hash map.
 	 * 
 	 * @param aliasRef the aliasRef key.
 	 */
-	public void removeAliasRef(Group aliasRef) {
+	protected void removeAliasRef(Group aliasRef) {
 		assert (hasAliasRef(aliasRef));
 		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
 		if (!aliases.isEmpty()) {
@@ -366,8 +379,8 @@ public class PathwayModel {
 	 * @param dataNode the data node to be added.
 	 */
 	public void addDataNode(DataNode dataNode) {
-		addPathwayObject(dataNode);
 		dataNodes.add(dataNode);
+		addPathwayObject(dataNode);
 	}
 
 	/**
@@ -397,8 +410,8 @@ public class PathwayModel {
 	 * @param interaction the interaction to be added.
 	 */
 	public void addInteraction(Interaction interaction) {
-		addPathwayObject(interaction);
 		interactions.add(interaction);
+		addPathwayObject(interaction);
 	}
 
 	/**
@@ -429,8 +442,8 @@ public class PathwayModel {
 	 * @param graphicalLine the graphicalLine to be added.
 	 */
 	public void addGraphicalLine(GraphicalLine graphicalLine) {
-		addPathwayObject(graphicalLine);
 		graphicalLines.add(graphicalLine);
+		addPathwayObject(graphicalLine);
 	}
 
 	/**
@@ -461,8 +474,8 @@ public class PathwayModel {
 	 * @param label the label to be added.
 	 */
 	public void addLabel(Label label) {
-		addPathwayObject(label);
 		labels.add(label);
+		addPathwayObject(label);
 	}
 
 	/**
@@ -492,8 +505,8 @@ public class PathwayModel {
 	 * @param shape the shape to be added.
 	 */
 	public void addShape(Shape shape) {
-		addPathwayObject(shape);
 		shapes.add(shape);
+		addPathwayObject(shape);
 	}
 
 	/**
@@ -523,8 +536,8 @@ public class PathwayModel {
 	 * @param group the group to be added.
 	 */
 	public void addGroup(Group group) {
-		addPathwayObject(group);
 		groups.add(group);
+		addPathwayObject(group);
 	}
 
 	/**
@@ -538,7 +551,7 @@ public class PathwayModel {
 	}
 
 	// ================================================================================
-	// PathwayObject List Methods
+	// Annotation, Citation, Evidence List Methods
 	// ================================================================================
 	/**
 	 * Returns the list of annotations.
@@ -565,8 +578,8 @@ public class PathwayModel {
 			Logger.log.trace("Annotation not added, information equivalent to " + annotationExisting.getElementId());
 			return annotationExisting;
 		} else {
-			addPathwayObject(annotation);
 			annotations.add(annotation);
+			addPathwayObject(annotation);
 			return annotation;
 		}
 	}
@@ -624,8 +637,8 @@ public class PathwayModel {
 				Logger.log.trace("Citation not added, information equivalent to " + citationExisting.getElementId());
 				return citationExisting;
 			} else {
-				addPathwayObject(citation);
 				citations.add(citation);
+				addPathwayObject(citation);
 				return citation;
 			}
 		} else {
@@ -682,8 +695,8 @@ public class PathwayModel {
 			Logger.log.trace("Evidence not added, information equivalent to " + evidenceExisting.getElementId());
 			return evidenceExisting;
 		} else {
-			addPathwayObject(evidence);
 			evidences.add(evidence);
+			addPathwayObject(evidence);
 			return evidence;
 		}
 	}
@@ -715,7 +728,7 @@ public class PathwayModel {
 	}
 
 	// ================================================================================
-	// General PathwayObject Methods
+	// General PathwayObject Add/Remove Methods
 	// ================================================================================
 	/**
 	 * Adds the given pathway object to pathway model. Sets pathwayModel for the
@@ -723,20 +736,20 @@ public class PathwayModel {
 	 * not already set. Corresponding elementId and given pathway object are added
 	 * to elementIdToPathwayObject map.
 	 * 
-	 * @param pathwayObject the pathway element to add.
+	 * Fires PathwayEvent.ADDED event <i>after</i> addition of the object
+	 * 
+	 * @param pathwayModel the pathway object to add.
 	 */
-	public void addPathwayObject(PathwayObject pathwayObject) {
-		// do not add pathway object if Pathway TODO
-		if (pathwayObject.getClass() == Pathway.class) {
-			throw new IllegalArgumentException("Pathway cannot be added as a pathwayObject");
-		}
-		assert (pathwayObject != null);
-		pathwayObject.setPathwayModelTo(this);
-		assert (pathwayObject.getPathwayModel() == this);
-		String elementId = pathwayObject.getElementId();
+	protected void addPathwayObject(PathwayObject pathwayModel) {
+		assert (pathwayModel != null);
+		pathwayModel.setPathwayModelTo(this);
+		assert (pathwayModel.getPathwayModel() == this);
+		String elementId = pathwayModel.getElementId();
 		if (elementId == null)
-			pathwayObject.setGeneratedElementId();
-		addElementId(pathwayObject.getElementId(), pathwayObject); // TODO
+			pathwayModel.setGeneratedElementId();
+		addElementId(pathwayModel.getElementId(), pathwayModel); // TODO
+		fireObjectModifiedEvent(new PathwayEvent(pathwayModel, PathwayEvent.ADDED));
+		checkMBoardSize(pathwayModel); // TODO
 	}
 
 	/**
@@ -744,89 +757,80 @@ public class PathwayModel {
 	 * elementIdToPathwayObject map. The pathway object is terminated in the
 	 * process.
 	 * 
-	 * @param pathwayObject the pathway object to remove.
+	 * Sets parent of object to null and removed elementId <i>before</i> removal of
+	 * the object. Fires PathwayEvent.DELETED event <i>after</i> removal of the
+	 * object
+	 * 
+	 * @param pathwayModel the pathway object to remove.
 	 */
-	public void removePathwayObject(PathwayObject pathwayObject) {
-		assert (pathwayObject != null);
-		assert (hasPathwayObject(pathwayObject));
-		removeElementId(pathwayObject.getElementId());
-		pathwayObject.terminate(); // TODO
+	protected void removePathwayObject(PathwayObject pathwayModel) {
+		assert (pathwayModel != null);
+		assert (hasPathwayObject(pathwayModel));
+		removeElementId(pathwayModel.getElementId());
+		pathwayModel.terminate(); // TODO
+		fireObjectModifiedEvent(new PathwayEvent(pathwayModel, PathwayEvent.DELETED));
 	}
 
 	/**
-	 * TODO IN PROGRESS 
-	 * 
-	 * Add a PathwayElement to this Pathway. takes care of setting parent and
-	 * removing from possible previous parent.
+	 * TODO Adds a PathwayObject to this Pathway. Calls the appropriate add method
+	 * based on PathwayObject class.
 	 *
-	 * fires PathwayEvent.ADDED event <i>after</i> addition of the object
-	 *
-	 * @param pathwayObject The object to add
+	 * @param o the pathway object to add
 	 */
-	private void add(PathwayObject pathwayObject) {
-		assert (pathwayObject.getPathwayModel() == this); // can only remove direct child objects
-		if (pathwayObject.getClass() == DataNode.class) {
-			addDataNode((DataNode) pathwayObject);
+	public void add(PathwayObject o) {
+		assert (o.getPathwayModel() == this);
+		if (o.getClass() == DataNode.class) {
+			addDataNode((DataNode) o);
+		} else if (o.getClass() == Interaction.class) {
+			addInteraction((Interaction) o);
+		} else if (o.getClass() == GraphicalLine.class) {
+			addGraphicalLine((GraphicalLine) o);
+		} else if (o.getClass() == Label.class) {
+			addLabel((Label) o);
+		} else if (o.getClass() == Shape.class) {
+			addShape((Shape) o);
+		} else if (o.getClass() == Group.class) {
+			addGroup((Group) o);
+		} else if (o.getClass() == Annotation.class) {
+			addAnnotation((Annotation) o);
+		} else if (o.getClass() == Citation.class) {
+			addCitation((Citation) o);
+		} else if (o.getClass() == Group.class) {
+			addEvidence((Evidence) o);
+		} else {
+			throw new IllegalArgumentException("Pathway object cannot be directly added to pathway model.");
 		}
-		if (pathwayObject.getClass() == Interaction.class) {
-			addInteraction((Interaction) pathwayObject);
-		}
-		if (pathwayObject.getClass() == GraphicalLine.class) {
-			addGraphicalLine((GraphicalLine) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Label.class) {
-			addLabel((Label) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Shape.class) {
-			addShape((Shape) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Group.class) {
-			addGroup((Group) pathwayObject);
-		}
-		// Citation...Anchor..Annotation...?????
-		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED)); // TODO
-
 	}
 
 	/**
-	 * TODO
-	 * 
-	 * removes object sets parent of object to null fires PathwayEvent.DELETED event
-	 * <i>before</i> removal of the object
-	 * 
-	 * TODO was forceRemove??? removes object, regardless whether the object may be
-	 * removed or not sets parent of object to null fires PathwayEvent.DELETED event
-	 * <i>before</i> removal of the object
+	 * TODO Removes a PathwayObject from this Pathway. Calls the appropriate remove
+	 * method based on PathwayObject class.
 	 *
-	 * @param pathwayObject the object to remove
+	 * @param o the pathway object to remove
 	 */
-	public void remove(PathwayObject pathwayObject) {
-		assert (pathwayObject.getPathwayModel() == this); // can only remove direct child objects
-		if (pathwayObject.getClass() == DataNode.class) {
-			removeDataNode((DataNode) pathwayObject);
+	public void remove(PathwayObject o) {
+		assert (o.getPathwayModel() == this);
+		if (o.getClass() == DataNode.class) {
+			removeDataNode((DataNode) o);
+		} else if (o.getClass() == Interaction.class) {
+			removeInteraction((Interaction) o);
+		} else if (o.getClass() == GraphicalLine.class) {
+			removeGraphicalLine((GraphicalLine) o);
+		} else if (o.getClass() == Label.class) {
+			removeLabel((Label) o);
+		} else if (o.getClass() == Shape.class) {
+			removeShape((Shape) o);
+		} else if (o.getClass() == Group.class) {
+			removeGroup((Group) o);
+		} else if (o.getClass() == Annotation.class) {
+			removeAnnotation((Annotation) o);
+		} else if (o.getClass() == Citation.class) {
+			removeCitation((Citation) o);
+		} else if (o.getClass() == Group.class) {
+			removeEvidence((Evidence) o);
+		} else {
+			throw new IllegalArgumentException("Pathway object cannot be removed from pathway model.");
 		}
-		if (pathwayObject.getClass() == State.class) {
-			DataNode dataNode = ((State) pathwayObject).getDataNode();
-			dataNode.removeState((State) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Interaction.class) {
-			removeInteraction((Interaction) pathwayObject);
-		}
-		if (pathwayObject.getClass() == GraphicalLine.class) {
-			removeGraphicalLine((GraphicalLine) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Label.class) {
-			removeLabel((Label) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Shape.class) {
-			removeShape((Shape) pathwayObject);
-		}
-		if (pathwayObject.getClass() == Group.class) {
-			removeGroup((Group) pathwayObject);
-		}
-		// Citation...Anchor..Annotation...?????
-		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED)); // TODO
-
 	}
 
 	// ================================================================================
@@ -1055,10 +1059,10 @@ public class PathwayModel {
 		double mw = getPathway().getBoardWidth();
 		double mh = getPathway().getBoardHeight();
 		if (e instanceof LineElement) { // TODO
-			mw = Math.max(mw, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePointX(),
-					((LineElement) e).getEndLinePointX()));
-			mh = Math.max(mh, BORDER_SIZE + Math.max(((LineElement) e).getStartLinePointY(),
-					((LineElement) e).getEndLinePointY()));
+			mw = Math.max(mw, BORDER_SIZE
+					+ Math.max(((LineElement) e).getStartLinePointX(), ((LineElement) e).getEndLinePointX()));
+			mh = Math.max(mh, BORDER_SIZE
+					+ Math.max(((LineElement) e).getStartLinePointY(), ((LineElement) e).getEndLinePointY()));
 		} else if (e instanceof ShapedElement) { // TODO
 			mw = Math.max(mw, BORDER_SIZE + ((ShapedElement) e).getLeft() + ((ShapedElement) e).getWidth());
 			mh = Math.max(mh, BORDER_SIZE + ((ShapedElement) e).getTop() + ((ShapedElement) e).getHeight());

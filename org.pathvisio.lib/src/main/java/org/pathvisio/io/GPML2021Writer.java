@@ -35,19 +35,19 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.model.Annotation;
 import org.pathvisio.model.Citation;
 import org.pathvisio.model.DataNode;
-import org.pathvisio.model.Evidence;
 import org.pathvisio.model.DataNode.State;
+import org.pathvisio.model.Evidence;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.GraphicalLine;
 import org.pathvisio.model.Group;
 import org.pathvisio.model.Interaction;
 import org.pathvisio.model.Label;
 import org.pathvisio.model.LineElement;
-import org.pathvisio.model.Pathway;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.Pathway;
 import org.pathvisio.model.Pathway.Author;
+import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.Comment;
@@ -94,8 +94,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 
 		Document doc = createJdom(pathwayModel);
 
-		if (validate)
+		if (validate) {
 			validateDocument(doc);
+		}
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
@@ -143,8 +144,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
-		// checks if interactions/graphicaLines have at least 2 points
-		validateLineElements(pathwayModel);
 
 		Document doc = new Document();
 		Element root = new Element("Pathway", getGpmlNamespace());
@@ -165,27 +164,6 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			writeEvidences(pathwayModel.getEvidences(), root);
 		}
 		return doc;
-	}
-
-	/**
-	 * Checks whether interactions and graphicaLines have at least two points.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @throws ConverterException
-	 */
-	protected void validateLineElements(PathwayModel pathwayModel) throws ConverterException {
-		for (Interaction interaction : pathwayModel.getInteractions()) {
-			if (interaction.getLinePoints().size() < 2) {
-				throw new ConverterException("Interaction " + interaction.getElementId() + " has "
-						+ interaction.getLinePoints().size() + " point(s),  must have at least 2.");
-			}
-		}
-		for (GraphicalLine graphicalLine : pathwayModel.getGraphicalLines()) {
-			if (graphicalLine.getLinePoints().size() < 2) {
-				throw new ConverterException("GraphicalLine " + graphicalLine.getElementId() + " has "
-						+ graphicalLine.getLinePoints().size() + " point(s),  must have at least 2.");
-			}
-		}
 	}
 
 	/**
@@ -350,8 +328,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			Element dp = new Element("Property", e.getNamespace());
 			dp.setAttribute("key", key);
 			dp.setAttribute("value", value);
-			if (dp != null)
+			if (dp != null) {
 				e.addContent(dp);
+			}
 		}
 	}
 
@@ -371,8 +350,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			anntRef.setAttribute("elementRef", annotationRef.getAnnotation().getElementId());
 			writeCitationRefs(annotationRef.getCitationRefs(), anntRef);
 			writeEvidenceRefs(annotationRef.getEvidenceRefs(), anntRef);
-			if (anntRef != null)
+			if (anntRef != null) {
 				e.addContent(anntRef);
+			}
 		}
 	}
 
@@ -390,8 +370,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				Element citRef = new Element("CitationRef", e.getNamespace());
 				citRef.setAttribute("elementRef", citationRef.getCitation().getElementId());
 				writeAnnotationRefs(citationRef.getAnnotationRefs(), citRef);
-				if (citRef != null)
+				if (citRef != null) {
 					e.addContent(citRef);
+				}
 			}
 		}
 	}
@@ -410,8 +391,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 			for (EvidenceRef evidenceRef : evidenceRefs) {
 				Element evidRef = new Element("EvidenceRef", e.getNamespace());
 				evidRef.setAttribute("elementRef", evidenceRef.getEvidence().getElementId());
-				if (evidRef != null)
+				if (evidRef != null) {
 					e.addContent(evidRef);
+				}
 			}
 		}
 	}
@@ -458,8 +440,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected void writeAliasRef(Group aliasRef, Element e) {
 		if (aliasRef != null) {
 			String aliasRefStr = aliasRef.getElementId();
-			if (aliasRefStr != null && !aliasRefStr.equals(""))
+			if (aliasRefStr != null && !aliasRefStr.equals("")) {
 				e.setAttribute("aliasRef", aliasRefStr);
+			}
 		}
 	}
 
@@ -582,11 +565,13 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				pt.setAttribute("relX", Double.toString(point.getRelX()));
 				pt.setAttribute("relY", Double.toString(point.getRelY()));
 			}
-			if (pt != null)
+			if (pt != null) {
 				ptList.add(pt);
+			}
 		}
-		if (ptList != null && ptList.isEmpty() == false)
+		if (ptList != null && ptList.isEmpty() == false) {
 			wyps.addContent(ptList);
+		}
 	}
 
 	/**
@@ -600,8 +585,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected boolean writeElementRef(LinkableTo elementRef, Element e) {
 		if (elementRef != null) {
 			String elementRefStr = elementRef.getElementId();
-			if (elementRefStr != null && !elementRefStr.equals(""))
+			if (elementRefStr != null && !elementRefStr.equals("")) {
 				e.setAttribute("elementRef", elementRefStr);
+			}
 			return true;
 		}
 		return false;
@@ -648,8 +634,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeShapedElement(label, lb);
 				// write jdom attributes
 				lb.setAttribute("textLabel", label.getTextLabel());
-				if (label.getHref() != null)
+				if (label.getHref() != null) {
 					lb.setAttribute("href", label.getHref());
+				}
 				writeGroupRef(label.getGroupRef(), lb);
 				if (lb != null) {
 					lbList.add(lb);
@@ -677,8 +664,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				Element shp = new Element("Shape", root.getNamespace());
 				writeShapedElement(shape, shp);
 				// write jdom attributes
-				if (shape.getTextLabel() != null)
+				if (shape.getTextLabel() != null) {
 					shp.setAttribute("textLabel", shape.getTextLabel());
+				}
 				writeGroupRef(shape.getGroupRef(), shp);
 				if (shp != null) {
 					shpList.add(shp);
@@ -707,8 +695,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeXref(group.getXref(), grp, false);
 				writeShapedElement(group, grp);
 				// write jdom attributes
-				if (group.getTextLabel() != null)
+				if (group.getTextLabel() != null) {
 					grp.setAttribute("textLabel", group.getTextLabel());
+				}
 				grp.setAttribute("type", group.getType().getName());
 				writeGroupRef(group.getGroupRef(), grp);
 				if (grp != null) {
@@ -740,8 +729,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				annt.setAttribute("type", annotation.getType().getName());
 				writeXref(annotation.getXref(), annt, false);
 				writeUrl(annotation.getUrlLink(), annt);
-				if (annt != null)
+				if (annt != null) {
 					anntList.add(annt);
+				}
 			}
 			if (anntList != null && anntList.isEmpty() == false) {
 				annts.addContent(anntList);
@@ -766,8 +756,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeElementId(citation.getElementId(), cit);
 				writeXref(citation.getXref(), cit, false);
 				writeUrl(citation.getUrlLink(), cit);
-				if (cit != null)
+				if (cit != null) {
 					citList.add(cit);
+				}
 			}
 			if (citList != null && citList.isEmpty() == false) {
 				cits.addContent(citList);
@@ -792,10 +783,12 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				writeElementId(evidence.getElementId(), evid);
 				writeXref(evidence.getXref(), evid, true);
 				writeUrl(evidence.getUrlLink(), evid);
-				if (evidence.getValue() != null)
+				if (evidence.getValue() != null) {
 					evid.setAttribute("value", evidence.getValue());
-				if (evid != null)
+				}
+				if (evid != null) {
 					evidList.add(evid);
+				}
 			}
 			if (evidList != null && evidList.isEmpty() == false) {
 				evids.addContent(evidList);
@@ -811,8 +804,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param e         the parent element.
 	 */
 	protected void writeElementId(String elementId, Element e) {
-		if (elementId != null && !elementId.equals(""))
+		if (elementId != null && !elementId.equals("")) {
 			e.setAttribute("elementId", elementId);
+		}
 	}
 
 	/**
@@ -824,8 +818,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected void writeGroupRef(Group groupRef, Element e) {
 		if (groupRef != null) {
 			String groupRefStr = groupRef.getElementId();
-			if (groupRefStr != null && !groupRefStr.equals(""))
+			if (groupRefStr != null && !groupRefStr.equals("")) {
 				e.setAttribute("groupRef", groupRefStr);
+			}
 		}
 	}
 
@@ -915,11 +910,13 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		gfx.setAttribute("borderWidth", String.valueOf(shapedElement.getBorderWidth()));
 		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapedElement.getFillColor(), false));
 		gfx.setAttribute("shapeType", shapedElement.getShapeType().getName());
-		if (writeZOrder)
+		if (writeZOrder) {
 			gfx.setAttribute("zOrder", String.valueOf(shapedElement.getZOrder()));
+		}
 		double rotation = shapedElement.getRotation();
-		if (rotation != 0)
+		if (rotation != 0) {
 			gfx.setAttribute("rotation", Double.toString(rotation));
+		}
 	}
 
 	/**

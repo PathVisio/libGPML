@@ -72,7 +72,7 @@ public class Group extends ShapedElement {
 	}
 
 	/**
-	 * Instantiates a Group given all possible parameters except textLabel and xref.
+	 * Instantiates a Group given all required parameters.
 	 */
 	public Group(GroupType type) {
 		this(type, null, null);

@@ -98,9 +98,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 		Document doc = createJdom(pathwayModel);
 
-		if (validate)
+		if (validate) {
 			validateDocument(doc);
-
+		}
 		// Get the XML code
 		XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 		Format xmlformat = xmlOutput.getFormat();
@@ -149,8 +149,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
-		// checks if interactions/graphicaLines have at least 2 points
-		validateLineElements(pathwayModel);
 
 		Document doc = new Document();
 		Element root = new Element("Pathway", getGpmlNamespace());
@@ -172,27 +170,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Checks whether interactions and graphicaLines have at least two points.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @throws ConverterException
-	 */
-	protected void validateLineElements(PathwayModel pathwayModel) throws ConverterException {
-		for (Interaction interaction : pathwayModel.getInteractions()) {
-			if (interaction.getLinePoints().size() < 2) {
-				throw new ConverterException("Interaction " + interaction.getElementId() + " has "
-						+ interaction.getLinePoints().size() + " point(s),  must have at least 2.");
-			}
-		}
-		for (GraphicalLine graphicalLine : pathwayModel.getGraphicalLines()) {
-			if (graphicalLine.getLinePoints().size() < 2) {
-				throw new ConverterException("GraphicalLine " + graphicalLine.getElementId() + " has "
-						+ graphicalLine.getLinePoints().size() + " point(s),  must have at least 2.");
-			}
-		}
-	}
-
-	/**
 	 * Writes pathway object {@link Pathway} information to root element.
 	 * 
 	 * @param pathwayModel the pathway model.
@@ -210,30 +187,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			cmt.setText(description);
 			root.addContent(cmt);
 		}
-		String source = pathway.getSource();
-		String version = pathway.getVersion();
-		String author = pathway.getDynamicProperty(PATHWAY_AUTHOR);
-		String maintainer = pathway.getDynamicProperty(PATHWAY_MAINTAINER);
-		String email = pathway.getDynamicProperty(PATHWAY_EMAIL);
-		String lastModified = pathway.getDynamicProperty(PATHWAY_LASTMODIFIED);
-		String organism = pathway.getOrganism();
-		String license = pathway.getLicense();
-		if (source != null)
-			setAttr("Pathway", "Data-Source", root, source);
-		if (version != null)
-			setAttr("Pathway", "Version", root, version);
-		if (author != null)
-			setAttr("Pathway", "Author", root, author);
-		if (maintainer != null)
-			setAttr("Pathway", "Maintainer", root, maintainer);
-		if (email != null)
-			setAttr("Pathway", "Email", root, email);
-		if (lastModified != null)
-			setAttr("Pathway", "Last-Modified", root, lastModified);
-		if (organism != null)
-			setAttr("Pathway", "Organism", root, organism);
-		if (license != null)
-			setAttr("Pathway", "License", root, license);
+		setAttr("Pathway", "Data-Source", root, pathway.getSource());
+		setAttr("Pathway", "Version", root, pathway.getVersion());
+		setAttr("Pathway", "Author", root, pathway.getDynamicProperty(PATHWAY_AUTHOR));
+		setAttr("Pathway", "Maintainer", root, pathway.getDynamicProperty(PATHWAY_MAINTAINER));
+		setAttr("Pathway", "Email", root, pathway.getDynamicProperty(PATHWAY_EMAIL));
+		setAttr("Pathway", "Last-Modified", root, pathway.getDynamicProperty(PATHWAY_LASTMODIFIED));
+		setAttr("Pathway", "Organism", root, pathway.getOrganism());
+		setAttr("Pathway", "License", root, pathway.getLicense());
 		// writes comments, biopaxRefs/citationRefs, dynamic properties
 		writeComments(pathway.getComments(), root);
 		writeBiopaxRefs(pathway.getCitationRefs(), root);
@@ -348,8 +309,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", root.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
-			if (dp != null)
+			if (dp != null) {
 				root.addContent(dp);
+			}
 		}
 	}
 
@@ -367,18 +329,21 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeShapedElement(dataNode, dn);
 			String typeStr = dataNode.getType().getName();
 			// in GPML2013a, "Undefined" type is written as "Unknown"
-			if (typeStr.equalsIgnoreCase("Undefined"))
+			if (typeStr.equalsIgnoreCase("Undefined")) {
 				typeStr = "Unknown";
+			}
 			setAttr("DataNode", "Type", dn, typeStr);
 			writeGroupRef(dataNode.getGroupRef(), dn);
 			// writes xref (required)
 			writeXref(dataNode.getXref(), dn, true);
-			if (dn != null)
+			if (dn != null) {
 				root.addContent(dn);
+			}
 			// warnings for conversion GPML2021 to GPML2013a
-			if (dataNode.getAliasRef() != null)
+			if (dataNode.getAliasRef() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: DataNode " + dataNode.getElementId()
 						+ " elementRef info lost.");
+			}
 		}
 	}
 
@@ -397,8 +362,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				// NB: StateType was not fully implemented in GPML2013a
 				String typeStr = state.getType().getName();
 				// in GPML2013a, "Undefined" type is written as "Unknown"
-				if (typeStr.equalsIgnoreCase("Undefined"))
+				if (typeStr.equalsIgnoreCase("Undefined")) {
 					typeStr = "Unknown";
+				}
 				setAttr("State", "StateType", st, typeStr);
 				setAttr("State", "GraphRef", st, dataNode.getElementId());
 				setAttr("State", "TextLabel", st, state.getTextLabel() == null ? "" : state.getTextLabel());
@@ -474,8 +440,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 					.collect(Collectors.joining("; "));
 			Element cmt = new Element("Comment", st.getNamespace());
 			cmt.setText(commentText);
-			if (cmt != null)
+			if (cmt != null) {
 				st.addContent(cmt);
+			}
 		}
 	}
 
@@ -559,15 +526,18 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			}
 			ArrowHeadType arrowHead = point.getArrowHead();
 			String arrowHeadStr = getArrowHeadTypeStr(arrowHead);
-			if (arrowHeadStr == null)
+			if (arrowHeadStr == null) {
 				arrowHeadStr = arrowHead.getName();
+			}
 			// TODO Sub type arrowhead Handling?
 			setAttr(base + ".Graphics.Point", "ArrowHead", pt, arrowHeadStr);
-			if (pt != null)
+			if (pt != null) {
 				ptList.add(pt);
+			}
 		}
-		if (ptList != null && ptList.isEmpty() == false)
+		if (ptList != null && ptList.isEmpty() == false) {
 			gfx.addContent(ptList);
+		}
 	}
 
 	/**
@@ -608,8 +578,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element lb = new Element("Label", root.getNamespace());
 			setAttr("Label", "TextLabel", lb, label.getTextLabel());
 			writeShapedElement(label, lb);
-			if (label.getHref() != null)
+			if (label.getHref() != null) {
 				setAttr("Label", "Href", lb, label.getHref());
+			}
 			writeGroupRef(label.getGroupRef(), lb);
 			if (lb != null) {
 				root.addContent(lb);
@@ -627,8 +598,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeShapes(List<Shape> shapes, Element root) throws ConverterException {
 		for (Shape shape : shapes) {
 			Element shp = new Element("Shape", root.getNamespace());
-			if (shape.getTextLabel() != null)
+			if (shape.getTextLabel() != null) {
 				setAttr("Shape", "TextLabel", shp, shape.getTextLabel());
+			}
 			writeShapedElement(shape, shp);
 			writeGroupRef(shape.getGroupRef(), shp);
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
@@ -661,8 +633,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			writeElementInfo(group, grp);
 			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group, grp);
 			// sets optional properties
-			if (group.getTextLabel() != null)
+			if (group.getTextLabel() != null) {
 				setAttr("Group", "TextLabel", grp, group.getTextLabel());
+			}
 			writeGroupRef(group.getGroupRef(), grp);
 			if (grp != null) {
 				root.addContent(grp);
@@ -735,15 +708,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param bp           the jdom biopax element.
 	 * @throws ConverterException
 	 */
-	protected void writeOpenControlledVocabulary(PathwayModel pathwayModel, Element bp)
-			throws ConverterException {
+	protected void writeOpenControlledVocabulary(PathwayModel pathwayModel, Element bp) throws ConverterException {
 		for (Annotation annotation : pathwayModel.getAnnotations()) {
 			String type = annotation.getType().getName();
 			// for GPML2013a, we only write annotations with annotationsRefs on the pathway
 			boolean hasPathwayAnnotation = false;
 			for (AnnotationRef annotationRef : annotation.getAnnotationRefs()) {
-				if (annotationRef.getAnnotatable().getClass() == Pathway.class)
+				if (annotationRef.getAnnotatable().getClass() == Pathway.class) {
 					hasPathwayAnnotation = true;
+				}
 			}
 			if (!hasPathwayAnnotation)
 				continue;
@@ -756,8 +729,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			onto.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			term.setText(annotation.getValue());
 			String prefix = XrefUtils.getXrefDataSourceStr(annotation.getXref().getDataSource());
-			if (OCV_ONTOLOGY_MAP.containsValue(prefix))
+			if (OCV_ONTOLOGY_MAP.containsValue(prefix)) {
 				type = OCV_ONTOLOGY_MAP.getKey(prefix);
+			}
 			onto.setText(type);
 			id.setText(prefix + ":" + annotation.getXref().getId());
 			ocv.addContent(term);
@@ -796,8 +770,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 					if (author != null && !author.equals(""))
 						writePublicationXrefInfo(author, "AUTHORS", pubxf);
 			}
-			if (pubxf != null)
+			if (pubxf != null) {
 				bp.addContent(pubxf);
+			}
 			// warnings for conversion GPML2021 to GPML2013a
 			if (citation.getUrlLink() != null) {
 				Logger.log.trace("Warning: Conversion GPML2021 to GPML2013a: Citation " + citation.getElementId()
@@ -808,21 +783,23 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Writes Biopax PublicationXref information to PublicationXref element. NB: The
-	 * main purpose of this method is to make {@link #writePublicationXref}
-	 * more concise. If property value is null, writes "".
+	 * main purpose of this method is to make {@link #writePublicationXref} more
+	 * concise. If property value is null, writes "".
 	 * 
 	 * @param propertyValue the value of the property.
 	 * @param elementName   the name for new child element of pubxf element.
 	 * @param pubxf         the PublicationXref element.
 	 * @throws ConverterException
 	 */
-	protected void writePublicationXrefInfo(String propertyValue, String elementName, Element pubxf) throws ConverterException {
+	protected void writePublicationXrefInfo(String propertyValue, String elementName, Element pubxf)
+			throws ConverterException {
 		propertyValue = propertyValue == null ? "" : propertyValue;
 		Element e = new Element(elementName, BIOPAX_NAMESPACE);
 		e.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 		e.setText(propertyValue);
-		if (e != null)
+		if (e != null) {
 			pubxf.addContent(e);
+		}
 	}
 
 	/**
@@ -832,8 +809,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param e         the parent element.
 	 */
 	protected void writeElementId(String elementId, Element e) {
-		if (elementId != null && !elementId.equals(""))
+		if (elementId != null && !elementId.equals("")) {
 			e.setAttribute("GraphId", elementId);
+		}
 	}
 
 	/**
@@ -846,8 +824,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeGroupRef(Group groupRef, Element e) {
 		if (groupRef != null) {
 			String groupRefStr = groupRef.getElementId();
-			if (groupRefStr != null && !groupRefStr.equals(""))
+			if (groupRefStr != null && !groupRefStr.equals("")) {
 				e.setAttribute("GroupRef", groupRefStr);
+			}
 		}
 	}
 
@@ -862,8 +841,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected boolean writePointElementRef(LinkableTo elementRef, Element pt) {
 		if (elementRef != null) {
 			String elementRefStr = elementRef.getElementId();
-			if (elementRefStr != null && !elementRefStr.equals(""))
+			if (elementRefStr != null && !elementRefStr.equals("")) {
 				pt.setAttribute("GraphRef", elementRefStr);
+			}
 			return true;
 		}
 		return false;
@@ -911,8 +891,10 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @throws ConverterException
 	 */
 	protected void writeElementInfo(PathwayElement elementInfo, Element e) throws ConverterException {
-		if (elementInfo.getClass() != Group.class)
+		// different method for writing group id
+		if (elementInfo.getClass() != Group.class) {
 			writeElementId(elementInfo.getElementId(), e);
+		}
 		writeComments(elementInfo.getComments(), e);
 		writeBiopaxRefs(elementInfo.getCitationRefs(), e);
 		// warnings for conversion GPML2021 to GPML2013a
@@ -941,8 +923,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
-			if (dp != null)
+			if (dp != null) {
 				se.addContent(dp);
+			}
 		}
 		// if shape in cellular component map, write info to dynamic property
 		ShapeType shapeType = shapedElement.getShapeType();
@@ -952,8 +935,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			String shapeTypeStr = shapeType.getName();
 			shapeTypeStr = fromCamelCase(shapeTypeStr);
 			setAttr("Attribute", "Value", dp, shapeTypeStr);
-			if (dp != null)
+			if (dp != null) {
 				se.addContent(dp);
+			}
 		}
 		// if double lineStyle, write info to dynamic property
 		LineStyleType borderStyle = shapedElement.getBorderStyle();
@@ -961,8 +945,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
 			setAttr("Attribute", "Value", dp, "Double");
-			if (dp != null)
+			if (dp != null) {
 				se.addContent(dp);
+			}
 		}
 	}
 
@@ -982,8 +967,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, key);
 			setAttr("Attribute", "Value", dp, dynamicProperties.get(key));
-			if (dp != null)
+			if (dp != null) {
 				ln.addContent(dp);
+			}
 		}
 		// if double lineStyle, write info to dynamic property
 		LineStyleType lineStyle = lineElement.getLineStyle();
@@ -991,8 +977,9 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			Element dp = new Element("Attribute", ln.getNamespace());
 			setAttr("Attribute", "Key", dp, DOUBLE_LINE_KEY);
 			setAttr("Attribute", "Value", dp, "Double");
-			if (dp != null)
+			if (dp != null) {
 				ln.addContent(dp);
+			}
 		}
 	}
 
@@ -1080,11 +1067,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		}
 		String borderStyleStr = shapedElement.getBorderStyle().getName();
 		// in GPML2013a, "Dashed" line style is "Broken" and must be written so
-		if (borderStyleStr.equalsIgnoreCase("Dashed"))
+		if (borderStyleStr.equalsIgnoreCase("Dashed")) {
 			borderStyleStr = "Broken";
+		}
 		// if "Double", line style information is written to dynamic property instead
-		if (!borderStyleStr.equalsIgnoreCase("Double"))
+		if (!borderStyleStr.equalsIgnoreCase("Double")) {
 			setAttr(base + ".Graphics", "LineStyle", gfx, borderStyleStr);
+		}
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(shapedElement.getBorderWidth()));
 	}
 
@@ -1101,11 +1090,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(lineElement.getZOrder()));
 		String lineStyleStr = lineElement.getLineStyle().getName();
 		// in GPML2013a, "Dashed" line style is "Broken" and must be written so
-		if (lineStyleStr.equalsIgnoreCase("Dashed"))
+		if (lineStyleStr.equalsIgnoreCase("Dashed")) {
 			lineStyleStr = "Broken";
+		}
 		// if "Double", line style information is written to dynamic property instead
-		if (!lineStyleStr.equalsIgnoreCase("Double"))
+		if (!lineStyleStr.equalsIgnoreCase("Double")) {
 			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyleStr);
+		}
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineElement.getLineWidth()));
 		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(lineElement.getLineColor(), false));
 	}

@@ -46,7 +46,7 @@ public class Label extends ShapedElement {
 	}
 
 	/**
-	 * Instantiates a Label given all possible parameters except href.
+	 * Instantiates a Label given all required parameters.
 	 */
 	public Label(String textLabel) {
 		this(textLabel, null);

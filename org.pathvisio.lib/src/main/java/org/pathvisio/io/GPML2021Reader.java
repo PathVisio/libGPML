@@ -114,22 +114,22 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readLabels(pathwayModel, root, refIdToJdomElement);
 		readShapes(pathwayModel, root, refIdToJdomElement);
 		readDataNodes(pathwayModel, root, refIdToJdomElement);
-		readInteractions(pathwayModel, root, refIdToJdomElement);
-		readGraphicalLines(pathwayModel, root, refIdToJdomElement);
-		// reads aliasRefs and elementRefs last
-		readDataNodeAliasRef(pathwayModel, root);
-		readPointElementRef(pathwayModel, root);
+		// stores jdom element to point, for reading point elementRefs (last)
+		Map<Element, LinePoint> elementToPoint = new HashMap<Element, LinePoint>();
+		readInteractions(pathwayModel, root, refIdToJdomElement, elementToPoint);
+		readGraphicalLines(pathwayModel, root, refIdToJdomElement, elementToPoint);
+		readPointElementRefs(pathwayModel, elementToPoint);
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
 		return pathwayModel;
 	}
 
 	/**
-	 * Reads pathway information from root element. Instantiates and returns the
-	 * pathway object {@link Pathway}.
+	 * Reads pathway information from jdom root element. Instantiates and returns
+	 * the pathway object {@link Pathway}.
 	 * 
-	 * @param root the root element.
-	 * @return pathway the pathway object.
+	 * @return pathway the pathway.
+	 * @param root the jdom root element.
 	 * @throws ConverterException
 	 */
 	protected Pathway readPathway(Pathway pathway, Element root) throws ConverterException {
@@ -155,12 +155,11 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads xref {@link Xref} information from element. Xref is required for
-	 * DataNodes, Interactions, and Evidences. Xref is optional for the Pathway,
-	 * States, Groups, and Annotations. Citations must have either Xref or Url, or
-	 * both.
+	 * Reads xref {@link Xref} information from jdom element. Xref is optional for
+	 * Pathway, DataNodes, States, Interactions, Groups, Annotations, and Evidences.
+	 * Citations must have either Xref or Url, or both.
 	 * 
-	 * @param e the element.
+	 * @param e the jdom element.
 	 * @return xref the new xref or null if no or invalid xref information.
 	 * @throws ConverterException
 	 */
@@ -196,7 +195,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads author {@link Author} information for pathway from root element.
 	 * 
 	 * @param pathway the pathway.
-	 * @param root    the root element.
+	 * @param root    the jdom root element.
 	 * @throws ConverterException
 	 */
 	protected void readAuthors(Pathway pathway, Element root) throws ConverterException {
@@ -215,10 +214,14 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		}
 	}
 
-	// TODO
 	/**
-	 * @param root
-	 * @param refIdToJdomElement
+	 * Reads and maps ref (Annotation, Citation, and Evidence) elementId id to the
+	 * corresponding jdom element in {@link Map} refIdToJdomElement, to assist other
+	 * reading methods: {@link #readAnnotationRefs}, {@link #readCitationRefs}, and
+	 * {@link #readEvidenceRefs}.
+	 * 
+	 * @param root               the jdom root element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readInfoMap(Element root, Map<String, Element> refIdToJdomElement) throws ConverterException {
@@ -236,13 +239,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads {@link Annotation} and {@link AnnotationRef} information for an
-	 * {@link Annotatable}. TODO
+	 * {@link Annotatable}.
 	 * 
 	 * @param pathwayModel       the pathway model.
 	 * @param annotatable        the pathway object which can have annotation.
 	 * @param e                  the jdom element.
-	 * @param refIdToJdomElement the map of ref elementId to jdom element
-	 *                           (annotation, citation, or evidence).
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readAnnotationRefs(PathwayModel pathwayModel, Annotatable annotatable, Element e,
@@ -280,13 +282,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads {@link Citation} and {@link CitationRef} information for a
-	 * {@link Citable}. TODO
+	 * {@link Citable}.
 	 * 
 	 * @param pathwayModel       the pathway model.
 	 * @param citable            the pathway object which can have citation.
 	 * @param e                  the jdom element.
-	 * @param refIdToJdomElement the map of ref elementId to jdom element
-	 *                           (annotation, citation, or evidence).
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readCitationRefs(PathwayModel pathwayModel, Citable citable, Element e,
@@ -320,13 +321,12 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads {@link Evidence} and {@link EvidenceRef} information for an
-	 * {@link Evidenceable}. TODO
+	 * {@link Evidenceable}.
 	 * 
 	 * @param pathwayModel       the pathway model.
 	 * @param evidenceable       the pathway object which can have evidence.
 	 * @param e                  the jdom element.
-	 * @param refIdToJdomElement the map of ref elementId to jdom element
-	 *                           (annotation, citation, or evidence).
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readEvidenceRefs(PathwayModel pathwayModel, Evidenceable evidenceable, Element e,
@@ -361,8 +361,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads comment group (comment, dynamic property, annotationRef, citationRef,
 	 * evidenceRef) information for {@link PathwayElement} from jdom element.
 	 * 
-	 * @param pathwayElement the element info pathway element object.
-	 * @param e              the jdom element to read.
+	 * @param pathwayElement     the element info pathway element object.
+	 * @param e                  the jdom element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readCommentGroup(PathwayModel pathwayModel, PathwayElement pathwayElement, Element e,
@@ -379,7 +380,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * element.
 	 * 
 	 * @param pathwayElement the pathway element.
-	 * @param e              the jdom element to read from.
+	 * @param e              the jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readComments(PathwayElement pathwayElement, Element e) throws ConverterException {
@@ -398,7 +399,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * for pathway element from jdom element.
 	 * 
 	 * @param pathwayElement the the pathway element.
-	 * @param e              the jdom element to read from.
+	 * @param e              the jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readDynamicProperties(PathwayElement pathwayElement, Element e) throws ConverterException {
@@ -412,8 +413,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads group {@link Group} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param root               the jdom root element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readGroups(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
@@ -450,8 +452,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads label {@link Label} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param root               the jdom root element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readLabels(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
@@ -478,8 +481,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads shape {@link Shape} information for pathway model from root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param root               the root element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readShapes(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
@@ -506,8 +510,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads data node {@link DataNode} information for pathway model from root
 	 * element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param root               the jdom root element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readDataNodes(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
@@ -528,8 +533,16 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				// sets optional properties
 				dataNode.setXref(readXref(dn));
 				String groupRef = dn.getAttributeValue("groupRef");
-				if (groupRef != null && !groupRef.equals(""))
+				if (groupRef != null && !groupRef.equals("")) {
 					dataNode.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
+				}
+				String aliasRefStr = dn.getAttributeValue("aliasRef");
+				if (aliasRefStr != null && !aliasRefStr.equals("")) {
+					Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
+					if (aliasRef != null) {
+						dataNode.setAliasRefTo(aliasRef);
+					}
+				}
 			}
 		}
 	}
@@ -537,8 +550,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads state {@link State} information for data node from element.
 	 * 
-	 * @param dataNode the data node object {@link DataNode}.
-	 * @param dn       the data node element.
+	 * @param pathwayModel       the pathway model.
+	 * @param dataNode           the data node object {@link DataNode}.
+	 * @param dn                 the jdom data node element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readStates(PathwayModel pathwayModel, DataNode dataNode, Element dn,
@@ -552,7 +567,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				Element gfx = st.getChild("Graphics", st.getNamespace());
 				double relX = Double.parseDouble(gfx.getAttributeValue("relX").trim());
 				double relY = Double.parseDouble(gfx.getAttributeValue("relY").trim());
-				// sets zOrder based on parent data node TODO
+				// sets zOrder based on parent data node
 				State state = dataNode.addState(elementId, textLabel, type, relX, relY);
 				// reads graphics and comment group props
 				readShapedElement(pathwayModel, state, st, refIdToJdomElement);
@@ -566,9 +581,10 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads common properties for shaped pathway elements {@link ShapedElement}.
 	 * 
-	 * @param pathwayModel  the pathway model.
-	 * @param shapedElement the shaped pathway element.
-	 * @param se            the jdom (shaped) pathway element element.
+	 * @param pathwayModel       the pathway model.
+	 * @param shapedElement      the shaped pathway element.
+	 * @param se                 the jdom (shaped) pathway element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
 	protected void readShapedElement(PathwayModel pathwayModel, ShapedElement shapedElement, Element se,
@@ -586,21 +602,24 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads interaction {@link Interaction} information for pathway model from root
 	 * element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param root               the jdom root element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
 	 */
-	protected void readInteractions(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
-			throws ConverterException {
+	protected void readInteractions(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement,
+			Map<Element, LinePoint> elementToPoint) throws ConverterException {
 		Element ias = root.getChild("Interactions", root.getNamespace());
 		if (ias != null) {
 			for (Element ia : ias.getChildren("Interaction", ias.getNamespace())) {
 				String elementId = ia.getAttributeValue("elementId");
 				Interaction interaction = new Interaction();
 				interaction.setElementId(elementId);
+				Element wyps = ia.getChild("Waypoints", ia.getNamespace());
+				readPoints(interaction, wyps, elementToPoint);
 				pathwayModel.addInteraction(interaction);
 				// reads graphics, comment group, points, and anchors
-				readLineElement(pathwayModel, interaction, ia, refIdToJdomElement);
+				readLineElement(pathwayModel, interaction, ia, refIdToJdomElement, elementToPoint);
 				// sets optional properties
 				interaction.setXref(readXref(ia));
 			}
@@ -611,63 +630,39 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads graphical line {@link GraphicalLine} information for pathway model from
 	 * root element.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel       the pathway model.
+	 * @param root               the jdom root element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
+	 * @param elementToPoint     the map of jdom element to line points.
 	 * @throws ConverterException
 	 */
-	protected void readGraphicalLines(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement)
-			throws ConverterException {
+	protected void readGraphicalLines(PathwayModel pathwayModel, Element root, Map<String, Element> refIdToJdomElement,
+			Map<Element, LinePoint> elementToPoint) throws ConverterException {
 		Element glns = root.getChild("GraphicalLines", root.getNamespace());
 		if (glns != null) {
 			for (Element gln : glns.getChildren("GraphicalLine", glns.getNamespace())) {
 				String elementId = gln.getAttributeValue("elementId");
 				GraphicalLine graphicalLine = new GraphicalLine();
 				graphicalLine.setElementId(elementId);
+				Element wyps = gln.getChild("Waypoints", gln.getNamespace());
+				readPoints(graphicalLine, wyps, elementToPoint);
 				pathwayModel.addGraphicalLine(graphicalLine);
 				// reads graphics, comment group, points, and anchors
-				readLineElement(pathwayModel, graphicalLine, gln, refIdToJdomElement);
+				readLineElement(pathwayModel, graphicalLine, gln, refIdToJdomElement, elementToPoint);
 			}
 		}
 	}
 
 	/**
-	 * Reads line element {@link LineElement} information for interaction or
-	 * graphical line from element.
+	 * Reads point {@link LinePoint} information for line element.
 	 * 
-	 * @param lineElement the line element object.
-	 * @param ln          the line element.
+	 * @param lineElement    the line element object.
+	 * @param wyps           the jdom waypoints element.
+	 * @param elementToPoint the map of jdom element to line points.
 	 * @throws ConverterException
 	 */
-	protected void readLineElement(PathwayModel pathwayModel, LineElement lineElement, Element ln,
-			Map<String, Element> refIdToJdomElement) throws ConverterException {
-		// reads graphics
-		Element gfx = ln.getChild("Graphics", ln.getNamespace());
-		readLineStyleProperty(lineElement, gfx);
-		// reads comment group
-		readCommentGroup(pathwayModel, lineElement, ln, refIdToJdomElement);
-		// reads points and anchors
-		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
-		readPoints(lineElement, wyps);
-		// checks if line has at least 2 point
-		if (lineElement.getLinePoints().size() < 2) {
-			throw new ConverterException("Line " + lineElement.getElementId() + " has "
-					+ lineElement.getLinePoints().size() + " point(s),  must have at least 2.");
-		}
-		readAnchors(lineElement, wyps);
-		// sets optional properties
-		String groupRef = ln.getAttributeValue("groupRef");
-		if (groupRef != null && !groupRef.equals(""))
-			lineElement.setGroupRefTo((Group) pathwayModel.getPathwayObject(ln.getAttributeValue("groupRef")));
-	}
-
-	/**
-	 * Reads point {@link LinePoint} information for line element from element.
-	 * 
-	 * @param lineElement the line element object.
-	 * @param wyps        the waypoints element.
-	 * @throws ConverterException
-	 */
-	protected void readPoints(LineElement lineElement, Element wyps) throws ConverterException {
+	protected void readPoints(LineElement lineElement, Element wyps, Map<Element, LinePoint> elementToPoint)
+			throws ConverterException {
 		List<LinePoint> ptList = new ArrayList<LinePoint>();
 		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
 			String elementId = pt.getAttributeValue("elementId");
@@ -677,16 +672,44 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			LinePoint point = lineElement.new LinePoint(arrowHead, x, y);
 			point.setElementId(elementId);
 			ptList.add(point);
+			// adds info for reading
+			elementToPoint.put(pt, point);
 		}
 		// adds points to line
 		lineElement.setLinePoints(ptList);
 	}
 
 	/**
-	 * Reads anchor {@link Anchor} information for line element from element.
+	 * Reads line element {@link LineElement} information for interaction or
+	 * graphical line from jdom element.
+	 * 
+	 * @param lineElement        the line element object.
+	 * @param ln                 the jdom line element.
+	 * @param refIdToJdomElement the map of ref elementId to jdom element.
+	 * @param elementToPoint     the map of jdom element to line points.
+	 * @throws ConverterException
+	 */
+	protected void readLineElement(PathwayModel pathwayModel, LineElement lineElement, Element ln,
+			Map<String, Element> refIdToJdomElement, Map<Element, LinePoint> elementToPoint) throws ConverterException {
+		// reads graphics
+		Element gfx = ln.getChild("Graphics", ln.getNamespace());
+		readLineStyleProperty(lineElement, gfx);
+		// reads comment group
+		readCommentGroup(pathwayModel, lineElement, ln, refIdToJdomElement);
+		// reads anchors
+		Element wyps = ln.getChild("Waypoints", ln.getNamespace());
+		readAnchors(lineElement, wyps);
+		// sets optional properties
+		String groupRef = ln.getAttributeValue("groupRef");
+		if (groupRef != null && !groupRef.equals(""))
+			lineElement.setGroupRefTo((Group) pathwayModel.getPathwayObject(ln.getAttributeValue("groupRef")));
+	}
+
+	/**
+	 * Reads anchor {@link Anchor} information for line element from jdom element.
 	 * 
 	 * @param lineElement the line element object.
-	 * @param wyps        the waypoints element.
+	 * @param wyps        the jdom waypoints element.
 	 * @throws ConverterException
 	 */
 	protected void readAnchors(LineElement lineElement, Element wyps) throws ConverterException {
@@ -700,64 +723,36 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	}
 
 	/**
-	 * Reads aliasRef {@link DataNode#setAliasRef} for pathway model datanodes.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
-	 * @throws ConverterException
-	 */
-	protected void readDataNodeAliasRef(PathwayModel pathwayModel, Element root) throws ConverterException {
-		Element dns = root.getChild("DataNodes", root.getNamespace());
-		for (Element dn : dns.getChildren("DataNode", dns.getNamespace())) {
-			String aliasRefStr = dn.getAttributeValue("aliasRef");
-			if (aliasRefStr != null && !aliasRefStr.equals("")) {
-				Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
-				if (aliasRef != null) {
-					String elementId = dn.getAttributeValue("elementId");
-					DataNode dataNode = (DataNode) pathwayModel.getPathwayObject(elementId);
-					dataNode.setAliasRefTo(aliasRef);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Reads elementRef {@link LinePoint#setElementRef} for pathway model points.
 	 * 
-	 * @param pathwayModel the pathway model.
-	 * @param root         the root element.
+	 * @param pathwayModel   the pathway model.
+	 * @param elementToPoint the map of jdom element to line points.
 	 * @throws ConverterException
 	 */
-	protected void readPointElementRef(PathwayModel pathwayModel, Element root) throws ConverterException {
-		List<String> lnElementNames = Collections.unmodifiableList(Arrays.asList("Interactions", "GraphicalLines"));
-		List<String> lnElementName = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
-		for (int i = 0; i < lnElementNames.size(); i++) {
-			Element ias = root.getChild(lnElementNames.get(i), root.getNamespace());
-			if (ias != null) {
-				for (Element ia : ias.getChildren(lnElementName.get(i), ias.getNamespace())) {
-					Element wyps = ia.getChild("Waypoints", ia.getNamespace());
-					for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
-						String elementRefStr = pt.getAttributeValue("elementRef");
-						if (elementRefStr != null && !elementRefStr.equals("")) {
-							LinkableTo elementRef = (LinkableTo) pathwayModel.getPathwayObject(elementRefStr);
-							if (elementRef != null) {
-								String elementId = pt.getAttributeValue("elementId");
-								LinePoint point = (LinePoint) pathwayModel.getPathwayObject(elementId);
-								double relX = Double.parseDouble(pt.getAttributeValue("RelX").trim());
-								double relY = Double.parseDouble(pt.getAttributeValue("RelY").trim());
-								point.linkTo(elementRef, relX, relY);
-							}
-						}
-					}
+	protected void readPointElementRefs(PathwayModel pathwayModel, Map<Element, LinePoint> elementToPoint)
+			throws ConverterException {
+		for (Element pt : elementToPoint.keySet()) {
+			String elementRefStr = pt.getAttributeValue("elementRef");
+			if (elementRefStr != null && !elementRefStr.equals("")) {
+				// retrieves referenced pathway element by elementId
+				LinkableTo elementRef = (LinkableTo) pathwayModel.getPathwayObject(elementRefStr);
+				// sets elementRef, relX, and relY for point
+				if (elementRef != null) {
+					LinePoint point = elementToPoint.get(pt);
+					double relX = Double.parseDouble(pt.getAttributeValue("relX").trim());
+					double relY = Double.parseDouble(pt.getAttributeValue("relY").trim());
+					point.linkTo(elementRef, relX, relY);
 				}
 			}
 		}
 	}
+	
 
 	/**
 	 * Reads rect property information. Jdom handles schema default values.
 	 * 
 	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readRectProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -766,7 +761,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			double centerY = Double.parseDouble(gfx.getAttributeValue("centerY").trim());
 			shapedElement.setCenterX(centerX);
 			shapedElement.setCenterY(centerY);
-
 		}
 		double width = Double.parseDouble(gfx.getAttributeValue("width").trim());
 		double height = Double.parseDouble(gfx.getAttributeValue("height").trim());
@@ -778,6 +772,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads font property information. Jdom handles schema default values.
 	 * 
 	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readFontProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -808,6 +803,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads shape style property information. Jdom handles schema default values.
 	 * 
 	 * @param shapedElement the shaped pathway element.
+	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
@@ -836,6 +832,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads line style property information. Jdom handles schema default values.
 	 * 
 	 * @param lineElement the line pathway element.
+	 * @param gfx         the jdom graphics element.
 	 * @throws ConverterException
 	 */
 	protected void readLineStyleProperty(LineElement lineElement, Element gfx) throws ConverterException {

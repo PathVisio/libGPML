@@ -18,8 +18,6 @@ package org.pathvisio.io;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -126,7 +124,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Map<String, PublicationXref> idToPublicationXref = new HashMap<String, PublicationXref>(); // ids and biopax
 		Map<String, Group> groupIdToGroup = new HashMap<String, Group>(); // graphId to group
 		Map<String, Group> graphIdToGroup = new HashMap<String, Group>(); // groupId to group
-		List<String> lineList = new ArrayList<String>(); // ordered id list for line pathway elements
+		Map<Element, LinePoint> elementToPoint = new HashMap<Element, LinePoint>(); // jdom element to point
 
 		readAllElementIds(root, elementIdSet);// reads all elementIds and stores in set
 		readPublicationXrefMap(root, elementIdSet, idToPublicationXref);
@@ -141,13 +139,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readLabels(pathwayModel, root, elementIdSet, idToPublicationXref, groupIdToGroup);
 		readShapes(pathwayModel, root, elementIdSet, idToPublicationXref, groupIdToGroup);
 		readDataNodes(pathwayModel, root, elementIdSet, idToPublicationXref, groupIdToGroup);
-
 		// reads states after data nodes
 		readStates(pathwayModel, root, elementIdSet, idToPublicationXref);
-		readInteractions(pathwayModel, root, elementIdSet, idToPublicationXref, lineList);
-		readGraphicalLines(pathwayModel, root, elementIdSet, idToPublicationXref, lineList);
-		// reads points last
-		readPoints(pathwayModel, root, elementIdSet, groupIdToGroup, graphIdToGroup, lineList);
+		readInteractions(pathwayModel, root, elementIdSet, idToPublicationXref, groupIdToGroup, elementToPoint);
+		readGraphicalLines(pathwayModel, root, elementIdSet, idToPublicationXref, groupIdToGroup, elementToPoint);
+		// reads line point elementRefs last
+		readPointElementRefs(pathwayModel, graphIdToGroup, elementToPoint);
 		// removes empty groups
 		removeEmptyGroups(pathwayModel);
 		return pathwayModel;
@@ -550,18 +547,20 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads group {@link Group} information for pathway model from root element.
-	 * Rect properties (centerX, centerY, width, height) are calculated by
-	 * {@link calculateGroupRectProperty} after group {@link List} is filled with
-	 * pathway elements.
-	 * 
-	 * NB: A group has identifier GroupId (essentially ElementId), while GraphId is
+	 *
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>A group has identifier GroupId (essentially ElementId), while GraphId is
 	 * optional. A group has GraphId if there is at least one {@link LinePoint}
 	 * referring to this group by GraphRef. Because GroupIds may conflict with an
 	 * elementId, new unique elementIds (value) can be assigned with reference back
 	 * to the original GroupIds (key) in groupIdToNew map.
-	 * 
-	 * NB: Group type "None" is deprecated in GPML2021. Group type "None" is
+	 * <li>Group type "None" is deprecated in GPML2021. Group type "None" is
 	 * replaced with "Group".
+	 * <li>Rect properties (centerX, centerY, width, height) are not set but
+	 * calculated when needed.
+	 * </ol>
 	 * 
 	 * @param pathwayModel        the pathway model.
 	 * @param root                the root element.
@@ -598,7 +597,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			// store info for reading
 			groupIdToGroup.put(groupId, group);
 			graphIdToGroup.put(graphId, group);
-			// Sets graphics. Calculate rect properties after pathway elements added //TODO
+			// Sets graphics.
 			group.setTextColor(Color.decode("#808080"));
 			readGroupShapeStyleProperty(group, type);
 			// type "Pathway" has font size (custom font name "Times" never implemented)
@@ -847,9 +846,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 						type = "parentid";
 					if (STATE_REF_LIST.contains(type))// type
 						isAnnotation = true;
-					annotationsMap.put(type, parts[1]); // type and value
+					try {
+						annotationsMap.put(type, parts[1]); // type and value
+					} catch (ArrayIndexOutOfBoundsException exception) {
+						continue; // skip if part[1] invalid
+					}
 				}
 			}
+			System.out.println(annotationsMap);
 			if (isAnnotation) {
 				for (String key : annotationsMap.keySet()) {
 					Xref xref = null;
@@ -907,25 +911,28 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
+	 * NB: points are read by {@link #readPoints}. 
+	 * 
 	 * @param pathwayModel        the pathway model.
 	 * @param root                the root element.
 	 * @param elementIdSet        the set of all elementIds.
 	 * @param idToPublicationXref the map of id to biopax jdom element.
-	 * @param lineList            the ordered list of line elementIds.
+	 * @param groupIdToGroup      the map of groupId to group.
+	 * @param elementToPoint      the map of jdom element to line points.
 	 * @throws ConverterException
 	 */
 	protected void readInteractions(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, PublicationXref> idToPublicationXref, List<String> lineList) throws ConverterException {
+			Map<String, PublicationXref> idToPublicationXref, Map<String, Group> groupIdToGroup,
+			Map<Element, LinePoint> elementToPoint) throws ConverterException {
 		for (Element ia : root.getChildren("Interaction", root.getNamespace())) {
 			String elementId = readElementId("Interaction", ia, elementIdSet);
-			// adds elementId to lineList
-			lineList.add(elementId);
 			// instantiates interaction and adds to pathway model
 			Interaction interaction = new Interaction();
 			interaction.setElementId(elementId);
+			readPoints(interaction, ia, elementIdSet, elementToPoint);
 			pathwayModel.addInteraction(interaction);
 			// reads line properties
-			readLineElement(interaction, ia, elementIdSet, idToPublicationXref);
+			readLineElement(interaction, ia, elementIdSet, idToPublicationXref, groupIdToGroup);
 			// sets optional properties
 			interaction.setXref(readXref(ia));
 		}
@@ -937,25 +944,67 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
+	 * NB: points are read by {@link #readPoints}. 
+	 * 
 	 * @param pathwayModel        the pathway model.
 	 * @param root                the root element.
 	 * @param elementIdSet        the set of all elementIds.
 	 * @param idToPublicationXref the map of id to biopax jdom element.
-	 * @param lineList            the ordered list of line elementIds.
+	 * @param groupIdToGroup      the map of groupId to group.
+	 * @param elementToPoint      the map of jdom element to line points.
 	 * @throws ConverterException
 	 */
 	protected void readGraphicalLines(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, PublicationXref> idToPublicationXref, List<String> lineList) throws ConverterException {
+			Map<String, PublicationXref> idToPublicationXref, Map<String, Group> groupIdToGroup,
+			Map<Element, LinePoint> elementToPoint) throws ConverterException {
 		for (Element gln : root.getChildren("GraphicalLine", root.getNamespace())) {
 			String elementId = readElementId("GraphicalLine", gln, elementIdSet);
-			// adds elementId to lineList
-			lineList.add(elementId);
 			// instantiates graphical line and adds to pathway model
 			GraphicalLine graphicalLine = new GraphicalLine();
 			graphicalLine.setElementId(elementId);
+			readPoints(graphicalLine, gln, elementIdSet, elementToPoint);
 			pathwayModel.addGraphicalLine(graphicalLine);
 			// reads line properties
-			readLineElement(graphicalLine, gln, elementIdSet, idToPublicationXref);
+			readLineElement(graphicalLine, gln, elementIdSet, idToPublicationXref, groupIdToGroup);
+		}
+	}
+
+	/**
+	 * Reads {@link LinePoint} elementRefs. ElementRefs must be read after the
+	 * pathway elements they refer to. {@link Map} elementToPoint stores jdom
+	 * elements for Points and their corresponding LinePoint pathway element so that
+	 * elementRef information can be easily added.
+	 * 
+	 * NB: points refer to a group by its GraphId not GroupId(essentially
+	 * elementId). If the pathway element referenced by a point is a group, we must
+	 * search for the group by its GraphId in {@link Map} graphIdToGroup.
+	 * 
+	 * @param pathwayModel   the pathway model.
+	 * @param graphIdToGroup the map of graphId to group.
+	 * @param elementToPoint the map of jdom element to line points.
+	 * @throws ConverterException
+	 */
+	protected void readPointElementRefs(PathwayModel pathwayModel, Map<String, Group> graphIdToGroup,
+			Map<Element, LinePoint> elementToPoint) throws ConverterException {
+		for (Element pt : elementToPoint.keySet()) {
+			String base = pt.getParentElement().getParentElement().getName();
+			String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
+			if (elementRefStr != null && !elementRefStr.equals("")) {
+				// retrieves referenced pathway element (aside from group) by elementId
+				LinkableTo elementRef = (LinkableTo) pathwayModel.getPathwayObject(elementRefStr);
+				// if elementRef refers to a group, it cannot be found by elementId
+				// find group by its graphId
+				if (elementRef == null) {
+					elementRef = graphIdToGroup.get(elementRefStr);
+				}
+				// sets elementRef, relX, and relY for point
+				if (elementRef != null) {
+					LinePoint point = elementToPoint.get(pt);
+					double relX = Double.parseDouble(pt.getAttributeValue("RelX").trim());
+					double relY = Double.parseDouble(pt.getAttributeValue("RelY").trim());
+					point.linkTo(elementRef, relX, relY);
+				}
+			}
 		}
 	}
 
@@ -963,17 +1012,18 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads line element {@link LineElement} information for interaction or
 	 * graphical line from jdom element.
 	 * 
-	 * NB: points are read in {@link #readPoints}. GroupRef is read after points
-	 * {@link #readLineGroupRef}.
+	 * NB: points are read by {@link #readPoints}. 
 	 * 
 	 * @param lineElement         the line pathway element.
 	 * @param ln                  the jdom line element.
 	 * @param elementIdSet        the set of all elementIds.
 	 * @param idToPublicationXref the map of id to biopax jdom element.
+	 * @param groupIdToGroup      the map of groupId to group.
 	 * @throws ConverterException
 	 */
 	protected void readLineElement(LineElement lineElement, Element ln, Set<String> elementIdSet,
-			Map<String, PublicationXref> idToPublicationXref) throws ConverterException {
+			Map<String, PublicationXref> idToPublicationXref, Map<String, Group> groupIdToGroup)
+			throws ConverterException {
 		// reads comment group
 		readCommentGroup(lineElement, ln, idToPublicationXref);
 		// reads line style graphics
@@ -981,121 +1031,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		readLineStyleProperty(lineElement, gfx);
 		// reads anchors
 		readAnchors(lineElement, gfx, elementIdSet);
-	}
-
-	/**
-	 * Reads anchor {@link Anchor} information for line element from element.
-	 * 
-	 * @param lineElement  the line element object.
-	 * @param gfx          the jdom graphics element.
-	 * @param elementIdSet the set of all elementIds.
-	 * @throws ConverterException
-	 */
-	protected void readAnchors(LineElement lineElement, Element gfx, Set<String> elementIdSet)
-			throws ConverterException {
-		String base = ((Element) gfx.getParent()).getName();
-		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
-			String elementId = readElementId(base + ".Graphics.Anchor", an, elementIdSet);
-			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
-			AnchorShapeType shapeType = AnchorShapeType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
-			// adds anchor to line pathway element and pathway model
-			lineElement.addAnchor(elementId, position, shapeType);
-		}
-	}
-
-	/**
-	 * Reads points {@link LinePoint} for pathway model line pathway elements.
-	 * Points must be read after the pathway elements they refer to. Therefore
-	 * points are read last in {@link #readFromRoot}.
-	 * 
-	 * NB: points refer to a group by its GraphId not GroupId(essentially
-	 * elementId). If the pathway element referenced by a point is a group, we must
-	 * search for the group by its GraphId {@link Group#getDynamicProperty}, instead
-	 * of using {@link PathwayModel#getPathwayObject} which retrieves groups by
-	 * their elementId.
-	 * 
-	 * @param pathwayModel   the pathway model.
-	 * @param root           the jdom root element.
-	 * @param elementIdSet   the set of all elementIds.
-	 * @param groupIdToGroup the map of groupId to group.
-	 * @param graphIdToGroup the map of graphId to group.
-	 * @param lineList       the ordered list of line elementIds.
-	 * @throws ConverterException
-	 */
-	protected void readPoints(PathwayModel pathwayModel, Element root, Set<String> elementIdSet,
-			Map<String, Group> groupIdToGroup, Map<String, Group> graphIdToGroup, List<String> lineList)
-			throws ConverterException {
-		// reads points for interactions, and then graphical lines
-		List<String> lineType = Collections.unmodifiableList(Arrays.asList("Interaction", "GraphicalLine"));
-		// initiates lineList index
-		int lineListIndex = 0;
-		for (int i = 0; i < lineType.size(); i++) {
-			for (Element ln : root.getChildren(lineType.get(i), root.getNamespace())) {
-				String base = ln.getName();
-				// retrieve line pathway element by its graphId
-				String lineElementId = getAttr(lineType.get(i), "GraphId", ln);
-				LineElement lineElement = (LineElement) pathwayModel.getPathwayObject(lineElementId);
-				// if line graphId null, retrieve line object by its order stored to lineList
-				if (lineElementId == null && lineElement == null)
-					lineElement = (LineElement) pathwayModel.getPathwayObject(lineList.get(lineListIndex));
-				Element gfx = ln.getChild("Graphics", ln.getNamespace());
-				// instantiate points list
-				List<LinePoint> ptList = new ArrayList<LinePoint>();
-				for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
-					String ptId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
-					String arrowHeadStr = getAttr(base + ".Graphics.Point", "ArrowHead", pt);
-					ArrowHeadType arrowHead = getInteractionPanelType(arrowHeadStr);
-					if (arrowHead == null) {
-						arrowHead = ArrowHeadType.register(arrowHeadStr);
-					}
-					// TODO Sub types added to Annotations while converting...
-					double x = Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim());
-					double y = Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim());
-					// instantiates and adds point
-					LinePoint point = lineElement.new LinePoint(arrowHead, x, y);
-					point.setElementId(ptId);
-					ptList.add(point);
-					// sets optional point parameters
-					String elementRefStr = getAttr(base + ".Graphics.Point", "GraphRef", pt);
-					if (elementRefStr != null && !elementRefStr.equals("")) {
-						// retrieves referenced pathway element (aside from group) by elementId
-						LinkableTo elementRef = (LinkableTo) pathwayModel.getPathwayObject(elementRefStr);
-						// if elementRef refers to a group, it cannot be found by elementId
-						// find group by its graphId
-						if (elementRef == null) {
-							elementRef = graphIdToGroup.get(elementRefStr);
-						}
-						// sets elementRef, relX, and relY for this point
-						if (elementRef != null) {
-							double relX = Double.parseDouble(pt.getAttributeValue("RelX").trim());
-							double relY = Double.parseDouble(pt.getAttributeValue("RelY").trim());
-							point.linkTo(elementRef, relX, relY);
-						}
-					}
-				}
-				// adds points to line
-				lineElement.setLinePoints(ptList);
-				// read groupRef for line
-				readLineGroupRef(lineElement, ln, groupIdToGroup);
-				// increment line list index
-				lineListIndex += 1;
-			}
-		}
-	}
-
-	/**
-	 * Reads groupRef for line pathway element from jdom element. Line points must
-	 * be read before groupRef is read. Called in {@link readPoints}.
-	 * 
-	 * @param lineElement    the line pathway element.
-	 * @param ln             the jdom line element.
-	 * @param groupIdToGroup the map of groupId to group.
-	 * @throws ConverterException
-	 */
-	protected void readLineGroupRef(LineElement lineElement, Element ln, Map<String, Group> groupIdToGroup)
-			throws ConverterException {
-		String base = ln.getName();
-		String groupRefStr = getAttr(base, "GroupRef", ln);
+		// reads groupRef
+		String groupRefStr = getAttr(ln.getName(), "GroupRef", ln);
 		if (groupRefStr != null && !groupRefStr.equals("")) {
 			// get parent group from groupRef
 			Group groupRef = groupIdToGroup.get(groupRefStr);
@@ -1103,6 +1040,63 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			if (groupRef != null) {
 				lineElement.setGroupRefTo(groupRef);
 			}
+		}
+	}
+
+	/**
+	 * Reads points {@link LinePoint} for pathway model line pathway elements. Point
+	 * elementRefs must be read after the pathway elements they refer to. Therefore
+	 * points are read last in {@link #readPointElementRefs}.
+	 * 
+	 * @param lineElement    the line pathway element.
+	 * @param ln             the jdom line element.
+	 * @param elementIdSet   the set of all elementIds.
+	 * @param elementToPoint the map of jdom element to line points.
+	 * @throws ConverterException
+	 */
+	protected void readPoints(LineElement lineElement, Element ln, Set<String> elementIdSet,
+			Map<Element, LinePoint> elementToPoint) throws ConverterException {
+		String base = ln.getName();
+		Element gfx = ln.getChild("Graphics", ln.getNamespace());
+		List<LinePoint> ptList = new ArrayList<LinePoint>();
+		for (Element pt : gfx.getChildren("Point", gfx.getNamespace())) {
+			String elementId = readElementId(base + ".Graphics.Point", pt, elementIdSet);
+			// TODO Annotation sub types?
+			String arrowHeadStr = getAttr(base + ".Graphics.Point", "ArrowHead", pt);
+			ArrowHeadType arrowHead = getInteractionPanelType(arrowHeadStr);
+			if (arrowHead == null) {
+				arrowHead = ArrowHeadType.register(arrowHeadStr);
+			}
+			double x = Double.parseDouble(getAttr(base + ".Graphics.Point", "X", pt).trim());
+			double y = Double.parseDouble(getAttr(base + ".Graphics.Point", "Y", pt).trim());
+			// instantiates and adds point
+			LinePoint point = lineElement.new LinePoint(arrowHead, x, y);
+			point.setElementId(elementId);
+			ptList.add(point);
+			// store info for reading
+			elementToPoint.put(pt, point);
+		}
+		// set points for line
+		lineElement.setLinePoints(ptList);
+	}
+
+	/**
+	 * Reads anchor {@link Anchor} information for line element from element.
+	 * 
+	 * @param lineElement  the line element object.
+	 * @param gfx           the jdom graphics element.
+	 * @param elementIdSet the set of all elementIds.
+	 * @throws ConverterException
+	 */
+	protected void readAnchors(LineElement lineElement, Element gfx, Set<String> elementIdSet)
+			throws ConverterException {
+		String base = gfx.getParentElement().getName();
+		for (Element an : gfx.getChildren("Anchor", gfx.getNamespace())) {
+			String elementId = readElementId(base + ".Graphics.Anchor", an, elementIdSet);
+			double position = Double.parseDouble(getAttr(base + ".Graphics.Anchor", "Position", an).trim());
+			AnchorShapeType shapeType = AnchorShapeType.register(getAttr(base + ".Graphics.Anchor", "Shape", an));
+			// adds anchor to line pathway element and pathway model
+			lineElement.addAnchor(elementId, position, shapeType);
 		}
 	}
 
@@ -1247,8 +1241,9 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		shapeTypeStr = toCamelCase(shapeTypeStr);
 		ShapeType shapeType = ShapeType.register(shapeTypeStr);
 		// checks deprecated shape type map for newer shape
-		if (DEPRECATED_MAP.containsKey(shapeType))
+		if (DEPRECATED_MAP.containsKey(shapeType)) {
 			shapeType = DEPRECATED_MAP.get(shapeType);
+		}
 		// set shape style properties
 		shapedElement.setBorderColor(borderColor);
 		shapedElement.setBorderStyle(borderStyle);

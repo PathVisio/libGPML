@@ -43,7 +43,7 @@ public class Interaction extends LineElement {
 	}
 
 	/**
-	 * Instantiates an Interaction pathway element given all possible parameters
+	 * Instantiates an Interaction pathway element given all required parameters
 	 * except xref.
 	 */
 	public Interaction() {

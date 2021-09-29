@@ -25,8 +25,8 @@ import junit.framework.TestCase;
 /**
  * Test for {@link State}.
  * <p>
- * <ol>
  * NB:
+ * <ol>
  * <li>For a state, getPathwayModel() is only null when outer class data node
  * terminated
  * <li>For a state, getDataNode() will always return outer class data node.
