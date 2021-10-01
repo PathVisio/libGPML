@@ -67,6 +67,5 @@ public class TestDataNodeType extends TestCase {
 
 		System.out.println(DataNodeType.getNames());
 		System.out.println(rna1 == DataNodeType.RNA);
-
 	}
 }

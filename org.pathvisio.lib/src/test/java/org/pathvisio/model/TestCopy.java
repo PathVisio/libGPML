@@ -52,7 +52,7 @@ public class TestCopy extends TestCase {
 		State s1 = o1.addState("st1", StateType.UNDEFINED, 0, 0);
 
 		DataNode o2 = o1.copy();
-		State s2 = o2.getStates().get(0);
+		State s2 = o2.getStates().get(0);	
 
 		assertEquals(o1, o1);
 		assertFalse(o1 == o2);
@@ -106,6 +106,35 @@ public class TestCopy extends TestCase {
 	 * 
 	 */
 	@Test
+	public void testCopyGraphicalLine() {
+		GraphicalLine o1 = new GraphicalLine();
+		p.addGraphicalLine(o1);
+
+		List<LinePoint> points = new ArrayList<LinePoint>();
+		points.add(o1.new LinePoint(null, 9, 18));
+		points.add(o1.new LinePoint(null, 9, 18));
+		o1.setLinePoints(points);
+		o1.addAnchor(0, null);
+
+		GraphicalLine o2 = o1.copy();
+		assertEquals(o1, o1);
+		assertFalse(o1 == o2);
+		assertEquals(o1.getPathwayModel(), p);
+		assertNull(o2.getPathwayModel());
+
+		PathwayModel p2 = new PathwayModel();
+		p2.addGraphicalLine(o2);
+		assertEquals(o2.getPathwayModel(), p2);
+		for (LinePoint i : o2.getLinePoints()) {
+			assertEquals(i.getPathwayModel(), p2);
+		}
+		assertEquals(o2.getAnchors().get(0).getPathwayModel(), p2);
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
 	public void testCopyLabel() {
 		Label o1 = new Label("o1");
 		p.addLabel(o1);
@@ -123,7 +152,7 @@ public class TestCopy extends TestCase {
 	 */
 	@Test
 	public void testCopyShape() {
-		Shape o1 = new Shape("o1");
+		Shape o1 = new Shape();
 		p.addShape(o1);
 
 		Shape o2 = o1.copy();

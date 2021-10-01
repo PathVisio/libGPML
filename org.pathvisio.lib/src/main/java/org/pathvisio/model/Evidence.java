@@ -153,7 +153,9 @@ public class Evidence extends PathwayObject {
 	 * @param evidenceRef the given evidenceRef to add.
 	 */
 	protected void addEvidenceRef(EvidenceRef evidenceRef) {
-		assert (evidenceRef != null);
+		if (evidenceRef == null) {
+			throw new IllegalArgumentException("Cannot add invalid evidenceRef to evidence.");
+		}
 		// add evidenceRef to evidenceRefs
 		if (evidenceRef.getEvidence() == this && !hasEvidenceRef(evidenceRef))
 			evidenceRefs.add(evidenceRef);

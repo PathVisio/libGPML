@@ -33,20 +33,12 @@ public class Shape extends ShapedElement {
 	// Constructors
 	// ================================================================================
 	/**
-	 * Instantiates a Label pathway element given all possible parameters.
+	 * Instantiates a Shape pathway element.
 	 * 
 	 * @param textLabel the text of the shape.
 	 */
-	public Shape(String textLabel) {
-		super();
-		this.textLabel = textLabel;
-	}
-
-	/**
-	 * Instantiates a Shape given all possible parameters except textLabel.
-	 */
 	public Shape() {
-		this(null);
+		super();
 	}
 
 	// ================================================================================

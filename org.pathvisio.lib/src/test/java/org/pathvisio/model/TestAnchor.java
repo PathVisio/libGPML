@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
 import org.pathvisio.model.type.AnchorShapeType;
+import org.pathvisio.model.type.ArrowHeadType;
 
 import junit.framework.TestCase;
 
@@ -44,20 +45,54 @@ public class TestAnchor extends TestCase {
 	@Before
 	public void setUp() {
 		p = new PathwayModel();
-		i1 = new Interaction(null);
+		i1 = new Interaction();
+		LinePoint pt1 = i1.getLinePoints().get(0);
+		LinePoint pt2 = i1.getLinePoints().get(1);
+
+		// checks
+		assertNull(i1.getPathwayModel());
+		assertNull(pt1.getPathwayModel());
+		assertNull(pt2.getPathwayModel());
 		p.addInteraction(i1);
 
+		// checks
+		assertTrue(p.hasPathwayObject(i1));
+		assertTrue(p.getInteractions().contains(i1));
+		assertEquals(i1.getPathwayModel(), p);
+		assertTrue(p.hasPathwayObject(pt1));
+		assertTrue(p.hasPathwayObject(pt2));
+		assertEquals(pt1.getPathwayModel(), p);
+		assertEquals(pt2.getPathwayModel(), p);
+
+		// set new points
 		List<LinePoint> points = new ArrayList<LinePoint>();
-		points.add(i1.new LinePoint(null, 9, 18));
-		points.add(i1.new LinePoint(null, 9, 18));
+		LinePoint pt3 = i1.new LinePoint(ArrowHeadType.BINDING, 10, 18);
+		LinePoint pt4 = i1.new LinePoint(ArrowHeadType.BINDING, 20, 18);
+		points.add(pt3);
+		points.add(pt4);
 		i1.setLinePoints(points);
 
+		// checks
+		assertTrue(p.hasPathwayObject(i1));
+		assertTrue(p.getInteractions().contains(i1));
+		assertEquals(i1.getPathwayModel(), p);
+		assertFalse(p.hasPathwayObject(pt1));
+		assertFalse(p.hasPathwayObject(pt2));
+		assertNull(pt1.getPathwayModel());
+		assertNull(pt2.getPathwayModel());
+		assertTrue(p.hasPathwayObject(pt3));
+		assertTrue(p.hasPathwayObject(pt4));
+		assertEquals(pt3.getPathwayModel(), p);
+		assertEquals(pt4.getPathwayModel(), p);
+
+		// add anchor
 		a1 = i1.addAnchor(0.5, AnchorShapeType.SQUARE);
 
+		// checks
 		assertTrue(i1.hasAnchor(a1));
 		assertTrue(p.hasPathwayObject(a1));
-		assertTrue(p.hasPathwayObject(i1));
 		assertEquals(a1.getLineElement(), i1);
+		assertEquals(a1.getPathwayModel(), p);
 		assertEquals(a1.getPathwayModel(), p);
 	}
 

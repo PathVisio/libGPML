@@ -43,39 +43,23 @@ public class Group extends ShapedElement {
 	// Constructors
 	// ================================================================================
 	/**
-	 * Instantiates a Group given all possible parameters.
+	 * Instantiates a Group given all required parameters and xref.
 	 * 
-	 * @param type      the type of the group.
-	 * @param textLabel the text of the group.
-	 * @param xref      the group Xref.
-	 */
-	public Group(GroupType type, String textLabel, Xref xref) {
-		super();
-		this.type = type;
-		this.textLabel = textLabel;
-		this.xref = xref;
-		this.pathwayElements = new ArrayList<Groupable>();
-	}
-
-	/**
-	 * Instantiates a Group given all possible parameters except textLabel.
+	 * @param type the type of the group.
+	 * @param xref the group Xref.
 	 */
 	public Group(GroupType type, Xref xref) {
-		this(type, null, xref);
-	}
-
-	/**
-	 * Instantiates a Group given all possible parameters except xref.
-	 */
-	public Group(GroupType type, String textLabel) {
-		this(type, textLabel, null);
+		super();
+		this.type = type;
+		this.xref = xref;
+		this.pathwayElements = new ArrayList<Groupable>();
 	}
 
 	/**
 	 * Instantiates a Group given all required parameters.
 	 */
 	public Group(GroupType type) {
-		this(type, null, null);
+		this(type, null);
 	}
 
 	// ================================================================================
@@ -108,14 +92,18 @@ public class Group extends ShapedElement {
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
 	public void addPathwayElement(Groupable pathwayElement) {
-		assert (pathwayElement != null);
+		if (pathwayElement == null) {
+			throw new IllegalArgumentException("Cannot add invalid pathway element to group " + getElementId());
+		}
+		if (getPathwayModel() != pathwayElement.getPathwayModel()) {
+			throw new IllegalArgumentException("Group can only add pathway elements of the same pathway model");
+		}
 		// set groupRef for pathway element if necessary
 		if (pathwayElement.getGroupRef() == null || pathwayElement.getGroupRef() != this)
 			pathwayElement.setGroupRefTo(this);
 		// add pathway element to this group
 		if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement))
 			pathwayElements.add(pathwayElement);
-		// TODO recalculate size
 	}
 
 	/**
@@ -129,6 +117,22 @@ public class Group extends ShapedElement {
 		if (pathwayElement != null) {
 			pathwayElement.unsetGroupRef();
 			pathwayElements.remove(pathwayElement);
+		}
+		// remove group if its empty, and refers to and belongs to the pathway model
+		if (pathwayElements.isEmpty() && pathwayModel != null && pathwayModel.hasPathwayObject(this)) {
+			pathwayModel.removeGroup(this);
+		}
+	}
+
+	/**
+	 * Adds the given list of pathway elements to pathwayElements list of this
+	 * group.
+	 * 
+	 * @param pathwayElements the given list of pathwayElement to add.
+	 */
+	public void addPathwayElements(List<? extends Groupable> pathwayElements) {
+		for (Groupable pathwayElement : pathwayElements) {
+			addPathwayElement(pathwayElement);
 		}
 	}
 
@@ -206,6 +210,22 @@ public class Group extends ShapedElement {
 			// TODO
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
+	}
+
+	// ================================================================================
+	// Special Methods
+	// ================================================================================
+
+	/**
+	 * Creates and returns an Alias data node for this group. TODO
+	 */
+	public DataNode createAlias(String textLabel) {
+		if (pathwayModel != null) {
+			DataNode alias = new DataNode(textLabel, this);
+			return alias;
+		}
+		System.out.println("Cannot create an alias for group without valid pathway model.");
+		return null;
 	}
 
 	/**

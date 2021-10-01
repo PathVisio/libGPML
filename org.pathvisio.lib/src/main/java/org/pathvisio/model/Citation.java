@@ -212,7 +212,9 @@ public class Citation extends PathwayObject {
 	 * @param citationRef the given citationRef to add.
 	 */
 	protected void addCitationRef(CitationRef citationRef) {
-		assert (citationRef != null);
+		if (citationRef == null){
+			throw new IllegalArgumentException("Cannot add invalid citationRef to citation.");
+		}
 		// add citationRef to citationRefs
 		if (citationRef.getCitation() == this && !hasCitationRef(citationRef))
 			citationRefs.add(citationRef);
@@ -262,10 +264,11 @@ public class Citation extends PathwayObject {
 	// Equals Methods
 	// ================================================================================
 	/**
-	 * Compares this citation to the given citation. Checks all properties except
-	 * citationsRefs list to determine whether they are equal.
+	 * Compares this citation to the given citation. Checks xref and url to
+	 * determine whether they are equal.
 	 * 
-	 * TODO
+	 * NB: Optional properties (title, source, year, authors) are assumed to be the
+	 * same if xref and url are equal.
 	 * 
 	 * @param citation the citation to compare to.
 	 * @return true if citations have equal properties, false otherwise.
@@ -287,16 +290,6 @@ public class Citation extends PathwayObject {
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, citation.getUrlLink()))
 			return false;
-		// TODO
-//		// checks if optional GPML2013a properties are equivalent
-//		if (!Objects.equals(title, citation.getTitle()))
-//			return false;
-//		if (!Objects.equals(source, citation.getSource()))
-//			return false;
-//		if (!Objects.equals(year, citation.getYear()))
-//			return false;
-//		if (!Objects.equals(authors, citation.getAuthors()))
-//			return false;
 		return true;
 	}
 

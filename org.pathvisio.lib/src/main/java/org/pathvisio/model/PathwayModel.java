@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -55,10 +54,10 @@ public class PathwayModel {
 
 	private Pathway pathway; // pathway information
 	// for elementId to PathwayElement
-	private Map<String, PathwayObject> elementIdToPathwayObject; // TODO PathwayElement????
-	// for PathwayElement and all the LinePoints which point to it
+	private Map<String, PathwayObject> elementIdToPathwayObject;
+	// for PathwayElement and all LinePoints which point to it
 	private Map<LinkableTo, Set<LinkableFrom>> elementRefToLinePoints;
-	// for Group aliasRef and all the DataNode aliases for it
+	// for Group aliasRef and all DataNode aliases for it
 	private Map<Group, Set<DataNode>> aliasRefToAliases;
 	private List<DataNode> dataNodes; // contains states
 	private List<Interaction> interactions; // contains points and anchors
@@ -74,13 +73,13 @@ public class PathwayModel {
 	// Constructors
 	// ================================================================================
 	/**
-	 * Initializes a pathway model object with {@link Pathway} information.
+	 * Initializes a pathway model object with default {@link Pathway}.
 	 * 
 	 * @param pathway the pathway object containing metadata information, e.g.
 	 *                title, organism...
 	 */
-	public PathwayModel(Pathway pathway) {
-		this.pathway = pathway;
+	public PathwayModel() {
+		this.pathway = new Pathway();
 		pathway.setPathwayModelTo(this); // TODO
 		this.elementIdToPathwayObject = new HashMap<String, PathwayObject>();
 		this.elementRefToLinePoints = new HashMap<LinkableTo, Set<LinkableFrom>>();
@@ -96,13 +95,6 @@ public class PathwayModel {
 		this.evidences = new ArrayList<Evidence>();
 	}
 
-	/**
-	 * Initializes a pathway model object with {@link Pathway} default values.
-	 */
-	public PathwayModel() {
-		this(new Pathway.PathwayBuilder("Click to add title", 0, 0, Color.decode("#ffffff")).build());
-	}
-
 	// ================================================================================
 	// Accessors
 	// ================================================================================
@@ -116,6 +108,11 @@ public class PathwayModel {
 	 */
 	public Pathway getPathway() {
 		return pathway;
+	}
+
+	// TODO
+	public List<PathwayElement> getPathwayElements() {
+		return null;
 	}
 
 	// ================================================================================
@@ -307,6 +304,10 @@ public class PathwayModel {
 	 * Adds mapping of aliasRef to data node alias in the aliasRefToAliases hash
 	 * map.
 	 * 
+	 * NB: This method is not used directly. It is called by
+	 * {@link DataNode#setAliasRef} when the data node alias is terminated
+	 * {@link DataNode#terminate} or deleted by {@link #removeDataNode}.
+	 * 
 	 * @param aliasRef the group for which a dataNode alias refers.
 	 * @param alias    the datanode which has an aliasRef.
 	 * @throws IllegalArgumentException if elementRef or dataNode are null.
@@ -326,6 +327,15 @@ public class PathwayModel {
 	 * Removes the given aliasRef and alias from aliasRefToAliases of this pathway
 	 * model.
 	 * 
+	 * <p>
+	 * NB: This method is not used directly.
+	 * <ol>
+	 * <li>It is called when the data node alias is deleted by
+	 * {@link #removeDataNode}.
+	 * <li>Or when the aliasRef is deleted {@link #removeAliasRef} and thus all
+	 * alias must be deleted.
+	 * </ol>
+	 * 
 	 * @param aliasRef the group for which a dataNode alias refers.
 	 * @param alias    the datanode which has an aliasRef.
 	 */
@@ -336,8 +346,9 @@ public class PathwayModel {
 		assert (hasAlias(aliasRef, alias));
 		Set<DataNode> aliases = aliasRefToAliases.get(aliasRef);
 		aliases.remove(alias);
-		if (alias.getAliasRef() != null)
-			alias.setAliasRefTo(null);
+		if (dataNodes.contains(alias)) {
+			removeDataNode(alias);
+		}
 		// removes aliasRef if it has no aliases
 		if (aliases.isEmpty())
 			removeAliasRef(aliasRef);
@@ -391,6 +402,12 @@ public class PathwayModel {
 	 */
 	public void removeDataNode(DataNode dataNode) {
 		dataNodes.remove(dataNode);
+		Group aliasRef = dataNode.getAliasRef();
+		if (aliasRef != null) {
+			if (hasAlias(aliasRef, dataNode)) {
+				removeAlias(aliasRef, dataNode);
+			}
+		}
 		removePathwayObject(dataNode);
 	}
 
@@ -542,11 +559,15 @@ public class PathwayModel {
 
 	/**
 	 * Removes the given group from groups list and elementIdToPathwayObject map.
+	 * Also removes group from aliasRefToAliases if applicable.
 	 * 
 	 * @param group the group to be removed.
 	 */
 	public void removeGroup(Group group) {
 		groups.remove(group);
+		if (hasAliasRef(group)) {
+			removeAliasRef(group);
+		}
 		removePathwayObject(group);
 	}
 
@@ -740,16 +761,21 @@ public class PathwayModel {
 	 * 
 	 * @param pathwayModel the pathway object to add.
 	 */
-	protected void addPathwayObject(PathwayObject pathwayModel) {
-		assert (pathwayModel != null);
-		pathwayModel.setPathwayModelTo(this);
-		assert (pathwayModel.getPathwayModel() == this);
-		String elementId = pathwayModel.getElementId();
-		if (elementId == null)
-			pathwayModel.setGeneratedElementId();
-		addElementId(pathwayModel.getElementId(), pathwayModel); // TODO
-		fireObjectModifiedEvent(new PathwayEvent(pathwayModel, PathwayEvent.ADDED));
-		checkMBoardSize(pathwayModel); // TODO
+	protected void addPathwayObject(PathwayObject pathwayObject) {
+		if (pathwayObject == null) {
+			throw new IllegalArgumentException("Cannot add invalid pathway object to pathway model");
+		}
+		pathwayObject.setPathwayModelTo(this);
+		if (pathwayObject.getPathwayModel() != this) {
+			throw new IllegalArgumentException("Pathway object does not refer to this pathway model");
+		}
+		String elementId = pathwayObject.getElementId();
+		if (elementId == null) {
+			pathwayObject.setGeneratedElementId();
+		}
+		addElementId(pathwayObject.getElementId(), pathwayObject);
+		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.ADDED));
+		checkMBoardSize(pathwayObject); // TODO
 	}
 
 	/**
@@ -763,22 +789,25 @@ public class PathwayModel {
 	 * 
 	 * @param pathwayModel the pathway object to remove.
 	 */
-	protected void removePathwayObject(PathwayObject pathwayModel) {
-		assert (pathwayModel != null);
-		assert (hasPathwayObject(pathwayModel));
-		removeElementId(pathwayModel.getElementId());
-		pathwayModel.terminate(); // TODO
-		fireObjectModifiedEvent(new PathwayEvent(pathwayModel, PathwayEvent.DELETED));
+	protected void removePathwayObject(PathwayObject pathwayObject) {
+		if (pathwayObject == null) {
+			throw new IllegalArgumentException("Cannot remove invalid pathway object");
+		}
+		if (!hasPathwayObject(pathwayObject)) {
+			throw new IllegalArgumentException("Pathway model does not have this pathway object");
+		}
+		removeElementId(pathwayObject.getElementId());
+		pathwayObject.terminate();
+		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED));
 	}
 
 	/**
-	 * TODO Adds a PathwayObject to this Pathway. Calls the appropriate add method
-	 * based on PathwayObject class.
+	 * Adds a PathwayObject to this Pathway. Calls the appropriate add method based
+	 * on PathwayObject class. TODO
 	 *
 	 * @param o the pathway object to add
 	 */
 	public void add(PathwayObject o) {
-		assert (o.getPathwayModel() == this);
 		if (o.getClass() == DataNode.class) {
 			addDataNode((DataNode) o);
 		} else if (o.getClass() == Interaction.class) {
@@ -803,8 +832,8 @@ public class PathwayModel {
 	}
 
 	/**
-	 * TODO Removes a PathwayObject from this Pathway. Calls the appropriate remove
-	 * method based on PathwayObject class.
+	 * Removes a PathwayObject from this Pathway. Calls the appropriate remove
+	 * method based on PathwayObject class. TODO
 	 *
 	 * @param o the pathway object to remove
 	 */
@@ -905,10 +934,11 @@ public class PathwayModel {
 	// Clone Methods
 	// ================================================================================
 	public PathwayModel clone() {
-		PathwayModel result = new PathwayModel(null); // TODO
-		for (PathwayObject pe : getPathwayObjects()) {
-			result.add(pe.copy()); // TODO
+		PathwayModel result = new PathwayModel(); // TODO
+		for (DataNode o : getDataNodes()) {
+			result.add(o.copy()); // TODO
 		}
+		// TODO ...
 		result.changed = changed;
 		if (sourceFile != null) {
 			result.sourceFile = new File(sourceFile.getAbsolutePath());

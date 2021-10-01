@@ -27,11 +27,20 @@ import java.awt.geom.Rectangle2D;
  * @author finterly
  */
 public interface Groupable {
+	
 	/**
-	 * Returns the parent group of the pathway element. In GPML, groupRef refers to
+	 * Returns the pathway model of this pathway element.
+	 * 
+	 * @return the pathway model of this pathway element.
+	 */
+	public PathwayModel getPathwayModel();
+
+	
+	/**
+	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
 	 * 
-	 * @return groupRef the parent group of the pathway element.
+	 * @return groupRef the parent group of this pathway element.
 	 */
 	public Group getGroupRef();
 
@@ -65,7 +74,7 @@ public interface Groupable {
 	public void unsetGroupRef();
 
 //	/**
-//	 * Terminates the pathway element.
+//	 * Terminates this pathway element.
 //	 */
 //	void terminate();
 

@@ -42,8 +42,6 @@ import org.pathvisio.util.Utils;
  * @author finterly
  */
 public class Pathway extends PathwayElement {
-	// TODO check if builder and stuff works correctly...
-
 	// required properties
 	private String title;
 	private double boardWidth;
@@ -59,145 +57,18 @@ public class Pathway extends PathwayElement {
 	private Xref xref;
 
 	// ================================================================================
-	// PathwayBuilder and Constructors
+	// Constructors
 	// ================================================================================
-	/**
-	 * This builder class builds an Pathway object step-by-step.
-	 * 
-	 * @author finterly
-	 */
-	public static class PathwayBuilder {
-
-		private String title = "Click to add title"; // TODO
-		private double boardWidth = 0;
-		private double boardHeight = 0;
-		private Color backgroundColor = Color.decode("#ffffff");
-		private List<Author> authors;
-		private String description; // optional
-		private String organism; // optional
-		private String source; // optional
-		private String version; // optional
-		private String license; // optional
-		private Xref xref; // optional
-
-		/**
-		 * Public constructor with required attribute name as parameter. //TODO actually
-		 * required?
-		 * 
-		 * @param title           the title of this pathway.
-		 * @param boardWidth      together with...
-		 * @param boardHeight     define the drawing size.
-		 * @param backgroundColor the background color of the drawing, default #ffffff
-		 *                        (white)
-		 */
-		public PathwayBuilder(String title, double boardWidth, double boardHeight, Color backgroundColor) {
-			this.title = title;
-			this.boardWidth = boardWidth;
-			this.boardHeight = boardHeight;
-			this.backgroundColor = backgroundColor;
-			this.authors = new ArrayList<Author>();
-		}
-
-		/**
-		 * Sets description and returns this builder object. Description is the textual
-		 * description for this pathway.
-		 * 
-		 * @param v the description of this pathway.
-		 * @return this pathwayBuilder object.
-		 */
-		public PathwayBuilder setDescription(String v) {
-			description = v;
-			return this;
-		}
-
-		/**
-		 * Sets organism and returns this builder object. Organism is the scientific
-		 * name (e.g., Homo sapiens) of the species being described by this pathway.
-		 * 
-		 * @param v the organism of this pathway.
-		 * @return this pathwayBuilder object.
-		 */
-		public PathwayBuilder setOrganism(String v) {
-			organism = v;
-			return this;
-		}
-
-		/**
-		 * Sets source and returns this builder object. The source of this pathway, e.g.
-		 * WikiPathways, KEGG, Cytoscape.
-		 * 
-		 * @param v the source of this pathway.
-		 * @return this pathwayBuilder object.
-		 */
-		public PathwayBuilder setSource(String v) {
-			source = v;
-			return this;
-		}
-
-		/**
-		 * Sets version and returns this builder object.
-		 * 
-		 * @param v the version of this pathway.
-		 * @return this pathwayBuilder object.
-		 */
-		public PathwayBuilder setVersion(String v) {
-			version = v;
-			return this;
-		}
-
-		/**
-		 * Sets license and returns this builder object.
-		 * 
-		 * @param v the license of this pathway.
-		 * @return this pathwayBuilder object.
-		 */
-		public PathwayBuilder setLicense(String v) {
-			license = v;
-			return this;
-		}
-
-		/**
-		 * Sets xref and returns this builder object.
-		 * 
-		 * @param v the xref of this pathway.
-		 * @return this pathwayBuilder object.
-		 */
-		public PathwayBuilder setXref(Xref v) {
-			if (v != null) {
-				xref = v;
-			}
-			return this;
-		}
-
-		/**
-		 * Calls the private constructor in this pathway class and passes builder object
-		 * itself as the parameter to this private constructor.
-		 * 
-		 * @return the created Pathway object.
-		 */
-		public Pathway build() {
-			return new Pathway(this);
-		}
-	}
 
 	/**
-	 * Private constructor for Pathway which takes PathwayBuilder object as its
-	 * argument.
-	 * 
-	 * @param builder this pathwayBuilder object.
+	 * Instantiates a pathway with default values.
 	 */
-	private Pathway(PathwayBuilder builder) {
-		this.title = builder.title;
-		this.boardWidth = builder.boardWidth;
-		this.boardHeight = builder.boardHeight;
-		this.backgroundColor = builder.backgroundColor;
-		this.authors = builder.authors;
-		this.description = builder.description;
-		this.organism = builder.organism;
-		this.source = builder.source;
-		this.version = builder.version;
-		this.license = builder.license;
-		this.xref = builder.xref;
+	public Pathway() {
+		this.title = "Click to add title";
+		this.boardWidth = 0;
+		this.boardHeight = 0;
+		this.backgroundColor = Color.decode("#ffffff");
+		this.authors = new ArrayList<Author>();
 	}
 
 	// ================================================================================
@@ -504,7 +375,7 @@ public class Pathway extends PathwayElement {
 	 */
 	@Override
 	protected void terminate() {
-		// Is pathway allowed to be terminated? TODO 
+		// Is pathway allowed to be terminated? TODO
 	}
 
 	// ================================================================================
@@ -542,7 +413,7 @@ public class Pathway extends PathwayElement {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Pathway copy() {
-		Pathway result = new Pathway(null); // TODO
+		Pathway result = new Pathway(); // TODO
 		result.copyValuesFrom(this);
 		return result;
 	}

@@ -13,7 +13,7 @@ import org.pathvisio.model.type.AnnotationType;
  * 
  * @author finterly
  */
-public interface Info {
+public interface Referenceable {
 
 	/**
 	 * Interface for classes which can hold a {@link List} of {@link AnnotationRef}.

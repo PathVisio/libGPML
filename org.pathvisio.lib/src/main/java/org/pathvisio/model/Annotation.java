@@ -171,13 +171,16 @@ public class Annotation extends PathwayObject {
 	}
 
 	/**
-	 * Adds the given annotationRef to annotationRefs list of the annotation. NB:
-	 * This method is not used directly.
+	 * Adds the given annotationRef to annotationRefs list of the annotation.
+	 * 
+	 * NB: This method is not used directly.
 	 * 
 	 * @param annotationRef the given annotationRef to add.
 	 */
 	protected void addAnnotationRef(AnnotationRef annotationRef) {
-		assert (annotationRef != null);
+		if (annotationRef == null) {
+			throw new IllegalArgumentException("Cannot add invalid annotationRef to annotation.");
+		}
 		// add citationRef to citationRefs
 		if (annotationRef.getAnnotation() == this && !hasAnnotationRef(annotationRef))
 			annotationRefs.add(annotationRef);
@@ -220,7 +223,7 @@ public class Annotation extends PathwayObject {
 	@Override
 	protected void terminate() {
 		removeAnnotationRefs();
-		unsetPathwayModel();
+		super.terminate();
 	}
 
 	// ================================================================================
@@ -229,8 +232,6 @@ public class Annotation extends PathwayObject {
 	/**
 	 * Compares this annotation to the given annotation. Checks all properties
 	 * except annotationsRefs list to determine whether they are equal.
-	 * 
-	 * TODO
 	 * 
 	 * @param annotation the annotation to compare to.
 	 * @return true if annotations have equal properties, false otherwise.

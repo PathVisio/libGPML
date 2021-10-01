@@ -24,9 +24,9 @@ import java.util.TreeMap;
 
 import org.bridgedb.Xref;
 import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.model.Info.Annotatable;
-import org.pathvisio.model.Info.Citable;
-import org.pathvisio.model.Info.Evidenceable;
+import org.pathvisio.model.Referenceable.Annotatable;
+import org.pathvisio.model.Referenceable.Citable;
+import org.pathvisio.model.Referenceable.Evidenceable;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;

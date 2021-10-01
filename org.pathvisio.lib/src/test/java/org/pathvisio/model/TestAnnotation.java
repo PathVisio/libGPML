@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
+import org.pathvisio.model.type.DataNodeType;
 
 import junit.framework.TestCase;
 
@@ -27,7 +28,7 @@ public class TestAnnotation extends TestCase {
 	@Before
 	public void setUp() {
 		p = new PathwayModel();
-		d1 = new DataNode("d1", null); 
+		d1 = new DataNode("d1", DataNodeType.UNDEFINED); 
 		p.addDataNode(d1); 
 		ar1 = d1.addAnnotation("value", AnnotationType.ONTOLOGY, null, null);
 		ar2 = d1.addAnnotation("value2", AnnotationType.ONTOLOGY, null, null);

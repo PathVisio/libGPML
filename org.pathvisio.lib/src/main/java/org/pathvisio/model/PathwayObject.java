@@ -35,7 +35,7 @@ import org.pathvisio.props.StaticProperty;
 public abstract class PathwayObject {
 
 	/* parent pathway model: may be null (e.g. when object is in clipboard) */
-	protected PathwayModel pathwayModel; //TODO protected? 
+	protected PathwayModel pathwayModel; // TODO protected?
 	private String elementId;
 
 	// ================================================================================
@@ -72,7 +72,10 @@ public abstract class PathwayObject {
 
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
-	 * model adds this pathway element. This method is not used directly.
+	 * model adds this pathway element.
+	 * 
+	 * NB: This method is not used directly. It is called by
+	 * {@link PathwayModel#addPathwayObject}.
 	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
@@ -86,7 +89,9 @@ public abstract class PathwayObject {
 
 	/**
 	 * Sets the pathway model of this pathway element to the given pathway model.
-	 * NB: This method is not used directly.
+	 * 
+	 * NB: This method is not used directly. It is called by
+	 * {@link #setPathwayModelTo}.
 	 * 
 	 * @param pathwayModel the new pathway model for this pathway element.
 	 */
@@ -96,12 +101,14 @@ public abstract class PathwayObject {
 
 	/**
 	 * Unsets the pathway model, if any, from this pathway element. The pathway
-	 * element no longer belongs to a pathway model. NB: This method is not used
-	 * directly.
+	 * element no longer belongs to a pathway model.
+	 * 
+	 * NB: This method is not used directly. It is called by {@link #terminate}.
 	 */
 	protected void unsetPathwayModel() {
-		if (hasPathwayModel())
+		if (hasPathwayModel()) {
 			setPathwayModel(null);
+		}
 	}
 
 	/**
@@ -138,7 +145,7 @@ public abstract class PathwayObject {
 	protected void terminate() {
 		unsetPathwayModel();
 		// At this point we cannot use the method setElementId,
-		// because it does not accept null as a legal value. TODO 
+		// because it does not accept null as a legal value. TODO
 		this.elementId = null;
 	}
 
@@ -198,12 +205,12 @@ public abstract class PathwayObject {
 //	 */
 //	public abstract void copyValuesFrom(PathwayObject src);
 
-	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
-	 *
-	 * No events will be sent to the parent of the original.
-	 */
-	public abstract PathwayObject copy();
+//	/**
+//	 * Copy Object. The object will not be part of the same Pathway object, it's
+//	 * parent will be set to null.
+//	 *
+//	 * No events will be sent to the parent of the original.
+//	 */
+//	public abstract PathwayObject copy();
 
 }

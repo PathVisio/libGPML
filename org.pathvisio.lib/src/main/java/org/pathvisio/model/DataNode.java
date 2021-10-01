@@ -40,48 +40,63 @@ public class DataNode extends ShapedElement {
 	private Group aliasRef; // optional, the pathway element to which this data node refers to as an alias.
 
 	// ================================================================================
-	// Constructors
+	// Constructors for DataNode or "Alias" DataNode
 	// ================================================================================
+
 	/**
-	 * 
-	 * Instantiates a Data Node pathway element given all possible parameters. The
-	 * data node is an alias and refers to another pathway element. In GPML, the
-	 * datanode has aliasRef which refers to the elementId of a pathway element
-	 * (normally gpml:Group).
+	 * Instantiates a DataNode (type != "Alias) given all possible parameters.
 	 * 
 	 * @param textLabel the text of this datanode.
 	 * @param type      the type of datanode, e.g. complex.
 	 * @param xref      the data node Xref.
 	 * @param aliasRef  the group this data node alias refers to.
 	 */
-	public DataNode(String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
+	public DataNode(String textLabel, DataNodeType type, Xref xref) {
+		super();
 		this.textLabel = textLabel;
-		this.type = type;
+		setType(type);
 		this.states = new ArrayList<State>();
 		this.xref = xref;
-		setAliasRefTo(aliasRef);
 	}
 
 	/**
-	 * Instantiates a DataNode given all possible parameters except xref.
-	 */
-	public DataNode(String textLabel, DataNodeType type, Group aliasRef) {
-		this(textLabel, type, null, aliasRef);
-
-	}
-
-	/**
-	 * Instantiates a DataNode given all possible parameters except aliasRef.
-	 */
-	public DataNode(String textLabel, DataNodeType type, Xref xref) {
-		this(textLabel, type, xref, null);
-	}
-
-	/**
-	 * Instantiates a DataNode given all required parameters.
+	 * Instantiates a DataNode (type != "Alias) given all required parameters.
 	 */
 	public DataNode(String textLabel, DataNodeType type) {
-		this(textLabel, type, null, null);
+		this(textLabel, type, null);
+	}
+
+	/**
+	 * Instantiates an Alias Data Node pathway element given all possible
+	 * parameters. An alias data node acts as an alias for a {@link Group}. In GPML,
+	 * the datanode has aliasRef which refers to the elementId of the group
+	 * aliasRef.
+	 * 
+	 * NB: This method is not used directly. Aliases are created by a group
+	 * {@link Group#createAlias(String)}.
+	 * 
+	 * @param textLabel the text of this datanode.
+	 * @param xref      the data node Xref.
+	 * @param aliasRef  the group this data node alias refers to.
+	 */
+	protected DataNode(String textLabel, Xref xref, Group aliasRef) {
+		super();
+		this.textLabel = textLabel;
+		this.type = DataNodeType.ALIAS;
+		this.states = new ArrayList<State>(); // TODO
+		this.xref = xref; // TODO
+		setAliasRef(aliasRef);
+	}
+
+	/**
+	 * Instantiates an Alias Data Node pathway element given all possible parameters
+	 * except xref.
+	 * 
+	 * NB: This method is not used directly. Aliases are created by a group
+	 * {@link Group#createAlias(String)}.
+	 */
+	protected DataNode(String textLabel, Group aliasRef) {
+		this(textLabel, null, aliasRef);
 	}
 
 	// ================================================================================
@@ -122,9 +137,17 @@ public class DataNode extends ShapedElement {
 	/**
 	 * Sets the type of this datanode, e.g. complex.
 	 * 
+	 * NB: Cannot change type if this is an alias data node.
+	 * 
 	 * @param v the type to set for this datanode.
 	 */
 	public void setType(DataNodeType v) {
+		if (type == DataNodeType.ALIAS) {
+			throw new IllegalArgumentException("DataNodeType cannot be changed for an alias data node");
+		}
+		if (v == DataNodeType.ALIAS) {
+			throw new IllegalArgumentException("DataNodeType Alias is reserved for alias data nodes.");
+		}
 		if (type != v && v != null) {
 			type = v;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.DATANODETYPE));
@@ -181,15 +204,22 @@ public class DataNode extends ShapedElement {
 	 * @param state the state to be added.
 	 */
 	public void addState(State state) {
-		assert (state != null);
-		assert (state.getDataNode() == this);
-		assert !hasState(state);
-		// add state to same pathway model as data node if applicable
-		if (getPathwayModel() != null)
-			getPathwayModel().addPathwayObject(state);
-		states.add(state);
-		// No state property, use BORDERSTYLE as dummy property to force redraw TODO
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
+		if (state == null) {
+			throw new IllegalArgumentException("Cannot add invalid state to data node " + getElementId());
+		}
+		if (state.getDataNode() != this) {
+			throw new IllegalArgumentException("Cannot add state to data node other than its parent data node");
+		}
+		if (!hasState(state)) {
+			// add state to same pathway model as data node if applicable
+			if (getPathwayModel() != null)
+				getPathwayModel().addPathwayObject(state);
+			states.add(state);
+			// No state property, use BORDERSTYLE as dummy property to force redraw TODO
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
+		} else {
+			System.out.println("State " + state.getElementId() + " already belongs to data node " + getElementId());
+		}
 	}
 
 	/**
@@ -244,9 +274,9 @@ public class DataNode extends ShapedElement {
 	 * Removes all states from states list.
 	 */
 	private void removeStates() {
-		for (State state : states) {
+		for (int i = states.size() - 1; i >= 0; i--) {
 			if (getPathwayModel() != null)
-				getPathwayModel().removePathwayObject(state);
+				getPathwayModel().removePathwayObject(states.get(i));
 		}
 		states.clear();
 	}
@@ -266,50 +296,44 @@ public class DataNode extends ShapedElement {
 	}
 
 	/**
-	 * Checks whether this data node has an aliasRef.
-	 *
-	 * @return true if and only if the aliasRef of this data node is effective.
-	 */
-	public boolean hasAliasRef() {
-		return getAliasRef() != null;
-	}
-
-	/**
 	 * Sets the group aliasRef to which this data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of gpml:Group.
 	 * 
-	 * NB: DataNode type must be "Alias".
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>This method calls {@link PathwayModel#addAlias}.
+	 * <li>DataNode type must be "Alias".
+	 * </ol>
 	 * 
 	 * @param v the group to which this data node refers.
 	 */
-	public void setAliasRefTo(Group v) {
-		if (aliasRef != v && v != null) {
+	private void setAliasRef(Group v) {
+		if (v != null) {
 			if (type != DataNodeType.ALIAS) {
 				throw new IllegalArgumentException("DataNode type must be Alias before setting aliasRef");
 			}
-			unsetAliasRef(); // unset aliasRef if necessary
-			setAliasRef(v);
-			getPathwayModel().addAlias(v, this);
+			aliasRef = v;
+			v.getPathwayModel().addAlias(v, this);
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 		}
 	}
 
 	/**
-	 * Sets the aliasRef for this data node.
-	 * 
-	 * @param v the given group to set.
-	 */
-	private void setAliasRef(Group v) {
-		aliasRef = v;
-	}
-
-	/**
 	 * Unsets the aliasRef, if any, from this data node. Also removes references in
 	 * pathway model.
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>This method does not call {@link PathwayModel#removeAlias}.
+	 * <li>This method is not used directly. It is called by when the data node
+	 * alias is deleted by {@link #removeDataNode} which in turn calls
+	 * {@link #terminate}.
+	 * </ol>
 	 */
-	public void unsetAliasRef() {
-		if (hasAliasRef()) {
-			getPathwayModel().removeAlias(getAliasRef(), this);
+	private void unsetAliasRef() {
+		if (getAliasRef() != null) {
+			aliasRef = null;
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 		}
 	}
@@ -318,37 +342,55 @@ public class DataNode extends ShapedElement {
 	// Inherited Methods
 	// ================================================================================
 
-	// TODO state GroupRef???
+	/**
+	 * Verifies if given parent group is new and valid. Sets the parent group of
+	 * this pathway element. Adds this pathway element to the the pathwayElements
+	 * list of the new parent group. If there is an old parent group, this pathway
+	 * element is removed from its pathwayElements list.
+	 * 
+	 * @param v the new parent group to set.
+	 */
+	@Override
+	public void setGroupRefTo(Group v) {
+		if (v == null)
+			throw new IllegalArgumentException("Invalid group.");
+		if (getGroupRef() != v) {
+			unsetGroupRef(); // first unsets if necessary
+			setGroupRef(v);
+			if (!v.hasPathwayElement(this)) {
+				v.addPathwayElement(this);
+			}
+			// if data node has states, set groupRef for states and add to group
+			v.addPathwayElements(states);
+		}
+	}
+
+	/**
+	 * Unsets the parent group, if any, from this pathway element.
+	 */
+	@Override
+	public void unsetGroupRef() {
+		super.unsetGroupRef();
+		for (State state : states) {
+			state.unsetGroupRef();
+		}
+	}
 
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
 	 * model adds this pathway element. This method is not used directly.
 	 * 
+	 * NB: This method is not used directly. It is called by
+	 * {@link PathwayModel#addPathwayObject}.
+	 * 
 	 * @param pathwayModel the parent pathway model.
 	 */
 	@Override
 	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
-		if (pathwayModel == null)
-			throw new IllegalArgumentException("Invalid pathway model.");
-		if (hasPathwayModel())
-			throw new IllegalStateException("Pathway element already belongs to a pathway model.");
-		setPathwayModel(pathwayModel);
+		super.setPathwayModelTo(pathwayModel);
 		// if data node has states, also add states to pathway model TODO
-		for (State state : states)
+		for (State state : states) {
 			pathwayModel.addPathwayObject(state);
-	}
-
-	/**
-	 * Unsets the pathway model, if any, from this pathway element. The pathway
-	 * element no longer belongs to a pathway model. NB: This method is not used
-	 * directly.
-	 */
-	@Override
-	protected void unsetPathwayModel() {
-		if (hasPathwayModel()) {
-			setPathwayModel(null);
-			for (State state : states)
-				state.setPathwayModel(null);
 		}
 	}
 
@@ -359,6 +401,7 @@ public class DataNode extends ShapedElement {
 	 */
 	@Override
 	protected void terminate() {
+		unsetAliasRef();
 		removeStates();
 		super.terminate();
 	}
@@ -443,8 +486,7 @@ public class DataNode extends ShapedElement {
 
 		/**
 		 * Instantiates a State pathway element given all possible parameters except
-		 * xref. This private constructor is accessed by
-		 * {@link DataNode#addState(String textLabel, StateType stateType, double relX, double relY)}.
+		 * xref.
 		 */
 		private State(String textLabel, StateType type, double relX, double relY) {
 			this(textLabel, type, relX, relY, null);
@@ -610,23 +652,10 @@ public class DataNode extends ShapedElement {
 		}
 
 		/**
-		 * Returns the pathway model for the parent data node, the outer class of this
-		 * state.
+		 * Sets the pathway model for this pathway element.
 		 * 
-		 * NB: Returns pathway model of parent data node, even if this state has been
-		 * removed from the pathway model and data node states list.
-		 * 
-		 * @return pathwayModel the parent pathway model.
-		 */
-		@Override
-		public PathwayModel getPathwayModel() {
-			return DataNode.this.getPathwayModel();
-		}
-
-		/**
-		 * Sets the pathway model for this pathway element. NB: Only set when a pathway
-		 * model adds this pathway element. This method is not used directly. The point
-		 * or anchor should always have the same pathwayModel as the line it belongs to.
+		 * NB: This method is not used directly. It is called by
+		 * {@link PathwayModel#addPathwayObject}.
 		 * 
 		 * @param pathwayModel the parent pathway model.
 		 */
@@ -635,8 +664,11 @@ public class DataNode extends ShapedElement {
 				throws IllegalArgumentException, IllegalStateException {
 			if (pathwayModel == null)
 				throw new IllegalArgumentException("Invalid pathway model.");
-			if (pathwayModel == getPathwayModel()) {
+			if (pathwayModel == getDataNode().getPathwayModel()) {
 				setPathwayModel(pathwayModel);
+			} else {
+				throw new IllegalArgumentException(this.getClass().getSimpleName()
+						+ " must be added to the same pathway model as its parent data node.");
 			}
 		}
 
@@ -678,6 +710,7 @@ public class DataNode extends ShapedElement {
 		 * No events will be sent to the parent of the original.
 		 */
 		public State copy() {
+			// make empty
 			State result = new State(textLabel, type, relX, relX); // TODO NEVER USED
 			result.copyValuesFrom(this);
 			return result;

@@ -36,9 +36,6 @@ import org.pathvisio.model.Evidence;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.GraphicalLine;
 import org.pathvisio.model.Group;
-import org.pathvisio.model.Info.Annotatable;
-import org.pathvisio.model.Info.Citable;
-import org.pathvisio.model.Info.Evidenceable;
 import org.pathvisio.model.Interaction;
 import org.pathvisio.model.Label;
 import org.pathvisio.model.LineElement;
@@ -52,6 +49,9 @@ import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.Comment;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.model.PathwayModel;
+import org.pathvisio.model.Referenceable.Annotatable;
+import org.pathvisio.model.Referenceable.Citable;
+import org.pathvisio.model.Referenceable.Evidenceable;
 import org.pathvisio.model.Shape;
 import org.pathvisio.model.ShapedElement;
 import org.pathvisio.model.type.AnchorShapeType;
@@ -523,7 +523,17 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String elementId = dn.getAttributeValue("elementId");
 				String textLabel = dn.getAttributeValue("textLabel");
 				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT));
-				DataNode dataNode = new DataNode(textLabel, type);
+				String aliasRefStr = dn.getAttributeValue("aliasRef");
+				DataNode dataNode = null; 
+				// if alias 
+				if (aliasRefStr != null && type ==DataNodeType.ALIAS) {
+					Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
+					if (aliasRef != null) {
+						dataNode = aliasRef.createAlias(textLabel);
+					}
+				} else {
+					dataNode = new DataNode(textLabel, type);
+				}
 				dataNode.setElementId(elementId);
 				pathwayModel.addDataNode(dataNode);
 				// reads graphics and comment group props
@@ -535,13 +545,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String groupRef = dn.getAttributeValue("groupRef");
 				if (groupRef != null && !groupRef.equals("")) {
 					dataNode.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
-				}
-				String aliasRefStr = dn.getAttributeValue("aliasRef");
-				if (aliasRefStr != null && !aliasRefStr.equals("")) {
-					Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
-					if (aliasRef != null) {
-						dataNode.setAliasRefTo(aliasRef);
-					}
 				}
 			}
 		}

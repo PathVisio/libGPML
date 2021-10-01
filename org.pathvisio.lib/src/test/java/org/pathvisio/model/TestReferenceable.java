@@ -5,18 +5,30 @@ import org.junit.Test;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
+import org.pathvisio.model.Referenceable.Citable;
+import org.pathvisio.model.Referenceable.Evidenceable;
 import org.pathvisio.model.type.AnnotationType;
+import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.util.XrefUtils;
 
 import junit.framework.TestCase;
 
 /**
- * Tests for PathwayElement class: Comments, References
+ * Tests for {@link Referenceable}:
+ * 
+ * <p>
+ * <ol>
+ * <li>{@link Annotatable}, {@link Citable}, {@link Evidenceable}
+ * <li>{@link Annotation} and {@link AnnotationRef}
+ * <li>{@link Citation} and {@link CitationRef}
+ * <li>{@link Evidence} and {@link EvidenceRef}.
+ * </ol>
+ * 
  * 
  * 
  * @author finterly
  */
-public class TestInfo extends TestCase {
+public class TestReferenceable extends TestCase {
 
 	private PathwayModel p;
 	private DataNode d1;
@@ -36,7 +48,7 @@ public class TestInfo extends TestCase {
 	@Before
 	public void setUp() throws Exception {
 		p = new PathwayModel();
-		d1 = new DataNode("d1", null); // instantiate dataNode
+		d1 = new DataNode("d1", DataNodeType.UNDEFINED); // instantiate dataNode
 		p.addDataNode(d1); // add datanode to pathway model
 
 		// add annotation, citation, evidence to data node

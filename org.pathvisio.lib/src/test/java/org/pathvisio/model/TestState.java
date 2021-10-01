@@ -19,6 +19,7 @@ package org.pathvisio.model;
 import org.junit.Before;
 import org.junit.Test;
 import org.pathvisio.model.DataNode.State;
+import org.pathvisio.model.type.DataNodeType;
 
 import junit.framework.TestCase;
 
@@ -45,7 +46,7 @@ public class TestState extends TestCase {
 	@Before
 	public void setUp() throws Exception {
 		p = new PathwayModel();
-		d1 = new DataNode("d1", null);
+		d1 = new DataNode("d1", DataNodeType.UNDEFINED);
 		p.addDataNode(d1);
 		assertTrue(p.hasPathwayObject(d1));
 		assertTrue(p.getDataNodes().contains(d1));
@@ -70,7 +71,7 @@ public class TestState extends TestCase {
 		d1.removeState(st3);
 		assertFalse(d1.hasState(st3));
 		assertFalse(p.hasPathwayObject(st3));
-
+		assertNull(st3.getPathwayModel());
 	}
 
 	/**

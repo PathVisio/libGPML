@@ -653,8 +653,8 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		String centerX = pathway.getDynamicProperty(INFOBOX_CENTER_X);
 		String centerY = pathway.getDynamicProperty(INFOBOX_CENTER_Y);
 		Element ifb = new Element("InfoBox", root.getNamespace());
-		ifb.setAttribute("CenterX", centerX == null ? "0" : centerX);
-		ifb.setAttribute("CenterY", centerY == null ? "0" : centerY);
+		ifb.setAttribute("CenterX", centerX == null ? "0.0" : centerX);
+		ifb.setAttribute("CenterY", centerY == null ? "0.0" : centerY);
 		root.addContent(ifb);
 	}
 

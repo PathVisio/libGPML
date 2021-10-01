@@ -34,22 +34,13 @@ public class Label extends ShapedElement {
 	// Constructors
 	// ================================================================================
 	/**
-	 * Instantiates a Label pathway element given all possible parameters.
+	 * Instantiates a Label pathway element given all required parameters.
 	 * 
 	 * @param textLabel the text of the label.
-	 * @param href      the hyperlink of the label.
-	 */
-	public Label(String textLabel, String href) {
-		super();
-		this.textLabel = textLabel;
-		this.href = href;
-	}
-
-	/**
-	 * Instantiates a Label given all required parameters.
 	 */
 	public Label(String textLabel) {
-		this(textLabel, null);
+		super();
+		this.textLabel = textLabel;
 	}
 
 	// ================================================================================

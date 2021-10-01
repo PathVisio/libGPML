@@ -94,7 +94,6 @@ public class TestReadWriteNewFeatures extends TestCase {
 		 */
 		DataNode alias1 = (DataNode) pathwayModel.getPathwayObject("alias001");
 		alias1.setType(DataNodeType.ALIAS);
-		alias1.setAliasRefTo(group1);
 
 		/**
 		 * Create nested groups. We nest group grp002 inside grp001 by adding alias002
@@ -102,7 +101,6 @@ public class TestReadWriteNewFeatures extends TestCase {
 		 */
 		DataNode alias2 = (DataNode) pathwayModel.getPathwayObject("alias002");
 		alias2.setType(DataNodeType.ALIAS);
-		alias2.setAliasRefTo(group2);
 //		alias2.setGroupRef(group1);
 
 		System.out.println(citation1.getElementId());

@@ -19,7 +19,10 @@ package org.pathvisio.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.type.ArrowHeadType;
 
 import junit.framework.TestCase;
 
@@ -30,146 +33,112 @@ import junit.framework.TestCase;
  */
 public class TestLinePoint extends TestCase {
 
-//	/**
-//	 * Create a {@link LineElement}, add Line to pathway model. Then create and add
-//	 * {@link LinePoint} to LineElement. TODO Line must have Points?
-//	 */
-//	public static void testLineThenPoint() {
-//		System.out.println("TEST 1");
-//
-//		// create a pathway model
-//		PathwayModel p = new PathwayModel();
-//		Interaction i1 = new Interaction(null);
-//		p.addInteraction(i1);
-//
-//		System.out.println(i1.getLinePoints().size());
-//		System.out.println(i1.getLinePoints());
-//
-//		LinePoint pt1 = i1.new LinePoint(ArrowHeadType.CATALYSIS, 2, 2);
-//		i1.setEndLinePoint(pt1);
-//		System.out.println(pt1.getPathwayModel());
-//		System.out.println(pt1.getLineElement());
-//
-//		LinePoint home = i1.getEndLinePoint();
-//		System.out.println("Contains " + p.getPathwayObject(pt1.getElementId()));
-//		System.out.println("Contains " + p.getPathwayObject(home.getElementId()));
-//
-//		System.out.println(i1.getLinePoints().size());
-//		System.out.println(i1.getLinePoints());
-//
-////		// create a point
-////		LinePoint pt1 = i1.addLinePoint(null, 0, 0);
-////		assertNull(pt1.getElementId());
-////		assertNull(pt1.getLineElement());
-////		assertNull(pt1.getPathwayModel());
-////		assertTrue(i1.getLinePoints().isEmpty());
-////		// add state to data node (which also adds to pathway model)
-////		i1.addLinePoint(pt1);
-////		assertEquals(pt1.getLineElement(), i1);
-////		assertEquals(pt1.getPathwayModel(), p1);
-////		System.out.println("Point elementId is " + pt1.getElementId());
-////		System.out.println("Interaction contains Points " + i1.getLinePoints());
-////		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-////
-////		// remove point
-////		i1.removeLinePoint(pt1);
-////		System.out.println("Interaction contains Points " + i1.getLinePoints());
-////		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-////
-////		// remove line element
-////		p1.removeInteraction(i1);
-////		System.out.println("PathwayModel contains PathwayElements " + p1.getPathwayObjects());
-////		System.out.println("PathwayModel contains Interactions " + p1.getInteractions());
-//	}
+	private PathwayModel p;
+	private Interaction i1;
+	private LinePoint pt3;
+	private LinePoint pt4;
 
-	// FROM GROUP 
-	public static void testLinkTo() {
+	/**
+	 * Creates and adds anchor to line, line to pathwayModel.
+	 */
+	@Before
+	public void setUp() {
+		p = new PathwayModel();
+		i1 = new Interaction();
+		LinePoint pt1 = i1.getLinePoints().get(0);
+		LinePoint pt2 = i1.getLinePoints().get(1);
 
-		PathwayModel pwy = new PathwayModel();
-		Interaction line = new Interaction(null);
-		DataNode node = new DataNode("d1", null);
-		pwy.addInteraction(line);
-		pwy.addDataNode(node);
+		// checks
+		assertNull(i1.getPathwayModel());
+		assertNull(pt1.getPathwayModel());
+		assertNull(pt2.getPathwayModel());
+		p.addInteraction(i1);
 
+		// checks
+		assertTrue(p.hasPathwayObject(i1));
+		assertTrue(p.getInteractions().contains(i1));
+		assertEquals(i1.getPathwayModel(), p);
+		assertTrue(p.hasPathwayObject(pt1));
+		assertTrue(p.hasPathwayObject(pt2));
+		assertEquals(pt1.getPathwayModel(), p);
+		assertEquals(pt2.getPathwayModel(), p);
+
+		// set new points
 		List<LinePoint> points = new ArrayList<LinePoint>();
-		points.add(line.new LinePoint(null, 9, 18));
-		points.add(line.new LinePoint(null, 9, 18));
-		line.setLinePoints(points);
+		pt3 = i1.new LinePoint(ArrowHeadType.BINDING, 10, 18);
+		pt4 = i1.new LinePoint(ArrowHeadType.BINDING, 20, 18);
+		points.add(pt3);
+		points.add(pt4);
+		i1.setLinePoints(points);
 
-		// manipulate data node size
-		node.setCenterX(120);
-		node.setCenterY(20);
-		node.setWidth(20);
-		node.setHeight(20);
-
-		// move point to "top-center" of group.
-		line.setEndLinePointX(node.getCenterX());
-		line.setEndLinePointY(node.getTop());
-		// link point and group. relX and relY should be 0.0 and -1.0.
-		line.getEndLinePoint().linkTo(node);
-		assertEquals(line.getEndLinePoint().getElementRef(), node);
-
-
-		assertEquals(120.0, line.getEndLinePointX(), 0.01);
-		assertEquals(10.0, line.getEndLinePointY(), 0.01);
-		System.out.println("RelXY:  " + line.getEndLinePoint().getRelX() + "    " + line.getEndLinePoint().getRelY());
-		System.out.println("XY:  " + line.getEndLinePoint().getX() + "    " + line.getEndLinePoint().getY());
-
-		// ungroup
-		pwy.remove(node);
-		System.out.println("RelXY:  " + line.getEndLinePoint().getRelX() + "    " + line.getEndLinePoint().getRelY());
-		System.out.println("XY:  " + line.getEndLinePoint().getX() + "    " + line.getEndLinePoint().getY());
-		// check that line points at same position
-		assertEquals(120.0, line.getEndLinePointX());
-		assertEquals(10.0, line.getEndLinePointY());
-
-		assertNull(line.getEndLinePoint().getElementRef());
-		assertNull(node.getGroupRef());
+		// checks
+		assertTrue(p.hasPathwayObject(i1));
+		assertTrue(p.getInteractions().contains(i1));
+		assertEquals(i1.getPathwayModel(), p);
+		assertFalse(p.hasPathwayObject(pt1));
+		assertFalse(p.hasPathwayObject(pt2));
+		assertNull(pt1.getPathwayModel());
+		assertNull(pt2.getPathwayModel());
+		assertTrue(p.hasPathwayObject(pt3));
+		assertTrue(p.hasPathwayObject(pt4));
+		assertEquals(pt3.getPathwayModel(), p);
+		assertEquals(pt4.getPathwayModel(), p);
 	}
-//	/**
-//	 * Create a {@link LineElement}. Create and add {@link LinePoint} to
-//	 * LineElement. Add both to Pathway model.
-//	 */
-//	public static void testDataNodeState() {
-//		System.out.println("TEST 2");
-//
-//		// create a pathway model
-//		PathwayModel p2 = new PathwayModel();
-//		assertTrue(p2.getInteractions().isEmpty());
-//		// create an interaction
-//		Interaction i2 = new Interaction(null);
-//		assertNull(i2.getElementId());
-//		assertNull(i2.getPathwayModel());
-//
-//		// create a point
-//		LinePoint pt2 = i2.addLinePoint(null, 0, 0);
-//		assertNull(pt2.getElementId());
-//		assertNull(pt2.getLineElement());
-//		assertNull(pt2.getPathwayModel());
-//		assertTrue(i2.getLinePoints().isEmpty());
-//		// add point to interaction
-//		i2.addLinePoint(pt2);
-//		assertNull(pt2.getElementId());
-//		assertNull(pt2.getPathwayModel());
-//		assertEquals(pt2.getLineElement(), i2);
-//		assertNull(i2.getPathwayModel());
-//		System.out.println("Interaction contains Points " + i2.getLinePoints());
-//
-//		// add interaction to pathway model
-//		p2.addInteraction(i2);
-//		System.out.println("Interaction elementId is " + i2.getElementId());
-//		System.out.println("Point elementId is " + pt2.getElementId());
-//		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
-//		System.out.println("PathwayModel contains Interactions " + p2.getDataNodes());
-//
-//		// remove point
-//		i2.removeLinePoint(pt2);
-//		System.out.println("DataNode contains Points " + i2.getLinePoints());
-//		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
-//
-//		// remove interaction
-//		p2.removeInteraction(i2);
-//		System.out.println("PathwayModel contains PathwayElements " + p2.getPathwayObjects());
-//		System.out.println("PathwayModel contains Interactions " + p2.getDataNodes());
-//	}
+
+	/**
+	 * Tests removing line and thus anchor.
+	 */
+	@Test
+	public void testRemoveLine() {
+		p.removeInteraction(i1);
+		assertFalse(p.hasPathwayObject(i1));
+		assertFalse(p.hasPathwayObject(pt3));
+		assertFalse(p.hasPathwayObject(pt4));
+	}
+
+	/**
+	 * Tests calling setLinePoints() before adding line to pathway model.
+	 */
+	@Test
+	public void testSetLinePoints() {
+		PathwayModel p = new PathwayModel();
+		GraphicalLine i1 = new GraphicalLine();
+		LinePoint pt1 = i1.getLinePoints().get(0);
+		LinePoint pt2 = i1.getLinePoints().get(1);
+
+		// checks
+		assertNull(i1.getPathwayModel());
+		assertNull(pt1.getPathwayModel());
+		assertNull(pt2.getPathwayModel());
+
+		// checks
+		assertFalse(p.hasPathwayObject(i1));
+		assertFalse(p.getInteractions().contains(i1));
+		assertNull(i1.getPathwayModel());
+		assertFalse(p.hasPathwayObject(pt1));
+		assertFalse(p.hasPathwayObject(pt2));
+
+		// set new points
+		List<LinePoint> points = new ArrayList<LinePoint>();
+		pt3 = i1.new LinePoint(ArrowHeadType.BINDING, 10, 18);
+		pt4 = i1.new LinePoint(ArrowHeadType.BINDING, 20, 18);
+		points.add(pt3);
+		points.add(pt4);
+		i1.setLinePoints(points);
+
+		p.addGraphicalLine(i1);
+
+		// checks
+		assertTrue(p.hasPathwayObject(i1));
+		assertTrue(p.getGraphicalLines().contains(i1));
+		assertEquals(i1.getPathwayModel(), p);
+		assertFalse(p.hasPathwayObject(pt1));
+		assertFalse(p.hasPathwayObject(pt2));
+		assertNull(pt1.getPathwayModel());
+		assertNull(pt2.getPathwayModel());
+		assertTrue(p.hasPathwayObject(pt3));
+		assertTrue(p.hasPathwayObject(pt4));
+		assertEquals(pt3.getPathwayModel(), p);
+		assertEquals(pt4.getPathwayModel(), p);
+	}
 }

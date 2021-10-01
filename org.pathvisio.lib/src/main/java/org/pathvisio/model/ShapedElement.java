@@ -133,6 +133,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setGroupRefTo(Group v) {
 		if (v == null)
 			throw new IllegalArgumentException("Invalid group.");
+		if (v.getPathwayModel() != getPathwayModel()) {
+			throw new IllegalArgumentException(
+					getClass().getSimpleName() + " cannot be added to a group of a different pathway model.");
+		}
 		if (groupRef != v) {
 			unsetGroupRef(); // first unsets if necessary
 			setGroupRef(v);
@@ -146,7 +150,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * 
 	 * @param v the given group to set.
 	 */
-	private void setGroupRef(Group v) {
+	protected void setGroupRef(Group v) {
 		// TODO
 		groupRef = v;
 		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
@@ -160,8 +164,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		if (hasGroupRef()) {
 			Group groupRef = getGroupRef();
 			setGroupRef(null);
-			if (groupRef.hasPathwayElement(this))
+			if (groupRef.hasPathwayElement(this)) {
 				groupRef.removePathwayElement(this);
+			}
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 		}
 	}
@@ -719,7 +724,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// TODO
 	public void unsetAllLinkableFroms() {
 		for (LinkableFrom linePoint : getLinkableFroms()) {
-			((LinePoint) linePoint).unlink(); //TODO 
+			((LinePoint) linePoint).unlink(); // TODO
 		}
 	}
 
@@ -790,7 +795,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the top y coordinate of the bounding box around (start, end) this
 	 * shaped pathway element.
-	 */ 
+	 */
 	public double getTop() {
 		return centerY - height / 2;
 	}
@@ -806,7 +811,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
 	}
 
-	@Override 
+	@Override
 	public Point2D toAbsoluteCoordinate(Point2D p) {
 		double x = p.getX();
 		double y = p.getY();
@@ -821,7 +826,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		y += bounds.getCenterY();
 		return new Point2D.Double(x, y);
 	}
-	
+
 	/**
 	 * @param mp a point in absolute model coordinates
 	 * @return the same point relative to the bounding box of this pathway element:

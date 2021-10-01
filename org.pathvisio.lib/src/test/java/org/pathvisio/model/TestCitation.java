@@ -1,5 +1,10 @@
 package org.pathvisio.model;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.pathvisio.model.PathwayElement.CitationRef;
+import org.pathvisio.model.type.DataNodeType;
+
 import junit.framework.TestCase;
 
 /**
@@ -9,12 +14,58 @@ import junit.framework.TestCase;
  */
 public class TestCitation extends TestCase {
 
-	/**
-	 * Tests for when citation with duplicate information is added to pathway
-	 * model.
-	 */
-	public static void testDuplicateCitation() {
+	private PathwayModel p;
+	private DataNode d1;
+	private CitationRef ar1;
+	private CitationRef ar2;
+	private Citation a;
+	private Citation a2;
 
+	/**
+	 * Two annotationRefs (same annotation) added to a data node. 
+	 */
+	@Before
+	public void setUp() {
+		p = new PathwayModel();
+		d1 = new DataNode("d1", DataNodeType.UNDEFINED); 
+		p.addDataNode(d1); 
+		ar1 = d1.addCitation(null, "urlLink");
+		ar2 = d1.addCitation(null, "urlLink2");
+		a = ar1.getCitation();
+		a2 = ar2.getCitation();
+		
+		assertTrue(p.hasPathwayObject(a));
+		assertTrue(p.hasPathwayObject(a2));
+
+		assertTrue(d1.hasCitationRef(ar1));
+		assertTrue(d1.hasCitationRef(ar2));
+		assertEquals(ar1.getCitable(), d1);
+		assertEquals(ar2.getCitable(), d1);
+		assertTrue(a.hasCitationRef(ar1));
+		assertTrue(a2.hasCitationRef(ar2));
 	}
 
+	/**
+	 * Tests for removing annotation.
+	 */
+	@Test
+	public void testRemoveCitation() {
+		System.out.println(d1.getCitationRefs());
+		System.out.println(a.getCitationRefs());
+		p.removeCitation(a);		
+		assertTrue(a.getCitationRefs().isEmpty());
+		assertFalse(p.hasPathwayObject(a));
+		assertFalse(d1.hasCitationRef(ar1));
+		assertTrue(d1.hasCitationRef(ar2));
+	}
+
+	/**
+	 * Tests for when annotation with duplicate information is added to pathway
+	 * model.
+	 */
+	@Test
+	public void testDuplicateCitation() {
+		CitationRef ar3 = d1.addCitation(null, "urlLink");
+		assertEquals(ar1.getCitation(), ar3.getCitation());
+	}
 }
