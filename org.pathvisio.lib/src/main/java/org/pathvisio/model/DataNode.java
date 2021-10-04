@@ -49,7 +49,6 @@ public class DataNode extends ShapedElement {
 	 * @param textLabel the text of this datanode.
 	 * @param type      the type of datanode, e.g. complex.
 	 * @param xref      the data node Xref.
-	 * @param aliasRef  the group this data node alias refers to.
 	 */
 	public DataNode(String textLabel, DataNodeType type, Xref xref) {
 		super();
@@ -212,8 +211,12 @@ public class DataNode extends ShapedElement {
 		}
 		if (!hasState(state)) {
 			// add state to same pathway model as data node if applicable
-			if (getPathwayModel() != null)
+			if (getPathwayModel() != null) {
 				getPathwayModel().addPathwayObject(state);
+			}
+			if (getGroupRef() != null) {
+				getGroupRef().addPathwayElement(state); // TODO add state to PathwayElements list...?
+			}
 			states.add(state);
 			// No state property, use BORDERSTYLE as dummy property to force redraw TODO
 			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
@@ -327,7 +330,7 @@ public class DataNode extends ShapedElement {
 	 * <ol>
 	 * <li>This method does not call {@link PathwayModel#removeAlias}.
 	 * <li>This method is not used directly. It is called by when the data node
-	 * alias is deleted by {@link #removeDataNode} which in turn calls
+	 * alias is deleted by {@link PathwayModel#removePathwayObject} which in turn calls
 	 * {@link #terminate}.
 	 * </ol>
 	 */
@@ -641,15 +644,18 @@ public class DataNode extends ShapedElement {
 		// Inherited Methods
 		// ================================================================================
 
-		/**
-		 * Returns the parent group of the dataNode of this state.
-		 * 
-		 * @return the parent group of this state and its parent dataNode.
-		 */
-		@Override
-		public Group getGroupRef() {
-			return DataNode.this.getGroupRef();
-		}
+//		/**
+//		 * Returns the parent group of the dataNode of this state.
+//		 * 
+//		 * NB: Although state groupRef is updated, a state should always belong to the
+//		 * same group as its parent data node.
+//		 * 
+//		 * @return the parent group of this state and its parent dataNode.
+//		 */
+//		@Override
+//		public Group getGroupRef() {
+//			return DataNode.this.getGroupRef();
+//		}
 
 		/**
 		 * Sets the pathway model for this pathway element.
@@ -682,6 +688,17 @@ public class DataNode extends ShapedElement {
 //				}
 //			}
 //		}
+
+		// TODO
+		private void updateCoordinates() {
+			if (getPathwayModel() != null) {
+				DataNode dn = getDataNode();
+				double centerx = dn.getCenterX() + (getRelX() * dn.getWidth() / 2);
+				double centery = dn.getCenterY() + (getRelY() * dn.getHeight() / 2);
+				setCenterY(centery);
+				setCenterX(centerx);
+			}
+		}
 
 		// ================================================================================
 		// Copy Methods

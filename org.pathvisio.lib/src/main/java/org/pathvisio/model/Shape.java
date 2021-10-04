@@ -34,8 +34,6 @@ public class Shape extends ShapedElement {
 	// ================================================================================
 	/**
 	 * Instantiates a Shape pathway element.
-	 * 
-	 * @param textLabel the text of the shape.
 	 */
 	public Shape() {
 		super();

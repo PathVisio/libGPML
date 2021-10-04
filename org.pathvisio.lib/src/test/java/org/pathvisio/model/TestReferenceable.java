@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
+import org.pathvisio.model.Referenceable.Annotatable;
 import org.pathvisio.model.Referenceable.Citable;
 import org.pathvisio.model.Referenceable.Evidenceable;
 import org.pathvisio.model.type.AnnotationType;

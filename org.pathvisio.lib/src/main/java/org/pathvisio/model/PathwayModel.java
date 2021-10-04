@@ -74,9 +74,6 @@ public class PathwayModel {
 	// ================================================================================
 	/**
 	 * Initializes a pathway model object with default {@link Pathway}.
-	 * 
-	 * @param pathway the pathway object containing metadata information, e.g.
-	 *                title, organism...
 	 */
 	public PathwayModel() {
 		this.pathway = new Pathway();
@@ -759,7 +756,7 @@ public class PathwayModel {
 	 * 
 	 * Fires PathwayEvent.ADDED event <i>after</i> addition of the object
 	 * 
-	 * @param pathwayModel the pathway object to add.
+	 * @param pathwayObject the pathway object to add.
 	 */
 	protected void addPathwayObject(PathwayObject pathwayObject) {
 		if (pathwayObject == null) {
@@ -787,7 +784,7 @@ public class PathwayModel {
 	 * the object. Fires PathwayEvent.DELETED event <i>after</i> removal of the
 	 * object
 	 * 
-	 * @param pathwayModel the pathway object to remove.
+	 * @param pathwayObject the pathway object to remove.
 	 */
 	protected void removePathwayObject(PathwayObject pathwayObject) {
 		if (pathwayObject == null) {

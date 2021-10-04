@@ -374,12 +374,14 @@ public class Group extends ShapedElement {
 	public Rectangle2D getRotatedBounds() {
 		Rectangle2D bounds = null;
 		for (Groupable e : pathwayElements) {
-			if (e == this)
+			if (e == this) {
 				continue; // To prevent recursion error
-			if (bounds == null)
+			}
+			if (bounds == null) {
 				bounds = e.getRotatedBounds();
-			else
+			} else {
 				bounds.add(e.getRotatedBounds());
+			}
 		}
 		if (bounds != null) {
 			double margin = getMargin();
