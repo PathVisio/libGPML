@@ -1,4 +1,4 @@
-libGPML<img width="22%" align="right" src=".graphics/bigcateye.svg">
+libGPML<img width="15%" align="right" src=".graphics/bigcateye.svg">
 =============================================================================
 
 [![Java CI with Maven](https://github.com/PathVisio/libGPML/actions/workflows/maven.yml/badge.svg)](https://github.com/PathVisio/libGPML/actions/workflows/maven.yml)[![codecov](https://codecov.io/gh/PathVisio/libGPML/branch/main/graph/badge.svg?token=xJbZhucQun)](https://codecov.io/gh/PathVisio/libGPML)
