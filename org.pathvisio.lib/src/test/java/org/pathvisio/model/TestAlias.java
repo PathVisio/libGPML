@@ -5,8 +5,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.GroupType;
 
@@ -51,7 +56,7 @@ public class TestAlias {
 		assertNull(p.getAlias(g));
 		assertFalse(p.hasAliasRef(g));
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -61,6 +66,16 @@ public class TestAlias {
 		assertNull(alias.getAliasRef());
 		assertNull(p.getAlias(g));
 		assertFalse(p.hasAliasRef(g));
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testWriteGPML2021() throws IOException, ConverterException {
+		File tmp = File.createTempFile("alias_testwriteGPML2021_", ".gpml");
+		GPML2021Writer.GPML2021WRITER.writeToXml(p, tmp, false);
+		System.out.println(tmp);
 	}
 
 }

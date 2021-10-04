@@ -1,7 +1,12 @@
 package org.pathvisio.model;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.pathvisio.io.ConverterException;
+import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.GroupType;
 
@@ -226,4 +231,13 @@ public class TestGroupNested extends TestCase {
 		assertEquals(d3.getGroupRef(), g2);
 	}
 
+	/**
+	 * 
+	 */
+	@Test
+	public void testWriteGPML2021() throws IOException, ConverterException {
+		File tmp = File.createTempFile("group_nested_testwriteGPML2021_", ".gpml");
+		GPML2021Writer.GPML2021WRITER.writeToXml(p, tmp, false);
+		System.out.println(tmp);
+	}
 }

@@ -196,4 +196,48 @@ public class TestReferenceable extends TestCase {
 		assertNull(er2.getEvidence());
 	}
 
+	@Test
+	public void testRemoveDataNode() {
+		p.removeDataNode(d1);
+
+		// pathway model has objects
+		assertFalse(p.hasPathwayObject(d1));
+		assertFalse(p.hasPathwayObject(a1));
+		assertFalse(p.hasPathwayObject(c1));
+		assertFalse(p.hasPathwayObject(e1));
+
+		// datanode
+		assertFalse(d1.hasAnnotationRef(ar1));
+		assertFalse(d1.hasCitationRef(cr1));
+		assertFalse(d1.hasEvidenceRef(er1));
+
+		// annotation and annotationRefs
+		assertFalse(a1.hasAnnotationRef(ar1));
+		assertFalse(a1.hasAnnotationRef(ar2));
+		assertFalse(ar1.hasCitationRef(cr2));
+		assertFalse(ar1.hasEvidenceRef(er2));
+		assertNull(ar1.getAnnotatable());
+		assertNull(ar1.getAnnotation());
+		assertNull(ar2.getAnnotatable());
+		assertNull(ar2.getAnnotation());
+		assertEquals(ar2.getTopPathwayElement(), d1);
+
+		// citation and citationRefs
+		assertFalse(c1.hasCitationRef(cr1));
+		assertFalse(c1.hasCitationRef(cr2));
+		assertNull(cr1.getCitable());
+		assertNull(cr1.getCitation());
+		assertNull(cr2.getCitable());
+		assertNull(cr2.getCitation());
+		assertEquals(cr2.getTopPathwayElement(), d1);
+
+		// evidence and evidenceRefs
+		assertFalse(e1.hasEvidenceRef(er1));
+		assertFalse(e1.hasEvidenceRef(er2));
+		assertNull(er1.getEvidenceable());
+		assertNull(er1.getEvidence());
+		assertNull(er2.getEvidenceable());
+		assertNull(er2.getEvidence());
+		assertEquals(er2.getTopPathwayElement(), d1);
+	}
 }

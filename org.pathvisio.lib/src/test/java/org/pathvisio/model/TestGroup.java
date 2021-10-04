@@ -2,6 +2,7 @@ package org.pathvisio.model;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.GroupType;
 
@@ -33,7 +34,15 @@ public class TestGroup extends TestCase {
 		p.addGroup(g1);
 		p.addDataNode(d1);
 		g1.addPathwayElement(d1);
-
+		
+		State st = d1.addState("string", "string", null, 1, 1);
+		assertTrue(g1.hasPathwayElement(st));
+		assertEquals(st.getGroupRef(), g1);
+		
+		d1.removeState(st);
+		assertFalse(g1.hasPathwayElement(st));
+		assertNull(st.getGroupRef());
+		
 		assertTrue(p.hasPathwayObject(g1));
 		assertTrue(p.hasPathwayObject(d1));
 		assertTrue(p.getGroups().contains(g1));
