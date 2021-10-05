@@ -40,7 +40,7 @@ libGPML consists of mainly the ....Documentation in progres...and java object mo
 
 
 <p align="center">
-  <img width="80%" src=".graphics/libgpml_diagram.svg">
+  <img width="100%" src=".graphics/libgpml_diagram.svg">
   <br>
   <em>Figure 1: libGPML Java Object Model</em>
 </p>
