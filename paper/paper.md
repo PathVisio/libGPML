@@ -36,7 +36,7 @@ Figures can be included like this:
 
   <img width="100%" src=".graphics/libgpml_diagram.svg">
 
-![libGPML UML diagram.\label{fig:example}](libGPML/.graphics/libgpml_diagram.svg)
+![libGPML UML diagram.\label{fig:example}](https://github.com/PathVisio/libGPML/blob/main/.graphics/libgpml_diagram.svg)
 and referenced from text using \autoref{fig:example}.
 
 ![Caption for example figure.\label{fig:example}](figure.png)
