@@ -21,7 +21,7 @@ Table of contents
 Introduction
 ------------
 
-libGPML is a programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML) format.  
+libGPML is a java programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML) format.  
 
 Why not simply use a generic XML parsing library?  A specialized library such as libGPML offers many advantages over using a generic XML library directly.  Here are some:
 
