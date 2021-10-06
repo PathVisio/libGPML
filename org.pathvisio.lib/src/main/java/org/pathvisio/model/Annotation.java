@@ -147,6 +147,7 @@ public class Annotation extends PathwayObject {
 	public void setUrlLink(String v) {
 		if (v != null && !Utils.stringEquals(urlLink, v)) {
 			urlLink = v;
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 		}
 	}
 
@@ -182,8 +183,10 @@ public class Annotation extends PathwayObject {
 			throw new IllegalArgumentException("Cannot add invalid annotationRef to annotation.");
 		}
 		// add citationRef to citationRefs
-		if (annotationRef.getAnnotation() == this && !hasAnnotationRef(annotationRef))
+		if (annotationRef.getAnnotation() == this && !hasAnnotationRef(annotationRef)) {
 			annotationRefs.add(annotationRef);
+			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+		}
 	}
 
 	/**
@@ -201,6 +204,7 @@ public class Annotation extends PathwayObject {
 			// if citationResf empty, remove this annotation from pathway model
 			if (annotationRefs.isEmpty()) {
 				getPathwayModel().removeAnnotation(this);
+				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 			}
 		}
 	}

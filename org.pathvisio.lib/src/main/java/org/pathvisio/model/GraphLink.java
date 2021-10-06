@@ -111,11 +111,11 @@ public abstract class GraphLink {
 		double getRelY();
 
 		/**
-		 * @param pathwayElement
+		 * @param elementRef
 		 * @param relX
 		 * @param relY
 		 */
-		void linkTo(LinkableTo pathwayElement, double relX, double relY);
+		void linkTo(LinkableTo elementRef, double relX, double relY);
 
 		/**
 		 * 
@@ -130,18 +130,18 @@ public abstract class GraphLink {
 
 	/**
 	 * Return a list of {@link LinkableFrom} {@link LinePoint}(s) referring to a
-	 * certain {@link LinkableTo} pathway element. TODO
+	 * certain {@link LinkableTo} pathway element or anchor. TODO
 	 *
-	 * @param pathwayElement the LinkableTo.
-	 * @param pathwayModel   the pathway model.
+	 * @param elementRef   the LinkableTo.
+	 * @param pathwayModel the pathway model.
 	 * @return
 	 */
-	public static Set<LinkableFrom> getReferences(LinkableTo pathwayElement, PathwayModel pathwayModel) {
-		if (pathwayModel == null || Utils.isEmpty(pathwayElement.getElementId())) {
+	public static Set<LinkableFrom> getReferences(LinkableTo elementRef, PathwayModel pathwayModel) {
+		if (pathwayModel == null || Utils.isEmpty(elementRef.getElementId())) {
 			return Collections.emptySet();
 		} else {
-			return pathwayModel.getReferringLinkableFroms(pathwayElement);
-			
+			return pathwayModel.getReferringLinkableFroms(elementRef);
+
 		}
 	}
 }

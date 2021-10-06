@@ -225,10 +225,10 @@ public class PathwayModel {
 	// ================================================================================
 	/**
 	 * Returns all {@link LinkableFrom} {@link LineElement.LinePoint} that refer to
-	 * a {@link LinkableTo} pathway element.
+	 * a {@link LinkableTo} pathway element or anchor.
 	 */
-	public Set<LinkableFrom> getReferringLinkableFroms(LinkableTo pathwayElement) {
-		Set<LinkableFrom> refs = elementRefToLinePoints.get(pathwayElement);
+	public Set<LinkableFrom> getReferringLinkableFroms(LinkableTo elementRef) {
+		Set<LinkableFrom> refs = elementRefToLinePoints.get(elementRef);
 		if (refs != null) {
 			// create defensive copy to prevent problems with ConcurrentModification.
 			return new HashSet<LinkableFrom>(refs);

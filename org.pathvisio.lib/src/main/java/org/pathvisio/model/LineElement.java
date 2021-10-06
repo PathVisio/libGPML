@@ -532,13 +532,13 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		return startLineType == null ? ArrowHeadType.UNDIRECTED : startLineType;
 	}
 
+	public void setStartLineType(ArrowHeadType value) {
+		getStartLinePoint().setArrowHead(value);
+	}
+
 	public ArrowHeadType getEndLineType() {
 		ArrowHeadType endLineType = getEndLinePoint().getArrowHead();
 		return endLineType == null ? ArrowHeadType.UNDIRECTED : endLineType;
-	}
-
-	public void setStartLineType(ArrowHeadType value) {
-		getStartLinePoint().setArrowHead(value);
 	}
 
 	public void setEndLineType(ArrowHeadType value) {
@@ -576,7 +576,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/** converts all points from MPoint to Point2D */
-	public List<Point2D> getPoint2Ds() {
+	public List<Point2D> getPoints2D() {
 		List<Point2D> pts = new ArrayList<Point2D>();
 		for (LinePoint p : linePoints) {
 			pts.add(p.toPoint2D());
@@ -621,6 +621,16 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
+	 * Sets the x position of the center of the line. This makes the line move as a
+	 * whole
+	 */
+	public void setCenterX(double v) {
+		double dx = v - getCenterX();
+		setStartLinePointX(getStartLinePointX() + dx);
+		setEndLinePointX(getEndLinePointX() + dx);
+	}
+
+	/**
 	 * Returns the center y coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
@@ -631,8 +641,18 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Returns the width of the bounding box around (start, end) this line pathway
-	 * element.
+	 * Sets the y position of the center of the line. This makes the line move as a
+	 * whole.
+	 */
+	public void setCenterY(double v) {
+		double dy = v - getCenterY();
+		setStartLinePointY(getStartLinePointY() + dy);
+		setEndLinePointY(getEndLinePointY() + dy);
+	}
+
+	/**
+	 * Calculates and returns the width of the bounding box around (start, end) this
+	 * line pathway element.
 	 */
 	public double getWidth() {
 		double start = getStartLinePointX();
@@ -641,8 +661,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
-	 * Returns the height of the bounding box around (start, end) this line pathway
-	 * element.
+	 * Calculates and returns the height of the bounding box around (start, end)
+	 * this line pathway element.
 	 */
 	public double getHeight() {
 		double start = getStartLinePointY();
@@ -661,6 +681,17 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	}
 
 	/**
+	 * Sets the position of the left side of the rectangular bounds of the line
+	 */
+	public void setLeft(double v) {
+		if (getDirectionX() > 0) {
+			setStartLinePointX(v);
+		} else {
+			setEndLinePointX(v);
+		}
+	}
+
+	/**
 	 * Returns the top y coordinate of the bounding box around (start, end) this
 	 * line pathway element.
 	 */
@@ -668,26 +699,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		double start = getStartLinePointY();
 		double end = getEndLinePointY();
 		return Math.min(start, end);
-	}
-
-	/**
-	 * Sets the x position of the center of the line. This makes the line move as a
-	 * whole
-	 */
-	public void setCenterX(double v) {
-		double dx = v - getCenterX();
-		setStartLinePointX(getStartLinePointX() + dx);
-		setEndLinePointX(getEndLinePointX() + dx);
-	}
-
-	/**
-	 * Sets the y position of the center of the line. This makes the line move as a
-	 * whole.
-	 */
-	public void setCenterY(double v) {
-		double dy = v - getCenterY();
-		setStartLinePointY(getStartLinePointY() + dy);
-		setEndLinePointY(getEndLinePointY() + dy);
 	}
 
 	/**
@@ -701,17 +712,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 	}
 
-	/**
-	 * Sets the position of the left side of the rectangular bounds of the line
-	 */
-	public void setLeft(double v) {
-		if (getDirectionX() > 0) {
-			setStartLinePointX(v);
-		} else {
-			setEndLinePointX(v);
-		}
-	}
-
 	/** returns the sign of end.x - start.x */
 	private int getDirectionX() {
 		return (int) Math.signum(getEndLinePointX() - getStartLinePointX());
@@ -720,6 +720,46 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	/** returns the sign of end.y - start.y */
 	private int getDirectionY() {
 		return (int) Math.signum(getEndLinePointY() - getStartLinePointY());
+	}
+
+	/**
+	 * @param p
+	 * @return
+	 */
+	public Point2D toAbsoluteCoordinate(Point2D p) {
+		double x = p.getX();
+		double y = p.getY();
+		Rectangle2D bounds = getRotatedBounds();
+		// Scale
+		if (bounds.getWidth() != 0)
+			x *= bounds.getWidth() / 2;
+		if (bounds.getHeight() != 0)
+			y *= bounds.getHeight() / 2;
+		// Translate
+		x += bounds.getCenterX();
+		y += bounds.getCenterY();
+		return new Point2D.Double(x, y);
+	}
+
+	/**
+	 * @param mp a point in absolute model coordinates
+	 * @return the same point relative to the bounding box of this pathway element:
+	 *          -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
+	 *          corner, and 0,0 meaning the center.
+	 */
+	public Point2D toRelativeCoordinate(Point2D mp) {
+		double relX = mp.getX();
+		double relY = mp.getY();
+		Rectangle2D bounds = getRotatedBounds();
+		// Translate
+		relX -= bounds.getCenterX();
+		relY -= bounds.getCenterY();
+		// Scalebounds.getCenterX();
+		if (relX != 0 && bounds.getWidth() != 0)
+			relX /= bounds.getWidth() / 2;
+		if (relY != 0 && bounds.getHeight() != 0)
+			relY /= bounds.getHeight() / 2;
+		return new Point2D.Double(relX, relY);
 	}
 
 	// ================================================================================
@@ -1388,18 +1428,18 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * Link to an object. Current absolute coordinates will be converted to relative
 		 * coordinates based on the object to link to. TODO
 		 * 
-		 * @param pathwayElement the linkableTo pathway element to link to.
+		 * @param elementRef the linkableTo pathway element or anchor to link to.
 		 */
-		public void linkTo(LinkableTo pathwayElement) {
-			Point2D rel = pathwayElement.toRelativeCoordinate(toPoint2D());
-			linkTo(pathwayElement, rel.getX(), rel.getY());
+		public void linkTo(LinkableTo elementRef) {
+			Point2D rel = elementRef.toRelativeCoordinate(toPoint2D());
+			linkTo(elementRef, rel.getX(), rel.getY());
 		}
 
 		/**
 		 * Link to an object using the given relative coordinates TODO
 		 */
-		public void linkTo(LinkableTo pathwayElement, double relX, double relY) {
-			setElementRef(pathwayElement);
+		public void linkTo(LinkableTo elementRef, double relX, double relY) {
+			setElementRef(elementRef);
 			setRelXY(relX, relY);
 		}
 
