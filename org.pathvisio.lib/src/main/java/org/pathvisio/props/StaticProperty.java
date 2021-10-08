@@ -57,9 +57,6 @@ public enum StaticProperty implements Property {
 
 	// pathway, datanode, state, interaction, graphicalline, label, shape, group
 	COMMENT("comment", "Comment", StaticPropertyType.COMMENT, 122),
-	ANNOTATIONREF("annotationRef", "Annotation Reference", StaticPropertyType.ANNOTATIONREF, 123, false, true, false),
-	CITATIONREF("citationRef", "Citation Reference", StaticPropertyType.CITATIONREF, 124, false, true, false),
-	EVIDENCEREF("evidenceRef", "Evidence Reference", StaticPropertyType.EVIDENCEREF, 125, false, true, false),
 
 	// rect props
 	CENTERX("centerX", "Center X", StaticPropertyType.DOUBLE, 130, true, false, false),
