@@ -22,6 +22,6 @@ jobs:
         java-version: ${{ matrix.java }}
         distribution: 'adopt'
     - name: Build with Maven
-      run: cd org.pathvisio.lib; mvn clean install -Dgpg.skip -Dmaven.javadoc.skip=true -Dmaven.test.failure.ignore=true
+      run: cd org.pathvisio.lib; mvn clean install -Dgpg.skip -Dmaven.javadoc.skip=true
     - name: push JaCoCo stats to codecov.io
       run: bash <(curl -s https://codecov.io/bash)
