@@ -27,7 +27,7 @@ import java.awt.geom.Rectangle2D;
  * @author finterly
  */
 public interface Groupable {
-	
+
 	/**
 	 * Returns the pathway model of this pathway element.
 	 * 
@@ -35,7 +35,6 @@ public interface Groupable {
 	 */
 	public PathwayModel getPathwayModel();
 
-	
 	/**
 	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
@@ -73,6 +72,13 @@ public interface Groupable {
 	 */
 	public void unsetGroupRef();
 
+	/**
+	 * Returns the z-order of this pathway element.
+	 * 
+	 * @return zOrder the order of this pathway element.
+	 */
+	public int getZOrder();
+	
 //	/**
 //	 * Terminates this pathway element.
 //	 */
@@ -88,35 +94,62 @@ public interface Groupable {
 	 */
 	public Rectangle2D getBounds();
 
+	/**
+	 * Returns the center x coordinate of the bounding box around (start, end) this
+	 * pathway element.
+	 */
 	public double getCenterX();
 
-	public void setCenterX(double d);
-
-	public double getCenterY();
-
-	public void setCenterY(double d);
+	/**
+	 * Sets the x position of the center of the pathway element.
+	 */
+	public void setCenterX(double v);
 
 	/**
-	 * NB: no setHeight() for Groupable because not applicable for line pathway
-	 * element. Lines can be positioned partially outside of a Group's border.
-	 * 
-	 * @return
+	 * Returns the center y coordinate of the bounding box around (start, end) this
+	 * pathway element.
+	 */
+	public double getCenterY();
+
+	/**
+	 * Sets the y position of the center of the pathway element.
+	 */
+	public void setCenterY(double v);
+
+	/**
+	 * Calculates and returns the width of the bounding box around (start, end) this
+	 * pathway element.
+	 */
+	public double getWidth();
+
+	/**
+	 * Calculates and returns the height of the bounding box around (start, end)
+	 * this pathway element.
 	 */
 	public double getHeight();
 
 	/**
-	 * NB: no setWidth() for Groupable because not applicable for line pathway
-	 * element.Lines can be positioned partially outside of a Group's border.
-	 * 
-	 * @return
+	 * Returns the left x coordinate of the bounding box around (start, end) this
+	 * pathway element.
 	 */
-	public double getWidth();
-
 	public double getLeft();
 
-	public void setLeft(double d);
+	/**
+	 * Sets the position of the left side of the rectangular bounds of the pathway
+	 * element.
+	 */
+	public void setLeft(double v);
 
+	/**
+	 * Returns the top y coordinate of the bounding box around (start, end) this
+	 * pathway element.
+	 */
 	public double getTop();
 
-	public void setTop(double d);
+	/**
+	 * Sets the position of the top side of the rectangular bounds of the pathway
+	 * element.
+	 */
+	public void setTop(double v);
+
 }

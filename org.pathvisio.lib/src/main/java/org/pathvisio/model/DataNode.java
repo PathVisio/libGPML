@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.props.StaticProperty;
@@ -120,7 +120,7 @@ public class DataNode extends ShapedElement {
 		String value = (v == null) ? "" : v;
 		if (!Utils.stringEquals(textLabel, value)) {
 			textLabel = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
@@ -149,7 +149,7 @@ public class DataNode extends ShapedElement {
 		}
 		if (type != v && v != null) {
 			type = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.DATANODETYPE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.DATANODETYPE));
 		}
 	}
 
@@ -171,7 +171,7 @@ public class DataNode extends ShapedElement {
 		if (v != null) {
 			xref = v;
 			// TODO
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
 
@@ -219,7 +219,7 @@ public class DataNode extends ShapedElement {
 			}
 			states.add(state);
 			// No state property, use BORDERSTYLE as dummy property to force redraw TODO
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 		} else {
 			System.out.println("State " + state.getElementId() + " already belongs to data node " + getElementId());
 		}
@@ -270,7 +270,7 @@ public class DataNode extends ShapedElement {
 			getPathwayModel().removePathwayObject(state);
 		states.remove(state);
 		// No state property, use BORDERSTYLE as dummy property to force redraw
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 	}
 
 	/**
@@ -318,7 +318,7 @@ public class DataNode extends ShapedElement {
 			}
 			aliasRef = v;
 			v.getPathwayModel().addAlias(v, this);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 		}
 	}
 
@@ -337,7 +337,7 @@ public class DataNode extends ShapedElement {
 	private void unsetAliasRef() {
 		if (getAliasRef() != null) {
 			aliasRef = null;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 		}
 	}
 
@@ -431,7 +431,7 @@ public class DataNode extends ShapedElement {
 		}
 		xref = src.xref;
 		aliasRef = src.aliasRef;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**
@@ -534,7 +534,7 @@ public class DataNode extends ShapedElement {
 			String value = (v == null) ? "" : v;
 			if (!Utils.stringEquals(textLabel, value)) {
 				textLabel = value;
-				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 			}
 		}
 
@@ -555,7 +555,7 @@ public class DataNode extends ShapedElement {
 		public void setType(StateType v) {
 			if (type != v && v != null) {
 				type = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.STATETYPE));
+				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.STATETYPE));
 			}
 		}
 
@@ -583,7 +583,7 @@ public class DataNode extends ShapedElement {
 		public void setRelX(double v) {
 			if (Math.abs(v) <= 1.0) {
 				relX = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 			} else {
 				throw new IllegalArgumentException("relX " + v + " should be between -1.0 and 1.0");
 			}
@@ -612,7 +612,7 @@ public class DataNode extends ShapedElement {
 		public void setRelY(double v) {
 			if (Math.abs(v) <= 1.0) {
 				relY = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 			} else {
 				throw new IllegalArgumentException("relY " + v + " should be between -1.0 and 1.0");
 			}
@@ -636,7 +636,7 @@ public class DataNode extends ShapedElement {
 			if (v != null) {
 				xref = v;
 				// TODO
-				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 			}
 		}
 
@@ -717,7 +717,7 @@ public class DataNode extends ShapedElement {
 			relX = src.relX;
 			relY = src.relY;
 			xref = src.xref;
-			fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 		}
 
 		/**

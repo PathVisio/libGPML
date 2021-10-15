@@ -20,7 +20,7 @@ import org.pathvisio.model.PathwayObject;
 import org.pathvisio.props.Property;
 
 /**
- * This event is used to notify {@link PathwayElementListener}s of changes to
+ * This event is used to notify {@link PathwayObjectListener}s of changes to
  * properties of a PathwayElement.
  * <p>
  * There are three variations on this event:
@@ -41,35 +41,35 @@ import org.pathvisio.props.Property;
  * 
  * @author Mark Woon
  */
-public final class PathwayElementEvent {
+public final class PathwayObjectEvent {
 	private final PathwayObject pwElement;
 	private final Object property;
 	private final boolean coordinateChange;
 
 	// TODO public for now
-	public static PathwayElementEvent createSinglePropertyEvent(PathwayObject pwe, Object property) {
-		return new PathwayElementEvent(pwe, property, false);
+	public static PathwayObjectEvent createSinglePropertyEvent(PathwayObject pwe, Object property) {
+		return new PathwayObjectEvent(pwe, property, false);
 	}
 
 	// TODO public for now
-	public static PathwayElementEvent createAllPropertiesEvent(PathwayObject pwe) {
-		return new PathwayElementEvent(pwe, null, false);
+	public static PathwayObjectEvent createAllPropertiesEvent(PathwayObject pwe) {
+		return new PathwayObjectEvent(pwe, null, false);
 	}
 
 	// TODO public for now
-	public static PathwayElementEvent createCoordinatePropertyEvent(PathwayObject pwe) {
-		return new PathwayElementEvent(pwe, null, true);
+	public static PathwayObjectEvent createCoordinatePropertyEvent(PathwayObject pwe) {
+		return new PathwayObjectEvent(pwe, null, true);
 	}
 
 	/**
 	 * Constructor.
 	 *
-	 * @param elem             the PathwayElement that's been modified
+	 * @param elem             the PathwayObject that's been modified
 	 * @param prop             the Property on the element that's been modified
 	 * @param coordinateChange Flag to indicate this event applies to a coordinate
 	 *                         change.
 	 */
-	private PathwayElementEvent(PathwayObject elem, Object prop, boolean coordinateChange) {
+	private PathwayObjectEvent(PathwayObject elem, Object prop, boolean coordinateChange) {
 		pwElement = elem;
 		property = prop;
 		this.coordinateChange = coordinateChange;
@@ -84,9 +84,9 @@ public final class PathwayElementEvent {
 	}
 
 	/**
-	 * Gets the PathwayElement whose properties have been modified.
+	 * Gets the PathwayObject whose properties have been modified.
 	 */
-	public PathwayObject getModifiedPathwayElement() {
+	public PathwayObject getModifiedPathwayObject() {
 		return pwElement;
 	}
 

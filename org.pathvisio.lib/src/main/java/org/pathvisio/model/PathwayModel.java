@@ -32,9 +32,9 @@ import java.util.Set;
 
 import org.bridgedb.Xref;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.events.PathwayElementEvent;
 import org.pathvisio.events.PathwayEvent;
 import org.pathvisio.events.PathwayListener;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.DataNode.State;
@@ -194,15 +194,11 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Generates random IDs, based on strings of hex digits (0..9 or a..f). IDs are
-	 * unique across elementIds per pathway and referenced by elementRefs and
-	 * groupRefs.
-	 * 
-	 * NB: elementId previously named graphId. Group pathway elements previously had
-	 * both elementId and groupId(deprecated).
+	 * Randomly generates a new unique ID, based on strings of hex digits (0..9 or
+	 * a..f) given a set of existing IDs.
 	 * 
 	 * @param ids the collection of already existing IDs.
-	 * @return result the new unique ID unique for this pathway.
+	 * @return result the new unique ID.
 	 */
 	public static String getUniqueId(Set<String> ids) {
 		String result;
@@ -1054,11 +1050,11 @@ public class PathwayModel {
 	 * coordinate change could trigger dependent objects such as states, groups and
 	 * connectors to be updated as well.
 	 */
-	void childModified(PathwayElementEvent e) {
+	void childModified(PathwayObjectEvent e) {
 		markChanged();
 		if (e.isCoordinateChange()) {
 			// TODO
-			PathwayObject elt = e.getModifiedPathwayElement();
+			PathwayObject elt = e.getModifiedPathwayObject();
 			if (elt instanceof LinkableTo) {
 				for (LinkableFrom refc : getReferringLinkableFroms((LinkableTo) elt)) {
 					refc.refeeChanged();
@@ -1068,10 +1064,10 @@ public class PathwayModel {
 				Group group = ((Groupable) elt).getGroupRef();
 				if (group != null) {
 					// identify group object and notify model change to trigger view update
-					group.fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(group));
+					group.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(group));
 				}
 			}
-			checkMBoardSize(e.getModifiedPathwayElement());
+			checkMBoardSize(e.getModifiedPathwayObject());
 		}
 	}
 

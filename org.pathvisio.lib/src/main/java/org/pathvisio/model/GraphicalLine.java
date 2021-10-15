@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.DataNode.State;
 
 /**
@@ -48,7 +48,7 @@ public class GraphicalLine extends LineElement {
 	 */
 	public void copyValuesFrom(State src) { //TODO
 		super.copyValuesFrom(src);
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

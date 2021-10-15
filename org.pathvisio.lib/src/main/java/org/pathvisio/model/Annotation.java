@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.props.StaticProperty;
@@ -84,7 +84,7 @@ public class Annotation extends PathwayObject {
 		}
 		if (!Utils.stringEquals(value, v)) {
 			value = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 		}
 	}
 
@@ -105,7 +105,7 @@ public class Annotation extends PathwayObject {
 	public void setType(AnnotationType v) {
 		if (type != v && v != null) {
 			type = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONTYPE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONTYPE));
 		}
 	}
 
@@ -126,7 +126,7 @@ public class Annotation extends PathwayObject {
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
 
@@ -147,7 +147,7 @@ public class Annotation extends PathwayObject {
 	public void setUrlLink(String v) {
 		if (v != null && !Utils.stringEquals(urlLink, v)) {
 			urlLink = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 		}
 	}
 
@@ -185,7 +185,7 @@ public class Annotation extends PathwayObject {
 		// add citationRef to citationRefs
 		if (annotationRef.getAnnotation() == this && !hasAnnotationRef(annotationRef)) {
 			annotationRefs.add(annotationRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 		}
 	}
 
@@ -204,7 +204,7 @@ public class Annotation extends PathwayObject {
 			// if citationResf empty, remove this annotation from pathway model
 			if (annotationRefs.isEmpty()) {
 				getPathwayModel().removeAnnotation(this);
-				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 			}
 		}
 	}
@@ -283,7 +283,7 @@ public class Annotation extends PathwayObject {
 		for (AnnotationRef a : src.annotationRefs) { // TODO????
 			addAnnotationRef(a);
 		}
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

@@ -19,8 +19,8 @@ package org.pathvisio.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.events.PathwayElementListener;
+import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.events.PathwayObjectListener;
 import org.pathvisio.props.StaticProperty;
 
 /**
@@ -128,7 +128,7 @@ public abstract class PathwayObject {
 	public void setElementId(String v) {
 		elementId = v;
 		fireObjectModifiedEvent(
-				PathwayElementEvent.createSinglePropertyEvent(PathwayObject.this, StaticProperty.ELEMENTID));
+				PathwayObjectEvent.createSinglePropertyEvent(PathwayObject.this, StaticProperty.ELEMENTID));
 	}
 
 	/**
@@ -161,12 +161,12 @@ public abstract class PathwayObject {
 		noFire = times;
 	}
 
-	private Set<PathwayElementListener> listeners = new HashSet<PathwayElementListener>();
+	private Set<PathwayObjectListener> listeners = new HashSet<PathwayObjectListener>();
 
 	/**
 	 * @param v
 	 */
-	public void addListener(PathwayElementListener v) {
+	public void addListener(PathwayObjectListener v) {
 		if (!listeners.contains(v))
 			listeners.add(v);
 	}
@@ -174,21 +174,21 @@ public abstract class PathwayObject {
 	/**
 	 * @param v
 	 */
-	public void removeListener(PathwayElementListener v) {
+	public void removeListener(PathwayObjectListener v) {
 		listeners.remove(v);
 	}
 
 	/**
 	 * @param e
 	 */
-	public void fireObjectModifiedEvent(PathwayElementEvent e) {
+	public void fireObjectModifiedEvent(PathwayObjectEvent e) {
 		if (noFire > 0) {
 			noFire -= 1;
 			return;
 		}
 		if (pathwayModel != null)
 			pathwayModel.childModified(e);
-		for (PathwayElementListener g : listeners) {
+		for (PathwayObjectListener g : listeners) {
 			g.gmmlObjectModified(e);
 		}
 	}

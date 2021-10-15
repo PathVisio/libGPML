@@ -1,9 +1,9 @@
 package org.pathvisio.util;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -50,8 +50,16 @@ public class TestColorUtils extends TestCase {
 			assertEquals(color.getGreen(), colorTests.get(i).getGreen());
 			assertEquals(color.getBlue(), colorTests.get(i).getBlue());
 			assertEquals(color.getAlpha(), colorTests.get(i).getAlpha());
-
-
 		}
 	}
+	
+	public void testTransparency() {	
+		Color color = ColorUtils.hexToColor("00000000");
+		Color color2 = ColorUtils.hexToColor("ffffff00");
+		assertTrue(ColorUtils.isTransparent(color));
+		assertTrue(ColorUtils.isTransparent(color2));
+	}
+
+		
+	
 }

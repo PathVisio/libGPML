@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -103,7 +103,7 @@ public class Evidence extends PathwayObject {
 		}
 		if (v != null || xref != v) {
 			xref = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
 
@@ -251,7 +251,7 @@ public class Evidence extends PathwayObject {
 		for (EvidenceRef e : src.evidenceRefs) { // TODO????
 			addEvidenceRef(e);
 		}
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

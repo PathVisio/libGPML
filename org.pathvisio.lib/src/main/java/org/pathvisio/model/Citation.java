@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -84,7 +84,7 @@ public class Citation extends PathwayObject {
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
 
@@ -318,7 +318,7 @@ public class Citation extends PathwayObject {
 		for (CitationRef c : src.citationRefs) { // TODO????
 			addCitationRef(c);
 		}
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

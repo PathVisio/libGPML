@@ -33,9 +33,9 @@ public class ShapeType {
 	private static final Map<String, ShapeType> nameToShapeType = new TreeMap<String, ShapeType>(
 			String.CASE_INSENSITIVE_ORDER);
 
-	// TODO unify case
+	// Basic shapes
 	public static final ShapeType NONE = new ShapeType("None");
-	public static final ShapeType RECTANGLE = new ShapeType("Rectangle"); // TODO: DEFAULT?
+	public static final ShapeType RECTANGLE = new ShapeType("Rectangle");
 	public static final ShapeType ROUNDED_RECTANGLE = new ShapeType("RoundedRectangle");
 	public static final ShapeType OVAL = new ShapeType("Oval");
 	public static final ShapeType TRIANGLE = new ShapeType("Triangle");
@@ -43,27 +43,31 @@ public class ShapeType {
 	public static final ShapeType HEXAGON = new ShapeType("Hexagon");
 	public static final ShapeType OCTAGON = new ShapeType("Octagon");
 
+	// Basic line shapes 
 	public static final ShapeType EDGE = new ShapeType("Line");
 	public static final ShapeType ARC = new ShapeType("Arc");
 	public static final ShapeType BRACE = new ShapeType("Brace");
 
+	// Cellular components with special shape
 	public static final ShapeType MITOCHONDRIA = new ShapeType("Mitochondria");
 	public static final ShapeType SARCOPLASMIC_RETICULUM = new ShapeType("SarcoplasmicReticulum");
 	public static final ShapeType ENDOPLASMIC_RETICULUM = new ShapeType("EndoplasmicReticulum");
 	public static final ShapeType GOLGI_APPARATUS = new ShapeType("GolgiApparatus");
 
-	// From CellularComponent.java
+	// Cellular components (rarely used)
 	public static final ShapeType NUCLEOLUS = new ShapeType("Nucleolus");
 	public static final ShapeType VACUOLE = new ShapeType("Vacuole");
 	public static final ShapeType LYSOSOME = new ShapeType("Lysosome");
 	public static final ShapeType CYTOSOL = new ShapeType("CytosolRegion");
+	
+	// Cellular components with basic shape
 	public static final ShapeType EXTRACELLULAR = new ShapeType("ExtracellularRegion");
-
-	// Deprecated
 	public static final ShapeType CELL = new ShapeType("Cell"); // Rounded rectangle
 	public static final ShapeType NUCLEUS = new ShapeType("Nucleus"); // Oval
 	public static final ShapeType ORGANELLE = new ShapeType("Organelle"); // Rounded rectangle
 	public static final ShapeType VESICLE = new ShapeType("Vesicle"); // Oval
+	
+	// Deprecated since GPML2013a?
 	public static final ShapeType MEMBRANE = new ShapeType("Membrane"); // Rounded rectangle
 	public static final ShapeType CELLA = new ShapeType("CellA"); // Oval
 	public static final ShapeType RIBOSOME = new ShapeType("Ribosome"); // Hexagon

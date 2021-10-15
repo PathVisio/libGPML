@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.Referenceable.Annotatable;
 import org.pathvisio.model.Referenceable.Citable;
 import org.pathvisio.model.Referenceable.Evidenceable;
@@ -87,7 +87,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	public void addComment(Comment comment) {
 		comments.add(comment);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
 	}
 
 	/**
@@ -110,7 +110,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	public void removeComment(Comment comment) {
 		comments.remove(comment);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
 	}
 
 	/**
@@ -168,7 +168,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			dynamicProperties.remove(key);
 		else
 			dynamicProperties.put(key, value);
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, key));
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, key));
 
 	}
 
@@ -211,7 +211,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			annotationRef.setAnnotatableTo(this);
 			assert (annotationRef.getAnnotatable() == this);
 			annotationRefs.add(annotationRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 		}
 		return annotationRef;
 	}
@@ -273,7 +273,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		if (annotationRef != null) {
 			annotationRefs.remove(annotationRef);
 			annotationRef.terminate();
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 		}
 	}
 
@@ -323,7 +323,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			citationRef.setCitableTo(this);
 			assert (citationRef.getCitable() == this);
 			citationRefs.add(citationRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.CITATION));
 		}
 		return citationRef;
 	}
@@ -382,7 +382,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		if (citationRef != null && hasCitationRef(citationRef)) {
 			citationRefs.remove(citationRef);
 			citationRef.terminate();
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.CITATION));
 		}
 	}
 
@@ -432,7 +432,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			evidenceRef.setEvidenceableTo(this);
 			assert (evidenceRef.getEvidenceable() == this);
 			evidenceRefs.add(evidenceRef);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCE));
 		}
 		return evidenceRef;
 	}
@@ -491,7 +491,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		if (evidenceRef != null && hasEvidenceRef(evidenceRef)) {
 			evidenceRefs.remove(evidenceRef);
 			evidenceRef.terminate();
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.EVIDENCE));
 		}
 	}
 
@@ -539,10 +539,11 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				/* not going to happen */
 			}
 		}
-		annotationRefs = new ArrayList<AnnotationRef>(); // TODO add???
-		citationRefs = new ArrayList<CitationRef>(); // TODO add???
-		evidenceRefs = new ArrayList<EvidenceRef>(); // TODO add???
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		// for now we do not copy references TODO
+//		annotationRefs = new ArrayList<AnnotationRef>();  
+//		citationRefs = new ArrayList<CitationRef>(); 
+//		evidenceRefs = new ArrayList<EvidenceRef>();  
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**
@@ -614,7 +615,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			if (v != null && !Utils.stringEquals(commentText, v)) {
 				commentText = v;
 				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
+						PathwayObjectEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
 			}
 		}
 
@@ -637,7 +638,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			if (v != null && !Utils.stringEquals(source, v)) {
 				source = v;
 				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
+						PathwayObjectEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.COMMENT));
 			}
 		}
 	}
@@ -1243,7 +1244,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				annotationRef.setAnnotatableTo(this);
 				assert (annotationRef.getAnnotatable() == this);
 				annotationRefs.add(annotationRef);
-				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(PathwayElement.this,
+				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(PathwayElement.this,
 						StaticProperty.ANNOTATION));
 			}
 			return annotationRef;

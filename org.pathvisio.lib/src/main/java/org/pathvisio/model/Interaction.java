@@ -17,7 +17,7 @@
 package org.pathvisio.model;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.props.StaticProperty;
 
 /**
@@ -71,7 +71,7 @@ public class Interaction extends LineElement {
 		if (v != null) {
 			xref = v;
 			// TODO
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class Interaction extends LineElement {
 	public void copyValuesFrom(Interaction src) { //TODO
 		super.copyValuesFrom(src);
 		xref = src.xref;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

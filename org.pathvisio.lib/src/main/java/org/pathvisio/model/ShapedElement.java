@@ -23,7 +23,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.LineElement.LinePoint;
@@ -153,7 +153,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	protected void setGroupRef(Group v) {
 		// TODO
 		groupRef = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
 
 	/**
@@ -167,7 +167,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 			if (groupRef.hasPathwayElement(this)) {
 				groupRef.removePathwayElement(this);
 			}
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 		}
 	}
 
@@ -194,7 +194,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 				Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
 			}
 			centerX = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -218,7 +218,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 				Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
 			}
 			centerY = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -243,7 +243,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (width != v) {
 			width = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -268,7 +268,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (height != v) {
 			height = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -329,7 +329,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (!Utils.stringEquals(fontName, v)) {
 			fontName = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTNAME));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FONTNAME));
 		}
 	}
 
@@ -353,7 +353,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setFontWeight(boolean v) {
 		if (fontWeight != v) {
 			fontWeight = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTWEIGHT));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FONTWEIGHT));
 		}
 	}
 
@@ -378,7 +378,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setFontStyle(boolean v) {
 		if (fontStyle != v) {
 			fontStyle = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTYLE));
 		}
 	}
 
@@ -402,7 +402,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setFontDecoration(boolean v) {
 		if (fontDecoration != v) {
 			fontDecoration = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTDECORATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FONTDECORATION));
 		}
 	}
 
@@ -425,7 +425,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setFontStrikethru(boolean v) {
 		if (fontStrikethru != v) {
 			fontStrikethru = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTRIKETHRU));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FONTSTRIKETHRU));
 		}
 	}
 
@@ -455,7 +455,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (fontSize != v) {
 			fontSize = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FONTSIZE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FONTSIZE));
 		}
 	}
 
@@ -481,7 +481,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setHAlign(HAlignType v) {
 		if (v != null && hAlign != v) {
 			hAlign = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HALIGN));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.HALIGN));
 		}
 	}
 
@@ -507,7 +507,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setVAlign(VAlignType v) {
 		if (v != null && vAlign != v) {
 			vAlign = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VALIGN));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.VALIGN));
 		}
 	}
 
@@ -539,7 +539,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (borderColor != v) {
 			borderColor = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERCOLOR));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERCOLOR));
 		}
 	}
 
@@ -564,7 +564,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setBorderStyle(LineStyleType v) {
 		if (v != null && borderStyle != v) {
 			borderStyle = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 		}
 	}
 
@@ -593,7 +593,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (borderWidth != v) {
 			borderWidth = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.BORDERWIDTH));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERWIDTH));
 		}
 	}
 
@@ -624,7 +624,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (fillColor != v) {
 			fillColor = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.FILLCOLOR));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FILLCOLOR));
 		}
 	}
 
@@ -661,7 +661,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		}
 		if (shapeType != v) {
 			shapeType = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SHAPETYPE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.SHAPETYPE));
 		}
 	}
 
@@ -682,7 +682,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setZOrder(int v) {
 		if (zOrder != v) {
 			zOrder = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
 		}
 	}
 
@@ -704,7 +704,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		if (rotation != v) {
 			rotation = v;
 			// TODO rotation????
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 	}
 
@@ -789,7 +789,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 */
 	public void setLeft(double v) {
 		centerX = v + width / 2;
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 	}
 
 	/**
@@ -808,9 +808,13 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 */
 	public void setTop(double v) {
 		centerY = v + height / 2;
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 	}
 
+	/**
+	 * @param p
+	 * @return
+	 */
 	@Override
 	public Point2D toAbsoluteCoordinate(Point2D p) {
 		double x = p.getX();
@@ -881,7 +885,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		shapeType = src.shapeType;
 		zOrder = src.zOrder;
 		rotation = src.rotation;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

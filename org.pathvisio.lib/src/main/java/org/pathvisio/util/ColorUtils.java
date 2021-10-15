@@ -117,18 +117,16 @@ public class ColorUtils {
 		colorMap = Collections.unmodifiableMap(cMap);
 	}
 
+	/**
+	 * Returns true if fill color is equal to null or the alpha value is equal to 0.
+	 * 
+	 * @return true if fill color is transparent.
+	 */
+	public static boolean isTransparent(Color color) {
+		return color == null || color.getAlpha() == 0;
+	}
+
 //	/**
-//	 * Checks if fill color is equal to null or the alpha value is equal to 0.
-//	 * 
-//	 * @return true if fill color equal to null or alpha value equal to 0, false
-//	 *         otherwise.
-//	 */
-//	public boolean isTransparent() {
-//		return fillColor == null || fillColor.getAlpha() == 0;
-//	}
-//	/**
-//	 * TODO: Logic seems weird...
-//	 * 
 //	 * Sets the alpha component of fillColor to 0 if true, sets the alpha component
 //	 * of fillColor to 255 if false.
 //	 * 

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.connector.ConnectorRestrictions;
@@ -136,7 +136,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	private void setGroupRef(Group v) {
 		// TODO
 		groupRef = v;
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
 
 	/**
@@ -149,7 +149,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			setGroupRef(null);
 			if (groupRef.hasPathwayElement(this))
 				groupRef.removePathwayElement(this);
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 		}
 	}
 
@@ -180,7 +180,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			removeLinePoints(); // remove points before setting new points
 			addLinePoints(points);
 		}
-		fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 	}
 
 	/**
@@ -252,7 +252,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 				getPathwayModel().addPathwayObject(anchor);
 			anchors.add(anchor);
 			// No anchor property, use LINESTYLE as dummy property to force redraw on line
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 
 		}
 	}
@@ -301,7 +301,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			getPathwayModel().removePathwayObject(anchor);
 		anchors.remove(anchor);
 		// No anchor property, use LINESTYLE as dummy property to force redraw on line
-		fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 	}
 
 	/**
@@ -343,7 +343,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 		if (lineColor != v) {
 			lineColor = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINECOLOR));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LINECOLOR));
 		}
 	}
 
@@ -372,7 +372,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 		if (lineStyle != v) {
 			lineStyle = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
 		}
 	}
 
@@ -401,7 +401,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 		if (lineWidth != v) {
 			lineWidth = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LINEWIDTH));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LINEWIDTH));
 		}
 	}
 
@@ -434,7 +434,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 		if (connectorType != v) {
 			connectorType = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CONNECTORTYPE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.CONNECTORTYPE));
 		}
 	}
 
@@ -455,7 +455,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void setZOrder(int v) {
 		if (zOrder != v) {
 			zOrder = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ZORDER));
 		}
 	}
 
@@ -1092,7 +1092,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		lineWidth = src.lineWidth;
 		connectorType = src.connectorType;
 		zOrder = src.zOrder;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**
@@ -1242,7 +1242,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			if (this.arrowHead != arrowHead && arrowHead != null) {
 				this.arrowHead = arrowHead;
 				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ARROWHEADTYPE));
+						PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ARROWHEADTYPE));
 			}
 		}
 
@@ -1266,7 +1266,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (x != v) {
 				x = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(LineElement.this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
 		}
 
@@ -1290,7 +1290,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (y != v) {
 				y = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(LineElement.this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
 		}
 
@@ -1324,7 +1324,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 				}
 				elementRef = v;
 				// TODO????
-				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ELEMENTREF));
+				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ELEMENTREF));
 			}
 		}
 
@@ -1355,7 +1355,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (relX != v) {
 				relX = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 			}
 		}
 
@@ -1385,7 +1385,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (relY != v) {
 				relY = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 			}
 		}
 
@@ -1455,7 +1455,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 //				}
 				relativeSet = false;
 				setElementRef(null);
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 			}
 		}
 
@@ -1483,26 +1483,26 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		public void moveBy(double deltaX, double deltaY) {
 			setX(x + deltaX);
 			setY(y + deltaY);
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
 		// TODO
 		public void moveTo(double x, double y) {
 			setX(x);
 			setY(y);
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
 		// TODO weird
 		public void moveTo(LinePoint linePoint) {
 			setX(linePoint.getX());
 			setY(linePoint.getY());
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
 		public void refeeChanged() {
 			// called whenever the object being referred to has changed.
-			fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
 		// /**
@@ -1553,7 +1553,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			elementRef = src.elementRef;
 			relX = src.relX;
 			relY = src.relY;
-			fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 		}
 
 	}
@@ -1613,7 +1613,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (position != v) {
 				position = v;
-				fireObjectModifiedEvent(PathwayElementEvent.createCoordinatePropertyEvent(LineElement.this));
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
 		}
 
@@ -1645,7 +1645,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 				shapeType = v;
 			}
 			fireObjectModifiedEvent(
-					PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
+					PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}
 
 		// ================================================================================
@@ -1702,7 +1702,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		public void copyValuesFrom(Anchor src) { // TODO
 			position = src.position;
 			shapeType = src.shapeType;
-			fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+			fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 		}
 
 	}

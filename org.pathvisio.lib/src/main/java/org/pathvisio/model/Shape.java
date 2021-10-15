@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -60,7 +60,7 @@ public class Shape extends ShapedElement {
 	public void setTextLabel(String v) {
 		if (v != null && !Utils.stringEquals(textLabel, v)) {
 			textLabel = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
@@ -77,7 +77,7 @@ public class Shape extends ShapedElement {
 	public void copyValuesFrom(Shape src) { // TODO
 		super.copyValuesFrom(src);
 		textLabel = src.textLabel;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

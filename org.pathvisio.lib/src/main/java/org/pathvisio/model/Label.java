@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -65,7 +65,7 @@ public class Label extends ShapedElement {
 		String value = (v == null) ? "" : v;
 		if (!Utils.stringEquals(textLabel, value)) {
 			textLabel = value;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
@@ -86,7 +86,7 @@ public class Label extends ShapedElement {
 	public void setHref(String v) {
 		if (v != null && !Utils.stringEquals(href, v)) {
 			href = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.HREF));
 		}
 	}
 
@@ -104,7 +104,7 @@ public class Label extends ShapedElement {
 		super.copyValuesFrom(src);
 		textLabel = src.textLabel;
 		href = src.href;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

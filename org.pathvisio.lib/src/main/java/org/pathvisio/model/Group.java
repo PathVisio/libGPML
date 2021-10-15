@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
+import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.type.GroupType;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -88,6 +89,9 @@ public class Group extends ShapedElement {
 	 * Adds the given pathway element to pathwayElements list of this group. Checks
 	 * if pathway element is valid. Sets groupRef of pathway element to this group
 	 * if necessary.
+	 * 
+	 * NB: States are not added to group pathway elements lists. States appear
+	 * outside of groups in the view.
 	 * 
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
@@ -162,7 +166,7 @@ public class Group extends ShapedElement {
 	public void setType(GroupType v) {
 		if (type != v && v != null) {
 			type = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.GROUPTYPE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPTYPE));
 		}
 	}
 
@@ -186,7 +190,7 @@ public class Group extends ShapedElement {
 	public void setTextLabel(String v) {
 		if (v != null && !Utils.stringEquals(textLabel, v)) {
 			textLabel = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.TEXTLABEL));
 		}
 	}
 
@@ -208,7 +212,7 @@ public class Group extends ShapedElement {
 		if (v != null) {
 			xref = v;
 			// TODO
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
 
@@ -377,6 +381,9 @@ public class Group extends ShapedElement {
 			if (e == this) {
 				continue; // To prevent recursion error
 			}
+			if (e.getClass() == State.class) { // TODO
+				continue; // States size is not taken into account for groups
+			}
 			if (bounds == null) {
 				bounds = e.getRotatedBounds();
 			} else {
@@ -403,12 +410,17 @@ public class Group extends ShapedElement {
 	public Rectangle2D getBounds() {
 		Rectangle2D bounds = null;
 		for (Groupable e : pathwayElements) {
-			if (e == this)
+			if (e == this) {
 				continue; // To prevent recursion error
-			if (bounds == null)
+			}
+			if (e.getClass() == State.class) { // TODO
+				continue; // States size is not taken into account for groups
+			}
+			if (bounds == null) {
 				bounds = e.getBounds();
-			else
+			} else {
 				bounds.add(e.getBounds());
+			}
 		}
 		if (bounds != null) {
 			double margin = getMargin();
@@ -434,7 +446,7 @@ public class Group extends ShapedElement {
 		textLabel = src.textLabel;
 		type = src.type;
 		xref = src.xref;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**

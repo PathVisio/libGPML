@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayElementEvent;
-import org.pathvisio.events.PathwayElementListener;
+import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.events.PathwayObjectListener;
 import org.pathvisio.props.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -94,7 +94,7 @@ public class Pathway extends PathwayElement {
 		}
 		if (title != v) {
 			title = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.TITLE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.TITLE));
 		}
 	}
 
@@ -246,7 +246,7 @@ public class Pathway extends PathwayElement {
 	public void setOrganism(String v) {
 		if (!Utils.stringEquals(organism, v)) {
 			organism = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ORGANISM));
 		}
 	}
 
@@ -267,7 +267,7 @@ public class Pathway extends PathwayElement {
 	public void setSource(String v) {
 		if (!Utils.stringEquals(source, v)) {
 			source = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.SOURCE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.SOURCE));
 		}
 	}
 
@@ -288,7 +288,7 @@ public class Pathway extends PathwayElement {
 	public void setVersion(String v) {
 		if (!Utils.stringEquals(version, v)) {
 			version = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.VERSION));
 		}
 	}
 
@@ -309,7 +309,7 @@ public class Pathway extends PathwayElement {
 	public void setLicense(String v) {
 		if (!Utils.stringEquals(license, v)) {
 			license = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.LICENSE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LICENSE));
 		}
 	}
 
@@ -330,7 +330,7 @@ public class Pathway extends PathwayElement {
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
-			fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
 
@@ -345,25 +345,25 @@ public class Pathway extends PathwayElement {
 		noFire = times;
 	}
 
-	private Set<PathwayElementListener> listeners = new HashSet<PathwayElementListener>();
+	private Set<PathwayObjectListener> listeners = new HashSet<PathwayObjectListener>();
 
-	public void addListener(PathwayElementListener v) {
+	public void addListener(PathwayObjectListener v) {
 		if (!listeners.contains(v))
 			listeners.add(v);
 	}
 
-	public void removeListener(PathwayElementListener v) {
+	public void removeListener(PathwayObjectListener v) {
 		listeners.remove(v);
 	}
 
-	public void fireObjectModifiedEvent(PathwayElementEvent e) {
+	public void fireObjectModifiedEvent(PathwayObjectEvent e) {
 		if (noFire > 0) {
 			noFire -= 1;
 			return;
 		}
 //		if (pathwayModel != null)
 //			pathwayModel.childModified(e);
-		for (PathwayElementListener g : listeners) {
+		for (PathwayObjectListener g : listeners) {
 			g.gmmlObjectModified(e);
 		}
 	}
@@ -403,7 +403,7 @@ public class Pathway extends PathwayElement {
 		version = src.version;
 		license = src.license;
 		xref = src.xref;
-		fireObjectModifiedEvent(PathwayElementEvent.createAllPropertiesEvent(this));
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**
@@ -469,7 +469,7 @@ public class Pathway extends PathwayElement {
 			if (!Utils.stringEquals(name, v)) {
 				name = v;
 				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
+						PathwayObjectEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
 			}
 		}
 
@@ -491,7 +491,7 @@ public class Pathway extends PathwayElement {
 			if (!Utils.stringEquals(username, v)) {
 				username = v;
 				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
+						PathwayObjectEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
 			}
 		}
 
@@ -513,7 +513,7 @@ public class Pathway extends PathwayElement {
 			if (order != v) {
 				order = v;
 				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
+						PathwayObjectEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
 			}
 		}
 
@@ -535,7 +535,7 @@ public class Pathway extends PathwayElement {
 			if (v != null) {
 				xref = v;
 				fireObjectModifiedEvent(
-						PathwayElementEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.XREF));
+						PathwayObjectEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.XREF));
 			}
 		}
 
