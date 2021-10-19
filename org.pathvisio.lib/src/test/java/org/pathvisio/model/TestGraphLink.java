@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 /**
  * For testing methods for elementRef:
  * <p>
- * Tests: 
+ * Tests:
  * <ol>
  * <li>linking point to shaped pathway element.
  * <li>linking point to anchor or line pathway element.
@@ -52,11 +52,13 @@ public class TestGraphLink extends TestCase {
 	 * Tests linking of interaction i to datanodes d and d2.
 	 * <p>
 	 * To look something like this:
-	 * <ol>
-	 * <li>.____. . .____.
-	 * <li>| d1 |___| d2 |
-	 * <li>|____| i |____|
-	 * </ol>
+	 * 
+	 * <pre>
+	      d1       d2            
+	     ____      ____
+	    |    |____|    |   
+	    |____| i  |____|
+	 * </pre>
 	 */
 	@Test
 	public void testLinkToShapedElement() {
@@ -90,11 +92,11 @@ public class TestGraphLink extends TestCase {
 	 * Test linking of start of interaction i to anchor of interaction i2.
 	 * <p>
 	 * To look something like this:
-	 * <ol>
-	 * <li>
-	 * <li>| _____
-	 * <li>|
-	 * </ol>
+	 * 
+	 * <pre>
+	    |____  
+	    |
+	 * </pre>
 	 */
 	@Test
 	public void testLinkToAnchor() {
