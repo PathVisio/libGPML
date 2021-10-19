@@ -46,17 +46,33 @@ public final class PathwayObjectEvent {
 	private final Object property;
 	private final boolean coordinateChange;
 
-	// TODO public for now
+	/**
+	 * TODO public for now
+	 * 
+	 * @param pwe
+	 * @param property
+	 * @return
+	 */
 	public static PathwayObjectEvent createSinglePropertyEvent(PathwayObject pwe, Object property) {
 		return new PathwayObjectEvent(pwe, property, false);
 	}
 
-	// TODO public for now
+	/**
+	 * TODO public for now
+	 * 
+	 * @param pwe
+	 * @return
+	 */
 	public static PathwayObjectEvent createAllPropertiesEvent(PathwayObject pwe) {
 		return new PathwayObjectEvent(pwe, null, false);
 	}
 
-	// TODO public for now
+	/**
+	 * TODO public for now
+	 * 
+	 * @param pwe
+	 * @return
+	 */
 	public static PathwayObjectEvent createCoordinatePropertyEvent(PathwayObject pwe) {
 		return new PathwayObjectEvent(pwe, null, true);
 	}

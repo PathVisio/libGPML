@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
-  * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -24,7 +24,7 @@ import java.awt.geom.Point2D;
  * segments and waypoints. ConnectorShapes may implement this class and use the
  * setShape, setSegments and setWayPoints to refresh the cached shape.
  * 
- * @author thomas, finterly
+ * @author thomas
  */
 public abstract class AbstractConnector implements ConnectorShape {
 	private Shape shape;
@@ -36,18 +36,26 @@ public abstract class AbstractConnector implements ConnectorShape {
 	 * 
 	 * @return shape the shape.
 	 */
+	@Override
 	public Shape getShape() {
 		return shape;
 	}
 
+	/**
+	 * Calculates shape from the width of the line endings. 
+	 * 
+	 * @param segments the array of segments.
+	 * @return the calculated shape.
+	 */
 	abstract protected Shape calculateShape(Segment[] segments);
 
 	/**
-	 * Calculate shape from the width of the line endings.
+	 * Calculates shape from the width of the line endings.
 	 *
 	 * @param startGap the double.
 	 * @param endGap   the double.
 	 */
+	@Override
 	public Shape calculateAdjustedShape(double startGap, double endGap) {
 		// gets the segments to local array
 		Segment[] segments = getSegments();
@@ -85,12 +93,13 @@ public abstract class AbstractConnector implements ConnectorShape {
 	 * 
 	 * @return segments the segment array.
 	 */
+	@Override
 	public Segment[] getSegments() {
 		return segments;
 	}
 
 	/**
-	 * Sets the segment cache that will be returned by {@link #getSegments()}
+	 * Sets the segment cache that will be returned by {@link #getSegments()}.
 	 * 
 	 * @param segments the segment array.
 	 */
@@ -103,12 +112,13 @@ public abstract class AbstractConnector implements ConnectorShape {
 	 * 
 	 * @return waypoints the waypoint array.
 	 */
+	@Override
 	public WayPoint[] getWayPoints() {
 		return waypoints;
 	}
 
 	/**
-	 * Sets the waypoints cache that will be returned by {@link #getWayPoints()}
+	 * Sets the waypoints cache that will be returned by {@link #getWayPoints()}.
 	 * 
 	 * @param waypoints the waypoint array.
 	 */

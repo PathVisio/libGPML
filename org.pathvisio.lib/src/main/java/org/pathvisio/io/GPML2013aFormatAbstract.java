@@ -66,7 +66,14 @@ import org.xml.sax.SAXException;
  */
 public abstract class GPML2013aFormatAbstract {
 
+	/**
+	 * The namespace 
+	 */
 	private final Namespace nsGPML;
+	
+	/**
+	 * The schema file 
+	 */
 	private final String xsdFile;
 
 	/**

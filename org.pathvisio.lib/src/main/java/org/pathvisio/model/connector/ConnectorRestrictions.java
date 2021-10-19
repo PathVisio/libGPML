@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
-  * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -23,6 +23,8 @@ import org.pathvisio.model.connector.ConnectorShape.WayPoint;
 
 /**
  * Methods to provide restrictions for the connector path
+ * 
+ * @author unknown
  */
 public interface ConnectorRestrictions {
 
@@ -36,44 +38,50 @@ public interface ConnectorRestrictions {
 	public final static int SIDE_WEST = 3;
 
 	/**
-	 * Check if the connector may cross this point
-	 * Optionally, returns a shape that defines the boundaries of the area  around this
-	 * point that the connector may not cross.
-	 * This method can be used for advanced connectors that route along other objects
-	 * on the drawing
-	 * @return A shape that defines the boundaries of the area around this point that
-	 * the connector may not cross. Returning null is allowed for implementing classes.
+	 * Checks if the connector may cross this point Optionally, returns a shape that
+	 * defines the boundaries of the area around this point that the connector may
+	 * not cross. This method can be used for advanced connectors that route along
+	 * other objects on the drawing
+	 * 
+	 * @param point the point to check.
+	 * @return A shape that defines the boundaries of the area around this point
+	 *         that the connector may not cross. Returning null is allowed for
+	 *         implementing classes.
 	 */
 	Shape mayCross(Point2D point);
 
 	/**
-	 * Get the side of the object to which the start of the connector connects
+	 * Returns the side of the object to which the start of the connector connects
+	 * 
 	 * @return The side, one of the SIDE_* constants
 	 */
 	int getStartSide();
 
 	/**
-	 * Get the side of the object to which the end of the connector connects
+	 * Returns the side of the object to which the end of the connector connects
+	 * 
 	 * @return The side, one of the SIDE_* constants
 	 */
 	int getEndSide();
 
 	/**
-	 * Get the start point to which the connector must connect
-	 * @return
+	 * Returns the start point to which the connector must connect
+	 * 
+	 * @return the start point.
 	 */
 	Point2D getStartPoint2D();
 
 	/**
-	 * Get the end point to which the connector must connect
-	 * @return
+	 * Returns the end point to which the connector must connect
+	 * 
+	 * @return the end point.
 	 */
 	Point2D getEndPoint2D();
 
 	/**
-	 * Get the preferred waypoints, to which the connector must draw
-	 * it's path. The waypoints returned by this method are preferences
-	 * and the connector shape may decide not to use them if they are invalid.
+	 * Returns the preferred waypoints, to which the connector must draw it's path.
+	 * The waypoints returned by this method are preferences and the connector shape
+	 * may decide not to use them if they are invalid.
 	 */
 	WayPoint[] getWayPointPreferences();
 }

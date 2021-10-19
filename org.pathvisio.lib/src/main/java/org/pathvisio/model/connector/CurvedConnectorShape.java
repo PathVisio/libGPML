@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
-  * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -24,26 +24,39 @@ import java.awt.geom.Point2D;
  * Implements a curved connector that draws curved lines between the segments.
  * 
  * @author thomas
- *
  */
 public class CurvedConnectorShape extends ElbowConnectorShape {
-	Segment[] elbowSegments; // The original segments of the elbow connector
-	CurvedSegment[] curvedSegments; // The elbow segment with bezier points
-	// Higher resolution approximation of the curve
-	// Used for calculating the anchor position
+
+	Segment[] elbowSegments; // the original segments of the elbow connector
+	CurvedSegment[] curvedSegments; // the elbow segment with bezier points
+	/*
+	 * Higher resolution approximation of the curve. Used for calculating the anchor
+	 * position.
+	 */
 	Segment[] curveHigh;
-	// Lower resolution approximation of the curve
-	// Used for calculating the arrow heads
+	/*
+	 * Lower resolution approximation of the curve. Used for calculating the arrow
+	 * heads
+	 */
 	Segment[] curveLow;
 
+	/**
+	 * Calculates shape from the width of the line endings. 
+	 * 
+	 * @return the calculated shape.
+	 */
+	@Override 
 	protected Shape calculateShape() {
 		return calculateShape(elbowSegments);
 	}
 
 	/**
+	 * Calculates shapes from the width of the line endings. 
+	 * 
 	 * @param segments the segment array.
 	 * @return path the Shape.
 	 */
+	@Override 
 	public Shape calculateShape(Segment[] segments) {
 		GeneralPath path = new GeneralPath();
 
@@ -77,8 +90,8 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	 * @param restrictions the connector restrictions.
 	 * @param waypoints    the waypoint array.
 	 * @return curveLow the segment array.
-	 * 
 	 */
+	@Override 
 	protected Segment[] calculateSegments(ConnectorRestrictions restrictions, WayPoint[] waypoints) {
 		elbowSegments = super.calculateSegments(restrictions, waypoints);
 
@@ -118,14 +131,14 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 		return curvedSegments;
 	}
 
-	static final int NRSTEP_LOW = 3; // Number of steps for lowres curve
-	static final int NRSTEP_HIGH = 20; // Number of steps for highres curve
+	static final int NRSTEP_LOW = 3; // Number of steps for low-res curve
+	static final int NRSTEP_HIGH = 20; // Number of steps for high-res curve
 
 	/**
 	 * Calculates the bezier curve, using NRSTEP segments for each curvedSegment.
 	 * 
-	 * @param nrStep the integer
-	 * @return An array with the curve broken down into small segments
+	 * @param nrStep the number of steps.
+	 * @return An array with the curve broken down into small segments.
 	 * @see calculateCurvedSegments
 	 */
 	protected Segment[] calculateCurve(int nrStep) {
@@ -180,16 +193,34 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 		private Point2D c1;
 		private Point2D c2;
 
+		/**
+		 * Constructor for a curved segment.
+		 * 
+		 * @param start the start point.
+		 * @param end   the end point.
+		 * @param c1    the bezier control point.
+		 * @param c2    the bezier control point.
+		 */
 		public CurvedSegment(Point2D start, Point2D end, Point2D c1, Point2D c2) {
 			super(start, end);
 			this.c1 = c1;
 			this.c2 = c2;
 		}
 
+		/**
+		 * Returns the c1 bezier control point.
+		 * 
+		 * @return c1 the bezier control point.
+		 */
 		public Point2D getC1() {
 			return c1;
 		}
 
+		/**
+		 * Returns the c2 bezier control point.
+		 * 
+		 * @return c2 the bezier control point.
+		 */
 		public Point2D getC2() {
 			return c2;
 		}
@@ -200,6 +231,7 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	 * @param l the double.
 	 * @return ...
 	 */
+	@Override 
 	public Point2D fromLineCoordinate(double l) {
 		return super.fromLineCoordinate(l, curveHigh);
 	}
@@ -207,9 +239,10 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	/**
 	 * 
 	 * @param waypoints the waypoint array.
-	 * @param segments the segment array.
+	 * @param segments  the segment array.
 	 * @return ...
 	 */
+	@Override 
 	protected WayPoint[] wayPointsToCenter(WayPoint[] waypoints, Segment[] segments) {
 		return super.wayPointsToCenter(waypoints, elbowSegments);
 	}

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
-  * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -23,16 +23,19 @@ import java.awt.geom.Point2D;
  * ConnectorShape implementation for the elbow connector.
  * 
  * @author thomas
- *
  */
 public class ElbowConnectorShape extends SegmentedConnector {
 	private final static double SEGMENT_OFFSET = 20;
 
 	/**
-	 * @param restrictions the connector restriction.
+	 * Forces the connector to redraw it's path. The cache for segments, waypoints
+	 * and shape.
+	 * 
+	 * @param restrictions the ConnectorRestrictions that provides the start, end
+	 *                     and preferred waypoints
 	 */
+	@Override
 	public void recalculateShape(ConnectorRestrictions restrictions) {
-
 		WayPoint[] wps = calculateWayPoints(restrictions);
 		setSegments(calculateSegments(restrictions, wps));
 		setWayPoints(wayPointsToCenter(wps, getSegments()));
@@ -40,18 +43,24 @@ public class ElbowConnectorShape extends SegmentedConnector {
 	}
 
 	/**
+	 * Checks if number of waypoints matches number of segments.
+	 * 
 	 * @param restrictions the connector restriction.
-	 * @return ...
+	 * @return true if number of waypoints matches number of segments, false
+	 *         otherwise.
 	 */
+	@Override
 	public boolean hasValidWaypoints(ConnectorRestrictions restrictions) {
 		// Only check if number of waypoints matches number of segments
 		return restrictions.getWayPointPreferences().length == getNrSegments(restrictions) - 2;
 	}
 
 	/**
+	 * Sets all waypoints to the center of the segments.
+	 * 
 	 * @param waypoints the waypoint array.
 	 * @param segments  the segment array.
-	 * @return waypoints
+	 * @return waypoints the array of waypoints.
 	 */
 	protected WayPoint[] wayPointsToCenter(WayPoint[] waypoints, Segment[] segments) {
 		// Set all waypoints to the center of the segments
@@ -62,7 +71,9 @@ public class ElbowConnectorShape extends SegmentedConnector {
 	}
 
 	/**
-	 * @return shape.
+	 * Calculates shape from the width of the line endings. 
+	 * 
+	 * @return the calculated shape.
 	 */
 	protected Shape calculateShape() {
 		return calculateShape(getSegments());

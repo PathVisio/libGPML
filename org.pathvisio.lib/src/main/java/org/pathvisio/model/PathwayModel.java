@@ -1181,4 +1181,17 @@ public class PathwayModel {
 		}
 	}
 
+	// ================================================================================
+	// Helper Methods
+	// ================================================================================
+	public String summary() {
+		String result = "    " + toString() + "\n    with Objects:";
+		for (PathwayObject pe : getPathwayObjects()) {
+			String code = pe.toString();
+			code = code.substring(code.lastIndexOf('@'), code.length() - 1);
+			result += "\n      " + code + " " + pe.getClass().getSimpleName() + " " + pe.getPathwayModel();
+		}
+		return result;
+	}
+
 }

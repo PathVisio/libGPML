@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
-  * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -31,6 +31,7 @@ import org.pathvisio.model.type.ConnectorType;
  *
  */
 public abstract class ConnectorShapeFactory {
+
 	private static Map<String, Class<? extends ConnectorShape>> shapes = new HashMap<String, Class<? extends ConnectorShape>>();
 
 	static {
@@ -48,7 +49,7 @@ public abstract class ConnectorShapeFactory {
 	}
 
 	/**
-	 * Create an instance of a the implementor of ConnectorShape identified by the
+	 * Creates an instance of a the implementor of ConnectorShape identified by the
 	 * given name.
 	 * 
 	 * @param name the name of the connector shape

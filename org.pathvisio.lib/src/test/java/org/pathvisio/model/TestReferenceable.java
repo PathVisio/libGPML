@@ -18,14 +18,13 @@ import junit.framework.TestCase;
  * Tests for {@link Referenceable}:
  * 
  * <p>
+ * Tests:
  * <ol>
  * <li>{@link Annotatable}, {@link Citable}, {@link Evidenceable}
  * <li>{@link Annotation} and {@link AnnotationRef}
  * <li>{@link Citation} and {@link CitationRef}
  * <li>{@link Evidence} and {@link EvidenceRef}.
  * </ol>
- * 
- * 
  * 
  * @author finterly
  */

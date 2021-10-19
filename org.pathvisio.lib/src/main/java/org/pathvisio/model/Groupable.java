@@ -79,6 +79,13 @@ public interface Groupable {
 	 */
 	public int getZOrder();
 	
+	/**
+	 * Sets the z-order of this pathway element.
+	 * 
+	 * @param v the order of this pathway element.
+	 */
+	public void setZOrder(int v);
+	
 //	/**
 //	 * Terminates this pathway element.
 //	 */

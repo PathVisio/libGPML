@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
-  * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -21,12 +21,19 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.connector.LinAlg.Point;
+import org.pathvisio.util.LinAlg;
+import org.pathvisio.util.LinAlg.Point;
 
 /**
  * Base class for segmented connectors.
  */
 public abstract class SegmentedConnector extends AbstractConnector {
+
+	/**
+	 * @param l
+	 * @param segments
+	 * @return
+	 */
 	protected Point2D fromLineCoordinate(double l, Segment[] segments) {
 		double totalLength = getTotalLength(segments);
 
@@ -66,6 +73,13 @@ public abstract class SegmentedConnector extends AbstractConnector {
 		}
 	}
 
+	/**
+	 * Calculates shape from the width of the line endings. 
+	 * 
+	 * @param segments the array of segments. 
+	 * @return the calculated shape.
+	 */
+	@Override
 	protected Shape calculateShape(Segment[] segments) {
 		GeneralPath path = new GeneralPath();
 		for (Segment s : segments) {
@@ -79,7 +93,12 @@ public abstract class SegmentedConnector extends AbstractConnector {
 		return path;
 	}
 
-	/** @return sum of the lengths of the segments */
+	/**
+	 * Returns the sum of the lengths of the segments
+	 * 
+	 * @param segments the array of segments.
+	 * @return the total length of segments.
+	 */
 	double getTotalLength(Segment[] segments) {
 		double totLength = 0.0;
 		for (Segment seg : segments)
@@ -87,10 +106,25 @@ public abstract class SegmentedConnector extends AbstractConnector {
 		return totLength;
 	}
 
+	/**
+	 * Translates a 1-dimensional line coordinate to a 2-dimensional view
+	 * coordinate. The 1-dimensional line coordinate is position objects that are
+	 * attached to the line.
+	 * 
+	 * @param l the double.
+	 */
+	@Override
 	public Point2D fromLineCoordinate(double l) {
 		return fromLineCoordinate(l, getSegments());
 	}
 
+	/**
+	 * Translates a 2-dimensional view coordinate to a 1-dimensional line
+	 * coordinate.
+	 * 
+	 * @param v the Point2D
+	 */
+	@Override
 	public double toLineCoordinate(Point2D v) {
 		Segment[] segments = getSegments();
 		double totLength = getTotalLength(segments);

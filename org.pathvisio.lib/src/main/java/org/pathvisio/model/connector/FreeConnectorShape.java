@@ -1,6 +1,6 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
-  * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -27,13 +27,22 @@ import java.awt.geom.Point2D;
  *
  */
 public class FreeConnectorShape extends SegmentedConnector {
+
+	/**
+	 * Constructor for free connector shape.
+	 */
 	public FreeConnectorShape() {
 		super();
 	}
 
 	/**
-	 * @param restrictions the connector restrictions.
+	 * Forces the connector to redraw it's path. The cache for segments, waypoints
+	 * and shape.
+	 * 
+	 * @param restrictions the ConnectorRestrictions that provides the start, end
+	 *                     and preferred waypoints
 	 */
+	@Override 
 	public void recalculateShape(ConnectorRestrictions restrictions) {
 		WayPoint[] wps = restrictions.getWayPointPreferences();
 		setSegments(calculateSegments(restrictions, wps));
@@ -42,8 +51,11 @@ public class FreeConnectorShape extends SegmentedConnector {
 	}
 
 	/**
+	 * Checks if number of waypoints matches number of segments.
+	 * 
 	 * @param restrictions the connector restrictions.
-	 * @return true if...
+	 * @return true if number of waypoints matches number of segments, false
+	 *         otherwise.
 	 */
 	public boolean hasValidWaypoints(ConnectorRestrictions restrictions) {
 		// Only check if number of waypoints matches number of segments
@@ -51,17 +63,21 @@ public class FreeConnectorShape extends SegmentedConnector {
 	}
 
 	/**
+	 * Returns the number of segments given connector restrictions.
+	 * 
 	 * @param restrictions the connector restrictions.
-	 * @return integer...
+	 * @return the number of segments.
 	 */
 	private int getNrSegments(ConnectorRestrictions restrictions) {
 		return restrictions.getWayPointPreferences().length + 1;
 	}
 
 	/**
+	 * Calculates segments given restrictions and waypoints.
+	 * 
 	 * @param restrictions the connector restrictions.
 	 * @param waypoints    the waypoint array
-	 * @return integer...
+	 * @return the array of segments.
 	 */
 	protected Segment[] calculateSegments(ConnectorRestrictions restrictions, WayPoint[] waypoints) {
 		Segment[] segments = new Segment[waypoints.length + 1];

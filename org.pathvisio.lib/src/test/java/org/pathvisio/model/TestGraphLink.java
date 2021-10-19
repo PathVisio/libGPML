@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 /**
  * For testing methods for elementRef:
  * <p>
+ * Tests: 
  * <ol>
  * <li>linking point to shaped pathway element.
  * <li>linking point to anchor or line pathway element.

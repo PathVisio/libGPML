@@ -744,8 +744,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	/**
 	 * @param mp a point in absolute model coordinates
 	 * @return the same point relative to the bounding box of this pathway element:
-	 *          -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
-	 *          corner, and 0,0 meaning the center.
+	 *         -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
+	 *         corner, and 0,0 meaning the center.
 	 */
 	public Point2D toRelativeCoordinate(Point2D mp) {
 		double relX = mp.getX();
@@ -768,7 +768,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	ConnectorShape shape;
 
 	/**
-	 * the Connector Shape for this line - the connector shape can calculate a Shape
+	 * The Connector Shape for this line - the connector shape can calculate a Shape
 	 * based on the connector type (straight, elbow or curved) and possibly way
 	 * points
 	 */
@@ -1644,8 +1644,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			if (shapeType != v) {
 				shapeType = v;
 			}
-			fireObjectModifiedEvent(
-					PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANCHORSHAPETYPE));
 		}
 
 		// ================================================================================
