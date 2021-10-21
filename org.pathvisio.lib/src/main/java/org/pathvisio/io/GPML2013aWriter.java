@@ -612,11 +612,16 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Writes group {@link Group} information. In GPML2013a, group has default font
-	 * properties and shape style properties which are not written to the gpml.
+	 * Writes group {@link Group} information.
 	 * 
-	 * NB: Group type "None" is deprecated in GPML2021. Group type "None" is
-	 * replaced with "Group".
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>In GPML2013a, group has default font properties and shape style
+	 * properties which are not written to the gpml.
+	 * <li>Group type "Group" (GPML2021) is written as "None" (GPML2013a).
+	 * <li>Group type "Transparent" (GPML2021) is written as "Group" (GPML2013a).
+	 * </ol>
 	 * 
 	 * @param groups the list of groups.
 	 * @param root   the root element.
@@ -628,7 +633,13 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Group", "GroupId", grp, group.getElementId());
 //			if (!group.getLinkableFroms().isEmpty()) //TODO 
 			setAttr("Group", "GraphId", grp, group.getElementId());
-			setAttr("Group", "Style", grp, group.getType().getName());
+			String typeStr = group.getType().getName();
+			if (typeStr.equals("Group")) {
+				typeStr = "None"; // "Group" (GPML2021) is written as "None" (GPML2013a)
+			} else if (typeStr.equals("Transparent")) {
+				typeStr = "Group"; // "Transparent" (GPML2021) is written as "Group" (GPML2013a)
+			}
+			setAttr("Group", "Style", grp, typeStr);
 			writeXref(group.getXref(), grp, false);
 			writeElementInfo(group, grp);
 			writeShapedOrStateDynamicProperties(group.getDynamicProperties(), group, grp);
@@ -947,6 +958,19 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			setAttr("Attribute", "Value", dp, "Double");
 			if (dp != null) {
 				se.addContent(dp);
+			}
+		}
+		// if state has rotation, write info to dynamic property
+		if (shapedElement.getClass() == State.class) {
+			Double rotation = shapedElement.getRotation();
+			if (rotation != 0) {
+				String rotationStr = String.valueOf(rotation);
+				Element dp = new Element("Attribute", se.getNamespace());
+				setAttr("Attribute", "Key", dp, STATE_ROTATION);
+				setAttr("Attribute", "Value", dp, rotationStr);
+				if (dp != null) {
+					se.addContent(dp);
+				}
 			}
 		}
 	}

@@ -28,16 +28,20 @@ import org.pathvisio.debug.Logger;
  * different biological meanings (e.g. protein Complex), and can be rendered in
  * different ways based on that.
  *
+ * TODO: Add group type="Transparent" to GPML Schema  
+ * 
  * NB: group type previously named group style.
  * 
  * @author unknown, finterly
  */
 public class GroupType {
 
-	private static Map<String, GroupType> nameToGroupType = new TreeMap<String, GroupType>(String.CASE_INSENSITIVE_ORDER);
+	private static Map<String, GroupType> nameToGroupType = new TreeMap<String, GroupType>(
+			String.CASE_INSENSITIVE_ORDER);
 
-	public static final GroupType GROUP = new GroupType("Group"); // default: replaces "NONE"
-	public static final GroupType COMPLEX = new GroupType("Complex"); 
+	public static final GroupType GROUP = new GroupType("Group"); // default: replaces "NONE" of 2013a
+	public static final GroupType TRANSPARENT = new GroupType("Transparent"); // replaces "GROUP" of 2013a
+	public static final GroupType COMPLEX = new GroupType("Complex");
 	public static final GroupType PATHWAY = new GroupType("Pathway");
 	public static final GroupType ANALOG = new GroupType("Analog");
 	public static final GroupType PARALOG = new GroupType("Paralog");
@@ -71,7 +75,7 @@ public class GroupType {
 		if (nameToGroupType.containsKey(name)) {
 			return nameToGroupType.get(name);
 		} else {
-			Logger.log.trace("Registered group type " + name); 
+			Logger.log.trace("Registered group type " + name);
 			return new GroupType(name);
 		}
 	}

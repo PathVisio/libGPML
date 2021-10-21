@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 public class TestSingleGPMLReadWrite extends TestCase {
 
 	private PathwayModel pathwayModel;
-	private String inputFile = "WP4522_119310.gpml";
+	private String inputFile = "temp.gpml";
 	private URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
 
 	/**
@@ -53,29 +53,20 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	}
 
 	/**
-	 * Writes pathway mode to a GPML2013a file.
+	 * Writes pathway mode to a GPML2013a and GPML2021 file.
 	 * 
 	 * @throws ConverterException
 	 * @throws IOException
 	 */
 	@Test
-	public void testWriteGPML2013a() throws IOException, ConverterException {
+	public void testWrite() throws IOException, ConverterException {
 		File tmp = File.createTempFile(inputFile + "_testwriteGPML2013a_", ".gpml");
 		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
-	}
 
-	/**
-	 * Writes pathway mode to a GPML2021 file.
-	 * 
-	 * @throws ConverterException
-	 * @throws IOException
-	 */
-	@Test
-	public void testWriteGPML2021() throws IOException, ConverterException {
-		File tmp = File.createTempFile(inputFile + "_testwriteGPML2021_", ".gpml");
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp, false);
-		System.out.println(tmp);
+		File tmp2 = File.createTempFile(inputFile + "_testwriteGPML2021_", ".gpml");
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp2, true);
+		System.out.println(tmp2);
 	}
 
 }

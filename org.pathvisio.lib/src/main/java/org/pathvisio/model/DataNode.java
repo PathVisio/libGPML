@@ -214,9 +214,6 @@ public class DataNode extends ShapedElement {
 			if (getPathwayModel() != null) {
 				getPathwayModel().addPathwayObject(state);
 			}
-			if (getGroupRef() != null) {
-				getGroupRef().addPathwayElement(state); // TODO add state to PathwayElements list...?
-			}
 			states.add(state);
 			// No state property, use BORDERSTYLE as dummy property to force redraw TODO
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
@@ -330,8 +327,8 @@ public class DataNode extends ShapedElement {
 	 * <ol>
 	 * <li>This method does not call {@link PathwayModel#removeAlias}.
 	 * <li>This method is not used directly. It is called by when the data node
-	 * alias is deleted by {@link PathwayModel#removePathwayObject} which in turn calls
-	 * {@link #terminate}.
+	 * alias is deleted by {@link PathwayModel#removePathwayObject} which in turn
+	 * calls {@link #terminate}.
 	 * </ol>
 	 */
 	private void unsetAliasRef() {
@@ -344,40 +341,6 @@ public class DataNode extends ShapedElement {
 	// ================================================================================
 	// Inherited Methods
 	// ================================================================================
-
-	/**
-	 * Verifies if given parent group is new and valid. Sets the parent group of
-	 * this pathway element. Adds this pathway element to the the pathwayElements
-	 * list of the new parent group. If there is an old parent group, this pathway
-	 * element is removed from its pathwayElements list.
-	 * 
-	 * @param v the new parent group to set.
-	 */
-	@Override
-	public void setGroupRefTo(Group v) {
-		if (v == null)
-			throw new IllegalArgumentException("Invalid group.");
-		if (getGroupRef() != v) {
-			unsetGroupRef(); // first unsets if necessary
-			setGroupRef(v);
-			if (!v.hasPathwayElement(this)) {
-				v.addPathwayElement(this);
-			}
-			// if data node has states, set groupRef for states and add to group
-			v.addPathwayElements(states);
-		}
-	}
-
-	/**
-	 * Unsets the parent group, if any, from this pathway element.
-	 */
-	@Override
-	public void unsetGroupRef() {
-		super.unsetGroupRef();
-		for (State state : states) {
-			state.unsetGroupRef();
-		}
-	}
 
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
@@ -644,18 +607,28 @@ public class DataNode extends ShapedElement {
 		// Inherited Methods
 		// ================================================================================
 
-//		/**
-//		 * Returns the parent group of the dataNode of this state.
-//		 * 
-//		 * NB: Although state groupRef is updated, a state should always belong to the
-//		 * same group as its parent data node.
-//		 * 
-//		 * @return the parent group of this state and its parent dataNode.
-//		 */
-//		@Override
-//		public Group getGroupRef() {
-//			return DataNode.this.getGroupRef();
-//		}
+		/**
+		 * Returns the parent group of the dataNode of this state.
+		 * 
+		 * NB: A state should always belong to the same group as its parent data node.
+		 * 
+		 * @return the parent group of this state and its parent dataNode.
+		 */
+		@Override
+		public Group getGroupRef() {
+			return DataNode.this.getGroupRef();
+		}
+
+		/**
+		 * Do not allow groupRef to be set for this state. A state will always belong to
+		 * the same group as its parent data node.
+		 * 
+		 * @param v the group.
+		 */
+		@Override
+		public void setGroupRefTo(Group v) {
+			// do nothing
+		}
 
 		/**
 		 * Sets the pathway model for this pathway element.

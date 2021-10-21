@@ -102,12 +102,15 @@ public class Group extends ShapedElement {
 		if (getPathwayModel() != pathwayElement.getPathwayModel()) {
 			throw new IllegalArgumentException("Group can only add pathway elements of the same pathway model");
 		}
-		// set groupRef for pathway element if necessary
-		if (pathwayElement.getGroupRef() == null || pathwayElement.getGroupRef() != this)
-			pathwayElement.setGroupRefTo(this);
-		// add pathway element to this group
-		if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement))
-			pathwayElements.add(pathwayElement);
+		// do not add if pathway element is a state
+		if (pathwayElement.getClass() != State.class) {
+			// set groupRef for pathway element if necessary
+			if (pathwayElement.getGroupRef() == null || pathwayElement.getGroupRef() != this)
+				pathwayElement.setGroupRefTo(this);
+			// add pathway element to this group
+			if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement))
+				pathwayElements.add(pathwayElement);
+		}
 	}
 
 	/**
@@ -381,9 +384,6 @@ public class Group extends ShapedElement {
 			if (e == this) {
 				continue; // To prevent recursion error
 			}
-			if (e.getClass() == State.class) { // TODO
-				continue; // States size is not taken into account for groups
-			}
 			if (bounds == null) {
 				bounds = e.getRotatedBounds();
 			} else {
@@ -412,9 +412,6 @@ public class Group extends ShapedElement {
 		for (Groupable e : pathwayElements) {
 			if (e == this) {
 				continue; // To prevent recursion error
-			}
-			if (e.getClass() == State.class) { // TODO
-				continue; // States size is not taken into account for groups
 			}
 			if (bounds == null) {
 				bounds = e.getBounds();

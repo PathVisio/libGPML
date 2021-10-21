@@ -68,4 +68,14 @@ public class TestDataNodeType extends TestCase {
 		System.out.println(DataNodeType.getNames());
 		System.out.println(rna1 == DataNodeType.RNA);
 	}
+	
+	/**
+	 * For testing group type features.
+	 */
+	public static void testGroupType() {
+		GroupType type1 = GroupType.register("group");
+		assertEquals(GroupType.GROUP, type1);
+		assertTrue(GroupType.GROUP == type1);
+	}
+	
 }

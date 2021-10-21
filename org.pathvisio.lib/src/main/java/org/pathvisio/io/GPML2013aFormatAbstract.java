@@ -51,7 +51,6 @@ import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.type.ArrowHeadType;
-import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.MiscUtils;
@@ -67,12 +66,12 @@ import org.xml.sax.SAXException;
 public abstract class GPML2013aFormatAbstract {
 
 	/**
-	 * The namespace 
+	 * The namespace
 	 */
 	private final Namespace nsGPML;
-	
+
 	/**
-	 * The schema file 
+	 * The schema file
 	 */
 	private final String xsdFile;
 
@@ -150,12 +149,12 @@ public abstract class GPML2013aFormatAbstract {
 	public final static String WP_DESCRIPTION = "WikiPathways-description";
 
 	/**
-	 * In GPML2013a, {@link LineStyleType#DOUBLE} and cellular component
-	 * {@link ShapeType} were stored as a dynamic properties using the following
-	 * {@link String}s as keys.
+	 * In GPML2013a, Double LineStyleType, Cellular Component Shape Types, and State
+	 * rotation were stored as a dynamic properties using the following String keys.
 	 */
 	public final static String DOUBLE_LINE_KEY = "org.pathvisio.DoubleLineProperty";
 	public final static String CELL_CMPNT_KEY = "org.pathvisio.CellularComponentProperty";
+	public final static String STATE_ROTATION = "org.pathvisio.core.StateRotation";
 
 	/**
 	 * This {@link BidiMap}is used for mapping {@link ShapeType} Strings to their
@@ -328,8 +327,8 @@ public abstract class GPML2013aFormatAbstract {
 	 */
 	public static final List<String> UNDIRECTED_LIST = new ArrayList<>(Arrays.asList("Line"));
 	public static final List<String> DIRECTED_LIST = new ArrayList<>(Arrays.asList("Arrow"));
-	public static final List<String> CONVERSION_LIST = new ArrayList<>(
-			Arrays.asList("mim-conversion", "mim-modification"));
+	public static final List<String> CONVERSION_LIST = new ArrayList<>(Arrays.asList("mim-conversion",
+			"mim-modification", "mim-cleavage", "mim-gap", "mim-branching-left", "mim-branching-right"));
 	public static final List<String> INHIBITION_LIST = new ArrayList<>(Arrays.asList("mim-inhibition", "TBar"));
 	public static final List<String> CATALYSIS_LIST = new ArrayList<>(Arrays.asList("mim-catalysis"));
 	public static final List<String> STIMULATION_LIST = new ArrayList<>(

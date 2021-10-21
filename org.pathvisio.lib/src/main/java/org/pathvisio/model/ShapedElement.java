@@ -150,7 +150,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * 
 	 * @param v the given group to set.
 	 */
-	protected void setGroupRef(Group v) {
+	private void setGroupRef(Group v) {
 		// TODO
 		groupRef = v;
 		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));

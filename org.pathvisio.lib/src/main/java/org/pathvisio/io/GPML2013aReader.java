@@ -541,6 +541,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					continue;
 				}
 			}
+			// if state, read rotation
+			if (pathwayElement.getClass() == State.class) {
+				if (key.equals(STATE_ROTATION)) {
+					((State) pathwayElement).setRotation(Double.parseDouble(value));
+					continue;
+				}
+			}
 			pathwayElement.setDynamicProperty(key, value);
 		}
 	}
@@ -556,8 +563,8 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * referring to this group by GraphRef. Because GroupIds may conflict with an
 	 * elementId, new unique elementIds (value) can be assigned with reference back
 	 * to the original GroupIds (key) in groupIdToNew map.
-	 * <li>Group type "None" is deprecated in GPML2021. Group type "None" is
-	 * replaced with "Group".
+	 * <li>Group type "None" (GPML2013a) is replaced with "Group" (GPML2021).
+	 * <li>Group type "Group" (GPML2013a) is replaced with "Transparent" (GPML2021).
 	 * <li>Rect properties (centerX, centerY, width, height) are not set but
 	 * calculated when needed.
 	 * </ol>
@@ -585,10 +592,13 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 				elementId = groupId; // if groupId unique, use as elementId
 			}
 			elementIdSet.add(elementId);
-			// read type, in GPML2021, "None" group type is replaced with "Group"
+			// read type
 			String typeStr = getAttr("Group", "Style", grp);
-			if (typeStr.equals("None"))
-				typeStr = "Group";
+			if (typeStr.equals("Group")) {
+				typeStr = "Transparent"; // "Group" (GPML2013a) group type is replaced with "Transparent" (GPML2021)
+			} else if (typeStr.equals("None")) {
+				typeStr = "Group";// "None" (GPML2013a) group type is replaced with "Group" (GPML2021)
+			}
 			GroupType type = GroupType.register(typeStr);
 			// instantiates group and adds to pathway model
 			Group group = new Group(type);
@@ -640,39 +650,42 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Reads default shape style property for type of group as defined in 2013a in
 	 * GroupPainterRegistry.java.
+	 * <p>
+	 * Appearance depending on group type:
+	 * <ol>
+	 * <li>TRANSPARENT: transparent rectangle, hovers to blue #0000ff0c
+	 * <li>COMPLEX: gray #b4b46419 octagon with gray #808080 solid border, hovers to
+	 * red #ff00000c
+	 * <li>PATHWAY: green #00ff000c rectangle with gray #808080 dashed border,
+	 * hovers to green #00ff0019. fontSize 32, fontName "Times" (not implemented).
+	 * <li>GROUP (DEFAULT): gray #b4b46419 rectangle with gray #808080 dashed
+	 * border, hovers to red #ff00000c
+	 * </ol>
 	 * 
-	 * @param type the group type.
+	 * @param group the group pathway element.
+	 * @param type  the group type.
 	 * @throws ConverterException
 	 */
 	protected void readGroupShapeStyleProperty(Group group, GroupType type) throws ConverterException {
-		if (type.getName() == "Group") {
-			// fillColor translucent blue, hovers to transparent
-			group.setBorderColor(Color.decode("#808080"));
-			group.setBorderStyle(LineStyleType.DASHED);
-			group.setBorderWidth(1.0);
-			group.setFillColor(ColorUtils.hexToColor("#0000ff0c"));
+		group.setBorderWidth(1.0);
+		if (type == GroupType.TRANSPARENT) {
+			group.setBorderColor(Color.decode("#00000000"));
+			group.setBorderStyle(LineStyleType.SOLID);
+			group.setFillColor(ColorUtils.hexToColor("#00000000"));
 			group.setShapeType(ShapeType.RECTANGLE);
-		} else if (type.getName() == "Complex") {
-			// fillColor translucent yellowish-gray, hovers to translucent red #ff00000c
+		} else if (type == GroupType.COMPLEX) {
 			group.setBorderColor(Color.decode("#808080"));
 			group.setBorderStyle(LineStyleType.SOLID);
-			group.setBorderWidth(1.0);
 			group.setFillColor(ColorUtils.hexToColor("#b4b46419"));
 			group.setShapeType(ShapeType.OCTAGON);
-		} else if (type.getName() == "Pathway") {
-			// fontSize 32, fontName "Times" (was not implemented)
-			// fillColor translucent green, hovers to more opaque green #00ff0019
-			group.setBorderColor(Color.decode("#808080"));
-			group.setBorderStyle(LineStyleType.SOLID);
-			group.setBorderWidth(1.0);
-			group.setFillColor(ColorUtils.hexToColor("#00ff000c"));
-			group.setShapeType(ShapeType.RECTANGLE);
-		} else {
-			// GroupType "None", or default
-			// fillColor translucent yellowish-gray, hovers to translucent red #ff00000c
+		} else if (type == GroupType.PATHWAY) {
 			group.setBorderColor(Color.decode("#808080"));
 			group.setBorderStyle(LineStyleType.DASHED);
-			group.setBorderWidth(1.0);
+			group.setFillColor(ColorUtils.hexToColor("#00ff000c"));
+			group.setShapeType(ShapeType.RECTANGLE);
+		} else { // DEFAULT
+			group.setBorderColor(Color.decode("#808080"));
+			group.setBorderStyle(LineStyleType.DASHED);
 			group.setFillColor(ColorUtils.hexToColor("#b4b46419"));
 			group.setShapeType(ShapeType.RECTANGLE);
 		}
@@ -853,7 +866,6 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					}
 				}
 			}
-			System.out.println(annotationsMap);
 			if (isAnnotation) {
 				for (String key : annotationsMap.keySet()) {
 					Xref xref = null;
@@ -911,7 +923,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
-	 * NB: points are read by {@link #readPoints}. 
+	 * NB: points are read by {@link #readPoints}.
 	 * 
 	 * @param pathwayModel        the pathway model.
 	 * @param root                the root element.
@@ -944,7 +956,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * stored in the ordered lineList so that line pathway elements can be retrieved
 	 * based on previous read order.
 	 * 
-	 * NB: points are read by {@link #readPoints}. 
+	 * NB: points are read by {@link #readPoints}.
 	 * 
 	 * @param pathwayModel        the pathway model.
 	 * @param root                the root element.
@@ -1012,7 +1024,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads line element {@link LineElement} information for interaction or
 	 * graphical line from jdom element.
 	 * 
-	 * NB: points are read by {@link #readPoints}. 
+	 * NB: points are read by {@link #readPoints}.
 	 * 
 	 * @param lineElement         the line pathway element.
 	 * @param ln                  the jdom line element.
@@ -1084,7 +1096,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads anchor {@link Anchor} information for line element from element.
 	 * 
 	 * @param lineElement  the line element object.
-	 * @param gfx           the jdom graphics element.
+	 * @param gfx          the jdom graphics element.
 	 * @param elementIdSet the set of all elementIds.
 	 * @throws ConverterException
 	 */
@@ -1218,10 +1230,14 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * Reads shape style property information. Jdom handles schema default values.
 	 * If shape type is a key in {@link GPML2013aFormatAbstract#DEPRECATED_MAP},
 	 * replaces deprecated shape type with newer value.
-	 * 
-	 * NB: If pathway element has dynamic property key CellularComponentProperty,
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>If pathway element has dynamic property key CellularComponentProperty,
 	 * shape type is again replaced, this time with the dynamic property value in
 	 * {@link #readDynamicProperties}.
+	 * <li>If state pathway element has dynamic property key
+	 * </ol>
 	 * 
 	 * @param shapedElement the shaped pathway element.
 	 * @param gfx           the jdom graphics element.

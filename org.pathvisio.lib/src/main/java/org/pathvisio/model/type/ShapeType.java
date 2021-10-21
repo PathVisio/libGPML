@@ -76,6 +76,12 @@ public class ShapeType {
 	public static final ShapeType ORGANC = new ShapeType("OrganC"); // Oval
 	public static final ShapeType PROTEINB = new ShapeType("ProteinB"); // Hexagon
 
+	// Special shapes
+	public static final ShapeType CORONAVIRUS = new ShapeType("Coronavirus"); // 
+	public static final ShapeType DNA = new ShapeType("DNA"); // 
+	public static final ShapeType CELL_ICON = new ShapeType("CellIcon"); // 
+
+
 	private String name;
 	private final boolean isResizeable;
 	private final boolean isRotatable;

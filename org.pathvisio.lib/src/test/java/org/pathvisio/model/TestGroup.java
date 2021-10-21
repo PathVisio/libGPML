@@ -36,13 +36,17 @@ public class TestGroup extends TestCase {
 		g1.addPathwayElement(d1);
 		
 		State st = d1.addState("string", "string", null, 1, 1);
-		assertTrue(g1.hasPathwayElement(st));
+		assertFalse(g1.hasPathwayElement(st));
 		assertEquals(st.getGroupRef(), g1);
-		
+		assertTrue(d1.hasState(st));
+		assertTrue(p.hasPathwayObject(st));
+
 		d1.removeState(st);
 		assertFalse(g1.hasPathwayElement(st));
-		assertNull(st.getGroupRef());
-		
+		assertEquals(st.getGroupRef(), g1);
+		assertFalse(d1.hasState(st));
+		assertFalse(p.hasPathwayObject(st));
+
 		assertTrue(p.hasPathwayObject(g1));
 		assertTrue(p.hasPathwayObject(d1));
 		assertTrue(p.getGroups().contains(g1));
