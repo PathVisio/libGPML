@@ -30,3 +30,19 @@ And releases respectively:
 ```shell
 mvn clean deploy -P release
 ```
+
+### Sonatype access
+
+Deploying needs permission. Your account info is stored on Linux in `$HOME/.m2/settings.xml` and looks like:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>ossrh</id>
+      <username></username>
+      <password></password>
+    </server>
+  </servers>
+</settings>
+```
