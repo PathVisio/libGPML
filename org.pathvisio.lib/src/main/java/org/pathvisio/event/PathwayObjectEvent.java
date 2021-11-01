@@ -14,10 +14,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.events;
+package org.pathvisio.event;
 
 import org.pathvisio.model.PathwayObject;
-import org.pathvisio.props.Property;
+import org.pathvisio.prop.Property;
 
 /**
  * This event is used to notify {@link PathwayObjectListener}s of changes to

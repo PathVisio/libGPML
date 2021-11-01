@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.connector.ConnectorRestrictions;
@@ -37,7 +37,7 @@ import org.pathvisio.model.type.AnchorShapeType;
 import org.pathvisio.model.type.ArrowHeadType;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.LineStyleType;
-import org.pathvisio.props.StaticProperty;
+import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
 /**

@@ -32,9 +32,9 @@ import java.util.Set;
 
 import org.bridgedb.Xref;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.events.PathwayEvent;
-import org.pathvisio.events.PathwayListener;
-import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.event.PathwayEvent;
+import org.pathvisio.event.PathwayListener;
+import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.DataNode.State;

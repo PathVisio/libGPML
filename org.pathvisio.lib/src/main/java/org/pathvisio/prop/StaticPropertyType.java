@@ -15,7 +15,7 @@
  * the License.
  ******************************************************************************/
 
-package org.pathvisio.props;
+package org.pathvisio.prop;
 
 /**
  * The properties in {@link StaticProperty} define properties of different

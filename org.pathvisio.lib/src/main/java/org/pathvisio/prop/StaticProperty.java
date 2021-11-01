@@ -15,7 +15,7 @@
  * the License.
  ******************************************************************************/
 
-package org.pathvisio.props;
+package org.pathvisio.prop;
 
 import java.util.HashMap;
 import java.util.Map;

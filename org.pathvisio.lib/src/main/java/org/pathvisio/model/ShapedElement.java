@@ -23,7 +23,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import org.pathvisio.debug.Logger;
-import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.LineElement.LinePoint;
@@ -31,7 +31,7 @@ import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.model.type.VAlignType;
-import org.pathvisio.props.StaticProperty;
+import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
 /**

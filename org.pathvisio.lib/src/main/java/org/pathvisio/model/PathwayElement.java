@@ -23,12 +23,12 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.Referenceable.Annotatable;
 import org.pathvisio.model.Referenceable.Citable;
 import org.pathvisio.model.Referenceable.Evidenceable;
 import org.pathvisio.model.type.AnnotationType;
-import org.pathvisio.props.StaticProperty;
+import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
 /**

@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.StateType;
-import org.pathvisio.props.StaticProperty;
+import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
 /**

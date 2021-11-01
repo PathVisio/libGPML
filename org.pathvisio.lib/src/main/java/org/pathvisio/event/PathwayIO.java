@@ -14,41 +14,33 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.props;
+package org.pathvisio.event;
+
+import java.util.List;
 
 /**
- * This interface defines a typed property.
- *
- * @author Mark Woon
+ * Common methods for {@link PathwayImporter}s and {@link PathwayExporter}s
  */
-public interface Property {
+public interface PathwayIO {
+	public String getName();
 
 	/**
-	 * Gets the Id for this property. Ids must be unique.
-	 */
-	String getId();
-
-	/**
-	 * @return the name of property, used e.g. as row header in the properties
-	 *         table.
-	 */
-	String getName();
-
-	/**
-	 * Description of property, used e.g. as tooltip text when mousing over the
-	 * properties table. Descriptions are optional.
+	 * Get the possible extensions this importer/exporter can read (e.g. txt). The
+	 * extensions do not have to be unique. In case two importers use the same
+	 * extension, the correct one will be chosen based on the result of
+	 * PathwayImporter.isCorrectFileType(). If that doesn't help, the user may be
+	 * asked to pick an importer. The first item in the array is assumed to be the
+	 * preferred extension.
 	 * 
-	 * @return description. May return null.
+	 * @return An array with the possible extensions (without '.')
 	 */
-	String getDescription();
+	public String[] getExtensions();
 
 	/**
-	 * Gets the data type for this property.
+	 * After import or export, this can be used to check if there are any warnings
+	 * 
+	 * @return a list of warning messages, or an empty list if there are none.
 	 */
-	PropertyType getType();
+	public List<String> getWarnings();
 
-	/**
-	 * Gets whether this property has accepts values.
-	 */
-	boolean isCollection();
 }

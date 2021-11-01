@@ -14,21 +14,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.events;
+package org.pathvisio.event;
 
 import java.util.EventListener;
 
 /**
- * Implement this if you want to be notified of changes to a Pathway.
+ * Implement this if you want to be notified of changes to properties of a
+ * PathwayObject.
  *
- * This means addition of new elements to a Pathway and
- * removal of elements from a Pathway, but not
- * changes to properties of a single PathwayElement
- *
- * For example this is used by VPathway to refresh itself when a new
- * element is added.
+ * For example, this is used by DatanodeDialog or by PropertyTableModel to keep
+ * up to date with changes in the selected PathwayObject.
  */
-public interface PathwayListener extends EventListener
-{
-	public void pathwayModified(PathwayEvent e);
+public interface PathwayObjectListener extends EventListener {
+	
+	/**
+	 * @param e
+	 */
+	public void gmmlObjectModified(PathwayObjectEvent e);
+	
 }

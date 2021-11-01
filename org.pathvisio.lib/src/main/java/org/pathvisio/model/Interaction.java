@@ -17,8 +17,8 @@
 package org.pathvisio.model;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayObjectEvent;
-import org.pathvisio.props.StaticProperty;
+import org.pathvisio.event.PathwayObjectEvent;
+import org.pathvisio.prop.StaticProperty;
 
 /**
  * This class stores information for an Interaction pathway element.

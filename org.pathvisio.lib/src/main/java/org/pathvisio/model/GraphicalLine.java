@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.model;
 
-import org.pathvisio.events.PathwayObjectEvent;
+import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.DataNode.State;
 
 /**

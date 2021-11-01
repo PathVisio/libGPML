@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.props;
+package org.pathvisio.prop;
 
 /**
  * This interface represents a type (the <i>Type</i> in Property).

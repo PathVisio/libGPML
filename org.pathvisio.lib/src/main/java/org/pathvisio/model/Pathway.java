@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.bridgedb.Xref;
-import org.pathvisio.events.PathwayObjectEvent;
-import org.pathvisio.events.PathwayObjectListener;
-import org.pathvisio.props.StaticProperty;
+import org.pathvisio.event.PathwayObjectEvent;
+import org.pathvisio.event.PathwayObjectListener;
+import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
 /**

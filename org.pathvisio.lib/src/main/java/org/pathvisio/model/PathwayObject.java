@@ -19,9 +19,9 @@ package org.pathvisio.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.pathvisio.events.PathwayObjectEvent;
-import org.pathvisio.events.PathwayObjectListener;
-import org.pathvisio.props.StaticProperty;
+import org.pathvisio.event.PathwayObjectEvent;
+import org.pathvisio.event.PathwayObjectListener;
+import org.pathvisio.prop.StaticProperty;
 
 /**
  * Abstract class of pathway elements which are part of a pathway and have an
