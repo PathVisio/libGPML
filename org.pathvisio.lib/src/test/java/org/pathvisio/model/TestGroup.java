@@ -253,13 +253,14 @@ public class TestGroup extends TestCase {
 		assertEquals(line.getEndLinePoint().getElementRef(), group);
 
 		assertEquals(8.0, group.getMargin());
-
+	
 		assertEquals(120.0, line.getEndLinePointX(), 0.01);
 		assertEquals(2.0, line.getEndLinePointY(), 0.01);
 
 		// remove group completely
 		pwy.remove(group);
-
+		
+		System.out.println(line.getEndLinePointX());
 		// check that line points at same position
 		assertEquals(120.0, line.getEndLinePointX());
 		assertEquals(2.0, line.getEndLinePointY());

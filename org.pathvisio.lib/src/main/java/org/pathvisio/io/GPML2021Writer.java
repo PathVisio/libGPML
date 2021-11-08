@@ -837,7 +837,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 		se.addContent(gfx);
 		writeRectProperty(shapedElement, gfx);
 		writeFontProperty(shapedElement, gfx);
-		writeShapeStyleProperty(shapedElement, gfx, true);
+		writeShapeStyleProperty(shapedElement, gfx);
 		writeElementInfo(shapedElement, se);
 	}
 
@@ -903,14 +903,15 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx, boolean writeZOrder)
+	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx)
 			throws ConverterException {
 		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapedElement.getBorderColor(), false));
 		gfx.setAttribute("borderStyle", shapedElement.getBorderStyle().getName());
 		gfx.setAttribute("borderWidth", String.valueOf(shapedElement.getBorderWidth()));
 		gfx.setAttribute("fillColor", ColorUtils.colorToHex(shapedElement.getFillColor(), false));
 		gfx.setAttribute("shapeType", shapedElement.getShapeType().getName());
-		if (writeZOrder) {
+		// do not write z-order for states
+		if (shapedElement.getClass() != State.class) {
 			gfx.setAttribute("zOrder", String.valueOf(shapedElement.getZOrder()));
 		}
 		double rotation = shapedElement.getRotation();

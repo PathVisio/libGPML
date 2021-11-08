@@ -735,11 +735,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 */
 	@Override
 	protected void terminate() {
-		removeAnnotationRefs();
-		removeCitationRefs();
-		removeEvidenceRefs();// TODO
-		unsetGroupRef();
 		unsetAllLinkableFroms(); // TODO unset as a LinkableTo
+		unsetGroupRef();
 		super.terminate();
 	}
 

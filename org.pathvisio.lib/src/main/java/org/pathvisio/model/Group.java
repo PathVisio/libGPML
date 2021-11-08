@@ -242,8 +242,14 @@ public class Group extends ShapedElement {
 	 */
 	@Override
 	protected void terminate() {
+		unsetAllLinkableFroms(); // unlink before removing pathway element
+		unsetGroupRef();
 		removePathwayElements();
-		super.terminate();
+		removeAnnotationRefs();
+		removeCitationRefs();
+		removeEvidenceRefs();
+		unsetPathwayModel();
+		setElementId(null);
 	}
 
 	// ================================================================================

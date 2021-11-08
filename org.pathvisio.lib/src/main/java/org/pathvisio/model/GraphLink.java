@@ -70,6 +70,7 @@ public abstract class GraphLink {
 		 * Convert a point to pathway coordinates (relative to the pathway)
 		 */
 		Point2D toAbsoluteCoordinate(Point2D p);
+
 	}
 
 	// ================================================================================

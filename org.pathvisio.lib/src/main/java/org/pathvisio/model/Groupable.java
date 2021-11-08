@@ -17,6 +17,7 @@
 
 package org.pathvisio.model;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -78,14 +79,14 @@ public interface Groupable {
 	 * @return zOrder the order of this pathway element.
 	 */
 	public int getZOrder();
-	
+
 	/**
 	 * Sets the z-order of this pathway element.
 	 * 
 	 * @param v the order of this pathway element.
 	 */
 	public void setZOrder(int v);
-	
+
 //	/**
 //	 * Terminates this pathway element.
 //	 */
@@ -158,5 +159,19 @@ public interface Groupable {
 	 * element.
 	 */
 	public void setTop(double v);
+
+	/**
+	 * @param p
+	 * @return
+	 */
+	public Point2D toAbsoluteCoordinate(Point2D p);
+
+	/**
+	 * @param mp a point in absolute model coordinates
+	 * @return the same point relative to the bounding box of this pathway element:
+	 *         -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
+	 *         corner, and 0,0 meaning the center.
+	 */
+	public Point2D toRelativeCoordinate(Point2D mp);
 
 }

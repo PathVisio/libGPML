@@ -24,7 +24,7 @@ import org.pathvisio.model.PathwayModel;
 /**
  * implemented by classes that can import a pathway from various different types
  */
-public interface PathwayImporter extends PathwayIO {
+public interface PathwayModelImporter extends PathwayModelIO {
 	/**
 	 * Inspect the file and determine if the file is suitable for import using this
 	 * importer. For example, files ending in .xml could be examined for the local

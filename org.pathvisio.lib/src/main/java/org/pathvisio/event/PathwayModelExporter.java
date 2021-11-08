@@ -24,7 +24,7 @@ import org.pathvisio.model.PathwayModel;
 /**
  * Interface for an exporter that writes a pathway to a file
  */
-public interface PathwayExporter extends PathwayIO {
+public interface PathwayModelExporter extends PathwayModelIO {
 	/**
 	 * Export the given pathway to the file
 	 * 

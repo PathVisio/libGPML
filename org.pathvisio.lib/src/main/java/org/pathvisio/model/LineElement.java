@@ -1252,7 +1252,11 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @return x the coordinate value for x.
 		 */
 		public double getX() {
-			return x;
+			if (isRelative()) {
+				return getAbsolute().getX();
+			} else {
+				return x;
+			}
 		}
 
 		/**
@@ -1261,13 +1265,13 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @param v the coordinate value to set for x.
 		 */
 		public void setX(double v) {
-			if (v < 0) {
+			if (v != getX()) {
+				moveBy(v - getX(), 0);
+			}
+			if (x < 0) {
 				Logger.log.trace("Warning: negative x coordinate " + String.valueOf(v));
 			}
-			if (x != v) {
-				x = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
-			}
+
 		}
 
 		/**
@@ -1276,7 +1280,11 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @return y the coordinate value for y.
 		 */
 		public double getY() {
-			return y;
+			if (isRelative()) {
+				return getAbsolute().getY();
+			} else {
+				return y;
+			}
 		}
 
 		/**
@@ -1285,12 +1293,11 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @param v the coordinate value to set for y.
 		 */
 		public void setY(double v) {
-			if (v < 0) {
-				Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
+			if (v != getY()) {
+				moveBy(0, v - getY());
 			}
-			if (y != v) {
-				y = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
+			if (y < 0) {
+				Logger.log.trace("Warning: negative y coordinate " + String.valueOf(v));
 			}
 		}
 
@@ -1393,18 +1400,23 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// Point Link Methods
 		// ================================================================================
 
-		private boolean relativeSet; // TODO
+		/**
+		 * Checks if the position of this point should be stored as relative or absolute
+		 * coordinates
+		 * 
+		 * @return true if the coordinates are relative, false otherwise.
+		 */
+		public boolean isRelative() {
+			if (pathwayModel != null && elementRef != null) {
+				return pathwayModel.hasPathwayObject((PathwayObject) elementRef);
+			} else {
+				return false;
+			}
+		}
 
-//		/**
-//		 * Helper method for converting older GPML files without relative coordinates.
-//		 * 
-//		 * @return true if {@link #setRelativePosition(double, double)} was called to
-//		 *         set the relative coordinates, false if not.
-//		 */
-//		protected boolean relativeSet() {
-//			return relativeSet;
-//		}
-
+		/**
+		 * @return
+		 */
 		private Point2D getAbsolute() {
 			return elementRef.toAbsoluteCoordinate(new Point2D.Double(getRelX(), getRelY()));
 		}
@@ -1439,21 +1451,24 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * Link to an object using the given relative coordinates TODO
 		 */
 		public void linkTo(LinkableTo elementRef, double relX, double relY) {
+//			String id = elementRef.getElementId(); // TODO needed? 
+//			if (id == null) {
+//				id = ((PathwayObject) elementRef).setGeneratedElementId();
+//			}
 			setElementRef(elementRef);
-			setRelXY(relX, relY);
+			setRelativePosition(relX, relY);
 		}
 
 		/**
-		 * note that this may be called any number of times when this point is already
+		 * NB: This may be called any number of times when this point is already
 		 * unlinked
 		 */
 		public void unlink() {
 			if (elementRef != null) {
-//				if (getPathwayModel() != null) { TODO 
-//					Point2D abs = getAbsolute();
-//					moveTo(abs.getX(), abs.getY());
-//				}
-				relativeSet = false;
+				if (getPathwayModel() != null) {
+					Point2D abs = getAbsolute();
+					moveTo(abs.getX(), abs.getY());
+				}
 				setElementRef(null);
 				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 			}
@@ -1465,31 +1480,31 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 
 		// TODO
 		/**
-		 * Sets relX and relY for this point. When the given point is linked to a
+		 * Sets X, Y, relX and relY for this point. When the given point is linked to a
 		 * pathway element, relX and relY are the relative coordinates on the element,
 		 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
-		 * of the object. TODO was named set RelativePosition
+		 * of the object.
 		 * 
 		 * @param relX the relative x coordinate.
 		 * @param relY the relative y coordinate.
 		 */
-		public void setRelXY(double relX, double relY) {
+		public void setRelativePosition(double relX, double relY) {
+			moveTo(getX(), getY());
 			setRelX(relX);
 			setRelY(relY);
-			relativeSet = true;
 		}
 
 		// TODO
 		public void moveBy(double deltaX, double deltaY) {
-			setX(x + deltaX);
-			setY(y + deltaY);
+			x += deltaX;
+			y += deltaY;
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
 		// TODO
-		public void moveTo(double x, double y) {
-			setX(x);
-			setY(y);
+		public void moveTo(double vx, double vy) {
+			x = vx;
+			y = vy;
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
@@ -1497,6 +1512,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		public void moveTo(LinePoint linePoint) {
 			setX(linePoint.getX());
 			setY(linePoint.getY());
+			setRelX(linePoint.getRelX()); // TODO
+			setRelY(linePoint.getRelY()); // TODO
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
@@ -1504,16 +1521,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			// called whenever the object being referred to has changed.
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
-
-		// /**
-		// * Helper method for converting older GPML files without relative coordinates.
-		// *
-		// * @return true if {@link #setRelativePosition(double, double)} was called to
-		// * set the relative coordinates, false if not.
-		// */
-		// protected boolean relativeSet() {
-		// return relativeSet;
-		// }
 
 		// ================================================================================
 		// Inherited Methods
@@ -1555,7 +1562,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			relY = src.relY;
 			fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 		}
-
 	}
 
 // ================================================================================
@@ -1584,6 +1590,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		private Anchor(double position, AnchorShapeType shapeType) {
 			super();
+			// TODO unlink
 			setPosition(position); // must be valid
 			setShapeType(shapeType);
 		}

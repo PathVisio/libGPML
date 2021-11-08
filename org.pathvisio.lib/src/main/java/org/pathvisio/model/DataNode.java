@@ -608,6 +608,19 @@ public class DataNode extends ShapedElement {
 		// ================================================================================
 
 		/**
+		 * Returns the z-order of this pathway element.
+		 * 
+		 * NB: State z-order is always z-order of data node +1. This is because z-order
+		 * is not written out to the gpml file.
+		 * 
+		 * @return zOrder the order of this pathway element.
+		 */
+		@Override
+		public int getZOrder() {
+			return getDataNode().getZOrder() + 1;
+		}
+
+		/**
 		 * Returns the parent group of the dataNode of this state.
 		 * 
 		 * NB: A state should always belong to the same group as its parent data node.

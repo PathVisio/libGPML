@@ -20,14 +20,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pathvisio.event.PathwayExporter;
-import org.pathvisio.event.PathwayImporter;
+import org.pathvisio.event.PathwayModelExporter;
+import org.pathvisio.event.PathwayModelImporter;
 
 /**
  * base implementation of PathwayImporter and PathwayExporter warnings
  * mechanism.
  */
-public abstract class AbstractPathwayFormat implements PathwayImporter, PathwayExporter {
+public abstract class AbstractPathwayFormat implements PathwayModelImporter, PathwayModelExporter {
 	private List<String> warnings = new ArrayList<String>();
 
 	protected void clearWarnings() {

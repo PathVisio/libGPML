@@ -16,31 +16,19 @@
  ******************************************************************************/
 package org.pathvisio.event;
 
-import java.util.List;
+import java.util.EventListener;
 
 /**
- * Common methods for {@link PathwayImporter}s and {@link PathwayExporter}s
+ * Implement this if you want to be notified of changes to a Pathway.
+ *
+ * This means addition of new elements to a Pathway and
+ * removal of elements from a Pathway, but not
+ * changes to properties of a single PathwayElement
+ *
+ * For example this is used by VPathway to refresh itself when a new
+ * element is added.
  */
-public interface PathwayIO {
-	public String getName();
-
-	/**
-	 * Get the possible extensions this importer/exporter can read (e.g. txt). The
-	 * extensions do not have to be unique. In case two importers use the same
-	 * extension, the correct one will be chosen based on the result of
-	 * PathwayImporter.isCorrectFileType(). If that doesn't help, the user may be
-	 * asked to pick an importer. The first item in the array is assumed to be the
-	 * preferred extension.
-	 * 
-	 * @return An array with the possible extensions (without '.')
-	 */
-	public String[] getExtensions();
-
-	/**
-	 * After import or export, this can be used to check if there are any warnings
-	 * 
-	 * @return a list of warning messages, or an empty list if there are none.
-	 */
-	public List<String> getWarnings();
-
+public interface PathwayModelListener extends EventListener
+{
+	public void pathwayModified(PathwayModelEvent e);
 }

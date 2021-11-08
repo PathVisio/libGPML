@@ -26,7 +26,7 @@ import org.pathvisio.model.PathwayObject;
  * This event is currently used both by PathwayListener's and
  * PathwayElementListener's. That may change in the future.
  */
-public class PathwayEvent {
+public class PathwayModelEvent {
 	/**
 	 * Sent to listeners of Pathway when an object was deleted
 	 */
@@ -54,7 +54,7 @@ public class PathwayEvent {
 		return type;
 	}
 
-	public PathwayEvent(PathwayObject object, int t) {
+	public PathwayModelEvent(PathwayObject object, int t) {
 		affectedData = object;
 		type = t;
 	}

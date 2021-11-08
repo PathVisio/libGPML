@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashMap;
@@ -29,11 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bridgedb.Xref;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.event.PathwayEvent;
-import org.pathvisio.event.PathwayListener;
+import org.pathvisio.event.PathwayModelEvent;
+import org.pathvisio.event.PathwayModelListener;
 import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.io.ConverterException;
 import org.pathvisio.io.GpmlFormat;
@@ -108,8 +111,53 @@ public class PathwayModel {
 	}
 
 	// TODO
+	/**
+	 * Returns all pathway elements for the pathway model (dataNodes, interactions,
+	 * graphicalLines, labels, shapes, and groups). Excludes pathway? TODO
+	 * 
+	 * @return the pathway elements for this pathway model.
+	 */
 	public List<PathwayElement> getPathwayElements() {
-		return null;
+		return Stream.of(dataNodes, interactions, graphicalLines, labels, shapes, groups).flatMap(Collection::stream)
+				.collect(Collectors.toList());
+	}
+
+	// TODO
+	/**
+	 * Returns all shaped pathway elements for the pathway model (dataNodes, labels,
+	 * shapes, and groups). Excludes state? TODO
+	 * 
+	 * @return the pathway elements for this pathway model.
+	 */
+	public List<ShapedElement> getShapedElements() {
+		List<State> states = new ArrayList<State>();
+		for (DataNode dataNode : dataNodes) {
+			states.addAll(dataNode.getStates());
+		}
+		return Stream.of(dataNodes, states, labels, shapes, groups).flatMap(Collection::stream)
+				.collect(Collectors.toList());
+	}
+
+	// TODO
+	/**
+	 * Returns all shaped pathway elements for the pathway model (dataNodes, labels,
+	 * shapes, and groups) excluding states.
+	 * 
+	 * @return the pathway elements for this pathway model.
+	 */
+	public List<ShapedElement> getShapedElementsExclStates() {
+		return Stream.of(dataNodes, labels, shapes, groups).flatMap(Collection::stream).collect(Collectors.toList());
+	}
+
+	// TODO
+	/**
+	 * Returns all line pathway elements for the pathway model (interactions and
+	 * graphicalLines).
+	 * 
+	 * @return the pathway elements for this pathway model.
+	 */
+	public List<LineElement> getLineElements() {
+		return Stream.of(interactions, graphicalLines).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	// ================================================================================
@@ -125,10 +173,10 @@ public class PathwayModel {
 	}
 
 	/**
-	 * Returns PathwayElement for the given String elementId key.
+	 * Returns Pathway Object for the given String elementId key.
 	 * 
 	 * @param elementId the given elementId key.
-	 * @return the PathwayElement for the given elementId key.
+	 * @return the PathwayObject for the given elementId key.
 	 */
 	public PathwayObject getPathwayObject(String elementId) {
 		return elementIdToPathwayObject.get(elementId);
@@ -253,8 +301,9 @@ public class PathwayModel {
 		if (!elementRefToLinePoints.containsKey(elementRef))
 			throw new IllegalArgumentException();
 		elementRefToLinePoints.get(elementRef).remove(linePoint); // TODO
-		if (elementRefToLinePoints.get(elementRef).size() == 0)
+		if (elementRefToLinePoints.get(elementRef).size() == 0) {
 			elementRefToLinePoints.remove(elementRef);
+		}
 	}
 
 	// ================================================================================
@@ -764,10 +813,10 @@ public class PathwayModel {
 		}
 		String elementId = pathwayObject.getElementId();
 		if (elementId == null) {
-			pathwayObject.setGeneratedElementId();
+			elementId = pathwayObject.setGeneratedElementId();
 		}
-		addElementId(pathwayObject.getElementId(), pathwayObject);
-		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.ADDED));
+		addElementId(elementId, pathwayObject);
+		fireObjectModifiedEvent(new PathwayModelEvent(pathwayObject, PathwayModelEvent.ADDED));
 		checkMBoardSize(pathwayObject); // TODO
 	}
 
@@ -791,7 +840,7 @@ public class PathwayModel {
 		}
 		removeElementId(pathwayObject.getElementId());
 		pathwayObject.terminate();
-		fireObjectModifiedEvent(new PathwayEvent(pathwayObject, PathwayEvent.DELETED));
+		fireObjectModifiedEvent(new PathwayModelEvent(pathwayObject, PathwayModelEvent.DELETED));
 	}
 
 	/**
@@ -1093,7 +1142,7 @@ public class PathwayModel {
 		if (Math.abs(getPathway().getBoardWidth() - mw) + Math.abs(getPathway().getBoardHeight() - mh) > 0.01) {
 			getPathway().setBoardWidth(mw);
 			getPathway().setBoardHeight(mh);
-			fireObjectModifiedEvent(new PathwayEvent(getPathway(), PathwayEvent.RESIZED));
+			fireObjectModifiedEvent(new PathwayModelEvent(getPathway(), PathwayModelEvent.RESIZED));
 		}
 	}
 
@@ -1159,14 +1208,14 @@ public class PathwayModel {
 		}
 	}
 
-	private List<PathwayListener> listeners = new ArrayList<PathwayListener>();
+	private List<PathwayModelListener> listeners = new ArrayList<PathwayModelListener>();
 
-	public void addListener(PathwayListener v) {
+	public void addListener(PathwayModelListener v) {
 		if (!listeners.contains(v))
 			listeners.add(v);
 	}
 
-	public void removeListener(PathwayListener v) {
+	public void removeListener(PathwayModelListener v) {
 		listeners.remove(v);
 	}
 
@@ -1174,9 +1223,9 @@ public class PathwayModel {
 	 * Firing the ObjectModifiedEvent has the side effect of marking the Pathway as
 	 * changed.
 	 */
-	public void fireObjectModifiedEvent(PathwayEvent e) {
+	public void fireObjectModifiedEvent(PathwayModelEvent e) {
 		markChanged();
-		for (PathwayListener g : listeners) {
+		for (PathwayModelListener g : listeners) {
 			g.pathwayModified(e);
 		}
 	}

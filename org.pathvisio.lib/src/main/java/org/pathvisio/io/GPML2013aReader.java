@@ -608,7 +608,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 			groupIdToGroup.put(groupId, group);
 			graphIdToGroup.put(graphId, group);
 			// Sets graphics.
-			readGroupShapeStyleProperty(group, type);
+			setGroupGraphicsProperty(group, type);
 			// reads comment group
 			readCommentGroup(group, grp, idToPublicationXref);
 			// sets optional properties
@@ -644,13 +644,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	}
 
 	/**
-	 * Reads default shape style property for type of group as defined in 2013a in
-	 * GroupPainterRegistry.java.
+	 * Reads and sets graphics properties for {@link Group}.
 	 * <p>
-	 * Appearance depending on group type:
+	 * Graphics depends on group type:
 	 * <ol>
 	 * <li>Because textLabel was not implemented for groups in 2013a, we set the
-	 * textColor to transparent TODO 
+	 * textColor to transparent TODO
 	 * <li>TRANSPARENT: transparent rectangle, hovers to blue #0000ff0c
 	 * <li>COMPLEX: gray #b4b46419 octagon with gray #808080 solid border, hovers to
 	 * red #ff00000c
@@ -664,7 +663,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param type  the group type.
 	 * @throws ConverterException
 	 */
-	protected void readGroupShapeStyleProperty(Group group, GroupType type) throws ConverterException {
+	protected void setGroupGraphicsProperty(Group group, GroupType type) throws ConverterException {
 		group.setTextColor(Color.decode("#808080"));
 		group.setBorderWidth(1.0);
 		if (type == GroupType.TRANSPARENT) {

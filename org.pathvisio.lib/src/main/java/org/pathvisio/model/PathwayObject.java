@@ -133,9 +133,13 @@ public abstract class PathwayObject {
 
 	/**
 	 * Sets the elementId to generated elementId from pathwayModel.
+	 * 
+	 * NB: This method does not automatically add this elementId to the pathway
+	 * model.
 	 */
-	public void setGeneratedElementId() {
+	protected String setGeneratedElementId() {
 		setElementId(pathwayModel.getUniqueElementId());
+		return elementId;
 	}
 
 	/**
