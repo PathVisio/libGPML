@@ -1112,7 +1112,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * 
 	 * @author unknown, finterly
 	 */
-	public abstract class GenericPoint extends PathwayObject implements Cloneable { // TODO
+	public abstract class GenericPoint extends PathwayObject implements Drawable, Cloneable { // TODO
 
 		// ================================================================================
 		// Constructors
@@ -1527,6 +1527,30 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// ================================================================================
 
 		/**
+		 * Returns the z-order of this pathway element.
+		 * 
+		 * NB: LinePoint z-order is always z-order of parent line +1. This is because
+		 * z-order is not written out to the gpml file.
+		 * 
+		 * @return zOrder the order of this pathway element.
+		 */
+		@Override
+		public int getZOrder() {
+			return getLineElement().getZOrder() + 1;
+		}
+
+		/**
+		 * Do nothing. LinePoint z-order is always z-order of parent line +1. This is
+		 * because z-order is not written out to the gpml file.
+		 * 
+		 * @param v the input
+		 */
+		@Override
+		public void setZOrder(int v) {
+			// do nothing
+		}
+
+		/**
 		 * Terminates this line point element. Removes any link to an elementRef. The
 		 * pathway model, if any, is unset from this pathway element.
 		 */
@@ -1562,6 +1586,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			relY = src.relY;
 			fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 		}
+
 	}
 
 // ================================================================================
@@ -1657,6 +1682,31 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// ================================================================================
 		// Inherited Methods
 		// ================================================================================
+
+		/**
+		 * Returns the z-order of this pathway element.
+		 * 
+		 * NB: Anchor z-order is always z-order of parent line +1. This is because
+		 * z-order is not written out to the gpml file.
+		 * 
+		 * @return zOrder the order of this pathway element.
+		 */
+		@Override
+		public int getZOrder() {
+			return getLineElement().getZOrder() + 1;
+		}
+
+		/**
+		 * Do nothing. Anchor z-order is always z-order of parent line +1. This is
+		 * because z-order is not written out to the gpml file.
+		 * 
+		 * @param v the input
+		 */
+		@Override
+		public void setZOrder(int v) {
+			// do nothing
+		}
+
 		/**
 		 * Returns {@link LinkableFrom} pathway elements, at this time that only goes
 		 * for {@link LinePoint}, for this {@link LinkableTo} pathway element.

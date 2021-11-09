@@ -21,20 +21,12 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * Interface for classes which can belong in a {@link Group}. These classes
- * include {@link DataNode}, {@link GraphicalLine}, {@link Label},
- * {@link Shape}, and {@link Group}.
+ * Interface for classes which can belong in a {@link Group}. This class is
+ * implemented by {@link ShapedElement} and {@link LineElement}.
  * 
  * @author finterly
  */
-public interface Groupable {
-
-	/**
-	 * Returns the pathway model of this pathway element.
-	 * 
-	 * @return the pathway model of this pathway element.
-	 */
-	public PathwayModel getPathwayModel();
+public interface Groupable extends Drawable {
 
 	/**
 	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
@@ -72,25 +64,6 @@ public interface Groupable {
 	 * Unsets the parent group, if any, from this pathway element.
 	 */
 	public void unsetGroupRef();
-
-	/**
-	 * Returns the z-order of this pathway element.
-	 * 
-	 * @return zOrder the order of this pathway element.
-	 */
-	public int getZOrder();
-
-	/**
-	 * Sets the z-order of this pathway element.
-	 * 
-	 * @param v the order of this pathway element.
-	 */
-	public void setZOrder(int v);
-
-//	/**
-//	 * Terminates this pathway element.
-//	 */
-//	void terminate();
 
 	/**
 	 * Returns the rectangular bounds of the object after rotation is applied.
