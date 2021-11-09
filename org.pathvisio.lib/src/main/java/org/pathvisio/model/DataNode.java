@@ -31,7 +31,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class DataNode extends ShapedElement {
+public class DataNode extends ShapedElement implements Xrefable {
 
 	private String textLabel;
 	private DataNodeType type = DataNodeType.UNDEFINED;
@@ -417,7 +417,7 @@ public class DataNode extends ShapedElement {
 	 * 
 	 * @author finterly
 	 */
-	public class State extends ShapedElement {
+	public class State extends ShapedElement implements Xrefable {
 
 		private String textLabel;
 		private StateType type;

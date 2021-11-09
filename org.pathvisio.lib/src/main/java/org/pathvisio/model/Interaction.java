@@ -25,7 +25,7 @@ import org.pathvisio.prop.StaticProperty;
  * 
  * @author finterly
  */
-public class Interaction extends LineElement {
+public class Interaction extends LineElement implements Xrefable {
 
 	private Xref xref; // optional
 

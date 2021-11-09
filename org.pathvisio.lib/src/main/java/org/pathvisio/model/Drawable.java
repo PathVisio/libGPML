@@ -24,7 +24,7 @@ import org.pathvisio.model.LineElement.LinePoint;
 
 /**
  * Interface for classes which can be drawn a pathway model canvas. This class
- * is implemented by {@link VShapedElement} and {@link VLineElement}, as well as
+ * is implemented by {@link ShapedElement} and {@link LineElement}, as well as
  * by {@link LinePoint}, and {@link Anchor}.
  * 
  * @author finterly

@@ -41,7 +41,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class Pathway extends PathwayElement {
+public class Pathway extends PathwayElement implements Xrefable {
 	// required properties
 	private String title;
 	private double boardWidth;

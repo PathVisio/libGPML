@@ -32,7 +32,7 @@ import org.pathvisio.util.Utils;
  * 
  * @author finterly
  */
-public class Group extends ShapedElement {
+public class Group extends ShapedElement implements Xrefable {
 
 	private GroupType type = GroupType.GROUP;
 	private String textLabel; // optional
