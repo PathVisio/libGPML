@@ -1,7 +1,8 @@
 # Development
 
 Releases are created by the release manager and requires permission to submit the release to Maven Central
-(using an approved Sonatype ([oss.sonatype.org](http://oss.sonatype.org/)) account).
+(using an approved Sonatype ([oss.sonatype.org](http://oss.sonatype.org/)) account). This document
+explains how.
 
 ## Versioning
 

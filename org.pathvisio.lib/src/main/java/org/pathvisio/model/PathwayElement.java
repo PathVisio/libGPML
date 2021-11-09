@@ -581,7 +581,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 * @param source      the source of this comment.
 		 * 
 		 */
-		private Comment(String commentText, String source) {
+		public Comment(String commentText, String source) {
 			setCommentText(commentText);
 			setSource(source);
 		}
