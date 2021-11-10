@@ -43,6 +43,9 @@ import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
+import org.pathvisio.model.PathwayElement.AnnotationRef;
+import org.pathvisio.model.PathwayElement.CitationRef;
+import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.util.Utils;
 
 /**
@@ -793,6 +796,29 @@ public class PathwayModel {
 	// ================================================================================
 	// General PathwayObject Add/Remove Methods
 	// ================================================================================
+
+	/**
+	 * TODO
+	 * 
+	 * @param pathwayElement the pathway element to add.
+	 */
+	protected void addPathwayElement(PathwayElement pathwayElement) {
+		addPathwayObject(pathwayElement);
+		/*
+		 * If pathwayElement has annotations, citations, evidence (typically in the case
+		 * of copy/paste). TODO
+		 */
+		for (AnnotationRef annotationRef : pathwayElement.getAnnotationRefs()) {
+			addAnnotation(annotationRef.getAnnotation().copy());
+		}
+		for (CitationRef citationRef : pathwayElement.getCitationRefs()) {
+			addCitation(citationRef.getCitation().copy());
+		}
+		for (EvidenceRef evidencRef : pathwayElement.getEvidenceRefs()) {
+			addEvidence(evidencRef.getEvidence().copy());
+		}
+	}
+
 	/**
 	 * Adds the given pathway object to pathway model. Sets pathwayModel for the
 	 * given pathway object. Sets an unique elementId for given pathway object if

@@ -530,7 +530,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 					continue;
 				}
 				if (key.equals(CELL_CMPNT_KEY)) {
-					((ShapedElement) pathwayElement).setShapeType(ShapeType.register(toCamelCase(value)));
+					((ShapedElement) pathwayElement).setShapeType(ShapeType.register(toCamelCase(value), null));
 					continue;
 				}
 			}
@@ -1253,7 +1253,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GpmlForm
 		Color fillColor = ColorUtils.stringToColor(getAttr(base + ".Graphics", "FillColor", gfx));
 		String shapeTypeStr = getAttr(base + ".Graphics", "ShapeType", gfx);
 		shapeTypeStr = toCamelCase(shapeTypeStr);
-		ShapeType shapeType = ShapeType.register(shapeTypeStr);
+		ShapeType shapeType = ShapeType.register(shapeTypeStr, null);
 		// checks deprecated shape type map for newer shape
 		if (DEPRECATED_MAP.containsKey(shapeType)) {
 			shapeType = DEPRECATED_MAP.get(shapeType);

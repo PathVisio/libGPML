@@ -50,7 +50,9 @@ public class TestCopy extends TestCase {
 		DataNode o1 = new DataNode("o1", DataNodeType.UNDEFINED);
 		p.addDataNode(o1);
 		State s1 = o1.addState("st1", StateType.UNDEFINED, 0, 0);
-
+//		CitationRef cr = o1.addCitation(null, "String");
+//		Citation c = cr.getCitation();
+		
 		DataNode o2 = o1.copy();
 		State s2 = o2.getStates().get(0);	
 
@@ -62,8 +64,14 @@ public class TestCopy extends TestCase {
 
 		assertEquals(o1.getPathwayModel(), p);
 		assertEquals(s1.getPathwayModel(), p);
+//		assertTrue(p.hasPathwayObject(c));
+//		assertTrue(o1.hasCitationRef(cr));
+
 		assertNull(o2.getPathwayModel());
 		assertNull(s2.getPathwayModel());
+		
+//		Citation c2 = o2.getCitationRefs().get(0).getCitation();
+//		assertTrue(o2.hasCitationRef(cr));
 
 		PathwayModel p2 = new PathwayModel();
 		p2.addDataNode(o2);
@@ -71,6 +79,8 @@ public class TestCopy extends TestCase {
 		for (State i : o2.getStates()) {
 			assertEquals(i.getPathwayModel(), p2);
 		}
+//		assertTrue(p2.hasPathwayObject(c2));
+
 	}
 
 	/**

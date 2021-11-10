@@ -539,10 +539,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				/* not going to happen */
 			}
 		}
-		// for now we do not copy references TODO
-//		annotationRefs = new ArrayList<AnnotationRef>();  
-//		citationRefs = new ArrayList<CitationRef>(); 
-//		evidenceRefs = new ArrayList<EvidenceRef>();  
+		// for now is going to be pretty problematic... :( 
+//		annotationRefs = src.annotationRefs;
+//		citationRefs = src.citationRefs;
+//		evidenceRefs = src.evidenceRefs;
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
@@ -1056,6 +1056,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			unsetAnnotatable();
 		}
 	}
+	
 
 	// ================================================================================
 	// CitationRef Class
@@ -1244,8 +1245,8 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				annotationRef.setAnnotatableTo(this);
 				assert (annotationRef.getAnnotatable() == this);
 				annotationRefs.add(annotationRef);
-				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(PathwayElement.this,
-						StaticProperty.ANNOTATION));
+				fireObjectModifiedEvent(
+						PathwayObjectEvent.createSinglePropertyEvent(PathwayElement.this, StaticProperty.ANNOTATION));
 			}
 			return annotationRef;
 		}

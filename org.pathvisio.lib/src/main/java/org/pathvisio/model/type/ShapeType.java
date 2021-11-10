@@ -16,73 +16,99 @@
  ******************************************************************************/
 package org.pathvisio.model.type;
 
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.pathvisio.debug.Logger;
+import org.pathvisio.model.shape.IShape;
+import org.pathvisio.model.shape.ShapeCatalog;
+import org.pathvisio.model.shape.ShapeCatalog.Internal;
 
 /**
  * This enum class contains extensible enum for Shape type property.
  * 
  * @author unknown, finterly
  */
-public class ShapeType {
+public class ShapeType implements IShape {
 
+	// ================================================================================
+	// Static variables
+	// ================================================================================
+	private static Shape rectangle = new Rectangle(0, 0, 10, 10);
+	private static Shape roundedRectangle = new RoundRectangle2D.Double(0, 0, 10, 10, 20, 20);
+	private static Shape ellipse = new Ellipse2D.Double(0, 0, 10, 10);
+
+	// ================================================================================
+	// Instantiates and registers shapes
+	// ================================================================================
 	private static final Map<String, ShapeType> nameToShapeType = new TreeMap<String, ShapeType>(
 			String.CASE_INSENSITIVE_ORDER);
 
 	// Basic shapes
-	public static final ShapeType NONE = new ShapeType("None");
-	public static final ShapeType RECTANGLE = new ShapeType("Rectangle");
-	public static final ShapeType ROUNDED_RECTANGLE = new ShapeType("RoundedRectangle");
-	public static final ShapeType OVAL = new ShapeType("Oval");
-	public static final ShapeType TRIANGLE = new ShapeType("Triangle");
-	public static final ShapeType PENTAGON = new ShapeType("Pentagon");
-	public static final ShapeType HEXAGON = new ShapeType("Hexagon");
-	public static final ShapeType OCTAGON = new ShapeType("Octagon");
+	public static final ShapeType NONE = new ShapeType("None", null);
+	public static final ShapeType RECTANGLE = new ShapeType("Rectangle", rectangle);
+	public static final ShapeType ROUNDED_RECTANGLE = new ShapeType("RoundedRectangle", roundedRectangle);
+	public static final ShapeType OVAL = new ShapeType("Oval", ellipse);
+	public static final ShapeType TRIANGLE = new ShapeType("Triangle", ShapeCatalog.getRegularPolygon(3, 10, 10));
+	public static final ShapeType PENTAGON = new ShapeType("Pentagon", ShapeCatalog.getRegularPolygon(5, 10, 10));
+	public static final ShapeType HEXAGON = new ShapeType("Hexagon", ShapeCatalog.getRegularPolygon(6, 10, 10));
+	public static final ShapeType OCTAGON = new ShapeType("Octagon", ShapeCatalog.getRegularPolygon(8, 10, 10));
 
-	// Basic line shapes 
-	public static final ShapeType EDGE = new ShapeType("Line");
-	public static final ShapeType ARC = new ShapeType("Arc");
-	public static final ShapeType BRACE = new ShapeType("Brace");
+	// Basic line shapes
+	public static final ShapeType EDGE = new ShapeType("Line", new Line2D.Double(0, 0, 10, 10));
+	public static final ShapeType ARC = new ShapeType("Arc", new Arc2D.Double(0, 0, 10, 10, 0, -180, Arc2D.OPEN));
+	public static final ShapeType BRACE = new ShapeType("Brace", ShapeCatalog.getPluggableShape(Internal.BRACE));
 
 	// Cellular components with special shape
-	public static final ShapeType MITOCHONDRIA = new ShapeType("Mitochondria");
-	public static final ShapeType SARCOPLASMIC_RETICULUM = new ShapeType("SarcoplasmicReticulum");
-	public static final ShapeType ENDOPLASMIC_RETICULUM = new ShapeType("EndoplasmicReticulum");
-	public static final ShapeType GOLGI_APPARATUS = new ShapeType("GolgiApparatus");
+	public static final ShapeType MITOCHONDRIA = new ShapeType("Mitochondria",
+			ShapeCatalog.getPluggableShape(Internal.MITOCHONDRIA));
+	public static final ShapeType SARCOPLASMIC_RETICULUM = new ShapeType("SarcoplasmicReticulum",
+			ShapeCatalog.getPluggableShape(Internal.SARCOPLASMIC_RETICULUM));
+	public static final ShapeType ENDOPLASMIC_RETICULUM = new ShapeType("EndoplasmicReticulum",
+			ShapeCatalog.getPluggableShape(Internal.ENDOPLASMIC_RETICULUM));
+	public static final ShapeType GOLGI_APPARATUS = new ShapeType("GolgiApparatus",
+			ShapeCatalog.getPluggableShape(Internal.ENDOPLASMIC_RETICULUM));
 
 	// Cellular components (rarely used)
-	public static final ShapeType NUCLEOLUS = new ShapeType("Nucleolus");
-	public static final ShapeType VACUOLE = new ShapeType("Vacuole");
-	public static final ShapeType LYSOSOME = new ShapeType("Lysosome");
-	public static final ShapeType CYTOSOL = new ShapeType("CytosolRegion");
-	
+	public static final ShapeType NUCLEOLUS = new ShapeType("Nucleolus", null);
+	public static final ShapeType VACUOLE = new ShapeType("Vacuole", null);
+	public static final ShapeType LYSOSOME = new ShapeType("Lysosome", null);
+	public static final ShapeType CYTOSOL = new ShapeType("CytosolRegion", null);
+
 	// Cellular components with basic shape
-	public static final ShapeType EXTRACELLULAR = new ShapeType("ExtracellularRegion");
-	public static final ShapeType CELL = new ShapeType("Cell"); // Rounded rectangle
-	public static final ShapeType NUCLEUS = new ShapeType("Nucleus"); // Oval
-	public static final ShapeType ORGANELLE = new ShapeType("Organelle"); // Rounded rectangle
-	public static final ShapeType VESICLE = new ShapeType("Vesicle"); // Oval
-	
-	// Deprecated since GPML2013a?
-	public static final ShapeType MEMBRANE = new ShapeType("Membrane"); // Rounded rectangle
-	public static final ShapeType CELLA = new ShapeType("CellA"); // Oval
-	public static final ShapeType RIBOSOME = new ShapeType("Ribosome"); // Hexagon
-	public static final ShapeType ORGANA = new ShapeType("OrganA"); // Oval
-	public static final ShapeType ORGANB = new ShapeType("OrganB"); // Oval
-	public static final ShapeType ORGANC = new ShapeType("OrganC"); // Oval
-	public static final ShapeType PROTEINB = new ShapeType("ProteinB"); // Hexagon
+	public static final ShapeType EXTRACELLULAR = new ShapeType("ExtracellularRegion", roundedRectangle); // roundRect
+	public static final ShapeType CELL = new ShapeType("Cell", roundedRectangle); // roundRect
+	public static final ShapeType NUCLEUS = new ShapeType("Nucleus", ellipse); // oval
+	public static final ShapeType ORGANELLE = new ShapeType("Organelle", roundedRectangle); // roundRect
+	public static final ShapeType VESICLE = new ShapeType("Vesicle", ellipse); // oval
+
+	// Deprecated since GPML2013a? TODO
+	public static final ShapeType MEMBRANE = new ShapeType("Membrane", null); // roundRect
+	public static final ShapeType CELLA = new ShapeType("CellA", null); // oval
+	public static final ShapeType RIBOSOME = new ShapeType("Ribosome", null); // Hexagon
+	public static final ShapeType ORGANA = new ShapeType("OrganA", null); // oval
+	public static final ShapeType ORGANB = new ShapeType("OrganB", null); // oval
+	public static final ShapeType ORGANC = new ShapeType("OrganC", null); // oval
+	public static final ShapeType PROTEINB = new ShapeType("ProteinB", null); // hexagon
 
 	// Special shapes
-	public static final ShapeType CORONAVIRUS = new ShapeType("Coronavirus"); // 
-	public static final ShapeType DNA = new ShapeType("DNA"); // 
-	public static final ShapeType CELL_ICON = new ShapeType("CellIcon"); // 
+	public static final ShapeType CORONAVIRUS = new ShapeType("Coronavirus",
+			ShapeCatalog.getPluggableShape(Internal.CORONAVIRUS));
+	public static final ShapeType DNA = new ShapeType("DNA", ShapeCatalog.getPluggableShape(Internal.DNA)); //
+	public static final ShapeType CELL_ICON = new ShapeType("CellIcon",
+			ShapeCatalog.getPluggableShape(Internal.CELL_ICON)); //
 
-
-	private String name;
+	private final String name;
+	private final Shape shape;
 	private final boolean isResizeable;
 	private final boolean isRotatable;
 
@@ -90,22 +116,24 @@ public class ShapeType {
 	 * The constructor is private. ShapeType cannot be directly instantiated. Use
 	 * create() method to instantiate ShapeType.
 	 * 
-	 * @param name the string key of this ShapeType. // isResizeable if true object is resizeable. 
+	 * @param name the string key of this ShapeType. // isResizeable if true object
+	 *             is resizeable.
 	 * @throws NullPointerException if name is null.
 	 */
-	private ShapeType(String name) {
-		this(name, true, true);
+	private ShapeType(String name, Shape shape) {
+		this(name, shape, true, true);
 	}
 
 	// TODO documentation
-	private ShapeType(String name, boolean isResizeable, boolean isRotatable) {
-		this.isResizeable = isResizeable;
-		this.isRotatable = isRotatable;
+	private ShapeType(String name, Shape shape, boolean isResizeable, boolean isRotatable) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
 		this.name = name;
 		nameToShapeType.put(name, this); // adds this name and ShapeType to map.
+		this.shape = shape;
+		this.isResizeable = isResizeable;
+		this.isRotatable = isRotatable;
 	}
 
 	/**
@@ -113,16 +141,17 @@ public class ShapeType {
 	 * doesn't exist yet, it is created to extend the enum. The method makes sure
 	 * that the same object is not added twice.
 	 * 
-	 * @param name the string key.
+	 * @param name  the string key.
+	 * @param shape the shape.
 	 * @return the ShapeType for given name. If name does not exist, creates and
 	 *         returns a new ShapeType.
 	 */
-	public static ShapeType register(String name) {
+	public static ShapeType register(String name, Shape shape) {
 		if (nameToShapeType.containsKey(name)) {
 			return nameToShapeType.get(name);
 		} else {
 			Logger.log.trace("Registered shape type " + name);
-			return new ShapeType(name);
+			return new ShapeType(name, shape);
 		}
 	}
 
@@ -133,6 +162,20 @@ public class ShapeType {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @param mw
+	 * @param mh
+	 * @return the shape resized.
+	 */
+	public Shape getShape(double mw, double mh) {
+		// now scale the path so it has proper w and h.
+		Rectangle r = shape.getBounds();
+		AffineTransform at = new AffineTransform();
+		at.translate(-r.x, -r.y);
+		at.scale(mw / r.width, mh / r.height);
+		return at.createTransformedShape(shape);
 	}
 
 	public boolean isResizeable() {

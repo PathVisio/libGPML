@@ -236,9 +236,12 @@ public class Group extends ShapedElement implements Xrefable {
 	}
 
 	/**
-	 * Terminates this group. The pathway model and pathway elements, if any, are
-	 * unset or removed from this group. Links to all annotationRefs, citationRefs,
-	 * and evidenceRefs are removed from this group.
+	 * Terminates this group and removes all references and links.
+	 * 
+	 * NB: Must {@link LineElement.LinePoint#unlink} before removing pathway element
+	 * members, so that line points stays in the same position when the group
+	 * disappears. If you remove pathway elements first, the group bounds changes
+	 * before you can unlink(), effecting the position of line points.
 	 */
 	@Override
 	protected void terminate() {

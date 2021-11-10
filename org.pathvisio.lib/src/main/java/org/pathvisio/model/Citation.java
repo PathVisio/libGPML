@@ -310,10 +310,7 @@ public class Citation extends PathwayObject {
 		title = src.title;
 		source = src.source;
 		year = src.year;
-		authors = new ArrayList<String>();
-		for (String a : src.authors) {
-			authors.add(a);
-		} // TODO
+		authors = src.authors;
 		citationRefs = new ArrayList<CitationRef>();
 		for (CitationRef c : src.citationRefs) { // TODO????
 			addCitationRef(c);

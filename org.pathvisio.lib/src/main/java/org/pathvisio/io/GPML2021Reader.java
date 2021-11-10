@@ -524,9 +524,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String textLabel = dn.getAttributeValue("textLabel");
 				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT));
 				String aliasRefStr = dn.getAttributeValue("aliasRef");
-				DataNode dataNode = null; 
-				// if alias 
-				if (aliasRefStr != null && type ==DataNodeType.ALIAS) {
+				DataNode dataNode = null;
+				// if alias
+				if (aliasRefStr != null && type == DataNodeType.ALIAS) {
 					Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
 					if (aliasRef != null) {
 						dataNode = aliasRef.createAlias(textLabel);
@@ -749,7 +749,6 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 			}
 		}
 	}
-	
 
 	/**
 	 * Reads rect property information. Jdom handles schema default values.
@@ -814,7 +813,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		LineStyleType borderStyle = LineStyleType.register(gfx.getAttributeValue("borderStyle", BORDERSTYLE_DEFAULT));
 		double borderWidth = Double.parseDouble(gfx.getAttributeValue("borderWidth", BORDERWIDTH_DEFAULT).trim());
 		Color fillColor = ColorUtils.stringToColor(gfx.getAttributeValue("fillColor", FILLCOLOR_DEFAULT));
-		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType", SHAPETYPE_DEFAULT));
+		ShapeType shapeType = ShapeType.register(gfx.getAttributeValue("shapeType", SHAPETYPE_DEFAULT), null);
 		String zOrder = gfx.getAttributeValue("zOrder");
 		String rotation = gfx.getAttributeValue("rotation");
 		// set shape style props
