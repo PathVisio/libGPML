@@ -412,10 +412,10 @@ public class Pathway extends PathwayElement implements Xrefable {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Pathway copy() {
+	public CopyElement copy() {
 		Pathway result = new Pathway(); // TODO
 		result.copyValuesFrom(this);
-		return result;
+		return new CopyElement(result, this);
 	}
 
 	// ================================================================================

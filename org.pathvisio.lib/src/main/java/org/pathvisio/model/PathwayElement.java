@@ -205,6 +205,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public AnnotationRef addAnnotation(Annotation annotation) {
+		// add annotation to pathway model if applicable TODO
+		if (pathwayModel != null && !pathwayModel.getAnnotations().contains(annotation)) {
+			annotation = pathwayModel.addAnnotation(annotation);
+		}
 		AnnotationRef annotationRef = new AnnotationRef(annotation);
 		// adds annotationRef
 		if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
@@ -230,11 +234,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	@Override
 	public AnnotationRef addAnnotation(String value, AnnotationType type, Xref xref, String urlLink) {
 		Annotation annotation = new Annotation(value, type, xref, urlLink);
-		// add annotation to pathway model if applicable TODO
-		if (pathwayModel != null) {
-			annotation = pathwayModel.addAnnotation(annotation);
-		}
-		// creates and adds annotationRef
+		// adds annotation to pathway model, creates and adds annotationRef
 		return addAnnotation(annotation);
 	}
 
@@ -254,11 +254,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	public AnnotationRef addAnnotation(String elementId, String value, AnnotationType type, Xref xref, String urlLink) {
 		Annotation annotation = new Annotation(value, type, xref, urlLink);
 		annotation.setElementId(elementId);
-		// add annotation to pathway model if applicable TODO
-		if (pathwayModel != null) {
-			annotation = pathwayModel.addAnnotation(annotation);
-		}
-		// creates and adds annotationRef
+		// adds annotation to pathway model, creates and adds annotationRef
 		return addAnnotation(annotation);
 	}
 
@@ -317,6 +313,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public CitationRef addCitation(Citation citation) {
+		// add citation to pathway model if applicable TODO
+		if (pathwayModel != null && !pathwayModel.getCitations().contains(citation)) {
+			citation = pathwayModel.addCitation(citation);
+		}
 		CitationRef citationRef = new CitationRef(citation);
 		// adds citationRef
 		if (citationRef != null && !hasCitationRef(citationRef)) {
@@ -340,11 +340,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	@Override
 	public CitationRef addCitation(Xref xref, String urlLink) {
 		Citation citation = new Citation(xref, urlLink);
-		// add citation to pathway model if applicable TODO
-		if (pathwayModel != null) {
-			citation = pathwayModel.addCitation(citation);
-		}
-		// creates and adds citationRef
+		// adds citation to pathway model, creates and adds citationRef
 		return addCitation(citation);
 	}
 
@@ -364,10 +360,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		Citation citation = new Citation(xref, urlLink);
 		// set elementId
 		citation.setElementId(elementId);
-		// add citation to pathway model if applicable TODO
-		if (pathwayModel != null)
-			citation = pathwayModel.addCitation(citation);
-		// creates and adds citationRef
+		// adds citation to pathway model, creates and adds citationRef
 		return addCitation(citation);
 	}
 
@@ -426,6 +419,9 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public EvidenceRef addEvidence(Evidence evidence) {
+		// add evidence to pathway model if applicable TODO
+		if (pathwayModel != null && !pathwayModel.getEvidences().contains(evidence))
+			evidence = pathwayModel.addEvidence(evidence);
 		EvidenceRef evidenceRef = new EvidenceRef(evidence);
 		// adds evidenceRef
 		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
@@ -449,10 +445,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	@Override
 	public EvidenceRef addEvidence(String value, Xref xref, String urlLink) {
 		Evidence evidence = new Evidence(value, xref, urlLink);
-		// add evidence to pathway model if applicable TODO
-		if (pathwayModel != null)
-			evidence = pathwayModel.addEvidence(evidence);
-		// creates and adds evidenceRef
+		// adds evidence to pathway model, creates and adds evidenceRef
 		return addEvidence(evidence);
 	}
 
@@ -473,10 +466,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		Evidence evidence = new Evidence(value, xref, urlLink);
 		// set elementId
 		evidence.setElementId(elementId);
-		// add evidence to pathway model if applicable TODO
-		if (pathwayModel != null)
-			evidence = pathwayModel.addEvidence(evidence);
-		// creates and adds evidenceRef
+		// adds evidence to pathway model, creates and adds evidenceRef
 		return addEvidence(evidence);
 	}
 
@@ -525,7 +515,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * Note: doesn't change parent, only fields
 	 *
 	 * Used by UndoAction.
-	 *
+	 * 
+	 * NB: AnnotationRefs, citationRefs, and evidenceRefs are not immediately copied
+	 * but loaded later. TODO 
+	 * 
 	 * @param src
 	 */
 	public void copyValuesFrom(PathwayElement src) {
@@ -539,10 +532,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				/* not going to happen */
 			}
 		}
-		// for now is going to be pretty problematic... :( 
-//		annotationRefs = src.annotationRefs;
-//		citationRefs = src.citationRefs;
-//		evidenceRefs = src.evidenceRefs;
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
@@ -552,7 +541,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public abstract PathwayElement copy();
+	public abstract CopyElement copy();
 
 	// ================================================================================
 	// Comment Class
@@ -1056,7 +1045,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			unsetAnnotatable();
 		}
 	}
-	
 
 	// ================================================================================
 	// CitationRef Class

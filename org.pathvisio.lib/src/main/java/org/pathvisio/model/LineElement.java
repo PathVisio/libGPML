@@ -1101,7 +1101,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public abstract LineElement copy();
+	public abstract CopyElement copy();
 
 // ================================================================================
 // GenericPoint Class
@@ -1574,14 +1574,16 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * Note: doesn't change parent, only fields
 		 *
 		 * Used by UndoAction.
+		 * 
+		 * NB: ElementRef is not copied, but can be set later given the LinkableTo is
+		 * also copied. //TODO 
 		 *
 		 * @param src
 		 */
-		public void copyValuesFrom(LinePoint src) { // TODO
+		public void copyValuesFrom(LinePoint src) {
 			arrowHead = src.arrowHead;
 			x = src.x;
 			y = src.y;
-			elementRef = src.elementRef;
 			relX = src.relX;
 			relY = src.relY;
 			fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));

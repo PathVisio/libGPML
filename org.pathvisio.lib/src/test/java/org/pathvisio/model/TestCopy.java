@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.StateType;
 
@@ -50,10 +51,11 @@ public class TestCopy extends TestCase {
 		DataNode o1 = new DataNode("o1", DataNodeType.UNDEFINED);
 		p.addDataNode(o1);
 		State s1 = o1.addState("st1", StateType.UNDEFINED, 0, 0);
-//		CitationRef cr = o1.addCitation(null, "String");
-//		Citation c = cr.getCitation();
+		CitationRef cr = o1.addCitation(null, "String");
+		Citation c = cr.getCitation();
 		
-		DataNode o2 = o1.copy();
+		CopyElement copy = o1.copy();
+		DataNode o2 = (DataNode) copy.getNewElement();
 		State s2 = o2.getStates().get(0);	
 
 		assertEquals(o1, o1);
@@ -64,22 +66,30 @@ public class TestCopy extends TestCase {
 
 		assertEquals(o1.getPathwayModel(), p);
 		assertEquals(s1.getPathwayModel(), p);
-//		assertTrue(p.hasPathwayObject(c));
-//		assertTrue(o1.hasCitationRef(cr));
+		assertTrue(p.hasPathwayObject(c));
+		assertTrue(o1.hasCitationRef(cr));
 
 		assertNull(o2.getPathwayModel());
 		assertNull(s2.getPathwayModel());
 		
-//		Citation c2 = o2.getCitationRefs().get(0).getCitation();
-//		assertTrue(o2.hasCitationRef(cr));
-
 		PathwayModel p2 = new PathwayModel();
 		p2.addDataNode(o2);
 		assertEquals(o2.getPathwayModel(), p2);
 		for (State i : o2.getStates()) {
 			assertEquals(i.getPathwayModel(), p2);
 		}
-//		assertTrue(p2.hasPathwayObject(c2));
+		assertTrue(p2.hasPathwayObject(o2));
+
+		System.out.println(p.getPathwayObjects());
+		System.out.println(p2.getPathwayObjects());
+
+		// load references for new element
+		copy.loadReferences();
+		CitationRef cr2 = o2.getCitationRefs().get(0);
+		Citation c2 = cr2.getCitation();
+		assertEquals(c2.getUrlLink(), "String");
+		assertTrue(o2.hasCitationRef(cr2));
+		assertTrue(p2.hasPathwayObject(c2));
 
 	}
 
@@ -97,7 +107,7 @@ public class TestCopy extends TestCase {
 		o1.setLinePoints(points);
 		o1.addAnchor(0, null);
 
-		Interaction o2 = o1.copy();
+		Interaction o2 = (Interaction) o1.copy().getNewElement();
 		assertEquals(o1, o1);
 		assertFalse(o1 == o2);
 		assertEquals(o1.getPathwayModel(), p);
@@ -126,7 +136,7 @@ public class TestCopy extends TestCase {
 		o1.setLinePoints(points);
 		o1.addAnchor(0, null);
 
-		GraphicalLine o2 = o1.copy();
+		GraphicalLine o2 = (GraphicalLine) o1.copy().getNewElement();
 		assertEquals(o1, o1);
 		assertFalse(o1 == o2);
 		assertEquals(o1.getPathwayModel(), p);
@@ -149,7 +159,7 @@ public class TestCopy extends TestCase {
 		Label o1 = new Label("o1");
 		p.addLabel(o1);
 
-		Label o2 = o1.copy();
+		Label o2 = (Label) o1.copy().getNewElement();
 
 		assertEquals(o1, o1);
 		assertFalse(o1 == o2);
@@ -165,7 +175,7 @@ public class TestCopy extends TestCase {
 		Shape o1 = new Shape();
 		p.addShape(o1);
 
-		Shape o2 = o1.copy();
+		Shape o2 = (Shape) o1.copy().getNewElement();
 
 		assertEquals(o1, o1);
 		assertFalse(o1 == o2);

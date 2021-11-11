@@ -1004,7 +1004,7 @@ public class PathwayModel {
 	public PathwayModel clone() {
 		PathwayModel result = new PathwayModel(); // TODO
 		for (DataNode o : getDataNodes()) {
-			result.add(o.copy()); // TODO
+			result.add(o.copy().getNewElement()); // TODO
 		}
 		// TODO ...
 		result.changed = changed;

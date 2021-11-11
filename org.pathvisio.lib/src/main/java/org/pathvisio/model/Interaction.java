@@ -97,10 +97,10 @@ public class Interaction extends LineElement implements Xrefable {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Interaction copy() {
+	public CopyElement copy() {
 		Interaction result = new Interaction(); //TODO 
 		result.copyValuesFrom(this);
-		return result;
+		return new CopyElement(result, this);
 	}
 
 }

@@ -113,10 +113,10 @@ public class Label extends ShapedElement {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Label copy() {
+	public CopyElement copy() {
 		Label result = new Label(textLabel); // TODO
 		result.copyValuesFrom(this);
-		return result;
+		return new CopyElement(result, this);
 	}
 
 }

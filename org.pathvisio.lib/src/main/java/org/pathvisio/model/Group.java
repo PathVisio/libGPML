@@ -444,6 +444,8 @@ public class Group extends ShapedElement implements Xrefable {
 	 * Note: doesn't change parent, only fields
 	 *
 	 * Used by UndoAction.
+	 * 
+	 * NB: Pathway element members are not copied but added later.
 	 *
 	 * @param src
 	 */
@@ -461,10 +463,10 @@ public class Group extends ShapedElement implements Xrefable {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Group copy() {
+	public CopyElement copy() {
 		Group result = new Group(type); // TODO
 		result.copyValuesFrom(this);
-		return result;
+		return new CopyElement(result, this);
 	}
 
 }

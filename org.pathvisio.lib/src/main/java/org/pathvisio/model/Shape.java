@@ -86,10 +86,10 @@ public class Shape extends ShapedElement {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Shape copy() {
+	public CopyElement copy() {
 		Shape result = new Shape(); // TODO
 		result.copyValuesFrom(this);
-		return result;
+		return new CopyElement(result,this);
 	}
 
 }

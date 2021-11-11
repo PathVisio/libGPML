@@ -403,10 +403,10 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public DataNode copy() {
+	public CopyElement copy() {
 		DataNode result = new DataNode(textLabel, type);
 		result.copyValuesFrom(this);
-		return result;
+		return new CopyElement(result, this);
 	}
 
 	// ================================================================================
@@ -723,11 +723,11 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 *
 		 * No events will be sent to the parent of the original.
 		 */
-		public State copy() {
+		public CopyElement copy() {
 			// make empty
 			State result = new State(textLabel, type, relX, relX); // TODO NEVER USED
 			result.copyValuesFrom(this);
-			return result;
+			return new CopyElement(result, this);
 		}
 
 	}

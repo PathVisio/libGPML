@@ -856,12 +856,14 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * Note: doesn't change parent, only fields
 	 *
 	 * Used by UndoAction.
+	 * 
+	 * NB: GroupRef is not copied, but can be set later if the parent group and all
+	 * other pathway element members are copied.
 	 *
 	 * @param src
 	 */
 	public void copyValuesFrom(ShapedElement src) {
 		super.copyValuesFrom(src);
-		groupRef = src.groupRef;
 		centerX = src.centerX;
 		centerY = src.centerY;
 		width = src.width;
@@ -891,6 +893,6 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public abstract ShapedElement copy();
+	public abstract CopyElement copy();
 
 }
