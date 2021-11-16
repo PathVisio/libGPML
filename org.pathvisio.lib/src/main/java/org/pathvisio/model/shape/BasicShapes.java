@@ -26,32 +26,32 @@ import java.awt.geom.Rectangle2D;
 import org.pathvisio.model.type.AnchorShapeType;
 
 /**
- * Defines and registers all basic shapes and arrowheads, such Oval,
- * Rectangle, Arrow, TBar.
+ * Defines and registers all basic shapes and arrowheads, such Oval, Rectangle,
+ * Arrow, TBar.
  *
- * Note that this does not include all shapes used in GenMAPP, See GenMAPPShapes for more
- * Shapes defined by GenMAPP.
+ * Note that this does not include all shapes used in GenMAPP, See GenMAPPShapes
+ * for more Shapes defined by GenMAPP.
  *
  * Shapes are defined and registered in the static section of this class.
  */
-class BasicShapes
-{
-	static void registerShapes()
-	{
-		ShapeRegistry.registerArrow ("Arrow", getArrowHead(), ArrowShape.FillType.CLOSED);
-		ShapeRegistry.registerArrow ("TBar", getTBar(), ArrowShape.FillType.OPEN, TBARWIDTH + TBAR_GAP);
-		ShapeRegistry.registerArrow ("LigandRound", getLRound(), ArrowShape.FillType.CLOSED);
-		ShapeRegistry.registerArrow ("ReceptorRound", getRRound(), ArrowShape.FillType.WIRE);
-		ShapeRegistry.registerArrow ("Receptor", getReceptor(), ArrowShape.FillType.WIRE);
-		ShapeRegistry.registerArrow ("ReceptorSquare", getReceptorSquare(), ArrowShape.FillType.WIRE);
-		ShapeRegistry.registerArrow ("LigandSquare", getLigand(), ArrowShape.FillType.CLOSED);
+class BasicShapes {
+	static void registerShapes() {
+		ShapeRegistry.registerArrow("Arrow", getArrowHead(), ArrowShape.FillType.CLOSED);
+		ShapeRegistry.registerArrow("TBar", getTBar(), ArrowShape.FillType.OPEN, TBARWIDTH + TBAR_GAP);
+		ShapeRegistry.registerArrow("LigandRound", getLRound(), ArrowShape.FillType.CLOSED);
+		ShapeRegistry.registerArrow("ReceptorRound", getRRound(), ArrowShape.FillType.WIRE);
+		ShapeRegistry.registerArrow("Receptor", getReceptor(), ArrowShape.FillType.WIRE);
+		ShapeRegistry.registerArrow("ReceptorSquare", getReceptorSquare(), ArrowShape.FillType.WIRE);
+		ShapeRegistry.registerArrow("LigandSquare", getLigand(), ArrowShape.FillType.CLOSED);
 
-		ShapeRegistry.registerAnchor (AnchorShapeType.NONE.getName(), getAnchorDefault());
-		ShapeRegistry.registerAnchor (AnchorShapeType.CIRCLE.getName(), getAnchorCircle());
+		ShapeRegistry.registerAnchor(AnchorShapeType.NONE.getName(), getAnchorSquare());
+		ShapeRegistry.registerAnchor(AnchorShapeType.CIRCLE.getName(), getAnchorCircle());
+		ShapeRegistry.registerAnchor(AnchorShapeType.NONE.getName(), getAnchorNone());
+
 	}
 
 	/**
-	   These are all model coordinates:
+	 * These are all model coordinates:
 	 */
 	private static final int ARROWHEIGHT = 4;
 	private static final int ARROWWIDTH = 9;
@@ -65,75 +65,61 @@ class BasicShapes
 	private static final int RECEPWIDTH = LIGANDWIDTH + 2;
 	private static final int RECEPHEIGHT = LIGANDHEIGHT + 2;
 
-	private static final int ANCHOR_DEFAULT_SIZE = 3;
+	private static final int ANCHOR_SQUARE_SIZE = 6; // TODO
 	private static final int ANCHOR_CIRCLE_SIZE = 8;
+	private static final int ANCHOR_NONE_SIZE = 3;
 
-
-	private static Shape getArrowHead()
-	{
+	private static Shape getArrowHead() {
 		int[] xpoints = new int[] { 0, -ARROWWIDTH, -ARROWWIDTH };
 		int[] ypoints = new int[] { 0, -ARROWHEIGHT, ARROWHEIGHT };
 		return new Polygon(xpoints, ypoints, 3);
 	}
 
-	private static Shape getTBar()
-	{
-		return new Rectangle2D.Double(
-			0, -TBARHEIGHT / 2,
-			TBARWIDTH, TBARHEIGHT
-			);
+	private static Shape getTBar() {
+		return new Rectangle2D.Double(0, -TBARHEIGHT / 2, TBARWIDTH, TBARHEIGHT);
 	}
 
-	private static Shape getLRound()
-	{
+	private static Shape getLRound() {
 		return new Ellipse2D.Double(-LRDIAM / 2, -LRDIAM / 2, LRDIAM, LRDIAM);
 	}
 
-	private static Shape getRRound()
-	{
-		return new Arc2D.Double (0, - RRDIAM / 2, RRDIAM, RRDIAM, 90, 180, Arc2D.OPEN);
+	private static Shape getRRound() {
+		return new Arc2D.Double(0, -RRDIAM / 2, RRDIAM, RRDIAM, 90, 180, Arc2D.OPEN);
 	}
 
-	private static Shape getReceptorSquare()
-	{
+	private static Shape getReceptorSquare() {
 		GeneralPath rec = new GeneralPath();
 		rec.moveTo(RECEPWIDTH, RECEPHEIGHT / 2);
 		rec.lineTo(0, RECEPHEIGHT / 2);
 		rec.lineTo(0, -RECEPHEIGHT / 2);
-		rec.lineTo(RECEPWIDTH, - RECEPHEIGHT / 2);
+		rec.lineTo(RECEPWIDTH, -RECEPHEIGHT / 2);
 		return rec;
 	}
 
-	private static Shape getReceptor()
-	{
+	private static Shape getReceptor() {
 		GeneralPath rec = new GeneralPath();
 		rec.moveTo(RECEPWIDTH, RECEPHEIGHT / 2);
 		rec.lineTo(0, 0);
-		rec.lineTo(RECEPWIDTH, - RECEPHEIGHT / 2);
+		rec.lineTo(RECEPWIDTH, -RECEPHEIGHT / 2);
 		return rec;
 	}
 
-	private static Shape getLigand()
-	{
-		return new Rectangle2D.Double(
-			-LIGANDWIDTH, -LIGANDHEIGHT / 2,
-			LIGANDWIDTH, LIGANDHEIGHT
-			);
+	private static Shape getLigand() {
+		return new Rectangle2D.Double(-LIGANDWIDTH, -LIGANDHEIGHT / 2, LIGANDWIDTH, LIGANDHEIGHT);
 	}
 
-	private static Shape getAnchorDefault() {
-		return new Rectangle2D.Double(
-				-ANCHOR_DEFAULT_SIZE / 2, -ANCHOR_DEFAULT_SIZE / 2,
-				ANCHOR_DEFAULT_SIZE, ANCHOR_DEFAULT_SIZE
-			);
+	private static Shape getAnchorSquare() {
+		return new Rectangle2D.Double(-ANCHOR_SQUARE_SIZE / 2, -ANCHOR_SQUARE_SIZE / 2, ANCHOR_SQUARE_SIZE,
+				ANCHOR_SQUARE_SIZE);
 	}
 
 	private static Shape getAnchorCircle() {
-		return new Ellipse2D.Double(
-				-ANCHOR_CIRCLE_SIZE / 2, -ANCHOR_CIRCLE_SIZE / 2,
-				ANCHOR_CIRCLE_SIZE, ANCHOR_CIRCLE_SIZE
-			);
+		return new Ellipse2D.Double(-ANCHOR_CIRCLE_SIZE / 2, -ANCHOR_CIRCLE_SIZE / 2, ANCHOR_CIRCLE_SIZE,
+				ANCHOR_CIRCLE_SIZE);
+	}
+
+	private static Shape getAnchorNone() {
+		return new Rectangle2D.Double(-ANCHOR_NONE_SIZE / 2, -ANCHOR_NONE_SIZE / 2, ANCHOR_NONE_SIZE, ANCHOR_NONE_SIZE);
 	}
 
 }
-
