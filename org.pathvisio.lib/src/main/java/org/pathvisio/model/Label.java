@@ -100,7 +100,7 @@ public class Label extends ShapedElement {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(Label src) { // TODO
+	public void copyValuesFrom(Label src) {
 		super.copyValuesFrom(src);
 		textLabel = src.textLabel;
 		href = src.href;
@@ -114,9 +114,23 @@ public class Label extends ShapedElement {
 	 * No events will be sent to the parent of the original.
 	 */
 	public CopyElement copy() {
-		Label result = new Label(textLabel); // TODO
+		Label result = new Label(textLabel);
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
+	}
+
+	// ================================================================================
+	// Inherited Methods
+	// ================================================================================
+
+	/**
+	 * Terminates this label and removes all links and references.
+	 */
+	@Override
+	protected void terminate() {
+		unsetAllLinkableFroms();
+		unsetGroupRef();
+		super.terminate();
 	}
 
 }

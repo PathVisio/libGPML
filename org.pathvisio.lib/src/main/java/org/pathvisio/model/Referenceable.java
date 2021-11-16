@@ -129,7 +129,6 @@ public interface Referenceable {
 		 */
 		public CitationRef addCitation(Xref xref, String urlLink);
 
-		// TODO
 		/**
 		 * Creates a citation with given xref and urlLink, and adds citation to pathway
 		 * model. Creates a citationRef for citation, and adds to citationRefs list for

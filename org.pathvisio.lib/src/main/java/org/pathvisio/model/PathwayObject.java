@@ -123,12 +123,19 @@ public abstract class PathwayObject {
 	/**
 	 * Sets the elementId of the pathway element.
 	 * 
+	 * NB: This method is not used directly.
+	 * 
 	 * @param v the unique pathway element identifier.
 	 */
-	public void setElementId(String v) {
-		elementId = v;
-		fireObjectModifiedEvent(
-				PathwayObjectEvent.createSinglePropertyEvent(PathwayObject.this, StaticProperty.ELEMENTID));
+	public void setElementId(String v) { //TODO 
+		if (v != null) {
+			if (pathwayModel != null && pathwayModel.getElementIds().contains(v)) {
+				throw new IllegalArgumentException("elementId '" + v + "' is not unique");
+			}
+			elementId = v;
+			fireObjectModifiedEvent(
+					PathwayObjectEvent.createSinglePropertyEvent(PathwayObject.this, StaticProperty.ELEMENTID));
+		}
 	}
 
 	/**
@@ -148,8 +155,7 @@ public abstract class PathwayObject {
 	 */
 	protected void terminate() {
 		unsetPathwayModel();
-		// At this point we cannot use the method setElementId,
-		// because it does not accept null as a legal value. TODO
+		// We do not use the method setElementId, because it does not accept null
 		this.elementId = null;
 	}
 

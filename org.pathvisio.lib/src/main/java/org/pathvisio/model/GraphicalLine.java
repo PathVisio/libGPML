@@ -46,7 +46,7 @@ public class GraphicalLine extends LineElement {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(State src) { // TODO
+	public void copyValuesFrom(State src) {
 		super.copyValuesFrom(src);
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
@@ -58,7 +58,7 @@ public class GraphicalLine extends LineElement {
 	 * No events will be sent to the parent of the original.
 	 */
 	public CopyElement copy() {
-		GraphicalLine result = new GraphicalLine(); // TODO
+		GraphicalLine result = new GraphicalLine();
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
 	}

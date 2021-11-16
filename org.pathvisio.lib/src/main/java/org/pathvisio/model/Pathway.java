@@ -179,14 +179,15 @@ public class Pathway extends PathwayElement implements Xrefable {
 	 * 
 	 * @param author the author to add.
 	 */
-	public void addAuthor(Author author) {
+	public Author addAuthor(Author author) {
 		if (author != null) {
 			authors.add(author);
 		}
+		return author;
 	}
 
 	/**
-	 * Creates and adds an author to authors list. TODO
+	 * Creates and adds an author to authors list.
 	 * 
 	 * @param name the name of author.
 	 */
@@ -334,8 +335,6 @@ public class Pathway extends PathwayElement implements Xrefable {
 		}
 	}
 
-	// TODO....
-
 	// ================================================================================
 	// FireEvent and Listener Methods
 	// ================================================================================
@@ -394,10 +393,22 @@ public class Pathway extends PathwayElement implements Xrefable {
 		boardWidth = src.boardWidth;
 		boardHeight = src.boardHeight;
 		backgroundColor = src.backgroundColor;
-		authors = new ArrayList<Author>();
-		for (Author a : src.authors) {
-			addAuthor(a);
-		} // TODO
+		authors = new ArrayList<Author>(); // TODO
+		for (Author c : src.authors) {
+			try {
+				addAuthor((Author) c.clone());
+			} catch (CloneNotSupportedException e) {
+				assert (false);
+				/* not going to happen */
+			}
+		}
+//		for (Author a : src.authors) {
+//			Author na = addAuthor(a.getName());
+//			na.setUsername(a.getUsername());
+//			na.setOrder(a.getOrder());
+//			na.setXref(a.getXref());
+//			addAuthor(a);
+//		}
 		organism = src.organism;
 		source = src.source;
 		version = src.version;
@@ -427,7 +438,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 	 * 
 	 * @author finterly
 	 */
-	public class Author {
+	public class Author implements Cloneable {
 
 		private String name;
 		private String username; // optional
@@ -446,6 +457,18 @@ public class Pathway extends PathwayElement implements Xrefable {
 		 */
 		private Author(String name) {
 			this.name = name;
+		}
+
+		// ================================================================================
+		// Clone Methods
+		// ================================================================================
+
+		/**
+		 * Clones this author. TODO
+		 */
+		@Override
+		public Object clone() throws CloneNotSupportedException {
+			return super.clone();
 		}
 
 		// ================================================================================

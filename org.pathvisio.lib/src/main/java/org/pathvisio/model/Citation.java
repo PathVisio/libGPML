@@ -25,6 +25,7 @@ import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
+import org.pathvisio.util.XrefUtils;
 
 /**
  * This class stores information for a Citation.
@@ -212,7 +213,7 @@ public class Citation extends PathwayObject {
 	 * @param citationRef the given citationRef to add.
 	 */
 	protected void addCitationRef(CitationRef citationRef) {
-		if (citationRef == null){
+		if (citationRef == null) {
 			throw new IllegalArgumentException("Cannot add invalid citationRef to citation.");
 		}
 		// add citationRef to citationRefs
@@ -275,17 +276,8 @@ public class Citation extends PathwayObject {
 	 */
 	public boolean equalsCitation(Citation citation) {
 		// checks if xref is equivalent
-		if (xref != null && citation.getXref() == null) {
+		if (!XrefUtils.equivalentXrefs(xref, citation.getXref())) {
 			return false;
-		}
-		if (xref == null && citation.getXref() != null) {
-			return false;
-		}
-		if (xref != null && citation.getXref() != null) {
-			if (!Objects.equals(xref.getId(), citation.getXref().getId()))
-				return false;
-			if (!Objects.equals(xref.getDataSource(), citation.getXref().getDataSource()))
-				return false;
 		}
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, citation.getUrlLink()))
@@ -301,20 +293,18 @@ public class Citation extends PathwayObject {
 	 *
 	 * Used by UndoAction.
 	 *
+	 * NB: citationRefs list is not copied, citationRefs are created and added when
+	 * a citation is added to a pathway element.
+	 * 
 	 * @param src
 	 */
 	public void copyValuesFrom(Citation src) { // TODO
-//		super.copyValuesFrom(src);
 		xref = src.xref;
 		urlLink = src.urlLink;
 		title = src.title;
 		source = src.source;
 		year = src.year;
 		authors = src.authors;
-		citationRefs = new ArrayList<CitationRef>();
-		for (CitationRef c : src.citationRefs) { // TODO????
-			addCitationRef(c);
-		}
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
@@ -325,7 +315,7 @@ public class Citation extends PathwayObject {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Citation copy() {
-		Citation result = new Citation(xref, urlLink); // TODO
+		Citation result = new Citation(xref, urlLink);
 		result.copyValuesFrom(this);
 		return result;
 	}

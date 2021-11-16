@@ -114,7 +114,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
-	 * TODO Finds the first comment with a specific source.
+	 * Finds the first comment with a specific source.
 	 * 
 	 * @param source the source of the comment to be found.
 	 * @return the comment content with a given source.
@@ -205,7 +205,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public AnnotationRef addAnnotation(Annotation annotation) {
-		// add annotation to pathway model if applicable TODO
+		// add annotation to pathway model if applicable
 		if (pathwayModel != null && !pathwayModel.getAnnotations().contains(annotation)) {
 			annotation = pathwayModel.addAnnotation(annotation);
 		}
@@ -313,7 +313,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public CitationRef addCitation(Citation citation) {
-		// add citation to pathway model if applicable TODO
+		// add citation to pathway model if applicable
 		if (pathwayModel != null && !pathwayModel.getCitations().contains(citation)) {
 			citation = pathwayModel.addCitation(citation);
 		}
@@ -328,7 +328,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		return citationRef;
 	}
 
-	// TODO
 	/**
 	 * Creates a citation with given xref and urlLink, and adds citation to pathway
 	 * model. Creates a citationRef for citation, and adds to citationRefs list for
@@ -344,7 +343,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		return addCitation(citation);
 	}
 
-	// TODO
 	/**
 	 * Creates a citation with given xref and urlLink, and adds citation to pathway
 	 * model. Creates a citationRef for citation, and adds to citationRefs list for
@@ -419,9 +417,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 */
 	@Override
 	public EvidenceRef addEvidence(Evidence evidence) {
-		// add evidence to pathway model if applicable TODO
-		if (pathwayModel != null && !pathwayModel.getEvidences().contains(evidence))
+		// add evidence to pathway model if applicable
+		if (pathwayModel != null && !pathwayModel.getEvidences().contains(evidence)) {
 			evidence = pathwayModel.addEvidence(evidence);
+		}
 		EvidenceRef evidenceRef = new EvidenceRef(evidence);
 		// adds evidenceRef
 		if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
@@ -449,7 +448,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		return addEvidence(evidence);
 	}
 
-	// TODO
 	/**
 	 * Creates an evidence with given properties, and adds evidence to pathway
 	 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
@@ -517,7 +515,7 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * Used by UndoAction.
 	 * 
 	 * NB: AnnotationRefs, citationRefs, and evidenceRefs are not immediately copied
-	 * but loaded later. TODO 
+	 * but loaded later. TODO
 	 * 
 	 * @param src
 	 */
@@ -578,6 +576,11 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		// ================================================================================
 		// Clone Methods
 		// ================================================================================
+
+		/**
+		 * Clones this comment. TODO
+		 */
+		@Override
 		public Object clone() throws CloneNotSupportedException {
 			return super.clone();
 		}
@@ -841,18 +844,22 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public CitationRef addCitation(Citation citation) {
+			// add citation to pathway model if applicable
+			if (pathwayModel != null && !pathwayModel.getCitations().contains(citation)) {
+				citation = pathwayModel.addCitation(citation);
+			}
 			CitationRef citationRef = new CitationRef(citation);
-			// adds citationRef TODO
+			// adds citationRef
 			if (citationRef != null && !hasCitationRef(citationRef)) {
 				citationRef.setCitableTo(this);
 				assert (citationRef.getCitable() == this);
 				citationRefs.add(citationRef);
+				// TODO
 //				fireObjectModifiedEvent(PathwayElementEvent.createSinglePropertyEvent(this, StaticProperty.CITATIONREF));
 			}
 			return citationRef;
 		}
 
-		// TODO
 		/**
 		 * Creates a citation with given xref and urlLink, and adds citation to pathway
 		 * model. Creates a citationRef for citation, and adds to citationRefs list for
@@ -864,14 +871,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		@Override
 		public CitationRef addCitation(Xref xref, String urlLink) {
 			Citation citation = new Citation(xref, urlLink);
-			// add citation to pathway model if applicable TODO
-			if (pathwayModel != null)
-				pathwayModel.addCitation(citation);
 			// creates and adds citationRef
 			return addCitation(citation);
 		}
 
-		// TODO
 		/**
 		 * Creates a citation with given xref and urlLink, and adds citation to pathway
 		 * model. Creates a citationRef for citation, and adds to citationRefs list for
@@ -887,9 +890,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			Citation citation = new Citation(xref, urlLink);
 			// set elementId
 			citation.setElementId(elementId);
-			// add citation to pathway model if applicable TODO
-			if (pathwayModel != null)
-				pathwayModel.addCitation(citation);
 			// creates and adds citationRef
 			return addCitation(citation);
 		}
@@ -952,7 +952,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public EvidenceRef addEvidence(Evidence evidence) {
-			// Check if evidence already exists.... //TODO
+			// add evidence to pathway model if applicable
+			if (pathwayModel != null && !pathwayModel.getEvidences().contains(evidence)) {
+				evidence = pathwayModel.addEvidence(evidence);
+			}
 			EvidenceRef evidenceRef = new EvidenceRef(evidence);
 			// adds evidenceRef
 			if (evidenceRef != null && !hasEvidenceRef(evidenceRef)) {
@@ -964,7 +967,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			return evidenceRef;
 		}
 
-		// TODO
 		/**
 		 * Creates an evidence with given properties, and adds evidence to pathway
 		 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
@@ -977,14 +979,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		@Override
 		public EvidenceRef addEvidence(String value, Xref xref, String urlLink) {
 			Evidence evidence = new Evidence(value, xref, urlLink);
-			// add evidence to pathway model if applicable TODO
-			if (pathwayModel != null)
-				evidence = pathwayModel.addEvidence(evidence);
 			// creates and adds evidenceRef
 			return addEvidence(evidence);
 		}
 
-		// TODO
 		/**
 		 * Creates an evidence with given properties, and adds evidence to pathway
 		 * model. Creates a evidenceRef for evidence, and adds to evidenceRefs list for
@@ -1001,9 +999,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 			Evidence evidence = new Evidence(value, xref, urlLink);
 			// set elementId
 			evidence.setElementId(elementId);
-			// add evidence to pathway model if applicable TODO
-			if (pathwayModel != null)
-				evidence = pathwayModel.addEvidence(evidence);
 			// creates and adds evidenceRef
 			return addEvidence(evidence);
 		}
@@ -1227,6 +1222,10 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		 */
 		@Override
 		public AnnotationRef addAnnotation(Annotation annotation) {
+			// add annotation to pathway model if applicable
+			if (pathwayModel != null && !pathwayModel.getAnnotations().contains(annotation)) {
+				annotation = pathwayModel.addAnnotation(annotation);
+			}
 			AnnotationRef annotationRef = new AnnotationRef(annotation);
 			// adds annotationRef
 			if (annotationRef != null && !hasAnnotationRef(annotationRef)) {
@@ -1253,10 +1252,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		@Override
 		public AnnotationRef addAnnotation(String value, AnnotationType type, Xref xref, String urlLink) {
 			Annotation annotation = new Annotation(value, type, xref, urlLink);
-			// add annotation to pathway model if applicable TODO
-			if (pathwayModel != null) {
-				annotation = pathwayModel.addAnnotation(annotation);
-			}
 			// creates and adds annotationRef
 			return addAnnotation(annotation);
 		}
@@ -1278,10 +1273,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 				String urlLink) {
 			Annotation annotation = new Annotation(value, type, xref, urlLink);
 			annotation.setElementId(elementId);
-			// add annotation to pathway model if applicable TODO
-			if (pathwayModel != null) {
-				annotation = pathwayModel.addAnnotation(annotation);
-			}
 			// creates and adds annotationRef
 			return addAnnotation(annotation);
 		}

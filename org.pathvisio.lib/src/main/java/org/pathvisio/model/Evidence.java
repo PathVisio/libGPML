@@ -25,6 +25,7 @@ import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
+import org.pathvisio.util.XrefUtils;
 
 /**
  * This class stores information for an Evidence.
@@ -206,7 +207,7 @@ public class Evidence extends PathwayObject {
 	// ================================================================================
 	/**
 	 * Compares this evidence to the given evidence. Checks all properties except
-	 * evidenceRefs list to determine whether they are equal. * TODO
+	 * evidenceRefs list to determine whether they are equal.
 	 * 
 	 * @param evidence the evidence to compare to.
 	 * @return true if evidences have equal properties, false otherwise.
@@ -216,15 +217,8 @@ public class Evidence extends PathwayObject {
 		if (!Objects.equals(value, evidence.getValue()))
 			return false;
 		// checks if xref is equivalent
-		if (xref != null && evidence.getXref() == null)
+		if (!XrefUtils.equivalentXrefs(xref, evidence.getXref())) {
 			return false;
-		if (xref == null && evidence.getXref() != null)
-			return false;
-		if (xref != null && evidence.getXref() != null) {
-			if (!Objects.equals(xref.getId(), evidence.getXref().getId()))
-				return false;
-			if (!Objects.equals(xref.getDataSource(), evidence.getXref().getDataSource()))
-				return false;
 		}
 		// checks if url link property equivalent
 		if (!Objects.equals(urlLink, evidence.getUrlLink()))
@@ -239,18 +233,16 @@ public class Evidence extends PathwayObject {
 	 * Note: doesn't change parent, only fields
 	 *
 	 * Used by UndoAction.
+	 * 
+	 * NB: evidenceRefs list is not copied, evidenceRefs are created and added when
+	 * an evidence is added to a pathway element.
 	 *
 	 * @param src
 	 */
 	public void copyValuesFrom(Evidence src) { // TODO
-//		super.copyValuesFrom(src);
 		value = src.value;
 		xref = src.xref;
 		urlLink = src.urlLink;
-		evidenceRefs = new ArrayList<EvidenceRef>();
-		for (EvidenceRef e : src.evidenceRefs) { // TODO????
-			addEvidenceRef(e);
-		}
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
@@ -261,7 +253,7 @@ public class Evidence extends PathwayObject {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Evidence copy() {
-		Evidence result = new Evidence(value, xref, urlLink); // TODO
+		Evidence result = new Evidence(value, xref, urlLink); 
 		result.copyValuesFrom(this);
 		return result;
 	}

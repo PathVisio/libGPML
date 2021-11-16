@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.util;
 
+import java.util.Objects;
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.pathvisio.debug.Logger;
@@ -130,6 +132,28 @@ public class XrefUtils {
 		}
 		// returns null if no valid data source
 		return null;
+	}
+
+	/**
+	 * This method checks whether two {@link Xref}(s) are equal in value. Returns
+	 * true if the given Xrefs are equal, false otherwise.
+	 * 
+	 * @return true if given xrefs equal, false otherwise.
+	 */
+	public static boolean equivalentXrefs(Xref xref1, Xref xref2) {
+		if (xref1 == null && xref2 == null) {
+			return true;
+		} else if ((xref1 != null && xref2 == null) || (xref1 == null && xref2 != null)) {
+			return false;
+		} else if (xref1 != null && xref2 != null) {
+			if (!Objects.equals(xref1.getId(), xref2.getId())) {
+				return false;
+			}
+			if (!Objects.equals(xref1.getDataSource(), xref2.getDataSource())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

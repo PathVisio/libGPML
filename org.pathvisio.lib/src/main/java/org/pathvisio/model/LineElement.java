@@ -134,7 +134,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 * @param v the given group to set.
 	 */
 	private void setGroupRef(Group v) {
-		// TODO
 		groupRef = v;
 		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
@@ -247,7 +246,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void addAnchor(Anchor anchor) {
 		if (anchor != null && !hasAnchor(anchor)) {
 			assert (anchor.getLineElement() == this);
-			// add anchor to same pathway model as line if applicable TODO
+			// add anchor to same pathway model as line if applicable
 			if (getPathwayModel() != null)
 				getPathwayModel().addPathwayObject(anchor);
 			anchors.add(anchor);
@@ -463,7 +462,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	// Start and End LinePoint Methods
 	// ================================================================================
 	/**
-	 * Returns the start (first) point of points list. TODO necessary method?
+	 * Returns the start (first) point of points list.
 	 * 
 	 * @return the first point of points list.
 	 */
@@ -474,14 +473,14 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	/**
 	 * Sets start linePoint coordinates to the coordinates of the given linePoint.
 	 * 
-	 * @param linePoint
+	 * @param linePoint the given line point.
 	 */
 	public void setStartLinePoint(LinePoint linePoint) {
 		getStartLinePoint().moveTo(linePoint);
 	}
 
 	/**
-	 * Returns the end (last) point of points list. TODO necessary method?
+	 * Returns the end (last) point of points list.
 	 * 
 	 * @return the last point of points list.
 	 */
@@ -489,76 +488,159 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		return linePoints.get(linePoints.size() - 1);
 	}
 
-	// TODO weird
+	/**
+	 * Sets end linePoint coordinates to the coordinates of the given linePoint.
+	 * 
+	 * @param linePoint the given line point.
+	 */
 	public void setEndLinePoint(LinePoint linePoint) {
 		getEndLinePoint().moveTo(linePoint);
 	}
 
+	/**
+	 * Returns the x coordinate of the start point.
+	 * 
+	 * @return the x coordinate of the start point.
+	 */
 	public double getStartLinePointX() {
 		return getStartLinePoint().getX();
 	}
 
+	/**
+	 * Sets the x coordinate of the start point.
+	 * 
+	 * @param v the value to set.
+	 */
 	public void setStartLinePointX(double v) {
 		getStartLinePoint().setX(v);
 	}
 
+	/**
+	 * Returns the y coordinate of the start point.
+	 * 
+	 * @return the y coordinate of the start point.
+	 */
 	public double getStartLinePointY() {
 		return getStartLinePoint().getY();
 	}
 
+	/**
+	 * Sets the y coordinate of the start point.
+	 * 
+	 * @param v the value to set.
+	 */
 	public void setStartLinePointY(double v) {
 		getStartLinePoint().setY(v);
 	}
 
+	/**
+	 * Returns the x coordinate of the end point.
+	 * 
+	 * @return the x coordinate of the end point.
+	 */
 	public double getEndLinePointX() {
 		return getEndLinePoint().getX();
 	}
 
+	/**
+	 * Sets the x coordinate of the end point.
+	 * 
+	 * @param v the value to set.
+	 */
 	public void setEndLinePointX(double v) {
 		getEndLinePoint().setX(v);
 	}
 
+	/**
+	 * Returns the y coordinate of the end point.
+	 * 
+	 * @return the y coordinate of the end point.
+	 */
 	public double getEndLinePointY() {
 		return getEndLinePoint().getY();
 	}
 
+	/**
+	 * Sets the y coordinate of the end point.
+	 * 
+	 * @param v the value to set.
+	 */
 	public void setEndLinePointY(double v) {
 		getEndLinePoint().setY(v);
 	}
 
-	// TODO are these methods necessary?
+	/**
+	 * Returns the arrow head type of the start point.
+	 * 
+	 * @return startLineType the arrow head type.
+	 */
 	public ArrowHeadType getStartLineType() {
 		ArrowHeadType startLineType = getStartLinePoint().getArrowHead();
 		return startLineType == null ? ArrowHeadType.UNDIRECTED : startLineType;
 	}
 
+	/**
+	 * Sets the arrow head type of the start point.
+	 * 
+	 * @param value the arrow head type to set.
+	 */
 	public void setStartLineType(ArrowHeadType value) {
 		getStartLinePoint().setArrowHead(value);
 	}
 
+	/**
+	 * Returns the arrow head type of the end point.
+	 * 
+	 * @return endLineType the arrow head type.
+	 */
 	public ArrowHeadType getEndLineType() {
 		ArrowHeadType endLineType = getEndLinePoint().getArrowHead();
 		return endLineType == null ? ArrowHeadType.UNDIRECTED : endLineType;
 	}
 
+	/**
+	 * Sets the arrow head type of the end point.
+	 * 
+	 * @param value the arrow head type to set.
+	 */
 	public void setEndLineType(ArrowHeadType value) {
 		getEndLinePoint().setArrowHead(value);
 	}
 
+	/**
+	 * Returns the elementRef of the end point.
+	 * 
+	 * @return the elementRef linkableTo pathway element.
+	 */
 	public LinkableTo getStartElementRef() {
 		return getStartLinePoint().getElementRef();
 	}
 
+	/**
+	 * Sets the elementRef for the start point. TODO
+	 * 
+	 * @param elementRef to link to.
+	 */
 	public void setStartElementRef(LinkableTo elementRef) {
-		getStartLinePoint().setElementRef(elementRef);
+		getStartLinePoint().linkTo(elementRef);
 	}
 
+	/**
+	 * Returns the elementRef of the end point.
+	 * 
+	 * @return the elementRef linkableTo pathway element.
+	 */
 	public LinkableTo getEndElementRef() {
 		return getEndLinePoint().getElementRef();
 	}
 
+	/**
+	 * Sets the elementRef for the end point. TODO
+	 * 
+	 * @param elementRef to link to.
+	 */
 	public void setEndElementRef(LinkableTo elementRef) {
-		getEndLinePoint().setElementRef(elementRef);
+		getEndLinePoint().linkTo(elementRef);
 
 	}
 
@@ -1035,7 +1117,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	@Override
 	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		super.setPathwayModelTo(pathwayModel);
-		// if line element has points and anchors, also add them to pathway model TODO
+		// if line element has points and anchors, also add them to pathway model
 		for (LinePoint point : linePoints) {
 			pathwayModel.addPathwayObject(point);
 		}
@@ -1069,25 +1151,21 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void copyValuesFrom(LineElement src) { // TODO
 		super.copyValuesFrom(src);
 		groupRef = src.groupRef;
+		// copy line points
 		List<LinePoint> points = new ArrayList<LinePoint>();
 		for (LinePoint pt : src.linePoints) {
-			LinePoint result = new LinePoint(null, 0, 0); // TODO
+			LinePoint result = new LinePoint(null, 0, 0);
 			result.copyValuesFrom(pt);
 			points.add(result);
 		}
 		setLinePoints(points);
-//		for (LinePoint p : src.linePoints) {
-//			linePoints.add(p);
-//		}
+		// copy anchors
 		anchors = new ArrayList<Anchor>();
 		for (Anchor a : src.anchors) {
-			Anchor result = new Anchor(0, null); // TODO
+			Anchor result = new Anchor(0, null);
 			result.copyValuesFrom(a);
 			addAnchor(result);
 		}
-//		for (Anchor a : src.anchors) {
-//		anchors.add(a);
-//	}
 		lineColor = src.lineColor;
 		lineWidth = src.lineWidth;
 		connectorType = src.connectorType;
@@ -1127,8 +1205,12 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// ================================================================================
 		// Clone Methods
 		// ================================================================================
+
+		/**
+		 * TODO
+		 */
 		public Object clone() throws CloneNotSupportedException {
-			GenericPoint p = (GenericPoint) super.clone(); // TODO
+			GenericPoint p = (GenericPoint) super.clone(); // TODO????
 			if (getElementId() != null)
 				p.setElementId(getElementId()); // TODO????
 			return p;
@@ -1330,7 +1412,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 					}
 				}
 				elementRef = v;
-				// TODO????
 				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ELEMENTREF));
 			}
 		}
@@ -1402,7 +1483,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 
 		/**
 		 * Checks if the position of this point should be stored as relative or absolute
-		 * coordinates
+		 * coordinates.
 		 * 
 		 * @return true if the coordinates are relative, false otherwise.
 		 */
@@ -1415,41 +1496,65 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 
 		/**
+		 * Returns absolute coordinates based on elementRef.
+		 * 
 		 * @return
 		 */
 		private Point2D getAbsolute() {
 			return elementRef.toAbsoluteCoordinate(new Point2D.Double(getRelX(), getRelY()));
 		}
 
-		// TODO
+		/**
+		 * Returns this line point as a {@link Point2D}.
+		 * 
+		 * @return this point as point2d.
+		 */
 		public Point2D toPoint2D() {
 			return new Point2D.Double(getX(), getY());
 		}
 
-		// TODO
+		/**
+		 * Returns the absolute coordinate as a {@link Point2D}.
+		 * 
+		 * @return the absolute coordinate as point2d.
+		 */
+		@Override
 		public Point2D toAbsoluteCoordinate(Point2D p) {
 			return new Point2D.Double(p.getX() + getX(), p.getY() + getY());
 		}
 
-		// TODO
+		/**
+		 * Returns the relative coordinate as a {@link Point2D}.
+		 * 
+		 * @return the relative coordinate as point2d.
+		 */
+		@Override
 		public Point2D toRelativeCoordinate(Point2D p) {
 			return new Point2D.Double(p.getX() - getX(), p.getY() - getY());
 		}
 
 		/**
-		 * Link to an object. Current absolute coordinates will be converted to relative
-		 * coordinates based on the object to link to. TODO
+		 * Links this line point to the given object. Updates xy and relXY coordinates.
 		 * 
 		 * @param elementRef the linkableTo pathway element or anchor to link to.
 		 */
 		public void linkTo(LinkableTo elementRef) {
-			Point2D rel = elementRef.toRelativeCoordinate(toPoint2D());
-			linkTo(elementRef, rel.getX(), rel.getY());
+			if (elementRef != null) {
+				Point2D rel = elementRef.toRelativeCoordinate(toPoint2D());
+				linkTo(elementRef, rel.getX(), rel.getY());
+			} else {
+				unlink();
+			}
 		}
 
 		/**
-		 * Link to an object using the given relative coordinates TODO
+		 * Links this line point to the given object. Updates xy and relXY coordinates.
+		 * 
+		 * @param elementRef the linkableTo pathway element or anchor to link to.
+		 * @param relX       the relative x coordinate to set.
+		 * @param relY       the relative y coordinate to set.
 		 */
+		@Override
 		public void linkTo(LinkableTo elementRef, double relX, double relY) {
 //			String id = elementRef.getElementId(); // TODO needed? 
 //			if (id == null) {
@@ -1463,6 +1568,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * NB: This may be called any number of times when this point is already
 		 * unlinked
 		 */
+		@Override
 		public void unlink() {
 			if (elementRef != null) {
 				if (getPathwayModel() != null) {
@@ -1474,13 +1580,9 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 		}
 
-		// ================================================================================
-		// Point Move Methods
-		// ================================================================================
-
-		// TODO
 		/**
-		 * Sets X, Y, relX and relY for this point. When the given point is linked to a
+		 * Sets X, Y, relX and relY for this point. Updates x and y absolute coordinates
+		 * for this point which is now relative. When the given point is linked to a
 		 * pathway element, relX and relY are the relative coordinates on the element,
 		 * where 0,0 is at the center of the object and 1,1 at the bottom right corner
 		 * of the object.
@@ -1494,31 +1596,53 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			setRelY(relY);
 		}
 
-		// TODO
+		// ================================================================================
+		// Point Move Methods
+		// ================================================================================
+
+		/**
+		 * Moves x and y coordinates for this line point by the given values.
+		 * 
+		 * @param deltaX the value to move x coordinate by.
+		 * @param deltaY the value to move y coordinate by.
+		 */
 		public void moveBy(double deltaX, double deltaY) {
 			x += deltaX;
 			y += deltaY;
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
-		// TODO
+		/**
+		 * Moves x and y coordinates for this line point to given values.
+		 * 
+		 * @param vx the value to move x coordinate to.
+		 * @param vy the value to move y coordinate to.
+		 */
 		public void moveTo(double vx, double vy) {
 			x = vx;
 			y = vy;
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
-		// TODO weird
+		/**
+		 * Moves the xy and relXY coordinates for this line point to the coordinate
+		 * values of the given line point.
+		 * 
+		 * @param linePoint the linePoint to move to.
+		 */
 		public void moveTo(LinePoint linePoint) {
 			setX(linePoint.getX());
 			setY(linePoint.getY());
-			setRelX(linePoint.getRelX()); // TODO
-			setRelY(linePoint.getRelY()); // TODO
+			setRelX(linePoint.getRelX());
+			setRelY(linePoint.getRelY());
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
+		/**
+		 * Called whenever the object being referred to has changed.
+		 */
+		@Override
 		public void refeeChanged() {
-			// called whenever the object being referred to has changed.
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 
@@ -1551,18 +1675,22 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 
 		/**
-		 * Terminates this line point element. Removes any link to an elementRef. The
-		 * pathway model, if any, is unset from this pathway element.
+		 * Terminates this line point and removes all links and references.
 		 */
 		@Override
 		protected void terminate() {
-			unlink(); // TODO unset as a LinkableTo
+			unlink();
 			super.terminate();
 		}
 
 		// ================================================================================
 		// Clone Methods
 		// ================================================================================
+
+		/**
+		 * TODO
+		 */
+		@Override
 		public Object clone() throws CloneNotSupportedException {
 			LinePoint p = (LinePoint) super.clone();
 			if (elementRef != null)
@@ -1576,7 +1704,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * Used by UndoAction.
 		 * 
 		 * NB: ElementRef is not copied, but can be set later given the LinkableTo is
-		 * also copied. //TODO 
+		 * also copied. //TODO
 		 *
 		 * @param src
 		 */
@@ -1617,7 +1745,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		private Anchor(double position, AnchorShapeType shapeType) {
 			super();
-			// TODO unlink
 			setPosition(position); // must be valid
 			setShapeType(shapeType);
 		}
@@ -1718,19 +1845,32 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			return GraphLink.getReferences(this, getPathwayModel());
 		}
 
-		// TODO
+		/**
+		 * Removes links from all {@link LinkableFrom} line points to this
+		 * {@link LinkableTo} pathway element.
+		 */
 		public void unsetAllLinkableFroms() {
 			for (LinkableFrom linePoint : getLinkableFroms()) {
 				pathwayModel.removeElementRef(this, linePoint);
 			}
 		}
 
+		/**
+		 * Returns the absolute coordinate as a {@link Point2D}.
+		 * 
+		 * @return the absolute coordinate as point2d.
+		 */
 		@Override
 		public Point2D toAbsoluteCoordinate(Point2D p) {
 			Point2D l = getLineElement().getConnectorShape().fromLineCoordinate(getPosition());
 			return new Point2D.Double(p.getX() + l.getX(), p.getY() + l.getY());
 		}
 
+		/**
+		 * Returns the relative coordinate as a {@link Point2D}.
+		 * 
+		 * @return the relative coordinate as point2d.
+		 */
 		@Override
 		public Point2D toRelativeCoordinate(Point2D p) {
 			Point2D l = getLineElement().getConnectorShape().fromLineCoordinate(getPosition());
@@ -1738,12 +1878,11 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		}
 
 		/**
-		 * Terminates this anchor element. Removes any link by line point. The pathway
-		 * model, if any, is unset from this pathway element.
+		 * Terminates this anchor and removes all links and references.
 		 */
 		@Override
 		protected void terminate() {
-			unsetAllLinkableFroms(); // TODO unset as a LinkableTo
+			unsetAllLinkableFroms();
 			super.terminate();
 		}
 
@@ -1757,7 +1896,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 *
 		 * @param src
 		 */
-		public void copyValuesFrom(Anchor src) { // TODO
+		public void copyValuesFrom(Anchor src) {
 			position = src.position;
 			shapeType = src.shapeType;
 			fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));

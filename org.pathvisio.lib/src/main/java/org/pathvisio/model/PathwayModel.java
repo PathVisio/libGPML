@@ -43,9 +43,6 @@ import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.PathwayElement.AnnotationRef;
-import org.pathvisio.model.PathwayElement.CitationRef;
-import org.pathvisio.model.PathwayElement.EvidenceRef;
 import org.pathvisio.util.Utils;
 
 /**
@@ -435,8 +432,8 @@ public class PathwayModel {
 	 * @param dataNode the data node to be added.
 	 */
 	public void addDataNode(DataNode dataNode) {
-		dataNodes.add(dataNode);
 		addPathwayObject(dataNode);
+		dataNodes.add(dataNode);
 	}
 
 	/**
@@ -472,8 +469,8 @@ public class PathwayModel {
 	 * @param interaction the interaction to be added.
 	 */
 	public void addInteraction(Interaction interaction) {
-		interactions.add(interaction);
 		addPathwayObject(interaction);
+		interactions.add(interaction);
 	}
 
 	/**
@@ -504,8 +501,8 @@ public class PathwayModel {
 	 * @param graphicalLine the graphicalLine to be added.
 	 */
 	public void addGraphicalLine(GraphicalLine graphicalLine) {
-		graphicalLines.add(graphicalLine);
 		addPathwayObject(graphicalLine);
+		graphicalLines.add(graphicalLine);
 	}
 
 	/**
@@ -567,8 +564,8 @@ public class PathwayModel {
 	 * @param shape the shape to be added.
 	 */
 	public void addShape(Shape shape) {
-		shapes.add(shape);
 		addPathwayObject(shape);
+		shapes.add(shape);
 	}
 
 	/**
@@ -598,8 +595,8 @@ public class PathwayModel {
 	 * @param group the group to be added.
 	 */
 	public void addGroup(Group group) {
-		groups.add(group);
 		addPathwayObject(group);
+		groups.add(group);
 	}
 
 	/**
@@ -644,8 +641,8 @@ public class PathwayModel {
 			Logger.log.trace("Annotation not added, information equivalent to " + annotationExisting.getElementId());
 			return annotationExisting;
 		} else {
-			annotations.add(annotation);
 			addPathwayObject(annotation);
+			annotations.add(annotation);
 			return annotation;
 		}
 	}
@@ -703,8 +700,8 @@ public class PathwayModel {
 				Logger.log.trace("Citation not added, information equivalent to " + citationExisting.getElementId());
 				return citationExisting;
 			} else {
-				citations.add(citation);
 				addPathwayObject(citation);
+				citations.add(citation);
 				return citation;
 			}
 		} else {
@@ -761,8 +758,8 @@ public class PathwayModel {
 			Logger.log.trace("Evidence not added, information equivalent to " + evidenceExisting.getElementId());
 			return evidenceExisting;
 		} else {
-			evidences.add(evidence);
 			addPathwayObject(evidence);
+			evidences.add(evidence);
 			return evidence;
 		}
 	}
@@ -798,28 +795,6 @@ public class PathwayModel {
 	// ================================================================================
 
 	/**
-	 * TODO
-	 * 
-	 * @param pathwayElement the pathway element to add.
-	 */
-	protected void addPathwayElement(PathwayElement pathwayElement) {
-		addPathwayObject(pathwayElement);
-		/*
-		 * If pathwayElement has annotations, citations, evidence (typically in the case
-		 * of copy/paste). TODO
-		 */
-		for (AnnotationRef annotationRef : pathwayElement.getAnnotationRefs()) {
-			addAnnotation(annotationRef.getAnnotation().copy());
-		}
-		for (CitationRef citationRef : pathwayElement.getCitationRefs()) {
-			addCitation(citationRef.getCitation().copy());
-		}
-		for (EvidenceRef evidencRef : pathwayElement.getEvidenceRefs()) {
-			addEvidence(evidencRef.getEvidence().copy());
-		}
-	}
-
-	/**
 	 * Adds the given pathway object to pathway model. Sets pathwayModel for the
 	 * given pathway object. Sets an unique elementId for given pathway object if
 	 * not already set. Corresponding elementId and given pathway object are added
@@ -833,17 +808,23 @@ public class PathwayModel {
 		if (pathwayObject == null) {
 			throw new IllegalArgumentException("Cannot add invalid pathway object to pathway model");
 		}
+		String elementId = pathwayObject.getElementId();
+		// if pathway object already has elementId (from reading), it must be unique
+		if (elementId != null && elementIdToPathwayObject.containsKey(elementId)) {
+			throw new IllegalArgumentException("id '" + elementId + "' is not unique");
+		}
+		// set pathway model
 		pathwayObject.setPathwayModelTo(this);
 		if (pathwayObject.getPathwayModel() != this) {
 			throw new IllegalArgumentException("Pathway object does not refer to this pathway model");
 		}
-		String elementId = pathwayObject.getElementId();
+		// if pathway object does not yet have id, set a unique elementId
 		if (elementId == null) {
 			elementId = pathwayObject.setGeneratedElementId();
 		}
 		addElementId(elementId, pathwayObject);
 		fireObjectModifiedEvent(new PathwayModelEvent(pathwayObject, PathwayModelEvent.ADDED));
-		checkMBoardSize(pathwayObject); // TODO
+		checkMBoardSize(pathwayObject);
 	}
 
 	/**

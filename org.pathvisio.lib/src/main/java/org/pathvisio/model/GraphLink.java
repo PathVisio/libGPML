@@ -45,14 +45,6 @@ public abstract class GraphLink {
 		String getElementId();
 
 		/**
-		 * @param id
-		 */
-		void setElementId(String id);
-
-//		/** generate a unique graph Id and use that. */
-//		String setGeneratedGraphId();
-
-		/**
 		 * Returns {@link LinkableFrom}s {@link LineElement.LinePoint} for this pathway
 		 * element.
 		 * 

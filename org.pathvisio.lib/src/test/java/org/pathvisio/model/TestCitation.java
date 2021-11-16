@@ -1,9 +1,12 @@
 package org.pathvisio.model;
 
+import org.bridgedb.Xref;
+import org.bridgedb.bio.DataSourceTxt;
 import org.junit.Before;
 import org.junit.Test;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.util.XrefUtils;
 
 import junit.framework.TestCase;
 
@@ -26,10 +29,12 @@ public class TestCitation extends TestCase {
 	 */
 	@Before
 	public void setUp() {
+		DataSourceTxt.init();
 		p = new PathwayModel();
 		d1 = new DataNode("d1", DataNodeType.UNDEFINED); 
 		p.addDataNode(d1); 
-		ar1 = d1.addCitation(null, "urlLink");
+		Xref xref = XrefUtils.createXref("11", "ensembl");
+		ar1 = d1.addCitation(xref, "urlLink");
 		ar2 = d1.addCitation(null, "urlLink2");
 		a = ar1.getCitation();
 		a2 = ar2.getCitation();
@@ -65,7 +70,8 @@ public class TestCitation extends TestCase {
 	 */
 	@Test
 	public void testDuplicateCitation() {
-		CitationRef ar3 = d1.addCitation(null, "urlLink");
+		Xref xref = XrefUtils.createXref("11", "ensembl");
+		CitationRef ar3 = d1.addCitation(xref, "urlLink");
 		assertEquals(ar1.getCitation(), ar3.getCitation());
 	}
 }

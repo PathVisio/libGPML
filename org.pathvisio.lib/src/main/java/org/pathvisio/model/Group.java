@@ -248,11 +248,7 @@ public class Group extends ShapedElement implements Xrefable {
 		unsetAllLinkableFroms(); // unlink before removing pathway element
 		unsetGroupRef();
 		removePathwayElements();
-		removeAnnotationRefs();
-		removeCitationRefs();
-		removeEvidenceRefs();
-		unsetPathwayModel();
-		setElementId(null);
+		super.terminate();
 	}
 
 	// ================================================================================

@@ -74,7 +74,7 @@ public class Shape extends ShapedElement {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(Shape src) { // TODO
+	public void copyValuesFrom(Shape src) { 
 		super.copyValuesFrom(src);
 		textLabel = src.textLabel;
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
@@ -87,9 +87,23 @@ public class Shape extends ShapedElement {
 	 * No events will be sent to the parent of the original.
 	 */
 	public CopyElement copy() {
-		Shape result = new Shape(); // TODO
+		Shape result = new Shape();
 		result.copyValuesFrom(this);
-		return new CopyElement(result,this);
+		return new CopyElement(result, this);
+	}
+
+	// ================================================================================
+	// Inherited Methods
+	// ================================================================================
+
+	/**
+	 * Terminates this shape and removes all links and references.
+	 */
+	@Override
+	protected void terminate() {
+		unsetAllLinkableFroms();
+		unsetGroupRef();
+		super.terminate();
 	}
 
 }

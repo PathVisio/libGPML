@@ -60,10 +60,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	private VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
 	// shape style properties
 	private Color borderColor = Color.decode("#000000"); // black
-	private LineStyleType borderStyle = LineStyleType.SOLID; // solid TODO: Fix
-	private double borderWidth = 1.0; // TODO: type?
-	private Color fillColor = Color.decode("#ffffff"); // white TODO: Transparent if Label
-	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle TODO: NONE if Label.
+	private LineStyleType borderStyle = LineStyleType.SOLID; // solid
+	private double borderWidth = 1.0; 
+	private Color fillColor = Color.decode("#ffffff"); // white
+	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle
 	private int zOrder; // optional
 	private double rotation = 0; // optional, in radians
 
@@ -151,7 +151,6 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * @param v the given group to set.
 	 */
 	private void setGroupRef(Group v) {
-		// TODO
 		groupRef = v;
 		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.GROUPREF));
 	}
@@ -703,7 +702,6 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setRotation(Double v) {
 		if (rotation != v) {
 			rotation = v;
-			// TODO rotation????
 			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
 	}
@@ -721,10 +719,13 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		return GraphLink.getReferences(this, getPathwayModel());
 	}
 
-	// TODO
+	/**
+	 * Removes links from all {@link LinkableFrom} line points to this
+	 * {@link LinkableTo} pathway element.
+	 */
 	public void unsetAllLinkableFroms() {
 		for (LinkableFrom linePoint : getLinkableFroms()) {
-			((LinePoint) linePoint).unlink(); // TODO
+			((LinePoint) linePoint).unlink();
 		}
 	}
 
@@ -735,8 +736,6 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 */
 	@Override
 	protected void terminate() {
-		unsetAllLinkableFroms(); // TODO unset as a LinkableTo
-		unsetGroupRef();
 		super.terminate();
 	}
 

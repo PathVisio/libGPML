@@ -26,6 +26,7 @@ import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.type.AnnotationType;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
+import org.pathvisio.util.XrefUtils;
 
 /**
  * This class stores information for an Annotation.
@@ -79,7 +80,7 @@ public class Annotation extends PathwayObject {
 	 * @param v the name, term, or text of this annotation.
 	 */
 	public void setValue(String v) {
-		if (v == null) { // TODO
+		if (v == null) {
 			throw new IllegalArgumentException("Value is a required field for Annotation.");
 		}
 		if (!Utils.stringEquals(value, v)) {
@@ -242,24 +243,20 @@ public class Annotation extends PathwayObject {
 	 */
 	public boolean equalsAnnotation(Annotation annotation) {
 		// checks if value and type property equivalent
-		if (!Objects.equals(value, annotation.getValue()))
+		if (!Objects.equals(value, annotation.getValue())) {
 			return false;
-		if (!Objects.equals(type, annotation.getType()))
+		}
+		if (!Objects.equals(type, annotation.getType())) {
 			return false;
+		}
 		// checks if xref is equivalent
-		if (xref != null && annotation.getXref() == null)
+		if (!XrefUtils.equivalentXrefs(xref, annotation.getXref())) {
 			return false;
-		if (xref == null && annotation.getXref() != null)
-			return false;
-		if (xref != null && annotation.getXref() != null) {
-			if (xref.getId().equals(annotation.getXref().getId()))
-				return false;
-			if (xref.getDataSource().equals(annotation.getXref().getDataSource()))
-				return false;
 		}
 		// checks if url link property equivalent
-		if (!Objects.equals(urlLink, annotation.getUrlLink()))
+		if (!Objects.equals(urlLink, annotation.getUrlLink())) {
 			return false;
+		}
 		return true;
 	}
 
@@ -271,18 +268,16 @@ public class Annotation extends PathwayObject {
 	 *
 	 * Used by UndoAction.
 	 *
+	 * NB: annotationRefs list is not copied, annotationRefs are created and added when
+	 * an annotation is added to a pathway element.
+	 * 
 	 * @param src
 	 */
 	public void copyValuesFrom(Annotation src) { // TODO
-//		super.copyValuesFrom(src);
 		value = src.value;
 		type = src.type;
 		xref = src.xref;
 		urlLink = src.urlLink;
-		annotationRefs = new ArrayList<AnnotationRef>();
-		for (AnnotationRef a : src.annotationRefs) { // TODO????
-			addAnnotationRef(a);
-		}
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
@@ -293,7 +288,7 @@ public class Annotation extends PathwayObject {
 	 * No events will be sent to the parent of the original.
 	 */
 	public Annotation copy() {
-		Annotation result = new Annotation(value, type, xref, urlLink); // TODO
+		Annotation result = new Annotation(value, type, xref, urlLink);
 		result.copyValuesFrom(this);
 		return result;
 	}

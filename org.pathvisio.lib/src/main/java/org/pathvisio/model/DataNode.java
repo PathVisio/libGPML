@@ -82,8 +82,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 		super();
 		this.textLabel = textLabel;
 		this.type = DataNodeType.ALIAS;
-		this.states = new ArrayList<State>(); // TODO
-		this.xref = xref; // TODO
+		this.states = new ArrayList<State>();
+		this.xref = xref;
 		setAliasRef(aliasRef);
 	}
 
@@ -170,7 +170,6 @@ public class DataNode extends ShapedElement implements Xrefable {
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
-			// TODO
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
@@ -215,7 +214,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 				getPathwayModel().addPathwayObject(state);
 			}
 			states.add(state);
-			// No state property, use BORDERSTYLE as dummy property to force redraw TODO
+			// No state property, use BORDERSTYLE as dummy property to force redraw
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
 		} else {
 			System.out.println("State " + state.getElementId() + " already belongs to data node " + getElementId());
@@ -240,7 +239,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Instantiates a state with the given properties including elementId. Adds new
-	 * state to states list and pathway model. //TODO
+	 * state to states list and pathway model.
 	 * 
 	 * @param elementId the elementId to set for the instantiated state.
 	 * @param textLabel the text label of the state.
@@ -287,7 +286,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	/**
 	 * Returns the pathway element to which the data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of a pathway element
-	 * (normally gpml:Group). TODO
+	 * (normally gpml:Group).
 	 * 
 	 * @return aliasRef the pathway element to which the data node refers.
 	 */
@@ -354,21 +353,21 @@ public class DataNode extends ShapedElement implements Xrefable {
 	@Override
 	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
 		super.setPathwayModelTo(pathwayModel);
-		// if data node has states, also add states to pathway model TODO
+		// if data node has states, also add states to pathway model
 		for (State state : states) {
 			pathwayModel.addPathwayObject(state);
 		}
 	}
 
 	/**
-	 * Terminates this data node. The pathway model, if any, is unset from this data
-	 * node. Links to all states, annotationRefs, citationRefs, and evidenceRefs are
-	 * removed from this data node.
+	 * Terminates this data node and removes all links and references.
 	 */
 	@Override
 	protected void terminate() {
 		unsetAliasRef();
 		removeStates();
+		unsetAllLinkableFroms();
+		unsetGroupRef();
 		super.terminate();
 	}
 
@@ -388,7 +387,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		type = src.type;
 		states = new ArrayList<State>();
 		for (State s : src.states) {
-			State result = new State(null, null, 0, 0); // TODO
+			State result = new State(null, null, 0, 0);
 			result.copyValuesFrom(s);
 			addState(result);
 		}
@@ -598,7 +597,6 @@ public class DataNode extends ShapedElement implements Xrefable {
 		public void setXref(Xref v) {
 			if (v != null) {
 				xref = v;
-				// TODO
 				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 			}
 		}
@@ -697,6 +695,16 @@ public class DataNode extends ShapedElement implements Xrefable {
 			}
 		}
 
+		/**
+		 * Terminates this state and removes all links and references.
+		 */
+		@Override
+		protected void terminate() {
+			unsetAllLinkableFroms();
+			unsetGroupRef();
+			super.terminate();
+		}
+
 		// ================================================================================
 		// Copy Methods
 		// ================================================================================
@@ -707,7 +715,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 *
 		 * @param src
 		 */
-		public void copyValuesFrom(State src) { // TODO
+		public void copyValuesFrom(State src) {
 			super.copyValuesFrom(src);
 			textLabel = src.textLabel;
 			type = src.type;
@@ -722,10 +730,12 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * parent will be set to null.
 		 *
 		 * No events will be sent to the parent of the original.
+		 * 
+		 * NB: this method is only used if copying and pasting a state to the same
+		 * parent data node. TODO
 		 */
 		public CopyElement copy() {
-			// make empty
-			State result = new State(textLabel, type, relX, relX); // TODO NEVER USED
+			State result = new State(textLabel, type, relX, relX);
 			result.copyValuesFrom(this);
 			return new CopyElement(result, this);
 		}

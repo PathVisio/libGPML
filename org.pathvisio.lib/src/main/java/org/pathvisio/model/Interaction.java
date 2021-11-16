@@ -70,7 +70,6 @@ public class Interaction extends LineElement implements Xrefable {
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
-			// TODO
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
@@ -85,7 +84,7 @@ public class Interaction extends LineElement implements Xrefable {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(Interaction src) { //TODO
+	public void copyValuesFrom(Interaction src) { 
 		super.copyValuesFrom(src);
 		xref = src.xref;
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
@@ -98,7 +97,7 @@ public class Interaction extends LineElement implements Xrefable {
 	 * No events will be sent to the parent of the original.
 	 */
 	public CopyElement copy() {
-		Interaction result = new Interaction(); //TODO 
+		Interaction result = new Interaction();
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
 	}
