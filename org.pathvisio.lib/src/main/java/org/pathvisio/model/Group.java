@@ -40,6 +40,30 @@ public class Group extends ShapedElement implements Xrefable {
 	/* list of pathway elements which belong to the group. */
 	private List<Groupable> pathwayElements; // should have at least one pathway element
 
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case GROUPTYPE:
+			setType((GroupType) value);
+		case TEXTLABEL:
+			setTextLabel((String) value);
+		case XREF:
+			setXref((Xref) value);
+		default:
+			// do nothing
+		}
+	}
+
 	// ================================================================================
 	// Constructors
 	// ================================================================================

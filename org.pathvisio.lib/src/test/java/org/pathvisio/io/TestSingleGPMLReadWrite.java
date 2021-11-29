@@ -22,6 +22,9 @@ import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pathvisio.model.ConverterException;
+import org.pathvisio.model.GPML2013aWriter;
+import org.pathvisio.model.GPML2021Writer;
 import org.pathvisio.model.PathwayModel;
 
 import junit.framework.TestCase;
@@ -35,7 +38,7 @@ import junit.framework.TestCase;
 public class TestSingleGPMLReadWrite extends TestCase {
 
 	private PathwayModel pathwayModel;
-	private String inputFile = "temp.gpml";
+	private String inputFile = "test2.gpml";
 	private URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
 
 	/**

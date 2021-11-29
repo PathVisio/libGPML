@@ -14,33 +14,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.model;
+
+import java.io.File;
+import java.io.OutputStream;
 
 import org.jdom2.Document;
-import org.jdom2.Namespace;
 
 /**
- * Interface for GPML format versions.
+ * Interface for GPML writing.
  * 
  * @author unknown
  */
-public interface GpmlFormatVersion {
-	
-	/**
-	 * Returns the GPML namespace. 
-	 */
-	Namespace getGpmlNamespace();
-
-	/**
-	 * Returns the GPML schema file. 
-	 */
-	String getSchemaFile();
-
-	/**
-	 * validates a JDOM document against the xml-schema definition specified by
-	 * 'xsdFile'
-	 * 
-	 * @param doc the document to validate
-	 */
-	void validateDocument(Document doc) throws ConverterException;
+public interface GpmlFormatWriter extends GpmlFormatVersion 
+{
+	Document createJdom(PathwayModel pathwayModel) throws ConverterException;
+//	Element createJdomElement(PathwayElement o) throws ConverterException;
+	void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException;
+	void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate) throws ConverterException;
 }

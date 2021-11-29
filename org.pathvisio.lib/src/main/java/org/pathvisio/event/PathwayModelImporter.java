@@ -18,7 +18,7 @@ package org.pathvisio.event;
 
 import java.io.File;
 
-import org.pathvisio.io.ConverterException;
+import org.pathvisio.model.ConverterException;
 import org.pathvisio.model.PathwayModel;
 
 /**

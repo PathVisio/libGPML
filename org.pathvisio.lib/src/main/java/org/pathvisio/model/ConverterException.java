@@ -14,19 +14,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
-
-import org.jdom2.Element;
-import org.pathvisio.model.*;
+package org.pathvisio.model;
 
 /**
- * Interface for GPML reading.
+ * Exception that occurs during import, export, save or load of a pathway model.
  * 
  * @author unknown
  */
-public interface GpmlFormatReader extends GpmlFormatVersion 
-{
-//	public PathwayElement mapElement(Element e) throws ConverterException;
-	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException;
-	// TODO Return void or PathwayModel??? 
+public class ConverterException extends Exception {
+
+	/**
+	 * @param msg the string message. 
+	 */
+	public ConverterException(String msg) {
+		super(msg);
+	}
+
+	/**
+	 * @param e the exception
+	 */
+	public ConverterException(Exception e) {
+		super(e.getClass() + ": " + e.getMessage(), e);
+		setStackTrace(e.getStackTrace());
+	}
+
 }

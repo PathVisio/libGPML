@@ -14,17 +14,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.event;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pathvisio.event.PathwayModelExporter;
-import org.pathvisio.event.PathwayModelImporter;
-
 /**
- * base implementation of PathwayImporter and PathwayExporter warnings
+ * Base implementation of PathwayImporter and PathwayExporter warnings
  * mechanism.
  */
 public abstract class AbstractPathwayFormat implements PathwayModelImporter, PathwayModelExporter {

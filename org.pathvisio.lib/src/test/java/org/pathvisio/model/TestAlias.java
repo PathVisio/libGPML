@@ -10,8 +10,6 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GPML2021Writer;
 import org.pathvisio.model.type.DataNodeType;
 import org.pathvisio.model.type.GroupType;
 

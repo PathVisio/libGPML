@@ -38,8 +38,6 @@ import org.pathvisio.debug.Logger;
 import org.pathvisio.event.PathwayModelEvent;
 import org.pathvisio.event.PathwayModelListener;
 import org.pathvisio.event.PathwayObjectEvent;
-import org.pathvisio.io.ConverterException;
-import org.pathvisio.io.GpmlFormat;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;

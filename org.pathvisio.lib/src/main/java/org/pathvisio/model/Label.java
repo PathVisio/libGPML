@@ -30,6 +30,28 @@ public class Label extends ShapedElement {
 	private String textLabel;
 	private String href; // optional
 
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case TEXTLABEL:
+			setTextLabel((String) value);
+		case HREF:
+			setHref((String) value);
+		default:
+			// do nothing
+		}
+	}
+
 	// ================================================================================
 	// Constructors
 	// ================================================================================

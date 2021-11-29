@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Pathway xmlns="http://pathvisio.org/GPML/2013a" Name="Test" Version="20211117" Organism="Homo sapiens">
+  <Graphics BoardWidth="1115.0" BoardHeight="329.5" />
+  <DataNode TextLabel="fatty acid" GraphId="b7ccd" Type="Metabolite">
+    <Graphics CenterX="313.65656565656616" CenterY="107.0000000000001" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" Color="0000ff" />
+    <Xref Database="ChEBI" ID="CHEBI:35366" />
+  </DataNode>
+  <DataNode TextLabel="TP53" GraphId="c0c56" Type="GeneProduct">
+    <Graphics CenterX="223.65656565656607" CenterY="54.97979797979798" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" />
+    <Xref Database="Ensembl" ID="ENSG00000141510" />
+  </DataNode>
+  <DataNode TextLabel="glucose" GraphId="e329f" Type="Metabolite">
+    <Graphics CenterX="134.16161616161622" CenterY="107.0000000000001" Width="90.0" Height="25.0" ZOrder="32768" FontSize="12" Valign="Middle" Color="0000ff" />
+    <Xref Database="ChEBI" ID="CHEBI:4167" />
+  </DataNode>
+  <Interaction>
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="179.16161616161622" Y="107.0000000000001" GraphRef="e329f" RelX="1.0" RelY="0.0" />
+      <Point X="268.65656565656616" Y="107.0000000000001" GraphRef="b7ccd" RelX="-1.0" RelY="0.0" ArrowHead="mim-conversion" />
+      <Anchor Position="0.5" Shape="None" GraphId="ca6cb" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <Interaction>
+    <BiopaxRef>b85</BiopaxRef>
+    <Graphics ZOrder="12288" LineThickness="1.0">
+      <Point X="223.65656565656604" Y="67.47979797979798" GraphRef="c0c56" RelX="0.0" RelY="1.0" />
+      <Point X="223.9090909090912" Y="107.0000000000001" GraphRef="ca6cb" RelX="0.0" RelY="0.0" ArrowHead="mim-catalysis" />
+    </Graphics>
+    <Xref Database="" ID="" />
+  </Interaction>
+  <InfoBox CenterX="0.0" CenterY="0.0" />
+  <Biopax>
+    <bp:PublicationXref xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:id="b85">
+      <bp:ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12345</bp:ID>
+      <bp:DB rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:DB>
+      <bp:TITLE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A new granulation method for compressed tablets [proceedings].</bp:TITLE>
+      <bp:SOURCE rdf:datatype="http://www.w3.org/2001/XMLSchema#string">J Pharm Pharmacol</bp:SOURCE>
+      <bp:YEAR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1976</bp:YEAR>
+      <bp:AUTHORS rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Rubinstein MH</bp:AUTHORS>
+    </bp:PublicationXref>
+  </Biopax>
+</Pathway>
+

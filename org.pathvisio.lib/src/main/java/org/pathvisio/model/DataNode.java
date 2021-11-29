@@ -39,6 +39,32 @@ public class DataNode extends ShapedElement implements Xrefable {
 	private Xref xref; // optional
 	private Group aliasRef; // optional, the pathway element to which this data node refers to as an alias.
 
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case TEXTLABEL:
+			setTextLabel((String) value);
+		case DATANODETYPE:
+			setType((DataNodeType) value);
+		case XREF:
+			setXref((Xref) value);
+		case ALIASREF:
+			setAliasRef((Group) value);
+		default:
+			// do nothing
+		}
+	}
+
 	// ================================================================================
 	// Constructors for DataNode or "Alias" DataNode
 	// ================================================================================
@@ -423,6 +449,34 @@ public class DataNode extends ShapedElement implements Xrefable {
 		private double relX;
 		private double relY;
 		private Xref xref; // optional
+
+		/**
+		 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+		 * x);
+		 *
+		 * Value may be null in some cases, e.g. graphRef
+		 *
+		 * @param key
+		 * @param value
+		 */
+		@Override
+		public void setStaticProperty(StaticProperty key, Object value) {
+			super.setStaticProperty(key, value);
+			switch (key) {
+			case TEXTLABEL:
+				setTextLabel((String) value);
+			case STATETYPE:
+				setType((StateType) value);
+			case RELX:
+				setRelX((Double) value);
+			case RELY:
+				setRelY((Double) value);
+			case XREF:
+				setXref((Xref) value);
+			default:
+				// do nothing
+			}
+		}
 
 		// ================================================================================
 		// Constructors

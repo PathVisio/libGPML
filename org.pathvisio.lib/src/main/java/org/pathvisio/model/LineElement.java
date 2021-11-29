@@ -1181,6 +1181,72 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 */
 	public abstract CopyElement copy();
 
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) {
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case LINECOLOR:
+				result = getLineColor();
+				break;
+			case LINESTYLE:
+				result = getLineStyle();
+				break;
+			case LINEWIDTH:
+				result = getLineWidth();
+				break;
+			case CONNECTORTYPE:
+				result = getConnectorType();
+				break;
+			case ZORDER:
+				result = getZOrder();
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case LINECOLOR:
+			setLineColor((Color) value);
+			break;
+		case LINESTYLE:
+			setLineStyle((LineStyleType) value);
+			break;
+		case LINEWIDTH:
+			setLineWidth((Double) value);
+			break;
+		case CONNECTORTYPE:
+			setConnectorType((ConnectorType) value);
+			break;
+		case ZORDER:
+			setZOrder((Integer) value);
+			break;
+		default:
+			// do nothing
+		}
+	}
+
 // ================================================================================
 // GenericPoint Class
 // ================================================================================

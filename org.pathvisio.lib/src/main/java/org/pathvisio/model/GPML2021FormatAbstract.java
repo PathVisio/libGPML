@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.*;
 import org.xml.sax.SAXException;
 
 /**

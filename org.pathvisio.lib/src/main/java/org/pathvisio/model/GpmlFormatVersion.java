@@ -14,28 +14,33 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.model;
+
+import org.jdom2.Document;
+import org.jdom2.Namespace;
 
 /**
- * Exception that occurs during import, export, save or load of a Pathway.
+ * Interface for GPML format versions.
  * 
  * @author unknown
  */
-public class ConverterException extends Exception {
+public interface GpmlFormatVersion {
+	
+	/**
+	 * Returns the GPML namespace. 
+	 */
+	Namespace getGpmlNamespace();
 
 	/**
-	 * @param msg the string message. 
+	 * Returns the GPML schema file. 
 	 */
-	public ConverterException(String msg) {
-		super(msg);
-	}
+	String getSchemaFile();
 
 	/**
-	 * @param e the exception
+	 * validates a JDOM document against the xml-schema definition specified by
+	 * 'xsdFile'
+	 * 
+	 * @param doc the document to validate
 	 */
-	public ConverterException(Exception e) {
-		super(e.getClass() + ": " + e.getMessage(), e);
-		setStackTrace(e.getStackTrace());
-	}
-
+	void validateDocument(Document doc) throws ConverterException;
 }

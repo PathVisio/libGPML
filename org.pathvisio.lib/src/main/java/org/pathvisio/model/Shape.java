@@ -28,6 +28,26 @@ import org.pathvisio.util.Utils;
 public class Shape extends ShapedElement {
 
 	private String textLabel; // optional
+	
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {	
+		case TEXTLABEL:
+			setTextLabel((String) value);
+		default:
+			// do nothing
+		}
+	}
 
 	// ================================================================================
 	// Constructors

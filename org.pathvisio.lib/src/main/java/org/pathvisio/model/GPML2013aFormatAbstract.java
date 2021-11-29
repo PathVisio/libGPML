@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.model;
 
 import java.awt.Color;
 import java.io.InputStream;
@@ -44,12 +44,6 @@ import org.jdom2.output.Format;
 import org.jdom2.output.SAXOutputter;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.Annotation;
-import org.pathvisio.model.DataNode;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.Pathway;
-import org.pathvisio.model.PathwayElement;
-import org.pathvisio.model.PathwayModel;
 import org.pathvisio.model.type.ArrowHeadType;
 import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;

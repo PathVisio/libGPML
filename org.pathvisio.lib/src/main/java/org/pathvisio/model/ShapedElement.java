@@ -27,6 +27,7 @@ import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.GraphLink.LinkableFrom;
 import org.pathvisio.model.GraphLink.LinkableTo;
 import org.pathvisio.model.LineElement.LinePoint;
+import org.pathvisio.model.shape.IShape;
 import org.pathvisio.model.type.HAlignType;
 import org.pathvisio.model.type.LineStyleType;
 import org.pathvisio.model.type.ShapeType;
@@ -61,9 +62,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// shape style properties
 	private Color borderColor = Color.decode("#000000"); // black
 	private LineStyleType borderStyle = LineStyleType.SOLID; // solid
-	private double borderWidth = 1.0; 
+	private double borderWidth = 1.0;
 	private Color fillColor = Color.decode("#ffffff"); // white
-	private ShapeType shapeType = ShapeType.RECTANGLE; // rectangle
+	private IShape shapeType = ShapeType.RECTANGLE; // rectangle
 	private int zOrder; // optional
 	private double rotation = 0; // optional, in radians
 
@@ -636,7 +637,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * 
 	 * @return shapeType the visual appearance of this shaped pathway element.
 	 */
-	public ShapeType getShapeType() {
+	public IShape getShapeType() {
 		if (shapeType == null) {
 			return ShapeType.RECTANGLE;
 		} else {
@@ -654,7 +655,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * @param v the visual appearance of this shaped pathway element.
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
-	public void setShapeType(ShapeType v) {
+	public void setShapeType(IShape v) {
 		if (v == null) {
 			throw new IllegalArgumentException();
 		}
@@ -893,5 +894,168 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * No events will be sent to the parent of the original.
 	 */
 	public abstract CopyElement copy();
+
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) {
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case GROUPREF:
+				result = getGroupRef();
+				break;
+			case CENTERX:
+				result = getCenterX();
+				break;
+			case CENTERY:
+				result = getCenterY();
+				break;
+			case WIDTH:
+				result = getWidth();
+				break;
+			case HEIGHT:
+				result = getHeight();
+				break;
+			case TEXTCOLOR:
+				result = getTextColor();
+				break;
+			case FONTNAME:
+				result = getFontName();
+				break;
+			case FONTWEIGHT:
+				result = getFontWeight();
+				break;
+			case FONTSTYLE:
+				result = getFontStyle();
+				break;
+			case FONTDECORATION:
+				result = getFontDecoration();
+				break;
+			case FONTSTRIKETHRU:
+				result = getFontStrikethru();
+				break;
+			case FONTSIZE:
+				result = getFontSize();
+				break;
+			case HALIGN:
+				result = getHAlign();
+				break;
+			case VALIGN:
+				result = getVAlign();
+				break;
+			case BORDERCOLOR:
+				result = getBorderColor();
+				break;
+			case BORDERSTYLE:
+				result = getBorderStyle();
+				break;
+			case BORDERWIDTH:
+				result = getBorderWidth();
+				break;
+			case FILLCOLOR:
+				result = getFillColor();
+				break;
+			case SHAPETYPE:
+				result = getShapeType();
+				break;
+			case ZORDER:
+				result = getZOrder();
+				break;
+			case ROTATION:
+				result = getRotation();
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case GROUPREF:
+			setGroupRef((Group) value);
+			break;
+		case CENTERX:
+			setCenterX((Double) value);
+			break;
+		case CENTERY:
+			setCenterY((Double) value);
+			break;
+		case WIDTH:
+			setWidth((Double) value);
+			break;
+		case HEIGHT:
+			setHeight((Double) value);
+			break;
+		case TEXTCOLOR:
+			setFontName((String) value);
+			break;
+		case FONTNAME:
+			setFontName((String) value);
+			break;
+		case FONTWEIGHT:
+			setFontWeight((Boolean) value);
+			break;
+		case FONTSTYLE:
+			setFontStyle((Boolean) value);
+			break;
+		case FONTDECORATION:
+			setFontDecoration((Boolean) value);
+			break;
+		case FONTSTRIKETHRU:
+			setFontStrikethru((Boolean) value);
+			break;
+		case FONTSIZE:
+			setFontSize((Integer) value);
+			break;
+		case HALIGN:
+			setHAlign((HAlignType) value);
+			break;
+		case VALIGN:
+			setVAlign((VAlignType) value);
+			break;
+		case BORDERCOLOR:
+			setFillColor((Color) value);
+			break;
+		case BORDERSTYLE:
+			setBorderStyle((LineStyleType) value);
+			break;
+		case BORDERWIDTH:
+			setBorderWidth((Double) value);
+			break;
+		case FILLCOLOR:
+			setFillColor((Color) value);
+			break;
+		case SHAPETYPE:
+			setShapeType((IShape) value);
+			break;
+		case ZORDER:
+			setZOrder((Integer) value);
+			break;
+		case ROTATION:
+			setRotation((Double) value);
+			break;
+		default:
+			// do nothing
+		}
+
+	}
 
 }

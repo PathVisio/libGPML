@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.model;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -36,7 +36,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.pathvisio.debug.*;
-import org.pathvisio.model.PathwayModel;
+import org.pathvisio.event.AbstractPathwayFormat;
 import org.pathvisio.util.RootElementFinder;
 import org.xml.sax.InputSource;
 

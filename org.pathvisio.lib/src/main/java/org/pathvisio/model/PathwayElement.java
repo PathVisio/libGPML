@@ -17,6 +17,7 @@
 package org.pathvisio.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -114,6 +115,18 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	}
 
 	/**
+	 * Sets comments to the given comments list. TODO
+	 * 
+	 * @param value the given comment list.
+	 */
+	public void setComments(List<Comment> value) {
+		if (comments != value) {
+			comments = value;
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.COMMENT));
+		}
+	}
+
+	/**
 	 * Finds the first comment with a specific source.
 	 * 
 	 * @param source the source of the comment to be found.
@@ -169,7 +182,6 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		else
 			dynamicProperties.put(key, value);
 		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, key));
-
 	}
 
 	// ================================================================================
@@ -540,6 +552,96 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 	 * No events will be sent to the parent of the original.
 	 */
 	public abstract CopyElement copy();
+
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 * Returns keys of available static properties and dynamic properties as an
+	 * object list
+	 */
+	@Override
+	public Set<Object> getPropertyKeys() {
+		Set<Object> keys = new HashSet<Object>();
+		keys.addAll(getStaticPropertyKeys());
+		keys.addAll(getDynamicPropertyKeys());
+		return keys;
+	}
+
+	@Override
+	public Object getPropertyEx(Object key) {
+		if (key instanceof StaticProperty) {
+			return getStaticProperty((StaticProperty) key);
+		} else if (key instanceof String) {
+			return getDynamicProperty((String) key);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	/**
+	 * Set dynamic or static properties at the same time Will be replaced with
+	 * setProperty in the future.
+	 */
+	@Override
+	public void setPropertyEx(Object key, Object value) {
+		if (key instanceof StaticProperty) {
+			setStaticProperty((StaticProperty) key, value);
+		} else if (key instanceof String) {
+			setDynamicProperty((String) key, value.toString());
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	@Override
+	public Object getStaticProperty(StaticProperty key) {
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case COMMENT:
+				result = getComments();// TODO
+				break;
+			case ANNOTATION: // TODO
+				break;
+			case CITATION: // TODO
+				break;
+			case EVIDENCE: // TODO
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case COMMENT:
+			setComments((List<Comment>) value); // TODO
+			break;
+		case ANNOTATION: // TODO
+			break;
+		case CITATION:
+//			setBiopaxRefs((List<String>) value); TODO 
+			break;
+		case EVIDENCE: // TODO
+			break;
+		default:
+			// do nothing
+		}
+	}
 
 	// ================================================================================
 	// Comment Class

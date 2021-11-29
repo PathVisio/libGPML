@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.model;
 
 import java.awt.Color;
 import java.io.File;
@@ -35,30 +35,16 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.Annotation;
-import org.pathvisio.model.Citation;
-import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.GraphicalLine;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.Interaction;
-import org.pathvisio.model.Label;
-import org.pathvisio.model.LineElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
-import org.pathvisio.model.Pathway;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.Comment;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.PathwayObject;
-import org.pathvisio.model.Shape;
-import org.pathvisio.model.ShapedElement;
+import org.pathvisio.model.shape.IShape;
 import org.pathvisio.model.type.ArrowHeadType;
 import org.pathvisio.model.type.LineStyleType;
-import org.pathvisio.model.type.ShapeType;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
@@ -939,7 +925,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 			}
 		}
 		// if shape in cellular component map, write info to dynamic property
-		ShapeType shapeType = shapedElement.getShapeType();
+		IShape shapeType = shapedElement.getShapeType();
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
 			Element dp = new Element("Attribute", se.getNamespace());
 			setAttr("Attribute", "Key", dp, CELL_CMPNT_KEY);
@@ -1078,7 +1064,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
 		// do not set borderColor, Color is set by textColor
-		ShapeType shapeType = shapedElement.getShapeType();
+		IShape shapeType = shapedElement.getShapeType();
 		// if shape in cellular component map, specially handle
 		if (CELL_CMPNT_MAP.containsKey(shapeType)) {
 			String shapeTypeNewStr = CELL_CMPNT_MAP.get(shapeType).getName();

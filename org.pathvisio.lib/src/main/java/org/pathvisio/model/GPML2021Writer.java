@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.io;
+package org.pathvisio.model;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,30 +32,15 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.debug.Logger;
-import org.pathvisio.model.Annotation;
-import org.pathvisio.model.Citation;
-import org.pathvisio.model.DataNode;
 import org.pathvisio.model.DataNode.State;
-import org.pathvisio.model.Evidence;
 import org.pathvisio.model.GraphLink.LinkableTo;
-import org.pathvisio.model.GraphicalLine;
-import org.pathvisio.model.Group;
-import org.pathvisio.model.Interaction;
-import org.pathvisio.model.Label;
-import org.pathvisio.model.LineElement;
 import org.pathvisio.model.LineElement.Anchor;
 import org.pathvisio.model.LineElement.LinePoint;
-import org.pathvisio.model.Pathway;
 import org.pathvisio.model.Pathway.Author;
-import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.PathwayElement.AnnotationRef;
 import org.pathvisio.model.PathwayElement.CitationRef;
 import org.pathvisio.model.PathwayElement.Comment;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
-import org.pathvisio.model.PathwayModel;
-import org.pathvisio.model.PathwayObject;
-import org.pathvisio.model.Shape;
-import org.pathvisio.model.ShapedElement;
 import org.pathvisio.util.ColorUtils;
 import org.pathvisio.util.XrefUtils;
 
