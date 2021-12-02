@@ -36,7 +36,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.pathvisio.debug.*;
-import org.pathvisio.event.AbstractPathwayFormat;
+import org.pathvisio.io.AbstractPathwayModelFormat;
 import org.pathvisio.util.RootElementFinder;
 import org.xml.sax.InputSource;
 
@@ -46,7 +46,7 @@ import org.xml.sax.InputSource;
  * gpml-specific constants, and should be the only class (apart from svgFormat)
  * that needs to import jdom
  */
-public class GpmlFormat extends AbstractPathwayFormat {
+public class GpmlFormat extends AbstractPathwayModelFormat {
 	static private final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
 	static private final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
 

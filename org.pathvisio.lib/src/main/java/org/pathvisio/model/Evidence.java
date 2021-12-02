@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.bridgedb.Xref;
 import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.PathwayElement.EvidenceRef;
+import org.pathvisio.model.type.ObjectType;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 import org.pathvisio.util.XrefUtils;
@@ -64,6 +65,16 @@ public class Evidence extends PathwayObject {
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return the object type.
+	 */
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.EVIDENCE;
+	}
+	
 	/**
 	 * Returns the name, term, or text of this evidence.
 	 * 

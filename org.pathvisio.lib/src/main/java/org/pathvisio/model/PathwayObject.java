@@ -41,7 +41,6 @@ public abstract class PathwayObject {
 	/* parent pathway model: may be null (e.g. when object is in clipboard) */
 	protected PathwayModel pathwayModel; // TODO protected?
 	private String elementId;
-	private ObjectType objectType; // TODO add in constructor
 
 	// ================================================================================
 	// Constructors
@@ -56,6 +55,13 @@ public abstract class PathwayObject {
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the object type of the pathway element.
+	 * 
+	 * @return objectType the object type.
+	 */
+	abstract public ObjectType getObjectType();
+
 	/**
 	 * Returns the pathway model for this pathway element.
 	 * 
@@ -152,15 +158,6 @@ public abstract class PathwayObject {
 	protected String setGeneratedElementId() {
 		setElementId(pathwayModel.getUniqueElementId());
 		return elementId;
-	}
-
-	/**
-	 * Returns the object type of the pathway element.
-	 * 
-	 * @return objectType the object type.
-	 */
-	public ObjectType getObjectType() { // TODO
-		return objectType;
 	}
 
 	/**

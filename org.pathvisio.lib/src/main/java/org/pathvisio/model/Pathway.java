@@ -25,6 +25,7 @@ import java.util.Set;
 import org.bridgedb.Xref;
 import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.event.PathwayObjectListener;
+import org.pathvisio.model.type.ObjectType;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -74,6 +75,15 @@ public class Pathway extends PathwayElement implements Xrefable {
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return the object type.
+	 */
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.PATHWAY;
+	}
 	/**
 	 * Returns the title or name of this pathway.
 	 * 

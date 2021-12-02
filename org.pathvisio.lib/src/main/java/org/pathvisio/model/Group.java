@@ -24,6 +24,7 @@ import org.bridgedb.Xref;
 import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.DataNode.State;
 import org.pathvisio.model.type.GroupType;
+import org.pathvisio.model.type.ObjectType;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -90,6 +91,16 @@ public class Group extends ShapedElement implements Xrefable {
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return the object type.
+	 */
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.GROUP;
+	}
+
 	/**
 	 * Returns the list of pathway element members of the group.
 	 * 

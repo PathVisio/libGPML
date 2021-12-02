@@ -18,6 +18,7 @@ package org.pathvisio.model;
 
 import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.DataNode.State;
+import org.pathvisio.model.type.ObjectType;
 
 /**
  * This class stores information for GraphicalLine pathway element.
@@ -36,6 +37,19 @@ public class GraphicalLine extends LineElement {
 		super();
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return the object type.
+	 */
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.GRAPHLINE;
+	}
+	
 	// ================================================================================
 	// Copy Methods
 	// ================================================================================

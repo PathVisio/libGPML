@@ -17,6 +17,7 @@
 package org.pathvisio.model;
 
 import org.pathvisio.event.PathwayObjectEvent;
+import org.pathvisio.model.type.ObjectType;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -68,6 +69,16 @@ public class Label extends ShapedElement {
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return the object type.
+	 */
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.LABEL;
+	}
+	
 	/**
 	 * Returns the text of of the label.
 	 * 

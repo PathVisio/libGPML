@@ -48,6 +48,12 @@ public enum ObjectType {
 
 	/** A connector pathway element without semantic meaning. */
 	GRAPHLINE("GraphicalLine"),
+	
+	/** A point on a line pathway element. TODO */ 
+	LINEPOINT("Point"),
+	
+	/** An anchor point on a line pathway element. TODO */
+	ANCHOR("Anchor"),
 
 	/** A pathway element to attach simple labels to the pathway. */
 	LABEL("Label"),

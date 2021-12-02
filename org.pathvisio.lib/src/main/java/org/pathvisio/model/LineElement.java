@@ -37,6 +37,7 @@ import org.pathvisio.model.type.AnchorShapeType;
 import org.pathvisio.model.type.ArrowHeadType;
 import org.pathvisio.model.type.ConnectorType;
 import org.pathvisio.model.type.LineStyleType;
+import org.pathvisio.model.type.ObjectType;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
 
@@ -1365,6 +1366,16 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// Accessors
 		// ================================================================================
 		/**
+		 * Returns the object type of this pathway element.
+		 * 
+		 * @return the object type.
+		 */
+		@Override
+		public ObjectType getObjectType() {
+			return ObjectType.LINEPOINT;
+		}
+
+		/**
 		 * Returns the arrowHead property of the point. Arrowhead specifies the glyph at
 		 * the ends of graphical lines and interactions. Intermediate points have
 		 * arrowhead type LINE (the absence of an arrowhead).
@@ -1818,6 +1829,16 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		// ================================================================================
 		// Accessors
 		// ================================================================================
+		/**
+		 * Returns the object type of this pathway element.
+		 * 
+		 * @return the object type.
+		 */
+		@Override
+		public ObjectType getObjectType() {
+			return ObjectType.ANCHOR;
+		}
+
 		/**
 		 * Returns the proportional distance of an anchor along the line it belongs to,
 		 * between 0 and 1.

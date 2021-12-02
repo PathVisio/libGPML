@@ -22,6 +22,7 @@ import java.util.List;
 import org.bridgedb.Xref;
 import org.pathvisio.event.PathwayObjectEvent;
 import org.pathvisio.model.type.DataNodeType;
+import org.pathvisio.model.type.ObjectType;
 import org.pathvisio.model.type.StateType;
 import org.pathvisio.prop.StaticProperty;
 import org.pathvisio.util.Utils;
@@ -38,32 +39,6 @@ public class DataNode extends ShapedElement implements Xrefable {
 	private List<State> states;
 	private Xref xref; // optional
 	private Group aliasRef; // optional, the pathway element to which this data node refers to as an alias.
-
-	/**
-	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-	 * x);
-	 *
-	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
-	 */
-	@Override
-	public void setStaticProperty(StaticProperty key, Object value) {
-		super.setStaticProperty(key, value);
-		switch (key) {
-		case TEXTLABEL:
-			setTextLabel((String) value);
-		case DATANODETYPE:
-			setType((DataNodeType) value);
-		case XREF:
-			setXref((Xref) value);
-		case ALIASREF:
-			setAliasRef((Group) value);
-		default:
-			// do nothing
-		}
-	}
 
 	// ================================================================================
 	// Constructors for DataNode or "Alias" DataNode
@@ -127,6 +102,16 @@ public class DataNode extends ShapedElement implements Xrefable {
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return the object type.
+	 */
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.DATANODE;
+	}
+
 	/**
 	 * Returns the text of this datanode.
 	 * 
@@ -428,10 +413,40 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
+	@Override
 	public CopyElement copy() {
 		DataNode result = new DataNode(textLabel, type);
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
+	}
+
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case TEXTLABEL:
+			setTextLabel((String) value);
+		case DATANODETYPE:
+			setType((DataNodeType) value);
+		case XREF:
+			setXref((Xref) value);
+		case ALIASREF:
+			setAliasRef((Group) value);
+		default:
+			// do nothing
+		}
 	}
 
 	// ================================================================================
@@ -514,6 +529,16 @@ public class DataNode extends ShapedElement implements Xrefable {
 		// ================================================================================
 		// Accessors
 		// ================================================================================
+		/**
+		 * Returns the object type of this pathway element.
+		 * 
+		 * @return the object type.
+		 */
+		@Override
+		public ObjectType getObjectType() {
+			return ObjectType.STATE;
+		}
+
 		/**
 		 * Returns the parent data node, outer class, to which the state belongs.
 		 * <p>

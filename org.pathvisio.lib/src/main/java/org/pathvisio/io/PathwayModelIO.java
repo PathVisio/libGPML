@@ -14,41 +14,33 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.event;
+package org.pathvisio.io;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Base implementation of PathwayImporter and PathwayExporter warnings
- * mechanism.
+ * Common methods for {@link PathwayModelImporter}s and {@link PathwayModelExporter}s
  */
-public abstract class AbstractPathwayFormat implements PathwayModelImporter, PathwayModelExporter {
-	private List<String> warnings = new ArrayList<String>();
-
-	protected void clearWarnings() {
-		warnings.clear();
-	}
+public interface PathwayModelIO {
+	public String getName();
 
 	/**
-	 * Can be used by overriding classes to add to the list of warnings. Don't
-	 * forget to call {@link clearWarnings} at the start of conversion.
+	 * Get the possible extensions this importer/exporter can read (e.g. txt). The
+	 * extensions do not have to be unique. In case two importers use the same
+	 * extension, the correct one will be chosen based on the result of
+	 * PathwayImporter.isCorrectFileType(). If that doesn't help, the user may be
+	 * asked to pick an importer. The first item in the array is assumed to be the
+	 * preferred extension.
 	 * 
-	 * @param warning
+	 * @return An array with the possible extensions (without '.')
 	 */
-	protected void emitWarning(String warning) {
-		warnings.add(warning);
-	}
+	public String[] getExtensions();
 
-//	@Override TODO 
-	public boolean isCorrectType(File f) {
-		return true;
-	}
-
-//	@Override TODO
-	public List<String> getWarnings() {
-		return warnings;
-	}
+	/**
+	 * After import or export, this can be used to check if there are any warnings
+	 * 
+	 * @return a list of warning messages, or an empty list if there are none.
+	 */
+	public List<String> getWarnings();
 
 }

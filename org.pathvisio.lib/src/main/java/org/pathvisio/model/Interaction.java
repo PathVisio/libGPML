@@ -18,6 +18,7 @@ package org.pathvisio.model;
 
 import org.bridgedb.Xref;
 import org.pathvisio.event.PathwayObjectEvent;
+import org.pathvisio.model.type.ObjectType;
 import org.pathvisio.prop.StaticProperty;
 
 /**
@@ -28,26 +29,6 @@ import org.pathvisio.prop.StaticProperty;
 public class Interaction extends LineElement implements Xrefable {
 
 	private Xref xref; // optional
-	
-	/**
-	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-	 * x);
-	 *
-	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
-	 */
-	@Override
-	public void setStaticProperty(StaticProperty key, Object value) {
-		super.setStaticProperty(key, value);
-		switch (key) {
-		case XREF:
-			setXref((Xref) value);
-		default:
-			// do nothing
-		}
-	}
 
 	// ================================================================================
 	// Constructors
@@ -69,10 +50,19 @@ public class Interaction extends LineElement implements Xrefable {
 	public Interaction() {
 		this(null);
 	}
-	
+
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return the object type.
+	 */
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.INTERACTION;
+	}
 	/**
 	 * Returns the Xref for this interaction.
 	 * 
@@ -93,7 +83,7 @@ public class Interaction extends LineElement implements Xrefable {
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
-	
+
 	// ================================================================================
 	// Copy Methods
 	// ================================================================================
@@ -104,7 +94,7 @@ public class Interaction extends LineElement implements Xrefable {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(Interaction src) { 
+	public void copyValuesFrom(Interaction src) {
 		super.copyValuesFrom(src);
 		xref = src.xref;
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
@@ -120,6 +110,29 @@ public class Interaction extends LineElement implements Xrefable {
 		Interaction result = new Interaction();
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
+	}
+
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case XREF:
+			setXref((Xref) value);
+		default:
+			// do nothing
+		}
 	}
 
 }
