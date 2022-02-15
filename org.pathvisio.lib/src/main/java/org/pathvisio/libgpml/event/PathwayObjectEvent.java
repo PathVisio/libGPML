@@ -1,0 +1,132 @@
+/*******************************************************************************
+ * PathVisio, a tool for data visualization and analysis using biological pathways
+ * Copyright 2006-2021 BiGCaT Bioinformatics, WikiPathways
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
+package org.pathvisio.libgpml.event;
+
+import org.pathvisio.libgpml.model.PathwayObject;
+import org.pathvisio.libgpml.prop.Property;
+
+/**
+ * This event is used to notify {@link PathwayObjectListener}s of changes to
+ * properties of a PathwayElement.
+ * <p>
+ * There are three variations on this event:
+ * <ol>
+ * <li>Only a single, known property may have changed, that is not a coordinate change.
+ * <li>Only one of the coordinate properties (x, y, width, height) may have changed.
+ * <li>Any property may have changed.
+ * </ol>
+ * 
+ * Variation 2 is introduced for performance reasons. Coordinate changes
+ * generate a lot of events (e.g. resizing or dragging an object) and typically
+ * change in groups (if MLeft changes, MCenterX also changes). Listeners that
+ * are interested in coordinate changes, may filter out changes to these
+ * properties by using the {@link #isCoordinateChange()} property. Listeners
+ * that are not interested in coordinate changes may use the
+ * {@link #affectsProperty(Property)} method to find out if a property of
+ * interest may have changed.
+ * 
+ * @author Mark Woon
+ */
+public final class PathwayObjectEvent {
+	private final PathwayObject pwElement;
+	private final Object property;
+	private final boolean coordinateChange;
+
+	/**
+	 * TODO public for now
+	 * 
+	 * @param pwe
+	 * @param property
+	 * @return
+	 */
+	public static PathwayObjectEvent createSinglePropertyEvent(PathwayObject pwe, Object property) {
+		return new PathwayObjectEvent(pwe, property, false);
+	}
+
+	/**
+	 * TODO public for now
+	 * 
+	 * @param pwe
+	 * @return
+	 */
+	public static PathwayObjectEvent createAllPropertiesEvent(PathwayObject pwe) {
+		return new PathwayObjectEvent(pwe, null, false);
+	}
+
+	/**
+	 * TODO public for now
+	 * 
+	 * @param pwe
+	 * @return
+	 */
+	public static PathwayObjectEvent createCoordinatePropertyEvent(PathwayObject pwe) {
+		return new PathwayObjectEvent(pwe, null, true);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param elem             the PathwayObject that's been modified
+	 * @param prop             the Property on the element that's been modified
+	 * @param coordinateChange Flag to indicate this event applies to a coordinate
+	 *                         change.
+	 */
+	private PathwayObjectEvent(PathwayObject elem, Object prop, boolean coordinateChange) {
+		pwElement = elem;
+		property = prop;
+		this.coordinateChange = coordinateChange;
+	}
+
+	/**
+	 * Returns true if this event was caused by a coordinate change (e.g. movement
+	 * or resize operation).
+	 */
+	public boolean isCoordinateChange() {
+		return coordinateChange;
+	}
+
+	/**
+	 * Gets the PathwayObject whose properties have been modified.
+	 */
+	public PathwayObject getModifiedPathwayObject() {
+		return pwElement;
+	}
+
+	/**
+	 * Check if the given static property may have been modified in this event. Note
+	 * that this method does not apply to coordinate properties (position, size),
+	 * these need to be checked with {@link #isCoordinateChange()}.
+	 * 
+	 * @param prop The property to check.
+	 * @return true if the property may have been modified, false if not.
+	 */
+	public boolean affectsProperty(Property prop) { // TODO
+		return property == null || property.equals(prop);
+	}
+
+	/**
+	 * Check if the given dynamic property may have been modified in this event.
+	 * Note that this method does not apply to coordinate properties (position,
+	 * size), these need to be checked with {@link #isCoordinateChange()}.
+	 * 
+	 * @param prop The property to check.
+	 * @return true if the property may have been modified, false if not.
+	 */
+	public boolean affectsProperty(String prop) {
+		return property == null || property.equals(prop);
+	}
+}
