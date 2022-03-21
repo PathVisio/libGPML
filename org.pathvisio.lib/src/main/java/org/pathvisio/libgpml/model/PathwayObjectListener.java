@@ -14,22 +14,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.libgpml.event;
+package org.pathvisio.libgpml.model;
 
 import java.util.EventListener;
 
 /**
  * Implement this if you want to be notified of changes to properties of a
- * PathwayObject.
+ * PathwayElement.
  *
  * For example, this is used by DatanodeDialog or by PropertyTableModel to keep
- * up to date with changes in the selected PathwayObject.
+ * up to date with changes in the selected PathwayElement.
+ * 
+ * @author unknown
  */
 public interface PathwayObjectListener extends EventListener {
-	
-	/**
-	 * @param e
-	 */
+
 	public void gmmlObjectModified(PathwayObjectEvent e);
-	
+
 }

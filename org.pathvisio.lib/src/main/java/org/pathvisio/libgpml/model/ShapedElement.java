@@ -20,17 +20,17 @@ import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.pathvisio.libgpml.debug.Logger;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.GraphLink.LinkableFrom;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.shape.IShape;
+import org.pathvisio.libgpml.model.shape.ShapeType;
 import org.pathvisio.libgpml.model.type.HAlignType;
 import org.pathvisio.libgpml.model.type.LineStyleType;
-import org.pathvisio.libgpml.model.type.ShapeType;
 import org.pathvisio.libgpml.model.type.VAlignType;
 import org.pathvisio.libgpml.prop.StaticProperty;
 import org.pathvisio.libgpml.util.Utils;
@@ -56,7 +56,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	private boolean fontStyle = false; // italic or normal
 	private boolean fontDecoration = false; // underline or normal
 	private boolean fontStrikethru = false;// strikethru or normal
-	private int fontSize = 12; // 12, only integer full size values
+	private double fontSize = 12; // allows 0.5 sizes
 	private HAlignType hAlign = HAlignType.CENTER; // horizontal alignment of text
 	private VAlignType vAlign = VAlignType.MIDDLE; // vertical alignment of text
 	// shape style properties
@@ -134,7 +134,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	public void setGroupRefTo(Group v) {
 		if (v == null)
 			throw new IllegalArgumentException("Invalid group.");
-		if (v.getPathwayModel() != getPathwayModel()) {
+		if (v.getPathwayModel() != pathwayModel) {
 			throw new IllegalArgumentException(
 					getClass().getSimpleName() + " cannot be added to a group of a different pathway model.");
 		}
@@ -444,17 +444,18 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	}
 
 	/**
-	 * Sets point value for the size of the font.
+	 * Sets point value for the size of the font. Rounds any decimals to the nearest
+	 * 0.5. 
 	 * 
 	 * @param v the value for the size of the font.
 	 * @throws IllegalArgumentException if fontSize is a negative value.
 	 */
-	public void setFontSize(int v) {
+	public void setFontSize(double v) {
 		if (v < 0) {
 			throw new IllegalArgumentException("Tried to set font size < 0: " + v);
 		}
 		if (fontSize != v) {
-			fontSize = v;
+			fontSize = Math.round(v * 2) / 2.0; // round to nearest 0.5
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.FONTSIZE));
 		}
 	}
@@ -604,11 +605,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * @return fillColor the fill color of this shaped pathway element.
 	 */
 	public Color getFillColor() {
-		if (fillColor == null) {
-			return Color.decode("#ffffff"); // white
-		} else {
-			return fillColor;
-		}
+		return fillColor;
 	}
 
 	/**
@@ -717,7 +714,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 */
 	@Override
 	public Set<LinkableFrom> getLinkableFroms() {
-		return GraphLink.getReferences(this, getPathwayModel());
+		return GraphLink.getReferences(this, pathwayModel);
 	}
 
 	/**
@@ -899,6 +896,25 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// Property Methods
 	// ================================================================================
 	/**
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
+	 */
+	@Override
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		Set<StaticProperty> propsShapedElement = EnumSet.of(StaticProperty.GROUPREF, StaticProperty.CENTERX,
+				StaticProperty.CENTERY, StaticProperty.WIDTH, StaticProperty.HEIGHT, StaticProperty.TEXTCOLOR,
+				StaticProperty.FONTNAME, StaticProperty.FONTWEIGHT, StaticProperty.FONTSTYLE,
+				StaticProperty.FONTDECORATION, StaticProperty.FONTSTRIKETHRU, StaticProperty.FONTSIZE,
+				StaticProperty.HALIGN, StaticProperty.VALIGN, StaticProperty.BORDERCOLOR, StaticProperty.BORDERSTYLE,
+				StaticProperty.BORDERWIDTH, StaticProperty.FILLCOLOR, StaticProperty.SHAPETYPE, StaticProperty.ZORDER,
+				StaticProperty.ROTATION);
+		result.addAll(propsShapedElement);
+		return result;
+	}
+
+	/**
 	 *
 	 */
 	@Override
@@ -952,7 +968,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 				result = getBorderColor();
 				break;
 			case BORDERSTYLE:
-				result = getBorderStyle();
+				result = getBorderStyle().getName(); // TODO
 				break;
 			case BORDERWIDTH:
 				result = getBorderWidth();
@@ -1005,7 +1021,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 			setHeight((Double) value);
 			break;
 		case TEXTCOLOR:
-			setFontName((String) value);
+			setTextColor((Color) value);
 			break;
 		case FONTNAME:
 			setFontName((String) value);
@@ -1023,7 +1039,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 			setFontStrikethru((Boolean) value);
 			break;
 		case FONTSIZE:
-			setFontSize((Integer) value);
+			setFontSize((Double) value);
 			break;
 		case HALIGN:
 			setHAlign((HAlignType) value);
@@ -1032,10 +1048,14 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 			setVAlign((VAlignType) value);
 			break;
 		case BORDERCOLOR:
-			setFillColor((Color) value);
+			setBorderColor((Color) value);
 			break;
 		case BORDERSTYLE:
-			setBorderStyle((LineStyleType) value);
+			if (value instanceof LineStyleType) {
+				setBorderStyle((LineStyleType) value);
+			} else {
+				setBorderStyle(LineStyleType.fromName((String) value));
+			}
 			break;
 		case BORDERWIDTH:
 			setBorderWidth((Double) value);

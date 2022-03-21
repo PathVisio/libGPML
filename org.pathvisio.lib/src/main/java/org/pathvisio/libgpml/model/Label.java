@@ -16,7 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
 import org.pathvisio.libgpml.util.Utils;
@@ -30,28 +32,6 @@ public class Label extends ShapedElement {
 
 	private String textLabel;
 	private String href; // optional
-
-	/**
-	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-	 * x);
-	 *
-	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
-	 */
-	@Override
-	public void setStaticProperty(StaticProperty key, Object value) {
-		super.setStaticProperty(key, value);
-		switch (key) {
-		case TEXTLABEL:
-			setTextLabel((String) value);
-		case HREF:
-			setHref((String) value);
-		default:
-			// do nothing
-		}
-	}
 
 	// ================================================================================
 	// Constructors
@@ -78,7 +58,7 @@ public class Label extends ShapedElement {
 	public ObjectType getObjectType() {
 		return ObjectType.LABEL;
 	}
-	
+
 	/**
 	 * Returns the text of of the label.
 	 * 
@@ -124,6 +104,20 @@ public class Label extends ShapedElement {
 	}
 
 	// ================================================================================
+	// Inherited Methods
+	// ================================================================================
+
+	/**
+	 * Terminates this label and removes all links and references.
+	 */
+	@Override
+	protected void terminate() {
+		unsetAllLinkableFroms();
+		unsetGroupRef();
+		super.terminate();
+	}
+
+	// ================================================================================
 	// Copy Methods
 	// ================================================================================
 	/**
@@ -153,17 +147,64 @@ public class Label extends ShapedElement {
 	}
 
 	// ================================================================================
-	// Inherited Methods
+	// Property Methods
 	// ================================================================================
-
 	/**
-	 * Terminates this label and removes all links and references.
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
 	 */
 	@Override
-	protected void terminate() {
-		unsetAllLinkableFroms();
-		unsetGroupRef();
-		super.terminate();
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		Set<StaticProperty> propsLabel = EnumSet.of(StaticProperty.TEXTLABEL, StaticProperty.HREF);
+		result.addAll(propsLabel);
+		return result;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) { // TODO
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case TEXTLABEL:
+				result = getTextLabel();
+				break;
+			case HREF:
+				result = getHref();
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case TEXTLABEL:
+			setTextLabel((String) value);
+			break;
+		case HREF:
+			setHref((String) value);
+			break;
+		default:
+			// do nothing
+		}
 	}
 
 }

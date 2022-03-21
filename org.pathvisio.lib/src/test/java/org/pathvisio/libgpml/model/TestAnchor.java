@@ -68,11 +68,13 @@ public class TestAnchor extends TestCase {
 
 		// set new points
 		List<LinePoint> points = new ArrayList<LinePoint>();
-		LinePoint pt3 = i1.new LinePoint(ArrowHeadType.BINDING, 10, 18);
-		LinePoint pt4 = i1.new LinePoint(ArrowHeadType.BINDING, 20, 18);
+		LinePoint pt3 = i1.new LinePoint(10, 18);
+		LinePoint pt4 = i1.new LinePoint(20, 18);
 		points.add(pt3);
 		points.add(pt4);
 		i1.setLinePoints(points);
+		i1.setStartArrowHeadType(ArrowHeadType.BINDING);
+		i1.setEndArrowHeadType(ArrowHeadType.BINDING);
 
 		// checks
 		assertTrue(p.hasPathwayObject(i1));

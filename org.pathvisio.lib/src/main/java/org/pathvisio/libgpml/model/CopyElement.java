@@ -8,7 +8,9 @@ import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
 
 /**
  * This class stores information for copying {@link PathwayElement}.
- * CopyElements can be pasted later.
+ * 
+ * {@link PathwayElement#copy} returns a {@link CopyElement} which stores the
+ * newly created newElement and a reference to the original sourceElement.
  * 
  * @author finterly
  */
@@ -57,7 +59,8 @@ public class CopyElement {
 	}
 
 	/**
-	 * 
+	 * Loads references. NB: To be called after new pathway element is added to a
+	 * pathway model.
 	 */
 	public void loadReferences() {
 		if (newElement != null && sourceElement != null) {
@@ -72,7 +75,7 @@ public class CopyElement {
 	 */
 	private void loadCitationRefs(List<CitationRef> citationRefs) {
 		for (CitationRef citationRef : citationRefs) {
-			newElement.addCitation(citationRef.getCitation().copy());
+			newElement.addCitation(citationRef.getCitation().copyRef());
 			loadAnnotationRefs(citationRef.getAnnotationRefs());
 		}
 	}
@@ -85,7 +88,7 @@ public class CopyElement {
 	 */
 	private void loadAnnotationRefs(List<AnnotationRef> annotationRefs) {
 		for (AnnotationRef annotationRef : annotationRefs) {
-			newElement.addAnnotation(annotationRef.getAnnotation().copy());
+			newElement.addAnnotation(annotationRef.getAnnotation().copyRef());
 			loadCitationRefs(annotationRef.getCitationRefs());
 			loadEvidenceRefs(annotationRef.getEvidenceRefs());
 
@@ -97,7 +100,7 @@ public class CopyElement {
 	 */
 	private void loadEvidenceRefs(List<EvidenceRef> evidenceRefs) {
 		for (EvidenceRef evidenceRef : evidenceRefs) {
-			newElement.addEvidence(evidenceRef.getEvidence().copy());
+			newElement.addEvidence(evidenceRef.getEvidence().copyRef());
 		}
 	}
 

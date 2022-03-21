@@ -38,8 +38,8 @@ public enum VAlignType {
 	 * keys.
 	 */
 	static {
-		for (VAlignType vAlignType : values())
-			nameToVAlignType.put(vAlignType.name, vAlignType);
+		for (VAlignType t : values())
+			nameToVAlignType.put(t.name, t);
 	}
 
 	/**
@@ -66,8 +66,8 @@ public enum VAlignType {
 	 * @param name the string value.
 	 * @return VAlignType enum constant.
 	 */
-	public static VAlignType fromName(String name) {
-		return nameToVAlignType.get(name);
+	public static VAlignType fromName(String value) {
+		return nameToVAlignType.get(value);
 	}
 
 	/**
@@ -81,5 +81,4 @@ public enum VAlignType {
 			result[i] = values()[i].name;
 		return result;
 	}
-
 }

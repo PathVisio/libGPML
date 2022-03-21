@@ -22,13 +22,13 @@ import java.util.Map;
 import org.pathvisio.libgpml.debug.Logger;
 import org.pathvisio.libgpml.model.type.ConnectorType;
 
+
 /**
  * Constructs connector shapes. This class allows you to register a custom
  * connector shape class. The class to register must have a public constructor
  * without arguments!
  * 
  * @author thomas
- *
  */
 public abstract class ConnectorShapeFactory {
 

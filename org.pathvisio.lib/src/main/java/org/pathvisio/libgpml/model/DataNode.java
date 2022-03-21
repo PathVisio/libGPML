@@ -17,10 +17,13 @@
 package org.pathvisio.libgpml.model;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.model.type.StateType;
@@ -45,58 +48,29 @@ public class DataNode extends ShapedElement implements Xrefable {
 	// ================================================================================
 
 	/**
-	 * Instantiates a DataNode (type != "Alias) given all possible parameters.
+	 * Instantiates a DataNode given all possible parameters. A DataNode of type
+	 * Alias can have an aliasRef which refers to a {@link Group} and/or have a
+	 * textLabel which points to a group somewhere.
 	 * 
-	 * @param textLabel the text of this datanode.
+	 * @param textLabel the text or link of this datanode.
 	 * @param type      the type of datanode, e.g. complex.
-	 * @param xref      the data node Xref.
-	 */
-	public DataNode(String textLabel, DataNodeType type, Xref xref) {
-		super();
-		this.textLabel = textLabel;
-		setType(type);
-		this.states = new ArrayList<State>();
-		this.xref = xref;
-	}
-
-	/**
-	 * Instantiates a DataNode (type != "Alias) given all required parameters.
-	 */
-	public DataNode(String textLabel, DataNodeType type) {
-		this(textLabel, type, null);
-	}
-
-	/**
-	 * Instantiates an Alias Data Node pathway element given all possible
-	 * parameters. An alias data node acts as an alias for a {@link Group}. In GPML,
-	 * the datanode has aliasRef which refers to the elementId of the group
-	 * aliasRef.
-	 * 
-	 * NB: This method is not used directly. Aliases are created by a group
-	 * {@link Group#createAlias(String)}.
-	 * 
-	 * @param textLabel the text of this datanode.
 	 * @param xref      the data node Xref.
 	 * @param aliasRef  the group this data node alias refers to.
 	 */
-	protected DataNode(String textLabel, Xref xref, Group aliasRef) {
+	public DataNode(String textLabel, DataNodeType type, Xref xref, Group aliasRef) {
 		super();
 		this.textLabel = textLabel;
-		this.type = DataNodeType.ALIAS;
+		setType(type);
 		this.states = new ArrayList<State>();
 		this.xref = xref;
 		setAliasRef(aliasRef);
 	}
 
 	/**
-	 * Instantiates an Alias Data Node pathway element given all possible parameters
-	 * except xref.
-	 * 
-	 * NB: This method is not used directly. Aliases are created by a group
-	 * {@link Group#createAlias(String)}.
+	 * Instantiates a DataNode given all required parameters.
 	 */
-	protected DataNode(String textLabel, Group aliasRef) {
-		this(textLabel, null, aliasRef);
+	public DataNode(String textLabel, DataNodeType type) {
+		this(textLabel, type, null, null);
 	}
 
 	// ================================================================================
@@ -118,6 +92,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * @return textLabel the text of this datanode.
 	 * 
 	 */
+	@Override
 	public String getTextLabel() {
 		return textLabel;
 	}
@@ -127,6 +102,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * 
 	 * @param v the text to set.
 	 */
+	@Override
 	public void setTextLabel(String v) {
 		String value = (v == null) ? "" : v;
 		if (!Utils.stringEquals(textLabel, value)) {
@@ -152,13 +128,17 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * @param v the type to set for this datanode.
 	 */
 	public void setType(DataNodeType v) {
-		if (type == DataNodeType.ALIAS) {
-			throw new IllegalArgumentException("DataNodeType cannot be changed for an alias data node");
-		}
-		if (v == DataNodeType.ALIAS) {
-			throw new IllegalArgumentException("DataNodeType Alias is reserved for alias data nodes.");
-		}
 		if (type != v && v != null) {
+			if (type == DataNodeType.ALIAS && aliasRef != null) {
+				// TODO
+				unsetAliasRef();
+				int n = JOptionPane.showConfirmDialog(null, "Warning: aliasRef connection will be lost", "Warning",
+						JOptionPane.OK_CANCEL_OPTION);
+				if (n == JOptionPane.CANCEL_OPTION) {
+					return; // do not set new data node type
+				}
+			}
+			// set new data node type
 			type = v;
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.DATANODETYPE));
 		}
@@ -169,6 +149,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * 
 	 * @return xref the xref of this datanode.
 	 */
+	@Override
 	public Xref getXref() {
 		return xref;
 	}
@@ -178,6 +159,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * 
 	 * @param v the xref to set for this datanode.
 	 */
+	@Override
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
@@ -221,8 +203,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 		}
 		if (!hasState(state)) {
 			// add state to same pathway model as data node if applicable
-			if (getPathwayModel() != null) {
-				getPathwayModel().addPathwayObject(state);
+			if (pathwayModel != null) {
+				pathwayModel.addPathwayObject(state);
 			}
 			states.add(state);
 			// No state property, use BORDERSTYLE as dummy property to force redraw
@@ -273,8 +255,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * @param state the state to be removed.
 	 */
 	public void removeState(State state) {
-		if (getPathwayModel() != null)
-			getPathwayModel().removePathwayObject(state);
+		if (pathwayModel != null)
+			pathwayModel.removePathwayObject(state);
 		states.remove(state);
 		// No state property, use BORDERSTYLE as dummy property to force redraw
 		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.BORDERSTYLE));
@@ -285,8 +267,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 */
 	private void removeStates() {
 		for (int i = states.size() - 1; i >= 0; i--) {
-			if (getPathwayModel() != null)
-				getPathwayModel().removePathwayObject(states.get(i));
+			if (pathwayModel != null)
+				pathwayModel.removePathwayObject(states.get(i));
 		}
 		states.clear();
 	}
@@ -318,13 +300,14 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * 
 	 * @param v the group to which this data node refers.
 	 */
-	private void setAliasRef(Group v) {
+	public void setAliasRef(Group v) {
 		if (v != null) {
 			if (type != DataNodeType.ALIAS) {
 				throw new IllegalArgumentException("DataNode type must be Alias before setting aliasRef");
 			}
+			unsetAliasRef();
+			v.getPathwayModel().linkAlias(v, this);
 			aliasRef = v;
-			v.getPathwayModel().addAlias(v, this);
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
 		}
 	}
@@ -341,10 +324,130 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * calls {@link #terminate}.
 	 * </ol>
 	 */
-	private void unsetAliasRef() {
+	protected void unsetAliasRef() {
 		if (getAliasRef() != null) {
+			pathwayModel.unlinkAlias(aliasRef, this);
 			aliasRef = null;
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ALIASREF));
+		}
+	}
+
+	// ================================================================================
+	// Copy Methods
+	// ================================================================================
+	/**
+	 * Note: doesn't change parent, only fields
+	 *
+	 * Used by UndoAction.
+	 * 
+	 * NB: AliasRef value is not copied. References to other PathwayObjects are
+	 * stored in {@link CopyElement} by {@link #copy}.
+	 *
+	 * @param src the source pathway element.
+	 */
+	public void copyValuesFrom(DataNode src) {
+		super.copyValuesFrom(src);
+		textLabel = src.textLabel;
+		type = src.type;
+		states = new ArrayList<State>();
+		for (State s : src.states) {
+			State result = new State(null, null, 0, 0);
+			result.copyValuesFrom(s);
+			addState(result);
+		}
+		xref = src.xref;
+//		aliasRef = src.aliasRef; TODO not this yet
+		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
+	}
+
+	/**
+	 * Copy Object. The object will not be part of the same Pathway object, it's
+	 * parent will be set to null.
+	 *
+	 * No events will be sent to the parent of the original.
+	 */
+	@Override
+	public CopyElement copy() {
+		DataNode result = new DataNode(textLabel, type);
+		result.copyValuesFrom(this);
+		return new CopyElement(result, this);
+	}
+
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
+	 */
+	@Override
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		Set<StaticProperty> propsDataNode = EnumSet.of(StaticProperty.TEXTLABEL, StaticProperty.DATANODETYPE,
+				StaticProperty.XREF, StaticProperty.ALIASREF);
+		result.addAll(propsDataNode);
+		return result;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) { // TODO
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case TEXTLABEL:
+				result = getTextLabel();
+				break;
+			case DATANODETYPE:
+				result = getType().getName(); // TODO
+				break;
+			case XREF:
+				result = getXref();
+				break;
+			case ALIASREF:
+				result = getAliasRef();
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case TEXTLABEL:
+			setTextLabel((String) value);
+			break;
+		case DATANODETYPE:
+			if (value instanceof DataNodeType) {
+				setType((DataNodeType) value);
+			} else {
+				setType(DataNodeType.fromName((String) value));
+			}
+			break;
+		case XREF:
+			setXref((Xref) value);
+			break;
+		case ALIASREF:
+			setAliasRef((Group) value);
+			break;
+		default:
+			// do nothing
 		}
 	}
 
@@ -375,78 +478,11 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 */
 	@Override
 	protected void terminate() {
-		unsetAliasRef();
+		unsetAliasRef(); // unsets aliasRef
 		removeStates();
 		unsetAllLinkableFroms();
 		unsetGroupRef();
 		super.terminate();
-	}
-
-	// ================================================================================
-	// Copy Methods
-	// ================================================================================
-	/**
-	 * Note: doesn't change parent, only fields
-	 *
-	 * Used by UndoAction.
-	 *
-	 * @param src
-	 */
-	public void copyValuesFrom(DataNode src) {
-		super.copyValuesFrom(src);
-		textLabel = src.textLabel;
-		type = src.type;
-		states = new ArrayList<State>();
-		for (State s : src.states) {
-			State result = new State(null, null, 0, 0);
-			result.copyValuesFrom(s);
-			addState(result);
-		}
-		xref = src.xref;
-		aliasRef = src.aliasRef;
-		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
-	}
-
-	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
-	 *
-	 * No events will be sent to the parent of the original.
-	 */
-	@Override
-	public CopyElement copy() {
-		DataNode result = new DataNode(textLabel, type);
-		result.copyValuesFrom(this);
-		return new CopyElement(result, this);
-	}
-
-	// ================================================================================
-	// Property Methods
-	// ================================================================================
-	/**
-	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-	 * x);
-	 *
-	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
-	 */
-	@Override
-	public void setStaticProperty(StaticProperty key, Object value) {
-		super.setStaticProperty(key, value);
-		switch (key) {
-		case TEXTLABEL:
-			setTextLabel((String) value);
-		case DATANODETYPE:
-			setType((DataNodeType) value);
-		case XREF:
-			setXref((Xref) value);
-		case ALIASREF:
-			setAliasRef((Group) value);
-		default:
-			// do nothing
-		}
 	}
 
 	// ================================================================================
@@ -464,34 +500,6 @@ public class DataNode extends ShapedElement implements Xrefable {
 		private double relX;
 		private double relY;
 		private Xref xref; // optional
-
-		/**
-		 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-		 * x);
-		 *
-		 * Value may be null in some cases, e.g. graphRef
-		 *
-		 * @param key
-		 * @param value
-		 */
-		@Override
-		public void setStaticProperty(StaticProperty key, Object value) {
-			super.setStaticProperty(key, value);
-			switch (key) {
-			case TEXTLABEL:
-				setTextLabel((String) value);
-			case STATETYPE:
-				setType((StateType) value);
-			case RELX:
-				setRelX((Double) value);
-			case RELY:
-				setRelY((Double) value);
-			case XREF:
-				setXref((Xref) value);
-			default:
-				// do nothing
-			}
-		}
 
 		// ================================================================================
 		// Constructors
@@ -513,8 +521,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 			super();
 			this.textLabel = textLabel;
 			this.type = type;
-			this.relX = relX;
-			this.relY = relY;
+			setRelX(relX);
+			setRelY(relY);
 			this.xref = xref;
 		}
 
@@ -623,8 +631,11 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 */
 		public void setRelX(double v) {
 			if (Math.abs(v) <= 1.0) {
-				relX = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				if (relX != v) {
+					relX = v;
+					updateCoordinates(); // TODO
+					fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				}
 			} else {
 				throw new IllegalArgumentException("relX " + v + " should be between -1.0 and 1.0");
 			}
@@ -652,8 +663,11 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 */
 		public void setRelY(double v) {
 			if (Math.abs(v) <= 1.0) {
-				relY = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				if (relY != v) {
+					relY = v;
+					updateCoordinates(); // TODO
+					fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				}
 			} else {
 				throw new IllegalArgumentException("relY " + v + " should be between -1.0 and 1.0");
 			}
@@ -680,10 +694,38 @@ public class DataNode extends ShapedElement implements Xrefable {
 			}
 		}
 
+		// FROM MState
+		// @Override
+		// public void setParent(Pathway v) {
+		// if (parent != v) {
+		// super.setParent(v);
+		// if (parent != null && graphRef != null) {
+		// updateCoordinates();
+		// }
+		// }
+		// }
+
+		// TODO
+		private void updateCoordinates() {
+			DataNode dn = getDataNode();
+			if (dn != null && pathwayModel != null) {
+				double centerx = dn.getCenterX() + (getRelX() * dn.getWidth() / 2);
+				double centery = dn.getCenterY() + (getRelY() * dn.getHeight() / 2);
+				setCenterY(centery);
+				setCenterX(centerx);
+			}
+		}
+
+		/**
+		 * 
+		 */
+		public void coordinatesChanged() {
+			updateCoordinates();
+		}
+
 		// ================================================================================
 		// Inherited Methods
 		// ================================================================================
-
 		/**
 		 * Returns the z-order of this pathway element.
 		 * 
@@ -752,28 +794,6 @@ public class DataNode extends ShapedElement implements Xrefable {
 			}
 		}
 
-		// FROM MState
-//		@Override
-//		public void setParent(Pathway v) {
-//			if (parent != v) {
-//				super.setParent(v);
-//				if (parent != null && graphRef != null) {
-//					updateCoordinates();
-//				}
-//			}
-//		}
-
-		// TODO
-		private void updateCoordinates() {
-			if (getPathwayModel() != null) {
-				DataNode dn = getDataNode();
-				double centerx = dn.getCenterX() + (getRelX() * dn.getWidth() / 2);
-				double centery = dn.getCenterY() + (getRelY() * dn.getHeight() / 2);
-				setCenterY(centery);
-				setCenterX(centerx);
-			}
-		}
-
 		/**
 		 * Terminates this state and removes all links and references.
 		 */
@@ -817,6 +837,87 @@ public class DataNode extends ShapedElement implements Xrefable {
 			State result = new State(textLabel, type, relX, relX);
 			result.copyValuesFrom(this);
 			return new CopyElement(result, this);
+		}
+
+		// ================================================================================
+		// Property Methods
+		// ================================================================================
+		/**
+		 * Returns all static properties for this pathway object.
+		 * 
+		 * @return result the set of static property for this pathway object.
+		 */
+		@Override
+		public Set<StaticProperty> getStaticPropertyKeys() {
+			Set<StaticProperty> result = super.getStaticPropertyKeys();
+			Set<StaticProperty> propsState = EnumSet.of(StaticProperty.TEXTLABEL, StaticProperty.STATETYPE,
+					StaticProperty.RELX, StaticProperty.RELY, StaticProperty.XREF);
+			result.addAll(propsState);
+			return result;
+		}
+
+		@Override
+		public Object getStaticProperty(StaticProperty key) { // TODO
+			Object result = super.getStaticProperty(key);
+			if (result == null) {
+				switch (key) {
+				case TEXTLABEL:
+					result = getTextLabel();
+					break;
+				case STATETYPE:
+					result = getType().getName();// TODO
+					break;
+				case RELX:
+					result = getRelX();
+					break;
+				case RELY:
+					result = getRelY();
+					break;
+				case XREF:
+					result = getXref();
+					break;
+				default:
+					// do nothing
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+		 * x);
+		 *
+		 * Value may be null in some cases, e.g. graphRef
+		 *
+		 * @param key
+		 * @param value
+		 */
+		@Override
+		public void setStaticProperty(StaticProperty key, Object value) {
+			super.setStaticProperty(key, value);
+			switch (key) {
+			case TEXTLABEL:
+				setTextLabel((String) value);
+				break;
+			case STATETYPE:
+				if (value instanceof StateType) {
+					setType((StateType) value);
+				} else {
+					setType(StateType.fromName((String) value));
+				}
+				break;
+			case RELX:
+				setRelX((Double) value);
+				break;
+			case RELY:
+				setRelY((Double) value);
+				break;
+			case XREF:
+				setXref((Xref) value);
+				break;
+			default:
+				// do nothing
+			}
 		}
 
 	}

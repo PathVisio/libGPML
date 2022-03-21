@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
@@ -187,7 +186,7 @@ public class Evidence extends PathwayObject {
 			evidenceRef.terminate();
 			// if citationResf empty, remove this evidence from pathway model
 			if (evidenceRefs.isEmpty()) {
-				getPathwayModel().removeEvidence(this);
+				pathwayModel.removeEvidence(this);
 			}
 		}
 	}
@@ -263,7 +262,7 @@ public class Evidence extends PathwayObject {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Evidence copy() {
+	public Evidence copyRef() {
 		Evidence result = new Evidence(value, xref, urlLink); 
 		result.copyValuesFrom(this);
 		return result;

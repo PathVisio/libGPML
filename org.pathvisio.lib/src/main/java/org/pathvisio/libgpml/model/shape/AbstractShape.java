@@ -20,6 +20,11 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
+/**
+ * Class for shapes.
+ * 
+ * @author unknown
+ */
 public class AbstractShape implements IShape {
 
 	private String name;
@@ -27,6 +32,17 @@ public class AbstractShape implements IShape {
 	private boolean isRotatable;
 	private Shape sh;
 
+	// ================================================================================
+	// Constructors
+	// ================================================================================
+	/**
+	 * Instantiates.
+	 * 
+	 * @param sh           the Shape.
+	 * @param name         the String name.
+	 * @param isResizeable if true shape is resizeable.
+	 * @param isRotatable  if true shape is rotatable.
+	 */
 	public AbstractShape(Shape sh, String name, boolean isResizeable, boolean isRotatable) {
 		this.name = name;
 		this.sh = sh;
@@ -35,14 +51,32 @@ public class AbstractShape implements IShape {
 		ShapeRegistry.registerShape(this);
 	}
 
+	/**
+	 * @param sh
+	 * @param name
+	 */
 	public AbstractShape(Shape sh, String name) {
 		this(sh, name, true, true);
 	}
 
+	// ================================================================================
+	// Accessors
+	// ================================================================================
+
+	/**
+	 * Returns String name of this shape.
+	 * 
+	 * @return name
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 *
+	 */
+	@Override
 	public Shape getShape(double mw, double mh) {
 		// now scale the path so it has proper w and h.
 		Rectangle r = sh.getBounds();
@@ -52,14 +86,32 @@ public class AbstractShape implements IShape {
 		return at.createTransformedShape(sh);
 	}
 
+	/**
+	 * Returns boolean for whether shape is resizeable.
+	 * 
+	 * @return isResizeable if true shape is resizeable.
+	 */
+	@Override
 	public boolean isResizeable() {
 		return isResizeable;
 	}
 
+	/**
+	 * Returns boolean for whether shape is rotatable.
+	 * 
+	 * @return isRotatable if true shape is rotatable.
+	 */
+	@Override
 	public boolean isRotatable() {
 		return isRotatable;
 	}
 
+	/**
+	 * Returns String name of this shape.
+	 * 
+	 * @return name
+	 */
+	@Override
 	public String toString() {
 		return name;
 	}

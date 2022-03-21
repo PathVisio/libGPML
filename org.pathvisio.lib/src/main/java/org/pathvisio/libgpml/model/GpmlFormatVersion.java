@@ -18,6 +18,7 @@ package org.pathvisio.libgpml.model;
 
 import org.jdom2.Document;
 import org.jdom2.Namespace;
+import org.pathvisio.libgpml.io.ConverterException;
 
 /**
  * Interface for GPML format versions.
@@ -25,14 +26,14 @@ import org.jdom2.Namespace;
  * @author unknown
  */
 public interface GpmlFormatVersion {
-	
+
 	/**
-	 * Returns the GPML namespace. 
+	 * Returns the GPML namespace.
 	 */
 	Namespace getGpmlNamespace();
 
 	/**
-	 * Returns the GPML schema file. 
+	 * Returns the GPML schema file.
 	 */
 	String getSchemaFile();
 

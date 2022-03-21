@@ -10,11 +10,7 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.ConverterException;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.GPML2021Writer;
-import org.pathvisio.libgpml.model.Group;
-import org.pathvisio.libgpml.model.PathwayModel;
+import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 
@@ -39,14 +35,15 @@ public class TestAlias {
 		p.addGroup(g);
 		p.addDataNode(d);
 		g.addPathwayElement(d);
-		alias = g.createAlias("textLabel");
-		p.addDataNode(alias);
+		alias = g.addAlias("textLabel");
 
 		assertEquals(d.getGroupRef(), g);
 		assertTrue(g.hasPathwayElement(d));
 		assertFalse(g.hasPathwayElement(alias));
-		assertTrue(p.getAlias(g).contains(alias));
+		assertTrue(p.hasLinkedAlias(g, alias));
 		assertTrue(p.hasAliasRef(g));
+		
+		System.out.println(p.getPathwayObjects());
 	}
 
 	/**
@@ -56,7 +53,7 @@ public class TestAlias {
 	public void testRemoveAlias() {
 		p.removeDataNode(alias);
 		assertNull(alias.getAliasRef());
-		assertNull(p.getAlias(g));
+		assertNull(p.getLinkedAliases(g));
 		assertFalse(p.hasAliasRef(g));
 	}
 
@@ -67,7 +64,7 @@ public class TestAlias {
 	public void testRemoveGroup() {
 		p.removeGroup(g);
 		assertNull(alias.getAliasRef());
-		assertNull(p.getAlias(g));
+		assertNull(p.getLinkedAliases(g));
 		assertFalse(p.hasAliasRef(g));
 	}
 

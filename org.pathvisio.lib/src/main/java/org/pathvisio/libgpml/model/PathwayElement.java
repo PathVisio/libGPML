@@ -17,6 +17,7 @@
 package org.pathvisio.libgpml.model;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.Referenceable.Annotatable;
 import org.pathvisio.libgpml.model.Referenceable.Citable;
 import org.pathvisio.libgpml.model.Referenceable.Evidenceable;
@@ -40,7 +40,7 @@ import org.pathvisio.libgpml.util.Utils;
  * 
  * @author unknown, AP20070508, finterly
  */
-public abstract class PathwayElement extends PathwayObject implements Annotatable, Citable, Evidenceable {
+public abstract class PathwayElement extends PathwayObject implements Cloneable, Annotatable, Citable, Evidenceable {
 
 	private List<Comment> comments;
 	/**
@@ -566,6 +566,19 @@ public abstract class PathwayElement extends PathwayObject implements Annotatabl
 		keys.addAll(getStaticPropertyKeys());
 		keys.addAll(getDynamicPropertyKeys());
 		return keys;
+	}
+
+	/**
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
+	 */
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		Set<StaticProperty> propsPathwayElement = EnumSet.of(StaticProperty.COMMENT, StaticProperty.ANNOTATION,
+				StaticProperty.CITATION, StaticProperty.EVIDENCE); // TODO dynamic property
+		result.addAll(propsPathwayElement);
+		return result;
 	}
 
 	@Override

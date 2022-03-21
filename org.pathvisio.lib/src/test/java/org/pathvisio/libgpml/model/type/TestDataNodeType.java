@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.type;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.pathvisio.libgpml.model.type.DataNodeType;
@@ -54,15 +55,16 @@ public class TestDataNodeType extends TestCase {
 		// should both equal "new data node type"
 		assertEquals(new1, new2);
 
-		List<String> names = DataNodeType.getNames();
-		for (String i : names) {
+		List<String> names = Arrays.asList(DataNodeType.getNames());
+		for (String i : names) { 
 			System.out.println(i);
 		}
-		List<DataNodeType> values = DataNodeType.getValues();
-
+	
+		List<DataNodeType> values = Arrays.asList(DataNodeType.getValues());
 		for (DataNodeType i : values) {
 			System.out.println(i);
 		}
+		
 		assertTrue(names.contains("RNA"));
 		assertFalse(names.contains("Rna"));
 		assertTrue(names.contains("new data node type"));

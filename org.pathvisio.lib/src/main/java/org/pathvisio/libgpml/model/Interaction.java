@@ -16,8 +16,10 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
 
@@ -63,6 +65,7 @@ public class Interaction extends LineElement implements Xrefable {
 	public ObjectType getObjectType() {
 		return ObjectType.INTERACTION;
 	}
+
 	/**
 	 * Returns the Xref for this interaction.
 	 * 
@@ -116,6 +119,36 @@ public class Interaction extends LineElement implements Xrefable {
 	// Property Methods
 	// ================================================================================
 	/**
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
+	 */
+	@Override
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		result.add(StaticProperty.XREF);
+		return result;
+	}
+	
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) { // TODO
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case XREF:
+				result = getXref();
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
 	 * x);
 	 *
@@ -130,6 +163,7 @@ public class Interaction extends LineElement implements Xrefable {
 		switch (key) {
 		case XREF:
 			setXref((Xref) value);
+			break;
 		default:
 			// do nothing
 		}

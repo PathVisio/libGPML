@@ -38,8 +38,8 @@ public enum HAlignType {
 	 * keys.
 	 */
 	static {
-		for (HAlignType hAlignType : values())
-			nameToHAlignType.put(hAlignType.name, hAlignType);
+		for (HAlignType t : values())
+			nameToHAlignType.put(t.name, t);
 	}
 
 	/**
@@ -66,8 +66,8 @@ public enum HAlignType {
 	 * @param name the string value.
 	 * @return HAlignType enum constant.
 	 */
-	public static HAlignType fromName(String name) {
-		return nameToHAlignType.get(name);
+	public static HAlignType fromName(String value) {
+		return nameToHAlignType.get(value);
 	}
 
 	/**

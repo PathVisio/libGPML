@@ -21,6 +21,7 @@ import java.awt.geom.Point2D;
 import org.pathvisio.libgpml.util.LinAlg;
 import org.pathvisio.libgpml.util.LinAlg.Point;
 
+
 /**
  * Implement this to provide a line shape for connectors.
  *

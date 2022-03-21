@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.connector;
 
-import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
@@ -46,13 +45,13 @@ public class StraightConnectorShape extends AbstractConnector {
 	}
 
 	/**
-	 * Calculates shape from the width of the line endings. 
+	 * Calculates shape from the width of the line endings.
 	 * 
-	 * @param segments the array of segments. 
+	 * @param segments the array of segments.
 	 * @return the calculated shape.
 	 */
 	@Override
-	protected Shape calculateShape(Segment[] segments) {
+	protected java.awt.Shape calculateShape(Segment[] segments) {
 		Point2D start = segments[0].getMStart();
 		Point2D end = segments[segments.length - 1].getMEnd();
 		return (new Line2D.Double(start, end));

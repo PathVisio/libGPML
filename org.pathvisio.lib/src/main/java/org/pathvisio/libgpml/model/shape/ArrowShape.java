@@ -35,9 +35,11 @@ import java.awt.Shape;
     open             closed             wire
         |\               #\             \
   ______| \        ______##\        _____\
-	  | /              ##/             /
-	  |/               #/             /
+	    | /              ##/             /
+	    |/               #/             /
  * </pre>
+ * 
+ * @author unknown
  */
 public class ArrowShape {
 	/**
@@ -64,22 +66,17 @@ public class ArrowShape {
 
 	/**
 	 * Normally, this constructor is not called directly. Use
-	 * {@link ShapeRegistry#registerShape} instead to define a new ArrowShape.
-	 * 
-	 * @param shape    the shape.
-	 * @param fillType the fill type.
-	 * @param gap      the gap.
+	 * {@link ShapeRegistry.registerShape} instead to define a new ArrowShape.
 	 */
 	public ArrowShape(Shape shape, FillType fillType, int gap) {
 		this.shape = shape;
 		this.fillType = fillType;
 		this.gap = gap;
-
 	}
 
 	/**
 	 * Normally, this constructor is not called directly. Use
-	 * {@link ShapeRegistry#registerShape} instead to define a new ArrowShape.
+	 * {@link ShapeRegistry.registerShape} instead to define a new ArrowShape.
 	 */
 	public ArrowShape(Shape shape, FillType fillType) {
 		this.shape = shape;
@@ -87,10 +84,8 @@ public class ArrowShape {
 	}
 
 	/**
-	 * Returns fill type.
-	 * 
-	 * @return one of {@link FillType#OPEN}, {@link FillType#CLOSED} or
-	 *         {@link FillType#WIRE}
+	 * @return one of {@link FillType.OPEN}, {@link FillType.CLOSED} or
+	 *         {@link FillType.WIRE}
 	 */
 	public FillType getFillType() {
 		return fillType;

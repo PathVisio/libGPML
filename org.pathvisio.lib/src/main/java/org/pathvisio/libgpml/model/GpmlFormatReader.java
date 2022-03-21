@@ -17,15 +17,19 @@
 package org.pathvisio.libgpml.model;
 
 import org.jdom2.Element;
+import org.pathvisio.libgpml.io.ConverterException;
 
 /**
  * Interface for GPML reading.
  * 
  * @author unknown
  */
-public interface GpmlFormatReader extends GpmlFormatVersion 
-{
-//	public PathwayElement mapElement(Element e) throws ConverterException;
-	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException;
-	// TODO Return void or PathwayModel??? 
+public interface GpmlFormatReader extends GpmlFormatVersion {
+
+//	public PathwayObject mapElement(Element e) throws ConverterException; TODO 
+
+	//public void readFromRoot(PathwayModel pwy, Element root) throws ConverterException;
+	
+	public PathwayModel readFromRoot(PathwayModel pwy, Element root) throws ConverterException;
+
 }

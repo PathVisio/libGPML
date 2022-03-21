@@ -23,15 +23,6 @@ import java.util.List;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayModelEvent;
-import org.pathvisio.libgpml.event.PathwayModelListener;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
-import org.pathvisio.libgpml.event.PathwayObjectListener;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.Interaction;
-import org.pathvisio.libgpml.model.Pathway;
-import org.pathvisio.libgpml.model.PathwayModel;
-import org.pathvisio.libgpml.model.PathwayObject;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 

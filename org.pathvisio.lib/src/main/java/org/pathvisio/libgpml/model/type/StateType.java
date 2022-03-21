@@ -99,31 +99,31 @@ public class StateType {
 	}
 
 	/**
-	 * Returns the names of all registered StateTypes as a list.
+	 * Returns the names of all registered StateTypes as an array.
 	 * 
 	 * @return names the names of all registered StateTypes in order of insertion.
 	 */
-	static public List<String> getNames() {
-		List<String> names = new ArrayList<>(nameToStateType.keySet());
-		return names;
+	static public String[] getNames() {
+		return nameToStateType.keySet().toArray(new String[nameToStateType.size()]);
 	}
 
 	/**
-	 * Returns the state type values of all StateTypes as a list.
+	 * Returns the state type values of all StateTypes as an array.
 	 * 
 	 * @return stateTypes the list of all registered StateTypes.
 	 */
-	static public List<StateType> getValues() {
-		List<StateType> stateTypes = new ArrayList<>(nameToStateType.values());
-		return stateTypes;
+	static public StateType[] getValues() {
+		return nameToStateType.values().toArray(new StateType[0]);
 	}
 
 	/**
-	 * Returns a string representation of this StateType.
+	 * Returns a string representation of this StateType. Adds space between lower
+	 * and upper case letters to make more human readable.
 	 * 
 	 * @return name the identifier of this StateType.
 	 */
 	public String toString() {
+//		return name.replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2"); //TODO 
 		return name;
 	}
 }

@@ -16,7 +16,9 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
 import org.pathvisio.libgpml.util.Utils;
@@ -29,26 +31,6 @@ import org.pathvisio.libgpml.util.Utils;
 public class Shape extends ShapedElement {
 
 	private String textLabel; // optional
-	
-	/**
-	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-	 * x);
-	 *
-	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
-	 */
-	@Override
-	public void setStaticProperty(StaticProperty key, Object value) {
-		super.setStaticProperty(key, value);
-		switch (key) {	
-		case TEXTLABEL:
-			setTextLabel((String) value);
-		default:
-			// do nothing
-		}
-	}
 
 	// ================================================================================
 	// Constructors
@@ -72,7 +54,7 @@ public class Shape extends ShapedElement {
 	public ObjectType getObjectType() {
 		return ObjectType.SHAPE;
 	}
-	
+
 	/**
 	 * Returns the text of of the shape.
 	 * 
@@ -96,6 +78,19 @@ public class Shape extends ShapedElement {
 	}
 
 	// ================================================================================
+	// Inherited Methods
+	// ================================================================================
+	/**
+	 * Terminates this shape and removes all links and references.
+	 */
+	@Override
+	protected void terminate() {
+		unsetAllLinkableFroms();
+		unsetGroupRef();
+		super.terminate();
+	}
+
+	// ================================================================================
 	// Copy Methods
 	// ================================================================================
 	/**
@@ -105,7 +100,7 @@ public class Shape extends ShapedElement {
 	 *
 	 * @param src
 	 */
-	public void copyValuesFrom(Shape src) { 
+	public void copyValuesFrom(Shape src) {
 		super.copyValuesFrom(src);
 		textLabel = src.textLabel;
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
@@ -124,17 +119,57 @@ public class Shape extends ShapedElement {
 	}
 
 	// ================================================================================
-	// Inherited Methods
+	// Property Methods
 	// ================================================================================
-
 	/**
-	 * Terminates this shape and removes all links and references.
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
 	 */
 	@Override
-	protected void terminate() {
-		unsetAllLinkableFroms();
-		unsetGroupRef();
-		super.terminate();
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		result.add(StaticProperty.TEXTLABEL);
+		return result;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) { // TODO
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case TEXTLABEL:
+				result = getTextLabel();
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case TEXTLABEL:
+			setTextLabel((String) value);
+			break;
+		default:
+			// do nothing
+		}
 	}
 
 }

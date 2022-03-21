@@ -27,36 +27,29 @@ public enum StaticPropertyType implements PropertyType {
 	// basic types
 	BOOLEAN, DOUBLE, INTEGER, STRING, COLOR,
 
-	// pathway
-	ORGANISM, // TODO??
+	// Pathway
+	ORGANISM,
 
-	// xref
-	IDENTIFIER, DATASOURCE, XREF,
+	// Pathway Element
+	COMMENT, ANNOTATION, CITATION, EVIDENCE, ANNOTATIONREF, CITATIONREF, EVIDENCEREF, ANNOTATIONTYPE,
 
-	// meta-information
-	COMMENT,
-	ANNOTATIONREF,
-	CITATIONREF,
-	EVIDENCEREF,
+	// Xrefable
+	XREF, IDENTIFIER, DATASOURCE, //TODO
 
-	// font props
-	FONTNAME,
-	HALIGNTYPE, 
-	VALIGNTYPE,
-
-	// shape style props
-	SHAPETYPE, 
-	LINESTYLETYPE, //for both lines and shape borders
-	ORIENTATION, ROTATION, // TODO brace???
+	// ShapedElement
+	DATANODETYPE, STATETYPE, GROUPTYPE,
 	
-	// line style props 
-	CONNECTORTYPE,
-	
-	// types: anchor, annotation, linepoint, datanode, state, group
-	ANCHORSHAPETYPE, ANNOTATIONTYPE, ARROWHEADTYPE, DATANODETYPE, STATETYPE, GROUPTYPE,
-	
-	//bibliography
-	ANNOTATION, CITATION, EVIDENCE;
+	// DataNode
+	GROUP,
+
+	// line style properties
+
+	// LineElement
+	ARROWHEADTYPE, LINKABLETO, ANCHORSHAPETYPE, CONNECTORTYPE,
+
+	// Style properties
+	FONTNAME, HALIGNTYPE, VALIGNTYPE, SHAPETYPE, LINESTYLETYPE, // for both lines and shape borders
+	ORIENTATION, ROTATION; // TODO brace???
 
 	private String id;
 

@@ -41,22 +41,22 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	Segment[] curveLow;
 
 	/**
-	 * Calculates shape from the width of the line endings. 
+	 * Calculates shape from the width of the line endings.
 	 * 
 	 * @return the calculated shape.
 	 */
-	@Override 
+	@Override
 	protected Shape calculateShape() {
 		return calculateShape(elbowSegments);
 	}
 
 	/**
-	 * Calculates shapes from the width of the line endings. 
+	 * Calculates shapes from the width of the line endings.
 	 * 
 	 * @param segments the segment array.
 	 * @return path the Shape.
 	 */
-	@Override 
+	@Override
 	public Shape calculateShape(Segment[] segments) {
 		GeneralPath path = new GeneralPath();
 
@@ -91,7 +91,7 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	 * @param waypoints    the waypoint array.
 	 * @return curveLow the segment array.
 	 */
-	@Override 
+	@Override
 	protected Segment[] calculateSegments(ConnectorRestrictions restrictions, WayPoint[] waypoints) {
 		elbowSegments = super.calculateSegments(restrictions, waypoints);
 
@@ -231,7 +231,7 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	 * @param l the double.
 	 * @return ...
 	 */
-	@Override 
+	@Override
 	public Point2D fromLineCoordinate(double l) {
 		return super.fromLineCoordinate(l, curveHigh);
 	}
@@ -242,7 +242,7 @@ public class CurvedConnectorShape extends ElbowConnectorShape {
 	 * @param segments  the segment array.
 	 * @return ...
 	 */
-	@Override 
+	@Override
 	protected WayPoint[] wayPointsToCenter(WayPoint[] waypoints, Segment[] segments) {
 		return super.wayPointsToCenter(waypoints, elbowSegments);
 	}

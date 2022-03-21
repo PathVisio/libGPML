@@ -35,6 +35,7 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.libgpml.debug.Logger;
+import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
@@ -484,7 +485,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		ln.addContent(gfx);
 		writeLineStyleProperty(lineElement, gfx);
 		// writes points
-		writePoints(lineElement.getLinePoints(), gfx);
+		writePoints(lineElement, gfx);
 		// writes anchors
 		writeAnchors(lineElement.getAnchors(), gfx);
 		writeGroupRef(lineElement.getGroupRef(), ln);
@@ -497,9 +498,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param gfx    the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writePoints(List<LinePoint> points, Element gfx) throws ConverterException {
+	protected void writePoints(LineElement lineElement, Element gfx) throws ConverterException {
 		List<Element> ptList = new ArrayList<Element>();
-		for (LinePoint point : points) {
+		List<LinePoint> points = lineElement.getLinePoints();
+		for (int i = 0; i < points.size(); i++) {
+			LinePoint point = points.get(i);
 			Element pt = new Element("Point", gfx.getNamespace());
 			writeElementId(point.getElementId(), pt);
 			String base = ((Element) gfx.getParent()).getName();
@@ -510,13 +513,15 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 				setAttr(base + ".Graphics.Point", "RelX", pt, Double.toString(point.getRelX()));
 				setAttr(base + ".Graphics.Point", "RelY", pt, Double.toString(point.getRelY()));
 			}
-			ArrowHeadType arrowHead = point.getArrowHead();
-			String arrowHeadStr = getArrowHeadTypeStr(arrowHead);
-			if (arrowHeadStr == null) {
-				arrowHeadStr = arrowHead.getName();
+			// if start or end point, write arrowhead type. 
+			if (i == 0) {
+				writeArrowHeadType(lineElement.getStartArrowHeadType(), base, pt);
+			} else if (i == points.size() - 1) {
+				writeArrowHeadType(lineElement.getEndArrowHeadType(), base, pt);
+			} else { // otherwise arrowHeadType = Line
+				setAttr(base + ".Graphics.Point", "ArrowHead", pt, "Line");
 			}
-			// TODO Sub type arrowhead Handling?
-			setAttr(base + ".Graphics.Point", "ArrowHead", pt, arrowHeadStr);
+			// add point jdom element to list
 			if (pt != null) {
 				ptList.add(pt);
 			}
@@ -524,6 +529,23 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 		if (ptList != null && ptList.isEmpty() == false) {
 			gfx.addContent(ptList);
 		}
+	}
+
+	/**
+	 * Writes the arrowHead for point jdom element. // TODO Sub type arrowhead
+	 * Handling?
+	 * 
+	 * @param arrowHead the arrow head.
+	 * @param base      the string for either "Interaction" or "GraphicalLine"
+	 * @param pt        the point jdom element to write to.
+	 * @throws ConverterException
+	 */
+	protected void writeArrowHeadType(ArrowHeadType arrowHead, String base, Element pt) throws ConverterException {
+		String arrowHeadStr = getArrowHeadTypeStr(arrowHead);
+		if (arrowHeadStr == null) {
+			arrowHeadStr = arrowHead.getName();
+		}
+		setAttr(base + ".Graphics.Point", "ArrowHead", pt, arrowHeadStr);
 	}
 
 	/**

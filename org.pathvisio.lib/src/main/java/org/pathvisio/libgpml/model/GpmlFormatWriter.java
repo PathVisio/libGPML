@@ -20,16 +20,21 @@ import java.io.File;
 import java.io.OutputStream;
 
 import org.jdom2.Document;
+import org.pathvisio.libgpml.io.ConverterException;
 
 /**
  * Interface for GPML writing.
  * 
  * @author unknown
  */
-public interface GpmlFormatWriter extends GpmlFormatVersion 
-{
-	Document createJdom(PathwayModel pathwayModel) throws ConverterException;
-//	Element createJdomElement(PathwayElement o) throws ConverterException;
+public interface GpmlFormatWriter extends GpmlFormatVersion {
+	
+	Document createJdom(PathwayModel data) throws ConverterException;
+
+//	Element createJdomElement(PathwayObject o) throws ConverterException; TODO 
+
 	void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException;
+
 	void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate) throws ConverterException;
+
 }

@@ -14,19 +14,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.libgpml.event;
-
-import org.pathvisio.libgpml.model.PathwayObject;
+package org.pathvisio.libgpml.model;
 
 /**
- * Used to notify listeners of changes to the model, i.e a Pathway or
- * PathwayElement. This can mean the addition or removal of whole elements, or
- * just a modification to one of the properties of an existing element.
+ * Used to notify listeners of changes to the model, i.e a Pathway or PathwayElement.
+ * This can mean the addition or removal of whole elements, or just a modification to
+ * one of the properties of an existing element.
  *
- * This event is currently used both by PathwayListener's and
- * PathwayElementListener's. That may change in the future.
+ * This event is currently used both by PathwayListener's and  PathwayElementListener's.
+ * That may change in the future.
  */
-public class PathwayModelEvent {
+public class PathwayModelEvent
+{
 	/**
 	 * Sent to listeners of Pathway when an object was deleted
 	 */
@@ -37,24 +36,16 @@ public class PathwayModelEvent {
 	 */
 	public static final int ADDED = 3;
 
-	/**
-	 * Sent to listeners of Pathway when an object is resized
-	 */
 	public static final int RESIZED = 4;
 
 	private PathwayObject affectedData;
-
-	public PathwayObject getAffectedData() {
-		return affectedData;
-	}
+	public PathwayObject getAffectedData () { return affectedData; }
 
 	private int type;
+	public int getType() { return type; }
 
-	public int getType() {
-		return type;
-	}
-
-	public PathwayModelEvent(PathwayObject object, int t) {
+	public PathwayModelEvent (PathwayObject object, int t)
+	{
 		affectedData = object;
 		type = t;
 	}

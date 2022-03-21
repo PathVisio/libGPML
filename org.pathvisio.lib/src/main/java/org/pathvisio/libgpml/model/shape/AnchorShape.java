@@ -19,18 +19,21 @@ package org.pathvisio.libgpml.model.shape;
 import java.awt.Shape;
 
 /**
- * AnchorShape is responsible for defining the graphic for Anchors,
- * similar to ArrowShape for Arrows.
- * Currently this is nothing but a wrapper for a simple java Shape.
+ * AnchorShape is responsible for defining the graphic for Anchors, similar to
+ * ArrowShape for Arrows. Currently this is nothing but a wrapper for a simple
+ * java Shape.
+ * 
+ * @author unknown 
  */
-public class AnchorShape
-{
-	public AnchorShape (Shape shape)
-	{
+public class AnchorShape {
+	
+	public AnchorShape(Shape shape) {
 		this.shape = shape;
 	}
 
-	public Shape getShape() { return shape; }
+	public Shape getShape() {
+		return shape;
+	}
 
 	Shape shape;
 }

@@ -5,11 +5,7 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.ConverterException;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.GPML2021Writer;
-import org.pathvisio.libgpml.model.Group;
-import org.pathvisio.libgpml.model.PathwayModel;
+import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 

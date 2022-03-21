@@ -14,14 +14,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.libgpml.event;
+package org.pathvisio.libgpml.model;
 
-import org.pathvisio.libgpml.model.PathwayObject;
 import org.pathvisio.libgpml.prop.Property;
 
 /**
- * This event is used to notify {@link PathwayObjectListener}s of changes to
- * properties of a PathwayElement.
+ * This event is used to notify {@link PathwayObjectListener}s of changes to properties of a PathwayElement.  
  * <p>
  * There are three variations on this event:
  * <ol>
@@ -30,14 +28,10 @@ import org.pathvisio.libgpml.prop.Property;
  * <li>Any property may have changed.
  * </ol>
  * 
- * Variation 2 is introduced for performance reasons. Coordinate changes
- * generate a lot of events (e.g. resizing or dragging an object) and typically
- * change in groups (if MLeft changes, MCenterX also changes). Listeners that
- * are interested in coordinate changes, may filter out changes to these
- * properties by using the {@link #isCoordinateChange()} property. Listeners
- * that are not interested in coordinate changes may use the
- * {@link #affectsProperty(Property)} method to find out if a property of
- * interest may have changed.
+ * Variation 2 is introduced for performance reasons. Coordinate changes generate a lot of events (e.g. resizing or dragging an object) and
+ * typically change in groups (if MLeft changes, MCenterX also changes). Listeners that are interested in coordinate changes, may filter out
+ * changes to these properties by using the {@link #isCoordinateChange()} property. Listeners that are not interested in coordinate changes
+ * may use the {@link #affectsProperty(Property)} method to find out if a property of interest may have changed.
  * 
  * @author Mark Woon
  */
@@ -46,44 +40,24 @@ public final class PathwayObjectEvent {
 	private final Object property;
 	private final boolean coordinateChange;
 
-	/**
-	 * TODO public for now
-	 * 
-	 * @param pwe
-	 * @param property
-	 * @return
-	 */
-	public static PathwayObjectEvent createSinglePropertyEvent(PathwayObject pwe, Object property) {
+	protected static PathwayObjectEvent createSinglePropertyEvent(PathwayObject pwe, Object property) {
 		return new PathwayObjectEvent(pwe, property, false);
 	}
-
-	/**
-	 * TODO public for now
-	 * 
-	 * @param pwe
-	 * @return
-	 */
-	public static PathwayObjectEvent createAllPropertiesEvent(PathwayObject pwe) {
+	
+	protected static PathwayObjectEvent createAllPropertiesEvent(PathwayObject pwe) {
 		return new PathwayObjectEvent(pwe, null, false);
 	}
-
-	/**
-	 * TODO public for now
-	 * 
-	 * @param pwe
-	 * @return
-	 */
-	public static PathwayObjectEvent createCoordinatePropertyEvent(PathwayObject pwe) {
+	
+	protected static PathwayObjectEvent createCoordinatePropertyEvent(PathwayObject pwe) {
 		return new PathwayObjectEvent(pwe, null, true);
 	}
-
+	
 	/**
 	 * Constructor.
 	 *
-	 * @param elem             the PathwayObject that's been modified
-	 * @param prop             the Property on the element that's been modified
-	 * @param coordinateChange Flag to indicate this event applies to a coordinate
-	 *                         change.
+	 * @param elem the PathwayElement that's been modified
+	 * @param prop the Property on the element that's been modified
+	 * @param coordinateChange Flag to indicate this event applies to a coordinate change.
 	 */
 	private PathwayObjectEvent(PathwayObject elem, Object prop, boolean coordinateChange) {
 		pwElement = elem;
@@ -92,37 +66,33 @@ public final class PathwayObjectEvent {
 	}
 
 	/**
-	 * Returns true if this event was caused by a coordinate change (e.g. movement
-	 * or resize operation).
+	 * Returns true if this event was caused by a coordinate change (e.g. movement or resize operation).
 	 */
 	public boolean isCoordinateChange() {
 		return coordinateChange;
 	}
 
 	/**
-	 * Gets the PathwayObject whose properties have been modified.
+	 * Gets the PathwayElement whose properties have been modified.
 	 */
 	public PathwayObject getModifiedPathwayObject() {
 		return pwElement;
 	}
 
+
 	/**
-	 * Check if the given static property may have been modified in this event. Note
-	 * that this method does not apply to coordinate properties (position, size),
-	 * these need to be checked with {@link #isCoordinateChange()}.
-	 * 
+	 * Check if the given static property may have been modified in this event. Note that this method does
+	 * not apply to coordinate properties (position, size), these need to be checked with {@link #isCoordinateChange()}.
 	 * @param prop The property to check.
 	 * @return true if the property may have been modified, false if not.
 	 */
-	public boolean affectsProperty(Property prop) { // TODO
+	public boolean affectsProperty(Property prop) {
 		return property == null || property.equals(prop);
 	}
 
 	/**
-	 * Check if the given dynamic property may have been modified in this event.
-	 * Note that this method does not apply to coordinate properties (position,
-	 * size), these need to be checked with {@link #isCoordinateChange()}.
-	 * 
+	 * Check if the given dynamic property may have been modified in this event. Note that this method does
+	 * not apply to coordinate properties (position, size), these need to be checked with {@link #isCoordinateChange()}.
 	 * @param prop The property to check.
 	 * @return true if the property may have been modified, false if not.
 	 */

@@ -101,9 +101,8 @@ public class GroupType {
 	 * 
 	 * @return names the names of all registered GroupTypes in order of insertion.
 	 */
-	static public List<String> getNames() {
-		List<String> names = new ArrayList<>(nameToGroupType.keySet());
-		return names;
+	static public String[] getNames() {
+		return nameToGroupType.keySet().toArray(new String[nameToGroupType.size()]);
 	}
 
 	/**
@@ -111,9 +110,8 @@ public class GroupType {
 	 * 
 	 * @return groupTypes the list of all registered GroupTypes.
 	 */
-	static public List<GroupType> getValues() {
-		List<GroupType> groupTypes = new ArrayList<>(nameToGroupType.values());
-		return groupTypes;
+	static public GroupType[] getValues() {
+		return nameToGroupType.values().toArray(new GroupType[0]);
 	}
 
 	/**

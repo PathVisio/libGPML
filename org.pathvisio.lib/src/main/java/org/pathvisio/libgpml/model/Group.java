@@ -18,11 +18,13 @@ package org.pathvisio.libgpml.model;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.DataNode.State;
+import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
@@ -36,34 +38,10 @@ import org.pathvisio.libgpml.util.Utils;
 public class Group extends ShapedElement implements Xrefable {
 
 	private GroupType type = GroupType.GROUP;
-	private String textLabel; // optional
+	private String textLabel = ""; // optional TODO
 	private Xref xref; // optional
 	/* list of pathway elements which belong to the group. */
 	private List<Groupable> pathwayElements; // should have at least one pathway element
-
-	/**
-	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
-	 * x);
-	 *
-	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
-	 */
-	@Override
-	public void setStaticProperty(StaticProperty key, Object value) {
-		super.setStaticProperty(key, value);
-		switch (key) {
-		case GROUPTYPE:
-			setType((GroupType) value);
-		case TEXTLABEL:
-			setTextLabel((String) value);
-		case XREF:
-			setXref((Xref) value);
-		default:
-			// do nothing
-		}
-	}
 
 	// ================================================================================
 	// Constructors
@@ -134,7 +112,7 @@ public class Group extends ShapedElement implements Xrefable {
 		if (pathwayElement == null) {
 			throw new IllegalArgumentException("Cannot add invalid pathway element to group " + getElementId());
 		}
-		if (getPathwayModel() != pathwayElement.getPathwayModel()) {
+		if (pathwayModel != pathwayElement.getPathwayModel()) {
 			throw new IllegalArgumentException("Group can only add pathway elements of the same pathway model");
 		}
 		// do not add if pathway element is a state
@@ -259,11 +237,12 @@ public class Group extends ShapedElement implements Xrefable {
 	// ================================================================================
 
 	/**
-	 * Creates and returns an Alias data node for this group. TODO
+	 * Creates and returns an Alias data node for this group.
 	 */
-	public DataNode createAlias(String textLabel) {
+	public DataNode addAlias(String textLabel) {
 		if (pathwayModel != null) {
-			DataNode alias = new DataNode(textLabel, this);
+			DataNode alias = new DataNode(textLabel, DataNodeType.ALIAS, null, this);
+			pathwayModel.addDataNode(alias); // TODO
 			return alias;
 		}
 		System.out.println("Cannot create an alias for group without valid pathway model.");
@@ -280,6 +259,7 @@ public class Group extends ShapedElement implements Xrefable {
 	 */
 	@Override
 	protected void terminate() {
+		pathwayModel.removeAliasRef(this); // removes this group aliasRef from pathway model
 		unsetAllLinkableFroms(); // unlink before removing pathway element
 		unsetGroupRef();
 		removePathwayElements();
@@ -498,6 +478,79 @@ public class Group extends ShapedElement implements Xrefable {
 		Group result = new Group(type); // TODO
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
+	}
+
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
+	 */
+	@Override
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		Set<StaticProperty> propsGroup = EnumSet.of(StaticProperty.GROUPTYPE, StaticProperty.XREF,
+				StaticProperty.TEXTLABEL);
+		result.addAll(propsGroup);
+		return result;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) { // TODO
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case GROUPTYPE:
+				result = getType().getName();
+				break;
+			case TEXTLABEL:
+				result = getTextLabel();
+				break;
+			case XREF:
+				result = getXref();
+				break;
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		System.out.println(key);
+		switch (key) {
+		case GROUPTYPE:
+			if (value instanceof GroupType) {
+				setType((GroupType) value);
+			} else {
+				setType(GroupType.fromName((String) value));
+			}
+			break;
+		case TEXTLABEL:
+			setTextLabel((String) value);
+			break;
+		case XREF:
+			setXref((Xref) value);
+			break;
+		default:
+			// do nothing
+		}
 	}
 
 }

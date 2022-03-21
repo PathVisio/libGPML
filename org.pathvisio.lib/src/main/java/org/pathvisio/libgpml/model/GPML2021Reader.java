@@ -28,6 +28,7 @@ import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
+import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
@@ -40,6 +41,7 @@ import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
 import org.pathvisio.libgpml.model.Referenceable.Annotatable;
 import org.pathvisio.libgpml.model.Referenceable.Citable;
 import org.pathvisio.libgpml.model.Referenceable.Evidenceable;
+import org.pathvisio.libgpml.model.shape.ShapeType;
 import org.pathvisio.libgpml.model.type.AnchorShapeType;
 import org.pathvisio.libgpml.model.type.AnnotationType;
 import org.pathvisio.libgpml.model.type.ArrowHeadType;
@@ -48,7 +50,6 @@ import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 import org.pathvisio.libgpml.model.type.HAlignType;
 import org.pathvisio.libgpml.model.type.LineStyleType;
-import org.pathvisio.libgpml.model.type.ShapeType;
 import org.pathvisio.libgpml.model.type.StateType;
 import org.pathvisio.libgpml.model.type.VAlignType;
 import org.pathvisio.libgpml.util.ColorUtils;
@@ -457,9 +458,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				readShapedElement(pathwayModel, label, lb, refIdToJdomElement);
 				// sets optional properties
 				label.setHref(lb.getAttributeValue("href"));
-				String groupRef = lb.getAttributeValue("groupRef");
-				if (groupRef != null && !groupRef.equals(""))
-					label.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
+				readGroupRef(pathwayModel, label, lb);
 			}
 		}
 	}
@@ -485,9 +484,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				readShapedElement(pathwayModel, shape, shp, refIdToJdomElement);
 				// sets optional properties
 				shape.setTextLabel(shp.getAttributeValue("textLabel"));
-				String groupRef = shp.getAttributeValue("groupRef");
-				if (groupRef != null && !groupRef.equals(""))
-					shape.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
+				readGroupRef(pathwayModel, shape, shp);
 			}
 		}
 	}
@@ -509,28 +506,23 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 				String elementId = dn.getAttributeValue("elementId");
 				String textLabel = dn.getAttributeValue("textLabel");
 				DataNodeType type = DataNodeType.register(dn.getAttributeValue("type", DATANODETYPE_DEFAULT));
-				String aliasRefStr = dn.getAttributeValue("aliasRef");
-				DataNode dataNode = null;
-				// if alias
-				if (aliasRefStr != null && type == DataNodeType.ALIAS) {
-					Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
-					if (aliasRef != null) {
-						dataNode = aliasRef.createAlias(textLabel);
-					}
-				} else {
-					dataNode = new DataNode(textLabel, type);
-				}
+				DataNode dataNode = new DataNode(textLabel, type);
 				dataNode.setElementId(elementId);
 				pathwayModel.addDataNode(dataNode);
 				// reads graphics and comment group props
 				readShapedElement(pathwayModel, dataNode, dn, refIdToJdomElement);
 				// reads states
 				readStates(pathwayModel, dataNode, dn, refIdToJdomElement);
-				// sets optional properties
+				// reads optional properties
 				dataNode.setXref(readXref(dn));
-				String groupRef = dn.getAttributeValue("groupRef");
-				if (groupRef != null && !groupRef.equals("")) {
-					dataNode.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
+				readGroupRef(pathwayModel, dataNode, dn);
+				// reads aliasRef
+				String aliasRefStr = dn.getAttributeValue("aliasRef");
+				if (aliasRefStr != null) {
+					Group aliasRef = (Group) pathwayModel.getPathwayObject(aliasRefStr);
+					if (aliasRef != null) {
+						dataNode.setAliasRef(aliasRef);
+					}
 				}
 			}
 		}
@@ -585,6 +577,25 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readShapeStyleProperty(shapedElement, gfx);
 		// reads comment group, evidenceRefs
 		readCommentGroup(pathwayModel, shapedElement, se, refIdToJdomElement);
+	}
+
+	/**
+	 * Reads groupRef information for {@link DataNode}, {@link Label}, and
+	 * {@link Shape}.
+	 * 
+	 * NB: {@link Group} uses a different method.
+	 * 
+	 * @param pathwayModel  the pathway model.
+	 * @param shapedElement the shapedElement to read groupRef for.
+	 * @param dn            the jdom shaped element.
+	 * @throws ConverterException
+	 */
+	protected void readGroupRef(PathwayModel pathwayModel, ShapedElement shapedElement, Element e)
+			throws ConverterException {
+		String groupRef = e.getAttributeValue("groupRef");
+		if (groupRef != null && !groupRef.equals("")) {
+			shapedElement.setGroupRefTo((Group) pathwayModel.getPathwayObject(groupRef));
+		}
 	}
 
 	/**
@@ -653,12 +664,21 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	protected void readPoints(LineElement lineElement, Element wyps, Map<Element, LinePoint> elementToPoint)
 			throws ConverterException {
 		List<LinePoint> ptList = new ArrayList<LinePoint>();
-		for (Element pt : wyps.getChildren("Point", wyps.getNamespace())) {
+		List<Element> pts = wyps.getChildren("Point", wyps.getNamespace());
+		for (int i = 0; i < pts.size(); i++) {
+			Element pt = pts.get(i);
 			String elementId = pt.getAttributeValue("elementId");
-			ArrowHeadType arrowHead = ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT));
+			// if start or end point, set arrowhead type for parent line element
+			if (i == 0) {
+				lineElement.setStartArrowHeadType(
+						ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT)));
+			} else if (i == pts.size() - 1) {
+				lineElement.setEndArrowHeadType(
+						ArrowHeadType.register(pt.getAttributeValue("arrowHead", ARROWHEAD_DEFAULT)));
+			}
 			double x = Double.parseDouble(pt.getAttributeValue("x").trim());
 			double y = Double.parseDouble(pt.getAttributeValue("y").trim());
-			LinePoint point = lineElement.new LinePoint(arrowHead, x, y);
+			LinePoint point = lineElement.new LinePoint(x, y);
 			point.setElementId(elementId);
 			ptList.add(point);
 			// adds info for reading

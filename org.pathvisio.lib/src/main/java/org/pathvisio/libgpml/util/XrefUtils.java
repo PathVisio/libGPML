@@ -156,4 +156,34 @@ public class XrefUtils {
 		return true;
 	}
 
+	/**
+	 * Returns the identifier for given {@link Xref} if valid, otherwise returns
+	 * empty String. 
+	 * 
+	 * @param xref the xref.
+	 * @return identifier the id for given xref.
+	 */
+	public static String getIdentifier(Xref xref) {
+		String identifier = "";
+		if (xref != null) {
+			identifier = xref.getId();
+		}
+		return identifier;
+	}
+
+	/**
+	 * Returns the identifier for given {@link Xref} if valid, otherwise returns
+	 * null.
+	 * 
+	 * @param xrefthe xref.
+	 * @return dataSource the dataSource for given xref.
+	 */
+	public static DataSource getDataSource(Xref xref) {
+		DataSource dataSource = null;
+		if (xref != null) {
+			dataSource = xref.getDataSource();
+		}
+		return dataSource;
+	}
+
 }

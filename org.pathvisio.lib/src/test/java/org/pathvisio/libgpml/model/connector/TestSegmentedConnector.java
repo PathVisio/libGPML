@@ -38,10 +38,10 @@ public class TestSegmentedConnector extends TestCase {
 	/** test conversion to / from line coordinates */
 	public void testLineCoordinates() {
 		Interaction line = new Interaction();
-		LinePoint[] points = new LinePoint[] { line.new LinePoint(ArrowHeadType.UNDIRECTED, 75.0, 125.0),
-				line.new LinePoint(ArrowHeadType.UNDIRECTED, 75.0, 50.0),
-				line.new LinePoint(ArrowHeadType.UNDIRECTED, 50.0, 50.0),
-				line.new LinePoint(ArrowHeadType.UNDIRECTED, 25.0, 25.0) };
+		LinePoint[] points = new LinePoint[] { line.new LinePoint(75.0, 125.0),
+				line.new LinePoint(75.0, 50.0),
+				line.new LinePoint(50.0, 50.0),
+				line.new LinePoint(25.0, 25.0) };
 		line.setLinePoints(Arrays.asList(points));
 
 		assertEquals(75.0, line.getStartLinePointX());

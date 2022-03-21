@@ -20,16 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This PropertyManager handles the registration/lookups of everything related to TypedProperties.
+ * This PropertyManager handles the registration/lookups of everything related
+ * to TypedProperties.
  * <p>
  * Plugins with custom Properties or PropertyTypes should register them here.
  *
  * @author Mark Woon
  */
 public class PropertyManager {
+	
 	private static final Map<String, PropertyType> PROPERTY_TYPES = new HashMap<String, PropertyType>();
 	private static final Map<String, Property> PROPERTIES = new HashMap<String, Property>();
-
 
 	/**
 	 * Private constructor - not meant to be instantiated.
@@ -37,17 +38,18 @@ public class PropertyManager {
 	private PropertyManager() {
 	}
 
-
 	/**
-	 * Registers a property type.  Must have unique IDs.
+	 * Registers a property type. Must have unique IDs.
 	 *
-	 * @throws IllegalArgumentException if there is an existing type that uses the same ID
+	 * @throws IllegalArgumentException if there is an existing type that uses the
+	 *                                  same ID
 	 */
 	public static void registerPropertyType(PropertyType type) {
 
 		if (type != null) {
 			if (PROPERTY_TYPES.containsKey(type.getId())) {
-				throw new IllegalArgumentException("Duplicate Id: an existing type already uses the id '" + type.getId() + "'");
+				throw new IllegalArgumentException(
+						"Duplicate Id: an existing type already uses the id '" + type.getId() + "'");
 			}
 			PROPERTY_TYPES.put(type.getId(), type);
 		}
@@ -62,17 +64,18 @@ public class PropertyManager {
 		return PROPERTY_TYPES.get(id);
 	}
 
-
 	/**
-	 * Registers a property.  Properties must have unique IDs.
+	 * Registers a property. Properties must have unique IDs.
 	 *
-	 * @throws IllegalArgumentException if there is an existing property that uses the same ID
+	 * @throws IllegalArgumentException if there is an existing property that uses
+	 *                                  the same ID
 	 */
 	public static void registerProperty(Property prop) {
 
 		if (prop != null) {
 			if (PROPERTIES.containsKey(prop.getId())) {
-				throw new IllegalArgumentException("Duplicate Id: an existing property already uses the id '" + prop.getId() + "'");
+				throw new IllegalArgumentException(
+						"Duplicate Id: an existing property already uses the id '" + prop.getId() + "'");
 			}
 			PROPERTIES.put(prop.getId(), prop);
 		}

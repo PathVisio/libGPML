@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.type.ObjectType;
 

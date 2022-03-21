@@ -31,7 +31,9 @@ import org.pathvisio.libgpml.model.PathwayObject;
  */
 public enum StaticProperty implements Property {
 
-	// pathway
+	// ========================================
+	// Pathway shapes
+	// ========================================
 	TITLE("title", "Title", StaticPropertyType.STRING, 101),
 	ORGANISM("organism", "Organism", StaticPropertyType.ORGANISM, 102),
 	SOURCE("source", "Source", StaticPropertyType.STRING, 103),
@@ -39,108 +41,121 @@ public enum StaticProperty implements Property {
 	LICENSE("license", "License", StaticPropertyType.STRING, 105),
 
 	// author
-	AUTHOR("author", "Author", StaticPropertyType.STRING, 106),
-	NAME("name", "Author name", StaticPropertyType.STRING, 107), // TODO
-	USERNAME("username", "Author Username", StaticPropertyType.STRING, 108), // TODO
-	ORDER("order", "Author Order", StaticPropertyType.INTEGER, 109), // TODO
+	AUTHOR("author", "Author", StaticPropertyType.STRING, 110),
+	NAME("name", "Author name", StaticPropertyType.STRING, 111), // TODO
+	USERNAME("username", "Author Username", StaticPropertyType.STRING, 112), // TODO
+	ORDER("order", "Author Order", StaticPropertyType.INTEGER, 113), // TODO
 
 	// pathway graphics
-	BOARDWIDTH("boardWidth", "Board Width", StaticPropertyType.DOUBLE, 110, true, true, false),
-	BOARDHEIGHT("boardHeight", "Board Height", StaticPropertyType.DOUBLE, 111, true, true, false),
-	BACKGROUNDCOLOR("backgroundColor", "Background Color", StaticPropertyType.COLOR, 112, true, true, false),
+	BOARDWIDTH("boardWidth", "Board Width", StaticPropertyType.DOUBLE, 120, true, true, false),
+	BOARDHEIGHT("boardHeight", "Board Height", StaticPropertyType.DOUBLE, 121, true, true, false),
+	BACKGROUNDCOLOR("backgroundColor", "Background Color", StaticPropertyType.COLOR, 122, true, true, false),
 
-	// all pathway objects
-	ELEMENTID("elementId", "ElementId", StaticPropertyType.STRING, 120, false, true, false),
+	// ========================================
+	// Pathway Object
+	// ========================================
+	ELEMENTID("elementId", "ElementId", StaticPropertyType.STRING, 130, false, true, false),
 
-	// xref: pathway, author, datanode, state, interaction, group
-	XREF("xref", "Xref", StaticPropertyType.XREF, 121),
+	// ========================================
+	// Pathway Element
+	// ========================================
+	COMMENT("comment", "Comment", StaticPropertyType.COMMENT, 140),
+	ANNOTATION("annotation", "Annotation", StaticPropertyType.ANNOTATION, 141, false, true, false),
+	CITATION("citation", "Citation", StaticPropertyType.CITATION, 142, false, true, false),
+	EVIDENCE("evidence", "Evidence", StaticPropertyType.EVIDENCE, 143, false, true, false),
 
-	// pathway, datanode, state, interaction, graphicalline, label, shape, group
-	COMMENT("comment", "Comment", StaticPropertyType.COMMENT, 122),
+	// types
+	ANNOTATIONTYPE("annotationType", "Annotation Type", StaticPropertyType.ANNOTATIONTYPE, 150),
 
-	// rect props
-	CENTERX("centerX", "Center X", StaticPropertyType.DOUBLE, 130, true, false, false),
-	CENTERY("centerY", "Center Y", StaticPropertyType.DOUBLE, 131, true, false, false),
-	WIDTH("width", "Width", StaticPropertyType.DOUBLE, 132, true, false, false),
-	HEIGHT("height", "Height", StaticPropertyType.DOUBLE, 133, true, false, false),
+	// ========================================
+	// Xrefable 
+	// ========================================
+	XREF("xref", "Xref", StaticPropertyType.XREF, 160),
 
-	// font props
-	TEXTCOLOR("textColor", "Text Color", StaticPropertyType.COLOR, 134), // TODO number
-	FONTNAME("fontName", "Font Name", StaticPropertyType.FONTNAME, 135),
-	FONTWEIGHT("fontWeight", "Bold", StaticPropertyType.BOOLEAN, 136),
-	FONTSTYLE("fontStyle", "Italic", StaticPropertyType.BOOLEAN, 137),
-	FONTDECORATION("fontDecoration", "Underline", StaticPropertyType.BOOLEAN, 138), // TODO number
-	FONTSTRIKETHRU("fontStrikeThru", "Strikethru", StaticPropertyType.BOOLEAN, 139), // TODO number
-	FONTSIZE("fontSize", "Font Size", StaticPropertyType.INTEGER, 140), // TODO used to be double
-	VALIGN("vAlign", "Vertical Alignment", StaticPropertyType.VALIGNTYPE, 141),
-	HALIGN("hAlign", "Horizontal Alignment", StaticPropertyType.HALIGNTYPE, 142),
+	// ========================================
+	// Groupable
+	// ========================================
+	GROUPREF("groupRef", "GroupRef", StaticPropertyType.STRING, 170, false, true, false),
+	ZORDER("zOrder", "Z-Order", StaticPropertyType.INTEGER, 171, false, true, false),
 
-	// shape style props
-	BORDERCOLOR("borderColor", "Border Color", StaticPropertyType.COLOR, 143),
-	BORDERSTYLE("borderStyle", "Border Style", StaticPropertyType.LINESTYLETYPE, 144),
-	BORDERWIDTH("borderWidth", "Border Width", StaticPropertyType.DOUBLE, 145),
-	FILLCOLOR("fillColor", "Fill Color", StaticPropertyType.COLOR, 146),
-	SHAPETYPE("shapeType", "Shape Type", StaticPropertyType.SHAPETYPE, 147),
-	ROTATION("rotation", "Rotation", StaticPropertyType.ROTATION, 148, true, false, false),
-	// TRANSPARENT ("Transparent", "Transparent", StaticPropertyType.BOOLEAN, 210),
+	// ========================================
+	// ShapedElement
+	// ========================================
+	// common properties
+	TEXTLABEL("textLabel", "Text Label", StaticPropertyType.STRING, 180),
 
-	// line style props
-	LINECOLOR("lineColor", "Line Color", StaticPropertyType.COLOR, 150),
-	LINESTYLE("lineStyle", "Line Style", StaticPropertyType.LINESTYLETYPE, 151),
-	LINEWIDTH("lineWidth", "Line Width", StaticPropertyType.DOUBLE, 152),
-	CONNECTORTYPE("connectorType", "Connector Type", StaticPropertyType.DOUBLE, 153),
-
-	// line style and shape style props
-	ZORDER("zOrder", "Z-Order", StaticPropertyType.INTEGER, 154, false, true, false),
-
-	// shaped pathway elements: datanode, state, label, shape, group
-	TEXTLABEL("textLabel", "Text Label", StaticPropertyType.STRING, 160),
-
-	// types: anchor, annotation, linepoint, datanode, state, group //TODO TAG
-	// NAMES???
-	ANCHORSHAPETYPE("anchorShapeType", "Anchor Shape Type", StaticPropertyType.ANCHORSHAPETYPE, 161),
-	ANNOTATIONTYPE("annotationType", "Annotation Type", StaticPropertyType.ANNOTATIONTYPE, 162),
-	ARROWHEADTYPE("arrowHead", "ArrowHead Type", StaticPropertyType.ARROWHEADTYPE, 163),
-	DATANODETYPE("dataNodeType", "DataNode Type", StaticPropertyType.DATANODETYPE, 164),
-	STATETYPE("stateType", "State Type", StaticPropertyType.STATETYPE, 165),
-	GROUPTYPE("groupType", "Group Type", StaticPropertyType.GROUPTYPE, 166),
+	// types
+	DATANODETYPE("dataNodeType", "DataNode Type", StaticPropertyType.DATANODETYPE, 190),
+	STATETYPE("stateType", "State Type", StaticPropertyType.STATETYPE, 191),
+	GROUPTYPE("groupType", "Group Type", StaticPropertyType.GROUPTYPE, 192),
 
 	// datanode
-	ALIASREF("aliasRef", "Alias Reference", StaticPropertyType.STRING, 167, false, true, false),
+	ALIASREF("aliasRef", "Alias Reference", StaticPropertyType.GROUP, 200, false, false, false), //TODO 
 
 	// state
-	RELX("relX", "Relative X", StaticPropertyType.DOUBLE, 168, true, false, false),
-	RELY("relY", "Relative Y", StaticPropertyType.DOUBLE, 169, true, false, false),
-	ELEMENTREF("elementRef", "Element Reference", StaticPropertyType.STRING, 170, false, true, false),
+	RELX("relX", "Relative X", StaticPropertyType.DOUBLE, 210, true, false, false),
+	RELY("relY", "Relative Y", StaticPropertyType.DOUBLE, 211, true, false, false),
 
 	// label
-	HREF("href", "Href", StaticPropertyType.STRING, 171),
+	HREF("href", "Href", StaticPropertyType.STRING, 220),
 
 	// brace
-	ORIENTATION("Orientation", "Orientation", StaticPropertyType.ORIENTATION, 172), // TODO????
+	ORIENTATION("Orientation", "Orientation", StaticPropertyType.ORIENTATION, 230), // TODO????
 
-	// datanode, state, interaction, graphicalline, label, shape, group
-	GROUPREF("GroupRef", "GroupRef", StaticPropertyType.STRING, 173, false, true, false),
+	// rect properties
+	CENTERX("centerX", "Center X", StaticPropertyType.DOUBLE, 240, true, false, false),
+	CENTERY("centerY", "Center Y", StaticPropertyType.DOUBLE, 241, true, false, false),
+	WIDTH("width", "Width", StaticPropertyType.DOUBLE, 242, true, false, false),
+	HEIGHT("height", "Height", StaticPropertyType.DOUBLE, 243, true, false, false),
 
-	// annotation, citation, evidence //TODO
-	ANNOTATION("Annotation", "Annotation", StaticPropertyType.ANNOTATION, 174, false, true, false),
-	CITATION("Citation", "Citation", StaticPropertyType.CITATION, 175, false, true, false),
-	EVIDENCE("Evidence", "Evidence", StaticPropertyType.EVIDENCE, 176, false, true, false);
+	// font properties
+	TEXTCOLOR("textColor", "Text Color", StaticPropertyType.COLOR, 250), // TODO number
+	FONTNAME("fontName", "Font Name", StaticPropertyType.FONTNAME, 251),
+	FONTWEIGHT("fontWeight", "Bold", StaticPropertyType.BOOLEAN, 252),
+	FONTSTYLE("fontStyle", "Italic", StaticPropertyType.BOOLEAN, 253),
+	FONTDECORATION("fontDecoration", "Underline", StaticPropertyType.BOOLEAN, 254), // TODO number
+	FONTSTRIKETHRU("fontStrikeThru", "Strikethru", StaticPropertyType.BOOLEAN, 255), // TODO number
+	FONTSIZE("fontSize", "Font Size", StaticPropertyType.DOUBLE, 256), // TODO used to be double
+	VALIGN("vAlign", "Vertical Alignment", StaticPropertyType.VALIGNTYPE, 257),
+	HALIGN("hAlign", "Horizontal Alignment", StaticPropertyType.HALIGNTYPE, 258),
 
-	// line
-//STARTX ("StartX", "Start X", StaticPropertyType.DOUBLE, 114, true, false, false),
-//STARTY ("StartY", "Start Y", StaticPropertyType.DOUBLE, 115, true, false, false),
-//ENDX ("EndX", "End X", StaticPropertyType.DOUBLE, 116, true, false, false),
-//ENDY ("EndY", "End Y", StaticPropertyType.DOUBLE, 117, true, false, false),
-//STARTLINETYPE ("StartLineType", "Start Line Type", StaticPropertyType.LINETYPE, 118),
-//ENDLINETYPE ("EndLineType", "End Line Type", StaticPropertyType.LINETYPE, 119),
-	// other
-//	STARTGRAPHREF ("StartGraphRef", "StartGraphRef", StaticPropertyType.STRING, 148, false, true, false),
-	// ENDGRAPHREF ("EndGraphRef", "EndGraphRef", StaticPropertyType.STRING, 149,
-	// false, true, false),
+	// shape style properties
+	BORDERCOLOR("borderColor", "Border Color", StaticPropertyType.COLOR, 260),
+	BORDERSTYLE("borderStyle", "Border Style", StaticPropertyType.LINESTYLETYPE, 261),
+	BORDERWIDTH("borderWidth", "Border Width", StaticPropertyType.DOUBLE, 262),
+	FILLCOLOR("fillColor", "Fill Color", StaticPropertyType.COLOR, 263),
+	SHAPETYPE("shapeType", "Shape Type", StaticPropertyType.SHAPETYPE, 264),
+	ROTATION("rotation", "Rotation", StaticPropertyType.ROTATION, 265, true, false, false),
+	// TRANSPARENT ("Transparent", "Transparent", StaticPropertyType.BOOLEAN, 210),
+
+	// ========================================
+	// LineElement
+	// ========================================
+	// common properties
+	STARTARROWHEADTYPE("startArrowHeadType", "Start Arrow ", StaticPropertyType.ARROWHEADTYPE, 270),
+	ENDARROWHEADTYPE("endArrowHeadType", "End Arrow", StaticPropertyType.ARROWHEADTYPE, 271),
+	STARTX("startX", "Start X", StaticPropertyType.DOUBLE, 272, true, false, false),
+	STARTY("startY", "Start Y", StaticPropertyType.DOUBLE, 273, true, false, false),
+	ENDX("endX", "End X", StaticPropertyType.DOUBLE, 274, true, false, false),
+	ENDY("endY", "End Y", StaticPropertyType.DOUBLE, 275, true, false, false),
+	STARTELEMENTREF("startElementRef", "StartElementRef", StaticPropertyType.LINKABLETO, 276, false, true, false),
+	ENDELEMENTREF("endElementRef", "EndElementRef", StaticPropertyType.LINKABLETO, 277, false, true, false),
+//	ELEMENTREF("elementRef", "Element Reference", StaticPropertyType.LINKABLETO, 172, false, true, false),
+
+	// types
+	ANCHORSHAPETYPE("anchorShapeType", "Anchor Shape Type", StaticPropertyType.ANCHORSHAPETYPE, 280),
+	// line style properties
+	LINECOLOR("lineColor", "Line Color", StaticPropertyType.COLOR, 290),
+	LINESTYLE("lineStyle", "Line Style", StaticPropertyType.LINESTYLETYPE, 291),
+	LINEWIDTH("lineWidth", "Line Width", StaticPropertyType.DOUBLE, 292),
+	CONNECTORTYPE("connectorType", "Connector Type", StaticPropertyType.CONNECTORTYPE, 293);
+
 	// GROUPID("GroupId","GroupId",StaticPropertyType.STRING,150,false,true,false),
 	// style",StaticPropertyType.GROUPSTYLETYPE,152),BIOPAXREF("BiopaxRef","BiopaxRef",StaticPropertyType.BIOPAXREF,153,false,true,false),
 
+	// ================================================================================
+	// Properties
+	// ================================================================================
 	private String tag, name;
 	private StaticPropertyType type;
 	private boolean isCoordinate;

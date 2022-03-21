@@ -14,39 +14,39 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.libgpml.io;
+package org.pathvisio.libgpml.model.type;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * base implementation of PathwayImporter and PathwayExporter warnings
- * mechanism.
- */
-public abstract class AbstractPathwayModelFormat implements PathwayModelImporter, PathwayModelExporter {
-	private List<String> warnings = new ArrayList<String>();
+   Contains possible orientations for a Shape, such as
+   "Top" (0 degrees) or "Right" (90 degrees)
+*/
+public class OrientationType {
 
-	protected void clearWarnings() {
-		warnings.clear();
+	// warning: don't change these constants. Correct mapping to .MAPP format depends on it.
+	public static final int TOP		= 0;
+	public static final int RIGHT	= 1;
+	public static final int BOTTOM	= 2;
+	public static final int LEFT	= 3;
+
+	// Some mappings to Gpml
+	private static final List<String> ORIENTATION_MAPPINGS = Arrays.asList(new String[] {
+			"top", "right", "bottom", "left"
+	});
+
+	public static int getMapping(String value)
+	{
+		return ORIENTATION_MAPPINGS.indexOf(value);
 	}
 
-	/**
-	 * Can be used by overriding classes to add to the list of warnings. Don't
-	 * forget to call {@link clearWarnings} at the start of conversion.
-	 */
-	protected void emitWarning(String warning) {
-		warnings.add(warning);
+	public static String getMapping(int value)
+	{
+		return (String)ORIENTATION_MAPPINGS.get(value);
 	}
 
-	@Override
-	public boolean isCorrectType(File f) {
-		return true;
+	public static String[] getNames() {
+		return new String[] {"Top", "Right", "Bottom", "Left"};
 	}
-
-	@Override
-	public List<String> getWarnings() {
-		return warnings;
-	}
-
 }

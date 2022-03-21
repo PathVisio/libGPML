@@ -19,6 +19,7 @@ package org.pathvisio.libgpml.model.type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.pathvisio.libgpml.debug.Logger;
@@ -102,19 +103,17 @@ public class LineStyleType {
 	 * @return names the names of all registered LineStyleTypes in order of
 	 *         insertion.
 	 */
-	static public List<String> getNames() {
-		List<String> names = new ArrayList<>(nameToLineStyleType.keySet());
-		return names;
+	static public String[] getNames() {
+		return nameToLineStyleType.keySet().toArray(new String[nameToLineStyleType.size()]);
 	}
 
 	/**
-	 * Returns the line style type values of all LineStyleType as a list.
+	 * Returns the line style type values of all LineStyleType as an array.
 	 * 
 	 * @return lineStyleTypes the list of all registered LineStyleType.
 	 */
-	static public List<LineStyleType> getValues() {
-		List<LineStyleType> lineStyleTypes = new ArrayList<>(nameToLineStyleType.values());
-		return lineStyleTypes;
+	static public LineStyleType[] getValues() {		
+		return nameToLineStyleType.values().toArray(new LineStyleType[0]);
 	}
 
 	/**

@@ -41,13 +41,13 @@ public class TestGraphLink extends TestCase {
 		p.addInteraction(i2);
 
 		List<LinePoint> points = new ArrayList<LinePoint>();
-		points.add(i.new LinePoint(ArrowHeadType.UNDIRECTED, 4, 2));
-		points.add(i.new LinePoint(ArrowHeadType.UNDIRECTED, 8, 2));
+		points.add(i.new LinePoint(4, 2));
+		points.add(i.new LinePoint(8, 2));
 		i.setLinePoints(points);
 
 		List<LinePoint> points2 = new ArrayList<LinePoint>();
-		points2.add(i2.new LinePoint(ArrowHeadType.UNDIRECTED, 4, 0));
-		points2.add(i2.new LinePoint(ArrowHeadType.UNDIRECTED, 4, 4));
+		points2.add(i2.new LinePoint(4, 0));
+		points2.add(i2.new LinePoint(4, 4));
 		i2.setLinePoints(points2);
 	}
 

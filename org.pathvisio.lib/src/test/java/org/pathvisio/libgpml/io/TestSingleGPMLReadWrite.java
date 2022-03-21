@@ -22,7 +22,6 @@ import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.ConverterException;
 import org.pathvisio.libgpml.model.GPML2013aWriter;
 import org.pathvisio.libgpml.model.GPML2021Writer;
 import org.pathvisio.libgpml.model.PathwayModel;

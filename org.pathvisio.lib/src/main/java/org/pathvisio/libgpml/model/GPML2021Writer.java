@@ -32,6 +32,7 @@ import org.jdom2.Namespace;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.pathvisio.libgpml.debug.Logger;
+import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
@@ -41,7 +42,9 @@ import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.PathwayElement.Comment;
 import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
+import org.pathvisio.libgpml.model.type.ArrowHeadType;
 import org.pathvisio.libgpml.util.ColorUtils;
+import org.pathvisio.libgpml.util.Utils;
 import org.pathvisio.libgpml.util.XrefUtils;
 
 /**
@@ -522,7 +525,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	protected void writeLineElement(LineElement lineElement, Element ln) throws ConverterException {
 		Element wyps = new Element("Waypoints", ln.getNamespace());
 		ln.addContent(wyps);
-		writePoints(lineElement.getLinePoints(), wyps);
+		writePoints(lineElement, wyps);
 		writeAnchors(lineElement.getAnchors(), wyps);
 		Element gfx = new Element("Graphics", ln.getNamespace());
 		ln.addContent(gfx);
@@ -538,12 +541,21 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param wyps   the parent element.
 	 * @throws ConverterException
 	 */
-	protected void writePoints(List<LinePoint> points, Element wyps) throws ConverterException {
+	protected void writePoints(LineElement lineElement, Element wyps) throws ConverterException {
 		List<Element> ptList = new ArrayList<Element>();
-		for (LinePoint point : points) {
+		List<LinePoint> points = lineElement.getLinePoints();
+		for (int i = 0; i < points.size(); i++) {
+			LinePoint point = points.get(i);
 			Element pt = new Element("Point", wyps.getNamespace());
 			writeElementId(point.getElementId(), pt);
-			pt.setAttribute("arrowHead", point.getArrowHead().getName());
+			// if start or end point, write arrowhead type.
+			if (i == 0) {
+				pt.setAttribute("arrowHead", lineElement.getStartArrowHeadType().getName());
+			} else if (i == points.size() - 1) {
+				pt.setAttribute("arrowHead", lineElement.getEndArrowHeadType().getName());
+			} else { // otherwise arrowHeadType = Undirected
+				pt.setAttribute("arrowHead", ArrowHeadType.UNDIRECTED.getName());
+			}
 			pt.setAttribute("x", Double.toString(point.getX()));
 			pt.setAttribute("y", Double.toString(point.getY()));
 			if (writeElementRef(point.getElementRef(), pt)) {
@@ -679,8 +691,9 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 				Element grp = new Element("Group", root.getNamespace());
 				writeXref(group.getXref(), grp, false);
 				writeShapedElement(group, grp);
-				// write jdom attributes
-				if (group.getTextLabel() != null) {
+				// write jdom attributes TODO textLabel
+				String textLabel = group.getTextLabel();
+				if (textLabel != null && !Utils.stringEquals(textLabel, "")) {
 					grp.setAttribute("textLabel", group.getTextLabel());
 				}
 				grp.setAttribute("type", group.getType().getName());
@@ -888,8 +901,7 @@ public class GPML2021Writer extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param gfx           the parent graphics element.
 	 * @throws ConverterException
 	 */
-	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx)
-			throws ConverterException {
+	protected void writeShapeStyleProperty(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		gfx.setAttribute("borderColor", ColorUtils.colorToHex(shapedElement.getBorderColor(), false));
 		gfx.setAttribute("borderStyle", shapedElement.getBorderStyle().getName());
 		gfx.setAttribute("borderWidth", String.valueOf(shapedElement.getBorderWidth()));

@@ -45,26 +45,60 @@ import junit.framework.TestCase;
 public class TestCopy extends TestCase {
 
 	private PathwayModel p;
+	private DataNode o1;
+	private State s1;
+	private CitationRef cr;
+	private Citation c;
+	private Interaction i1;
 
 	@Before
 	public void setUp() throws Exception {
 		p = new PathwayModel();
+		// add datanode
+		o1 = new DataNode("o1", DataNodeType.UNDEFINED);
+		p.addDataNode(o1);
+		s1 = o1.addState("st1", StateType.UNDEFINED, 0, 0);
+		cr = o1.addCitation(null, "String");
+		c = cr.getCitation();
+		// add interaction
+		i1 = new Interaction();
+		p.addInteraction(i1);
+		List<LinePoint> points = new ArrayList<LinePoint>();
+		points.add(i1.new LinePoint(9, 18));
+		points.add(i1.new LinePoint(9, 18));
+		i1.setLinePoints(points);
+		i1.addAnchor(0, null);
 	}
 
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void testClonePathway() {
+		// link dataNode and interaction
+		i1.setStartElementRef(o1);
+		PathwayModel p2 = p.clone(); 
+		
+		System.out.println(p.getPathwayObjects());
+		System.out.println(p2.getPathwayObjects());
+
+//		p2.addInteraction(o2);
+//		assertEquals(o2.getPathwayModel(), p2);
+//		for (LinePoint i : o2.getLinePoints()) {
+//			assertEquals(i.getPathwayModel(), p2);
+//		}
+//		assertEquals(o2.getAnchors().get(0).getPathwayModel(), p2);
+	}
+	
 	/**
 	 * 
 	 */
 	@Test
 	public void testCopyDataNode() {
-		DataNode o1 = new DataNode("o1", DataNodeType.UNDEFINED);
-		p.addDataNode(o1);
-		State s1 = o1.addState("st1", StateType.UNDEFINED, 0, 0);
-		CitationRef cr = o1.addCitation(null, "String");
-		Citation c = cr.getCitation();
-		
 		CopyElement copy = o1.copy();
 		DataNode o2 = (DataNode) copy.getNewElement();
-		State s2 = o2.getStates().get(0);	
+		State s2 = o2.getStates().get(0);
 
 		assertEquals(o1, o1);
 		assertFalse(o1 == o2);
@@ -79,7 +113,7 @@ public class TestCopy extends TestCase {
 
 		assertNull(o2.getPathwayModel());
 		assertNull(s2.getPathwayModel());
-		
+
 		PathwayModel p2 = new PathwayModel();
 		p2.addDataNode(o2);
 		assertEquals(o2.getPathwayModel(), p2);
@@ -87,9 +121,6 @@ public class TestCopy extends TestCase {
 			assertEquals(i.getPathwayModel(), p2);
 		}
 		assertTrue(p2.hasPathwayObject(o2));
-
-		System.out.println(p.getPathwayObjects());
-		System.out.println(p2.getPathwayObjects());
 
 		// load references for new element
 		copy.loadReferences();
@@ -106,19 +137,10 @@ public class TestCopy extends TestCase {
 	 */
 	@Test
 	public void testCopyInteraction() {
-		Interaction o1 = new Interaction();
-		p.addInteraction(o1);
-
-		List<LinePoint> points = new ArrayList<LinePoint>();
-		points.add(o1.new LinePoint(null, 9, 18));
-		points.add(o1.new LinePoint(null, 9, 18));
-		o1.setLinePoints(points);
-		o1.addAnchor(0, null);
-
-		Interaction o2 = (Interaction) o1.copy().getNewElement();
-		assertEquals(o1, o1);
-		assertFalse(o1 == o2);
-		assertEquals(o1.getPathwayModel(), p);
+		Interaction o2 = (Interaction) i1.copy().getNewElement();
+		assertEquals(i1, i1);
+		assertFalse(i1 == o2);
+		assertEquals(i1.getPathwayModel(), p);
 		assertNull(o2.getPathwayModel());
 
 		PathwayModel p2 = new PathwayModel();
@@ -139,8 +161,8 @@ public class TestCopy extends TestCase {
 		p.addGraphicalLine(o1);
 
 		List<LinePoint> points = new ArrayList<LinePoint>();
-		points.add(o1.new LinePoint(null, 9, 18));
-		points.add(o1.new LinePoint(null, 9, 18));
+		points.add(o1.new LinePoint(9, 18));
+		points.add(o1.new LinePoint(9, 18));
 		o1.setLinePoints(points);
 		o1.addAnchor(0, null);
 
@@ -158,7 +180,7 @@ public class TestCopy extends TestCase {
 		}
 		assertEquals(o2.getAnchors().get(0).getPathwayModel(), p2);
 	}
-	
+
 	/**
 	 * 
 	 */

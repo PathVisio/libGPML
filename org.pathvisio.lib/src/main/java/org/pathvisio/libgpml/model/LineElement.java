@@ -21,13 +21,14 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
 import org.pathvisio.libgpml.debug.Logger;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.GraphLink.LinkableFrom;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
+import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.connector.ConnectorRestrictions;
 import org.pathvisio.libgpml.model.connector.ConnectorShape;
 import org.pathvisio.libgpml.model.connector.ConnectorShapeFactory;
@@ -49,6 +50,8 @@ import org.pathvisio.libgpml.util.Utils;
  */
 public abstract class LineElement extends PathwayElement implements Groupable, ConnectorRestrictions {
 
+	private ArrowHeadType startArrowHeadType = ArrowHeadType.UNDIRECTED;
+	private ArrowHeadType endArrowHeadType = ArrowHeadType.UNDIRECTED;
 	private Group groupRef; // optional, the parent group to which a pathway element belongs.
 	private List<LinePoint> linePoints; // minimum 2
 	private List<Anchor> anchors;
@@ -76,14 +79,61 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		super();
 		// instantiated points list and set
 		linePoints = new ArrayList<LinePoint>();
-		setLinePoints(new ArrayList<LinePoint>(Arrays.asList(new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0),
-				new LinePoint(ArrowHeadType.UNDIRECTED, 0, 0))));
+		setLinePoints(new ArrayList<LinePoint>(Arrays.asList(new LinePoint(0, 0), new LinePoint(0, 0))));
 		this.anchors = new ArrayList<Anchor>();
 	}
 
 	// ================================================================================
 	// Accessors
 	// ================================================================================
+	/**
+	 * Returns the arrowHead property of the start point. Arrowhead specifies the
+	 * glyph at the ends of graphical lines and interactions. Intermediate points
+	 * have arrowhead type UNDIRECTED (the absence of an arrowhead).
+	 * 
+	 * @return startArrowHeadType the arrow head type.
+	 */
+	public ArrowHeadType getStartArrowHeadType() {
+		return startArrowHeadType == null ? ArrowHeadType.UNDIRECTED : startArrowHeadType;
+	}
+
+	/**
+	 * Sets the arrow head type of the start point.
+	 * 
+	 * @param value the arrow head type to set.
+	 */
+	public void setStartArrowHeadType(ArrowHeadType value) {
+		if (startArrowHeadType != value && value != null) {
+			startArrowHeadType = value;
+			fireObjectModifiedEvent(
+					PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.STARTARROWHEADTYPE));
+		}
+	}
+
+	/**
+	 * Returns the arrowHead property of the end point. Arrowhead specifies the
+	 * glyph at the ends of graphical lines and interactions. Intermediate points
+	 * have arrowhead type UNDIRECTED (the absence of an arrowhead).
+	 * 
+	 * @return endArrowHeadType the arrow head type.
+	 */
+	public ArrowHeadType getEndArrowHeadType() {
+		return endArrowHeadType == null ? ArrowHeadType.UNDIRECTED : endArrowHeadType;
+	}
+
+	/**
+	 * Sets the arrow head type of the end point.
+	 * 
+	 * @param value the arrow head type to set.
+	 */
+	public void setEndArrowHeadType(ArrowHeadType value) {
+		if (endArrowHeadType != value && value != null) {
+			endArrowHeadType = value;
+			fireObjectModifiedEvent(
+					PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ENDARROWHEADTYPE));
+		}
+	}
+
 	/**
 	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
@@ -117,7 +167,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void setGroupRefTo(Group v) {
 		if (v == null)
 			throw new IllegalArgumentException("Invalid group.");
-		if (v.getPathwayModel() != getPathwayModel()) {
+		if (v.getPathwayModel() != pathwayModel) {
 			throw new IllegalArgumentException(
 					getClass().getSimpleName() + " cannot be added to a group of a different pathway model.");
 		}
@@ -177,10 +227,11 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 				throw new IllegalArgumentException("Points array should at least have two elements for "
 						+ getClass().getSimpleName() + " " + getElementId());
 			}
-			removeLinePoints(); // remove points before setting new points
-			addLinePoints(points);
+			if (linePoints != null)
+				removeLinePoints(); // remove points before setting new points
+			addLinePoints(points); // adds points to pathway model and to this line
+			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 		}
-		fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 	}
 
 	/**
@@ -248,12 +299,11 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		if (anchor != null && !hasAnchor(anchor)) {
 			assert (anchor.getLineElement() == this);
 			// add anchor to same pathway model as line if applicable
-			if (getPathwayModel() != null)
-				getPathwayModel().addPathwayObject(anchor);
+			if (pathwayModel != null)
+				pathwayModel.addPathwayObject(anchor);
 			anchors.add(anchor);
 			// No anchor property, use LINESTYLE as dummy property to force redraw on line
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
-
 		}
 	}
 
@@ -297,8 +347,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 */
 	public void removeAnchor(Anchor anchor) {
 		assert (anchor != null && hasAnchor(anchor));
-		if (getPathwayModel() != null)
-			getPathwayModel().removePathwayObject(anchor);
+		if (pathwayModel != null)
+			pathwayModel.removePathwayObject(anchor);
 		anchors.remove(anchor);
 		// No anchor property, use LINESTYLE as dummy property to force redraw on line
 		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.LINESTYLE));
@@ -309,8 +359,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 */
 	private void removeAnchors() {
 		for (int i = anchors.size() - 1; i >= 0; i--) {
-			if (getPathwayModel() != null)
-				getPathwayModel().removePathwayObject(anchors.get(i));
+			if (pathwayModel != null)
+				pathwayModel.removePathwayObject(anchors.get(i));
 		}
 		anchors.clear();
 	}
@@ -568,44 +618,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 */
 	public void setEndLinePointY(double v) {
 		getEndLinePoint().setY(v);
-	}
-
-	/**
-	 * Returns the arrow head type of the start point.
-	 * 
-	 * @return startLineType the arrow head type.
-	 */
-	public ArrowHeadType getStartLineType() {
-		ArrowHeadType startLineType = getStartLinePoint().getArrowHead();
-		return startLineType == null ? ArrowHeadType.UNDIRECTED : startLineType;
-	}
-
-	/**
-	 * Sets the arrow head type of the start point.
-	 * 
-	 * @param value the arrow head type to set.
-	 */
-	public void setStartLineType(ArrowHeadType value) {
-		getStartLinePoint().setArrowHead(value);
-	}
-
-	/**
-	 * Returns the arrow head type of the end point.
-	 * 
-	 * @return endLineType the arrow head type.
-	 */
-	public ArrowHeadType getEndLineType() {
-		ArrowHeadType endLineType = getEndLinePoint().getArrowHead();
-		return endLineType == null ? ArrowHeadType.UNDIRECTED : endLineType;
-	}
-
-	/**
-	 * Sets the arrow head type of the end point.
-	 * 
-	 * @param value the arrow head type to set.
-	 */
-	public void setEndLineType(ArrowHeadType value) {
-		getEndLinePoint().setArrowHead(value);
 	}
 
 	/**
@@ -1152,14 +1164,19 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void copyValuesFrom(LineElement src) { // TODO
 		super.copyValuesFrom(src);
 		groupRef = src.groupRef;
-		// copy line points
+		// copy line points //TODO
 		List<LinePoint> points = new ArrayList<LinePoint>();
 		for (LinePoint pt : src.linePoints) {
-			LinePoint result = new LinePoint(null, 0, 0);
-			result.copyValuesFrom(pt);
-			points.add(result);
+			points.add(new LinePoint(pt.getX(), pt.getY()));
 		}
 		setLinePoints(points);
+//		List<LinePoint> points = new ArrayList<LinePoint>();
+//		for (LinePoint pt : src.linePoints) {
+//			LinePoint result = new LinePoint(0, 0);
+//			result.copyValuesFrom(pt);
+//			points.add(result);
+//		}
+//		setLinePoints(points);
 		// copy anchors
 		anchors = new ArrayList<Anchor>();
 		for (Anchor a : src.anchors) {
@@ -1171,6 +1188,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		lineWidth = src.lineWidth;
 		connectorType = src.connectorType;
 		zOrder = src.zOrder;
+		startArrowHeadType = src.startArrowHeadType;
+		endArrowHeadType = src.endArrowHeadType;
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
@@ -1186,6 +1205,23 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	// Property Methods
 	// ================================================================================
 	/**
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
+	 */
+	@Override
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		Set<StaticProperty> propsLineElement = EnumSet.of(StaticProperty.GROUPREF, StaticProperty.LINECOLOR,
+				StaticProperty.LINESTYLE, StaticProperty.LINEWIDTH, StaticProperty.CONNECTORTYPE, StaticProperty.STARTX,
+				StaticProperty.STARTY, StaticProperty.ENDX, StaticProperty.ENDY, StaticProperty.STARTARROWHEADTYPE,
+				StaticProperty.ENDARROWHEADTYPE, StaticProperty.STARTELEMENTREF, StaticProperty.ENDELEMENTREF,
+				StaticProperty.ZORDER);
+		result.addAll(propsLineElement);
+		return result;
+	}
+
+	/**
 	 *
 	 */
 	@Override
@@ -1193,17 +1229,44 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		Object result = super.getStaticProperty(key);
 		if (result == null) {
 			switch (key) {
+			case GROUPREF:
+				result = getGroupRef();
+				break;
 			case LINECOLOR:
 				result = getLineColor();
 				break;
 			case LINESTYLE:
-				result = getLineStyle();
+				result = getLineStyle().getName();// TODO
 				break;
 			case LINEWIDTH:
 				result = getLineWidth();
 				break;
 			case CONNECTORTYPE:
-				result = getConnectorType();
+				result = getConnectorType().getName(); // TODO
+				break;
+			case STARTX:
+				result = getStartLinePointX();
+				break;
+			case STARTY:
+				result = getStartLinePointY();
+				break;
+			case ENDX:
+				result = getEndLinePointX();
+				break;
+			case ENDY:
+				result = getEndLinePointY();
+				break;
+			case STARTARROWHEADTYPE:
+				result = getStartArrowHeadType().getName(); // TODO
+				break;
+			case ENDARROWHEADTYPE:
+				result = getEndArrowHeadType().getName();// TODO
+				break;
+			case STARTELEMENTREF:
+				result = getStartElementRef();
+				break;
+			case ENDELEMENTREF:
+				result = getEndElementRef();
 				break;
 			case ZORDER:
 				result = getZOrder();
@@ -1228,17 +1291,60 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	public void setStaticProperty(StaticProperty key, Object value) {
 		super.setStaticProperty(key, value);
 		switch (key) {
+		case GROUPREF:
+			setGroupRef((Group) value);
+			break;
 		case LINECOLOR:
 			setLineColor((Color) value);
 			break;
 		case LINESTYLE:
-			setLineStyle((LineStyleType) value);
+			if (value instanceof LineStyleType) {
+				setLineStyle((LineStyleType) value);
+			} else {
+				setLineStyle(LineStyleType.fromName((String) value));
+			}
 			break;
 		case LINEWIDTH:
 			setLineWidth((Double) value);
 			break;
 		case CONNECTORTYPE:
-			setConnectorType((ConnectorType) value);
+			if (value instanceof ConnectorType) {
+				setConnectorType((ConnectorType) value);
+			} else {
+				setConnectorType(ConnectorType.fromName((String) value));
+			}
+			break;
+		case STARTX:
+			setStartLinePointX((Double) value);
+			break;
+		case STARTY:
+			setStartLinePointY((Double) value);
+			break;
+		case ENDX:
+			setEndLinePointX((Double) value);
+			break;
+		case ENDY:
+			setEndLinePointY((Double) value);
+			break;
+		case STARTARROWHEADTYPE:
+			if (value instanceof ArrowHeadType) {
+				setStartArrowHeadType((ArrowHeadType) value);
+			} else {
+				setStartArrowHeadType(ArrowHeadType.fromName((String) value));
+			}
+			break;
+		case ENDARROWHEADTYPE:
+			if (value instanceof ArrowHeadType) {
+				setEndArrowHeadType((ArrowHeadType) value);
+			} else {
+				setEndArrowHeadType(ArrowHeadType.fromName((String) value));
+			}
+			break;
+		case STARTELEMENTREF:
+			setStartElementRef((LinkableTo) value);
+			break;
+		case ENDELEMENTREF:
+			setEndElementRef((LinkableTo) value);
 			break;
 		case ZORDER:
 			setZOrder((Integer) value);
@@ -1278,8 +1384,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		public Object clone() throws CloneNotSupportedException {
 			GenericPoint p = (GenericPoint) super.clone(); // TODO????
-			if (getElementId() != null)
-				p.setElementId(getElementId()); // TODO????
+//			if (getElementId() != null)
+//				p.setElementId(getElementId()); // TODO????
 			return p;
 		}
 
@@ -1336,7 +1442,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 	 */
 	public class LinePoint extends GenericPoint implements LinkableFrom {
 
-		private ArrowHeadType arrowHead;
 		private double x;
 		private double y;
 		private LinkableTo elementRef; // optional, the pathway element to which the point refers.
@@ -1355,12 +1460,18 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @param x         the x coordinate position of the point.
 		 * @param y         the y coordinate position of the point.
 		 */
-		public LinePoint(ArrowHeadType arrowHead, double x, double y) {
+		public LinePoint(double x, double y) {
 			super();
-			this.arrowHead = arrowHead;
 			setX(x);
 			setY(y);
 		}
+
+		// TODO
+//		protected LinePoint(LinePoint p) {
+//			this(p.getX(), p.getY());
+//			if (p.elementRef != null)
+//				linkTo(p.elementRef);
+//		}
 
 		// ================================================================================
 		// Accessors
@@ -1373,36 +1484,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		@Override
 		public ObjectType getObjectType() {
 			return ObjectType.LINEPOINT;
-		}
-
-		/**
-		 * Returns the arrowHead property of the point. Arrowhead specifies the glyph at
-		 * the ends of graphical lines and interactions. Intermediate points have
-		 * arrowhead type LINE (the absence of an arrowhead).
-		 * 
-		 * @return arrowhead the arrowhead property of the point.
-		 */
-		public ArrowHeadType getArrowHead() {
-			if (arrowHead == null) {
-				return ArrowHeadType.UNDIRECTED;
-			} else {
-				return arrowHead;
-			}
-		}
-
-		/**
-		 * Sets the arrowHead property of the point. Arrowhead specifies the glyph at
-		 * the ends of graphical lines and interactions. Intermediate points have
-		 * arrowhead type LINE (the absence of an arrowhead).
-		 * 
-		 * @param arrowHead the arrowhead property of the point.
-		 */
-		public void setArrowHead(ArrowHeadType arrowHead) {
-			if (this.arrowHead != arrowHead && arrowHead != null) {
-				this.arrowHead = arrowHead;
-				fireObjectModifiedEvent(
-						PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ARROWHEADTYPE));
-			}
 		}
 
 		/**
@@ -1480,16 +1561,17 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		private void setElementRef(LinkableTo v) {
 			if (elementRef != v) {
-				if (getPathwayModel() != null) {
+				if (pathwayModel != null) {
 					if (elementRef != null) {
-						getPathwayModel().removeElementRef(elementRef, this);
+						pathwayModel.removeElementRef(elementRef, this);
 					}
 					if (v != null) {
-						getPathwayModel().addElementRef(v, this);
+						pathwayModel.addElementRef(v, this);
 					}
 				}
 				elementRef = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ELEMENTREF));
+//				LineElement.this.fireObjectModifiedEvent(
+//						PathwayObjectEvent.createSinglePropertyEvent(LineElement.this, StaticProperty.ELEMENTREF));
 			}
 		}
 
@@ -1520,7 +1602,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (relX != v) {
 				relX = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				LineElement.this
+						.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
 		}
 
@@ -1550,7 +1633,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (relY != v) {
 				relY = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				LineElement.this
+						.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
 		}
 
@@ -1648,12 +1732,13 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		@Override
 		public void unlink() {
 			if (elementRef != null) {
-				if (getPathwayModel() != null) {
+				if (pathwayModel != null) {
 					Point2D abs = getAbsolute();
 					moveTo(abs.getX(), abs.getY());
 				}
 				setElementRef(null);
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				LineElement.this
+						.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
 		}
 
@@ -1684,9 +1769,10 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @param deltaY the value to move y coordinate by.
 		 */
 		public void moveBy(double deltaX, double deltaY) {
-			x += deltaX;
-			y += deltaY;
-			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+			x = getX() + deltaX; // TODO
+			y = getY() + deltaY; // TODO
+			LineElement.this
+					.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 		}
 
 		/**
@@ -1698,7 +1784,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		public void moveTo(double vx, double vy) {
 			x = vx;
 			y = vy;
-			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+			LineElement.this
+					.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 		}
 
 		/**
@@ -1712,7 +1799,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			setY(linePoint.getY());
 			setRelX(linePoint.getRelX());
 			setRelY(linePoint.getRelY());
-			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+			LineElement.this
+					.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 		}
 
 		/**
@@ -1720,7 +1808,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		@Override
 		public void refeeChanged() {
-			fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+			LineElement.this
+					.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 		}
 
 		// ================================================================================
@@ -1770,8 +1859,9 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		@Override
 		public Object clone() throws CloneNotSupportedException {
 			LinePoint p = (LinePoint) super.clone();
-			if (elementRef != null)
-				p.elementRef = elementRef;
+//			if (elementRef != null)
+//				// p.elementRef = elementRef; TODO
+//				linkTo(elementRef);
 			return p;
 		}
 
@@ -1786,7 +1876,6 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 * @param src
 		 */
 		public void copyValuesFrom(LinePoint src) {
-			arrowHead = src.arrowHead;
 			x = src.x;
 			y = src.y;
 			relX = src.relX;
@@ -1861,7 +1950,8 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 			}
 			if (position != v) {
 				position = v;
-				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
+				LineElement.this
+						.fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(LineElement.this));
 			}
 		}
 
@@ -1929,7 +2019,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		@Override
 		public Set<LinkableFrom> getLinkableFroms() {
-			return GraphLink.getReferences(this, getPathwayModel());
+			return GraphLink.getReferences(this, pathwayModel);
 		}
 
 		/**
@@ -1938,7 +2028,7 @@ public abstract class LineElement extends PathwayElement implements Groupable, C
 		 */
 		public void unsetAllLinkableFroms() {
 			for (LinkableFrom linePoint : getLinkableFroms()) {
-				pathwayModel.removeElementRef(this, linePoint);
+				((LinePoint) linePoint).unlink();
 			}
 		}
 

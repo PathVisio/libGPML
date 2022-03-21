@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
+import org.pathvisio.libgpml.model.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
 import org.pathvisio.libgpml.model.type.AnnotationType;
 import org.pathvisio.libgpml.model.type.ObjectType;
@@ -215,7 +215,7 @@ public class Annotation extends PathwayObject {
 			annotationRef.terminate();
 			// if citationResf empty, remove this annotation from pathway model
 			if (annotationRefs.isEmpty()) {
-				getPathwayModel().removeAnnotation(this);
+				pathwayModel.removeAnnotation(this);
 				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
 			}
 		}
@@ -298,7 +298,7 @@ public class Annotation extends PathwayObject {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Annotation copy() {
+	public Annotation copyRef() {
 		Annotation result = new Annotation(value, type, xref, urlLink);
 		result.copyValuesFrom(this);
 		return result;

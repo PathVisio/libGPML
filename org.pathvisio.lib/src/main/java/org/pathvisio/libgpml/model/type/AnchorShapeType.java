@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.type;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -107,9 +105,8 @@ public class AnchorShapeType {
 	 * 
 	 * @return names the names of all registered AnchorTypes in order of insertion.
 	 */
-	static public List<String> getNames() {
-		List<String> names = new ArrayList<>(nameToAnchorShapeType.keySet());
-		return names;
+	static public String[] getNames() {
+		return nameToAnchorShapeType.keySet().toArray(new String[nameToAnchorShapeType.size()]);
 	}
 
 	/**
@@ -117,9 +114,8 @@ public class AnchorShapeType {
 	 * 
 	 * @return anchorTypes the list of all registered AnchorType.
 	 */
-	static public List<AnchorShapeType> getValues() {
-		List<AnchorShapeType> anchorTypes = new ArrayList<>(nameToAnchorShapeType.values());
-		return anchorTypes;
+	static public AnchorShapeType[] getValues() {
+		return nameToAnchorShapeType.values().toArray(new AnchorShapeType[0]);
 	}
 
 	/**

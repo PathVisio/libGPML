@@ -14,21 +14,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.libgpml.event;
+package org.pathvisio.libgpml.model;
 
 import java.util.EventListener;
 
 /**
- * Implement this if you want to be notified of changes to a Pathway.
+ * Implement this if you want to be notified of changes to a PathwayModel.
  *
- * This means addition of new elements to a Pathway and
- * removal of elements from a Pathway, but not
- * changes to properties of a single PathwayElement
+ * This means addition of new elements to a PathwayModel and removal of elements from
+ * a PathwayModel, but not changes to properties of a single PathwayElement
  *
- * For example this is used by VPathway to refresh itself when a new
- * element is added.
+ * For example this is used by VPathwayModel to refresh itself when a new element is
+ * added.
  */
-public interface PathwayModelListener extends EventListener
-{
+public interface PathwayModelListener extends EventListener {
+	
 	public void pathwayModified(PathwayModelEvent e);
+	
 }

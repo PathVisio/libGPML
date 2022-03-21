@@ -96,9 +96,8 @@ public class AnnotationType {
 	 * @return names the names of all registered AnnotationTypes in order of
 	 *         insertion.
 	 */
-	static public List<String> getNames() {
-		List<String> names = new ArrayList<>(nameToAnnotationType.keySet());
-		return names;
+	static public String[] getNames() {
+		return nameToAnnotationType.keySet().toArray(new String[nameToAnnotationType.size()]);
 	}
 
 	/**
@@ -106,9 +105,8 @@ public class AnnotationType {
 	 * 
 	 * @return annotationTypes the list of all registered AnnotationTypes.
 	 */
-	static public List<AnnotationType> getValues() {
-		List<AnnotationType> annotationTypes = new ArrayList<>(nameToAnnotationType.values());
-		return annotationTypes;
+	static public AnnotationType[] getValues() {
+		return nameToAnnotationType.values().toArray(new AnnotationType[0]);
 	}
 
 	/**

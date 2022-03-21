@@ -37,6 +37,7 @@ import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.pathvisio.libgpml.debug.*;
 import org.pathvisio.libgpml.io.AbstractPathwayModelFormat;
+import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.util.RootElementFinder;
 import org.xml.sax.InputSource;
 

@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.shape;
 
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
@@ -56,11 +58,12 @@ public class ShapeCatalog {
 
 		// Basic line shapes
 		BRACE,
+
 		// Cellular components
 		MITOCHONDRIA, SARCOPLASMIC_RETICULUM, ENDOPLASMIC_RETICULUM, GOLGI_APPARATUS,
 
 		// Special shapes
-		CORONAVIRUS, DNA, CELL_ICON
+		CORONAVIRUS, DNA, RNA, DNA2, RNA2, CELL_ICON
 
 	}
 
@@ -72,6 +75,9 @@ public class ShapeCatalog {
 	static public java.awt.Shape getPluggableShape(Internal st) {
 		GeneralPath path = new GeneralPath();
 		switch (st) {
+		// ========================================
+		// Basic line shapes
+		// ========================================
 		case BRACE:
 			path.moveTo(0, 4);
 			path.quadTo(0, 2, 3, 2);
@@ -79,6 +85,9 @@ public class ShapeCatalog {
 			path.quadTo(6, 2, 9, 2);
 			path.quadTo(12, 2, 12, 4);
 			break;
+		// ========================================
+		// Cellular components (irregular shape)
+		// ========================================
 		case MITOCHONDRIA:
 			path.moveTo(72.81f, 85.70f);
 			path.curveTo(97.59f, 83.01f, 94.55f, 147.38f, 119.28f, 144.29f);
@@ -166,6 +175,9 @@ public class ShapeCatalog {
 			path.lineTo(83.40f, 133.15f);
 			path.closePath();
 			break;
+		// ========================================
+		// Special shapes
+		// ========================================
 		case CORONAVIRUS:
 			path.append(new Ellipse2D.Double(90, 90, 150, 150), false);
 			double origin = 165;
@@ -185,17 +197,215 @@ public class ShapeCatalog {
 			}
 			break;
 		case DNA:
-			// TODO
+			path.moveTo(17.63, 25.01);
+			path.curveTo(23.64, 19.04, 29.93, 12.07, 30, 0);
+			path.lineTo(27.15, 0);
+			path.curveTo(27.15, 0, 27.42, 1.39, 27, 3.23);
+			path.lineTo(3, 3.23);
+			path.curveTo(2.74, 1.52, 2.85, 0, 2.85, 0);
+			path.lineTo(0, 0);
+			path.curveTo(0, 12.17, 6.37, 19.37, 12.37, 24.99);
+			path.curveTo(6.25, 30.11, 0, 37.83, 0, 50.01);
+			path.curveTo(0, 62.19, 8.42, 70.74, 12.3, 75.05);
+			path.curveTo(7.73, 80.05, 0, 87.82, 0, 100);
+			path.lineTo(2.85, 100);
+			path.curveTo(2.85, 100, 2.81, 98.43, 3, 96.79);
+			path.lineTo(27, 96.79);
+			path.curveTo(27.47, 98.41, 27.2, 99.03, 27.15, 100);
+			path.lineTo(30, 100);
+			path.curveTo(30, 87.82, 21.77, 79.33, 17.63, 75.05);
+			path.curveTo(21.67, 71, 23.81, 68.9, 25.99, 65.23);
+			path.curveTo(28.36, 61.24, 30, 56.35, 30, 50.01);
+			path.curveTo(30, 37.83, 23.68, 29.19, 17.63, 25.01);
+			path.closePath();
+			path.moveTo(3.37, 6.63);
+			path.lineTo(26.62, 6.63);
+			path.curveTo(26.12, 9.26, 24.87, 11.11, 23.62, 13.25);
+			path.lineTo(6.38, 13.25);
+			path.curveTo(5.02, 11.42, 4.22, 8.73, 3.37, 6.63);
+			path.closePath();
+			path.moveTo(9, 16.65);
+			path.lineTo(21, 16.65);
+			path.curveTo(18.55, 19.17, 17.91, 20.04, 15, 22.46);
+			path.curveTo(11.7, 20.22, 11.59, 19.32, 9, 16.65);
+			path.closePath();
+			path.moveTo(26.63, 93.39);
+			path.lineTo(3.37, 93.39);
+			path.curveTo(4.67, 90.13, 4.86, 89.61, 6.38, 86.78);
+			path.lineTo(23.62, 86.78);
+			path.curveTo(25.05, 89.38, 25.67, 90.5, 26.62, 93.39);
+			path.closePath();
+			path.moveTo(21, 83.37);
+			path.lineTo(9, 83.37);
+			path.curveTo(10.22, 82.08, 13.08, 79.03, 15, 77.56);
+			path.curveTo(16.75, 79.22, 19.76, 82.06, 21, 83.37);
+			path.closePath();
+			path.moveTo(15, 72.55);
+			path.curveTo(12.46, 70.33, 10.58, 68.63, 9, 66.74);
+			path.lineTo(21, 66.74);
+			path.curveTo(19.47, 68.7, 17.34, 70.47, 15, 72.55);
+			path.closePath();
+			path.moveTo(23.62, 63.33);
+			path.lineTo(6.38, 63.33);
+			path.curveTo(5.67, 61.72, 3.92, 59.37, 3.37, 56.72);
+			path.lineTo(26.62, 56.72);
+			path.curveTo(26.22, 58.73, 25.31, 61.08, 23.62, 63.33);
+			path.closePath();
+			path.moveTo(27, 53.32);
+			path.lineTo(3, 53.32);
+			path.curveTo(2.71, 50.62, 2.73, 48.87, 3, 46.71);
+			path.lineTo(27, 46.71);
+			path.curveTo(27.33, 49.16, 27.28, 50.85, 27, 53.32);
+			path.closePath();
+			path.moveTo(26.62, 43.3);
+			path.lineTo(3.37, 43.3);
+			path.curveTo(4.07, 41.19, 4.68, 38.95, 6.38, 36.69);
+			path.lineTo(23.62, 36.69);
+			path.curveTo(25.05, 39.31, 25.96, 41.25, 26.62, 43.3);
+			path.closePath();
+			path.moveTo(21, 33.28);
+			path.lineTo(9, 33.28);
+			path.curveTo(10.7, 31.42, 12.79, 29.17, 15, 27.47);
+			path.curveTo(17.02, 29.02, 19.9, 31.76, 21, 33.28);
+			path.closePath();
+			break;
+		case RNA:
+			path.moveTo(21.26, 83.38);
+			path.lineTo(16.54, 83.38);
+			path.lineTo(16.54, 86.79);
+			path.lineTo(23.69, 86.79);
+			path.curveTo(25.51, 89.42, 25.94, 90.43, 26.7, 93.39);
+			path.lineTo(16.54, 93.39);
+			path.lineTo(16.54, 96.8);
+			path.lineTo(27.04, 96.8);
+			path.curveTo(27.09, 97.68, 27.16, 98.65, 27.18, 99.95);
+			path.curveTo(27.18, 100, 28.59, 99.95, 30, 99.95);
+			path.curveTo(29.98, 87.77, 26.46, 83.53, 20.57, 78.07);
+			path.curveTo(14.68, 72.62, 12.94, 70.92, 9.02, 66.76);
+			path.lineTo(14.29, 66.76);
+			path.lineTo(14.29, 63.36);
+			path.lineTo(6.39, 63.36);
+			path.curveTo(5.12, 61.15, 4.32, 59.47, 3.38, 56.75);
+			path.lineTo(14.29, 56.75);
+			path.lineTo(14.29, 53.35);
+			path.lineTo(3.01, 53.55);
+			path.curveTo(2.72, 50.86, 2.73, 49.28, 3.01, 46.74);
+			path.lineTo(14.29, 46.74);
+			path.lineTo(14.29, 43.34);
+			path.lineTo(3.38, 43.34);
+			path.curveTo(4.19, 40.93, 4.98, 39.52, 6.39, 36.73);
+			path.lineTo(14.29, 36.73);
+			path.lineTo(14.29, 33.32);
+			path.lineTo(9.02, 33.32);
+			path.curveTo(12.37, 28.49, 14.66, 26.12, 20.57, 21.01);
+			path.curveTo(26.49, 15.91, 29.93, 12.29, 30, 0.23);
+			path.lineTo(30, 0.06);
+			path.curveTo(30, 0.06, 28.24, 0, 27.18, 0.06);
+			path.curveTo(27.18, 0.06, 27.21, 0.84, 27.04, 3.29);
+			path.lineTo(16.54, 3.29);
+			path.lineTo(16.54, 6.69);
+			path.lineTo(26.7, 6.69);
+			path.curveTo(25.89, 9.51, 25.17, 11.17, 23.69, 13.3);
+			path.lineTo(16.54, 13.3);
+			path.lineTo(16.54, 16.71);
+			path.lineTo(21.26, 16.71);
+			path.curveTo(6.31, 28.1, 0, 37.89, 0, 50.04);
+			path.curveTo(0, 62.2, 5.96, 69.49, 21.26, 83.38);
+			path.closePath();
+			break;
 		case CELL_ICON:
-			// TODO
+			// cell membrane
+			path.moveTo(0.87, 42.66);
+			path.curveTo(0, 58.6, 1.29, 79.48, 14.32, 88.6);
+			path.curveTo(22.71, 94.47, 34.73, 87.46, 44.9, 86.47);
+			path.curveTo(67.63, 84.26, 97.85, 95.25, 112.88, 77.96);
+			path.curveTo(125.2, 63.79, 124.12, 36.12, 112.34, 21.5);
+			path.curveTo(102.41, 9.17, 81.8, 13.21, 66.16, 11.2);
+			path.curveTo(49.15, 9, 29.21, 0, 14.77, 9.29);
+			path.curveTo(4.67, 15.78, 1.54, 30.62, 0.87, 42.66);
+			path.closePath();
+			path.moveTo(112.37, 21.48); // for "3D"
+			path.curveTo(124.15, 36.1, 125.22, 63.78, 112.91, 77.94);
+			path.curveTo(97.87, 95.24, 67.65, 84.24, 44.92, 86.45);
+			path.curveTo(34.75, 87.44, 22.73, 94.45, 14.34, 88.58);
+			path.curveTo(23.57, 96.12, 38, 91.78, 49.88, 91.44);
+			path.curveTo(72.58, 90.81, 103.16, 100, 117.37, 82.18);
+			path.curveTo(130, 66.35, 125.64, 36.78, 112.37, 21.48);
+			path.closePath();
+			// nucleolus
+			path.append(new Ellipse2D.Double(65, 55, 10, 10), false);
+			// nucleus
+			path.append(new Ellipse2D.Double(34.5, 27.5, 55, 50), false);
+			path.append(new Ellipse2D.Double(34.5, 27.5, 55, 50), false);// for fill color
+			// mitochondria (simplified version)
+			GeneralPath mito = new GeneralPath();
+			mito.moveTo(2.6, 2.5);
+			mito.curveTo(3.56, 2.41, 3.45, 4.3, 4.36, 4.21);
+			mito.curveTo(6, 4.21, 6.04, 1.16, 7.5, 1.14);
+			mito.curveTo(9, 1.12, 9, 4, 10.5, 4);
+			mito.curveTo(11.91, 4.12, 11.7, 1.11, 13.07, 1.19);
+			mito.curveTo(14.57, 1.27, 14.4, 4.48, 15.89, 4.68);
+			mito.curveTo(16.88, 4.81, 16.81, 2.74, 17.81, 2.83);
+			mito.curveTo(19.49, 3.41, 19.44, 5.24, 18.43, 6.48);
+			mito.curveTo(18.05, 6.96, 17.52, 7.35, 16.89, 7.56);
+			mito.curveTo(16.24, 7.63, 14.93, 6.58, 14.28, 6.64);
+			mito.curveTo(13.11, 6.75, 13.05, 9.07, 11.87, 9.02);
+			mito.curveTo(10.78, 8.97, 10.79, 7.09, 9.51, 6.96);
+			mito.curveTo(8.33, 6.84, 8.39, 9.11, 7.21, 8.95);
+			mito.curveTo(5.9, 8.78, 6.11, 6.13, 4.8, 6);
+			mito.curveTo(4.02, 5.92, 4.25, 7.52, 3.46, 7.54);
+			mito.curveTo(0.53, 6.91, 0.17, 3.33, 2.65, 2.49);
+			mito.closePath();
+			mito.append(new Ellipse2D.Double(0, 0, 20, 10), false);
+			mito.append(new Ellipse2D.Double(0, 0, 20, 10), false);// for fill color
+			AffineTransform at = new AffineTransform();
+			at.translate(100, 30);
+			at.scale(1.5, 1.5);
+			at.rotate(40, 50);
+			Shape mitochondria = at.createTransformedShape(mito);
+			path.append(mitochondria, false);
+			// endoplasmic reticulum
+			AffineTransform at2 = new AffineTransform();
+			at2.translate(35, -5);
+			at2.scale(0.2, 0.2);
+			at2.rotate(50, 40);
+			Shape endoplasmicReticulum = at2.createTransformedShape(getPluggableShape(Internal.ENDOPLASMIC_RETICULUM));
+			path.moveTo(34.5, 27.5);
+			path.append(endoplasmicReticulum, false);
+			// small miscellaneous organelles
+			path.append(new Ellipse2D.Double(20, 65, 5, 5), false);
+			path.append(new Ellipse2D.Double(20, 65, 5, 5), false);// for fill color
+			path.append(new Ellipse2D.Double(25, 75, 5, 5), false);
+			path.append(new Ellipse2D.Double(25, 75, 5, 5), false);// for fill color
+			break;
 		default:
 			break;
 		}
 		return path;
 	}
 
+	/**
+	 * Returns regular polygon shape given number of sides, width, and height.
+	 * 
+	 * @param sides the number of sides of polygon.
+	 * @param w     the width.
+	 * @param h     the height.
+	 * @return
+	 */
 	public static java.awt.Shape getRegularPolygon(int sides, double w, double h) {
 		GeneralPath path = new GeneralPath();
+		if (sides == 8) { // separate method for octagon TODO 
+			path.moveTo(52.32, 100);
+			path.lineTo(21.68, 100);
+			path.lineTo(0, 70.71);
+			path.lineTo(0, 29.29);
+			path.lineTo(21.67, 0);
+			path.lineTo(52.32, 0);
+			path.lineTo(74, 29.29);
+			path.lineTo(74, 70.71);
+			path.lineTo(52.32, 100);
+			return path;
+		}
 		for (int i = 0; i < sides; ++i) {
 			double angle = Math.PI * 2 * i / sides;
 			double x = (w / 2) * (1 + Math.cos(angle));
@@ -209,6 +419,21 @@ public class ShapeCatalog {
 		path.closePath();
 		return path;
 	}
+
+//	static public java.awt.Shape getCircle(double xCenter, double yCenter, double r, int nPoints) {
+//		GeneralPath gp = new GeneralPath();
+//		for (int i = 0; i < nPoints; i++) {
+//			double angle = i / (double) nPoints * Math.PI * 2;
+//			double x = r * Math.cos(angle) + xCenter;
+//			double y = r * Math.sin(angle) + yCenter;
+//			if (i == 0)
+//				gp.moveTo(x, y);
+//			else
+//				gp.lineTo(x, y);
+//		}
+//		gp.closePath();
+//		return gp;
+//	}
 
 	// TODO
 //	@Deprecated

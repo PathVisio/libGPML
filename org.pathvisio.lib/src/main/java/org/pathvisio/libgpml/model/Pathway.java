@@ -18,13 +18,16 @@ package org.pathvisio.libgpml.model;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
-import org.pathvisio.libgpml.event.PathwayObjectListener;
+import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
+import org.pathvisio.libgpml.model.type.ArrowHeadType;
+import org.pathvisio.libgpml.model.type.ConnectorType;
+import org.pathvisio.libgpml.model.type.LineStyleType;
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
 import org.pathvisio.libgpml.util.Utils;
@@ -84,6 +87,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 	public ObjectType getObjectType() {
 		return ObjectType.PATHWAY;
 	}
+
 	/**
 	 * Returns the title or name of this pathway.
 	 * 
@@ -356,15 +360,18 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	private Set<PathwayObjectListener> listeners = new HashSet<PathwayObjectListener>();
 
+	@Override
 	public void addListener(PathwayObjectListener v) {
 		if (!listeners.contains(v))
 			listeners.add(v);
 	}
 
+	@Override
 	public void removeListener(PathwayObjectListener v) {
 		listeners.remove(v);
 	}
 
+	@Override
 	public void fireObjectModifiedEvent(PathwayObjectEvent e) {
 		if (noFire > 0) {
 			noFire -= 1;
@@ -437,6 +444,116 @@ public class Pathway extends PathwayElement implements Xrefable {
 		Pathway result = new Pathway(); // TODO
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
+	}
+
+	// ================================================================================
+	// Property Methods
+	// ================================================================================
+	/**
+	 * Returns all static properties for this pathway object.
+	 * 
+	 * @return result the set of static property for this pathway object.
+	 */
+	@Override
+	public Set<StaticProperty> getStaticPropertyKeys() {
+		Set<StaticProperty> result = super.getStaticPropertyKeys();
+		Set<StaticProperty> propsPathway = EnumSet.of(StaticProperty.TITLE, StaticProperty.ORGANISM,
+				StaticProperty.SOURCE, StaticProperty.VERSION, StaticProperty.LICENSE, StaticProperty.XREF,
+				StaticProperty.BOARDWIDTH, StaticProperty.BOARDHEIGHT, StaticProperty.BACKGROUNDCOLOR);
+		Set<StaticProperty> propsAuthor = EnumSet.of(StaticProperty.AUTHOR, StaticProperty.NAME,
+				StaticProperty.USERNAME, StaticProperty.ORDER); //TODO AUTHORS?
+		result.addAll(propsPathway);
+		result.addAll(propsAuthor);
+		return result;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public Object getStaticProperty(StaticProperty key) {
+		Object result = super.getStaticProperty(key);
+		if (result == null) {
+			switch (key) {
+			case TITLE:
+				result = getTitle();
+				break;
+			case ORGANISM:
+				result = getOrganism(); // TODO name???
+				break;
+			case SOURCE:
+				result = getSource();
+				break;
+			case VERSION:
+				result = getVersion();
+				break;
+			case LICENSE:
+				result = getLicense();
+				break;
+			case XREF:
+				result = getXref();
+				break;
+			case BOARDWIDTH:
+				result = getBoardWidth();
+				break;
+			case BOARDHEIGHT:
+				result = getBoardHeight();
+				break;
+			case BACKGROUNDCOLOR:
+				result = getBackgroundColor();
+				break;
+			// TODO AUTHOR!!!!
+			default:
+				// do nothing
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
+	 * x);
+	 *
+	 * Value may be null in some cases, e.g. graphRef
+	 *
+	 * @param key
+	 * @param value
+	 */
+	@Override
+	public void setStaticProperty(StaticProperty key, Object value) {
+		super.setStaticProperty(key, value);
+		switch (key) {
+		case TITLE:
+			setTitle((String) value);
+			break;
+		case ORGANISM:
+			setOrganism((String) value);
+			break;
+		case SOURCE:
+			setSource((String) value);
+			break;
+		case VERSION:
+			setVersion((String) value);
+			break;
+		case LICENSE:
+			setLicense((String) value);
+			break;
+		case XREF:
+			setXref((Xref) value);
+			break;
+		case BOARDWIDTH:
+			setBoardWidth((Double) value);
+			break;
+		case BOARDHEIGHT:
+			setBoardHeight((Double) value);
+			break;
+		case BACKGROUNDCOLOR:
+			setBackgroundColor((Color) value);
+			break;
+		// TODO AUTHOR!!!!
+		default:
+			// do nothing
+		}
 	}
 
 	// ================================================================================

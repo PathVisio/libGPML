@@ -14,39 +14,57 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.pathvisio.libgpml.io;
+package org.pathvisio.libgpml.debug;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ConcurrentModificationException;
+import java.util.ListIterator;
 
-/**
- * base implementation of PathwayImporter and PathwayExporter warnings
- * mechanism.
- */
-public abstract class AbstractPathwayModelFormat implements PathwayModelImporter, PathwayModelExporter {
-	private List<String> warnings = new ArrayList<String>();
+import junit.framework.TestCase;
 
-	protected void clearWarnings() {
-		warnings.clear();
+public class TestDebug extends TestCase
+{
+	DebugList<String> l;
+
+	public void setUp()
+	{
+		l = new DebugList<String>();
+		l.add ("boom");
+		l.add ("roos");
+		l.add ("vis");
+		l.add ("vuur");
 	}
 
-	/**
-	 * Can be used by overriding classes to add to the list of warnings. Don't
-	 * forget to call {@link clearWarnings} at the start of conversion.
-	 */
-	protected void emitWarning(String warning) {
-		warnings.add(warning);
-	}
+	public void test1()
+	{
+		try
+		{
+			ListIterator<String> i = l.listIterator();
+			while (i.hasNext())
+			{
+				System.out.println (i.next());
+				i.add("Hello");
+				l.remove(3);
+			}
+			fail ("Expected concurrentModificationException");
+		}
+		catch (ConcurrentModificationException ex)
+		{
+			// success!
+		}
 
-	@Override
-	public boolean isCorrectType(File f) {
-		return true;
-	}
+		try
+		{
+			for (String s : l)
+			{
+				System.out.println (s);
+				l.add("Bye");
+			}
+			fail ("Expected concurrentModificationException");
+		}
+		catch (ConcurrentModificationException ex)
+		{
+			// success!
+		}
 
-	@Override
-	public List<String> getWarnings() {
-		return warnings;
 	}
-
 }

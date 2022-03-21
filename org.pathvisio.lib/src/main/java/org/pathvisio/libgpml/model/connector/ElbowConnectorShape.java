@@ -71,7 +71,7 @@ public class ElbowConnectorShape extends SegmentedConnector {
 	}
 
 	/**
-	 * Calculates shape from the width of the line endings. 
+	 * Calculates shape from the width of the line endings.
 	 * 
 	 * @return the calculated shape.
 	 */

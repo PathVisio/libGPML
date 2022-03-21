@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.event.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
@@ -246,7 +245,7 @@ public class Citation extends PathwayObject {
 			citationRef.terminate();
 			// if citationResf empty, remove this citation from pathway model
 			if (citationRefs.isEmpty()) {
-				getPathwayModel().removeCitation(this);
+				pathwayModel.removeCitation(this);
 			}
 		}
 	}
@@ -325,7 +324,7 @@ public class Citation extends PathwayObject {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
-	public Citation copy() {
+	public Citation copyRef() {
 		Citation result = new Citation(xref, urlLink);
 		result.copyValuesFrom(this);
 		return result;

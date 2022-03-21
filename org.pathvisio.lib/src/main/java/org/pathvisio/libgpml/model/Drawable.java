@@ -21,6 +21,7 @@ import java.awt.geom.Point2D;
 
 import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
+import org.pathvisio.libgpml.model.type.ObjectType;
 
 /**
  * Interface for classes which can be drawn a pathway model canvas. This class
@@ -38,6 +39,13 @@ public interface Drawable {
 	 */
 	public PathwayModel getPathwayModel();
 
+	/**
+	 * Returns the object type of this pathway element.
+	 * 
+	 * @return objectType the object type.
+	 */
+	public ObjectType getObjectType();
+	
 	/**
 	 * Returns the z-order of this pathway element.
 	 * 

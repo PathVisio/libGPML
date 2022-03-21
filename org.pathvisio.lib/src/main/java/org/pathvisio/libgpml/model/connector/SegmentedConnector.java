@@ -76,9 +76,9 @@ public abstract class SegmentedConnector extends AbstractConnector {
 	}
 
 	/**
-	 * Calculates shape from the width of the line endings. 
+	 * Calculates shape from the width of the line endings.
 	 * 
-	 * @param segments the array of segments. 
+	 * @param segments the array of segments.
 	 * @return the calculated shape.
 	 */
 	@Override

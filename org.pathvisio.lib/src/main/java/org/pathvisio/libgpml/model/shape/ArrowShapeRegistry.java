@@ -23,31 +23,36 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 
-import org.pathvisio.libgpml.model.type.AnchorShapeType;
-
 /**
- * Defines and registers all basic shapes and arrowheads, such Oval, Rectangle,
- * Arrow, TBar.
- *
- * Note that this does not include all shapes used in GenMAPP, See GenMAPPShapes
- * for more Shapes defined by GenMAPP.
+ * Defines and registers all arrowhead shapes.
  *
  * Shapes are defined and registered in the static section of this class.
+ * 
+ * @author unknown
  */
-class BasicShapes {
+class ArrowShapeRegistry {
+
+	// Register ArrowHead shapes
 	static void registerShapes() {
-		ShapeRegistry.registerArrow("Arrow", getArrowHead(), ArrowShape.FillType.CLOSED);
-		ShapeRegistry.registerArrow("TBar", getTBar(), ArrowShape.FillType.OPEN, TBARWIDTH + TBAR_GAP);
+
+		// Interaction panel, NB: "Undirected" (no arrow head) TODO
+		ShapeRegistry.registerArrow("Directed", getArrowHead(), ArrowShape.FillType.CLOSED);
+		ShapeRegistry.registerArrow("Conversion", getArrowHead(), ArrowShape.FillType.CLOSED);
+		ShapeRegistry.registerArrow("Inhibition", getTBar(), ArrowShape.FillType.OPEN, TBARWIDTH + TBAR_GAP);
+		ShapeRegistry.registerArrow("Catalysis", getCatalysis(), ArrowShape.FillType.OPEN,
+				CATALYSIS_DIAM + CATALYSIS_GAP);
+		ShapeRegistry.registerArrow("Stimulation", getArrowHead(), ArrowShape.FillType.OPEN);
+		ShapeRegistry.registerArrow("Binding", getBinding(), ArrowShape.FillType.CLOSED);
+		ShapeRegistry.registerArrow("Translocation", getArrowHead(), ArrowShape.FillType.CLOSED);
+		ShapeRegistry.registerArrow("TranscriptionTranslation", getTranscriptionTranslation(), ArrowShape.FillType.WIRE,
+				ARROWWIDTH + ARROWHEIGHT);
+
+		// Other
 		ShapeRegistry.registerArrow("LigandRound", getLRound(), ArrowShape.FillType.CLOSED);
 		ShapeRegistry.registerArrow("ReceptorRound", getRRound(), ArrowShape.FillType.WIRE);
 		ShapeRegistry.registerArrow("Receptor", getReceptor(), ArrowShape.FillType.WIRE);
 		ShapeRegistry.registerArrow("ReceptorSquare", getReceptorSquare(), ArrowShape.FillType.WIRE);
 		ShapeRegistry.registerArrow("LigandSquare", getLigand(), ArrowShape.FillType.CLOSED);
-
-		ShapeRegistry.registerAnchor(AnchorShapeType.SQUARE.getName(), getAnchorSquare());
-		ShapeRegistry.registerAnchor(AnchorShapeType.CIRCLE.getName(), getAnchorCircle());
-		ShapeRegistry.registerAnchor(AnchorShapeType.NONE.getName(), getAnchorNone());
-
 	}
 
 	/**
@@ -64,29 +69,91 @@ class BasicShapes {
 	private static final int LIGANDHEIGHT = 11;
 	private static final int RECEPWIDTH = LIGANDWIDTH + 2;
 	private static final int RECEPHEIGHT = LIGANDHEIGHT + 2;
+	// catalysis
+	static final int CATALYSIS_DIAM = 8;
+	static final int CATALYSIS_GAP = CATALYSIS_DIAM / 4;
+	static final int CATALYSIS_GAP_HEIGHT = 6;
+	// transcription translation
+	private static final int TAIL = ARROWWIDTH / 2;
 
-	private static final int ANCHOR_SQUARE_SIZE = 6; // TODO
-	private static final int ANCHOR_CIRCLE_SIZE = 8;
-	private static final int ANCHOR_NONE_SIZE = 3;
-
+	/**
+	 * Returns standard arrowhead shape.
+	 * 
+	 * @return the arrowhead shape.
+	 */
 	private static Shape getArrowHead() {
 		int[] xpoints = new int[] { 0, -ARROWWIDTH, -ARROWWIDTH };
 		int[] ypoints = new int[] { 0, -ARROWHEIGHT, ARROWHEIGHT };
 		return new Polygon(xpoints, ypoints, 3);
 	}
 
+	/**
+	 * Returns catalysis arrowhead shape.
+	 * 
+	 * @return the catalysis arrowhead shape.
+	 */
+	static private java.awt.Shape getCatalysis() {
+		return new Ellipse2D.Double(0, -CATALYSIS_DIAM / 2, CATALYSIS_DIAM, CATALYSIS_DIAM);
+	}
+
+	/**
+	 * Returns binding arrowhead shape.
+	 * 
+	 * @return the binding arrowhead shape.
+	 */
+	static private java.awt.Shape getBinding() {
+		GeneralPath path = new GeneralPath();
+		path.moveTo(0, 0);
+		path.lineTo(-ARROWWIDTH, -ARROWHEIGHT);
+		path.lineTo(-ARROWWIDTH / 2, 0);
+		path.lineTo(-ARROWWIDTH, ARROWHEIGHT);
+		path.closePath();
+		return path;
+	}
+
+	/**
+	 * Returns transcription-translation arrowhead shape.
+	 * 
+	 * @return the transcription-translation arrowhead shape.
+	 */
+	static private java.awt.Shape getTranscriptionTranslation() {
+		GeneralPath path = new GeneralPath();
+		path.moveTo(-TAIL, 0);
+		path.lineTo(-TAIL, ARROWHEIGHT * 2);
+		path.lineTo(TAIL, ARROWHEIGHT * 2);
+		path.lineTo(TAIL, ARROWHEIGHT * 3);
+		path.lineTo(TAIL + ARROWWIDTH, ARROWHEIGHT * 2);
+		path.lineTo(TAIL, ARROWHEIGHT);
+		path.lineTo(TAIL, ARROWHEIGHT * 2);
+		return path;
+	}
+
+	/**
+	 * Returns inhibition (Tbar) arrowhead shape.
+	 * 
+	 * @return the inhibition (Tbar) arrowhead shape.
+	 */
 	private static Shape getTBar() {
 		return new Rectangle2D.Double(0, -TBARHEIGHT / 2, TBARWIDTH, TBARHEIGHT);
 	}
 
+	/**
+	 * @return
+	 */
 	private static Shape getLRound() {
 		return new Ellipse2D.Double(-LRDIAM / 2, -LRDIAM / 2, LRDIAM, LRDIAM);
 	}
 
+	/**
+	 * @return
+	 */
 	private static Shape getRRound() {
 		return new Arc2D.Double(0, -RRDIAM / 2, RRDIAM, RRDIAM, 90, 180, Arc2D.OPEN);
 	}
 
+	/**
+	 * @return
+	 */
 	private static Shape getReceptorSquare() {
 		GeneralPath rec = new GeneralPath();
 		rec.moveTo(RECEPWIDTH, RECEPHEIGHT / 2);
@@ -96,6 +163,9 @@ class BasicShapes {
 		return rec;
 	}
 
+	/**
+	 * @return
+	 */
 	private static Shape getReceptor() {
 		GeneralPath rec = new GeneralPath();
 		rec.moveTo(RECEPWIDTH, RECEPHEIGHT / 2);
@@ -104,22 +174,11 @@ class BasicShapes {
 		return rec;
 	}
 
+	/**
+	 * @return
+	 */
 	private static Shape getLigand() {
 		return new Rectangle2D.Double(-LIGANDWIDTH, -LIGANDHEIGHT / 2, LIGANDWIDTH, LIGANDHEIGHT);
-	}
-
-	private static Shape getAnchorSquare() {
-		return new Rectangle2D.Double(-ANCHOR_SQUARE_SIZE / 2, -ANCHOR_SQUARE_SIZE / 2, ANCHOR_SQUARE_SIZE,
-				ANCHOR_SQUARE_SIZE);
-	}
-
-	private static Shape getAnchorCircle() {
-		return new Ellipse2D.Double(-ANCHOR_CIRCLE_SIZE / 2, -ANCHOR_CIRCLE_SIZE / 2, ANCHOR_CIRCLE_SIZE,
-				ANCHOR_CIRCLE_SIZE);
-	}
-
-	private static Shape getAnchorNone() {
-		return new Rectangle2D.Double(-ANCHOR_NONE_SIZE / 2, -ANCHOR_NONE_SIZE / 2, ANCHOR_NONE_SIZE, ANCHOR_NONE_SIZE);
 	}
 
 }
