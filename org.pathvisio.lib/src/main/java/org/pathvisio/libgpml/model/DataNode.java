@@ -68,6 +68,9 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Instantiates a DataNode given all required parameters.
+	 * 
+	 * @param textLabel the datanode text label.
+	 * @param type      the datanode type.
 	 */
 	public DataNode(String textLabel, DataNodeType type) {
 		this(textLabel, type, null, null);
@@ -448,8 +451,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 *
 	 * Value may be null in some cases, e.g. graphRef
 	 *
-	 * @param key the key.
-	 * @return the static property value.
+	 * @param key   the key.
+	 * @param value the static property value.
 	 */
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {
@@ -881,7 +884,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * @return the static property value.
 		 */
 		@Override
-		public Object getStaticProperty(StaticProperty key) { 
+		public Object getStaticProperty(StaticProperty key) {
 			Object result = super.getStaticProperty(key);
 			if (result == null) {
 				switch (key) {
@@ -913,8 +916,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 *
 		 * Value may be null in some cases, e.g. graphRef
 		 *
-		 * @param key the key.
-		 * @return the static property value.
+		 * @param key   the key.
+		 * @param value the static property value.
 		 */
 		@Override
 		public void setStaticProperty(StaticProperty key, Object value) {

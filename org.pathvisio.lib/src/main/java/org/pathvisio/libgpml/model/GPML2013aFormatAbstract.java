@@ -43,7 +43,7 @@ import org.pathvisio.libgpml.util.Utils;
  *
  * @author finterly
  */
-public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
+public abstract class Gpml2013aFormatAbstract extends GpmlFormatAbstract {
 
 	/**
 	 * Constructor for GPML2013aFormat Abstract.
@@ -51,7 +51,7 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
-	protected GPML2013aFormatAbstract(String xsdFile, Namespace nsGPML) {
+	protected Gpml2013aFormatAbstract(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
@@ -87,8 +87,8 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 	/**
 	 * This {@link Set} stores the deprecated GPML2013a properties. Dynamic
 	 * properties with these keys are ignored when writing GPML2013a
-	 * {@link GPML2013aWriter#writePathwayDynamicProperties} and GPML2021
-	 * {@link GPML2021Writer#writeDynamicProperties}.
+	 * {@link Gpml2013aWriter#writePathwayDynamicProperties} and GPML2021
+	 * {@link Gpml2021Writer#writeDynamicProperties}.
 	 */
 	public static final Set<String> GPML2013A_KEY_SET = new HashSet<>(Arrays.asList(PATHWAY_AUTHOR, PATHWAY_MAINTAINER,
 			PATHWAY_EMAIL, PATHWAY_LASTMODIFIED, INFOBOX_CENTER_X, INFOBOX_CENTER_Y, LEGEND_CENTER_X, LEGEND_CENTER_Y));
@@ -154,7 +154,7 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 
 	/**
 	 * This {@link Map} maps deprecated {@link String} to the new {@link ShapeType}
-	 * when reading GPML2013a {@link GPML2013aReader#readShapeStyleProperty}.
+	 * when reading GPML2013a {@link Gpml2013aReader#readShapeStyleProperty}.
 	 * 
 	 * NB: for mim-degradation
 	 */
@@ -166,10 +166,10 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 	/**
 	 * This cellular component {@link Map} maps {@link ShapeType}s. In GPML2013a,
 	 * cellular component shapeTypes are written as dynamic properties
-	 * {@link GPML2013aWriter#writeShapedOrStateDynamicProperties} with
+	 * {@link Gpml2013aWriter#writeShapedOrStateDynamicProperties} with
 	 * {@link #CELL_CMPNT_KEY} key and a value (e.g. "Nucleus); and property
 	 * shapeType in Graphics is written with a corresponding shapeType value (e.g.
-	 * "Oval") {@link GPML2013aWriter#writeShapeStyleProperty}.
+	 * "Oval") {@link Gpml2013aWriter#writeShapeStyleProperty}.
 	 */
 	public static final Map<ShapeType, ShapeType> CELL_CMPNT_MAP = new HashMap<ShapeType, ShapeType>();
 	static {
@@ -192,8 +192,8 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 	/**
 	 * This {@link BidiMap} maps GPML2013a openControlledVocabulary Ontology types
 	 * to their {@link DataSource} Prefix for reading
-	 * {@link GPML2013aReader#readOpenControlledVocabulary} and writing
-	 * {@link GPML2013aWriter#writeOpenControlledVocabulary}.
+	 * {@link Gpml2013aReader#readOpenControlledVocabulary} and writing
+	 * {@link Gpml2013aWriter#writeOpenControlledVocabulary}.
 	 */
 	public static final BidiMap<String, String> OCV_ONTOLOGY_MAP = new DualHashBidiMap<>();
 	static {
@@ -224,7 +224,7 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 	 * {@link DataNode.State} phosphosite {@link PathwayElement.Comment} in
 	 * GPML2013a. This set is used in determining whether a state comment should be
 	 * written as {@link Annotation}s and {@link Xref} in
-	 * {@link GPML2013aReader#convertStateCommentToRefs}.
+	 * {@link Gpml2013aReader#convertStateCommentToRefs}.
 	 */
 	Set<String> STATE_REF_LIST = new HashSet<>(
 			Arrays.asList(PARENT, POSITION, PTM, DIRECTION, PARENTID, PARENTSYMBOL, SITE, SITEGRPID));
@@ -234,7 +234,7 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 	 * {@link PathwayElement.Comment} maps PTM character to {@link Annotation} and
 	 * {@link Xref} information. E.g. for ptm=p, Annotation value=Phosphorylation,
 	 * Xref identifier=0000216, and dataSource = SBO. Used in writing state comments
-	 * to annotations and xref {@link GPML2013aReader#convertStateCommentToRefs}.
+	 * to annotations and xref {@link Gpml2013aReader#convertStateCommentToRefs}.
 	 */
 	public static final Map<String, List<String>> STATE_PTM_MAP = new HashMap<String, List<String>>();
 	static {
@@ -249,7 +249,7 @@ public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 	 * Map for {@link DataNode.State} phosphosite {@link PathwayElement.Comment}
 	 * direction character to {@link Annotation} and {@link Xref} information. "u"
 	 * for up-regulated and "d" for down-regulated. Used in writing state comments
-	 * to annotations and xref {@link GPML2013aReader#convertStateCommentToRefs}.
+	 * to annotations and xref {@link Gpml2013aReader#convertStateCommentToRefs}.
 	 */
 	public static final Map<String, List<String>> STATE_DIRECTION_MAP = new HashMap<String, List<String>>();
 	static {

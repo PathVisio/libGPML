@@ -22,7 +22,7 @@ import org.jdom2.Namespace;
  * Read / write GPML files. Base implementation for different GpmlFormat
  * versions. Code that is shared between multiple versions is located here.
  */
-public abstract class GPML2021FormatAbstract extends GPMLFormatAbstract {
+public abstract class Gpml2021FormatAbstract extends GpmlFormatAbstract {
 
 	/**
 	 * Constructor for GPML2021Format Abstract.
@@ -30,7 +30,7 @@ public abstract class GPML2021FormatAbstract extends GPMLFormatAbstract {
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
-	protected GPML2021FormatAbstract(String xsdFile, Namespace nsGPML) {
+	protected Gpml2021FormatAbstract(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 

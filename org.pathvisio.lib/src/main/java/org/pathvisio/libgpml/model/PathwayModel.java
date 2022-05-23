@@ -114,7 +114,7 @@ public class PathwayModel {
 	 *
 	 * NB: There can only be one pathway per pathway model.
 	 *
-	 * @return newInfo the new pathway info.
+	 * @param newP the new pathway info.
 	 */
 	protected void replacePathway(Pathway newP) {
 		Pathway oldP = pathway;

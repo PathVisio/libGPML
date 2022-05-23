@@ -161,7 +161,7 @@ public class Shape extends ShapedElement {
 	 * Value may be null in some cases, e.g. graphRef
 	 * 
 	 * @param key the key.
-	 * @return the static property value.
+	 * @param value the static property value.
 	 */
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {

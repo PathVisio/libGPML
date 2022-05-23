@@ -60,9 +60,9 @@ import org.pathvisio.libgpml.util.XrefUtils;
  *
  * @author finterly
  */
-public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormatReader {
+public class Gpml2021Reader extends Gpml2021FormatAbstract implements GpmlFormatReader {
 
-	public static final GPML2021Reader GPML2021READER = new GPML2021Reader("GPML2021.xsd",
+	public static final Gpml2021Reader GPML2021READER = new Gpml2021Reader("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
 
 	/**
@@ -71,7 +71,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
-	protected GPML2021Reader(String xsdFile, Namespace nsGPML) {
+	protected Gpml2021Reader(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
@@ -587,7 +587,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 *
 	 * @param pathwayModel  the pathway model.
 	 * @param shapedElement the shapedElement to read groupRef for.
-	 * @param dn            the jdom shaped element.
+	 * @param e            the jdom shaped element.
 	 * @throws ConverterException
 	 */
 	protected void readGroupRef(PathwayModel pathwayModel, ShapedElement shapedElement, Element e)

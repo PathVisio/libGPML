@@ -22,8 +22,8 @@ import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.GPML2013aWriter;
-import org.pathvisio.libgpml.model.GPML2021Writer;
+import org.pathvisio.libgpml.model.Gpml2013aWriter;
+import org.pathvisio.libgpml.model.Gpml2021Writer;
 import org.pathvisio.libgpml.model.PathwayModel;
 
 import junit.framework.TestCase;
@@ -63,11 +63,11 @@ public class TestSingleGPMLReadWrite extends TestCase {
 	@Test
 	public void testWrite() throws IOException, ConverterException {
 		File tmp = File.createTempFile(inputFile + "_testwriteGPML2013a_", ".gpml");
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		Gpml2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);
 
 		File tmp2 = File.createTempFile(inputFile + "_testwriteGPML2021_", ".gpml");
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp2, true);
+		Gpml2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp2, true);
 		System.out.println(tmp2);
 	}
 

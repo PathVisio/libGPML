@@ -61,9 +61,9 @@ import org.pathvisio.libgpml.util.XrefUtils;
  *
  * @author finterly
  */
-public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlFormatWriter {
+public class Gpml2013aWriter extends Gpml2013aFormatAbstract implements GpmlFormatWriter {
 
-	public static final GPML2013aWriter GPML2013aWRITER = new GPML2013aWriter("GPML2013a.xsd",
+	public static final Gpml2013aWriter GPML2013aWRITER = new Gpml2013aWriter("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
 	/**
@@ -72,7 +72,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	 * @param xsdFile the GPML schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
-	protected GPML2013aWriter(String xsdFile, Namespace nsGPML) {
+	protected Gpml2013aWriter(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
@@ -502,7 +502,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GpmlForm
 	/**
 	 * Writes point {@link LinePoint} information.
 	 *
-	 * @param points the list of points.
+	 * @param lineElement the line element.
 	 * @param gfx    the parent graphics element.
 	 * @throws ConverterException
 	 */

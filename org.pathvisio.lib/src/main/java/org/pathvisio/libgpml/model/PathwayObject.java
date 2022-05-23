@@ -311,7 +311,7 @@ public abstract class PathwayObject {
 	 * Value may be null in some cases, e.g. elementRef
 	 *
 	 * @param key the key.
-	 * @return the static property value.
+	 * @param value the static property value.
 	 */
 	public void setStaticProperty(StaticProperty key, Object value) {
 		if (!getStaticPropertyKeys().contains(key))

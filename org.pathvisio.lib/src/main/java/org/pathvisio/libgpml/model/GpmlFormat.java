@@ -54,8 +54,8 @@ import org.xml.sax.InputSource;
  */
 public class GpmlFormat extends AbstractPathwayModelFormat {
 
-	static public final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
-	static public final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
+	static public final Gpml2021Writer CURRENT = Gpml2021Writer.GPML2021WRITER;
+	static public final Gpml2013aWriter PREVIOUS = Gpml2013aWriter.GPML2013aWRITER;
 
 	private GpmlFormatWriter writer;
 
@@ -116,7 +116,7 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 	 */
 	@Override
 	public String getName() {
-		if (writer instanceof GPML2013aWriter) {
+		if (writer instanceof Gpml2013aWriter) {
 			return "GPML2013a file";
 		} else {
 			return "GPML file";
@@ -215,8 +215,8 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 	 * @return the correct GPML reader for the given namespace.
 	 */
 	public static GpmlFormatReader getReaderForNamespace(Namespace ns) {
-		GpmlFormatReader[] formats = new GpmlFormatReader[] { GPML2021Reader.GPML2021READER,
-				GPML2013aReader.GPML2013aREADER };
+		GpmlFormatReader[] formats = new GpmlFormatReader[] { Gpml2021Reader.GPML2021READER,
+				Gpml2013aReader.GPML2013aREADER };
 		for (GpmlFormatReader format : formats) {
 			if (ns.equals(format.getGpmlNamespace())) {
 				return format;
@@ -231,7 +231,6 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 	 * @param pathwayModel the pathway model.
 	 * @param is           the file from which the JDOM document should be read.
 	 * @param validate     if true, validate the dom structure during/after reading.
-	 * @return the read pathway model.
 	 * @throws ConverterException
 	 */
 	private static void readFromXmlImpl(PathwayModel pathwayModel, InputSource is, boolean validate)
@@ -263,7 +262,7 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 			Logger.log.trace("Copy map elements");
 			format.readFromRoot(pathwayModel, root);
 			// warning message if opening older GPML
-			if (!(format instanceof GPML2021Reader)) {
+			if (!(format instanceof Gpml2021Reader)) {
 				JOptionPane.showMessageDialog(null,
 						"This pathway was written in an older Gpml version.\nSave will automatically update it to GPML2021.",
 						"Warning", JOptionPane.WARNING_MESSAGE);

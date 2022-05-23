@@ -136,7 +136,7 @@ public class Group extends ShapedElement implements Xrefable {
 	 * <ol>
 	 * <li>Generally called after {@link addPathwayElement} or setGroupRefTo
 	 * Methods, when pathway elements are added to group.
-	 * <li>Called after reading methods in {@link updateGroup}.
+	 * <li>Called after reading methods in {@link GpmlFormatAbstract#updateGroups}.
 	 * <li>Also called in copy and paste methods.
 	 * </ol>
 	 */
@@ -475,7 +475,7 @@ public class Group extends ShapedElement implements Xrefable {
 	 * Value may be null in some cases, e.g. graphRef
 	 * 
 	 * @param key the key.
-	 * @return the static property value.
+	 * @param value the static property value.
 	 */
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {
