@@ -21,11 +21,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.GraphicalLine;
-import org.pathvisio.libgpml.model.Interaction;
-import org.pathvisio.libgpml.model.PathwayModel;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
-import org.pathvisio.libgpml.model.type.ArrowHeadType;
 
 import junit.framework.TestCase;
 
@@ -116,7 +112,7 @@ public class TestLinePoint extends TestCase {
 
 		// checks
 		assertFalse(p.hasPathwayObject(i1));
-		assertFalse(p.getInteractions().contains(i1));
+		assertFalse(p.getGraphicalLines().contains(i1));
 		assertNull(i1.getPathwayModel());
 		assertFalse(p.hasPathwayObject(pt1));
 		assertFalse(p.hasPathwayObject(pt2));

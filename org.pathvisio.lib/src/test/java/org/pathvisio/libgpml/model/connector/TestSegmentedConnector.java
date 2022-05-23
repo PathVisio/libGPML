@@ -21,9 +21,7 @@ import java.util.Arrays;
 
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
-import org.pathvisio.libgpml.model.connector.FreeConnectorShape;
 import org.pathvisio.libgpml.model.connector.ConnectorShape.Segment;
-import org.pathvisio.libgpml.model.type.ArrowHeadType;
 
 import junit.framework.TestCase;
 

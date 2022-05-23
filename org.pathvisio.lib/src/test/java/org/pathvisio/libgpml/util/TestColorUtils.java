@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.pathvisio.libgpml.util.ColorUtils;
-
 import junit.framework.TestCase;
 
 /**
@@ -61,6 +59,6 @@ public class TestColorUtils extends TestCase {
 		assertTrue(ColorUtils.isTransparent(color));
 		assertTrue(ColorUtils.isTransparent(color2));
 	}
-		
+	
 	
 }

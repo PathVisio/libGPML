@@ -24,31 +24,39 @@ package org.pathvisio.libgpml.prop;
 public interface Property {
 
 	/**
-	 * Gets the Id for this property.  Ids must be unique.
+	 * Returns the Id for this property. Ids must be unique.
+	 * 
+	 * @return the id for this property.
 	 */
 	String getId();
 
 	/**
-	 * @returns Name of property, used e.g. as row header in the properties table.
+	 * Returns the name of property, used e.g. as row header in the properties
+	 * table.
+	 * 
+	 * @return the name.
 	 */
 	String getName();
 
 	/**
-	 * Description of property, used e.g. as tooltip text when mousing over
-	 * the properties table. Descriptions are optional.
-	 * @returns description. May return null.
+	 * Description of property, used e.g. as tooltip text when mousing over the
+	 * properties table. Descriptions are optional.
+	 * 
+	 * @return description. May return null.
 	 */
 	String getDescription();
 
-
 	/**
-	 * Gets the data type for this property.
+	 * Returns the data type for this property.
+	 * 
+	 * @return the data property type.
 	 */
 	PropertyType getType();
 
-
 	/**
 	 * Gets whether this property has accepts values.
+	 * 
+	 * @return true if this property accepts values.
 	 */
 	boolean isCollection();
 }

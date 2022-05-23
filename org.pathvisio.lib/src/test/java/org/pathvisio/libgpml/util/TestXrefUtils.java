@@ -3,7 +3,6 @@ package org.pathvisio.libgpml.util;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
-import org.pathvisio.libgpml.util.XrefUtils;
 
 import junit.framework.TestCase;
 
@@ -53,7 +52,6 @@ public class TestXrefUtils extends TestCase {
 		assertFalse(XrefUtils.equivalentXrefs(xref1, xref2));
 		assertFalse(XrefUtils.equivalentXrefs(xref1, xref3));
 		assertTrue(XrefUtils.equivalentXrefs(xref3, xref4));
-
 	}
 
 }

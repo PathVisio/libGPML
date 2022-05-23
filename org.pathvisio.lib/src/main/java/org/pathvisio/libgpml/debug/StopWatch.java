@@ -16,12 +16,12 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.debug;
 
-
 /**
-   A simple helper class for speed optimizations
-*/
-public class StopWatch
-{
+ * A simple helper class for speed optimizations. 
+ * 
+ * @author unknown
+ */
+public class StopWatch {
 	boolean running;
 	long start;
 	long last;
@@ -38,7 +38,8 @@ public class StopWatch
 	}
 
 	public long look() {
-		if(running) return System.currentTimeMillis() - start;
+		if (running)
+			return System.currentTimeMillis() - start;
 		return last;
 	}
 

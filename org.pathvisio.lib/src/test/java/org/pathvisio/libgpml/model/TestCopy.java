@@ -21,14 +21,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.Citation;
-import org.pathvisio.libgpml.model.CopyElement;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.GraphicalLine;
-import org.pathvisio.libgpml.model.Interaction;
-import org.pathvisio.libgpml.model.Label;
-import org.pathvisio.libgpml.model.PathwayModel;
-import org.pathvisio.libgpml.model.Shape;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
@@ -123,7 +115,7 @@ public class TestCopy extends TestCase {
 		assertTrue(p2.hasPathwayObject(o2));
 
 		// load references for new element
-		copy.loadReferences();
+		o2.copyReferencesFrom(copy.getSourceElement());
 		CitationRef cr2 = o2.getCitationRefs().get(0);
 		Citation c2 = cr2.getCitation();
 		assertEquals(c2.getUrlLink(), "String");

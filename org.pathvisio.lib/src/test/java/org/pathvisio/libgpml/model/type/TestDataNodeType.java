@@ -19,9 +19,6 @@ package org.pathvisio.libgpml.model.type;
 import java.util.Arrays;
 import java.util.List;
 
-import org.pathvisio.libgpml.model.type.DataNodeType;
-import org.pathvisio.libgpml.model.type.GroupType;
-
 import junit.framework.TestCase;
 
 /**

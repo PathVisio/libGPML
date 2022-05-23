@@ -1,28 +1,27 @@
 package org.pathvisio.libgpml.model;
 
-import java.util.List;
-
-import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
-import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
-import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
-
 /**
- * This class stores information for copying {@link PathwayElement}.
- * 
+ * This class stores information for copied {@link PathwayElement}. Storing both
+ * the new pathway element and its original source pathway element helps
+ * maintain pathway element data, such as reference information, when copying
+ * (to clipboard) and pasting or transferring pathway data.
+ *
  * {@link PathwayElement#copy} returns a {@link CopyElement} which stores the
  * newly created newElement and a reference to the original sourceElement.
- * 
+ *
  * @author finterly
  */
 public class CopyElement {
 
 	PathwayElement newElement;
-
 	PathwayElement sourceElement;
 
 	/**
-	 * @param newElement
-	 * @param sourceElement
+	 * Instantiates a CopyElement which holds references to a new pathway element
+	 * and the original source element it was copied from.
+	 *
+	 * @param newElement    the new pathway element copied from a source element.
+	 * @param sourceElement the original pathway element copied.
 	 */
 	public CopyElement(PathwayElement newElement, PathwayElement sourceElement) {
 		super();
@@ -31,84 +30,39 @@ public class CopyElement {
 	}
 
 	/**
-	 * @return
+	 * Returns the new pathway element.
+	 *
+	 * @return newElement the new pathway element copied from source element.
 	 */
 	public PathwayElement getNewElement() {
 		return newElement;
 	}
 
 	/**
-	 * @param newElement
+	 * Sets the new pathway element.
+	 *
+	 * @param newElement the new pathway element copied from source element.
 	 */
 	public void setNewElement(PathwayElement newElement) {
 		this.newElement = newElement;
 	}
 
 	/**
-	 * @return
+	 * Returns source pathway element.
+	 *
+	 * @return sourceElement the original pathway element copied.
 	 */
 	public PathwayElement getSourceElement() {
 		return sourceElement;
 	}
 
 	/**
-	 * @param sourceElement
+	 * Sets source pathway element.
+	 *
+	 * @param sourceElement the the original pathway element copied.
 	 */
 	public void setSourceElement(PathwayElement sourceElement) {
 		this.sourceElement = sourceElement;
-	}
-
-	/**
-	 * Loads references. NB: To be called after new pathway element is added to a
-	 * pathway model.
-	 */
-	public void loadReferences() {
-		if (newElement != null && sourceElement != null) {
-			loadAnnotationRefs(sourceElement.getAnnotationRefs());
-			loadCitationRefs(sourceElement.getCitationRefs());
-			loadEvidenceRefs(sourceElement.getEvidenceRefs());
-		}
-	}
-
-	/**
-	 * @param citationRefs
-	 */
-	private void loadCitationRefs(List<CitationRef> citationRefs) {
-		for (CitationRef citationRef : citationRefs) {
-			newElement.addCitation(citationRef.getCitation().copyRef());
-			loadAnnotationRefs(citationRef.getAnnotationRefs());
-		}
-	}
-
-	/**
-	 * 
-	 */
-	/**
-	 * @param annotationRefs
-	 */
-	private void loadAnnotationRefs(List<AnnotationRef> annotationRefs) {
-		for (AnnotationRef annotationRef : annotationRefs) {
-			newElement.addAnnotation(annotationRef.getAnnotation().copyRef());
-			loadCitationRefs(annotationRef.getCitationRefs());
-			loadEvidenceRefs(annotationRef.getEvidenceRefs());
-
-		}
-	}
-
-	/**
-	 * @param evidenceRefs
-	 */
-	private void loadEvidenceRefs(List<EvidenceRef> evidenceRefs) {
-		for (EvidenceRef evidenceRef : evidenceRefs) {
-			newElement.addEvidence(evidenceRef.getEvidence().copyRef());
-		}
-	}
-
-	/**
-	 * 
-	 */
-	public void getGroup() {
-		// TODO
 	}
 
 }

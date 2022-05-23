@@ -23,19 +23,22 @@ import java.awt.geom.GeneralPath;
 
 /**
  * This class defines some shapes. Shapes are defined and registered in the
- * static section of this class. Custom shapes are created using
  * {@link GeneralPath}.
  * 
  * <p>
+ * NB:
  * <ol>
  * <li>BRACE
  * <li>MITOCHONDRIA
  * <li>SARCOPLASMICRETICULUM
  * <li>ENDOPLASMICRETICULUM
  * <li>GOLGIAPPARATUS
- * <li>CORONAVIRUS //TODO
- * <li>DNA //TODO
- * <li>CELL ICON //TODO
+ * <li>CORONAVIRUS_ICON
+ * <li>DNA_ICON
+ * <li>RNA_ICON
+ * <li>CELL_ICON
+ * <li>MEMBRANE_ICON
+ * <li>DEGRADATION
  * </ol>
  * 
  * NB: shapes were previously specific to GenMAPP, such as the GenMAPP
@@ -55,6 +58,7 @@ public class ShapeCatalog {
 	public enum Internal {
 
 		// Basic shapes
+		OCTAGON,
 
 		// Basic line shapes
 		BRACE,
@@ -62,8 +66,8 @@ public class ShapeCatalog {
 		// Cellular components
 		MITOCHONDRIA, SARCOPLASMIC_RETICULUM, ENDOPLASMIC_RETICULUM, GOLGI_APPARATUS,
 
-		// Special shapes
-		CORONAVIRUS, DNA, RNA, DNA2, RNA2, CELL_ICON
+		// Miscellaneous shapes
+		CORONAVIRUS_ICON, DNA_ICON, RNA_ICON, CELL_ICON, MEMBRANE_ICON, DEGRADATION
 
 	}
 
@@ -75,6 +79,21 @@ public class ShapeCatalog {
 	static public java.awt.Shape getPluggableShape(Internal st) {
 		GeneralPath path = new GeneralPath();
 		switch (st) {
+		// ========================================
+		// Basic shapes
+		// ========================================
+		case OCTAGON:
+			path.moveTo(52.32, 100);
+			path.lineTo(21.68, 100);
+			path.lineTo(0, 70.71);
+			path.lineTo(0, 29.29);
+			path.lineTo(21.67, 0);
+			path.lineTo(52.32, 0);
+			path.lineTo(74, 29.29);
+			path.lineTo(74, 70.71);
+			path.lineTo(52.32, 100);
+			path.closePath();
+			break;
 		// ========================================
 		// Basic line shapes
 		// ========================================
@@ -178,7 +197,7 @@ public class ShapeCatalog {
 		// ========================================
 		// Special shapes
 		// ========================================
-		case CORONAVIRUS:
+		case CORONAVIRUS_ICON:
 			path.append(new Ellipse2D.Double(90, 90, 150, 150), false);
 			double origin = 165;
 			for (double angle = 0; angle < 360; angle += 30) {
@@ -196,7 +215,7 @@ public class ShapeCatalog {
 				path.lineTo(endX, endY);
 			}
 			break;
-		case DNA:
+		case DNA_ICON:
 			path.moveTo(17.63, 25.01);
 			path.curveTo(23.64, 19.04, 29.93, 12.07, 30, 0);
 			path.lineTo(27.15, 0);
@@ -269,7 +288,7 @@ public class ShapeCatalog {
 			path.curveTo(17.02, 29.02, 19.9, 31.76, 21, 33.28);
 			path.closePath();
 			break;
-		case RNA:
+		case RNA_ICON:
 			path.moveTo(21.26, 83.38);
 			path.lineTo(16.54, 83.38);
 			path.lineTo(16.54, 86.79);
@@ -378,6 +397,54 @@ public class ShapeCatalog {
 			path.append(new Ellipse2D.Double(25, 75, 5, 5), false);
 			path.append(new Ellipse2D.Double(25, 75, 5, 5), false);// for fill color
 			break;
+		case MEMBRANE_ICON:
+			// phospholipid bilayer
+			GeneralPath plipid = new GeneralPath();
+			plipid.moveTo(7.09, 16.54); // hydrophobic tail
+			plipid.curveTo(6.89, 16.14, 6.07, 14.67, 6.02, 14.08);
+			plipid.curveTo(5.9, 12.87, 7.11, 12.28, 7.11, 11.06);
+			plipid.curveTo(7.08, 9.8, 5.19, 8.09, 4.9, 7.94);
+			plipid.curveTo(5.18, 8.12, 7.01, 9.8, 7.08, 11.06);
+			plipid.curveTo(7.04, 12.28, 5.88, 12.88, 6, 14.09);
+			plipid.curveTo(6.05, 14.69, 6.84, 16.16, 7.04, 16.56);
+			plipid.curveTo(7.62, 17.7, 7.7, 18.13, 7.64, 19);
+			plipid.curveTo(7.68, 18.15, 7.67, 17.68, 7.09, 16.54);
+			plipid.closePath();
+			plipid.moveTo(8, 4.02); // hydrophilic head
+			plipid.curveTo(8, 6.24, 6.21, 8.05, 4, 8.05);
+			plipid.curveTo(1.79, 8.05, 0, 6.24, 0, 4.02);
+			plipid.curveTo(0, 1.8, 1.79, 0, 4, 0);
+			plipid.curveTo(6.21, 0, 8, 1.8, 8, 4.02);
+			plipid.closePath();
+			plipid.moveTo(0.87, 16.54); // hydrophobic tail
+			plipid.curveTo(1.07, 16.14, 1.89, 14.67, 1.93, 14.08);
+			plipid.curveTo(2.06, 12.87, 0.85, 12.28, 0.85, 11.06);
+			plipid.curveTo(0.88, 9.8, 2.77, 8.09, 3.06, 7.94);
+			plipid.curveTo(2.77, 8.12, 0.95, 9.8, 0.88, 11.06);
+			plipid.curveTo(0.92, 12.28, 2.08, 12.88, 1.96, 14.09);
+			plipid.curveTo(1.91, 14.69, 1.12, 16.16, 0.92, 16.56);
+			plipid.curveTo(0.34, 17.7, 0.26, 18.13, 0.31, 19);
+			plipid.curveTo(0.28, 18.15, 0.29, 17.68, 0.87, 16.54);
+			plipid.closePath();
+			for (int i = 0; i < 6; i++) {
+				AffineTransform at4 = new AffineTransform();
+				at4.translate(i * 10.5, 0);
+				path.append(at4.createTransformedShape(plipid), false);
+				AffineTransform at5 = AffineTransform.getScaleInstance(1, -1);
+				at5.translate(i * 10.5, -40);
+				path.append(at5.createTransformedShape(plipid), false);
+			}
+			break;
+		case DEGRADATION:
+			path.moveTo(31.59f, 18.46f);
+			path.curveTo(31.59f, 25.44f, 25.72f, 31.10f, 18.50f, 31.10f);
+			path.curveTo(11.27f, 31.10f, 5.41f, 25.44f, 5.41f, 18.46f);
+			path.curveTo(5.41f, 11.48f, 11.27f, 5.82f, 18.50f, 5.82f);
+			path.curveTo(25.72f, 5.82f, 31.59f, 11.48f, 31.59f, 18.46f);
+			path.closePath();
+			path.moveTo(0.39f, 0.80f);
+			path.curveTo(34.84f, 36.07f, 35.25f, 35.67f, 35.25f, 35.67f);
+			break;
 		default:
 			break;
 		}
@@ -394,18 +461,6 @@ public class ShapeCatalog {
 	 */
 	public static java.awt.Shape getRegularPolygon(int sides, double w, double h) {
 		GeneralPath path = new GeneralPath();
-		if (sides == 8) { // separate method for octagon TODO 
-			path.moveTo(52.32, 100);
-			path.lineTo(21.68, 100);
-			path.lineTo(0, 70.71);
-			path.lineTo(0, 29.29);
-			path.lineTo(21.67, 0);
-			path.lineTo(52.32, 0);
-			path.lineTo(74, 29.29);
-			path.lineTo(74, 70.71);
-			path.lineTo(52.32, 100);
-			return path;
-		}
 		for (int i = 0; i < sides; ++i) {
 			double angle = Math.PI * 2 * i / sides;
 			double x = (w / 2) * (1 + Math.cos(angle));

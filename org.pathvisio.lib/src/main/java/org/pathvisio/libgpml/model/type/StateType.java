@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.type;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,14 +33,10 @@ public class StateType {
 	private static Map<String, StateType> nameToStateType = new TreeMap<String, StateType>(
 			String.CASE_INSENSITIVE_ORDER);
 
-	// TODO Add more and changes
 	public static final StateType UNDEFINED = new StateType("Undefined");
 	public static final StateType PROTEIN_MODIFICATION = new StateType("ProteinModification");
 	public static final StateType GENETIC_VARIANT = new StateType("GeneticVariant");
 	public static final StateType EPIGENETIC_MODIFICATION = new StateType("EpigeneticModification");
-
-	// (something for metabolites?)
-	// gene modification?
 
 	private String name;
 
@@ -117,13 +111,12 @@ public class StateType {
 	}
 
 	/**
-	 * Returns a string representation of this StateType. Adds space between lower
-	 * and upper case letters to make more human readable.
+	 * Returns a string representation of this StateType.
 	 * 
 	 * @return name the identifier of this StateType.
 	 */
 	public String toString() {
-//		return name.replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2"); //TODO 
 		return name;
 	}
+
 }

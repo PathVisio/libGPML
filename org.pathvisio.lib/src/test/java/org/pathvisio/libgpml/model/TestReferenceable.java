@@ -2,12 +2,6 @@ package org.pathvisio.libgpml.model;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.Annotation;
-import org.pathvisio.libgpml.model.Citation;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.Evidence;
-import org.pathvisio.libgpml.model.PathwayModel;
-import org.pathvisio.libgpml.model.Referenceable;
 import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;

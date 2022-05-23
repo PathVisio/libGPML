@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -17,7 +17,6 @@
 package org.pathvisio.libgpml.model;
 
 import java.awt.Color;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,77 +25,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.ValidatorHandler;
-
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
-import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
-import org.jdom2.output.Format;
-import org.jdom2.output.SAXOutputter;
-import org.jdom2.output.XMLOutputter;
-import org.pathvisio.libgpml.debug.Logger;
 import org.pathvisio.libgpml.io.ConverterException;
-import org.pathvisio.libgpml.model.shape.ShapeType;
+import org.pathvisio.libgpml.model.type.ShapeType;
 import org.pathvisio.libgpml.model.type.ArrowHeadType;
 import org.pathvisio.libgpml.util.ColorUtils;
-import org.pathvisio.libgpml.util.MiscUtils;
-import org.xml.sax.SAXException;
+import org.pathvisio.libgpml.util.Utils;
 
 /**
- * Abstract class for GPML2013a format. Contains static properties
- * {@link String}, {@link Map}, {@link BidiMap}, {@link List}, and methods used
- * in reading or writing GPML2013a.
- * 
+ * Abstract class for GPML2013a format. Contains static properties and methods
+ * used in reading or writing GPML2013a.
+ *
  * @author finterly
  */
-public abstract class GPML2013aFormatAbstract {
-
-	/**
-	 * The namespace
-	 */
-	private final Namespace nsGPML;
-
-	/**
-	 * The schema file
-	 */
-	private final String xsdFile;
+public abstract class GPML2013aFormatAbstract extends GPMLFormatAbstract {
 
 	/**
 	 * Constructor for GPML2013aFormat Abstract.
-	 * 
+	 *
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
 	protected GPML2013aFormatAbstract(String xsdFile, Namespace nsGPML) {
-		this.xsdFile = xsdFile;
-		this.nsGPML = nsGPML;
-	}
-
-	/**
-	 * Returns the GPML schema file.
-	 * 
-	 * @return xsdFile the schema file.
-	 */
-	public String getSchemaFile() {
-		return xsdFile;
-	}
-
-	/**
-	 * Returns the GPML namespace.
-	 * 
-	 * @return nsGPML the GPML namespace.
-	 */
-	public Namespace getGpmlNamespace() {
-		return nsGPML;
+		super(xsdFile, nsGPML);
 	}
 
 	// ================================================================================
@@ -162,13 +118,14 @@ public abstract class GPML2013aFormatAbstract {
 		SHAPETYPE_TO_CAMELCASE.put("Golgi Apparatus", "GolgiApparatus");
 		SHAPETYPE_TO_CAMELCASE.put("Cytosol region", "CytosolRegion");
 		SHAPETYPE_TO_CAMELCASE.put("Extracellular region", "ExtracellularRegion");
+		SHAPETYPE_TO_CAMELCASE.put("Membrane region", "MembraneRegion");
 	}
 
 	/**
 	 * Converts shapeType {@link String} to UpperCamelCase convention. In GPML2013a,
 	 * naming convention was inconsistent. Moving forward, enum types strings are
 	 * all in UpperCamelCase.
-	 * 
+	 *
 	 * @param str the string.
 	 * @return the string in camelCase format, or string as it was.
 	 * @throws ConverterException
@@ -183,7 +140,7 @@ public abstract class GPML2013aFormatAbstract {
 	/**
 	 * Converts shapeType {@link String} from UpperCamelCase convention back to its
 	 * original appearance in GPML2013a.
-	 * 
+	 *
 	 * @param str the string.
 	 * @return the string in its original format.
 	 * @throws ConverterException
@@ -196,25 +153,14 @@ public abstract class GPML2013aFormatAbstract {
 	}
 
 	/**
-	 * This {@link Map} maps deprecated {@link ShapeType} to the new shape types
+	 * This {@link Map} maps deprecated {@link String} to the new {@link ShapeType}
 	 * when reading GPML2013a {@link GPML2013aReader#readShapeStyleProperty}.
-	 * However, if the pathway element has dynamic property with
-	 * {@link #CELL_CMPNT_KEY}, shapeType may be overridden after reading dynamic
-	 * properties.
+	 * 
+	 * NB: for mim-degradation
 	 */
-	public static final Map<ShapeType, ShapeType> DEPRECATED_MAP = new HashMap<ShapeType, ShapeType>();
+	public static final BidiMap<String, ShapeType> DEPRECATED_MAP = new DualHashBidiMap<String, ShapeType>();
 	static {
-		DEPRECATED_MAP.put(ShapeType.CELL, ShapeType.ROUNDED_RECTANGLE);
-		DEPRECATED_MAP.put(ShapeType.ORGANELLE, ShapeType.ROUNDED_RECTANGLE);
-		DEPRECATED_MAP.put(ShapeType.MEMBRANE, ShapeType.ROUNDED_RECTANGLE);
-		DEPRECATED_MAP.put(ShapeType.CELLA, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.NUCLEUS, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.ORGANA, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.ORGANB, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.ORGANC, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.VESICLE, ShapeType.OVAL);
-		DEPRECATED_MAP.put(ShapeType.PROTEINB, ShapeType.HEXAGON);
-		DEPRECATED_MAP.put(ShapeType.RIBOSOME, ShapeType.HEXAGON);
+		DEPRECATED_MAP.put("mim-degradation", ShapeType.DEGRADATION);
 	}
 
 	/**
@@ -238,9 +184,9 @@ public abstract class GPML2013aFormatAbstract {
 		CELL_CMPNT_MAP.put(ShapeType.NUCLEOLUS, ShapeType.OVAL);
 		CELL_CMPNT_MAP.put(ShapeType.VACUOLE, ShapeType.OVAL);
 		CELL_CMPNT_MAP.put(ShapeType.VESICLE, ShapeType.OVAL);
-		CELL_CMPNT_MAP.put(ShapeType.CYTOSOL, ShapeType.ROUNDED_RECTANGLE);
-		CELL_CMPNT_MAP.put(ShapeType.EXTRACELLULAR, ShapeType.ROUNDED_RECTANGLE);
-		CELL_CMPNT_MAP.put(ShapeType.MEMBRANE, ShapeType.ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(ShapeType.CYTOSOL_REGION, ShapeType.ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(ShapeType.EXTRACELLULAR_REGION, ShapeType.ROUNDED_RECTANGLE);
+		CELL_CMPNT_MAP.put(ShapeType.MEMBRANE_REGION, ShapeType.ROUNDED_RECTANGLE);
 	}
 
 	/**
@@ -353,7 +299,7 @@ public abstract class GPML2013aFormatAbstract {
 	/**
 	 * Returns the GPML2021 Interaction Panel arrow head type for given GPML2013a
 	 * arrowHead type string.
-	 * 
+	 *
 	 * @param arrowHeadStr the string for GPML2013a arrow head type.
 	 * @return arrowHead the interaction panel arrow head type which corresponds to
 	 *         arrowHeadStr, or null if no corresponding type exists.
@@ -364,7 +310,7 @@ public abstract class GPML2013aFormatAbstract {
 		for (ArrowHeadType arrowHead : arrowHeads) {
 			List<String> arrowHeadStrs = IA_PANEL_MAP.get(arrowHead);
 			// case insensitive method for matching in list
-			if (MiscUtils.containsCaseInsensitive(arrowHeadStr, arrowHeadStrs)) {
+			if (Utils.containsCaseInsensitive(arrowHeadStr, arrowHeadStrs)) {
 				return arrowHead;
 			}
 		}
@@ -374,7 +320,7 @@ public abstract class GPML2013aFormatAbstract {
 	/**
 	 * Returns the prioritized GPML2013a arrowHead type string for given GPML2021
 	 * Interaction Panel arrow head type.
-	 * 
+	 *
 	 * @param arrowHead the interaction panel arrow head type for GPML2021e.
 	 * @return the first GPML2013a arrow head which corresponds to the interaction
 	 *         panel arrow head type, or null if no corresponding type exists.
@@ -392,7 +338,7 @@ public abstract class GPML2013aFormatAbstract {
 
 	/**
 	 * Attribute info map is initiated with {@link #initAttributeInfo()}.
-	 * 
+	 *
 	 */
 	private static final Map<String, AttributeInfo> ATTRIBUTE_INFO = initAttributeInfo();
 
@@ -405,12 +351,12 @@ public abstract class GPML2013aFormatAbstract {
 	 * fetched from this map. When writing, if trying to set a default value or an
 	 * optional value to null, the attribute is omitted which results in a leaner
 	 * xml output.
-	 * 
+	 *
 	 * This map defines custom default values not in the GPML2013a schema such as
 	 * default "Label.Graphics@FillColor" as "Transparent". We do not do this for
 	 * GPML2021 as it can be confusing to have custom reading/writing resulting in
 	 * xml which do not adhere to the schema.
-	 * 
+	 *
 	 * @return
 	 */
 	private static Map<String, AttributeInfo> initAttributeInfo() {
@@ -603,7 +549,7 @@ public abstract class GPML2013aFormatAbstract {
 
 		/**
 		 * Creates an object containing the gpml schema definition of a given attribute.
-		 * 
+		 *
 		 * @param aSchemaType the xsd validated type of the attribute.
 		 * @param aDef        the default value for the attribute.
 		 * @param aUse        the use of the attribute.
@@ -617,7 +563,7 @@ public abstract class GPML2013aFormatAbstract {
 
 	/**
 	 * Returns true if given string value and default value are equal.
-	 * 
+	 *
 	 * @param def   the default string.
 	 * @param value the given string.
 	 * @return true if the specified arguments are equal, or both null.
@@ -629,7 +575,7 @@ public abstract class GPML2013aFormatAbstract {
 
 	/**
 	 * Returns true if given string value and default value are numerically equal.
-	 * 
+	 *
 	 * @param def   the string for default number value.
 	 * @param value the string for given number value.
 	 * @return true if absolute value of difference between def and value is less
@@ -647,7 +593,7 @@ public abstract class GPML2013aFormatAbstract {
 
 	/**
 	 * Returns true if given value and default value are the same color object.
-	 * 
+	 *
 	 * @param def   the string for default color object.
 	 * @param value the string for given color object.
 	 * @return true if color is equal, false otherwise.
@@ -718,64 +664,4 @@ public abstract class GPML2013aFormatAbstract {
 		return result;
 	}
 
-	/**
-	 * Removes group from pathwayModel if empty. Check executed after reading and
-	 * before writing.
-	 * 
-	 * @param pathwayModel the pathway model.
-	 * @throws ConverterException
-	 */
-	protected void removeEmptyGroups(PathwayModel pathwayModel) throws ConverterException {
-		List<Group> groups = pathwayModel.getGroups();
-		List<Group> groupsToRemove = new ArrayList<Group>();
-		for (Group group : groups) {
-			if (group.getPathwayElements().isEmpty()) {
-				groupsToRemove.add(group);
-			}
-		}
-		for (Group groupToRemove : groupsToRemove) {
-			Logger.log.trace("Warning: Removed empty group " + groupToRemove.getElementId());
-			pathwayModel.removeGroup(groupToRemove);
-		}
-	}
-
-	/**
-	 * validates a JDOM document against the xml-schema definition specified by
-	 * 'xsdFile'
-	 * 
-	 * @param doc the document to validate
-	 */
-	public void validateDocument(Document doc) throws ConverterException {
-		ClassLoader cl = PathwayModel.class.getClassLoader();
-		InputStream is = cl.getResourceAsStream(xsdFile);
-		if (is != null) {
-			Schema schema;
-			try {
-				SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				StreamSource ss = new StreamSource(is);
-				schema = factory.newSchema(ss);
-				ValidatorHandler vh = schema.newValidatorHandler();
-				SAXOutputter so = new SAXOutputter(vh);
-				so.output(doc);
-				// If no errors occur, the file is valid according to the gpml xml schema
-				// definition
-				Logger.log
-						.info("Document is valid according to the xml schema definition '" + xsdFile.toString() + "'");
-			} catch (SAXException se) {
-				Logger.log.error("Could not parse the xml-schema definition", se);
-				throw new ConverterException(se);
-			} catch (JDOMException je) {
-				Logger.log.error("Document is invalid according to the xml-schema definition!: " + je.getMessage(), je);
-				XMLOutputter xmlcode = new XMLOutputter(Format.getPrettyFormat());
-
-				Logger.log.error("The invalid XML code:\n" + xmlcode.outputString(doc));
-				throw new ConverterException(je);
-			}
-		} else {
-			Logger.log.error("Document is not validated because the xml schema definition '" + xsdFile
-					+ "' could not be found in classpath");
-			throw new ConverterException("Document is not validated because the xml schema definition '" + xsdFile
-					+ "' could not be found in classpath");
-		}
-	}
 }

@@ -23,7 +23,7 @@ import java.awt.geom.Rectangle2D;
 import org.pathvisio.libgpml.model.type.AnchorShapeType;
 
 /**
- * Defines and registers all Anchor shapes. 
+ * Defines and registers all Anchor shapes.
  *
  * Shapes are defined and registered in the static section of this class.
  * 
@@ -33,22 +33,31 @@ class AnchorShapeRegistry {
 
 	// Register Anchor shapes
 	static void registerShapes() {
-		ShapeRegistry.registerAnchor(AnchorShapeType.SQUARE.getName(), getAnchorSquare());
 		ShapeRegistry.registerAnchor(AnchorShapeType.NONE.getName(), getAnchorNone());
+		ShapeRegistry.registerAnchor(AnchorShapeType.SQUARE.getName(), getAnchorSquare());
 		ShapeRegistry.registerAnchor(AnchorShapeType.CIRCLE.getName(), getAnchorCircle());
 	}
 
 	/**
 	 * These are all model coordinates:
 	 */
-	private static final int ANCHOR_SQUARE_SIZE = 6; // TODO
 	private static final int ANCHOR_NONE_SIZE = 3;
+	private static final int ANCHOR_SQUARE_SIZE = 6;
 	private static final int ANCHOR_CIRCLE_SIZE = 8;
 
 	/**
-	 * Returns default square anchor shape. 
+	 * Returns anchor shape none, which appears invisible.
 	 * 
-	 * @return the default square anchor shape. 
+	 * @return the anchor shape for none.
+	 */
+	private static Shape getAnchorNone() {
+		return new Rectangle2D.Double(-ANCHOR_NONE_SIZE / 2, -ANCHOR_NONE_SIZE / 2, ANCHOR_NONE_SIZE, ANCHOR_NONE_SIZE);
+	}
+
+	/**
+	 * Returns default square anchor shape.
+	 * 
+	 * @return the default square anchor shape.
 	 */
 	private static Shape getAnchorSquare() {
 		return new Rectangle2D.Double(-ANCHOR_SQUARE_SIZE / 2, -ANCHOR_SQUARE_SIZE / 2, ANCHOR_SQUARE_SIZE,
@@ -56,18 +65,9 @@ class AnchorShapeRegistry {
 	}
 
 	/**
-	 * Returns anchor shape none, which appears invisible.  
+	 * Returns circle anchor shape.
 	 * 
-	 * @return the anchor shape for none. 
-	 */
-	private static Shape getAnchorNone() {
-		return new Rectangle2D.Double(-ANCHOR_NONE_SIZE / 2, -ANCHOR_NONE_SIZE / 2, ANCHOR_NONE_SIZE, ANCHOR_NONE_SIZE);
-	}
-
-	/**
-	 * Returns circle anchor shape. 
-	 * 
-	 * @return the circle anchor shape. 
+	 * @return the circle anchor shape.
 	 */
 	private static Shape getAnchorCircle() {
 		return new Ellipse2D.Double(-ANCHOR_CIRCLE_SIZE / 2, -ANCHOR_CIRCLE_SIZE / 2, ANCHOR_CIRCLE_SIZE,

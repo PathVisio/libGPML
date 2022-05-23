@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -29,7 +29,7 @@ import org.pathvisio.libgpml.util.XrefUtils;
 
 /**
  * This class stores information for an Evidence.
- * 
+ *
  * @author finterly
  */
 public class Evidence extends PathwayObject {
@@ -46,9 +46,9 @@ public class Evidence extends PathwayObject {
 	/**
 	 * Instantiates an Evidence pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, xref, and url.
-	 * 
+	 *
 	 * NB: Manipulated the order of variables to overload constructor.
-	 * 
+	 *
 	 * @param value   the name, term, or text of this evidence.
 	 * @param xref    this evidence xref.
 	 * @param urlLink the url of this evidence.
@@ -66,17 +66,17 @@ public class Evidence extends PathwayObject {
 	// ================================================================================
 	/**
 	 * Returns the object type of this pathway element.
-	 * 
+	 *
 	 * @return the object type.
 	 */
 	@Override
 	public ObjectType getObjectType() {
 		return ObjectType.EVIDENCE;
 	}
-	
+
 	/**
 	 * Returns the name, term, or text of this evidence.
-	 * 
+	 *
 	 * @return value the name, term, or text of this evidence.
 	 */
 	public String getValue() {
@@ -85,10 +85,10 @@ public class Evidence extends PathwayObject {
 
 	/**
 	 * Sets the name, term, or text of this evidence.
-	 * 
+	 *
 	 * @param v the name, term, or text of this evidence.
 	 */
-	public void setValue(String v) {
+	protected void setValue(String v) {
 		if (v != null && Utils.stringEquals(value, v)) {
 			value = v;
 		}
@@ -96,7 +96,7 @@ public class Evidence extends PathwayObject {
 
 	/**
 	 * Returns this evidence Xref.
-	 * 
+	 *
 	 * @return xref this evidence xref.
 	 */
 	public Xref getXref() {
@@ -105,10 +105,10 @@ public class Evidence extends PathwayObject {
 
 	/**
 	 * Sets the Xref for this evidence.
-	 * 
+	 *
 	 * @param v the xref of this evidence.
 	 */
-	public void setXref(Xref v) {
+	protected void setXref(Xref v) {
 		if (v == null) {
 			throw new IllegalArgumentException("Evidence must have valid xref.");
 		}
@@ -120,7 +120,7 @@ public class Evidence extends PathwayObject {
 
 	/**
 	 * Returns the url link for a web address.
-	 * 
+	 *
 	 * @return urlLink the url link.
 	 */
 	public String getUrlLink() {
@@ -129,10 +129,10 @@ public class Evidence extends PathwayObject {
 
 	/**
 	 * Sets the url link for a web address.
-	 * 
+	 *
 	 * @param v the url link.
 	 */
-	public void setUrlLink(String v) {
+	protected void setUrlLink(String v) {
 		if (v != null && !Utils.stringEquals(urlLink, v)) {
 			urlLink = v;
 		}
@@ -140,7 +140,7 @@ public class Evidence extends PathwayObject {
 
 	/**
 	 * Returns the list of evidenceRefs which reference this evidence.
-	 * 
+	 *
 	 * @return evidenceRefs the list of evidenceRefs which reference this evidence.
 	 */
 	public List<EvidenceRef> getEvidenceRefs() {
@@ -149,7 +149,7 @@ public class Evidence extends PathwayObject {
 
 	/**
 	 * Check whether evidenceRefs has the given evidenceRef.
-	 * 
+	 *
 	 * @param evidenceRef this evidenceRef to look for.
 	 * @return true if has evidenceRef, false otherwise.
 	 */
@@ -160,7 +160,7 @@ public class Evidence extends PathwayObject {
 	/**
 	 * Adds the given evidenceRef to evidenceRefs list of this evidence. NB: This
 	 * method is not used directly.
-	 * 
+	 *
 	 * @param evidenceRef the given evidenceRef to add.
 	 */
 	protected void addEvidenceRef(EvidenceRef evidenceRef) {
@@ -177,7 +177,7 @@ public class Evidence extends PathwayObject {
 	 * evidenceRefs becomes empty, this evidence is removed from the pathway model
 	 * because it is no longer referenced/used. NB: This method is not used
 	 * directly.
-	 * 
+	 *
 	 * @param evidenceRef the given evidenceRef to remove.
 	 */
 	protected void removeEvidenceRef(EvidenceRef evidenceRef) {
@@ -218,7 +218,7 @@ public class Evidence extends PathwayObject {
 	/**
 	 * Compares this evidence to the given evidence. Checks all properties except
 	 * evidenceRefs list to determine whether they are equal.
-	 * 
+	 *
 	 * @param evidence the evidence to compare to.
 	 * @return true if evidences have equal properties, false otherwise.
 	 */
@@ -231,7 +231,7 @@ public class Evidence extends PathwayObject {
 			return false;
 		}
 		// checks if url link property equivalent
-		if (!Objects.equals(urlLink, evidence.getUrlLink()))
+		if (!Utils.stringNullEqualsEmpty(urlLink, evidence.getUrlLink()))
 			return false;
 		return true;
 	}
@@ -240,16 +240,18 @@ public class Evidence extends PathwayObject {
 	// Copy Methods
 	// ================================================================================
 	/**
-	 * Note: doesn't change parent, only fields
+	 * Copies values from the given source pathway element.
 	 *
-	 * Used by UndoAction.
-	 * 
-	 * NB: evidenceRefs list is not copied, evidenceRefs are created and added when
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>evidenceRefs list is not copied, evidenceRefs are created and added when
 	 * an evidence is added to a pathway element.
+	 * </ol>
 	 *
-	 * @param src
+	 * @param src the source pathway element.
 	 */
-	public void copyValuesFrom(Evidence src) { // TODO
+	public void copyValuesFrom(Evidence src) {
 		value = src.value;
 		xref = src.xref;
 		urlLink = src.urlLink;
@@ -257,13 +259,12 @@ public class Evidence extends PathwayObject {
 	}
 
 	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
+	 * Copies this evidence.
 	 *
-	 * No events will be sent to the parent of the original.
+	 * @return the new evidence copied from this evidence.
 	 */
 	public Evidence copyRef() {
-		Evidence result = new Evidence(value, xref, urlLink); 
+		Evidence result = new Evidence(value, xref, urlLink);
 		result.copyValuesFrom(this);
 		return result;
 	}

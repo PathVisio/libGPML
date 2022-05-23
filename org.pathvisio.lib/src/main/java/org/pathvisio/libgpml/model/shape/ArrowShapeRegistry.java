@@ -35,7 +35,8 @@ class ArrowShapeRegistry {
 	// Register ArrowHead shapes
 	static void registerShapes() {
 
-		// Interaction panel, NB: "Undirected" (no arrow head) TODO
+		// Interaction panel 
+		// NB: "Undirected" (no arrow head)
 		ShapeRegistry.registerArrow("Directed", getArrowHead(), ArrowShape.FillType.CLOSED);
 		ShapeRegistry.registerArrow("Conversion", getArrowHead(), ArrowShape.FillType.CLOSED);
 		ShapeRegistry.registerArrow("Inhibition", getTBar(), ArrowShape.FillType.OPEN, TBARWIDTH + TBAR_GAP);

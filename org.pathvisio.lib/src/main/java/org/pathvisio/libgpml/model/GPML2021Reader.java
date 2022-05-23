@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -41,7 +41,6 @@ import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
 import org.pathvisio.libgpml.model.Referenceable.Annotatable;
 import org.pathvisio.libgpml.model.Referenceable.Citable;
 import org.pathvisio.libgpml.model.Referenceable.Evidenceable;
-import org.pathvisio.libgpml.model.shape.ShapeType;
 import org.pathvisio.libgpml.model.type.AnchorShapeType;
 import org.pathvisio.libgpml.model.type.AnnotationType;
 import org.pathvisio.libgpml.model.type.ArrowHeadType;
@@ -50,6 +49,7 @@ import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 import org.pathvisio.libgpml.model.type.HAlignType;
 import org.pathvisio.libgpml.model.type.LineStyleType;
+import org.pathvisio.libgpml.model.type.ShapeType;
 import org.pathvisio.libgpml.model.type.StateType;
 import org.pathvisio.libgpml.model.type.VAlignType;
 import org.pathvisio.libgpml.util.ColorUtils;
@@ -57,7 +57,7 @@ import org.pathvisio.libgpml.util.XrefUtils;
 
 /**
  * This class reads a PathwayModel from an input source (GPML 2021).
- * 
+ *
  * @author finterly
  */
 public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormatReader {
@@ -67,7 +67,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Constructor for GPML reader.
-	 * 
+	 *
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
@@ -78,18 +78,18 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads information from root element of Jdom document {@link Document} to the
 	 * pathway model {@link PathwayModel}.
-	 * 
+	 *
 	 * NB: Order of reading is done in such as way that referenced elements are read
 	 * first. Groups are read first as other pathway elements reference groupRef.
 	 * Point and DataNode elementRef are read last to ensure the Pathway Elements
 	 * referenced are already instantiated.
-	 * 
+	 *
 	 * @param pathwayModel the given pathway model.
 	 * @param root         the root element of given Jdom document.
-	 * @return pathwayModel the pathway model after reading root element.
 	 * @throws ConverterException
 	 */
-	public PathwayModel readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
+	@Override
+	public void readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException {
 		readPathway(pathwayModel.getPathway(), root);
 		// reads annotation/citation/evidence ref info into a map
 		Map<String, Element> refIdToJdomElement = new HashMap<String, Element>();
@@ -106,16 +106,16 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 		readInteractions(pathwayModel, root, refIdToJdomElement, elementToPoint);
 		readGraphicalLines(pathwayModel, root, refIdToJdomElement, elementToPoint);
 		readPointElementRefs(pathwayModel, elementToPoint);
-		// removes empty groups
-		removeEmptyGroups(pathwayModel);
-		return pathwayModel;
+		// removes empty groups and updates group dimensions
+		updateGroups(pathwayModel);
+		// refreshes line elements
+		refreshLineElements(pathwayModel);
 	}
 
 	/**
 	 * Reads pathway information from jdom root element. Instantiates and returns
 	 * the pathway object {@link Pathway}.
-	 * 
-	 * @return pathway the pathway.
+	 *
 	 * @param root the jdom root element.
 	 * @throws ConverterException
 	 */
@@ -145,7 +145,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * Reads xref {@link Xref} information from jdom element. Xref is optional for
 	 * Pathway, DataNodes, States, Interactions, Groups, Annotations, and Evidences.
 	 * Citations must have either Xref or Url, or both.
-	 * 
+	 *
 	 * @param e the jdom element.
 	 * @return xref the new xref or null if no or invalid xref information.
 	 * @throws ConverterException
@@ -164,7 +164,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads Url link information from element. Url is optional for Annotations,
 	 * Citations, and Evidences. Citations must have either Xref or Url, or both.
-	 * 
+	 *
 	 * @param e the element.
 	 * @return urlLink the link for the url.
 	 * @throws ConverterException
@@ -180,7 +180,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads author {@link Author} information for pathway from root element.
-	 * 
+	 *
 	 * @param pathway the pathway.
 	 * @param root    the jdom root element.
 	 * @throws ConverterException
@@ -206,7 +206,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	 * corresponding jdom element in {@link Map} refIdToJdomElement, to assist other
 	 * reading methods: {@link #readAnnotationRefs}, {@link #readCitationRefs}, and
 	 * {@link #readEvidenceRefs}.
-	 * 
+	 *
 	 * @param root               the jdom root element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
 	 * @throws ConverterException
@@ -227,7 +227,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads {@link Annotation} and {@link AnnotationRef} information for an
 	 * {@link Annotatable}.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param annotatable        the pathway object which can have annotation.
 	 * @param e                  the jdom element.
@@ -270,7 +270,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads {@link Citation} and {@link CitationRef} information for a
 	 * {@link Citable}.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param citable            the pathway object which can have citation.
 	 * @param e                  the jdom element.
@@ -309,7 +309,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads {@link Evidence} and {@link EvidenceRef} information for an
 	 * {@link Evidenceable}.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param evidenceable       the pathway object which can have evidence.
 	 * @param e                  the jdom element.
@@ -347,7 +347,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads comment group (comment, dynamic property, annotationRef, citationRef,
 	 * evidenceRef) information for {@link PathwayElement} from jdom element.
-	 * 
+	 *
 	 * @param pathwayElement     the element info pathway element object.
 	 * @param e                  the jdom element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -365,7 +365,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads comment {@link Comment} information for pathway element from jdom
 	 * element.
-	 * 
+	 *
 	 * @param pathwayElement the pathway element.
 	 * @param e              the jdom element.
 	 * @throws ConverterException
@@ -384,7 +384,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads dynamic property {@link PathwayElement#setDynamicProperty} information
 	 * for pathway element from jdom element.
-	 * 
+	 *
 	 * @param pathwayElement the the pathway element.
 	 * @param e              the jdom element.
 	 * @throws ConverterException
@@ -399,7 +399,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads group {@link Group} information for pathway model from root element.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param root               the jdom root element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -438,7 +438,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads label {@link Label} information for pathway model from root element.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param root               the jdom root element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -465,7 +465,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads shape {@link Shape} information for pathway model from root element.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param root               the root element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -492,7 +492,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads data node {@link DataNode} information for pathway model from root
 	 * element.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param root               the jdom root element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -530,7 +530,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads state {@link State} information for data node from element.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param dataNode           the data node object {@link DataNode}.
 	 * @param dn                 the jdom data node element.
@@ -561,7 +561,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads common properties for shaped pathway elements {@link ShapedElement}.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param shapedElement      the shaped pathway element.
 	 * @param se                 the jdom (shaped) pathway element.
@@ -582,9 +582,9 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads groupRef information for {@link DataNode}, {@link Label}, and
 	 * {@link Shape}.
-	 * 
+	 *
 	 * NB: {@link Group} uses a different method.
-	 * 
+	 *
 	 * @param pathwayModel  the pathway model.
 	 * @param shapedElement the shapedElement to read groupRef for.
 	 * @param dn            the jdom shaped element.
@@ -601,7 +601,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads interaction {@link Interaction} information for pathway model from root
 	 * element.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param root               the jdom root element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -629,7 +629,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads graphical line {@link GraphicalLine} information for pathway model from
 	 * root element.
-	 * 
+	 *
 	 * @param pathwayModel       the pathway model.
 	 * @param root               the jdom root element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -655,7 +655,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads point {@link LinePoint} information for line element.
-	 * 
+	 *
 	 * @param lineElement    the line element object.
 	 * @param wyps           the jdom waypoints element.
 	 * @param elementToPoint the map of jdom element to line points.
@@ -691,7 +691,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 	/**
 	 * Reads line element {@link LineElement} information for interaction or
 	 * graphical line from jdom element.
-	 * 
+	 *
 	 * @param lineElement        the line element object.
 	 * @param ln                 the jdom line element.
 	 * @param refIdToJdomElement the map of ref elementId to jdom element.
@@ -716,7 +716,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads anchor {@link Anchor} information for line element from jdom element.
-	 * 
+	 *
 	 * @param lineElement the line element object.
 	 * @param wyps        the jdom waypoints element.
 	 * @throws ConverterException
@@ -733,7 +733,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads elementRef {@link LinePoint#setElementRef} for pathway model points.
-	 * 
+	 *
 	 * @param pathwayModel   the pathway model.
 	 * @param elementToPoint the map of jdom element to line points.
 	 * @throws ConverterException
@@ -758,7 +758,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads rect property information. Jdom handles schema default values.
-	 * 
+	 *
 	 * @param shapedElement the shaped pathway element.
 	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
@@ -778,7 +778,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads font property information. Jdom handles schema default values.
-	 * 
+	 *
 	 * @param shapedElement the shaped pathway element.
 	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
@@ -809,7 +809,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads shape style property information. Jdom handles schema default values.
-	 * 
+	 *
 	 * @param shapedElement the shaped pathway element.
 	 * @param gfx           the jdom graphics element.
 	 * @throws ConverterException
@@ -838,7 +838,7 @@ public class GPML2021Reader extends GPML2021FormatAbstract implements GpmlFormat
 
 	/**
 	 * Reads line style property information. Jdom handles schema default values.
-	 * 
+	 *
 	 * @param lineElement the line pathway element.
 	 * @param gfx         the jdom graphics element.
 	 * @throws ConverterException

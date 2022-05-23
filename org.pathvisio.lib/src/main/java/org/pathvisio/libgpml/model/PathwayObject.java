@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,10 +16,8 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.pathvisio.libgpml.model.type.ObjectType;
@@ -28,16 +26,16 @@ import org.pathvisio.libgpml.prop.StaticProperty;
 /**
  * Abstract class of pathway elements which are part of a pathway and have an
  * elementId.
- * 
+ *
  * Children: DataNode, State, Interaction, GraphicalLine, Label, Shape, Group,
  * Anchor, Point, Annotation, Citation, and Evidence.
- * 
+ *
  * @author finterly
  */
 public abstract class PathwayObject {
 
 	/* parent pathway model: may be null (e.g. when object is in clipboard) */
-	protected PathwayModel pathwayModel; // TODO protected?
+	protected PathwayModel pathwayModel;
 	private String elementId;
 
 	// ================================================================================
@@ -55,14 +53,14 @@ public abstract class PathwayObject {
 	// ================================================================================
 	/**
 	 * Returns the object type of the pathway object.
-	 * 
+	 *
 	 * @return objectType the object type.
 	 */
 	abstract public ObjectType getObjectType();
 
 	/**
 	 * Returns the pathway model for this pathway element.
-	 * 
+	 *
 	 * @return pathwayModel the parent pathway model.
 	 */
 	public PathwayModel getPathwayModel() {
@@ -82,10 +80,10 @@ public abstract class PathwayObject {
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
 	 * model adds this pathway element.
-	 * 
+	 *
 	 * NB: This method is not used directly. It is called by
 	 * {@link PathwayModel#addPathwayObject}.
-	 * 
+	 *
 	 * @param pathwayModel the parent pathway model.
 	 */
 	protected void setPathwayModelTo(PathwayModel pathwayModel) throws IllegalArgumentException, IllegalStateException {
@@ -98,10 +96,10 @@ public abstract class PathwayObject {
 
 	/**
 	 * Sets the pathway model of this pathway element to the given pathway model.
-	 * 
+	 *
 	 * NB: This method is not used directly. It is called by
 	 * {@link #setPathwayModelTo}.
-	 * 
+	 *
 	 * @param pathwayModel the new pathway model for this pathway element.
 	 */
 	protected void setPathwayModel(PathwayModel pathwayModel) {
@@ -111,7 +109,7 @@ public abstract class PathwayObject {
 	/**
 	 * Unsets the pathway model, if any, from this pathway element. The pathway
 	 * element no longer belongs to a pathway model.
-	 * 
+	 *
 	 * NB: This method is not used directly. It is called by {@link #terminate}.
 	 */
 	protected void unsetPathwayModel() {
@@ -122,7 +120,7 @@ public abstract class PathwayObject {
 
 	/**
 	 * Returns the elementId of the pathway element.
-	 * 
+	 *
 	 * @return elementId the unique pathway element identifier.
 	 */
 	public String getElementId() {
@@ -131,12 +129,12 @@ public abstract class PathwayObject {
 
 	/**
 	 * Sets the elementId of the pathway element.
-	 * 
+	 *
 	 * NB: This method is not used directly.
-	 * 
+	 *
 	 * @param v the unique pathway element identifier.
 	 */
-	protected void setElementId(String v) { // TODO
+	protected void setElementId(String v) {
 		if (v != null) {
 			if (pathwayModel != null && pathwayModel.getElementIds().contains(v)) {
 				throw new IllegalArgumentException("elementId '" + v + "' is not unique");
@@ -149,7 +147,7 @@ public abstract class PathwayObject {
 
 	/**
 	 * Sets the elementId to generated elementId from pathwayModel.
-	 * 
+	 *
 	 * NB: This method does not automatically add this elementId to the pathway
 	 * model.
 	 */
@@ -174,7 +172,9 @@ public abstract class PathwayObject {
 	int noFire = 0;
 
 	/**
-	 * @param times
+	 * Sets noFire to the given integer. 
+	 * 
+	 * @param times the times integer value.
 	 */
 	public void dontFireEvents(int times) {
 		noFire = times;
@@ -183,6 +183,8 @@ public abstract class PathwayObject {
 	private Set<PathwayObjectListener> listeners = new HashSet<PathwayObjectListener>();
 
 	/**
+	 * Returns the listeners for this pathway object.
+	 * 
 	 * @return listeners for this pathway object.
 	 */
 	public Set<PathwayObjectListener> getListeners() {
@@ -190,7 +192,9 @@ public abstract class PathwayObject {
 	}
 
 	/**
-	 * @param v
+	 * Adds pathway object listener.
+	 * 
+	 * @param v the pathway object listener to add.
 	 */
 	public void addListener(PathwayObjectListener v) {
 		if (!listeners.contains(v)) {
@@ -199,14 +203,18 @@ public abstract class PathwayObject {
 	}
 
 	/**
-	 * @param v
+	 * Removes pathway object listener.
+	 * 
+	 * @param v the pathway object listener to remove.
 	 */
 	public void removeListener(PathwayObjectListener v) {
 		listeners.remove(v);
 	}
 
 	/**
-	 * @param e
+	 * Fires object modified event.
+	 * 
+	 * @param e the pathway object event.
 	 */
 	public void fireObjectModifiedEvent(PathwayObjectEvent e) {
 		if (noFire > 0) {
@@ -220,26 +228,6 @@ public abstract class PathwayObject {
 			g.gmmlObjectModified(e);
 		}
 	}
-
-	// ================================================================================
-	// Copy Methods
-	// ================================================================================
-//	/**
-//	 * Note: doesn't change parent, only fields TODO 
-//	 *
-//	 * Used by UndoAction.
-//	 *
-//	 * @param src the source pathway object 
-//	 */
-//	public abstract void copyValuesFrom(PathwayObject src);
-
-//	/**
-//	 * Copy Object. The object will not be part of the same Pathway object, it's
-//	 * parent will be set to null.
-//	 *
-//	 * No events will be sent to the parent of the original.
-//	 */
-//	public abstract PathwayObject copy();
 
 	// ================================================================================
 	// Property Methods
@@ -257,15 +245,21 @@ public abstract class PathwayObject {
 
 	/**
 	 * Returns all static properties for this pathway object.
-	 * 
-	 * @return result the set of static property for this pathway object. 
+	 *
+	 * @return result the set of static property for this pathway object.
 	 */
 	public Set<StaticProperty> getStaticPropertyKeys() {
-		Set<StaticProperty> result = EnumSet.noneOf(StaticProperty.class); // TODO use Tree?
+		Set<StaticProperty> result = EnumSet.noneOf(StaticProperty.class);
 		result.add(StaticProperty.ELEMENTID);
 		return result;
 	}
 
+	/**
+	 * Returns static property of given key.
+	 *
+	 * @param key the key.
+	 * @return
+	 */
 	public Object getPropertyEx(Object key) {
 		if (key instanceof StaticProperty) {
 			return getStaticProperty((StaticProperty) key);
@@ -275,8 +269,11 @@ public abstract class PathwayObject {
 	}
 
 	/**
-	 * Set dynamic or static properties at the same time Will be replaced with
-	 * setProperty in the future.
+	 * Sets properties. Old notes: Will be replaced with setProperty in the future.
+	 * TODO
+	 *
+	 * @param key   the key for the property to set.
+	 * @param value the value for the property to set.
 	 */
 	public void setPropertyEx(Object key, Object value) {
 		if (key instanceof StaticProperty) {
@@ -286,6 +283,12 @@ public abstract class PathwayObject {
 		}
 	}
 
+	/**
+	 * Returns static property value for given key.
+	 *
+	 * @param key the key.
+	 * @return the static property value.
+	 */
 	public Object getStaticProperty(StaticProperty key) {
 		if (!getStaticPropertyKeys().contains(key))
 			throw new IllegalArgumentException(
@@ -293,7 +296,7 @@ public abstract class PathwayObject {
 		Object result = null;
 		switch (key) {
 		case ELEMENTID:
-			result = getElementId();// TODO
+			result = getElementId();
 			break;
 		default:
 			// do nothing
@@ -305,10 +308,10 @@ public abstract class PathwayObject {
 	 * This works so that o.setNotes(x) is the equivalent of o.setProperty("Notes",
 	 * x);
 	 *
-	 * Value may be null in some cases, e.g. graphRef
+	 * Value may be null in some cases, e.g. elementRef
 	 *
-	 * @param key
-	 * @param value
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	public void setStaticProperty(StaticProperty key, Object value) {
 		if (!getStaticPropertyKeys().contains(key))
@@ -316,7 +319,7 @@ public abstract class PathwayObject {
 					"Property " + key.name() + " is not allowed for objects of type " + getObjectType());
 		switch (key) {
 		case ELEMENTID:
-//			setElementId((String) value); TODO not to be used? 
+			// elementId is set when pathway element is added to pathway model
 			break;
 		default:
 			// do nothing

@@ -7,13 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.GraphicalLine;
-import org.pathvisio.libgpml.model.Group;
-import org.pathvisio.libgpml.model.Interaction;
-import org.pathvisio.libgpml.model.Label;
-import org.pathvisio.libgpml.model.PathwayModel;
-import org.pathvisio.libgpml.model.Shape;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 

@@ -2,10 +2,6 @@ package org.pathvisio.libgpml.model;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.Group;
-import org.pathvisio.libgpml.model.Interaction;
-import org.pathvisio.libgpml.model.PathwayModel;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;

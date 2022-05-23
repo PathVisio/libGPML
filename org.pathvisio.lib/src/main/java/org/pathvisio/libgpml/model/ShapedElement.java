@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -28,9 +28,9 @@ import org.pathvisio.libgpml.model.GraphLink.LinkableFrom;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.shape.IShape;
-import org.pathvisio.libgpml.model.shape.ShapeType;
 import org.pathvisio.libgpml.model.type.HAlignType;
 import org.pathvisio.libgpml.model.type.LineStyleType;
+import org.pathvisio.libgpml.model.type.ShapeType;
 import org.pathvisio.libgpml.model.type.VAlignType;
 import org.pathvisio.libgpml.prop.StaticProperty;
 import org.pathvisio.libgpml.util.Utils;
@@ -38,7 +38,7 @@ import org.pathvisio.libgpml.util.Utils;
 /**
  * This class stores information for shaped pathway element {@link DataNode},
  * {@link DataNode.State}, {@link Label}, {@link Shape}, and {@link Group}.
- * 
+ *
  * @author finterly
  */
 public abstract class ShapedElement extends PathwayElement implements LinkableTo, Groupable {
@@ -47,8 +47,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// rect properties
 	private double centerX;
 	private double centerY;
-	private double width = 1.0;
-	private double height = 1.0;
+	private double width;
+	private double height;
 	// font properties
 	private Color textColor = Color.decode("#000000"); // black
 	private String fontName = "Arial"; // Arial
@@ -89,14 +89,14 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * Returns text label for shaped pathway elements. Text labels are required for
 	 * {@link DataNode}, {@link DataNode.State} and {@link Label}; and optional for
 	 * {@link Shape} and {@link Group}.
-	 * 
+	 *
 	 * @return the text of of the shaped pathway element.
 	 */
 	public abstract String getTextLabel();
 
 	/**
 	 * Sets text label for this shaped pathway elements.
-	 * 
+	 *
 	 * @param v the the text to set for this shaped pathway element.
 	 */
 	public abstract void setTextLabel(String v);
@@ -104,7 +104,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the parent group of this pathway element. In GPML, groupRef refers to
 	 * the elementId (formerly groupId) of the parent gpml:Group.
-	 * 
+	 *
 	 * @return groupRef the parent group of this pathway element.
 	 */
 	@Override
@@ -127,7 +127,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * this pathway element. Adds this pathway element to the the pathwayElements
 	 * list of the new parent group. If there is an old parent group, this pathway
 	 * element is removed from its pathwayElements list.
-	 * 
+	 *
 	 * @param v the new parent group to set.
 	 */
 	@Override
@@ -148,7 +148,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the parent group for this pathway element.
-	 * 
+	 *
 	 * @param v the given group to set.
 	 */
 	private void setGroupRef(Group v) {
@@ -176,18 +176,20 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// ================================================================================
 	/**
 	 * Returns the center x coordinate for this shaped pathway element.
-	 * 
+	 *
 	 * @return centerX the middle of an object in the x direction.
 	 */
+	@Override
 	public double getCenterX() {
 		return centerX;
 	}
 
 	/**
 	 * Sets the center x coordinate for this shaped pathway element.
-	 * 
+	 *
 	 * @param v the middle of an object in the x direction to set.
 	 */
+	@Override
 	public void setCenterX(double v) {
 		if (centerX != v) {
 			if (v < 0) {
@@ -200,18 +202,20 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the center y coordinate for this shaped pathway element.
-	 * 
+	 *
 	 * @return centerY the middle of an object in the y direction.
 	 */
+	@Override
 	public double getCenterY() {
 		return centerY;
 	}
 
 	/**
 	 * Sets the center y coordinate for this shaped pathway element.
-	 * 
+	 *
 	 * @param v the middle of an object in the y direction to set.
 	 */
+	@Override
 	public void setCenterY(double v) {
 		if (centerY != v) {
 			if (v < 0) {
@@ -224,16 +228,17 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the width of this shaped pathway element.
-	 * 
+	 *
 	 * @return width the width of this shaped pathway element.
 	 */
+	@Override
 	public double getWidth() {
 		return width;
 	}
 
 	/**
 	 * Sets the width of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the width to set for this shaped pathway element.
 	 * @throws IllegalArgumentException if width is a negative value.
 	 */
@@ -249,16 +254,17 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the height of this shaped pathway element.
-	 * 
+	 *
 	 * @return height the height of this shaped pathway element.
 	 */
+	@Override
 	public double getHeight() {
 		return height;
 	}
 
 	/**
 	 * Sets the height of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the height to set for this shaped pathway element.
 	 * @throws IllegalArgumentException if height is a negative value.
 	 */
@@ -277,7 +283,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// ================================================================================
 	/**
 	 * Returns the color of text for this shaped pathway element..
-	 * 
+	 *
 	 * @return textColor the color of text.
 	 */
 	public Color getTextColor() {
@@ -290,7 +296,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the color of text for this shaped pathway element.
-	 * 
+	 *
 	 * @param v the color of text for this shaped pathway element.
 	 * @throws IllegalArgumentException if color null.
 	 */
@@ -305,7 +311,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the name of the set of printable text characters to be used for
 	 * visualization, e.g., Arial.
-	 * 
+	 *
 	 * @return fontName the name of the font.
 	 */
 	public String getFontName() {
@@ -319,7 +325,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Sets the name of the set of printable text characters to be used for
 	 * visualization, e.g., Arial.
-	 * 
+	 *
 	 * @param v the name of the font.
 	 * @throws IllegalArgumentException if given fontName is null.
 	 */
@@ -335,10 +341,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the thickness of the font used, a bold font would have more weight.
-	 * 
+	 *
 	 * @return fontWeight the boolean, if true font weight is bold. If false, font
 	 *         weight is normal.
-	 * 
+	 *
 	 */
 	public boolean getFontWeight() {
 		return fontWeight;
@@ -346,7 +352,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the thickness of the font used, a bold font would have more weight.
-	 * 
+	 *
 	 * @param v the boolean, if true font weight is bold. If false, font weight is
 	 *          normal.
 	 */
@@ -360,10 +366,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the typographic style applied to displayed text, e.g. normal or
 	 * italic.
-	 * 
+	 *
 	 * @return fontStyle the boolean, if true typographic style is italic. If false,
 	 *         typographic style is normal.
-	 * 
+	 *
 	 */
 	public boolean getFontStyle() {
 		return fontStyle;
@@ -371,7 +377,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the typographic style applied to displayed text, e.g. normal or italic.
-	 * 
+	 *
 	 * @param v the boolean, if true typographic style is italic. If false,
 	 *          typographic style is normal.
 	 */
@@ -384,10 +390,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the typographic style for underline or normal.
-	 * 
+	 *
 	 * @return fontDecoration the boolean, if true typographic style is underline.
 	 *         If false, typographic style is normal.
-	 * 
+	 *
 	 */
 	public boolean getFontDecoration() {
 		return fontDecoration;
@@ -395,7 +401,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the typographic style for underline or normal.
-	 * 
+	 *
 	 * @param v the boolean, if true typographic style is underline. If false,
 	 *          typographic style is normal.
 	 */
@@ -408,7 +414,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the typographic style for strikethru or normal.
-	 * 
+	 *
 	 * @return fontStrikethru the boolean, if true typographic style is strikethru.
 	 *         If false, typographic style is normal.
 	 */
@@ -418,7 +424,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the typographic style for strikethru or normal.
-	 * 
+	 *
 	 * @param v the boolean, if true typographic style is strikethru. If false,
 	 *          typographic style is normal.
 	 */
@@ -431,9 +437,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the point value for the size of the font.
-	 * 
+	 *
 	 * @return fontSize the value for the size of the font.
-	 * 
+	 *
 	 */
 	public double getFontSize() {
 		if (fontSize < 0) {
@@ -445,8 +451,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets point value for the size of the font. Rounds any decimals to the nearest
-	 * 0.5. 
-	 * 
+	 * 0.5.
+	 *
 	 * @param v the value for the size of the font.
 	 * @throws IllegalArgumentException if fontSize is a negative value.
 	 */
@@ -463,7 +469,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the horizontal alignment of displayed text, e.g., Left, Center,
 	 * Right.
-	 * 
+	 *
 	 * @return hAlign the horizontal alignment value of displayed text.
 	 */
 	public HAlignType getHAlign() {
@@ -476,7 +482,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the horizontal alignment of displayed text, e.g., Left, Center, Right.
-	 * 
+	 *
 	 * @param v the horizontal alignment value of displayed text.
 	 */
 	public void setHAlign(HAlignType v) {
@@ -488,7 +494,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the vertical alignment of displayed text, e.g., Top, Middle, Bottom.
-	 * 
+	 *
 	 * @return vAlign the vertical alignment value of displayed text.
 	 */
 	public VAlignType getVAlign() {
@@ -501,9 +507,9 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the vertical alignment of displayed text, e.g., Top, Middle, Bottom.
-	 * 
+	 *
 	 * @param v the vertical alignment value of displayed text.
-	 * 
+	 *
 	 */
 	public void setVAlign(VAlignType v) {
 		if (v != null && vAlign != v) {
@@ -517,7 +523,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// ================================================================================
 	/**
 	 * Returns the border color of this shaped pathway element.
-	 * 
+	 *
 	 * @return borderColor the border color of this shaped pathway element.
 	 */
 	public Color getBorderColor() {
@@ -530,7 +536,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the border color of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the border color of this shaped pathway element.
 	 * @throws IllegalArgumentException if color null.
 	 */
@@ -546,7 +552,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the visual appearance of a border, e.g. Solid or Broken.
-	 * 
+	 *
 	 * @return borderStyle the style of a border.
 	 */
 	public LineStyleType getBorderStyle() {
@@ -559,7 +565,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the visual appearance of a border, e.g. Solid or Broken.
-	 * 
+	 *
 	 * @param v the style of a border.
 	 */
 	public void setBorderStyle(LineStyleType v) {
@@ -571,20 +577,16 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the pixel value for the border of this shaped pathway element.
-	 * 
+	 *
 	 * @return borderWidth the width of a border.
 	 */
 	public double getBorderWidth() {
-		if (borderWidth < 0) {
-			return 1.0; // TODO: Can borderWidth be zero?
-		} else {
-			return borderWidth;
-		}
+		return borderWidth;
 	}
 
 	/**
 	 * Sets the pixel value for the border of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the width of a border.
 	 * @throws IllegalArgumentException if borderWidth is a negative value.
 	 */
@@ -601,7 +603,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the color used to paint the area of this shaped pathway element., not
 	 * including its border.
-	 * 
+	 *
 	 * @return fillColor the fill color of this shaped pathway element.
 	 */
 	public Color getFillColor() {
@@ -611,7 +613,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Sets the color used to paint the area of this shaped pathway element, not
 	 * including its border.
-	 * 
+	 *
 	 * @param v the fill color of this shaped pathway element.
 	 * @throws IllegalArgumentException if fillColor null.
 	 */
@@ -628,10 +630,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle,
 	 * Arc, Mitochondria, Oval.
-	 * 
+	 *
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
 	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
-	 * 
+	 *
 	 * @return shapeType the visual appearance of this shaped pathway element.
 	 */
 	public IShape getShapeType() {
@@ -645,10 +647,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the visual appearance of a two dimensional object, e.g. Rectangle,
 	 * Arc, Mitochondria, Oval.
-	 * 
+	 *
 	 * NB: Shape.type is for object type while shapeType is the visual appearance.
 	 * For example, an object may have Shape.type "Nucleus" and shapeType "Oval".
-	 * 
+	 *
 	 * @param v the visual appearance of this shaped pathway element.
 	 * @throws IllegalArgumentException if shapeType null.
 	 */
@@ -664,18 +666,20 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the z-order of this pathway element.
-	 * 
+	 *
 	 * @return zOrder the order of this pathway element.
 	 */
+	@Override
 	public int getZOrder() {
 		return zOrder;
 	}
 
 	/**
 	 * Sets the z-order of this pathway element.
-	 * 
+	 *
 	 * @param v the order of this pathway element.
 	 */
+	@Override
 	public void setZOrder(int v) {
 		if (zOrder != v) {
 			zOrder = v;
@@ -685,7 +689,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Returns the rotation of this shaped pathway element.
-	 * 
+	 *
 	 * @return rotation the rotation of this shaped pathway element.
 	 */
 	public double getRotation() {
@@ -694,7 +698,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 
 	/**
 	 * Sets the rotation of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the rotation of this shaped pathway element.
 	 */
 	public void setRotation(Double v) {
@@ -743,7 +747,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the rectangular bounds of this shaped pathway element after rotation
 	 * is applied.
-	 * 
+	 *
 	 * @return the rectangular bounds for this shaped pathway element with rotation
 	 *         taken into account.
 	 */
@@ -759,7 +763,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Returns the rectangular bounds of this shaped pathway element without
 	 * rotation taken into account.
-	 * 
+	 *
 	 * @return the rectangular bounds for this shaped pathway element.
 	 */
 	@Override
@@ -771,6 +775,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * Returns the left x coordinate of the bounding box around (start, end) this
 	 * shaped pathway element.
 	 */
+	@Override
 	public double getLeft() {
 		return centerX - width / 2;
 	}
@@ -778,9 +783,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Sets the center x coordinate given the left x coordinate of the bounding box
 	 * around (start, end) this shaped pathway element.
-	 * 
+	 *
 	 * @param v the left coordinate.
 	 */
+	@Override
 	public void setLeft(double v) {
 		centerX = v + width / 2;
 		fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
@@ -790,6 +796,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 * Returns the top y coordinate of the bounding box around (start, end) this
 	 * shaped pathway element.
 	 */
+	@Override
 	public double getTop() {
 		return centerY - height / 2;
 	}
@@ -797,17 +804,20 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	/**
 	 * Sets the center y coordinate given the top y coordinate of the bounding box
 	 * around (start, end) this shaped pathway element.
-	 * 
+	 *
 	 * @param v the y top coordinate.
 	 */
+	@Override
 	public void setTop(double v) {
 		centerY = v + height / 2;
 		fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 	}
 
 	/**
-	 * @param p
-	 * @return
+	 * Converts a point to pathway coordinates (relative to the pathway).
+	 *
+	 * @param p the point2d.
+	 * @return the absolute point2d coordinate.
 	 */
 	@Override
 	public Point2D toAbsoluteCoordinate(Point2D p) {
@@ -826,14 +836,17 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	}
 
 	/**
-	 * @param mp a point in absolute model coordinates
+	 * Converts a point to shape coordinates (relative to the bounds of the shape).
+	 *
+	 * @param p a point in absolute model coordinates
 	 * @return the same point relative to the bounding box of this pathway element:
 	 *         -1,-1 meaning the top-left corner, 1,1 meaning the bottom right
 	 *         corner, and 0,0 meaning the center.
 	 */
-	public Point2D toRelativeCoordinate(Point2D mp) {
-		double relX = mp.getX();
-		double relY = mp.getY();
+	@Override
+	public Point2D toRelativeCoordinate(Point2D p) {
+		double relX = p.getX();
+		double relY = p.getY();
 		Rectangle2D bounds = getRotatedBounds();
 		// Translate
 		relX -= bounds.getCenterX();
@@ -850,14 +863,16 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	// Copy Methods
 	// ================================================================================
 	/**
-	 * Note: doesn't change parent, only fields
+	 * Copies values from the given source pathway element.
 	 *
-	 * Used by UndoAction.
-	 * 
-	 * NB: GroupRef is not copied, but can be set later if the parent group and all
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>GroupRef is not copied, but can be set later if the parent group and all
 	 * other pathway element members are copied.
+	 * </ol>
 	 *
-	 * @param src
+	 * @param src the source pathway element.
 	 */
 	public void copyValuesFrom(ShapedElement src) {
 		super.copyValuesFrom(src);
@@ -884,20 +899,12 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
-	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
-	 *
-	 * No events will be sent to the parent of the original.
-	 */
-	public abstract CopyElement copy();
-
 	// ================================================================================
 	// Property Methods
 	// ================================================================================
 	/**
 	 * Returns all static properties for this pathway object.
-	 * 
+	 *
 	 * @return result the set of static property for this pathway object.
 	 */
 	@Override
@@ -915,7 +922,10 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	}
 
 	/**
+	 * Returns static property value for given key.
 	 *
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
 	public Object getStaticProperty(StaticProperty key) {
@@ -968,7 +978,7 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 				result = getBorderColor();
 				break;
 			case BORDERSTYLE:
-				result = getBorderStyle().getName(); // TODO
+				result = getBorderStyle().getName();
 				break;
 			case BORDERWIDTH:
 				result = getBorderWidth();
@@ -998,8 +1008,8 @@ public abstract class ShapedElement extends PathwayElement implements LinkableTo
 	 *
 	 * Value may be null in some cases, e.g. graphRef
 	 *
-	 * @param key
-	 * @param value
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {

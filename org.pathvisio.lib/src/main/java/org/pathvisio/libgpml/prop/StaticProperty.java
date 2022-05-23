@@ -32,45 +32,43 @@ import org.pathvisio.libgpml.model.PathwayObject;
 public enum StaticProperty implements Property {
 
 	// ========================================
-	// Pathway shapes
+	// Pathway Info
 	// ========================================
 	TITLE("title", "Title", StaticPropertyType.STRING, 101),
 	ORGANISM("organism", "Organism", StaticPropertyType.ORGANISM, 102),
-	SOURCE("source", "Source", StaticPropertyType.STRING, 103),
-	VERSION("version", "Version", StaticPropertyType.STRING, 104),
-	LICENSE("license", "License", StaticPropertyType.STRING, 105),
-
-	// author
-	AUTHOR("author", "Author", StaticPropertyType.STRING, 110),
-	NAME("name", "Author name", StaticPropertyType.STRING, 111), // TODO
-	USERNAME("username", "Author Username", StaticPropertyType.STRING, 112), // TODO
-	ORDER("order", "Author Order", StaticPropertyType.INTEGER, 113), // TODO
-
-	// pathway graphics
-	BOARDWIDTH("boardWidth", "Board Width", StaticPropertyType.DOUBLE, 120, true, true, false),
-	BOARDHEIGHT("boardHeight", "Board Height", StaticPropertyType.DOUBLE, 121, true, true, false),
-	BACKGROUNDCOLOR("backgroundColor", "Background Color", StaticPropertyType.COLOR, 122, true, true, false),
+	DESCRIPTION("description", "Description", StaticPropertyType.DESCRIPTION, 103),
+	SOURCE("source", "Source", StaticPropertyType.STRING, 104),
+	VERSION("version", "Version", StaticPropertyType.STRING, 105),
+	LICENSE("license", "License", StaticPropertyType.STRING, 106),
+	AUTHOR("author", "Author", StaticPropertyType.AUTHOR, 107),
 
 	// ========================================
 	// Pathway Object
 	// ========================================
-	ELEMENTID("elementId", "ElementId", StaticPropertyType.STRING, 130, false, true, false),
+	ELEMENTID("elementId", "ElementId", StaticPropertyType.STRING, 120, false, true, false),
 
 	// ========================================
 	// Pathway Element
 	// ========================================
-	COMMENT("comment", "Comment", StaticPropertyType.COMMENT, 140),
-	ANNOTATION("annotation", "Annotation", StaticPropertyType.ANNOTATION, 141, false, true, false),
-	CITATION("citation", "Citation", StaticPropertyType.CITATION, 142, false, true, false),
-	EVIDENCE("evidence", "Evidence", StaticPropertyType.EVIDENCE, 143, false, true, false),
+	COMMENT("comment", "Comment", StaticPropertyType.COMMENT, 130),
+	ANNOTATIONREF("annotationRef", "AnnotationRef", StaticPropertyType.ANNOTATIONREF, 131, false, true, false),
+	CITATIONREF("citationRef", "CitationRef", StaticPropertyType.CITATIONREF, 132, false, true, false),
+	EVIDENCEREF("evidenceRef", "EvidenceRef", StaticPropertyType.EVIDENCEREF, 133, false, true, false),
 
 	// types
-	ANNOTATIONTYPE("annotationType", "Annotation Type", StaticPropertyType.ANNOTATIONTYPE, 150),
+	ANNOTATIONTYPE("annotationType", "Annotation Type", StaticPropertyType.ANNOTATIONTYPE, 140),
 
 	// ========================================
-	// Xrefable 
+	// Xrefable
 	// ========================================
-	XREF("xref", "Xref", StaticPropertyType.XREF, 160),
+	XREF("xref", "Database:Id", StaticPropertyType.XREF, 150),
+	
+	// ========================================
+	// Pathway Canvas Graphics
+	// ========================================
+	BOARDWIDTH("boardWidth", "Board Width", StaticPropertyType.DOUBLE, 160, true, true, false),
+	BOARDHEIGHT("boardHeight", "Board Height", StaticPropertyType.DOUBLE, 161, true, true, false),
+	BACKGROUNDCOLOR("backgroundColor", "Background Color", StaticPropertyType.COLOR, 162),
 
 	// ========================================
 	// Groupable
@@ -90,17 +88,14 @@ public enum StaticProperty implements Property {
 	GROUPTYPE("groupType", "Group Type", StaticPropertyType.GROUPTYPE, 192),
 
 	// datanode
-	ALIASREF("aliasRef", "Alias Reference", StaticPropertyType.GROUP, 200, false, false, false), //TODO 
+	ALIASREF("aliasRef", "Linked to Group", StaticPropertyType.ALIASREF, 200, false, false, false), // TODO
 
 	// state
 	RELX("relX", "Relative X", StaticPropertyType.DOUBLE, 210, true, false, false),
 	RELY("relY", "Relative Y", StaticPropertyType.DOUBLE, 211, true, false, false),
 
 	// label
-	HREF("href", "Href", StaticPropertyType.STRING, 220),
-
-	// brace
-	ORIENTATION("Orientation", "Orientation", StaticPropertyType.ORIENTATION, 230), // TODO????
+	HREF("href", "Hyperlink", StaticPropertyType.STRING, 220),
 
 	// rect properties
 	CENTERX("centerX", "Center X", StaticPropertyType.DOUBLE, 240, true, false, false),
@@ -120,38 +115,33 @@ public enum StaticProperty implements Property {
 	HALIGN("hAlign", "Horizontal Alignment", StaticPropertyType.HALIGNTYPE, 258),
 
 	// shape style properties
-	BORDERCOLOR("borderColor", "Border Color", StaticPropertyType.COLOR, 260),
-	BORDERSTYLE("borderStyle", "Border Style", StaticPropertyType.LINESTYLETYPE, 261),
-	BORDERWIDTH("borderWidth", "Border Width", StaticPropertyType.DOUBLE, 262),
-	FILLCOLOR("fillColor", "Fill Color", StaticPropertyType.COLOR, 263),
-	SHAPETYPE("shapeType", "Shape Type", StaticPropertyType.SHAPETYPE, 264),
-	ROTATION("rotation", "Rotation", StaticPropertyType.ROTATION, 265, true, false, false),
-	// TRANSPARENT ("Transparent", "Transparent", StaticPropertyType.BOOLEAN, 210),
+	BORDERCOLOR("borderColor", "Border Color", StaticPropertyType.COLOR, 270),
+	BORDERSTYLE("borderStyle", "Border Style", StaticPropertyType.LINESTYLETYPE, 271),
+	BORDERWIDTH("borderWidth", "Border Width", StaticPropertyType.DOUBLE, 272),
+	FILLCOLOR("fillColor", "Fill Color", StaticPropertyType.COLOR, 273),
+	SHAPETYPE("shapeType", "Shape Type", StaticPropertyType.SHAPETYPE, 274),
+	ROTATION("rotation", "Rotation", StaticPropertyType.ROTATION, 275, true, false, false),
 
 	// ========================================
 	// LineElement
 	// ========================================
 	// common properties
-	STARTARROWHEADTYPE("startArrowHeadType", "Start Arrow ", StaticPropertyType.ARROWHEADTYPE, 270),
-	ENDARROWHEADTYPE("endArrowHeadType", "End Arrow", StaticPropertyType.ARROWHEADTYPE, 271),
-	STARTX("startX", "Start X", StaticPropertyType.DOUBLE, 272, true, false, false),
-	STARTY("startY", "Start Y", StaticPropertyType.DOUBLE, 273, true, false, false),
-	ENDX("endX", "End X", StaticPropertyType.DOUBLE, 274, true, false, false),
-	ENDY("endY", "End Y", StaticPropertyType.DOUBLE, 275, true, false, false),
-	STARTELEMENTREF("startElementRef", "StartElementRef", StaticPropertyType.LINKABLETO, 276, false, true, false),
-	ENDELEMENTREF("endElementRef", "EndElementRef", StaticPropertyType.LINKABLETO, 277, false, true, false),
-//	ELEMENTREF("elementRef", "Element Reference", StaticPropertyType.LINKABLETO, 172, false, true, false),
+	STARTARROWHEADTYPE("startArrowHeadType", "Start Arrow ", StaticPropertyType.ARROWHEADTYPE, 280),
+	ENDARROWHEADTYPE("endArrowHeadType", "End Arrow", StaticPropertyType.ARROWHEADTYPE, 281),
+	STARTX("startX", "Start X", StaticPropertyType.DOUBLE, 282, true, false, false),
+	STARTY("startY", "Start Y", StaticPropertyType.DOUBLE, 283, true, false, false),
+	ENDX("endX", "End X", StaticPropertyType.DOUBLE, 284, true, false, false),
+	ENDY("endY", "End Y", StaticPropertyType.DOUBLE, 285, true, false, false),
+	STARTELEMENTREF("startElementRef", "StartElementRef", StaticPropertyType.LINKABLETO, 286, false, true, false),
+	ENDELEMENTREF("endElementRef", "EndElementRef", StaticPropertyType.LINKABLETO, 287, false, true, false),
 
 	// types
-	ANCHORSHAPETYPE("anchorShapeType", "Anchor Shape Type", StaticPropertyType.ANCHORSHAPETYPE, 280),
+	ANCHORSHAPETYPE("anchorShapeType", "Anchor Shape Type", StaticPropertyType.ANCHORSHAPETYPE, 290),
 	// line style properties
-	LINECOLOR("lineColor", "Line Color", StaticPropertyType.COLOR, 290),
-	LINESTYLE("lineStyle", "Line Style", StaticPropertyType.LINESTYLETYPE, 291),
-	LINEWIDTH("lineWidth", "Line Width", StaticPropertyType.DOUBLE, 292),
-	CONNECTORTYPE("connectorType", "Connector Type", StaticPropertyType.CONNECTORTYPE, 293);
-
-	// GROUPID("GroupId","GroupId",StaticPropertyType.STRING,150,false,true,false),
-	// style",StaticPropertyType.GROUPSTYLETYPE,152),BIOPAXREF("BiopaxRef","BiopaxRef",StaticPropertyType.BIOPAXREF,153,false,true,false),
+	LINECOLOR("lineColor", "Line Color", StaticPropertyType.COLOR, 300),
+	LINESTYLE("lineStyle", "Line Style", StaticPropertyType.LINESTYLETYPE, 301),
+	LINEWIDTH("lineWidth", "Line Width", StaticPropertyType.DOUBLE, 302),
+	CONNECTORTYPE("connectorType", "Connector Type", StaticPropertyType.CONNECTORTYPE, 303);
 
 	// ================================================================================
 	// Properties

@@ -20,13 +20,15 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that this class or method should only be accessed by the
- * Event Dispatch Thread
+ * Indicates that this class or method should only be accessed by the Event
+ * Dispatch Thread
  * <p>
- * Add this annotation to methods that call (swing) GUI methods,
- * or that may be called from event handlers etc.
+ * Add this annotation to methods that call (swing) GUI methods, or that may be
+ * called from event handlers etc.
+ * 
+ * @author unknown
  */
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
+@Target({ ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR })
 public @interface EventDispatchThreadOnly {
 
 }

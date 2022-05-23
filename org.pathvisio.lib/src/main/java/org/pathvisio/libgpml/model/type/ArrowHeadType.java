@@ -136,9 +136,9 @@ public class ArrowHeadType {
 	}
 	
 	/**
-	 * TODO 
+	 * Returns an array of visible arrowheads name.  
 	 * 
-	 * @return
+	 * @return the array of visible arrowhead names. 
 	 */
 	static public String[] getVisibleNames() {
 		String[] result = new String[visible.size()];
@@ -148,10 +148,10 @@ public class ArrowHeadType {
 		return result;
 	}
 
-	/** 
-	 * TODO 
+	/**
+	 * Returns an array of visible arrowheads values.  
 	 * 
-	 * @return
+	 * @return the array of visible arrowhead values. 
 	 */
 	static public ArrowHeadType[] getVisibleValues() {
 		return visible.toArray(new ArrowHeadType[0]);

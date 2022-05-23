@@ -16,8 +16,11 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.debug;
 
-/** Use this annotation to indicate that this method is Thread-safe,
- * i.e. it can be safely called from any thread at any time.
+/**
+ * Use this annotation to indicate that this method is Thread-safe, i.e. it can
+ * be safely called from any thread at any time.
+ * 
+ * @author unknown
  */
 public @interface ThreadSafe {
 

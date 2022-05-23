@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -19,30 +19,26 @@ package org.pathvisio.libgpml.model;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
-import org.pathvisio.libgpml.model.type.ArrowHeadType;
-import org.pathvisio.libgpml.model.type.ConnectorType;
-import org.pathvisio.libgpml.model.type.LineStyleType;
 import org.pathvisio.libgpml.model.type.ObjectType;
 import org.pathvisio.libgpml.prop.StaticProperty;
 import org.pathvisio.libgpml.util.Utils;
+import org.pathvisio.libgpml.util.XrefUtils;
 
 /**
- * This class stores metadata for a Pathway. Pathway is treated as a
- * {@link PathwayElement} for simplicity of listeners and implementation.
- * 
- * Because of multiple optional parameters, a builder pattern is implemented for
- * Pathway. Example of how a Pathway object can be created:
- * 
- * Pathway pathway = new Pathway.PathwayBuilder("Title", 100, 100,
- * Color.decode("#ffffff")).setOrganism("Homo Sapiens")
- * .setSource("WikiPathways").setVersion("r1").setLicense("CC0").setXref(xref).build();
- * 
+ * The Pathway class stores information or metadata for a Pathway Model.
+ * <p>
+ * NB:
+ * <ol>
+ * <li>Pathway is treated as a {@link PathwayElement} for simplicity of
+ * listeners and implementation.
+ * <li>There can only be one Pathway per a PathwayModel.
+ * <li>A Pathway references its PathwayModel, but has no elementId (null).
+ * </ol>
+ *
  * @author finterly
  */
 public class Pathway extends PathwayElement implements Xrefable {
@@ -80,7 +76,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 	// ================================================================================
 	/**
 	 * Returns the object type of this pathway element.
-	 * 
+	 *
 	 * @return the object type.
 	 */
 	@Override
@@ -90,7 +86,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the title or name of this pathway.
-	 * 
+	 *
 	 * @return title the title.
 	 */
 	public String getTitle() {
@@ -99,7 +95,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the title or name of this pathway.
-	 * 
+	 *
 	 * @param v the title to set.
 	 */
 	public void setTitle(String v) {
@@ -115,7 +111,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 	/**
 	 * Returns the board width. Board width together with board height define
 	 * drawing size.
-	 * 
+	 *
 	 * @return boardWidth the board width
 	 */
 	public double getBoardWidth() {
@@ -124,7 +120,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the board width.
-	 * 
+	 *
 	 * @param v the board width to set.
 	 */
 	public void setBoardWidth(double v) {
@@ -138,7 +134,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 	/**
 	 * Returns the board height. Board width together with board height define
 	 * drawing size.
-	 * 
+	 *
 	 * @return boardHeight the board height
 	 */
 	public double getBoardHeight() {
@@ -147,7 +143,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the board height.
-	 * 
+	 *
 	 * @param v the board height to set.
 	 */
 	public void setBoardHeight(double v) {
@@ -160,7 +156,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the background color of this pathway.
-	 * 
+	 *
 	 * @return backgroundColor the background color.
 	 */
 	public Color getBackgroundColor() {
@@ -172,7 +168,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the background color of this pathway.
-	 * 
+	 *
 	 * @param v the background color to set.
 	 */
 	public void setBackgroundColor(Color v) {
@@ -181,7 +177,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the list of authors for this pathway model.
-	 * 
+	 *
 	 * @return authors the list of authors.
 	 */
 	public List<Author> getAuthors() {
@@ -190,7 +186,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Adds the given author to authors list.
-	 * 
+	 *
 	 * @param author the author to add.
 	 */
 	public Author addAuthor(Author author) {
@@ -202,7 +198,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Creates and adds an author to authors list.
-	 * 
+	 *
 	 * @param name the name of author.
 	 */
 	public Author addAuthor(String name) {
@@ -213,7 +209,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Removes the given author from authors list.
-	 * 
+	 *
 	 * @param author the author to remove.
 	 */
 	public void removeAuthor(Author author) {
@@ -224,7 +220,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the description of this pathway.
-	 * 
+	 *
 	 * @return description the description.
 	 */
 	public String getDescription() {
@@ -233,19 +229,20 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the description of this pathway.
-	 * 
+	 *
 	 * @param v the description to set.
 	 */
 	public void setDescription(String v) {
-		if (v != null && !Utils.stringEquals(description, v)) {
+		if (v != null) {
 			description = v;
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.DESCRIPTION));
 		}
 	}
 
 	/**
 	 * Returns the organism of this pathway. Organism is the scientific name (e.g.,
 	 * Homo sapiens) of the species being described by this pathway.
-	 * 
+	 *
 	 * @return organism the organism.
 	 */
 	public String getOrganism() {
@@ -255,7 +252,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 	/**
 	 * Sets the organism of this pathway. Organism is the scientific name (e.g.,
 	 * Homo sapiens) of the species being described by this pathway.
-	 * 
+	 *
 	 * @param v the organism to set.
 	 */
 	public void setOrganism(String v) {
@@ -267,7 +264,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the source of this pathway, e.g. WikiPathways, KEGG, Cytoscape.
-	 * 
+	 *
 	 * @return source the source.
 	 */
 	public String getSource() {
@@ -276,7 +273,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the source of this pathway, e.g. WikiPathways, KEGG, Cytoscape.
-	 * 
+	 *
 	 * @param v the source to set.
 	 */
 	public void setSource(String v) {
@@ -288,7 +285,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the version of this pathway.
-	 * 
+	 *
 	 * @return version the version
 	 */
 	public String getVersion() {
@@ -297,7 +294,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the version of this pathway.
-	 * 
+	 *
 	 * @param v the version to set.
 	 */
 	public void setVersion(String v) {
@@ -309,7 +306,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the license of this pathway.
-	 * 
+	 *
 	 * @return license the license.
 	 */
 	public String getLicense() {
@@ -318,7 +315,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Sets the license of this pathway.
-	 * 
+	 *
 	 * @param v the license to set.
 	 */
 	public void setLicense(String v) {
@@ -330,68 +327,25 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 	/**
 	 * Returns the Xref for this pathway.
-	 * 
+	 *
 	 * @return xref the xref of this pathway.
 	 */
+	@Override
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
 	 * Sets the Xref for this pathway.
-	 * 
+	 *
 	 * @param v the xref to set for this pathway.
 	 */
+	@Override
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
-	}
-
-	// ================================================================================
-	// FireEvent and Listener Methods
-	// ================================================================================
-	int noFire = 0;
-
-	public void dontFireEvents(int times) {
-		noFire = times;
-	}
-
-	private Set<PathwayObjectListener> listeners = new HashSet<PathwayObjectListener>();
-
-	@Override
-	public void addListener(PathwayObjectListener v) {
-		if (!listeners.contains(v))
-			listeners.add(v);
-	}
-
-	@Override
-	public void removeListener(PathwayObjectListener v) {
-		listeners.remove(v);
-	}
-
-	@Override
-	public void fireObjectModifiedEvent(PathwayObjectEvent e) {
-		if (noFire > 0) {
-			noFire -= 1;
-			return;
-		}
-//		if (pathwayModel != null)
-//			pathwayModel.childModified(e);
-		for (PathwayObjectListener g : listeners) {
-			g.gmmlObjectModified(e);
-		}
-	}
-
-	/**
-	 * Terminates this pathway. The pathway model, if any, is unset from this
-	 * pathway. Links to all annotationRefs, citationRefs, and evidenceRefs are
-	 * removed from this data node.
-	 */
-	@Override
-	protected void terminate() {
-		// Is pathway allowed to be terminated? TODO
 	}
 
 	// ================================================================================
@@ -410,22 +364,15 @@ public class Pathway extends PathwayElement implements Xrefable {
 		boardWidth = src.boardWidth;
 		boardHeight = src.boardHeight;
 		backgroundColor = src.backgroundColor;
-		authors = new ArrayList<Author>(); // TODO
+		// copy authors
 		for (Author c : src.authors) {
 			try {
 				addAuthor((Author) c.clone());
 			} catch (CloneNotSupportedException e) {
-				assert (false);
-				/* not going to happen */
+				assert (false); // not going to happen
 			}
 		}
-//		for (Author a : src.authors) {
-//			Author na = addAuthor(a.getName());
-//			na.setUsername(a.getUsername());
-//			na.setOrder(a.getOrder());
-//			na.setXref(a.getXref());
-//			addAuthor(a);
-//		}
+		description = src.description;
 		organism = src.organism;
 		source = src.source;
 		version = src.version;
@@ -440,8 +387,9 @@ public class Pathway extends PathwayElement implements Xrefable {
 	 *
 	 * No events will be sent to the parent of the original.
 	 */
+	@Override
 	public CopyElement copy() {
-		Pathway result = new Pathway(); // TODO
+		Pathway result = new Pathway();
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
 	}
@@ -451,19 +399,17 @@ public class Pathway extends PathwayElement implements Xrefable {
 	// ================================================================================
 	/**
 	 * Returns all static properties for this pathway object.
-	 * 
+	 *
 	 * @return result the set of static property for this pathway object.
 	 */
 	@Override
 	public Set<StaticProperty> getStaticPropertyKeys() {
 		Set<StaticProperty> result = super.getStaticPropertyKeys();
 		Set<StaticProperty> propsPathway = EnumSet.of(StaticProperty.TITLE, StaticProperty.ORGANISM,
-				StaticProperty.SOURCE, StaticProperty.VERSION, StaticProperty.LICENSE, StaticProperty.XREF,
-				StaticProperty.BOARDWIDTH, StaticProperty.BOARDHEIGHT, StaticProperty.BACKGROUNDCOLOR);
-		Set<StaticProperty> propsAuthor = EnumSet.of(StaticProperty.AUTHOR, StaticProperty.NAME,
-				StaticProperty.USERNAME, StaticProperty.ORDER); //TODO AUTHORS?
+				StaticProperty.DESCRIPTION, StaticProperty.SOURCE, StaticProperty.VERSION, StaticProperty.LICENSE,
+				StaticProperty.AUTHOR, StaticProperty.XREF, StaticProperty.BOARDWIDTH, StaticProperty.BOARDHEIGHT,
+				StaticProperty.BACKGROUNDCOLOR);
 		result.addAll(propsPathway);
-		result.addAll(propsAuthor);
 		return result;
 	}
 
@@ -479,7 +425,10 @@ public class Pathway extends PathwayElement implements Xrefable {
 				result = getTitle();
 				break;
 			case ORGANISM:
-				result = getOrganism(); // TODO name???
+				result = getOrganism();
+				break;
+			case DESCRIPTION:
+				result = getDescription();
 				break;
 			case SOURCE:
 				result = getSource();
@@ -489,6 +438,9 @@ public class Pathway extends PathwayElement implements Xrefable {
 				break;
 			case LICENSE:
 				result = getLicense();
+				break;
+			case AUTHOR:
+				result = getAuthors();
 				break;
 			case XREF:
 				result = getXref();
@@ -502,7 +454,6 @@ public class Pathway extends PathwayElement implements Xrefable {
 			case BACKGROUNDCOLOR:
 				result = getBackgroundColor();
 				break;
-			// TODO AUTHOR!!!!
 			default:
 				// do nothing
 			}
@@ -522,12 +473,15 @@ public class Pathway extends PathwayElement implements Xrefable {
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {
 		super.setStaticProperty(key, value);
-		switch (key) {
+		switch (key) { 
 		case TITLE:
 			setTitle((String) value);
 			break;
 		case ORGANISM:
 			setOrganism((String) value);
+			break;
+		case DESCRIPTION:
+			setDescription((String) value);
 			break;
 		case SOURCE:
 			setSource((String) value);
@@ -538,19 +492,21 @@ public class Pathway extends PathwayElement implements Xrefable {
 		case LICENSE:
 			setLicense((String) value);
 			break;
+		case AUTHOR:
+			// do nothing TODO
+			break;
 		case XREF:
 			setXref((Xref) value);
 			break;
 		case BOARDWIDTH:
-			setBoardWidth((Double) value);
+			// ignore, board width is calculated automatically
 			break;
 		case BOARDHEIGHT:
-			setBoardHeight((Double) value);
+			// ignore, board height is calculated automatically
 			break;
 		case BACKGROUNDCOLOR:
 			setBackgroundColor((Color) value);
 			break;
-		// TODO AUTHOR!!!!
 		default:
 			// do nothing
 		}
@@ -562,7 +518,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 	/**
 	 * This class stores information for an Author. An Author must have name and
 	 * optionally username, order, and Xref.
-	 * 
+	 *
 	 * @author finterly
 	 */
 	public class Author implements Cloneable {
@@ -579,7 +535,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 		 * Instantiates an author with only required property. Use set methods for
 		 * optional author properties. This private constructor is called by
 		 * {@link #addAuthor(String name)}.
-		 * 
+		 *
 		 * @param name the author name.
 		 */
 		private Author(String name) {
@@ -591,7 +547,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 		// ================================================================================
 
 		/**
-		 * Clones this author. TODO
+		 * Clones this author.
 		 */
 		@Override
 		public Object clone() throws CloneNotSupportedException {
@@ -603,7 +559,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 		// ================================================================================
 		/**
 		 * Returns the name of this author.
-		 * 
+		 *
 		 * @return name the name of this author.
 		 */
 		public String getName() {
@@ -612,7 +568,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 		/**
 		 * Sets the name of this author.
-		 * 
+		 *
 		 * @param v the name of this author.
 		 */
 		public void setName(String v) {
@@ -625,7 +581,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 		/**
 		 * Returns the username of this author.
-		 * 
+		 *
 		 * @return username the username of this author.
 		 */
 		public String getUsername() {
@@ -634,7 +590,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 		/**
 		 * Sets the username of this author.
-		 * 
+		 *
 		 * @param v the username of this author.
 		 */
 		public void setUsername(String v) {
@@ -647,7 +603,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 		/**
 		 * Returns the authorship order of this author.
-		 * 
+		 *
 		 * @return order the authorship order.
 		 */
 		public int getOrder() {
@@ -669,7 +625,7 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 		/**
 		 * Returns the Xref for the author.
-		 * 
+		 *
 		 * @return xref the xref of the author.
 		 */
 		public Xref getXref() {
@@ -678,15 +634,44 @@ public class Pathway extends PathwayElement implements Xrefable {
 
 		/**
 		 * Sets the Xref for the author.
-		 * 
+		 *
 		 * @param v the xref of the author.
 		 */
 		public void setXref(Xref v) {
 			if (v != null) {
 				xref = v;
 				fireObjectModifiedEvent(
-						PathwayObjectEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.XREF));
+						PathwayObjectEvent.createSinglePropertyEvent(Pathway.this, StaticProperty.AUTHOR));
 			}
+		}
+
+		/**
+		 * Writes author out as a string.
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			// Order
+			if (order != 0) {
+				builder.append(order + ": ");
+			}
+			// Name
+			if (name != null) {
+				builder.append(name);
+			}
+			// Username
+			if (username != null) {
+				builder.append(" (" + username + ")");
+			}
+			// Xref
+			if (xref != null) {
+				String id = XrefUtils.getIdentifier(xref);
+				String ds = XrefUtils.getDataSource(xref).getFullName();
+				if (!Utils.isEmpty(id)) {
+					builder.append(" ").append(ds).append(" ").append(id);
+				}
+			}
+			return builder.toString();
 		}
 
 	}

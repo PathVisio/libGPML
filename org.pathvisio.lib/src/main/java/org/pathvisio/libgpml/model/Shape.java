@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import java.util.EnumSet;
 import java.util.Set;
 
 import org.pathvisio.libgpml.model.type.ObjectType;
@@ -25,7 +24,7 @@ import org.pathvisio.libgpml.util.Utils;
 
 /**
  * This class stores all information relevant to a Shape pathway element.
- * 
+ *
  * @author finterly
  */
 public class Shape extends ShapedElement {
@@ -47,7 +46,7 @@ public class Shape extends ShapedElement {
 	// ================================================================================
 	/**
 	 * Returns the object type of this pathway element.
-	 * 
+	 *
 	 * @return the object type.
 	 */
 	@Override
@@ -57,19 +56,21 @@ public class Shape extends ShapedElement {
 
 	/**
 	 * Returns the text of of the shape.
-	 * 
+	 *
 	 * @return textLabel the text of of the shape.
-	 * 
+	 *
 	 */
+	@Override
 	public String getTextLabel() {
 		return textLabel;
 	}
 
 	/**
 	 * Sets the text of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the text to set.
 	 */
+	@Override
 	public void setTextLabel(String v) {
 		if (v != null && !Utils.stringEquals(textLabel, v)) {
 			textLabel = v;
@@ -94,11 +95,9 @@ public class Shape extends ShapedElement {
 	// Copy Methods
 	// ================================================================================
 	/**
-	 * Note: doesn't change parent, only fields
+	 * Copies values from the given source pathway element.
 	 *
-	 * Used by UndoAction.
-	 *
-	 * @param src
+	 * @param src the source pathway element.
 	 */
 	public void copyValuesFrom(Shape src) {
 		super.copyValuesFrom(src);
@@ -107,11 +106,12 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
+	 * Copies this pathway element.
 	 *
-	 * No events will be sent to the parent of the original.
+	 * @return the copyElement for the new pathway element and this source pathway
+	 *         element.
 	 */
+	@Override
 	public CopyElement copy() {
 		Shape result = new Shape();
 		result.copyValuesFrom(this);
@@ -123,7 +123,7 @@ public class Shape extends ShapedElement {
 	// ================================================================================
 	/**
 	 * Returns all static properties for this pathway object.
-	 * 
+	 *
 	 * @return result the set of static property for this pathway object.
 	 */
 	@Override
@@ -134,10 +134,13 @@ public class Shape extends ShapedElement {
 	}
 
 	/**
+	 * Returns static property value for given key.
 	 *
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
-	public Object getStaticProperty(StaticProperty key) { // TODO
+	public Object getStaticProperty(StaticProperty key) {
 		Object result = super.getStaticProperty(key);
 		if (result == null) {
 			switch (key) {
@@ -156,9 +159,9 @@ public class Shape extends ShapedElement {
 	 * x);
 	 *
 	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
+	 * 
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {

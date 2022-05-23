@@ -32,35 +32,55 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-// TODO: this is similar to com.sun.xml.internal.ws.message.RootElementSniffer, perhaps can be re-used.
-public class RootElementFinder
-{
-	static class RootElementHandler extends DefaultHandler
-	{
+/**
+ * 
+ * This is similar to com.sun.xml.internal.ws.message.RootElementSniffer,
+ * perhaps can be re-used.
+ * 
+ * @author unknown
+ */
+public class RootElementFinder {
+
+	/**
+	 * Root element handler class. 
+	 * 
+	 * @author unknown
+	 */
+	static class RootElementHandler extends DefaultHandler {
+
 		private String rootQName = null;
 		private String rootUri = null;
 
+		/**
+		 *
+		 */
 		@Override
-		public void startElement (String uri, String localName, String qName, Attributes attributes) throws SAXException
-		{
-			if (rootQName == null && rootUri == null) 
-			{
+		public void startElement(String uri, String localName, String qName, Attributes attributes)
+				throws SAXException {
+			if (rootQName == null && rootUri == null) {
 				rootQName = qName;
 				rootUri = uri;
 			}
-			
 			// TODO: stop parsing here...
 		}
 
-		public String getRootQName()  { return rootQName; }
-		public String getRootUri()  { return rootUri; }
+		public String getRootQName() {
+			return rootQName;
+		}
+
+		public String getRootUri() {
+			return rootUri;
+		}
 	};
 
 	/**
 	 * Special reader that works around problem with UTF-BOM
+	 * 
+	 * @param xin
+	 * @return
+	 * @throws IOException
 	 */
-	private static Reader inputStreamToReader(InputStream xin) throws IOException 
-	{
+	private static Reader inputStreamToReader(InputStream xin) throws IOException {
 		BufferedInputStream in = new BufferedInputStream(xin);
 		in.mark(3);
 		int byte1 = in.read();
@@ -80,23 +100,39 @@ public class RootElementFinder
 		}
 	}
 
-	private static RootElementHandler parse(File file) throws FileNotFoundException, IOException, SAXException
-	{
-		XMLReader xr;	
+	/**
+	 * Handles root element.
+	 * 
+	 * @param file
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	private static RootElementHandler parse(File file) throws FileNotFoundException, IOException, SAXException {
+		XMLReader xr;
 		xr = XMLReaderFactory.createXMLReader();
 
 		RootElementHandler rootElementHandler = new RootElementHandler();
 
-		xr.setEntityResolver(null);		
+		xr.setEntityResolver(null);
 		xr.setContentHandler(rootElementHandler);
 		xr.setErrorHandler(rootElementHandler);
-		xr.parse(new InputSource(inputStreamToReader(new FileInputStream (file))));
+		xr.parse(new InputSource(inputStreamToReader(new FileInputStream(file))));
 
 		return rootElementHandler;
 	}
 
-	public static String getRootUri (File file) throws SAXException, FileNotFoundException, IOException
-	{
+	/**
+	 * Returns root URI.
+	 * 
+	 * @param file
+	 * @return
+	 * @throws SAXException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static String getRootUri(File file) throws SAXException, FileNotFoundException, IOException {
 		RootElementHandler handler = parse(file);
 		return handler.getRootUri();
 	}

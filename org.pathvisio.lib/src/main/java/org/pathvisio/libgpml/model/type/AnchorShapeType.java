@@ -31,9 +31,9 @@ public class AnchorShapeType {
 	private static Map<String, AnchorShapeType> nameToAnchorShapeType = new TreeMap<String, AnchorShapeType>(
 			String.CASE_INSENSITIVE_ORDER);
 
-	public static final AnchorShapeType SQUARE = new AnchorShapeType("Square"); // default
+	public static final AnchorShapeType NONE = new AnchorShapeType("None"); // default
+	public static final AnchorShapeType SQUARE = new AnchorShapeType("Square");
 	public static final AnchorShapeType CIRCLE = new AnchorShapeType("Circle");
-	public static final AnchorShapeType NONE = new AnchorShapeType("None");
 
 	private String name;
 	private boolean disallowLinks;
@@ -119,15 +119,6 @@ public class AnchorShapeType {
 	}
 
 	/**
-	 * Returns a string representation of this AnchorType.
-	 * 
-	 * @return name the identifier of this AnchorType.
-	 */
-	public String toString() {
-		return name;
-	}
-
-	/**
 	 * Returns the booleans disallowLinks.
 	 * 
 	 * @return disallowLinks the boolean if set to true nothing will be able to
@@ -135,6 +126,15 @@ public class AnchorShapeType {
 	 */
 	public boolean isDisallowLinks() {
 		return disallowLinks;
+	}
+
+	/**
+	 * Returns a string representation of this AnchorShapeType.
+	 * 
+	 * @return name the identifier of this AnchorShapeType.
+	 */
+	public String toString() {
+		return name;
 	}
 
 	/**

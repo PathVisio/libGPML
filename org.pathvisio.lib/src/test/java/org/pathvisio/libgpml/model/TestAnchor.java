@@ -21,8 +21,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.Interaction;
-import org.pathvisio.libgpml.model.PathwayModel;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.type.AnchorShapeType;
@@ -90,7 +88,7 @@ public class TestAnchor extends TestCase {
 		assertEquals(pt4.getPathwayModel(), p);
 
 		// add anchor
-		a1 = i1.addAnchor(0.5, AnchorShapeType.SQUARE);
+		a1 = i1.addAnchor(0.5, AnchorShapeType.NONE);
 
 		// checks
 		assertTrue(i1.hasAnchor(a1));

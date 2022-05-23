@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -32,7 +32,7 @@ import org.pathvisio.libgpml.util.Utils;
 
 /**
  * This class stores information for a DataNode pathway element.
- * 
+ *
  * @author finterly
  */
 public class DataNode extends ShapedElement implements Xrefable {
@@ -51,7 +51,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * Instantiates a DataNode given all possible parameters. A DataNode of type
 	 * Alias can have an aliasRef which refers to a {@link Group} and/or have a
 	 * textLabel which points to a group somewhere.
-	 * 
+	 *
 	 * @param textLabel the text or link of this datanode.
 	 * @param type      the type of datanode, e.g. complex.
 	 * @param xref      the data node Xref.
@@ -78,7 +78,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	// ================================================================================
 	/**
 	 * Returns the object type of this pathway element.
-	 * 
+	 *
 	 * @return the object type.
 	 */
 	@Override
@@ -88,9 +88,9 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Returns the text of this datanode.
-	 * 
+	 *
 	 * @return textLabel the text of this datanode.
-	 * 
+	 *
 	 */
 	@Override
 	public String getTextLabel() {
@@ -99,7 +99,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Sets the text of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the text to set.
 	 */
 	@Override
@@ -113,7 +113,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Returns the type of this datanode.
-	 * 
+	 *
 	 * @return type the type of this datanode, e.g. complex.
 	 */
 	public DataNodeType getType() {
@@ -122,15 +122,14 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Sets the type of this datanode, e.g. complex.
-	 * 
+	 *
 	 * NB: Cannot change type if this is an alias data node.
-	 * 
+	 *
 	 * @param v the type to set for this datanode.
 	 */
 	public void setType(DataNodeType v) {
 		if (type != v && v != null) {
 			if (type == DataNodeType.ALIAS && aliasRef != null) {
-				// TODO
 				unsetAliasRef();
 				int n = JOptionPane.showConfirmDialog(null, "Warning: aliasRef connection will be lost", "Warning",
 						JOptionPane.OK_CANCEL_OPTION);
@@ -146,7 +145,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Returns the Xref for this datanode.
-	 * 
+	 *
 	 * @return xref the xref of this datanode.
 	 */
 	@Override
@@ -156,15 +155,13 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Sets the Xref for this datanode.
-	 * 
+	 *
 	 * @param v the xref to set for this datanode.
 	 */
 	@Override
 	public void setXref(Xref v) {
-		if (v != null) {
-			xref = v;
-			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
-		}
+		xref = v;
+		fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 	}
 
 	// ================================================================================
@@ -172,7 +169,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	// ================================================================================
 	/*
 	 * Returns the list of states of this data node.
-	 * 
+	 *
 	 * @return states the list of states.
 	 */
 	public List<State> getStates() {
@@ -181,7 +178,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Checks whether states has the given state.
-	 * 
+	 *
 	 * @param state the state to look for.
 	 * @return true if has state, false otherwise.
 	 */
@@ -191,7 +188,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 	/**
 	 * Adds given state to states list. Sets datanode for the given state.
-	 * 
+	 *
 	 * @param state the state to be added.
 	 */
 	public void addState(State state) {
@@ -217,7 +214,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	/**
 	 * Instantiates a state with the given properties. Adds new state to states list
 	 * and pathway model.
-	 * 
+	 *
 	 * @param textLabel the text label of the state.
 	 * @param type      the type of the state, e.g. protein modification.
 	 * @param relX      the relative x coordinates.
@@ -233,7 +230,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	/**
 	 * Instantiates a state with the given properties including elementId. Adds new
 	 * state to states list and pathway model.
-	 * 
+	 *
 	 * @param elementId the elementId to set for the instantiated state.
 	 * @param textLabel the text label of the state.
 	 * @param type      the type of the state, e.g. protein modification.
@@ -251,7 +248,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	/**
 	 * Removes given state from states list. State ceases to exist and is
 	 * terminated.
-	 * 
+	 *
 	 * @param state the state to be removed.
 	 */
 	public void removeState(State state) {
@@ -280,7 +277,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * Returns the pathway element to which the data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of a pathway element
 	 * (normally gpml:Group).
-	 * 
+	 *
 	 * @return aliasRef the pathway element to which the data node refers.
 	 */
 	public Group getAliasRef() {
@@ -290,14 +287,16 @@ public class DataNode extends ShapedElement implements Xrefable {
 	/**
 	 * Sets the group aliasRef to which this data node refers to as an alias. In
 	 * GPML, this is aliasRef which refers to the elementId of gpml:Group.
-	 * 
+	 *
 	 * <p>
 	 * NB:
 	 * <ol>
-	 * <li>This method calls {@link PathwayModel#addAlias}.
+	 * <li>This method calls {@link #unsetAliasRef} to remove any existing links.
+	 * <li>This method calls {@link PathwayModel#linkAlias} to add information to
+	 * pathway model.
 	 * <li>DataNode type must be "Alias".
 	 * </ol>
-	 * 
+	 *
 	 * @param v the group to which this data node refers.
 	 */
 	public void setAliasRef(Group v) {
@@ -316,15 +315,15 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 * Unsets the aliasRef, if any, from this data node. Also removes references in
 	 * pathway model.
 	 * <p>
-	 * NB:
 	 * <ol>
-	 * <li>This method does not call {@link PathwayModel#removeAlias}.
-	 * <li>This method is not used directly. It is called by when the data node
-	 * alias is deleted by {@link PathwayModel#removePathwayObject} which in turn
-	 * calls {@link #terminate}.
+	 * <li>This method calls {@link #unsetAliasRef} to remove any existing links.
+	 * <li>This method calls {@link PathwayModel#unlinkAlias} to remove information
+	 * in the pathway model.
+	 * <li>This method is also called when this data node alias is
+	 * {@link #terminate}.
 	 * </ol>
 	 */
-	protected void unsetAliasRef() {
+	public void unsetAliasRef() {
 		if (getAliasRef() != null) {
 			pathwayModel.unlinkAlias(aliasRef, this);
 			aliasRef = null;
@@ -336,12 +335,14 @@ public class DataNode extends ShapedElement implements Xrefable {
 	// Copy Methods
 	// ================================================================================
 	/**
-	 * Note: doesn't change parent, only fields
+	 * Copies values from the given source pathway element.
 	 *
-	 * Used by UndoAction.
-	 * 
-	 * NB: AliasRef value is not copied. References to other PathwayObjects are
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>AliasRef value is not copied. References to other PathwayObjects are
 	 * stored in {@link CopyElement} by {@link #copy}.
+	 * </ol>
 	 *
 	 * @param src the source pathway element.
 	 */
@@ -351,20 +352,18 @@ public class DataNode extends ShapedElement implements Xrefable {
 		type = src.type;
 		states = new ArrayList<State>();
 		for (State s : src.states) {
-			State result = new State(null, null, 0, 0);
+			State result = addState(null, null, 0, 0);
 			result.copyValuesFrom(s);
-			addState(result);
 		}
 		xref = src.xref;
-//		aliasRef = src.aliasRef; TODO not this yet
 		fireObjectModifiedEvent(PathwayObjectEvent.createAllPropertiesEvent(this));
 	}
 
 	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
+	 * Copies this pathway element.
 	 *
-	 * No events will be sent to the parent of the original.
+	 * @return the copyElement for the new pathway element and this source pathway
+	 *         element.
 	 */
 	@Override
 	public CopyElement copy() {
@@ -373,12 +372,35 @@ public class DataNode extends ShapedElement implements Xrefable {
 		return new CopyElement(result, this);
 	}
 
+	/**
+	 * Copies references from the given source data node, including state
+	 * references.
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>For each state, copies references from the corresponding source state.
+	 * <li>To be called after new data node is added to a pathway model.
+	 * <li>The source data node may be the immediate copy element source of the new
+	 * data node, or an older source data node.
+	 * </ol>
+	 *
+	 * @param srcDataNode the source element to copy references from.
+	 */
+	@Override
+	public void copyReferencesFrom(PathwayElement srcDataNode) {
+		super.copyReferencesFrom(srcDataNode);
+		List<State> srcStates = ((DataNode) srcDataNode).getStates();
+		for (int i = 0; i < getStates().size(); i++) {
+			states.get(i).copyReferencesFrom(srcStates.get(i));
+		}
+	}
+
 	// ================================================================================
 	// Property Methods
 	// ================================================================================
 	/**
 	 * Returns all static properties for this pathway object.
-	 * 
+	 *
 	 * @return result the set of static property for this pathway object.
 	 */
 	@Override
@@ -391,10 +413,13 @@ public class DataNode extends ShapedElement implements Xrefable {
 	}
 
 	/**
+	 * Returns static property value for given key.
 	 *
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
-	public Object getStaticProperty(StaticProperty key) { // TODO
+	public Object getStaticProperty(StaticProperty key) {
 		Object result = super.getStaticProperty(key);
 		if (result == null) {
 			switch (key) {
@@ -402,7 +427,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 				result = getTextLabel();
 				break;
 			case DATANODETYPE:
-				result = getType().getName(); // TODO
+				result = getType().getName();
 				break;
 			case XREF:
 				result = getXref();
@@ -423,8 +448,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 	 *
 	 * Value may be null in some cases, e.g. graphRef
 	 *
-	 * @param key
-	 * @param value
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {
@@ -458,10 +483,10 @@ public class DataNode extends ShapedElement implements Xrefable {
 	/**
 	 * Sets the pathway model for this pathway element. NB: Only set when a pathway
 	 * model adds this pathway element. This method is not used directly.
-	 * 
+	 *
 	 * NB: This method is not used directly. It is called by
 	 * {@link PathwayModel#addPathwayObject}.
-	 * 
+	 *
 	 * @param pathwayModel the parent pathway model.
 	 */
 	@Override
@@ -490,7 +515,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	// ================================================================================
 	/**
 	 * This class stores all information relevant to a State pathway element.
-	 * 
+	 *
 	 * @author finterly
 	 */
 	public class State extends ShapedElement implements Xrefable {
@@ -506,7 +531,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		// ================================================================================
 		/**
 		 * Instantiates a State pathway element given all possible parameters.
-		 * 
+		 *
 		 * @param textLabel the text label of the state.
 		 * @param type      the type of the state, e.g. protein modification.
 		 * @param relX      the relative x coordinates on the parent object, where 0,0
@@ -539,7 +564,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		// ================================================================================
 		/**
 		 * Returns the object type of this pathway element.
-		 * 
+		 *
 		 * @return the object type.
 		 */
 		@Override
@@ -557,7 +582,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * <li>In GPML2013a, elementRef was used to refer to the elementId of parent
 		 * data node, thus linking state to parent data node.
 		 * </ol>
-		 * 
+		 *
 		 * @return dataNode the parent data node of the state.
 		 */
 		public DataNode getDataNode() {
@@ -566,19 +591,21 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 		/**
 		 * Returns the text of of this state.
-		 * 
+		 *
 		 * @return textLabel the text of of this state.
-		 * 
+		 *
 		 */
+		@Override
 		public String getTextLabel() {
 			return textLabel;
 		}
 
 		/**
 		 * Sets the text of of this shaped pathway element.
-		 * 
+		 *
 		 * @param v the text to set for this shaped pathway element.
 		 */
+		@Override
 		public void setTextLabel(String v) {
 			String value = (v == null) ? "" : v;
 			if (!Utils.stringEquals(textLabel, value)) {
@@ -589,7 +616,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 		/**
 		 * Returns the type of this state.
-		 * 
+		 *
 		 * @return type the type of this state, e.g. complex.
 		 */
 		public StateType getType() {
@@ -598,7 +625,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 		/**
 		 * Sets the type of this state.
-		 * 
+		 *
 		 * @param v the type of this state, e.g. complex.
 		 */
 		public void setType(StateType v) {
@@ -613,7 +640,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * node, relX and relY are the relative coordinates on the data node, where 0,0
 		 * is at the center of the data node and 1,1 at the bottom right corner of the
 		 * data node.
-		 * 
+		 *
 		 * @return relX the relative x coordinate.
 		 */
 		public double getRelX() {
@@ -625,7 +652,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * node, relX and relY are the relative coordinates on the data node, where 0,0
 		 * is at the center of the data node and 1,1 at the bottom right corner of the
 		 * data node.
-		 * 
+		 *
 		 * @param v the relative x coordinate.
 		 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 		 */
@@ -633,7 +660,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 			if (Math.abs(v) <= 1.0) {
 				if (relX != v) {
 					relX = v;
-					updateCoordinates(); // TODO
+					updateCoordinates();
 					fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 				}
 			} else {
@@ -646,7 +673,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * node, relX and relY are the relative coordinates on the data node, where 0,0
 		 * is at the center of the data node and 1,1 at the bottom right corner of the
 		 * data node.
-		 * 
+		 *
 		 * @return relY the relative y coordinate.
 		 */
 		public double getRelY() {
@@ -658,14 +685,14 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * node, relX and relY are the relative coordinates on the data node, where 0,0
 		 * is at the center of the data node and 1,1 at the bottom right corner of the
 		 * data node.
-		 * 
+		 *
 		 * @param v the relative y coordinate.
 		 */
 		public void setRelY(double v) {
 			if (Math.abs(v) <= 1.0) {
 				if (relY != v) {
 					relY = v;
-					updateCoordinates(); // TODO
+					updateCoordinates();
 					fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 				}
 			} else {
@@ -675,18 +702,20 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 		/**
 		 * Returns the Xref for this state.
-		 * 
+		 *
 		 * @return xref the xref of this state.
 		 */
+		@Override
 		public Xref getXref() {
 			return xref;
 		}
 
 		/**
 		 * Sets the Xref for this state.
-		 * 
+		 *
 		 * @param v the xref of this state.
 		 */
+		@Override
 		public void setXref(Xref v) {
 			if (v != null) {
 				xref = v;
@@ -694,18 +723,9 @@ public class DataNode extends ShapedElement implements Xrefable {
 			}
 		}
 
-		// FROM MState
-		// @Override
-		// public void setParent(Pathway v) {
-		// if (parent != v) {
-		// super.setParent(v);
-		// if (parent != null && graphRef != null) {
-		// updateCoordinates();
-		// }
-		// }
-		// }
-
-		// TODO
+		/**
+		 * Updates coordinates.
+		 */
 		private void updateCoordinates() {
 			DataNode dn = getDataNode();
 			if (dn != null && pathwayModel != null) {
@@ -717,7 +737,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		}
 
 		/**
-		 * 
+		 * Updates coordinates, called by {@link PathwayModel#childModified}
 		 */
 		public void coordinatesChanged() {
 			updateCoordinates();
@@ -728,10 +748,10 @@ public class DataNode extends ShapedElement implements Xrefable {
 		// ================================================================================
 		/**
 		 * Returns the z-order of this pathway element.
-		 * 
+		 *
 		 * NB: State z-order is always z-order of parent data node +1. This is because
 		 * z-order is not written out to the gpml file.
-		 * 
+		 *
 		 * @return zOrder the order of this pathway element.
 		 */
 		@Override
@@ -742,7 +762,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		/**
 		 * Do nothing. State z-order is always z-order of parent data node +1. This is
 		 * because z-order is not written out to the gpml file.
-		 * 
+		 *
 		 * @param v the input
 		 */
 		@Override
@@ -752,9 +772,9 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 		/**
 		 * Returns the parent group of the dataNode of this state.
-		 * 
+		 *
 		 * NB: A state should always belong to the same group as its parent data node.
-		 * 
+		 *
 		 * @return the parent group of this state and its parent dataNode.
 		 */
 		@Override
@@ -765,7 +785,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		/**
 		 * Do not allow groupRef to be set for this state. A state will always belong to
 		 * the same group as its parent data node.
-		 * 
+		 *
 		 * @param v the group.
 		 */
 		@Override
@@ -775,10 +795,10 @@ public class DataNode extends ShapedElement implements Xrefable {
 
 		/**
 		 * Sets the pathway model for this pathway element.
-		 * 
+		 *
 		 * NB: This method is not used directly. It is called by
 		 * {@link PathwayModel#addPathwayObject}.
-		 * 
+		 *
 		 * @param pathwayModel the parent pathway model.
 		 */
 		@Override
@@ -808,11 +828,9 @@ public class DataNode extends ShapedElement implements Xrefable {
 		// Copy Methods
 		// ================================================================================
 		/**
-		 * Note: doesn't change parent, only fields
+		 * Copies values from the given source pathway element.
 		 *
-		 * Used by UndoAction.
-		 *
-		 * @param src
+		 * @param src the source pathway element.
 		 */
 		public void copyValuesFrom(State src) {
 			super.copyValuesFrom(src);
@@ -825,14 +843,14 @@ public class DataNode extends ShapedElement implements Xrefable {
 		}
 
 		/**
-		 * Copy Object. The object will not be part of the same Pathway object, it's
-		 * parent will be set to null.
-		 *
-		 * No events will be sent to the parent of the original.
+		 * Copies this pathway element.
 		 * 
-		 * NB: this method is only used if copying and pasting a state to the same
-		 * parent data node. TODO
+		 * NB: this method is never actually used.
+		 *
+		 * @return the copyElement for the new pathway element and this source pathway
+		 *         element.
 		 */
+		@Override
 		public CopyElement copy() {
 			State result = new State(textLabel, type, relX, relX);
 			result.copyValuesFrom(this);
@@ -844,7 +862,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 		// ================================================================================
 		/**
 		 * Returns all static properties for this pathway object.
-		 * 
+		 *
 		 * @return result the set of static property for this pathway object.
 		 */
 		@Override
@@ -856,8 +874,14 @@ public class DataNode extends ShapedElement implements Xrefable {
 			return result;
 		}
 
+		/**
+		 * Returns static property value for given key.
+		 *
+		 * @param key the key.
+		 * @return the static property value.
+		 */
 		@Override
-		public Object getStaticProperty(StaticProperty key) { // TODO
+		public Object getStaticProperty(StaticProperty key) { 
 			Object result = super.getStaticProperty(key);
 			if (result == null) {
 				switch (key) {
@@ -865,7 +889,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 					result = getTextLabel();
 					break;
 				case STATETYPE:
-					result = getType().getName();// TODO
+					result = getType().getName();
 					break;
 				case RELX:
 					result = getRelX();
@@ -889,8 +913,8 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 *
 		 * Value may be null in some cases, e.g. graphRef
 		 *
-		 * @param key
-		 * @param value
+		 * @param key the key.
+		 * @return the static property value.
 		 */
 		@Override
 		public void setStaticProperty(StaticProperty key, Object value) {

@@ -2,9 +2,6 @@ package org.pathvisio.libgpml.model;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pathvisio.libgpml.model.DataNode;
-import org.pathvisio.libgpml.model.Evidence;
-import org.pathvisio.libgpml.model.PathwayModel;
 import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.util.XrefUtils;

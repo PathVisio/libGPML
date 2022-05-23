@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.type;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -42,7 +40,7 @@ public class DataNodeType {
 	public static final DataNodeType PROTEIN = new DataNodeType("Protein");
 	public static final DataNodeType DNA = new DataNodeType("DNA");
 	public static final DataNodeType RNA = new DataNodeType("RNA");
-	public static final DataNodeType COMPLEX = new DataNodeType("Complex");
+	public static final DataNodeType COMPLEX = new DataNodeType("Complex"); // deprecated 
 
 	// Concepts
 	public static final DataNodeType PATHWAY = new DataNodeType("Pathway");
@@ -50,8 +48,8 @@ public class DataNodeType {
 	public static final DataNodeType PHENOTYPE = new DataNodeType("Phenotype");
 	public static final DataNodeType ALIAS = new DataNodeType("Alias");
 	public static final DataNodeType EVENT = new DataNodeType("Event");
-	public static final DataNodeType CELL = new DataNodeType("Cell"); // TODO
-	public static final DataNodeType ORGAN = new DataNodeType("Organ"); // TODO
+	public static final DataNodeType CELL_NODE = new DataNodeType("CellNode"); 
+	public static final DataNodeType ORGAN = new DataNodeType("Organ");
 
 	private String name;
 
@@ -127,8 +125,7 @@ public class DataNodeType {
 	}
 
 	/**
-	 * Returns a string representation of this DataNodeType. Adds space between
-	 * lower and upper case letters to make more human readable.
+	 * Returns a string representation of this DataNodeType.
 	 * 
 	 * @return name the identifier of this DataNodeType.
 	 */

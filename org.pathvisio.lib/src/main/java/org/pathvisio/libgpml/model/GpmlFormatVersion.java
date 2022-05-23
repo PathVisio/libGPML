@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -22,7 +22,7 @@ import org.pathvisio.libgpml.io.ConverterException;
 
 /**
  * Interface for GPML format versions.
- * 
+ *
  * @author unknown
  */
 public interface GpmlFormatVersion {
@@ -38,9 +38,9 @@ public interface GpmlFormatVersion {
 	String getSchemaFile();
 
 	/**
-	 * validates a JDOM document against the xml-schema definition specified by
+	 * Validates a JDOM document against the xml-schema definition specified by
 	 * 'xsdFile'
-	 * 
+	 *
 	 * @param doc the document to validate
 	 */
 	void validateDocument(Document doc) throws ConverterException;

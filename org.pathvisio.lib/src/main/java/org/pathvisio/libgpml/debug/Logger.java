@@ -21,18 +21,22 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 /**
-	Logs output to a stream, with the option to filter for types of messages
+ * Logs output to a stream, with the option to filter for types of messages
+ * <p>
+ * log levels:
+ * <ol>
+ * <li>1: debug
+ * <li>2: trace
+ * <li>3: info
+ * <li>4: warn
+ * <li>5: error
+ * <li>6: fatal
+ * </ol>
+ * 
+ * @author unknown
+ */
+public class Logger {
 
-	log levels:
-		1: Trace
-		2: debug
-		3: info
-		4: warn
-		5: error
-		6: fatal
-*/
-public class Logger
-{
 	private boolean debugEnabled = true;
 	private boolean traceEnabled = false;
 	private boolean infoEnabled = true;
@@ -42,35 +46,32 @@ public class Logger
 
 	private PrintStream s = System.err;
 
-	public PrintStream getStream () { return s; }
-	public void setStream (PrintStream aStream) { s = aStream; }
+	public PrintStream getStream() {
+		return s;
+	}
+
+	public void setStream(PrintStream aStream) {
+		s = aStream;
+	}
 
 	/**
-	 * if dest is "STDERR" or "STDOUT", the
-	 * standard error / output are used.
-	 * Otherwise, dest is interpreted as a filename
+	 * If dest is "STDERR" or "STDOUT", the standard error / output are used.
+	 * Otherwise, dest is interpreted as a filename.
+	 * 
+	 * @param dest the destination for log file.
 	 */
-	public void setDest(String dest)
-	{
+	public void setDest(String dest) {
 		if (dest != null) {
-			if (dest.equals ("STDERR"))
-			{
+			if (dest.equals("STDERR")) {
 				s = System.err;
-			}
-			else if (dest.equals("STDOUT"))
-			{
+			} else if (dest.equals("STDOUT")) {
 				s = System.out;
-			}
-			else
-			{
-				try
-				{
-					s = new PrintStream (new File (dest));
-				}
-				catch (FileNotFoundException e)
-				{
+			} else {
+				try {
+					s = new PrintStream(new File(dest));
+				} catch (FileNotFoundException e) {
 					s = System.err;
-					error ("Could not open log file " + dest + " for writing", e);
+					error("Could not open log file " + dest + " for writing", e);
 				}
 			}
 		}
@@ -78,20 +79,23 @@ public class Logger
 
 	StopWatch logTimer;
 
-	public Logger()
-	{
+	public Logger() {
 		logTimer = new StopWatch();
 		logTimer.start();
 	}
 
 	/**
-		get/set log level to a certain level. The higher the level, the
-		move output. Messages above this level are discarded.
-	*/
-
-	public void setLogLevel (boolean debug, boolean trace, boolean info,
-		boolean warn, boolean error, boolean fatal)
-	{
+	 * get/set log level to a certain level. The higher the level, the move output.
+	 * Messages above this level are discarded.
+	 * 
+	 * @param debug
+	 * @param trace
+	 * @param info
+	 * @param warn
+	 * @param error
+	 * @param fatal
+	 */
+	public void setLogLevel(boolean debug, boolean trace, boolean info, boolean warn, boolean error, boolean fatal) {
 		debugEnabled = debug;
 		traceEnabled = trace;
 		infoEnabled = info;
@@ -102,52 +106,62 @@ public class Logger
 
 	private static final String FORMAT_STRING = "[%10.3f] ";
 
-	public void trace (String msg)
-	{
-		if (traceEnabled)
-		{
-			s.printf (FORMAT_STRING , logTimer.look() / 1000.0f);
-			s.println ("Trace: " + msg);
+	public void trace(String msg) {
+		if (traceEnabled) {
+			s.printf(FORMAT_STRING, logTimer.look() / 1000.0f);
+			s.println("Trace: " + msg);
 		}
 	}
 
-	public void debug (String msg)
-	{
-		if (debugEnabled)
-		{
-			s.printf (FORMAT_STRING , logTimer.look() / 1000.0f);
-			s.println ("Debug: " + msg);
+	public void debug(String msg) {
+		if (debugEnabled) {
+			s.printf(FORMAT_STRING, logTimer.look() / 1000.0f);
+			s.println("Debug: " + msg);
 		}
 	}
 
-	public void info  (String msg)
-	{
-		if (infoEnabled)
-		{
-			s.printf (FORMAT_STRING , logTimer.look() / 1000.0f);
-			s.println ("Info:  " + msg);
+	public void info(String msg) {
+		if (infoEnabled) {
+			s.printf(FORMAT_STRING, logTimer.look() / 1000.0f);
+			s.println("Info:  " + msg);
 		}
 	}
 
-	public void warn  (String msg) { if (warnEnabled) s.println ("Warn:  " + msg); }
-
-	public void warn  (String msg, Throwable e)
-	{
-		if (warnEnabled) {	s.println ("Warn:  " + msg + "\n\t" + e.getMessage()); 	}
-		if (debugEnabled) {	e.printStackTrace(s); }
+	public void warn(String msg) {
+		if (warnEnabled)
+			s.println("Warn:  " + msg);
 	}
 
-	public void error (String msg) { if (errorEnabled) s.println ("Error: " + msg); }
-	public void error (String msg, Throwable e)
-	{
-		if(errorEnabled) { error(msg + "\n\t" + e.toString() + (e != null ? ": " + e.getMessage() : "")); }
-		if(debugEnabled) { e.printStackTrace(s); }
+	public void warn(String msg, Throwable e) {
+		if (warnEnabled) {
+			s.println("Warn:  " + msg + "\n\t" + e.getMessage());
+		}
+		if (debugEnabled) {
+			e.printStackTrace(s);
+		}
 	}
-	public void fatal (String msg) { if (fatalEnabled) s.println ("Fatal: " + msg); }
 
+	public void error(String msg) {
+		if (errorEnabled)
+			s.println("Error: " + msg);
+	}
+
+	public void error(String msg, Throwable e) {
+		if (errorEnabled) {
+			error(msg + "\n\t" + e.toString() + (e != null ? ": " + e.getMessage() : ""));
+		}
+		if (debugEnabled) {
+			e.printStackTrace(s);
+		}
+	}
+
+	public void fatal(String msg) {
+		if (fatalEnabled)
+			s.println("Fatal: " + msg);
+	}
 
 	/**
-	   Global application logger
+	 * Global application logger
 	 */
 	public static Logger log = new Logger();
 }

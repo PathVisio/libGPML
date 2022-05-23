@@ -30,7 +30,7 @@ import org.pathvisio.libgpml.debug.Logger;
 public class XrefUtils {
 
 	/**
-	 * Instantiates an {@link Xref} given string identifier and dataSource.
+	 * Instantiates an {@link Xref} given String identifier and dataSource.
 	 * {@link getXrefDataSource} returns a {@link DataSource} for string compact
 	 * identifier prefix, fullName, or systemCode.
 	 * 
@@ -39,12 +39,36 @@ public class XrefUtils {
 	 * @return the xref for given identifier and data source.
 	 */
 	public static Xref createXref(String identifier, String dataSource) {
-		// TODO allow identifier to be null or empty
-		if (identifier == null)
-			identifier = "";
-		// data source cannot be null nor empty
-		if (dataSource != null && !dataSource.equals("")) {
+//		if (identifier == null) {
+//			identifier = ""; // TODO for now allow identifier to be null or empty
+//		}
+		// both identifier and data must be valid
+		if (identifier != null && !identifier.equals("") && dataSource != null && !dataSource.equals("")) {
 			return new Xref(identifier, getXrefDataSource(dataSource));
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Instantiates an {@link Xref} given String identifier and DataSource
+	 * dataSource.
+	 * 
+	 * NB: Temporary Method? BridgeDB as of (15/04/2022) still allows the
+	 * instantiation of and Xref with null DataSource. This is not desirable for
+	 * some use cases.
+	 * 
+	 * @param identifier the identifier of the database entry.
+	 * @param dataSource the source of database entry.
+	 * @return the xref for given identifier and data source.
+	 */
+	public static Xref createXref(String identifier, DataSource dataSource) {
+//		if (identifier == null) {
+//			identifier = ""; // TODO for now allow identifier to be null or empty
+//		}
+		// both identifier and data must be valid
+		if (identifier != null && !identifier.equals("") && dataSource != null && !dataSource.equals("")) {
+			return new Xref(identifier, dataSource);
 		} else {
 			return null;
 		}
@@ -60,21 +84,23 @@ public class XrefUtils {
 	 * @return dataSource the data source for the given string.
 	 */
 	public static DataSource getXrefDataSource(String dataSourceStr) {
-		// retrieve data source using string as compact identifier prefix
+		if (dataSourceStr.equals("")) {
+			return null; // null datasource if if empty string
+		}
+		// if compact identifier prefix
 		DataSource dataSource = DataSource.getByCompactIdentifierPrefix(dataSourceStr);
-		// if compact identifier prefix does not exist, data source is null
 		if (dataSource == null) {
-			// if string is existing full name, retrieve data source
+			// if existing full name
 			if (DataSource.fullNameExists(dataSourceStr)) {
-				return DataSource.getExistingByFullName(dataSourceStr);
-				// if string is existing system code, retrieve data source
+				dataSource = DataSource.getExistingByFullName(dataSourceStr);
+				// if existing system code
 			} else if (DataSource.systemCodeExists(dataSourceStr)) {
-				return DataSource.getByAlias(dataSourceStr);
-				// if all else fails, register string as new data source
+				dataSource = DataSource.getByAlias(dataSourceStr);
+				// else register new data source
 			} else {
 				DataSource.register(dataSourceStr, dataSourceStr).compactIdentifierPrefix(dataSourceStr).asDataSource();
 				Logger.log.trace("Registered xref datasource " + dataSourceStr);
-				return DataSource.getByCompactIdentifierPrefix(dataSourceStr);
+				dataSource = DataSource.getByCompactIdentifierPrefix(dataSourceStr);
 			}
 		}
 		return dataSource;
@@ -91,20 +117,16 @@ public class XrefUtils {
 	 *         data source string.
 	 */
 	public static String getXrefDataSourceStr(DataSource dataSource) {
-		// data source cannot be null
 		if (dataSource != null) {
-			String dataSourceStr = dataSource.getCompactIdentifierPrefix(); // TODO
+			String dataSourceStr = dataSource.getCompactIdentifierPrefix(); // compact identifier prefix
 			if (dataSourceStr == null) {
-				// retrieve data source full name if compact identifier prefix is null
-				dataSourceStr = dataSource.getFullName();
-				// retrieve system code if full name is null
+				dataSourceStr = dataSource.getFullName(); // existing full name
 				if (dataSourceStr == null)
-					dataSourceStr = dataSource.getSystemCode();
+					dataSourceStr = dataSource.getSystemCode();// existing system code
 			}
 			return dataSourceStr;
 		}
-		// returns null if no valid data source
-		return null;
+		return null; // return null if no valid data source
 	}
 
 	/**
@@ -158,7 +180,7 @@ public class XrefUtils {
 
 	/**
 	 * Returns the identifier for given {@link Xref} if valid, otherwise returns
-	 * empty String. 
+	 * empty String.
 	 * 
 	 * @param xref the xref.
 	 * @return identifier the id for given xref.
@@ -175,7 +197,7 @@ public class XrefUtils {
 	 * Returns the identifier for given {@link Xref} if valid, otherwise returns
 	 * null.
 	 * 
-	 * @param xrefthe xref.
+	 * @param xref the xref.
 	 * @return dataSource the dataSource for given xref.
 	 */
 	public static DataSource getDataSource(Xref xref) {

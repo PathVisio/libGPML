@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -32,13 +33,13 @@ import org.pathvisio.libgpml.util.Utils;
 
 /**
  * This class stores all information relevant to a Group pathway element.
- * 
+ *
  * @author finterly
  */
 public class Group extends ShapedElement implements Xrefable {
 
 	private GroupType type = GroupType.GROUP;
-	private String textLabel = ""; // optional TODO
+	private String textLabel = ""; // optional
 	private Xref xref; // optional
 	/* list of pathway elements which belong to the group. */
 	private List<Groupable> pathwayElements; // should have at least one pathway element
@@ -48,7 +49,7 @@ public class Group extends ShapedElement implements Xrefable {
 	// ================================================================================
 	/**
 	 * Instantiates a Group given all required parameters and xref.
-	 * 
+	 *
 	 * @param type the type of the group.
 	 * @param xref the group Xref.
 	 */
@@ -71,7 +72,7 @@ public class Group extends ShapedElement implements Xrefable {
 	// ================================================================================
 	/**
 	 * Returns the object type of this pathway element.
-	 * 
+	 *
 	 * @return the object type.
 	 */
 	@Override
@@ -81,7 +82,7 @@ public class Group extends ShapedElement implements Xrefable {
 
 	/**
 	 * Returns the list of pathway element members of the group.
-	 * 
+	 *
 	 * @return pathwayElements the list of pathway elements belonging to the group.
 	 */
 	public List<Groupable> getPathwayElements() {
@@ -90,7 +91,7 @@ public class Group extends ShapedElement implements Xrefable {
 
 	/**
 	 * Checks whether pathwayElements has the given pathwayElement.
-	 * 
+	 *
 	 * @param pathwayElement the pathway element to look for.
 	 * @return true if has pathwayElement, false otherwise.
 	 */
@@ -102,10 +103,10 @@ public class Group extends ShapedElement implements Xrefable {
 	 * Adds the given pathway element to pathwayElements list of this group. Checks
 	 * if pathway element is valid. Sets groupRef of pathway element to this group
 	 * if necessary.
-	 * 
+	 *
 	 * NB: States are not added to group pathway elements lists. States appear
 	 * outside of groups in the view.
-	 * 
+	 *
 	 * @param pathwayElement the given pathwayElement to add.
 	 */
 	public void addPathwayElement(Groupable pathwayElement) {
@@ -118,11 +119,42 @@ public class Group extends ShapedElement implements Xrefable {
 		// do not add if pathway element is a state
 		if (pathwayElement.getClass() != State.class) {
 			// set groupRef for pathway element if necessary
-			if (pathwayElement.getGroupRef() == null || pathwayElement.getGroupRef() != this)
+			if (pathwayElement.getGroupRef() == null || pathwayElement.getGroupRef() != this) {
 				pathwayElement.setGroupRefTo(this);
+			}
 			// add pathway element to this group
-			if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement))
+			if (pathwayElement.getGroupRef() == this && !hasPathwayElement(pathwayElement)) {
 				pathwayElements.add(pathwayElement);
+			}
+		}
+	}
+
+	/**
+	 * Updates Group centerX, centerY, width, and height.
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>Generally called after {@link addPathwayElement} or setGroupRefTo
+	 * Methods, when pathway elements are added to group.
+	 * <li>Called after reading methods in {@link updateGroup}.
+	 * <li>Also called in copy and paste methods.
+	 * </ol>
+	 */
+	public void updateDimensions() {
+		// if newly created group (size 1 or smaller)
+		// or if width or height not yet updated (zero)
+		if (pathwayElements.size() <= 1 || getWidth() == 0 || getHeight() == 0) {
+			Rectangle2D r = getMinBounds(true);
+			setCenterX(r.getCenterX());
+			setCenterY(r.getCenterY());
+			setWidth(r.getWidth());
+			setHeight(r.getHeight());
+		} else {
+			Rectangle2D r = getRotatedBounds();
+			setCenterX(r.getCenterX());
+			setCenterY(r.getCenterY());
+			setWidth(r.getWidth());
+			setHeight(r.getHeight());
 		}
 	}
 
@@ -130,7 +162,7 @@ public class Group extends ShapedElement implements Xrefable {
 	 * Removes the given pathway element from pathwayElements list of the group.
 	 * Checks if pathway element is valid. Unsets groupRef of pathway element from
 	 * this group if necessary.
-	 * 
+	 *
 	 * @param pathwayElement the given pathwayElement to remove.
 	 */
 	public void removePathwayElement(Groupable pathwayElement) {
@@ -147,13 +179,14 @@ public class Group extends ShapedElement implements Xrefable {
 	/**
 	 * Adds the given list of pathway elements to pathwayElements list of this
 	 * group.
-	 * 
+	 *
 	 * @param pathwayElements the given list of pathwayElement to add.
 	 */
 	public void addPathwayElements(List<? extends Groupable> pathwayElements) {
 		for (Groupable pathwayElement : pathwayElements) {
 			addPathwayElement(pathwayElement);
 		}
+		updateDimensions();
 	}
 
 	/**
@@ -167,7 +200,7 @@ public class Group extends ShapedElement implements Xrefable {
 
 	/**
 	 * Returns GroupType. GroupType is GROUP by default.
-	 * 
+	 *
 	 * @return type the type of group, e.g. complex.
 	 */
 	public GroupType getType() {
@@ -176,7 +209,7 @@ public class Group extends ShapedElement implements Xrefable {
 
 	/**
 	 * Sets GroupType to the given groupType.
-	 * 
+	 *
 	 * @param v the type to set for this group, e.g. complex.
 	 */
 	public void setType(GroupType v) {
@@ -188,9 +221,9 @@ public class Group extends ShapedElement implements Xrefable {
 
 	/**
 	 * Returns the text of of this group.
-	 * 
+	 *
 	 * @return textLabel the text of of this group.
-	 * 
+	 *
 	 */
 	@Override
 	public String getTextLabel() {
@@ -199,7 +232,7 @@ public class Group extends ShapedElement implements Xrefable {
 
 	/**
 	 * Sets the text of this shaped pathway element.
-	 * 
+	 *
 	 * @param v the text to set.
 	 */
 	@Override
@@ -212,22 +245,23 @@ public class Group extends ShapedElement implements Xrefable {
 
 	/**
 	 * Returns the Xref for the group.
-	 * 
+	 *
 	 * @return xref the xref of this group
 	 */
+	@Override
 	public Xref getXref() {
 		return xref;
 	}
 
 	/**
 	 * Sets the Xref for this group.
-	 * 
+	 *
 	 * @param v the xref to set for this group.
 	 */
+	@Override
 	public void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
-			// TODO
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
 		}
 	}
@@ -242,16 +276,15 @@ public class Group extends ShapedElement implements Xrefable {
 	public DataNode addAlias(String textLabel) {
 		if (pathwayModel != null) {
 			DataNode alias = new DataNode(textLabel, DataNodeType.ALIAS, null, this);
-			pathwayModel.addDataNode(alias); // TODO
+			pathwayModel.addDataNode(alias);
 			return alias;
 		}
-		System.out.println("Cannot create an alias for group without valid pathway model.");
 		return null;
 	}
 
 	/**
 	 * Terminates this group and removes all references and links.
-	 * 
+	 *
 	 * NB: Must {@link LineElement.LinePoint#unlink} before removing pathway element
 	 * members, so that line points stays in the same position when the group
 	 * disappears. If you remove pathway elements first, the group bounds changes
@@ -277,9 +310,20 @@ public class Group extends ShapedElement implements Xrefable {
 	public static final double COMPLEX_M_MARGIN = 12;
 
 	/**
+	 * Rotation is not allowed for Groups and will always be set to 0 (default).
+	 *
+	 * @param v
+	 */
+	@Override
+	public void setRotation(Double v) {
+		// rotation not allowed
+		super.setRotation(0.0);
+	}
+
+	/**
 	 * Returns margin for group bounding-box around contained elements depending on
 	 * group type, as specified in GPML2013a.
-	 * 
+	 *
 	 * @return the margin for group.
 	 */
 	public double getMargin() {
@@ -291,152 +335,55 @@ public class Group extends ShapedElement implements Xrefable {
 	}
 
 	/**
-	 * Center x of the group bounds
-	 */
-	@Override
-	public double getCenterX() {
-		return getRotatedBounds().getCenterX();
-	}
-
-	/**
-	 * Center y of the group bounds
-	 */
-	@Override
-	public double getCenterY() {
-		return getRotatedBounds().getCenterY();
-	}
-
-	/**
-	 * Width of the group bounds
-	 */
-	@Override
-	public double getWidth() {
-		return getRotatedBounds().getWidth();
-	}
-
-	/**
-	 * Height of the group bounds
-	 */
-	@Override
-	public double getHeight() {
-		return getRotatedBounds().getHeight();
-	}
-
-	/**
-	 * Left of the group bounds
-	 */
-	@Override
-	public double getLeft() {
-		return getRotatedBounds().getX();
-	}
-
-	/**
-	 * Top of the group bounds
-	 */
-	@Override
-	public double getTop() {
-		return getRotatedBounds().getY();
-	}
-
-	@Override
-	public void setCenterX(double v) {
-		double d = v - getRotatedBounds().getCenterX();
-		for (Groupable e : pathwayElements) {
-			e.setCenterX(e.getCenterX() + d); // TODO PROBLEM!
-		}
-	}
-
-	@Override
-	public void setCenterY(double v) {
-		double d = v - getRotatedBounds().getCenterY();
-		for (Groupable e : pathwayElements) {
-			e.setCenterY(e.getCenterY() + d); // TODO PROBLEM!
-		}
-	}
-
-	@Override
-	public void setWidth(double v) {
-		double d = v - getRotatedBounds().getWidth();
-		for (Groupable e : pathwayElements) {
-			if (e instanceof ShapedElement) {
-				((ShapedElement) e).setWidth(e.getWidth() + d); //// TODO PROBLEM!
-			}
-		}
-	}
-
-	@Override
-	public void setHeight(double v) {
-		double d = v - getRotatedBounds().getHeight();
-		for (Groupable e : pathwayElements) {
-			if (e instanceof ShapedElement) {
-				((ShapedElement) e).setHeight(e.getHeight() + d);
-			} //// TODO PROBLEM!
-		}
-	}
-
-	@Override
-	public void setLeft(double v) {
-		double d = v - getRotatedBounds().getX();
-		for (Groupable e : pathwayElements) {
-			e.setLeft(e.getLeft() + d); //// TODO PROBLEM!
-		}
-	}
-
-	@Override
-	public void setTop(double v) {
-		double d = v - getRotatedBounds().getY();
-		for (Groupable e : pathwayElements) {
-			e.setTop(e.getTop() + d); //// TODO PROBLEM!
-		}
-	}
-
-	/**
-	 * Iterates over all group elements to find the total rectangular bounds, taking
-	 * into account rotation of the nested elements
+	 * Iterates over all group elements to find the TOTAL rectangular bounds, taking
+	 * into account rotation of the nested elements.
 	 * 
+	 * NB: For now, groups should never be rotated.
+	 *
 	 * @return the rectangular bounds for this group with rotation taken into
 	 *         account.
 	 */
 	@Override
 	public Rectangle2D getRotatedBounds() {
-		Rectangle2D bounds = null;
-		for (Groupable e : pathwayElements) {
-			if (e == this) {
-				continue; // To prevent recursion error
-			}
-			if (bounds == null) {
-				bounds = e.getRotatedBounds();
-			} else {
-				bounds.add(e.getRotatedBounds());
-			}
-		}
-		if (bounds != null) {
-			double margin = getMargin();
-			return new Rectangle2D.Double(bounds.getX() - margin, bounds.getY() - margin,
-					bounds.getWidth() + 2 * margin, bounds.getHeight() + 2 * margin);
-		} else {
-			return new Rectangle2D.Double();
-		}
+		Rectangle2D bounds = getBounds();
+		AffineTransform t = new AffineTransform();
+		t.rotate(getRotation(), getCenterX(), getCenterY());
+		bounds = t.createTransformedShape(bounds).getBounds2D();
+		Rectangle2D minbounds = getMinBounds(true);
+		bounds.add(minbounds); // add bounds
+		return new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
 	}
 
 	/**
-	 * Iterates over all group elements to find the total rectangular bounds. Note:
-	 * doesn't include rotation of the nested elements. If you want to include
-	 * rotation, use {@link #getRotatedBounds()} instead.
-	 * 
+	 * Iterates over all group elements to find the TOTAL rectangular bounds.
+	 *
 	 * @return the rectangular bounds for this group.
 	 */
 	@Override
 	public Rectangle2D getBounds() {
+		Rectangle2D bounds = new Rectangle2D.Double(getLeft(), getTop(), getWidth(), getHeight());
+		Rectangle2D minbounds = getMinBounds(false);
+		bounds.add(minbounds); // add bounds
+		return new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+	}
+
+	/**
+	 * Iterates over all group elements to find the MINIMAL total rectangular
+	 * bounds.
+	 *
+	 * @param rotated if true, take into account rotation.
+	 * @return the rectangular bounds for this group.
+	 */
+	public Rectangle2D getMinBounds(boolean rotated) {
 		Rectangle2D bounds = null;
 		for (Groupable e : pathwayElements) {
 			if (e == this) {
 				continue; // To prevent recursion error
 			}
 			if (bounds == null) {
-				bounds = e.getBounds();
+				bounds = rotated ? e.getRotatedBounds() : e.getBounds();
 			} else {
-				bounds.add(e.getBounds());
+				bounds.add(rotated ? e.getRotatedBounds() : e.getBounds());
 			}
 		}
 		if (bounds != null) {
@@ -452,15 +399,11 @@ public class Group extends ShapedElement implements Xrefable {
 	// Copy Methods
 	// ================================================================================
 	/**
-	 * Note: doesn't change parent, only fields
+	 * Copies values from the given source pathway element.
 	 *
-	 * Used by UndoAction.
-	 * 
-	 * NB: Pathway element members are not copied but added later.
-	 *
-	 * @param src
+	 * @param src the source pathway element.
 	 */
-	public void copyValuesFrom(Group src) { // TODO
+	public void copyValuesFrom(Group src) {
 		super.copyValuesFrom(src);
 		textLabel = src.textLabel;
 		type = src.type;
@@ -469,13 +412,14 @@ public class Group extends ShapedElement implements Xrefable {
 	}
 
 	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
+	 * Copies this pathway element.
 	 *
-	 * No events will be sent to the parent of the original.
+	 * @return the copyElement for the new pathway element and this source pathway
+	 *         element.
 	 */
+	@Override
 	public CopyElement copy() {
-		Group result = new Group(type); // TODO
+		Group result = new Group(type);
 		result.copyValuesFrom(this);
 		return new CopyElement(result, this);
 	}
@@ -485,7 +429,7 @@ public class Group extends ShapedElement implements Xrefable {
 	// ================================================================================
 	/**
 	 * Returns all static properties for this pathway object.
-	 * 
+	 *
 	 * @return result the set of static property for this pathway object.
 	 */
 	@Override
@@ -498,10 +442,13 @@ public class Group extends ShapedElement implements Xrefable {
 	}
 
 	/**
+	 * Returns static property value for given key.
 	 *
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
-	public Object getStaticProperty(StaticProperty key) { // TODO
+	public Object getStaticProperty(StaticProperty key) {
 		Object result = super.getStaticProperty(key);
 		if (result == null) {
 			switch (key) {
@@ -526,14 +473,13 @@ public class Group extends ShapedElement implements Xrefable {
 	 * x);
 	 *
 	 * Value may be null in some cases, e.g. graphRef
-	 *
-	 * @param key
-	 * @param value
+	 * 
+	 * @param key the key.
+	 * @return the static property value.
 	 */
 	@Override
 	public void setStaticProperty(StaticProperty key, Object value) {
 		super.setStaticProperty(key, value);
-		System.out.println(key);
 		switch (key) {
 		case GROUPTYPE:
 			if (value instanceof GroupType) {
@@ -551,6 +497,20 @@ public class Group extends ShapedElement implements Xrefable {
 		default:
 			// do nothing
 		}
+	}
+
+	/**
+	 * Writes this group out as a string.
+	 * 
+	 * @return the string representing this group.
+	 */
+	@Override
+	public String toString() {
+		String result = "Group " + getElementId();
+		if (textLabel != null && !Utils.stringEquals(textLabel, "")) {
+			result = result + ": " + textLabel;
+		}
+		return result;
 	}
 
 }

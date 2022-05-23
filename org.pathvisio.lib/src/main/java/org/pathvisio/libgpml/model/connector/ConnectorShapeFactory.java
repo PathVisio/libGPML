@@ -70,7 +70,7 @@ public abstract class ConnectorShapeFactory {
 	}
 
 	/**
-	 * Get the class that implements ConnectorShape identified by the given name
+	 * Returns the class that implements ConnectorShape identified by the given name
 	 * 
 	 * @param name the string.
 	 * @return the class, or null if no class is registered by the given name

@@ -66,7 +66,7 @@ public class ArrowShape {
 
 	/**
 	 * Normally, this constructor is not called directly. Use
-	 * {@link ShapeRegistry.registerShape} instead to define a new ArrowShape.
+	 * {@link ShapeRegistry#registerShape} instead to define a new ArrowShape.
 	 */
 	public ArrowShape(Shape shape, FillType fillType, int gap) {
 		this.shape = shape;
@@ -76,7 +76,7 @@ public class ArrowShape {
 
 	/**
 	 * Normally, this constructor is not called directly. Use
-	 * {@link ShapeRegistry.registerShape} instead to define a new ArrowShape.
+	 * {@link ShapeRegistry#registerShape} instead to define a new ArrowShape.
 	 */
 	public ArrowShape(Shape shape, FillType fillType) {
 		this.shape = shape;
@@ -84,8 +84,8 @@ public class ArrowShape {
 	}
 
 	/**
-	 * @return one of {@link FillType.OPEN}, {@link FillType.CLOSED} or
-	 *         {@link FillType.WIRE}
+	 * @return one of {@link FillType#OPEN}, {@link FillType#CLOSED} or
+	 *         {@link FillType#WIRE}
 	 */
 	public FillType getFillType() {
 		return fillType;

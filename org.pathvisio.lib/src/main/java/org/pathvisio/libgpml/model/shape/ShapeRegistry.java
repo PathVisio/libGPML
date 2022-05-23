@@ -68,7 +68,6 @@ public class ShapeRegistry {
 		AnchorShapeRegistry.registerShapes();
 		ArrowShapeRegistry.registerShapes();
 		ShapeCatalog.registerShapes();
-//		MIMShapes.registerShapes(); TODO plugin probably
 	}
 
 	// ================================================================================

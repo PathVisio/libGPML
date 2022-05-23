@@ -1,13 +1,13 @@
 /*******************************************************************************
  * PathVisio, a tool for data visualization and analysis using biological pathways
  * Copyright 2006-2022 BiGCaT Bioinformatics, WikiPathways
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.bridgedb.Xref;
-import org.pathvisio.libgpml.model.PathwayObjectEvent;
 import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
 import org.pathvisio.libgpml.model.type.AnnotationType;
 import org.pathvisio.libgpml.model.type.ObjectType;
@@ -31,7 +30,7 @@ import org.pathvisio.libgpml.util.XrefUtils;
 
 /**
  * This class stores information for an Annotation.
- * 
+ *
  * @author finterly
  */
 public class Annotation extends PathwayObject {
@@ -48,7 +47,7 @@ public class Annotation extends PathwayObject {
 	/**
 	 * Instantiates an Annotation pathway element given all possible parameters:
 	 * elementId, parent pathway model, value, type, url, and xref.
-	 * 
+	 *
 	 * @param value   the name, term, or text of the annotation.
 	 * @param type    the type of the annotation, e.g. ontology.
 	 * @param xref    the annotation xref.
@@ -68,7 +67,7 @@ public class Annotation extends PathwayObject {
 	// ================================================================================
 	/**
 	 * Returns the object type of this pathway element.
-	 * 
+	 *
 	 * @return the object type.
 	 */
 	@Override
@@ -78,7 +77,7 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Returns the name, term, or text of this annotation.
-	 * 
+	 *
 	 * @return value the name, term, or text of this annotation.
 	 */
 	public String getValue() {
@@ -87,22 +86,22 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Sets the name, term, or text of this annotation.
-	 * 
+	 *
 	 * @param v the name, term, or text of this annotation.
 	 */
-	public void setValue(String v) {
+	protected void setValue(String v) {
 		if (v == null) {
 			throw new IllegalArgumentException("Value is a required field for Annotation.");
 		}
 		if (!Utils.stringEquals(value, v)) {
 			value = v;
-			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
 		}
 	}
 
 	/**
 	 * Returns the type of this annotation.
-	 * 
+	 *
 	 * @return type the type of this annotation, e.g. ontology term.
 	 */
 	public AnnotationType getType() {
@@ -111,10 +110,10 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Sets the type of this annotation.
-	 * 
+	 *
 	 * @param v the type to set for this annotation, e.g. ontology term.
 	 */
-	public void setType(AnnotationType v) {
+	protected void setType(AnnotationType v) {
 		if (type != v && v != null) {
 			type = v;
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONTYPE));
@@ -123,7 +122,7 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Returns the Annotation Xref.
-	 * 
+	 *
 	 * @return xref the annotation xref.
 	 */
 	public Xref getXref() {
@@ -132,10 +131,10 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Sets the Xref for this annotation.
-	 * 
+	 *
 	 * @param v the xref to set for this annotation.
 	 */
-	public void setXref(Xref v) {
+	protected void setXref(Xref v) {
 		if (v != null) {
 			xref = v;
 			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.XREF));
@@ -144,7 +143,7 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Returns the url link for a web address.
-	 * 
+	 *
 	 * @return urlLink the url link.
 	 */
 	public String getUrlLink() {
@@ -153,19 +152,19 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Sets the url link for a web address.
-	 * 
+	 *
 	 * @param v the url link.
 	 */
-	public void setUrlLink(String v) {
+	protected void setUrlLink(String v) {
 		if (v != null && !Utils.stringEquals(urlLink, v)) {
 			urlLink = v;
-			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
 		}
 	}
 
 	/**
 	 * Returns the list of annotationRefs which reference the annotation.
-	 * 
+	 *
 	 * @return annotationRefs the list of pathway elements which reference the
 	 *         annotation.
 	 */
@@ -175,7 +174,7 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Check whether annotationRefs has the given annotationRef.
-	 * 
+	 *
 	 * @param annotationRef the annotationRef to look for.
 	 * @return true if has annotationRef, false otherwise.
 	 */
@@ -185,9 +184,9 @@ public class Annotation extends PathwayObject {
 
 	/**
 	 * Adds the given annotationRef to annotationRefs list of the annotation.
-	 * 
+	 *
 	 * NB: This method is not used directly.
-	 * 
+	 *
 	 * @param annotationRef the given annotationRef to add.
 	 */
 	protected void addAnnotationRef(AnnotationRef annotationRef) {
@@ -197,7 +196,7 @@ public class Annotation extends PathwayObject {
 		// add citationRef to citationRefs
 		if (annotationRef.getAnnotation() == this && !hasAnnotationRef(annotationRef)) {
 			annotationRefs.add(annotationRef);
-			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+			fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
 		}
 	}
 
@@ -206,7 +205,7 @@ public class Annotation extends PathwayObject {
 	 * If annotationRefs becomes empty, this annotation is removed from the pathway
 	 * model because it is no longer referenced/used. NB: This method is not used
 	 * directly.
-	 * 
+	 *
 	 * @param annotationRef the given annotationRef to remove.
 	 */
 	protected void removeAnnotationRef(AnnotationRef annotationRef) {
@@ -216,7 +215,8 @@ public class Annotation extends PathwayObject {
 			// if citationResf empty, remove this annotation from pathway model
 			if (annotationRefs.isEmpty()) {
 				pathwayModel.removeAnnotation(this);
-				fireObjectModifiedEvent(PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATION));
+				fireObjectModifiedEvent(
+						PathwayObjectEvent.createSinglePropertyEvent(this, StaticProperty.ANNOTATIONREF));
 			}
 		}
 	}
@@ -248,7 +248,7 @@ public class Annotation extends PathwayObject {
 	/**
 	 * Compares this annotation to the given annotation. Checks all properties
 	 * except annotationsRefs list to determine whether they are equal.
-	 * 
+	 *
 	 * @param annotation the annotation to compare to.
 	 * @return true if annotations have equal properties, false otherwise.
 	 */
@@ -265,7 +265,7 @@ public class Annotation extends PathwayObject {
 			return false;
 		}
 		// checks if url link property equivalent
-		if (!Objects.equals(urlLink, annotation.getUrlLink())) {
+		if (!Utils.stringNullEqualsEmpty(urlLink, annotation.getUrlLink())) {
 			return false;
 		}
 		return true;
@@ -275,16 +275,18 @@ public class Annotation extends PathwayObject {
 	// Copy Methods
 	// ================================================================================
 	/**
-	 * Note: doesn't change parent, only fields
+	 * Copies values from the given source pathway element.
 	 *
-	 * Used by UndoAction.
-	 *
-	 * NB: annotationRefs list is not copied, annotationRefs are created and added
+	 * <p>
+	 * NB:
+	 * <ol>
+	 * <li>annotationRefs list is not copied, annotationRefs are created and added
 	 * when an annotation is added to a pathway element.
-	 * 
-	 * @param src
+	 * </ol>
+	 *
+	 * @param src the source pathway element.
 	 */
-	public void copyValuesFrom(Annotation src) { // TODO
+	public void copyValuesFrom(Annotation src) {
 		value = src.value;
 		type = src.type;
 		xref = src.xref;
@@ -293,10 +295,9 @@ public class Annotation extends PathwayObject {
 	}
 
 	/**
-	 * Copy Object. The object will not be part of the same Pathway object, it's
-	 * parent will be set to null.
+	 * Copies this annotation.
 	 *
-	 * No events will be sent to the parent of the original.
+	 * @return the new annotation copied from this annotation.
 	 */
 	public Annotation copyRef() {
 		Annotation result = new Annotation(value, type, xref, urlLink);
