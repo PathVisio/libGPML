@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
+import org.bridgedb.bio.DataSourceTxt;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 
@@ -200,6 +201,8 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 	 * test that Xref and XrefWithSymbol obey the equals contract
 	 */
 	public void testXRefEquals() {
+		DataSourceTxt.init();
+
 		Object[] testList = new Object[] { new Xref("1007_at", DataSource.getExistingByFullName("Affy")),
 				new Xref("3456", DataSource.getExistingByFullName("Affy")),
 				new Xref("1007_at", DataSource.getExistingByFullName("Entrez Gene")),
