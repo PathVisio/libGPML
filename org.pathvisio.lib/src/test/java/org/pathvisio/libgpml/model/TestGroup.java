@@ -244,6 +244,9 @@ public class TestGroup extends TestCase {
 		node2.setCenterY(20);
 		node2.setWidth(10);
 		node2.setHeight(10);
+		
+		// update group dimensions, this is usually naturally done in the GUI
+		group.updateDimensions();
 
 		// move point to "top-center" of group.
 		line.setEndLinePointX(group.getCenterX());

@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 public class TestSingleGPMLReadWrite extends TestCase {
 
 	private PathwayModel pathwayModel;
-	private String inputFile = "example-v2021.xml";
+	private String inputFile = "example-v2013a.xml";
 	private URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
 
 	/**
