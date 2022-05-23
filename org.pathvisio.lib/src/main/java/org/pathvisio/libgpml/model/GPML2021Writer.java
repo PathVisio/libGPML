@@ -58,9 +58,9 @@ import org.pathvisio.libgpml.util.XrefUtils;
  *
  * @author finterly
  */
-public class Gpml2021Writer extends Gpml2021FormatAbstract implements GpmlFormatWriter {
+public class GPML2021Writer extends GPML2021FormatAbstract implements GPMLFormatWriter {
 
-	public static final Gpml2021Writer GPML2021WRITER = new Gpml2021Writer("GPML2021.xsd",
+	public static final GPML2021Writer GPML2021WRITER = new GPML2021Writer("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
 
 	/**
@@ -69,7 +69,7 @@ public class Gpml2021Writer extends Gpml2021FormatAbstract implements GpmlFormat
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
-	protected Gpml2021Writer(String xsdFile, Namespace nsGPML) {
+	protected GPML2021Writer(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
@@ -322,7 +322,7 @@ public class Gpml2021Writer extends Gpml2021FormatAbstract implements GpmlFormat
 		for (String key : dynamicProperties.keySet()) {
 			String value = dynamicProperties.get(key);
 			// warnings for conversion GPML2021 to GPML2013a
-			if (Gpml2013aFormatAbstract.GPML2013A_KEY_SET.contains(key)) {
+			if (GPML2013aFormatAbstract.GPML2013A_KEY_SET.contains(key)) {
 				Logger.log.trace("Warning: Conversion GPML2013a to GPML2021: " + e.getName() + " dynamic property \""
 						+ key + "\" (key) and \"" + value + "\" (value) info lost.");
 				continue;

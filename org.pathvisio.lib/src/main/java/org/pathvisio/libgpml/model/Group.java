@@ -136,7 +136,7 @@ public class Group extends ShapedElement implements Xrefable {
 	 * <ol>
 	 * <li>Generally called after {@link addPathwayElement} or setGroupRefTo
 	 * Methods, when pathway elements are added to group.
-	 * <li>Called after reading methods in {@link GpmlFormatAbstract#updateGroups}.
+	 * <li>Called after reading methods in {@link GPMLFormatAbstract#updateGroups}.
 	 * <li>Also called in copy and paste methods.
 	 * </ol>
 	 */

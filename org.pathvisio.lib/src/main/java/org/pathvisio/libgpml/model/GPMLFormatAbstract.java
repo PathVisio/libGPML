@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  *
  * @author finterly
  */
-public abstract class GpmlFormatAbstract {
+public abstract class GPMLFormatAbstract {
 
 	/**
 	 * The namespace
@@ -60,7 +60,7 @@ public abstract class GpmlFormatAbstract {
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
-	protected GpmlFormatAbstract(String xsdFile, Namespace nsGPML) {
+	protected GPMLFormatAbstract(String xsdFile, Namespace nsGPML) {
 		this.xsdFile = xsdFile;
 		this.nsGPML = nsGPML;
 	}

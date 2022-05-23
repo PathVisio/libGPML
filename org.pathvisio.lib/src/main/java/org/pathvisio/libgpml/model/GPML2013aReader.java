@@ -67,15 +67,15 @@ import org.pathvisio.libgpml.util.XrefUtils;
  *
  * @author finterly
  */
-public class Gpml2013aReader extends Gpml2013aFormatAbstract implements GpmlFormatReader {
+public class GPML2013aReader extends GPML2013aFormatAbstract implements GPMLFormatReader {
 
-	public static final Gpml2013aReader GPML2013aREADER = new Gpml2013aReader("GPML2013a.xsd",
+	public static final GPML2013aReader GPML2013aREADER = new GPML2013aReader("GPML2013a.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2013a"));
 
 	/**
 	 * {@link #readFromRoot}
 	 */
-	protected Gpml2013aReader(String xsdFile, Namespace nsGPML) {
+	protected GPML2013aReader(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 
@@ -1138,7 +1138,7 @@ public class Gpml2013aReader extends Gpml2013aFormatAbstract implements GpmlForm
 	 * to elementIdSet.
 	 *
 	 * @param tag          the string tag for
-	 *                     {@link Gpml2013aFormatAbstract#getAttr}
+	 *                     {@link GPML2013aFormatAbstract#getAttr}
 	 * @param e            the jdom element.
 	 * @param elementIdSet the set of all elementIds.
 	 * @return elementId the elementId for given element.
@@ -1230,7 +1230,7 @@ public class Gpml2013aReader extends Gpml2013aFormatAbstract implements GpmlForm
 
 	/**
 	 * Reads shape style property information. Jdom handles schema default values.
-	 * If shape type is a key in {@link Gpml2013aFormatAbstract#DEPRECATED_MAP},
+	 * If shape type is a key in {@link GPML2013aFormatAbstract#DEPRECATED_MAP},
 	 * replaces deprecated shape type with newer value.
 	 * <p>
 	 * NB:

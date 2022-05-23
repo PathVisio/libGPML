@@ -25,7 +25,7 @@ import org.pathvisio.libgpml.io.ConverterException;
  *
  * @author unknown
  */
-public interface GpmlFormatVersion {
+public interface GPMLFormatVersion {
 
 	/**
 	 * Returns the GPML namespace.

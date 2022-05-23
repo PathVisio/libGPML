@@ -52,12 +52,12 @@ import org.xml.sax.InputSource;
  *
  * @author unknown, finterly
  */
-public class GpmlFormat extends AbstractPathwayModelFormat {
+public class GPMLFormat extends AbstractPathwayModelFormat {
 
-	static public final Gpml2021Writer CURRENT = Gpml2021Writer.GPML2021WRITER;
-	static public final Gpml2013aWriter PREVIOUS = Gpml2013aWriter.GPML2013aWRITER;
+	static public final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
+	static public final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
 
-	private GpmlFormatWriter writer;
+	private GPMLFormatWriter writer;
 
 	// ================================================================================
 	// Constructors and Initialize
@@ -67,7 +67,7 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 	 *
 	 * @param writer
 	 */
-	public GpmlFormat(GpmlFormatWriter writer) {
+	public GPMLFormat(GPMLFormatWriter writer) {
 		this.writer = writer;
 	}
 
@@ -116,7 +116,7 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 	 */
 	@Override
 	public String getName() {
-		if (writer instanceof Gpml2013aWriter) {
+		if (writer instanceof GPML2013aWriter) {
 			return "GPML2013a file";
 		} else {
 			return "GPML file";
@@ -214,10 +214,10 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 	 * @param ns the given namespace.
 	 * @return the correct GPML reader for the given namespace.
 	 */
-	public static GpmlFormatReader getReaderForNamespace(Namespace ns) {
-		GpmlFormatReader[] formats = new GpmlFormatReader[] { Gpml2021Reader.GPML2021READER,
-				Gpml2013aReader.GPML2013aREADER };
-		for (GpmlFormatReader format : formats) {
+	public static GPMLFormatReader getReaderForNamespace(Namespace ns) {
+		GPMLFormatReader[] formats = new GPMLFormatReader[] { GPML2021Reader.GPML2021READER,
+				GPML2013aReader.GPML2013aREADER };
+		for (GPMLFormatReader format : formats) {
 			if (ns.equals(format.getGpmlNamespace())) {
 				return format;
 			}
@@ -248,7 +248,7 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 			}
 			// reader
 			Namespace ns = root.getNamespace();
-			GpmlFormatReader format = getReaderForNamespace(ns);
+			GPMLFormatReader format = getReaderForNamespace(ns);
 			if (format == null) {
 				throw new ConverterException("This file looks like a pathwayModel, " + "but the namespace " + ns
 						+ " was not recognized. This application might be out of date.");
@@ -262,7 +262,7 @@ public class GpmlFormat extends AbstractPathwayModelFormat {
 			Logger.log.trace("Copy map elements");
 			format.readFromRoot(pathwayModel, root);
 			// warning message if opening older GPML
-			if (!(format instanceof Gpml2021Reader)) {
+			if (!(format instanceof GPML2021Reader)) {
 				JOptionPane.showMessageDialog(null,
 						"This pathway was written in an older Gpml version.\nSave will automatically update it to GPML2021.",
 						"Warning", JOptionPane.WARNING_MESSAGE);

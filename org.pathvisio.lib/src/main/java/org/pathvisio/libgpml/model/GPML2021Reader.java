@@ -60,9 +60,9 @@ import org.pathvisio.libgpml.util.XrefUtils;
  *
  * @author finterly
  */
-public class Gpml2021Reader extends Gpml2021FormatAbstract implements GpmlFormatReader {
+public class GPML2021Reader extends GPML2021FormatAbstract implements GPMLFormatReader {
 
-	public static final Gpml2021Reader GPML2021READER = new Gpml2021Reader("GPML2021.xsd",
+	public static final GPML2021Reader GPML2021READER = new GPML2021Reader("GPML2021.xsd",
 			Namespace.getNamespace("http://pathvisio.org/GPML/2021"));
 
 	/**
@@ -71,7 +71,7 @@ public class Gpml2021Reader extends Gpml2021FormatAbstract implements GpmlFormat
 	 * @param xsdFile the schema file.
 	 * @param nsGPML  the GPML namespace.
 	 */
-	protected Gpml2021Reader(String xsdFile, Namespace nsGPML) {
+	protected GPML2021Reader(String xsdFile, Namespace nsGPML) {
 		super(xsdFile, nsGPML);
 	}
 

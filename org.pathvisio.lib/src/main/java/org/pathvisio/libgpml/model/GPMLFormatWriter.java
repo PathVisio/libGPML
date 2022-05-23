@@ -16,23 +16,46 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import org.jdom2.Element;
+import java.io.File;
+import java.io.OutputStream;
+
+import org.jdom2.Document;
 import org.pathvisio.libgpml.io.ConverterException;
 
 /**
- * Interface for GPML reading.
+ * Interface for GPML writing.
  *
  * @author unknown
  */
-public interface GpmlFormatReader extends GpmlFormatVersion {
+public interface GPMLFormatWriter extends GPMLFormatVersion {
 
 	/**
-	 * Reads pathway model from root element. 
+	 * Creates a Jdom document from pathway model.
 	 * 
-	 * @param pathwayModel the pathway model. 
-	 * @param root the jdom root element. 
+	 * @param pathwayModel the pathway model.
+	 * @return
 	 * @throws ConverterException
 	 */
-	public void readFromRoot(PathwayModel pathwayModel, Element root) throws ConverterException;
+	Document createJdom(PathwayModel pathwayModel) throws ConverterException;
+
+	/**
+	 * Write pathway model to file.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param file         the file to write to.
+	 * @param validate     if true, validate.
+	 * @throws ConverterException
+	 */
+	void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException;
+
+	/**
+	 * Writes pathway model to outputstream.
+	 * 
+	 * @param pathwayModel the pathway model.
+	 * @param out          the output stream.
+	 * @param validate     if true, validate.
+	 * @throws ConverterException
+	 */
+	void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate) throws ConverterException;
 
 }

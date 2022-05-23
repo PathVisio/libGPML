@@ -1159,7 +1159,7 @@ public class PathwayModel {
 	 *                 classpath, an exception will be thrown.
 	 */
 	public void writeToXml(File file, boolean validate) throws ConverterException {
-		GpmlFormat gpmlFormat = new GpmlFormat(GpmlFormat.CURRENT);
+		GPMLFormat gpmlFormat = new GPMLFormat(GPMLFormat.CURRENT);
 		gpmlFormat.writeToXml(this, file, validate);
 		setSourceFile(file);
 		clearChangedFlag();
@@ -1167,20 +1167,20 @@ public class PathwayModel {
 	}
 
 	public void readFromXml(Reader in, boolean validate) throws ConverterException {
-		GpmlFormat.readFromXml(this, in, validate);
+		GPMLFormat.readFromXml(this, in, validate);
 		setSourceFile(null);
 		clearChangedFlag();
 	}
 
 	public void readFromXml(InputStream in, boolean validate) throws ConverterException {
-		GpmlFormat.readFromXml(this, in, validate);
+		GPMLFormat.readFromXml(this, in, validate);
 		setSourceFile(null);
 		clearChangedFlag();
 	}
 
 	public void readFromXml(File file, boolean validate) throws ConverterException {
 		Logger.log.info("Start reading the XML file: " + file);
-		GpmlFormat.readFromXml(this, file, validate);
+		GPMLFormat.readFromXml(this, file, validate);
 		setSourceFile(file);
 		clearChangedFlag();
 	}
