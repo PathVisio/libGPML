@@ -42,7 +42,7 @@ import org.pathvisio.libgpml.debug.Logger;
 public class FileUtils {
 
 	/**
-	 * Get all files in a directory
+	 * Returns all files in a directory
 	 * 
 	 * @param directory The directory to get the files from
 	 * @param recursive Whether to include sub directories or not
@@ -72,12 +72,12 @@ public class FileUtils {
 	}
 
 	/**
-	 * Get all files in a directory
+	 * Returns all files in a directory
 	 * 
-	 * @param directory The directory to get the files from
-	 * @param extension The extension of the files to get, without the dot so e.g.
+	 * @param directory the directory to get the files from
+	 * @param extension the extension of the files to get, without the dot so e.g.
 	 *                  "gpml"
-	 * @param recursive Whether to include subdirectories or not
+	 * @param recursive whether to include subdirectories or not
 	 * @return A list of files with given extension present in the given directory
 	 */
 	public static List<File> getFiles(File directory, final String extension, boolean recursive) {
@@ -109,9 +109,9 @@ public class FileUtils {
 	}
 
 	/**
-	 * Determine the number of lines in the given file.
+	 * Determines the number of lines in the given file.
 	 * 
-	 * @param fileName The file to get the number of lines from
+	 * @param fileName the file to get the number of lines from
 	 * @return the number of lines, or -1 if unable to determine the number of lines
 	 */
 	public static int getNrLines(String fileName) {
@@ -133,9 +133,11 @@ public class FileUtils {
 	}
 
 	/**
+	 * Returns file name extension.
+	 * 
 	 * @param fileName file as a String
-	 * @returns fragment of the filename after the '.'. Returns null if there was no
-	 *          '.'.
+	 * @return fragment of the filename after the '.'. Returns null if there was no
+	 *         '.'.
 	 */
 	public static String getExtension(String fileName) {
 		int dot = fileName.lastIndexOf('.');
@@ -160,8 +162,8 @@ public class FileUtils {
 	 * Replaces file extension with something else. If there was no extension
 	 * previously, the new one will simply be added.
 	 * 
-	 * @param fname     file name to use.
-	 * @param extension New extension to use. Should not include dot.
+	 * @param fname     the file name to use.
+	 * @param extension the new extension to use. Should not include dot.
 	 */
 	public static File replaceExtension(File fname, String extension) {
 		return new File(removeExtension(fname.toString()) + "." + extension);
@@ -170,8 +172,8 @@ public class FileUtils {
 	/**
 	 * Downloads a remote file given by an URL to the given local file
 	 * 
-	 * @param url    The URL that specifies the location of the file to download
-	 * @param toFile The local file to which the remote file will be downloaded
+	 * @param url    the URL that specifies the location of the file to download
+	 * @param toFile the local file to which the remote file will be downloaded
 	 * @throws IOException
 	 */
 	public static void downloadFile(URL url, File toFile) throws IOException {
@@ -204,7 +206,11 @@ public class FileUtils {
 	 *
 	 * /home/username/input/pathways/human/metabolomic/pathway.gpml to
 	 * /tmp/output/pathways/human/metabolomic/pathway.gpml
-	 *
+	 * 
+	 * @param f       the file.
+	 * @param srcDir  the source directory.
+	 * @param destDir the destination directory.
+	 * @return the file.
 	 */
 	public static File mapFileTree(File f, File srcDir, File destDir) {
 		List<String> components = new ArrayList<String>();
