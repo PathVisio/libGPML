@@ -79,7 +79,7 @@ We encourage you to join the ..... google group, where other libGPML users can b
 
 You can report issues, suggestions and requests using the [GitHub issue tracker](https://github.com/libGPML/issues).  
 
-You can email the main developers directly at [@googlegroups.com](mailto: googlegroups.com).
+You can email the main developers directly at [@googlegroups.com](mailto:googlegroups.com).
 
 
 Contributing
