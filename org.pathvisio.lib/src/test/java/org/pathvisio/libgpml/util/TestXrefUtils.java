@@ -14,8 +14,8 @@ import junit.framework.TestCase;
 public class TestXrefUtils extends TestCase {
 
 	public void testBridgeDb() {
-
-		DataSourceTxt.init();
+		if (!DataSource.fullNameExists("Affy"))
+			DataSourceTxt.init();
 
 		DataSource ds = DataSource.getExistingBySystemCode("Eco");
 
@@ -36,7 +36,8 @@ public class TestXrefUtils extends TestCase {
 	 * Tests the method for checking if Xrefs are equal
 	 */
 	public void testEquivalentXrefs() {
-		DataSourceTxt.init();
+		if (!DataSource.fullNameExists("Ensembl"))
+			DataSourceTxt.init();
 		Xref xref00 = null;
 		Xref xref0 = null;
 		Xref xref11 = XrefUtils.createXref("11", "ensembl");
