@@ -1,5 +1,6 @@
 package org.pathvisio.libgpml.model;
 
+import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
 import org.junit.Before;
@@ -29,7 +30,8 @@ public class TestCitation extends TestCase {
 	 */
 	@Before
 	public void setUp() {
-		DataSourceTxt.init();
+		if (!DataSource.fullNameExists("Affy"))
+			DataSourceTxt.init();
 		p = new PathwayModel();
 		d1 = new DataNode("d1", DataNodeType.UNDEFINED); 
 		p.addDataNode(d1); 
