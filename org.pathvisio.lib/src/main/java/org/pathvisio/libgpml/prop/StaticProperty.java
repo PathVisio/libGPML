@@ -109,7 +109,7 @@ public enum StaticProperty implements Property {
 	FONTWEIGHT("fontWeight", "Bold", StaticPropertyType.BOOLEAN, 252),
 	FONTSTYLE("fontStyle", "Italic", StaticPropertyType.BOOLEAN, 253),
 	FONTDECORATION("fontDecoration", "Underline", StaticPropertyType.BOOLEAN, 254), // TODO number
-	FONTSTRIKETHRU("fontStrikeThru", "Strikethru", StaticPropertyType.BOOLEAN, 255), // TODO number
+	FONTSTRIKETHRU("fontStrikeThru", "Strikethrough", StaticPropertyType.BOOLEAN, 255), // TODO number
 	FONTSIZE("fontSize", "Font Size", StaticPropertyType.DOUBLE, 256), // TODO used to be double
 	VALIGN("vAlign", "Vertical Alignment", StaticPropertyType.VALIGNTYPE, 257),
 	HALIGN("hAlign", "Horizontal Alignment", StaticPropertyType.HALIGNTYPE, 258),

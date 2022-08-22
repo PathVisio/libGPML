@@ -1159,7 +1159,7 @@ public class PathwayModel {
 	 *                 classpath, an exception will be thrown.
 	 */
 	public void writeToXml(File file, boolean validate) throws ConverterException {
-		GPMLFormat gpmlFormat = new GPMLFormat(GPMLFormat.CURRENT);
+		GPMLFormat gpmlFormat = new GPMLFormat(GPMLFormat.GPML2021);
 		gpmlFormat.writeToXml(this, file, validate);
 		setSourceFile(file);
 		clearChangedFlag();

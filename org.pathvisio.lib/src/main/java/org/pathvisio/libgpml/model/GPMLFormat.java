@@ -54,8 +54,8 @@ import org.xml.sax.InputSource;
  */
 public class GPMLFormat extends AbstractPathwayModelFormat {
 
-	static public final GPML2021Writer CURRENT = GPML2021Writer.GPML2021WRITER;
-	static public final GPML2013aWriter PREVIOUS = GPML2013aWriter.GPML2013aWRITER;
+	static public final GPML2021Writer GPML2021 = GPML2021Writer.GPML2021WRITER;
+	static public final GPML2013aWriter GPML2013a = GPML2013aWriter.GPML2013aWRITER;
 
 	private GPMLFormatWriter writer;
 

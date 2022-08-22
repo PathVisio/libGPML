@@ -1282,7 +1282,7 @@ public abstract class PathwayElement extends PathwayObject implements Cloneable,
 			// Value and Type
 			String value = annotation.getValue();
 			AnnotationType type = annotation.getType();
-			if (value != null && type != null) {
+			if (value != null && type != null && !Utils.stringEquals(value, "")) {
 				builder.append(value).append(" (" + type.getName() + ")").append("</A>");
 				semicolon = true;
 			}
@@ -1787,12 +1787,6 @@ public abstract class PathwayElement extends PathwayObject implements Cloneable,
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			boolean semicolon = false;
-			// Value and Type
-			String value = evidence.getValue();
-			if (value != null) {
-				builder.append(value);
-				semicolon = true;
-			}
 			// Xref
 			Xref xref = evidence.getXref();
 			if (xref != null) {
@@ -1802,10 +1796,18 @@ public abstract class PathwayElement extends PathwayObject implements Cloneable,
 					if (semicolon) {
 						builder.append("; ");
 					}
-					builder.append("<A href='" + xref.getKnownUrl()).append("'>").append(ds).append(" ").append(id)
-							.append("</A>");
+					builder.append(ds).append(":").append(id);
 					semicolon = true;
 				}
+			}
+			// Value and Type
+			String value = evidence.getValue();
+			if (value != null && !Utils.stringEquals(value, "")) {
+				if (semicolon) {
+					builder.append("; ");
+				}
+				builder.append(value);
+				semicolon = true;
 			}
 			// Url
 			String urlLink = evidence.getUrlLink();
