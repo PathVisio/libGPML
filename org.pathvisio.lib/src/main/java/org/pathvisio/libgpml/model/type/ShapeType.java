@@ -87,7 +87,7 @@ public class ShapeType implements IShape {
 	public static final ShapeType ENDOPLASMIC_RETICULUM = new ShapeType("EndoplasmicReticulum",
 			ShapeCatalog.getPluggableShape(Internal.ENDOPLASMIC_RETICULUM));
 	public static final ShapeType GOLGI_APPARATUS = new ShapeType("GolgiApparatus",
-			ShapeCatalog.getPluggableShape(Internal.ENDOPLASMIC_RETICULUM));
+			ShapeCatalog.getPluggableShape(Internal.GOLGI_APPARATUS));
 
 	// ========================================
 	// Cellular components (basic shape)
@@ -125,16 +125,6 @@ public class ShapeType implements IShape {
 			ShapeCatalog.getPluggableShape(Internal.MEMBRANE_ICON));
 	public static final ShapeType DEGRADATION = new ShapeType("Degradation",
 			ShapeCatalog.getPluggableShape(Internal.DEGRADATION));
-
-	// ========================================
-	// Rarely used/Deprecated TODO
-	// ========================================
-	// Cellular components (rarely used) TODO
-	public static final ShapeType NUCLEOLUS = new ShapeType("Nucleolus", null);
-	public static final ShapeType VACUOLE = new ShapeType("Vacuole", null);
-	public static final ShapeType LYSOSOME = new ShapeType("Lysosome", null);
-	public static final ShapeType CYTOSOL_REGION = new ShapeType("CytosolRegion", null);
-	public static final ShapeType MEMBRANE_REGION = new ShapeType("MembraneRegion", null);
 
 	// ================================================================================
 	// Properties
