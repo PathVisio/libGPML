@@ -5,8 +5,7 @@
 	<version>4.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>libGPML</name>
-	<description>library for reading / writing GPML</description>
-
+	<description>libGPML is a library for reading, writing, manipulation, and conversion of files and data streams in the GPML (Graphical Pathway Markup Language) format.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,6 +44,54 @@
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>5.1.8</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Copyright> 2006-2022 BiGCaT Bioinformatics, WikiPathways</Bundle-Copyright>
+						<Bundle-DocURL> http://www.pathvisio.org</Bundle-DocURL>
+						<Bundle-License> http://www.apache.org/licenses/LICENSE-2.0</Bundle-License>
+						<Bundle-Name>org.pathvisio.libgpml</Bundle-Name>
+						<Bundle-SymbolicName>org.pathvisio.libgpml</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Bundle-Vendor> PathVisio developers</Bundle-Vendor>
+						<Export-Package>org.pathvisio.libgpml.*</Export-Package>
+						<Import-Package> 
+							javax.swing,
+						 	org.osgi.framework;version="1.5.0"
+						</Import-Package>
+						<Require-Bundle>
+							org.apache.servicemix.bundles.jdom;bundle-version="2.0.6",
+ 							org.bridgedb;bundle-version="3.0.16",
+						 	org.bridgedb.bio;bundle-version="3.0.16",
+						 	org.bridgedb.rdb;bundle-version="3.0.16",
+							org.apache.commons.commons-collections4;bundle-version="4.4"
+						</Require-Bundle>
+					</instructions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
