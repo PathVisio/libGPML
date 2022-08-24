@@ -26,8 +26,9 @@ import java.util.Map;
  * 
  * at this moment the shape registry initializes itself, by calling
  * registerShape() on BasicShapes, GenMAPPShapes and MIMShapes.
+ * 
+ * @author unknown, finterly
  */
-
 public class ShapeRegistry {
 
 	private static Shape defaultShape = null;

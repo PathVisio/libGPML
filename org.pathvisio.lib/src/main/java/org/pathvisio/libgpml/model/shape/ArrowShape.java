@@ -39,7 +39,7 @@ import java.awt.Shape;
 	    |/               #/             /
  * </pre>
  * 
- * @author unknown
+ * @author unknown, finterly
  */
 public class ArrowShape {
 	/**

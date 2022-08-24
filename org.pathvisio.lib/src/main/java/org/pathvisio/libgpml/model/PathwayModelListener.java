@@ -26,6 +26,8 @@ import java.util.EventListener;
  *
  * For example this is used by VPathwayModel to refresh itself when a new element is
  * added.
+ * 
+ * @author unknown
  */
 public interface PathwayModelListener extends EventListener {
 

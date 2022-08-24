@@ -24,9 +24,7 @@ import org.pathvisio.libgpml.model.PathwayObject;
 
 /**
  * Static properties for ObjectTypes, linked in {@link PathwayObject}.
- * 
- * // TODO Tag name must be unique...Does it matter what numbers?
- * 
+ *  
  * @author unknown, finterly
  */
 public enum StaticProperty implements Property {
@@ -88,7 +86,7 @@ public enum StaticProperty implements Property {
 	GROUPTYPE("groupType", "Group Type", StaticPropertyType.GROUPTYPE, 192),
 
 	// datanode
-	ALIASREF("aliasRef", "Linked to Group", StaticPropertyType.ALIASREF, 200, false, false, false), // TODO
+	ALIASREF("aliasRef", "Linked to Group", StaticPropertyType.ALIASREF, 200, false, false, false), 
 
 	// state
 	RELX("relX", "Relative X", StaticPropertyType.DOUBLE, 210, true, false, false),
@@ -104,13 +102,13 @@ public enum StaticProperty implements Property {
 	HEIGHT("height", "Height", StaticPropertyType.DOUBLE, 243, true, false, false),
 
 	// font properties
-	TEXTCOLOR("textColor", "Text Color", StaticPropertyType.COLOR, 250), // TODO number
+	TEXTCOLOR("textColor", "Text Color", StaticPropertyType.COLOR, 250), 
 	FONTNAME("fontName", "Font Name", StaticPropertyType.FONTNAME, 251),
 	FONTWEIGHT("fontWeight", "Bold", StaticPropertyType.BOOLEAN, 252),
 	FONTSTYLE("fontStyle", "Italic", StaticPropertyType.BOOLEAN, 253),
-	FONTDECORATION("fontDecoration", "Underline", StaticPropertyType.BOOLEAN, 254), // TODO number
-	FONTSTRIKETHRU("fontStrikeThru", "Strikethrough", StaticPropertyType.BOOLEAN, 255), // TODO number
-	FONTSIZE("fontSize", "Font Size", StaticPropertyType.DOUBLE, 256), // TODO used to be double
+	FONTDECORATION("fontDecoration", "Underline", StaticPropertyType.BOOLEAN, 254), 
+	FONTSTRIKETHRU("fontStrikeThru", "Strikethrough", StaticPropertyType.BOOLEAN, 255), 
+	FONTSIZE("fontSize", "Font Size", StaticPropertyType.DOUBLE, 256), 
 	VALIGN("vAlign", "Vertical Alignment", StaticPropertyType.VALIGNTYPE, 257),
 	HALIGN("hAlign", "Horizontal Alignment", StaticPropertyType.HALIGNTYPE, 258),
 

@@ -88,7 +88,7 @@ public class Logger {
 	 * get/set log level to a certain level. The higher the level, the move output.
 	 * Messages above this level are discarded.
 	 * 
-	 * @param debug
+	 * @param debug 
 	 * @param trace
 	 * @param info
 	 * @param warn

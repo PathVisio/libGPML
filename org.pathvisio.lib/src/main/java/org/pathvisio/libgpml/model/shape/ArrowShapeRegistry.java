@@ -28,7 +28,7 @@ import java.awt.geom.Rectangle2D;
  *
  * Shapes are defined and registered in the static section of this class.
  * 
- * @author unknown
+ * @author unknown, finterly
  */
 class ArrowShapeRegistry {
 

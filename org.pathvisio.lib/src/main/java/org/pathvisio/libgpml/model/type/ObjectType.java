@@ -22,6 +22,8 @@ import java.util.Map;
 /**
  * Possible values for PathwayElement.getObjectType(), such as "DataNode" or
  * "Shape"
+ * 
+ * @author unknown, finterly
  */
 public enum ObjectType {
 
@@ -48,11 +50,11 @@ public enum ObjectType {
 
 	/** A connector pathway element without semantic meaning. */
 	GRAPHLINE("GraphicalLine"),
-	
-	/** A point on a line pathway element. TODO */ 
+
+	/** A point on a line pathway element. */
 	LINEPOINT("Point"),
-	
-	/** An anchor point on a line pathway element. TODO */
+
+	/** An anchor point on a line pathway element. */
 	ANCHOR("Anchor"),
 
 	/** A pathway element to attach simple labels to the pathway. */

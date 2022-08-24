@@ -23,6 +23,8 @@ import java.util.List;
 /**
  * base implementation of PathwayImporter and PathwayExporter warnings
  * mechanism.
+ * 
+ * @author unknown
  */
 public abstract class AbstractPathwayModelFormat implements PathwayModelImporter, PathwayModelExporter {
 	private List<String> warnings = new ArrayList<String>();
@@ -34,6 +36,8 @@ public abstract class AbstractPathwayModelFormat implements PathwayModelImporter
 	/**
 	 * Can be used by overriding classes to add to the list of warnings. Don't
 	 * forget to call {@link clearWarnings} at the start of conversion.
+	 * 
+	 * @param warning the warning. 
 	 */
 	protected void emitWarning(String warning) {
 		warnings.add(warning);

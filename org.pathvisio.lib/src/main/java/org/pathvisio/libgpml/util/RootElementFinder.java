@@ -33,7 +33,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * 
  * This is similar to com.sun.xml.internal.ws.message.RootElementSniffer,
  * perhaps can be re-used.
  * 

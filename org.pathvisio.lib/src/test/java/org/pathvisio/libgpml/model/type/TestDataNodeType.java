@@ -54,12 +54,12 @@ public class TestDataNodeType extends TestCase {
 
 		List<String> names = Arrays.asList(DataNodeType.getNames());
 		for (String i : names) { 
-			System.out.println(i);
+//			System.out.println(i);
 		}
 	
 		List<DataNodeType> values = Arrays.asList(DataNodeType.getValues());
 		for (DataNodeType i : values) {
-			System.out.println(i);
+//			System.out.println(i);
 		}
 		
 		assertTrue(names.contains("RNA"));
@@ -67,8 +67,8 @@ public class TestDataNodeType extends TestCase {
 		assertTrue(names.contains("new data node type"));
 		assertFalse(names.contains("NEW data NODE type"));
 
-		System.out.println(DataNodeType.getNames());
-		System.out.println(rna1 == DataNodeType.RNA);
+//		System.out.println(DataNodeType.getNames());
+//		System.out.println(rna1 == DataNodeType.RNA);
 	}
 	
 	/**

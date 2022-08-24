@@ -150,6 +150,8 @@ public abstract class PathwayObject {
 	 *
 	 * NB: This method does not automatically add this elementId to the pathway
 	 * model.
+	 * 
+	 * @return elementId the generated elementId. 
 	 */
 	protected String setGeneratedElementId() {
 		setElementId(pathwayModel.getUniqueElementId());
@@ -236,6 +238,8 @@ public abstract class PathwayObject {
 	/**
 	 * Returns keys of available static properties and dynamic properties as an
 	 * object list.
+	 * 
+	 * @return keys the keys of available properties. 
 	 */
 	public Set<Object> getPropertyKeys() {
 		Set<Object> keys = new HashSet<Object>();
@@ -258,7 +262,7 @@ public abstract class PathwayObject {
 	 * Returns static property of given key.
 	 *
 	 * @param key the key.
-	 * @return
+	 * @return the static key property of given key. 
 	 */
 	public Object getPropertyEx(Object key) {
 		if (key instanceof StaticProperty) {

@@ -27,7 +27,7 @@ import org.pathvisio.libgpml.model.type.AnchorShapeType;
  *
  * Shapes are defined and registered in the static section of this class.
  * 
- * @author unknown
+ * @author unknown, finterly
  */
 class AnchorShapeRegistry {
 

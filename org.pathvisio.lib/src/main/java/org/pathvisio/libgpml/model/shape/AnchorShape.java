@@ -23,7 +23,7 @@ import java.awt.Shape;
  * ArrowShape for Arrows. Currently this is nothing but a wrapper for a simple
  * java Shape.
  * 
- * @author unknown 
+ * @author unknown
  */
 public class AnchorShape {
 	

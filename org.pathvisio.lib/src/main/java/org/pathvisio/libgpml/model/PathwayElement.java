@@ -658,7 +658,7 @@ public abstract class PathwayElement extends PathwayObject implements Cloneable,
 	 * Returns property of given key.
 	 *
 	 * @param key the key.
-	 * @return
+	 * @return the property of given key. 
 	 */
 	@Override
 	public Object getPropertyEx(Object key) {

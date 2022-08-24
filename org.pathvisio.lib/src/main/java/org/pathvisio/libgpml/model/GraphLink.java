@@ -26,6 +26,8 @@ import org.pathvisio.libgpml.util.Utils;
 
 /**
  * This class only contains static methods and should not be instantiated.
+ * 
+ * @author finterly
  */
 public abstract class GraphLink {
 

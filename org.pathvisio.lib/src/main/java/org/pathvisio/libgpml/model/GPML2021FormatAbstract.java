@@ -21,6 +21,8 @@ import org.jdom2.Namespace;
 /**
  * Read / write GPML files. Base implementation for different GpmlFormat
  * versions. Code that is shared between multiple versions is located here.
+ * 
+ * @author unknown, finterly
  */
 public abstract class GPML2021FormatAbstract extends GPMLFormatAbstract {
 
