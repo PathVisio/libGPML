@@ -51,6 +51,7 @@ import org.pathvisio.libgpml.model.type.ShapeType;
 import org.pathvisio.libgpml.model.type.StateType;
 import org.pathvisio.libgpml.model.type.VAlignType;
 import org.pathvisio.libgpml.util.ColorUtils;
+import org.pathvisio.libgpml.util.Utils;
 import org.pathvisio.libgpml.util.XrefUtils;
 
 /**
@@ -519,7 +520,10 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GPMLForm
 					continue;
 				}
 				if (key.equals(CELL_CMPNT_KEY)) {
-					((ShapedElement) pathwayElement).setShapeType(ShapeType.register(toCamelCase(value), null));
+					// NB: do not set ShapeType if "None"
+					if (!Utils.stringEquals(value, "None")) {
+						((ShapedElement) pathwayElement).setShapeType(ShapeType.register(toCamelCase(value), null));
+					}
 					continue;
 				}
 			}
