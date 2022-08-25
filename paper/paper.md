@@ -1,5 +1,5 @@
 ---
-title: 'libGPML: a Java Library for reading, writing, and converting GPML'
+title: 'libGPML: a Java API Library for reading, writing, and conversion of GPML'
 tags:
   - bioinformatics
   - pathvisio
@@ -18,58 +18,40 @@ authors:
 affiliations:
  - name: Dept of Bioinformatics - BiGCaT, NUTRIM, Maastricht University
    index: 1
-date: 25 June 2021
+date: 25 June 2022
 bibliography: paper.bib
 ---
 
-
-
 # Summary
-describing the high-level functionality and purpose of the software for a diverse, non-specialist audience.
-
-GPML (Graphical Pathway Markup Language) was originally... It was later ....libGPML is a Java library....that is more easily updated, built, released, and used. A subset of the original functionality is available, and some managers have already been updated to
-use more recent versions of dependencies.
-
-
-
-
+LibGPML is an open-source application programming interface (API) library for reading, writing and manipulating pathway models in the Graphical Pathway Markup Language (GPML) format.  It is written in Java and runs on all major operating systems.  LibGPML not only provides convenience for developers who need to parse GPML in their applications, but also includes many features that facilitate use of GPML and the library itself, including pathway validation and conversion between GPML2013a and the latest released version GPML2021.
 
 # Statement of Need
-clearly illustrates the research purpose of the software.
+Pathways provide a powerful visual representation of biological concepts for data exploration. 
+The study and collection of biological pathways is valuable for research such as insights into complicated disease mechanisms, computational analysis and interpretation of large-scale experimental data. 
 
-Moving to GPML2021 format....While pathvisio core library has served our research for many years, a number of limitations has made
-this increasingly hard. ...
+Graphical Pathway Markup Language (GPML), an open XML-based format, was developed to effectively represent pathway models and their elements with biological information. GPML is the file format used to store and share pathway content at WikiPathways [@Kelder:2012], a community curated pathway database, and is compatible with pathway visualization and analysis software tools such as Cytoscape [@Shannon:2003] and Pathvisio [@Kutmon:2012], the latter of which uses GPML as its native format. 
 
-While Bioclipse has served our research for many years, a number of limitations has made this increasingly hard. For example, the dependency of Bioclipse on the Eclipse UI requires the scripts to be run inside a running Bioclipse application. This makes repeatedly running of a script needlessly hard and use in continuous integration systems or use on computing platforms impossible. A second problem was that the build and release system of Bioclipse was complex, making it hard for others to repeat creating new releases. This is reflected in the lack of recent releases and complicates the process for external developers wishing to make patches.
-
-These needs triggered a next generation design of Bioclipse: 1. the managers providing the domain-specific functionality would need to be usable on the command line; 2. building the Bioclipse managers should be possible on the command line, ideally with continuous build systems; 3. Bacting should be easy to install and reuse.
+LibGPML was developed specially for the parsing of pathway models in the GPML format. Although there are many off-the-shelf-XML parser libraries, a higher-level API library such as libGPML tailored specifically to GPML provides ease of use and added capabilities. LibGPML features such as validation of models help improve the consistency and quality of created pathway models.  LibGPML also seamlessly reads, writes, and converts GPML2013a and the latest GPML2021 format, which introduced new attributes and type definitions, and extended capability to annotate, cite literature, and add evidence to pathway elements. Software tools such as LibGPML, which work with pathway data, can help researchers to better understand, share and discuss knowledge. LibGPML will be embedded in the latest version of PathVisio 4.0.0 and its plugins. 
 
 # Implementation
+
+
 ## Continuous integration and releases
+LibGPML is hosted on GitHub.
 
 
+# Figures
+
+![libGPML UML Class Diagram.\label{fig:example}](https://github.com/PathVisio/libGPML/blob/main/.graphics/libgpml_diagram.svg){ width=90% }
+
+and referenced from text using \autoref{fig:example}.
 
 
 
 # Use cases
 Mention (if applicable) a representative set of past or ongoing research projects using the software and recent scholarly publications enabled by it.
+
 Pathvisio and GPML scripts have been in use in our group in various research lines to automate repetitive work.
-
-
-# Figures
-
-Figures can be included like this:
-
-  <img width="100%" src=".graphics/libgpml_diagram.svg">
-
-![libGPML UML diagram.\label{fig:example}](https://github.com/PathVisio/libGPML/blob/main/.graphics/libgpml_diagram.svg)
-and referenced from text using \autoref{fig:example}.
-
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
 
 
 # Acknowledgements
@@ -80,3 +62,40 @@ We acknowledge the contributions
 # References
 A list of key references, including to other software addressing related needs. Note that the references should include full names of venues, e.g., journals and conferences, not abbreviations only understood in the context of a specific discipline.
 
+@article{Kelder:2012,
+	author = {Kelder, Thomas and van Iersel, Martijn P and Hanspers, Kristina and Kutmon, Martina and Conklin, Bruce R and Evelo, Chris T and Pico, Alex R},
+	title = {WikiPathways: building research communities on biological pathways},
+	year = {2012},
+    journal = {Nucleic Acids Research},
+	volume = {40},
+	number = {D1},	
+	pages = {D1301–D1307},
+	doi = {10.1093/nar/gkr1074},
+	pmid = {22096230},
+	url = {https://doi.org/10.1093/nar/gkr1074}
+}
+
+@article{Shannon:2003,
+    author={Shannon, Paul and Markiel, Andrew and Ozier, Owen and Baliga, Nitin S and Wang, Jonathan T and Ramage, Daniel and Amin, Nada and Schwikowski, Benno and Ideker, Trey},
+    title = {Cytoscape: a software environment for integrated models of biomolecular interaction networks},
+    year = {2003},
+    journal = {Genome research},
+    volume = {13},
+    number = {11},
+    pages = {2498-2504},
+    doi = {10.1101/gr.1239303},
+    pmid = {14597658},
+    url = {https://pubmed.ncbi.nlm.nih.gov/14597658/},
+}
+
+@article{Kutmon:2012,
+	author = {Kutmon, Martina and van Iersel, Martijn P and Bohler, Anwesha and Kelder, Thomas and Nunes, Nuno and Pico, Alex R and Evelo, Chris T},
+	title = {PathVisio 3: An Extendable Pathway Analysis Toolbox},
+    journal = {PLoS Comput Biol},
+    year = {2012},
+	volume = {11},
+	number = {2},	
+	doi = {10.1371/journal.pcbi.1004085},
+	pmid = {25706687},
+	url = {https://doi.org/10.1371/journal.pcbi.1004085}
+}
