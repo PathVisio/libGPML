@@ -1,4 +1,4 @@
-libGPML<img width="15%" align="right" src=".graphics/bigcateye.svg">
+libGPML<img width="10%" align="right" src=".graphics/bigcateye.svg">
 =============================================================================
 
 [![Java CI with Maven](https://github.com/PathVisio/libGPML/actions/workflows/maven.yml/badge.svg)](https://github.com/PathVisio/libGPML/actions/workflows/maven.yml)[![codecov](https://codecov.io/gh/PathVisio/libGPML/branch/main/graph/badge.svg?token=xJbZhucQun)](https://codecov.io/gh/PathVisio/libGPML)
@@ -40,7 +40,7 @@ libGPML consists of mainly the ....Documentation in progres...and java object mo
 
 
 <p align="center">
-  <img width="100%" src=".graphics/libgpml_diagram.svg">
+  <img width="80%" src=".graphics/libgpml_diagram.svg">
   <br>
   <em>Figure 1: libGPML Java Object Model</em>
 </p>
