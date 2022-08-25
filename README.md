@@ -110,17 +110,11 @@ The development of libGPML was supported in largely by funding from ...
 
 <br>
 <div align="center">
-  <a href="https://www.nigms.nih.gov">
-    <img valign="middle"  height="100" src=".graphics/bigcat.gif">
-  </a>
+    <img valign="middle"  height="60" src=".graphics/bigcat.gif">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.caltech.edu">
-    <img valign="middle" height="130" src=".graphics/bigcateye.svg">
-  </a>
+    <img valign="middle" height="60" src=".graphics/bigcateye.svg">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.caltech.edu">
-    <img valign="middle" height="100" src=".graphics/maastricht_university_logo2017.svg">
-  </a>
+    <img valign="middle" height="60" src=".graphics/maastricht_university_logo2017.svg">
 </div>
