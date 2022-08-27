@@ -52,7 +52,7 @@ libGPML uses an object oriented Java model. In the libGPML Java model, GPML Path
 libGPML consists of several packages: 
 - org.pathvisio.libgpml.debug - Debugging and logging utility classes
 - org.pathvisio.libgpml.io - Import and export classes
-- org.pathvisio.libgpml.model - Pathway model classes
+- org.pathvisio.libgpml.model - Classes representing the pathway "model". Also includes classes for reading and writing. 
 - org.pathvisio.libgpml.model.connector - Line connectors classes
 - org.pathvisio.libgpml.model.shape - Shape defining classes
 - org.pathvisio.libgpml.model.type - Enum type classes 
