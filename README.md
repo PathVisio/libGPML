@@ -9,7 +9,7 @@ How to cite
 -----------------
 If you use this software, please cite the article in JOSS:
 
-In progress...
+*In progress...*
 
 Table of contents
 -----------------
