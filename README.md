@@ -13,16 +13,15 @@ In progress...
 
 Table of contents
 -----------------
-
 * [Introduction](#introduction)
-* [Installation](#installation)
+* [Dependencies](#dependencies)
 * [Usage](#usage)
+* [Library Architecture](#library-architecture)
 * [Getting help](#getting-help)
 * [Contributing](#contributing)
 * [License](#license)
 * [Authors and history](#authors-and-history)
 * [Acknowledgments](#authors-and-acknowledgments)
-
 
 Introduction
 ------------
@@ -38,6 +37,20 @@ Why not simply use a generic XML parsing library?  A specialized library such as
 * **Conversion**: libGPML can convert between GPML2013a and GPML2021. Conversions between GPML2013a and older 
 
 libGPML works on Linux, Windows, and  MacOS X, and other operating systems. 
+
+Dependencies
+------------
+You need the following tools:
+
+* Computer with Windows, Mac, or Linux
+* [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+* [Maven 3](https://maven.apache.org/) (Tested with 3.8.1)
+
+Usage
+-----
+Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libGPML and important information.
+
+Documentation is available online at [libGPML javadoc](https://pathvisio.org/libgpml-javadoc/).
 
 Library Architecture
 ------------
@@ -59,35 +72,9 @@ libGPML consists of several packages:
 - org.pathvisio.libgpml.prop - Properties classes
 - org.pathvisio.libgpml.util - Utility classes
 
-
-Getting Started
-------------
-* [Documentation site](https://pathvisio.github.io/libGPML) 
-
-Dependencies
-------------
-You need the following tools:
-
-* Computer with Windows, Mac, or Linux
-* [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
-* [Maven 3](https://maven.apache.org/) (Tested with 3.8.1)
-
-Installation
-------------
-
-
-
-Usage
------
-Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libGPML and important information.
-
-Documentation is available online at [libGPML javadoc](https://pathvisio.org/libgpml-javadoc/).
-
-
 Getting help
 ------------
 You can report issues, suggestions and requests using the [GitHub issue tracker](https://github.com/libGPML/issues).  
-
 
 Contributing
 ------------
