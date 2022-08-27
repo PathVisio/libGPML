@@ -48,9 +48,7 @@ You need the following tools:
 
 Usage
 -----
-Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libGPML and important information.
-
-Documentation is available online at [libGPML javadoc](https://pathvisio.org/libgpml-javadoc/).
+Documentation is available online at [libGPML Java Documentation](https://pathvisio.org/libgpml-javadoc/).
 
 Library Architecture
 ------------
