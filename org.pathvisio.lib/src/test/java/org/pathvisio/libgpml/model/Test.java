@@ -30,6 +30,7 @@ import org.pathvisio.libgpml.model.type.DataNodeType;
 import junit.framework.TestCase;
 
 /**
+ * Tests for libgpml model classes. 
  * 
  * @author unknown
  */

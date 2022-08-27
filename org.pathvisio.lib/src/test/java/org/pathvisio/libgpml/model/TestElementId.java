@@ -11,8 +11,9 @@ import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 
 /**
- * @author p70073399
- *
+ * Tests for elementId. 
+ * 
+ * @author finterly
  */
 public class TestElementId {
 
