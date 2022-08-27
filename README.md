@@ -5,6 +5,12 @@ libGPML<img width="10%" align="right" src=".graphics/bigcateye.svg">
 
 libGPML is an open-source Java library for working with [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML). 
 
+How to cite
+-----------------
+If you use this software, please cite the article in JOSS:
+
+In progress...
+
 Table of contents
 -----------------
 
@@ -21,7 +27,7 @@ Table of contents
 Introduction
 ------------
 
-libGPML is a java programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML) format.  
+libGPML is a Java programming library that helps you read, write, validate, manipulate, and convert files and data streams in the [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML) format.  
 
 Why not simply use a generic XML parsing library?  A specialized library such as libGPML offers many advantages over using a generic XML library directly.  Here are some:
 
@@ -35,9 +41,7 @@ libGPML works on Linux, Windows, and  MacOS X, and other operating systems.
 
 Library Architecture
 ------------
-
-libGPML consists of mainly the ....Documentation in progres...and java object model classes.  
-
+libGPML uses an object oriented Java model. In the libGPML Java model, GPML Pathway Elements are represented by Java Classes.  Pathway Element types are represented by Enum Java Classes.
 
 <p align="center">
   <img width="80%" src=".graphics/libgpml_diagram.svg">
@@ -45,6 +49,15 @@ libGPML consists of mainly the ....Documentation in progres...and java object mo
   <em>Figure 1: libGPML Java Object Model</em>
 </p>
 
+libGPML consists of several packages: 
+- org.pathvisio.libgpml.debug - Debugging and logging utility classes
+- org.pathvisio.libgpml.io - Import and export classes
+- org.pathvisio.libgpml.model - Pathway model classes
+- org.pathvisio.libgpml.model.connector - Line connectors classes
+- org.pathvisio.libgpml.model.shape - Shape defining classes
+- org.pathvisio.libgpml.model.type - Enum type classes 
+- org.pathvisio.libgpml.prop - Properties classes
+- org.pathvisio.libgpml.util - Utility classes
 
 
 Getting Started
@@ -66,47 +79,45 @@ Installation
 
 Usage
 -----
-
 Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libGPML and important information.
 
-Documentation is available online at ....
+Documentation is available online at 
 
 
 Getting help
 ------------
-
-We encourage you to join the ..... google group, where other libGPML users can be found.  You can ask questions and discuss the development, use, and interoperability of all kinds of software that supports GPML.
-
 You can report issues, suggestions and requests using the [GitHub issue tracker](https://github.com/libGPML/issues).  
-
-You can email the main developers directly at [@googlegroups.com](mailto:googlegroups.com).
 
 
 Contributing
 ------------
-
-We welcome contributions to libGPML!  Please read our [contribution guidelines](CONTRIBUTING.md), and also feel free to contact the developers at to coordinate your efforts.
+We welcome contributions to libGPML!  Please read our [contribution guidelines](CONTRIBUTING.md), and also feel free to contact the developers to coordinate your efforts.
 
 
 License
 -------
-
 libGPML is available for free under the terms of the [Apache License, Version 2.0](LICENSE).
 
 
 Authors and history
 ---------------------------
-
-libGPML's main authors are [Finterly Hu](https://github.com/Finterly), [Martina Summer-Kutmon](https://github.com/mkutmon), with contributions from many others.  We especially thank the following (in alphabetical order):
-
-* ...
-* ....
-
+libGPML's main authors are [Finterly Hu](https://github.com/Finterly), [Martina Summer-Kutmon](https://github.com/mkutmon), with contributions from many others.  We especially thank the following (**in alphabetical order**):
+* Alex Pico
+* Anders Riutta
+* Chris Evelo
+* Denise Slenter
+* Egon Willighagen
+* Friederike Ehrhart 
+* Kristina Hanspers 
+* Luc de Meyer
+* Nhung Pham
+* Susan Coort
+* ... 
 
 Acknowledgments
 ---------------
 
-The development of libGPML was supported in largely by funding from ...
+The development of libGPML was supported in largely by funding from WikiPathways-COVID19 ZonMW project.
 
 <br>
 <div align="center">
