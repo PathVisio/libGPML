@@ -81,7 +81,7 @@ Usage
 -----
 Please read the file [NEWS.txt](NEWS.txt) for highlights about recent changes in libGPML and important information.
 
-Documentation is available online at 
+Documentation is available online at [libGPML javadoc](https://pathvisio.org/libgpml-javadoc/).
 
 
 Getting help
