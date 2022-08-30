@@ -1,3 +1,5 @@
+name: JOSS PDF
+
 on:
   workflow_dispatch:
   push:
