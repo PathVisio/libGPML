@@ -62,13 +62,7 @@ public class TestConversionToGPML2021 extends TestCase {
 	 */
 	@Test
 	public void testWrite() throws IOException, ConverterException {
-		File tmp = File.createTempFile(inputFile + "_testwriteGPML2013a_", ".gpml");
-		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
-		System.out.println(tmp);
-		
-		File tmp2 = File.createTempFile(inputFile + "_testwriteGPML2021_", ".gpml");
-		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp2, false);
-		System.out.println(tmp2);
+		//just read
 	}
 
 
