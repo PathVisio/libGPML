@@ -12,8 +12,8 @@ authors:
   - name: Martina Kutmon
     orcid: 0000-0002-7699-8191
     affiliation: 1 
-  - name: 
-    orcid:
+  - name: Egon Willighagen
+    orcid: 0000-0001-7542-0286
     affiliation: 1 
 affiliations:
  - name: Dept of Bioinformatics - BiGCaT, NUTRIM, Maastricht University
