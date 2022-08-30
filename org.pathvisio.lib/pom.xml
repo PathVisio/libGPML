@@ -214,4 +214,19 @@
 		</dependency>
 	</dependencies>
 
+	<developers>
+		<developer>
+			<id>tina</id>
+			<name>Martina Summer-Kutmon</name>
+		</developer>
+                <developer>
+                        <id>egonw</id>
+                        <name>Egon Willighagen</name>
+                </developer>
+                <developer>
+                        <id>finterly</id>
+                        <name>Finterly Hu</name>
+                </developer>
+	</developers>
+
 </project>
