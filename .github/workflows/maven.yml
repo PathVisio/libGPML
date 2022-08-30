@@ -3,8 +3,12 @@ name: Java CI
 on:
   push:
     branches: [ main ]
+    paths:
+      - org.pathvisio.lib/**
   pull_request:
     branches: [ main ]
+    paths:
+      - org.pathvisio.lib/**
 
 jobs:
   build:
