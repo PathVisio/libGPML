@@ -4,6 +4,12 @@ Releases are created by the release manager and requires permission to submit th
 (using an approved Sonatype ([oss.sonatype.org](http://oss.sonatype.org/)) account). This document
 explains how.
 
+## Compiling
+
+```shell
+mvn clean install -Dgpg.skip
+```
+
 ## Versioning
 
 Instructions to increase the version to a development (ending with `-SNAPSHOT`) version:
