@@ -262,26 +262,7 @@ public class GPMLFormat extends AbstractPathwayModelFormat {
 			}
 			Logger.log.trace("Copy map elements");
 			format.readFromRoot(pathwayModel, root);
-			// warning message if opening older GPML, automatically closes after 10 seconds
-			if (!(format instanceof GPML2021Reader)) {
-				JOptionPane msg = new JOptionPane(
-						"This pathway was written in an older Gpml version.\nSave will automatically update it to GPML2021.",
-						JOptionPane.WARNING_MESSAGE);
-				final JDialog dlg = msg.createDialog("Warning");
-				dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(10000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						dlg.setVisible(false);
-					}
-				}).start();
-				dlg.setVisible(true);
-			}
+		
 		} catch (JDOMException e) {
 			throw new ConverterException(e);
 		} catch (IOException e) {
