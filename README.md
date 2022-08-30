@@ -2,6 +2,8 @@ libGPML<img width="10%" align="right" src=".graphics/bigcateye.svg">
 =============================================================================
 
 [![Java CI with Maven](https://github.com/PathVisio/libGPML/actions/workflows/maven.yml/badge.svg)](https://github.com/PathVisio/libGPML/actions/workflows/maven.yml)[![codecov](https://codecov.io/gh/PathVisio/libGPML/branch/main/graph/badge.svg?token=xJbZhucQun)](https://codecov.io/gh/PathVisio/libGPML)
+[![DOI](https://zenodo.org/badge/336210372.svg)](https://zenodo.org/badge/latestdoi/336210372)
+[![Maven Central](https://img.shields.io/maven-central/v/org.pathvisio/org.pathvisio.libgpml.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.pathvisio%22%20AND%20a:%22org.pathvisio.libgpml%22)
 
 libGPML is an open-source Java library for working with [GPML (Graphical Pathway Markup Language)](https://pathvisio.github.io/documentation/GPML). 
 
