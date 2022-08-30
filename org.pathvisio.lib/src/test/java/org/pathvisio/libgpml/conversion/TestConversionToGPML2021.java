@@ -30,7 +30,7 @@ import org.pathvisio.libgpml.model.PathwayModel;
 import junit.framework.TestCase;
 
 /**
- * Test for reading, writing, and conversion of a single GPML2013a file, for
+ * Test for reading and writing of a single GPML2013a file, for
  * troubleshooting and resolving specific issues.
  * 
  * @author finterly
@@ -41,7 +41,7 @@ public class TestConversionToGPML2021 extends TestCase {
 	private URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
 
 	/**
-	 * Reads a GPML2013a
+	 * Reads a GPML2013a/GPML2021 file.
 	 * 
 	 * @throws ConverterException
 	 * @throws IOException
@@ -62,7 +62,13 @@ public class TestConversionToGPML2021 extends TestCase {
 	 */
 	@Test
 	public void testWrite() throws IOException, ConverterException {
-		//just read
+		File tmp = File.createTempFile(inputFile + "_testwriteGPML2013a_", ".gpml");
+		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
+		System.out.println(tmp);
+		
+		File tmp2 = File.createTempFile(inputFile + "_testwriteGPML2021_", ".gpml");
+		GPML2021Writer.GPML2021WRITER.writeToXml(pathwayModel, tmp2, false);
+		System.out.println(tmp2);
 	}
 
 
