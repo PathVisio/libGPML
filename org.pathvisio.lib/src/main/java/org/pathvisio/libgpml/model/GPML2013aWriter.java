@@ -503,7 +503,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 	 * Writes point {@link LinePoint} information.
 	 *
 	 * @param lineElement the line element.
-	 * @param gfx    the parent graphics element.
+	 * @param gfx         the parent graphics element.
 	 * @throws ConverterException
 	 */
 	protected void writePoints(LineElement lineElement, Element gfx) throws ConverterException {
@@ -754,12 +754,14 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 			id.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			onto.setAttribute("datatype", RDF_STRING, RDF_NAMESPACE);
 			term.setText(annotation.getValue());
-			String prefix = XrefUtils.getXrefDataSourceStr(annotation.getXref().getDataSource());
-			if (OCV_ONTOLOGY_MAP.containsValue(prefix)) {
-				type = OCV_ONTOLOGY_MAP.getKey(prefix);
+			if (annotation.getXref() != null) {
+				String prefix = XrefUtils.getXrefDataSourceStr(annotation.getXref().getDataSource());
+				if (OCV_ONTOLOGY_MAP.containsValue(prefix)) {
+					type = OCV_ONTOLOGY_MAP.getKey(prefix);
+				}
+				id.setText(prefix + ":" + annotation.getXref().getId());
 			}
 			onto.setText(type);
-			id.setText(prefix + ":" + annotation.getXref().getId());
 			ocv.addContent(term);
 			ocv.addContent(id);
 			ocv.addContent(onto);
