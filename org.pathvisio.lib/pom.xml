@@ -6,6 +6,7 @@
 	<packaging>jar</packaging>
 	<name>libGPML</name>
 	<description>libGPML is a library for reading, writing, manipulation, and conversion of files and data streams in the GPML (Graphical Pathway Markup Language) format.</description>
+	<url>https://github.com/PathVisio/libGPML/</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
