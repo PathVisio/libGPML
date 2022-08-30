@@ -97,7 +97,6 @@ libGPML's main authors are [Finterly Hu](https://github.com/Finterly), [Martina 
 * Luc de Meyer
 * Nhung Pham
 * Susan Coort
-* ... 
 
 Acknowledgments
 ---------------
