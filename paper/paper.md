@@ -43,7 +43,7 @@ LibGPML is hosted on GitHub.
 # Figures
 LibGPML uses an object oriented Java model to represent pathway models. In the libGPML Java model, GPML Pathway Elements are represented by Java Classes. Pathway Element types are represented by Enum Java Classes. 
 
-![libGPML UML Class Diagram.\label{fig:javamodel}](https://github.com/PathVisio/libGPML/blob/main/.graphics/libgpml_diagram.svg)
+![libGPML UML Class Diagram.\label{fig:javamodel}](../.graphics/libgpml_diagram.svg)
 
 # Use cases
 Mention (if applicable) a representative set of past or ongoing research projects using the software and recent scholarly publications enabled by it.
