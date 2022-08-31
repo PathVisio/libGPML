@@ -133,13 +133,7 @@ public class DataNode extends ShapedElement implements Xrefable {
 	public void setType(DataNodeType v) {
 		if (type != v && v != null) {
 			if (type == DataNodeType.ALIAS && aliasRef != null) {
-				int n = JOptionPane.showConfirmDialog(null, "Warning: aliasRef connection will be lost", "Warning",
-						JOptionPane.OK_CANCEL_OPTION);
-				if (n == JOptionPane.CANCEL_OPTION) {
-					return; // do not set new data node type
-				} else {
-					unsetAliasRef(); // unset alias ref
-				}
+				unsetAliasRef(); // unset alias ref
 			}
 			// set new data node type
 			type = v;
