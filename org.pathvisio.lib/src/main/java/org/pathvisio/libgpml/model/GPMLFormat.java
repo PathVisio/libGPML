@@ -24,9 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
+import org.bridgedb.DataSource;
 import org.bridgedb.bio.DataSourceTxt;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -76,7 +74,7 @@ public class GPMLFormat extends AbstractPathwayModelFormat {
 	 * Initializes Xref data source text.
 	 */
 	static {
-		DataSourceTxt.init();
+		if (!DataSource.fullNameExists("Ensembl")) DataSourceTxt.init();
 	}
 
 	// ================================================================================
