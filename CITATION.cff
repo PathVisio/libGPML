@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: Pico
+  given-names: Alex
+- family-names: Riutta
+  given-names: Anders
+- family-names: Evelo
+  given-names: Chris
+- family-names: Slenter
+  given-names: Denise
+- family-names: Willighagen
+  given-names: Egon
+  orcid: https://orcid.org/0000-0001-7542-0286
+- family-names: Hu
+  given-names: Finterly
+- family-names: Ehrhart
+  given-names: Friederike
+- family-names: Hanspers
+  given-names: Kristina
+- family-names: de Meyer
+  given-names: Luc
+- family-names: Pham
+  given-names: Nhung
+- family-names: Summer-Kutmon
+  given-names: Martina
+- family-names: Coort
+  given-names: Susan
+title: "libGPML"
+version: 4.0.0
+date-released: 2022-08-30
+url: "https://github.com/PathVisio/libGPML"
