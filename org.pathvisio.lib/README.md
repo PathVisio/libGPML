@@ -15,13 +15,13 @@ mvn clean install -Dgpg.skip
 Instructions to increase the version to a development (ending with `-SNAPSHOT`) version:
 
 ```shell
-mvn versions:set -DnewVersion=4.0.0-SNAPSHOT
+mvn versions:set -DnewVersion=4.0.2-SNAPSHOT
 ```
 
 Or to a release version:
 
 ```shell
-mvn versions:set -DnewVersion=4.0.0
+mvn versions:set -DnewVersion=4.0.1
 ```
 
 ## Making releases
