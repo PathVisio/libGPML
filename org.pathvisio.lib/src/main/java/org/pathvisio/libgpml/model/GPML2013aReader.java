@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -278,7 +279,16 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GPMLForm
 				String[] biopaxIdDb = biopaxIdDbStr.split(":"); // splits "ID" into Id and Database
 				String biopaxDb = biopaxIdDb[0]; // e.g. PW
 				String biopaxId = biopaxIdDb[1]; // e.g 0000650
-				Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
+				Xref xref = null;
+				if ("PW".equals(biopaxDb)) {
+					xref = XrefUtils.createXref(biopaxId, DataSource.getExistingByFullName("Pathway Ontology"));
+				} else if ("CL".equals(biopaxDb)) {
+					xref = XrefUtils.createXref(biopaxId, DataSource.getExistingByFullName("Cell Ontology"));
+				} else if ("DOID".equals(biopaxDb)) {
+					xref = XrefUtils.createXref(biopaxId, DataSource.getExistingByFullName("Human Disease Ontology"));
+				} else {
+					xref = XrefUtils.createXref(biopaxId, biopaxDb);
+				}
 				// creates and adds annotation and annotationRef
 				pathwayModel.getPathway().addAnnotation(elementId, value, type, xref, null);
 			}

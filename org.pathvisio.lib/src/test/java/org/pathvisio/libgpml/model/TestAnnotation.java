@@ -1,7 +1,13 @@
 package org.pathvisio.libgpml.model;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
 import org.pathvisio.libgpml.model.type.AnnotationType;
 import org.pathvisio.libgpml.model.type.DataNodeType;
@@ -44,6 +50,23 @@ public class TestAnnotation extends TestCase {
 		assertEquals(ar2.getAnnotatable(), d1);
 		assertTrue(a.hasAnnotationRef(ar1));
 		assertTrue(a2.hasAnnotationRef(ar2));
+	}
+
+	@Test
+	public void testReadingOfPathwayAnnotations() throws ConverterException {
+		String inputFile = "example-v2013a.gpml";
+		URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
+		File file = new File(url.getPath());
+		assertTrue(file.exists());
+		PathwayModel pathwayModel = new PathwayModel();
+		pathwayModel.readFromXml(file, true);
+		Pathway pathway = pathwayModel.getPathway();
+		List<String> allowedFullNames = new ArrayList<>();
+		allowedFullNames.add("Pathway Ontology");
+		allowedFullNames.add("Human Disease Ontology");
+		for (AnnotationRef ann : pathway.getAnnotationRefs()) {
+			assertTrue(allowedFullNames.contains(ann.getAnnotation().getXref().getDataSource().getFullName()));
+		}
 	}
 
 	/**
