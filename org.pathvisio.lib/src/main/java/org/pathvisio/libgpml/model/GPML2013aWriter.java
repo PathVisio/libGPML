@@ -760,7 +760,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 				if (OCV_ONTOLOGY_MAP.containsValue(prefix)) {
 					type = OCV_ONTOLOGY_MAP.getKey(prefix);
 				}
-				id.setText(prefix + ":" + annotation.getXref().getId());
+				id.setText(prefix.toUpperCase() + ":" + annotation.getXref().getId());
 			}
 			if(annotation.getXref() != null && annotation.getXref().getDataSource() != null) {
 				onto.setText(annotation.getXref().getDataSource().getFullName());

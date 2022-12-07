@@ -197,17 +197,17 @@
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb</artifactId>
-			<version>3.0.16</version>
+			<version>3.0.17</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.bio</artifactId>
-			<version>3.0.16</version>
+			<version>3.0.17</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.rdb</artifactId>
-			<version>3.0.16</version>
+			<version>3.0.17</version>
 		</dependency>
 		<!-- Apache Commons -->
 		<dependency>
