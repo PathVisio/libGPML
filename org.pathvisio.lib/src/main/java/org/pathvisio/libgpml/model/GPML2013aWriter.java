@@ -376,7 +376,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 				setAttr("State.Graphics", "Height", gfx, Double.toString(state.getHeight()));
 				// state does not have custom font properties in GPML2013a
 				// z-order for state is not written to GPML2013a
-				setAttr("State.Graphics", "FillColor", gfx, ColorUtils.colorToHex(state.getFillColor(), false));
+				setAttr("State.Graphics", "FillColor", gfx, ColorUtils.colorToHex2013(state.getFillColor(), false));
 				writeShapeStyleProperty(state, gfx);
 				writeColor(state, gfx);
 				// writes xref (write even if empty)
@@ -620,7 +620,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 			writeShapedElement(shape, shp);
 			writeGroupRef(shape.getGroupRef(), shp);
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
-			setAttr("Shape.Graphics", "FillColor", gfx, ColorUtils.colorToHex(shape.getFillColor(), false));
 			setAttr("Shape.Graphics", "Rotation", gfx, Double.toString(shape.getRotation()));
 			if (shp != null) {
 				root.addContent(shp);
@@ -900,7 +899,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 		writeRectProperty(shapedElement, gfx);
 		// writes z-order and fill color (separately to preserve GPML2013 order)
 		setAttr(base + ".Graphics", "ZOrder", gfx, String.valueOf(shapedElement.getZOrder()));
-		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex(shapedElement.getFillColor(), false));
+		setAttr(base + ".Graphics", "FillColor", gfx, ColorUtils.colorToHex2013(shapedElement.getFillColor(), false));
 		// writes font properties
 		writeFontProperty(shapedElement, gfx);
 		// writes rest of shape style properties
@@ -1060,8 +1059,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 	 */
 	protected void writeColor(ShapedElement shapedElement, Element gfx) throws ConverterException {
 		String base = ((Element) gfx.getParent()).getName();
-		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(shapedElement.getTextColor(), false));
-
+		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex2013(shapedElement.getTextColor(), false));
 	}
 
 	/**
@@ -1148,7 +1146,6 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 			setAttr(base + ".Graphics", "LineStyle", gfx, lineStyleStr);
 		}
 		setAttr(base + ".Graphics", "LineThickness", gfx, String.valueOf(lineElement.getLineWidth()));
-		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex(lineElement.getLineColor(), false));
+		setAttr(base + ".Graphics", "Color", gfx, ColorUtils.colorToHex2013(lineElement.getLineColor(), false));
 	}
-
 }

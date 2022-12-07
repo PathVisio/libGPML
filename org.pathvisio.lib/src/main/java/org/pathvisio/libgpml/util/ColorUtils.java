@@ -58,6 +58,31 @@ public class ColorUtils {
 			}
 		}
 	}
+	
+	/**
+	 * Converts a {@link Color} object to a hexBinary string for 2013a.
+	 * 
+	 * @param color      the color object.
+	 * @param appendHash the boolean, if true appends "#" to beginning of hex
+	 *                   string.
+	 * @return the resulting hex string.
+	 */
+	public static String colorToHex2013(Color color, boolean appendHash) {
+		int a = color.getAlpha();
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		
+		if(a == 0 && r == 0 && g == 0 && b == 0) {
+			return "Transparent";
+		} else {
+			if (appendHash) {
+				return String.format("#%02x%02x%02x", r, g, b);
+			} else {
+				return String.format("%02x%02x%02x", r, g, b);
+			}
+		}
+	}
 
 	/**
 	 * Converts a hexBinary string to {@link Color} (r,g,b) or (r,g,b,a). If it
