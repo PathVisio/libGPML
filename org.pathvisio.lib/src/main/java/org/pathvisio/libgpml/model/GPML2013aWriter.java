@@ -620,6 +620,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 			writeShapedElement(shape, shp);
 			writeGroupRef(shape.getGroupRef(), shp);
 			Element gfx = shp.getChild("Graphics", shp.getNamespace());
+			setAttr("Shape.Graphics", "FillColor", gfx, ColorUtils.colorToHex(shape.getFillColor(), false));
 			setAttr("Shape.Graphics", "Rotation", gfx, Double.toString(shape.getRotation()));
 			if (shp != null) {
 				root.addContent(shp);
@@ -761,7 +762,11 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 				}
 				id.setText(prefix + ":" + annotation.getXref().getId());
 			}
-			onto.setText(type);
+			if(annotation.getXref() != null && annotation.getXref().getDataSource() != null) {
+				onto.setText(annotation.getXref().getDataSource().getFullName());
+			} else {
+				onto.setText(type);
+			}
 			ocv.addContent(term);
 			ocv.addContent(id);
 			ocv.addContent(onto);
