@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.pathvisio</groupId>
 	<artifactId>org.pathvisio.libgpml</artifactId>
-	<version>4.0.1</version>
+	<version>4.0.2</version>
 	<packaging>jar</packaging>
 	<name>libGPML</name>
 	<description>libGPML is a library for reading, writing, manipulation, and conversion of files and data streams in the GPML (Graphical Pathway Markup Language) format.</description>

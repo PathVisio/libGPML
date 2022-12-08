@@ -27,6 +27,6 @@ authors:
 - family-names: Coort
   given-names: Susan
 title: "libGPML"
-version: 4.0.1
-date-released: 2022-10-05
+version: 4.0.2
+date-released: 2022-12-08
 url: "https://github.com/PathVisio/libGPML"
