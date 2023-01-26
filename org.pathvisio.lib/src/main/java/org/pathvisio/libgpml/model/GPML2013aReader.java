@@ -370,7 +370,7 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GPMLForm
 				// if source is an url, also set as citation urlLink
 				String urlLink = null;
 				if (source != null) {
-					if (source.startsWith("http") || source.startsWith("www")) {
+					if (source.startsWith("http") || source.startsWith("www") || source.startsWith("doi")) {
 						urlLink = source;
 					}
 				}
