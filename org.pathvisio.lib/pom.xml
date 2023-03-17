@@ -76,9 +76,9 @@
 						</Import-Package>
 						<Require-Bundle>
 							org.apache.servicemix.bundles.jdom;bundle-version="2.0.6",
- 							org.bridgedb;bundle-version="3.0.18",
-						 	org.bridgedb.bio;bundle-version="3.0.18",
-						 	org.bridgedb.rdb;bundle-version="3.0.18",
+ 							org.bridgedb;bundle-version="3.0.20",
+						 	org.bridgedb.bio;bundle-version="3.0.20",
+						 	org.bridgedb.rdb;bundle-version="3.0.20",
 							org.apache.commons.commons-collections4;bundle-version="4.4"
 						</Require-Bundle>
 					</instructions>
@@ -197,23 +197,23 @@
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb</artifactId>
-			<version>3.0.18</version>
+			<version>3.0.20</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.bio</artifactId>
-			<version>3.0.18</version>
+			<version>3.0.20</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.rdb</artifactId>
-			<version>3.0.18</version>
+			<version>3.0.20</version>
 		</dependency>
 		<!-- Apache Commons -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
-			<version>4.1</version>
+			<version>4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
