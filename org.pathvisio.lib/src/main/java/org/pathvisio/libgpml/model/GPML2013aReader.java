@@ -365,6 +365,12 @@ public class GPML2013aReader extends GPML2013aFormatAbstract implements GPMLForm
 				// reads PublicationXref/citation
 				String biopaxId = readPublicationXrefInfo(pubxf.getChildren("ID", BIOPAX_NAMESPACE));
 				String biopaxDb = readPublicationXrefInfo(pubxf.getChildren("DB", BIOPAX_NAMESPACE));
+				if(biopaxId == null || biopaxId.equals("")) {
+					biopaxId = "NA";
+				}
+				if(biopaxDb == null || biopaxDb.equals("")) {
+					biopaxDb = "PubMed";
+				}
 				Xref xref = XrefUtils.createXref(biopaxId, biopaxDb);
 				String source = readPublicationXrefInfo(pubxf.getChildren("SOURCE", BIOPAX_NAMESPACE));
 				// if source is an url, also set as citation urlLink
