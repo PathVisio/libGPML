@@ -45,6 +45,15 @@ mvn clean deploy -P release
 Besides the Maven Central release, the next step is to make the release on GitHub
 allowing Zenodo to archive the release which gives the DOI associated with the release.
 
+This is first done by tagging the latest commit with the version tag:
+
+```shell
+git tag v4.0.4
+git push origin --tags
+```
+
+This tag is used by GitHub to define the release.
+
 ### Sonatype access
 
 Deploying needs permission. Your account info is stored on Linux in `$HOME/.m2/settings.xml` and looks like:
