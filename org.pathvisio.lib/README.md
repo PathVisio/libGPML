@@ -28,7 +28,7 @@ Also update the `../CITATION.cff` file for the version and release date.
 
 ## Making releases
 
-Deploy to Sonatype with the following commands, for snapshots:
+Deploy to Sonatype (for access see below) with the following commands, for snapshots:
 
 ```shell
 mvn clean deploy
@@ -39,6 +39,11 @@ And releases respectively:
 ```shell
 mvn clean deploy -P release
 ```
+
+### GitHub Release
+
+Besides the Maven Central release, the next step is to make the release on GitHub
+allowing Zenodo to archive the release which gives the DOI associated with the release.
 
 ### Sonatype access
 
