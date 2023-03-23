@@ -114,4 +114,7 @@ The development of libGPML was supported in largely by funding from WikiPathways
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img valign="middle" height="60" src=".graphics/maastricht_university_logo2017.svg">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img valign="middle" height="60" src="https://user-images.githubusercontent.com/2158343/227148345-de2f9813-4ee6-4892-bd35-f935fcb82eef.png">
 </div>
