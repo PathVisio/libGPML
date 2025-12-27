@@ -21,7 +21,7 @@ mvn versions:set -DnewVersion=4.0.4-SNAPSHOT
 Or to a release version:
 
 ```shell
-mvn versions:set -DnewVersion=4.0.3
+mvn versions:set -DnewVersion=4.0.5
 ```
 
 Also update the `../CITATION.cff` file for the version and release date.
