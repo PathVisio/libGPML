@@ -41,5 +41,7 @@ jobs:
       run: cd org.pathvisio.lib; mvn clean install -Dgpg.skip -Pjacoco
     - name: push JaCoCo stats to codecov.io
       uses: codecov/codecov-action@v5
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        directory: 'org.pathvisio.lib'
+        verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }}
