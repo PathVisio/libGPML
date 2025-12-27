@@ -1,15 +1,16 @@
 package org.pathvisio.libgpml.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.type.DataNodeType;
-
-import junit.framework.TestCase;
 
 /**
  * For testing methods for elementRef:
@@ -22,14 +23,14 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestGraphLink extends TestCase {
+class TestGraphLink {
 
 	private PathwayModel p;
 	private Interaction i;
 	private Interaction i2;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		p = new PathwayModel();
 		i = new Interaction();
 		i2 = new Interaction();
@@ -60,7 +61,7 @@ public class TestGraphLink extends TestCase {
 	 * </pre>
 	 */
 	@Test
-	public void testLinkToShapedElement() {
+	void linkToShapedElement() {
 
 		DataNode d1 = new DataNode("d", DataNodeType.METABOLITE);
 		p.addDataNode(d1);
@@ -98,7 +99,7 @@ public class TestGraphLink extends TestCase {
 	 * </pre>
 	 */
 	@Test
-	public void testLinkToAnchor() {
+	void linkToAnchor() {
 		// adds anchor to interaction i2
 		Anchor a = i2.addAnchor(0.5, null);
 

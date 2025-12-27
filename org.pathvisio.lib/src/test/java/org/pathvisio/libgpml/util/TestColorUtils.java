@@ -1,20 +1,24 @@
 package org.pathvisio.libgpml.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for ColorUtils class. 
  * 
  * @author finterly
  */
-public class TestColorUtils extends TestCase {
-	
-	public void testHexToColorToHex() {
+class TestColorUtils {
+
+	@Test
+	void hexToColorToHex() {
 		// hex strings tests
 		List<String> hexTests = new ArrayList<String>(Arrays.asList("#b4b46419", "#00000000", "#ffffff"));
 		// color object equivalent of hex string tests
@@ -35,8 +39,9 @@ public class TestColorUtils extends TestCase {
 
 		}
 	}
-	
-	public void testStringToColor() {
+
+	@Test
+	void stringToColor() {
 		// strings tests
 		List<String> strTests = new ArrayList<String>(Arrays.asList("white", "Transparent", "blue"));
 		// color object equivalent of hex string tests
@@ -52,8 +57,9 @@ public class TestColorUtils extends TestCase {
 			assertEquals(color.getAlpha(), colorTests.get(i).getAlpha());
 		}
 	}
-	
-	public void testTransparency() {	
+
+	@Test
+	void transparency() {	
 		Color color = ColorUtils.hexToColor("00000000");
 		Color color2 = ColorUtils.hexToColor("ffffff00");
 		assertTrue(ColorUtils.isTransparent(color));

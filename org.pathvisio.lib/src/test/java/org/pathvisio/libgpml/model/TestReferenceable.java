@@ -1,7 +1,13 @@
 package org.pathvisio.libgpml.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
@@ -11,8 +17,6 @@ import org.pathvisio.libgpml.model.Referenceable.Evidenceable;
 import org.pathvisio.libgpml.model.type.AnnotationType;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.util.XrefUtils;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for {@link Referenceable}:
@@ -28,7 +32,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestReferenceable extends TestCase {
+class TestReferenceable {
 
 	private PathwayModel p;
 	private DataNode d1;
@@ -45,8 +49,8 @@ public class TestReferenceable extends TestCase {
 	private CitationRef cr2;
 	private EvidenceRef er2;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		p = new PathwayModel();
 		d1 = new DataNode("d1", DataNodeType.UNDEFINED); // instantiate dataNode
 		p.addDataNode(d1); // add datanode to pathway model
@@ -68,7 +72,7 @@ public class TestReferenceable extends TestCase {
 	}
 
 	@Test
-	public void testCheckSetUp() {
+	void checkSetUp() {
 		// pathway model has objects
 		assertTrue(p.hasPathwayObject(d1));
 		assertTrue(p.hasPathwayObject(a1));
@@ -112,7 +116,7 @@ public class TestReferenceable extends TestCase {
 	}
 
 	@Test
-	public void testRemoveAnnotation() {
+	void removeAnnotation() {
 		p.removeAnnotation(a1);
 
 		// pathway model has objects
@@ -154,7 +158,7 @@ public class TestReferenceable extends TestCase {
 	}
 
 	@Test
-	public void testRemoveAnnotationRef() {
+	void removeAnnotationRef() {
 		d1.removeAnnotationRef(ar1);
 
 		// pathway model has objects
@@ -197,7 +201,7 @@ public class TestReferenceable extends TestCase {
 	}
 
 	@Test
-	public void testRemoveDataNode() {
+	void removeDataNode() {
 		p.removeDataNode(d1);
 
 		// pathway model has objects

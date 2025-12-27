@@ -17,16 +17,17 @@
 package org.pathvisio.libgpml.util;
 
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for GroupRectPropertyUtils class, the utility class for finding group bounds. 
  * 
  * @author finterly
  */
-public class TestGroupRectPropertyUtils extends TestCase {
+class TestGroupRectPropertyUtils {
 
-	public void testGroupRectPropertyCalculation() {
+	@Test
+	void groupRectPropertyCalculation() {
 
 //		Group group = new Group();
 //				

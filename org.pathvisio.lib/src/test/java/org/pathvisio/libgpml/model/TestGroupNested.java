@@ -1,22 +1,23 @@
 package org.pathvisio.libgpml.model;
 
-import java.io.File;
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.pathvisio.libgpml.io.ConverterException;
+import java.io.File;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for nested {@link Group}(s).
  * 
  * @author finterly
  */
-public class TestGroupNested extends TestCase {
+class TestGroupNested {
 
 	PathwayModel p;
 	Group g1;
@@ -28,8 +29,8 @@ public class TestGroupNested extends TestCase {
 	/**
 	 * Creates and adds anchor to line, line to pathwayModel.
 	 */
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 
 		p = new PathwayModel();
 		g1 = new Group(GroupType.GROUP);
@@ -76,7 +77,7 @@ public class TestGroupNested extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveDataNode() {
+	void removeDataNode() {
 		// terminates data node and g1
 		p.removeDataNode(d1);
 		assertFalse(p.hasPathwayObject(g1));
@@ -108,7 +109,7 @@ public class TestGroupNested extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveDataNode2() {
+	void removeDataNode2() {
 		// terminates data node, group remains
 		p.removeDataNode(d2);
 		assertTrue(p.hasPathwayObject(g2));
@@ -130,7 +131,7 @@ public class TestGroupNested extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveDataNodeFromGroup() {
+	void removeDataNodeFromGroup() {
 
 		// removes data node from group, terminates group, data node remains
 		g1.removePathwayElement(d1);
@@ -176,7 +177,7 @@ public class TestGroupNested extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveGroup() {
+	void removeGroup() {
 		// terminates group, data nodes remain
 		p.removeGroup(g1);
 		assertFalse(p.hasPathwayObject(g1));
@@ -208,7 +209,7 @@ public class TestGroupNested extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testSwitchGroup() {
+	void switchGroup() {
 		d1.setGroupRefTo(g2);
 		assertFalse(p.hasPathwayObject(g1));
 		assertTrue(p.hasPathwayObject(g2));
@@ -234,7 +235,7 @@ public class TestGroupNested extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testWriteGPML2021() throws IOException, ConverterException {
+	void writeGPML2021() throws Exception {
 		File tmp = File.createTempFile("group_nested_testwriteGPML2021_", ".gpml");
 		GPML2021Writer.GPML2021WRITER.writeToXml(p, tmp, false);
 		System.out.println(tmp);

@@ -16,21 +16,24 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
-
-import junit.framework.TestCase;
 
 /**
  * Test for {@link LinePoint}.
  * 
  * @author finterly
  */
-public class TestLinePoint extends TestCase {
+class TestLinePoint {
 
 	private PathwayModel p;
 	private Interaction i1;
@@ -40,8 +43,8 @@ public class TestLinePoint extends TestCase {
 	/**
 	 * Creates and adds anchor to line, line to pathwayModel.
 	 */
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		p = new PathwayModel();
 		i1 = new Interaction();
 		LinePoint pt1 = i1.getLinePoints().get(0);
@@ -88,7 +91,7 @@ public class TestLinePoint extends TestCase {
 	 * Tests removing line and thus anchor.
 	 */
 	@Test
-	public void testRemoveLine() {
+	void removeLine() {
 		p.removeInteraction(i1);
 		assertFalse(p.hasPathwayObject(i1));
 		assertFalse(p.hasPathwayObject(pt3));
@@ -99,7 +102,7 @@ public class TestLinePoint extends TestCase {
 	 * Tests calling setLinePoints() before adding line to pathway model.
 	 */
 	@Test
-	public void testSetLinePoints() {
+	void setLinePoints() {
 		PathwayModel p = new PathwayModel();
 		GraphicalLine i1 = new GraphicalLine();
 		LinePoint pt1 = i1.getLinePoints().get(0);

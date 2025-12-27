@@ -16,22 +16,28 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.type;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for extensible enum class. Tests DataNodeType as an example.
  * 
  * @author finterly
  */
-public class TestDataNodeType extends TestCase {
+class TestDataNodeType {
 
 	/**
 	 * For testing data node type features.
 	 */
-	public static void testDataNodeType() {
+	@Test
+	static void dataNodeType() {
 
 		// returns "RNA"
 		DataNodeType rna1 = DataNodeType.register("RNA");
@@ -43,7 +49,7 @@ public class TestDataNodeType extends TestCase {
 		// should return "Complex" in place of "comPLEX"
 		DataNodeType complex1 = DataNodeType.register("comPLEX");
 		// should both equal "Complex"
-		assertEquals(complex1, DataNodeType.COMPLEX);
+		assertEquals(DataNodeType.COMPLEX, complex1);
 
 		// should add "new data node type"
 		DataNodeType new1 = DataNodeType.register("new data node type");
@@ -70,14 +76,15 @@ public class TestDataNodeType extends TestCase {
 //		System.out.println(DataNodeType.getNames());
 //		System.out.println(rna1 == DataNodeType.RNA);
 	}
-	
+
 	/**
 	 * For testing group type features.
 	 */
-	public static void testGroupType() {
+	@Test
+	static void groupType() {
 		GroupType type1 = GroupType.register("group");
 		assertEquals(GroupType.GROUP, type1);
-		assertTrue(GroupType.GROUP == type1);
+		assertSame(GroupType.GROUP, type1);
 	}
 	
 }

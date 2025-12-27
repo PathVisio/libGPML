@@ -1,12 +1,12 @@
 package org.pathvisio.libgpml.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 
@@ -15,12 +15,12 @@ import org.pathvisio.libgpml.model.type.GroupType;
  * 
  * @author finterly
  */
-public class TestElementId {
+class TestElementId {
 
 	private PathwayModel p;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		p = new PathwayModel();
 	}
 
@@ -28,7 +28,7 @@ public class TestElementId {
 	 * 
 	 */
 	@Test
-	public void testDataNode() {
+	void dataNode() {
 		DataNode o = new DataNode("textLabel", DataNodeType.UNDEFINED);
 		assertNull(o.getElementId());
 		p.add(o);
@@ -41,7 +41,7 @@ public class TestElementId {
 	}
 
 	@Test
-	public void testInteraction() {
+	void interaction() {
 		Interaction o = new Interaction();
 		assertNull(o.getElementId());
 		p.add(o);
@@ -54,7 +54,7 @@ public class TestElementId {
 	}
 
 	@Test
-	public void testGraphicalLine() {
+	void graphicalLine() {
 		GraphicalLine o = new GraphicalLine();
 		assertNull(o.getElementId());
 		p.add(o);
@@ -67,7 +67,7 @@ public class TestElementId {
 	}
 
 	@Test
-	public void testLabel() {
+	void label() {
 		Label o = new Label("textLabel");
 		assertNull(o.getElementId());
 		p.add(o);
@@ -80,7 +80,7 @@ public class TestElementId {
 	}
 
 	@Test
-	public void testShape() {
+	void shape() {
 		Shape o = new Shape();
 		assertNull(o.getElementId());
 		p.add(o);
@@ -93,7 +93,7 @@ public class TestElementId {
 	}
 
 	@Test
-	public void testGroup() {
+	void group() {
 		Group o = new Group(GroupType.GROUP);
 		assertNull(o.getElementId());
 		p.add(o);

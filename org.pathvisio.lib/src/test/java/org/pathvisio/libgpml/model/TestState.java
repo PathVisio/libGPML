@@ -16,12 +16,16 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.type.DataNodeType;
-
-import junit.framework.TestCase;
 
 /**
  * Test for {@link State}.
@@ -35,7 +39,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestState extends TestCase {
+class TestState {
 
 	private PathwayModel p;
 	private DataNode d1;
@@ -43,8 +47,8 @@ public class TestState extends TestCase {
 	private State st2;
 	private State st3;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		p = new PathwayModel();
 		d1 = new DataNode("d1", DataNodeType.UNDEFINED);
 		p.addDataNode(d1);
@@ -67,7 +71,7 @@ public class TestState extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveState() {
+	void removeState() {
 		d1.removeState(st3);
 		assertFalse(d1.hasState(st3));
 		assertFalse(p.hasPathwayObject(st3));
@@ -78,7 +82,7 @@ public class TestState extends TestCase {
 	 * Tests removing a data node and its effect on states.
 	 */
 	@Test
-	public void testRemoveDataNode() {
+	void removeDataNode() {
 		p.removeDataNode(d1);
 		assertTrue(d1.getStates().isEmpty());
 		assertTrue(p.getDataNodes().isEmpty());

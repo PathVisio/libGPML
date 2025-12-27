@@ -1,22 +1,25 @@
 package org.pathvisio.libgpml.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.util.XrefUtils;
-
-import junit.framework.TestCase;
 
 /**
  * For testing Citation methods
  * 
  * @author finterly
  */
-public class TestCitation extends TestCase {
+class TestCitation {
 
 	private PathwayModel p;
 	private DataNode d1;
@@ -28,8 +31,8 @@ public class TestCitation extends TestCase {
 	/**
 	 * Two annotationRefs (same annotation) added to a data node. 
 	 */
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		if (!DataSource.fullNameExists("Affy"))
 			DataSourceTxt.init();
 		p = new PathwayModel();
@@ -56,7 +59,7 @@ public class TestCitation extends TestCase {
 	 * Tests for removing annotation.
 	 */
 	@Test
-	public void testRemoveCitation() {
+	void removeCitation() {
 		System.out.println(d1.getCitationRefs());
 		System.out.println(a.getCitationRefs());
 		p.removeCitation(a);		
@@ -71,7 +74,7 @@ public class TestCitation extends TestCase {
 	 * model.
 	 */
 	@Test
-	public void testDuplicateCitation() {
+	void duplicateCitation() {
 		Xref xref = XrefUtils.createXref("11", "ensembl");
 		CitationRef ar3 = d1.addCitation(xref, "urlLink");
 		assertEquals(ar1.getCitation(), ar3.getCitation());

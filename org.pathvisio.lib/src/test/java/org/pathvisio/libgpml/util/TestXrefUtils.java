@@ -1,19 +1,24 @@
 package org.pathvisio.libgpml.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for XrefUtils class.
  * 
  * @author finterly
  */
-public class TestXrefUtils extends TestCase {
+class TestXrefUtils {
 
-	public void testBridgeDb() {
+	@Test
+	void bridgeDb() {
 		if (!DataSource.fullNameExists("Affy"))
 			DataSourceTxt.init();
 
@@ -28,14 +33,15 @@ public class TestXrefUtils extends TestCase {
 
 		Xref xref1 = XrefUtils.createXref("123", "doid");
 
-		assertEquals(XrefUtils.getXrefDataSourceStr(xref1.getDataSource()), "doid");
+		assertEquals("doid", XrefUtils.getXrefDataSourceStr(xref1.getDataSource()));
 
 	}
 
 	/**
 	 * Tests the method for checking if Xrefs are equal
 	 */
-	public void testEquivalentXrefs() {
+	@Test
+	void equivalentXrefs() {
 		if (!DataSource.fullNameExists("Ensembl"))
 			DataSourceTxt.init();
 		Xref xref00 = null;

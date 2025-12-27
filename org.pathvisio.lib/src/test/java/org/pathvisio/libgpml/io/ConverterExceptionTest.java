@@ -14,30 +14,28 @@
  */
 package org.pathvisio.libgpml.io;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for reading and writing of a single GPML2021 file, for
  * troubleshooting and resolving specific issues.
  */
-public class ConverterExceptionTest extends TestCase {
+class ConverterExceptionTest {
 
 	@Test
-	public void testConstructor() {
+	void constructor() {
 		Exception exception = new ConverterException("Something bad happened");
-		Assert.assertNotNull(exception);
-		Assert.assertSame("Something bad happened", exception.getMessage());
+		Assertions.assertNotNull(exception);
+		Assertions.assertSame("Something bad happened", exception.getMessage());
 	}
 
 	@Test
-	public void testConstructor_Exception() {
+	void constructorException() {
 		Exception exception = new ConverterException(new Exception("Something bad happened"));
-		Assert.assertNotNull(exception);
-		Assert.assertNotNull(exception.getMessage());
-		Assert.assertTrue(exception.getMessage().contains("Something bad happened"));
+		Assertions.assertNotNull(exception);
+		Assertions.assertNotNull(exception.getMessage());
+		Assertions.assertTrue(exception.getMessage().contains("Something bad happened"));
 	}
 
 }

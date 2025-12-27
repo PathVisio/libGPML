@@ -16,25 +16,28 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.PathwayElement.CitationRef;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.StateType;
 
-import junit.framework.TestCase;
-
 /**
  * Test for Clone methods.
  * 
  * @author finterly
  */
-public class TestCopy extends TestCase {
+class TestCopy {
 
 	private PathwayModel p;
 	private DataNode o1;
@@ -43,8 +46,8 @@ public class TestCopy extends TestCase {
 	private Citation c;
 	private Interaction i1;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		p = new PathwayModel();
 		// add datanode
 		o1 = new DataNode("o1", DataNodeType.UNDEFINED);
@@ -62,12 +65,12 @@ public class TestCopy extends TestCase {
 		i1.addAnchor(0, null);
 	}
 
-	
+
 	/**
 	 * 
 	 */
 	@Test
-	public void testClonePathway() {
+	void clonePathway() {
 		// link dataNode and interaction
 		i1.setStartElementRef(o1);
 		PathwayModel p2 = p.clone(); 
@@ -82,21 +85,21 @@ public class TestCopy extends TestCase {
 //		}
 //		assertEquals(o2.getAnchors().get(0).getPathwayModel(), p2);
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Test
-	public void testCopyDataNode() {
+	void copyDataNode() {
 		CopyElement copy = o1.copy();
 		DataNode o2 = (DataNode) copy.getNewElement();
 		State s2 = o2.getStates().get(0);
 
 		assertEquals(o1, o1);
-		assertFalse(o1 == o2);
+		assertNotSame(o1, o2);
 		assertEquals(s1.getDataNode(), o1);
 		assertEquals(s2.getDataNode(), o2);
-		assertFalse(s1 == s2);
+		assertNotSame(s1, s2);
 
 		assertEquals(o1.getPathwayModel(), p);
 		assertEquals(s1.getPathwayModel(), p);
@@ -118,7 +121,7 @@ public class TestCopy extends TestCase {
 		o2.copyReferencesFrom(copy.getSourceElement());
 		CitationRef cr2 = o2.getCitationRefs().get(0);
 		Citation c2 = cr2.getCitation();
-		assertEquals(c2.getUrlLink(), "String");
+		assertEquals("String", c2.getUrlLink());
 		assertTrue(o2.hasCitationRef(cr2));
 		assertTrue(p2.hasPathwayObject(c2));
 
@@ -128,10 +131,10 @@ public class TestCopy extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testCopyInteraction() {
+	void copyInteraction() {
 		Interaction o2 = (Interaction) i1.copy().getNewElement();
 		assertEquals(i1, i1);
-		assertFalse(i1 == o2);
+		assertNotSame(i1, o2);
 		assertEquals(i1.getPathwayModel(), p);
 		assertNull(o2.getPathwayModel());
 
@@ -148,7 +151,7 @@ public class TestCopy extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testCopyGraphicalLine() {
+	void copyGraphicalLine() {
 		GraphicalLine o1 = new GraphicalLine();
 		p.addGraphicalLine(o1);
 
@@ -160,7 +163,7 @@ public class TestCopy extends TestCase {
 
 		GraphicalLine o2 = (GraphicalLine) o1.copy().getNewElement();
 		assertEquals(o1, o1);
-		assertFalse(o1 == o2);
+		assertNotSame(o1, o2);
 		assertEquals(o1.getPathwayModel(), p);
 		assertNull(o2.getPathwayModel());
 
@@ -177,14 +180,14 @@ public class TestCopy extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testCopyLabel() {
+	void copyLabel() {
 		Label o1 = new Label("o1");
 		p.addLabel(o1);
 
 		Label o2 = (Label) o1.copy().getNewElement();
 
 		assertEquals(o1, o1);
-		assertFalse(o1 == o2);
+		assertNotSame(o1, o2);
 		assertEquals(o1.getPathwayModel(), p);
 		assertNull(o2.getPathwayModel());
 	}
@@ -193,14 +196,14 @@ public class TestCopy extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testCopyShape() {
+	void copyShape() {
 		Shape o1 = new Shape();
 		p.addShape(o1);
 
 		Shape o2 = (Shape) o1.copy().getNewElement();
 
 		assertEquals(o1, o1);
-		assertFalse(o1 == o2);
+		assertNotSame(o1, o2);
 		assertEquals(o1.getPathwayModel(), p);
 		assertNull(o2.getPathwayModel());
 	}

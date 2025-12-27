@@ -16,24 +16,27 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.LineElement.Anchor;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.type.AnchorShapeType;
 import org.pathvisio.libgpml.model.type.ArrowHeadType;
-
-import junit.framework.TestCase;
 
 /**
  * Test for {@link Anchor}.
  * 
  * @author finterly
  */
-public class TestAnchor extends TestCase {
+class TestAnchor {
 
 	private PathwayModel p;
 	private Interaction i1;
@@ -42,8 +45,8 @@ public class TestAnchor extends TestCase {
 	/**
 	 * Creates and adds anchor to line, line to pathwayModel.
 	 */
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		p = new PathwayModel();
 		i1 = new Interaction();
 		LinePoint pt1 = i1.getLinePoints().get(0);
@@ -102,7 +105,7 @@ public class TestAnchor extends TestCase {
 	 * Tests removing anchor.
 	 */
 	@Test
-	public void testRemoveAnchor() {
+	void removeAnchor() {
 		// remove anchor
 		i1.removeAnchor(a1);
 		assertFalse(i1.hasAnchor(a1));
@@ -113,7 +116,7 @@ public class TestAnchor extends TestCase {
 	 * Tests removing line and thus anchor.
 	 */
 	@Test
-	public void testRemoveLine() {
+	void removeLine() {
 		p.removeInteraction(i1);
 		assertFalse(i1.hasAnchor(a1));
 		assertFalse(p.hasPathwayObject(a1));

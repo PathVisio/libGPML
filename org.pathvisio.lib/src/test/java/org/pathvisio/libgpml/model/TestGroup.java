@@ -1,19 +1,24 @@
 package org.pathvisio.libgpml.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.DataNode.State;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
-
-import junit.framework.TestCase;
 
 /**
  * Test for {@link Group}.
  * 
  * @author finterly
  */
-public class TestGroup extends TestCase {
+class TestGroup {
 
 	PathwayModel p;
 	Group g1;
@@ -25,8 +30,8 @@ public class TestGroup extends TestCase {
 	/**
 	 * Creates and adds anchor to line, line to pathwayModel.
 	 */
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 
 		p = new PathwayModel();
 		g1 = new Group(GroupType.GROUP);
@@ -82,7 +87,7 @@ public class TestGroup extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveDataNode() {
+	void removeDataNode() {
 		// terminates data node and empty group
 		p.removeDataNode(d1);
 		assertFalse(p.hasPathwayObject(g1));
@@ -112,7 +117,7 @@ public class TestGroup extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveDataNodeFromGroup() {
+	void removeDataNodeFromGroup() {
 
 		// removes data node from group, terminates group, data node remains
 		g1.removePathwayElement(d1);
@@ -156,7 +161,7 @@ public class TestGroup extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testRemoveGroup() {
+	void removeGroup() {
 		// terminates group, data nodes remain
 		p.removeGroup(g1);
 		assertFalse(p.hasPathwayObject(g1));
@@ -186,7 +191,7 @@ public class TestGroup extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testSwitchGroup() {
+	void switchGroup() {
 		d1.setGroupRefTo(g2);
 		assertFalse(p.hasPathwayObject(g1));
 		assertTrue(p.hasPathwayObject(g2));
@@ -213,7 +218,7 @@ public class TestGroup extends TestCase {
 	 * @author unknown, finterly
 	 */
 	@Test
-	public void testUngroup() {
+	void ungroup() {
 		PathwayModel pwy = new PathwayModel();
 		Interaction line = new Interaction(null);
 		Group group = new Group(null);

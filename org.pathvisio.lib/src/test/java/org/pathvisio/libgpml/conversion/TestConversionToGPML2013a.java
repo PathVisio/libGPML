@@ -16,18 +16,18 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.conversion;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.io.ConverterException;
 import org.pathvisio.libgpml.model.GPML2013aWriter;
 import org.pathvisio.libgpml.model.GPML2021Writer;
 import org.pathvisio.libgpml.model.PathwayModel;
-
-import junit.framework.TestCase;
 
 /**
  * Test for reading and writing of a single GPML2021 file, for
@@ -35,7 +35,7 @@ import junit.framework.TestCase;
  * 
  * @author finterly
  */
-public class TestConversionToGPML2013a extends TestCase {
+class TestConversionToGPML2013a {
 	private PathwayModel pathwayModel;
 	private String inputFile = "example-v2021.gpml";
 	private URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
@@ -46,8 +46,8 @@ public class TestConversionToGPML2013a extends TestCase {
 	 * @throws ConverterException
 	 * @throws IOException
 	 */
-	@Before
-	public void setUp() throws IOException, ConverterException {
+	@BeforeEach
+	void setUp() throws IOException, ConverterException {
 		File file = new File(url.getPath());
 		assertTrue(file.exists());
 		pathwayModel = new PathwayModel();
@@ -61,7 +61,7 @@ public class TestConversionToGPML2013a extends TestCase {
 	 * @throws IOException
 	 */
 	@Test
-	public void testWrite() throws IOException, ConverterException {
+	void write() throws Exception {
 		File tmp = File.createTempFile(inputFile + "_testwriteGPML2013a_", ".gpml");
 		GPML2013aWriter.GPML2013aWRITER.writeToXml(pathwayModel, tmp, true);
 		System.out.println(tmp);

@@ -1,19 +1,22 @@
 package org.pathvisio.libgpml.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.PathwayElement.EvidenceRef;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.util.XrefUtils;
-
-import junit.framework.TestCase;
 
 /**
  * For testing Evidence methods
  * 
  * @author finterly
  */
-public class TestEvidence extends TestCase {
+class TestEvidence {
 
 	private PathwayModel p;
 	private DataNode d1;
@@ -25,8 +28,8 @@ public class TestEvidence extends TestCase {
 	/**
 	 * Two annotationRefs (same annotation) added to a data node.
 	 */
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		p = new PathwayModel();
 		d1 = new DataNode("d1", DataNodeType.UNDEFINED);
 		p.addDataNode(d1);
@@ -51,7 +54,7 @@ public class TestEvidence extends TestCase {
 	 * Tests for removing annotation.
 	 */
 	@Test
-	public void testRemoveEvidence() {
+	void removeEvidence() {
 		System.out.println(d1.getEvidenceRefs());
 		System.out.println(a.getEvidenceRefs());
 		p.removeEvidence(a);
@@ -66,7 +69,7 @@ public class TestEvidence extends TestCase {
 	 * model.
 	 */
 	@Test
-	public void testDuplicateEvidence() {
+	void duplicateEvidence() {
 		EvidenceRef ar3 = d1.addEvidence("value", XrefUtils.createXref("123", "doid"), "urlLink");
 		assertEquals(ar1.getEvidence(), ar3.getEvidence());
 	}

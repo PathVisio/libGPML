@@ -16,20 +16,24 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.debug;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ConcurrentModificationException;
 import java.util.ListIterator;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for debug.
  * 
  * @author unknown
  */
-public class TestDebug extends TestCase {
+class TestDebug {
 	DebugList<String> l;
 
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		l = new DebugList<String>();
 		l.add("boom");
 		l.add("roos");
@@ -37,7 +41,8 @@ public class TestDebug extends TestCase {
 		l.add("vuur");
 	}
 
-	public void test1() {
+	@Test
+	void test1() {
 		try {
 			ListIterator<String> i = l.listIterator();
 			while (i.hasNext()) {

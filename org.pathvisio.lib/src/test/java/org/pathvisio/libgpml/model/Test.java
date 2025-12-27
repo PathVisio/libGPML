@@ -16,6 +16,13 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,17 +31,16 @@ import java.util.List;
 import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 import org.bridgedb.bio.DataSourceTxt;
+import org.junit.jupiter.api.BeforeEach;
 import org.pathvisio.libgpml.model.GraphLink.LinkableTo;
 import org.pathvisio.libgpml.model.type.DataNodeType;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for libgpml model classes. 
  * 
  * @author unknown
  */
-public class Test extends TestCase implements PathwayModelListener, PathwayObjectListener {
+public class Test implements PathwayModelListener, PathwayObjectListener {
 
 	PathwayModel data;
 	DataNode o;
@@ -42,7 +48,8 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 	List<PathwayObjectEvent> receivedElementEvents;
 	Interaction l;
 
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		data = new PathwayModel();
 		data.addListener(this);
 		o = new DataNode("", DataNodeType.UNDEFINED);
@@ -56,13 +63,14 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 		receivedElementEvents.clear();
 	}
 
-	public void testFields() {
+	@org.junit.jupiter.api.Test
+	void fields() {
 		o.setCenterX(1.0);
 
-		assertEquals("test set/get CenterX", 1.0, o.getCenterX(), 0.0001);
+		assertEquals(1.0, o.getCenterX(), 0.0001, "test set/get CenterX");
 
-		assertEquals("Setting CenterX should generate single event", receivedElementEvents.size(), 1);
-		assertEquals("test getProperty()", 1.0, o.getCenterX(), 0.0001);
+		assertEquals(1, receivedElementEvents.size(), "Setting CenterX should generate single event");
+		assertEquals(1.0, o.getCenterX(), 0.0001, "test getProperty()");
 
 //		try {
 //			o.setCenterX(null);
@@ -72,9 +80,9 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 
 		// however, you should be able to set graphRef to null
 
-		assertNull("graphref null by default", l.getStartElementRef());
+		assertNull(l.getStartElementRef(), "graphref null by default");
 		l.setStartElementRef(null);
-		assertNull("can set graphRef to null", l.getStartElementRef());
+		assertNull(l.getStartElementRef(), "can set graphRef to null");
 	}
 
 //	public void testProperties() throws IOException, ConverterException {
@@ -153,7 +161,8 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 //		assertEquals("Something other than 'World7'", o2.getPropertyEx("Hello7"));
 //	}
 
-	public void testColor() {
+	@org.junit.jupiter.api.Test
+	void color() {
 		try {
 			o.setTextColor(null);
 			o.setBorderColor(null);
@@ -162,46 +171,49 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 		}
 	}
 
-	public void testParent() {
+	@org.junit.jupiter.api.Test
+	void parent() {
 		// remove
 		data.remove(o);
-		assertNull("removing object set parents null", o.getPathwayModel());
-		assertEquals(received.size(), 1);
-		assertEquals("Event type should be DELETED", received.get(0).getType(), PathwayModelEvent.DELETED);
+		assertNull(o.getPathwayModel(), "removing object set parents null");
+		assertEquals(1, received.size());
+		assertEquals(PathwayModelEvent.DELETED, received.get(0).getType(), "Event type should be DELETED");
 
 		// re-add
 		data.add(o);
-		assertEquals("adding sets parent", o.getPathwayModel(), data);
-		assertEquals(received.size(), 2);
-		assertEquals("Event type should be ADDED", received.get(1).getType(), PathwayModelEvent.ADDED);
+		assertEquals(o.getPathwayModel(), data, "adding sets parent");
+		assertEquals(2, received.size());
+		assertEquals(PathwayModelEvent.ADDED, received.get(1).getType(), "Event type should be ADDED");
 	}
 
 	/**
 	 * Test graphRef's and graphId's
 	 *
 	 */
-	public void testRef() {
-		assertTrue("query non-existing list of ref", data.getReferringLinkableFroms(o).size() == 0);
+	@org.junit.jupiter.api.Test
+	void ref() {
+		assertEquals(0, data.getReferringLinkableFroms(o).size(), "query non-existing list of ref");
 
 		// create link
 		l.setStartElementRef(o);
-		assertTrue("reference created", data.getReferringLinkableFroms(o).contains(l.getStartLinePoint()));
+		assertTrue(data.getReferringLinkableFroms(o).contains(l.getStartLinePoint()), "reference created");
 
 		l.setStartElementRef(null);
-		assertTrue("reference removed", data.getReferringLinkableFroms(o).size() == 0);
+		assertEquals(0, data.getReferringLinkableFroms(o).size(), "reference removed");
 
 		DataNode o2 = new DataNode("", DataNodeType.UNDEFINED);
 		data.add(o2);
 
 		// create link in opposite order
 		l.setEndElementRef(o);
-		assertTrue("reference created (2)", data.getReferringLinkableFroms(o).contains(l.getEndLinePoint()));
+		assertTrue(data.getReferringLinkableFroms(o).contains(l.getEndLinePoint()), "reference created (2)");
 	}
 
 	/**
 	 * test that Xref and XrefWithSymbol obey the equals contract
 	 */
-	public void testXRefEquals() {
+	@org.junit.jupiter.api.Test
+	void xRefEquals() {
 		if (!DataSource.fullNameExists("Affy"))
 			DataSourceTxt.init();
 
@@ -216,16 +228,16 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 		for (int i = 0; i < testList.length; ++i) {
 			Object refi = testList[i];
 			// equals must be reflexive
-			assertTrue(refi.equals(refi));
+			assertEquals(refi, refi);
 			// never equal to null
-			assertFalse(refi.equals(null));
+			assertNotEquals(null, refi);
 		}
 		for (int i = 1; i < testList.length; ++i)
 			for (int j = 0; j < i; ++j) {
 				// equals must be symmetric
 				Object refi = testList[i];
 				Object refj = testList[j];
-				assertEquals("Symmetry fails for " + refj + " and " + refi, refi.equals(refj), refj.equals(refi));
+				assertEquals(refi.equals(refj), refj.equals(refi), "Symmetry fails for " + refj + " and " + refi);
 
 				// hashcode contract
 				if (refi.equals(refj)) {
@@ -240,13 +252,13 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 					Object refj = testList[j];
 					Object refk = testList[k];
 					if (refi.equals(refj) && refj.equals(refk)) {
-						assertTrue(refk.equals(refi));
+						assertEquals(refk, refi);
 					}
 					if (refj.equals(refk) && refk.equals(refi)) {
-						assertTrue(refi.equals(refj));
+						assertEquals(refi, refj);
 					}
 					if (refk.equals(refi) && refi.equals(refj)) {
-						assertTrue(refk.equals(refj));
+						assertEquals(refk, refj);
 					}
 				}
 	}
@@ -310,22 +322,24 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 //		}
 //	}
 
-	public void testRef2() {
+	@org.junit.jupiter.api.Test
+	void ref2() {
 		o.setElementId("1");
 
 		LinkableTo o2 = new DataNode("", DataNodeType.UNDEFINED);
 		// note: parent not set yet!
 		data.add((PathwayObject) o2); // reference should now be created
 
-		assertNull("default endGraphRef is null", l.getEndElementRef());
+		assertNull(l.getEndElementRef(), "default endGraphRef is null");
 
 		l.setEndElementRef(o2);
 
-		assertTrue("reference created through adding",
-				data.getReferringLinkableFroms(o2).contains(l.getEndLinePoint()));
+		assertTrue(data.getReferringLinkableFroms(o2).contains(l.getEndLinePoint()),
+				"reference created through adding");
 	}
 
-	public void testWrongFormat() {
+	@org.junit.jupiter.api.Test
+	void wrongFormat() {
 		try {
 			String inputFile = "test.mapp";
 			URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
@@ -350,7 +364,8 @@ public class Test extends TestCase implements PathwayModelListener, PathwayObjec
 	 * Test that there is one and only one Pathway object
 	 *
 	 */
-	public void testMappInfo() {
+	@org.junit.jupiter.api.Test
+	void mappInfo() {
 		Pathway mi;
 
 		// pathway is created and set when a pathway model is first created.

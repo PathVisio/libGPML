@@ -1,18 +1,19 @@
 package org.pathvisio.libgpml.model;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for random things.
  * 
  * @author finterly
  */
-public class TestTemporary extends TestCase {
+class TestTemporary {
 
 	/**
 	 * Temporary place for testing various methods.
 	 */
-	public static void testThis() {
+	@Test
+	static void testThis() {
 
 //		PathwayModel p = new PathwayModel();
 //		Interaction line = new Interaction();

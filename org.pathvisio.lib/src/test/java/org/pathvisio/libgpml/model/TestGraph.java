@@ -16,27 +16,30 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.type.DataNodeType;
-
-import junit.framework.TestCase;
 
 /**
  * Test graph properties of a pathway model.
  *
  * @author unknown
  */
-public class TestGraph extends TestCase {
+class TestGraph {
 
 	PathwayModel p;
 	Interaction l;
 	DataNode n1, n2;
 	LinePoint start, end;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		p = new PathwayModel();
 
 		l = new Interaction();
@@ -70,7 +73,7 @@ public class TestGraph extends TestCase {
 	 * that the mPoint is linked to an object or not.
 	 */
 	@Test
-	public void testRelative() {
+	void relative() {
 		assertFalse(start.isRelative());
 		assertFalse(end.isRelative());
 
@@ -101,7 +104,7 @@ public class TestGraph extends TestCase {
 	 * properly unlinked.
 	 */
 	@Test
-	public void testRemove() {
+	void remove() {
 		assertFalse(start.isRelative());
 		assertEquals(11.0, start.getX(), 0.01);
 

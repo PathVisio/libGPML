@@ -1,25 +1,26 @@
 package org.pathvisio.libgpml.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.pathvisio.libgpml.io.ConverterException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.PathwayElement.AnnotationRef;
 import org.pathvisio.libgpml.model.type.AnnotationType;
 import org.pathvisio.libgpml.model.type.DataNodeType;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for Annotation class.
  * 
  * @author p70073399
  */
-public class TestAnnotation extends TestCase {
+class TestAnnotation {
 
 	private PathwayModel p;
 	private DataNode d1;
@@ -31,8 +32,8 @@ public class TestAnnotation extends TestCase {
 	/**
 	 * Two annotationRefs (same annotation) added to a data node. 
 	 */
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		p = new PathwayModel();
 		d1 = new DataNode("d1", DataNodeType.UNDEFINED); 
 		p.addDataNode(d1); 
@@ -53,7 +54,7 @@ public class TestAnnotation extends TestCase {
 	}
 
 	@Test
-	public void testReadingOfPathwayAnnotations() throws ConverterException {
+	void readingOfPathwayAnnotations() throws Exception {
 		String inputFile = "example-v2013a.gpml";
 		URL url = Thread.currentThread().getContextClassLoader().getResource(inputFile);
 		File file = new File(url.getPath());
@@ -73,7 +74,7 @@ public class TestAnnotation extends TestCase {
 	 * Tests for removing annotation.
 	 */
 	@Test
-	public void testRemoveAnnotation() {
+	void removeAnnotation() {
 		System.out.println(d1.getAnnotationRefs());
 		System.out.println(a.getAnnotationRefs());
 		p.removeAnnotation(a);		
@@ -88,7 +89,7 @@ public class TestAnnotation extends TestCase {
 	 * model.
 	 */
 	@Test
-	public void testDuplicateAnnotation() {
+	void duplicateAnnotation() {
 		AnnotationRef ar3 = d1.addAnnotation("value", AnnotationType.ONTOLOGY, null, null);
 		assertEquals(ar1.getAnnotation(), ar3.getAnnotation());
 	}

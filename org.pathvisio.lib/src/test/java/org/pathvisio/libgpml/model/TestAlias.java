@@ -1,16 +1,14 @@
 package org.pathvisio.libgpml.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.pathvisio.libgpml.io.ConverterException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.type.DataNodeType;
 import org.pathvisio.libgpml.model.type.GroupType;
 
@@ -20,15 +18,15 @@ import org.pathvisio.libgpml.model.type.GroupType;
  * @author finterly
  *
  */
-public class TestAlias {
+class TestAlias {
 
 	private PathwayModel p;
 	private Group g;
 	private DataNode d;
 	private DataNode alias;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		p = new PathwayModel();
 		g = new Group(GroupType.GROUP);
 		d = new DataNode("textLabel", DataNodeType.UNDEFINED);
@@ -50,7 +48,7 @@ public class TestAlias {
 	 * 
 	 */
 	@Test
-	public void testRemoveAlias() {
+	void removeAlias() {
 		p.removeDataNode(alias);
 		assertNull(alias.getAliasRef());
 		assertNull(p.getLinkedAliases(g));
@@ -61,7 +59,7 @@ public class TestAlias {
 	 * 
 	 */
 	@Test
-	public void testRemoveGroup() {
+	void removeGroup() {
 		p.removeGroup(g);
 		assertNull(alias.getAliasRef());
 		assertNull(p.getLinkedAliases(g));
@@ -72,7 +70,7 @@ public class TestAlias {
 	 * 
 	 */
 	@Test
-	public void testWriteGPML2021() throws IOException, ConverterException {
+	void writeGPML2021() throws Exception {
 		File tmp = File.createTempFile("alias_testwriteGPML2021_", ".gpml");
 		GPML2021Writer.GPML2021WRITER.writeToXml(p, tmp, false);
 		System.out.println(tmp);

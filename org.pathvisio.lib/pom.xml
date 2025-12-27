@@ -210,7 +210,6 @@
 			<artifactId>org.bridgedb.rdb</artifactId>
 			<version>3.0.29</version>
 		</dependency>
-		<!-- Apache Commons -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
@@ -221,12 +220,14 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
-		<!-- JUnit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-		</dependency>
+                <!-- JUnit -->
+                <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter</artifactId>
+                        <version>5.14.1</version>
+                        <scope>test</scope>
+                </dependency>
+                <!-- Apache Commons -->
 	</dependencies>
 
 	<developers>

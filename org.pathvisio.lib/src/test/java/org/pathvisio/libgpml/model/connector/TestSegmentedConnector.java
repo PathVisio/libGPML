@@ -16,14 +16,14 @@
  ******************************************************************************/
 package org.pathvisio.libgpml.model.connector;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.awt.geom.Point2D;
 import java.util.Arrays;
-
+import org.junit.jupiter.api.Test;
 import org.pathvisio.libgpml.model.Interaction;
 import org.pathvisio.libgpml.model.LineElement.LinePoint;
 import org.pathvisio.libgpml.model.connector.ConnectorShape.Segment;
-
-import junit.framework.TestCase;
 
 /**
  * Test for segmented connector. 
@@ -31,10 +31,11 @@ import junit.framework.TestCase;
  * @author unknown
  *
  */
-public class TestSegmentedConnector extends TestCase {
-	
+class TestSegmentedConnector {
+
 	/** test conversion to / from line coordinates */
-	public void testLineCoordinates() {
+	@Test
+	void lineCoordinates() {
 		Interaction line = new Interaction();
 		LinePoint[] points = new LinePoint[] { line.new LinePoint(75.0, 125.0),
 				line.new LinePoint(75.0, 50.0),
