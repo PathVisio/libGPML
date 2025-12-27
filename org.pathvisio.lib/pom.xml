@@ -79,7 +79,7 @@
  							org.bridgedb;bundle-version="3.0.29",
 						 	org.bridgedb.bio;bundle-version="3.0.29",
 						 	org.bridgedb.rdb;bundle-version="3.0.29",
-							org.apache.commons.commons-collections4;bundle-version="4.4"
+							org.apache.commons.commons-collections4;bundle-version="4.5.0"
 						</Require-Bundle>
 					</instructions>
 				</configuration>
@@ -213,7 +213,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
-			<version>4.4</version>
+			<version>4.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
