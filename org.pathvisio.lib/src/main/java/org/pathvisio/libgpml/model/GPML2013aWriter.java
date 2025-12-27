@@ -85,7 +85,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 	 * @param validate     if true, validate the dom structure before writing. If
 	 *                     there is a validation error, or the xsd is not in the
 	 *                     classpath, an exception will be thrown.
-	 * @throws ConverterException
+	 * @throws ConverterException when an {@link IOException} when the XML code is sent to the output stream
 	 */
 	@Override
 	public void writeToXml(PathwayModel pathwayModel, OutputStream output, boolean validate) throws ConverterException {
@@ -120,7 +120,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 	 * @param file         the file to which the JDOM document should be saved.
 	 * @param validate     if true, validate the dom structure before writing to
 	 *                     file.
-	 * @throws ConverterException
+	 * @throws ConverterException when an {@link IOException} happened during the creation of a {@link FileOutputStream}
 	 */
 	@Override
 	public void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException {
@@ -138,7 +138,7 @@ public class GPML2013aWriter extends GPML2013aFormatAbstract implements GPMLForm
 	 * pathwayModel {@link PathwayModel} data.
 	 *
 	 * @param pathwayModel the pathway model to be written.
-	 * @throws ConverterException
+	 * @throws ConverterException when an {@link IOException} happened during the creation of a Jdom
 	 */
 	@Override
 	public Document createJdom(PathwayModel pathwayModel) throws ConverterException {

@@ -34,7 +34,7 @@ public interface GPMLFormatWriter extends GPMLFormatVersion {
 	 * 
 	 * @param pathwayModel the pathway model.
 	 * @return
-	 * @throws ConverterException
+	 * @throws ConverterException when an exception happened during the conversion
 	 */
 	Document createJdom(PathwayModel pathwayModel) throws ConverterException;
 
@@ -44,7 +44,7 @@ public interface GPMLFormatWriter extends GPMLFormatVersion {
 	 * @param pathwayModel the pathway model.
 	 * @param file         the file to write to.
 	 * @param validate     if true, validate.
-	 * @throws ConverterException
+	 * @throws ConverterException when an exception happened during the conversion
 	 */
 	void writeToXml(PathwayModel pathwayModel, File file, boolean validate) throws ConverterException;
 
@@ -54,7 +54,7 @@ public interface GPMLFormatWriter extends GPMLFormatVersion {
 	 * @param pathwayModel the pathway model.
 	 * @param out          the output stream.
 	 * @param validate     if true, validate.
-	 * @throws ConverterException
+	 * @throws ConverterException when an exception happened during the conversion
 	 */
 	void writeToXml(PathwayModel pathwayModel, OutputStream out, boolean validate) throws ConverterException;
 
