@@ -13,7 +13,7 @@ class TestTemporary {
 	 * Temporary place for testing various methods.
 	 */
 	@Test
-	static void testThis() {
+	void testThis() {
 
 //		PathwayModel p = new PathwayModel();
 //		Interaction line = new Interaction();
