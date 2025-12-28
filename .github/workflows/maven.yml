@@ -45,3 +45,4 @@ jobs:
         directory: 'org.pathvisio.lib'
         verbose: true
         token: ${{ secrets.CODECOV_TOKEN }}
+        slug: PathVisio/libGPML
