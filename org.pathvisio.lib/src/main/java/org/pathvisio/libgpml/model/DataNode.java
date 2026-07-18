@@ -655,15 +655,20 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * @throws IllegalArgumentException if relX is not between -1.0 and 1.0. t
 		 */
 		public void setRelX(double v) {
-			if (Math.abs(v) <= 1.0) {
-				if (relX != v) {
-					relX = v;
-					updateCoordinates();
-					fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
-				}
-			} else {
-				throw new IllegalArgumentException("relX " + v + " should be between -1.0 and 1.0");
+			//Fix: instead off throwing an exception, clamping the value to the valid range and print a warning message.
+			if (v<-1.0) {
+				v = -1.0;
+				System.out.println("Warning: relX value clamped to -1.0");
 			}
+			else if (v>1.0) {
+				v = 1.0;
+				System.out.println("Warning: relX value clamped to 1.0");
+			}
+			if (relX != v) {
+				relX = v;
+				updateCoordinates();
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
+				}
 		}
 
 		/**
@@ -687,14 +692,20 @@ public class DataNode extends ShapedElement implements Xrefable {
 		 * @param v the relative y coordinate.
 		 */
 		public void setRelY(double v) {
-			if (Math.abs(v) <= 1.0) {
-				if (relY != v) {
-					relY = v;
-					updateCoordinates();
-					fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
-				}
-			} else {
-				throw new IllegalArgumentException("relY " + v + " should be between -1.0 and 1.0");
+			
+			//Fix: instead off throwing an exception, clamping the value to the valid range and print a warning message.
+			if (v<-1.0) {
+				v = -1.0;
+				System.out.println("Warning: relY value clamped to -1.0");
+			}
+			else if (v>1.0) {
+				v = 1.0;
+				System.out.println("Warning: relY value clamped to 1.0");
+			}
+			if (relY != v) {
+				relY = v;
+				updateCoordinates();
+				fireObjectModifiedEvent(PathwayObjectEvent.createCoordinatePropertyEvent(this));
 			}
 		}
 
